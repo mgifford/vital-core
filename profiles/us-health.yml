@@ -109,3 +109,35 @@ targets:
       postLoadDelay: 2000
       max_pages: 25
       maxTimeoutMs: 120000
+
+  - id: healthcare-gov
+    name: HealthCare.gov
+    base_url: https://www.healthcare.gov
+    sitemap_url: https://www.healthcare.gov/sitemap.xml
+    include_paths:
+      - "/coverage/*"
+      - "/quick-guide/*"
+      - "/glossary/*"
+    priority_urls:
+      - https://www.healthcare.gov/
+      - https://www.healthcare.gov/quick-guide/
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
+
+  - id: cdc-gov
+    name: CDC.gov
+    base_url: https://www.cdc.gov
+    sitemap_url: https://www.cdc.gov/sitemap.xml
+    include_paths:
+      - "/about/*"
+      - "/chronicdisease/*"
+      - "/vaccines/*"
+    priority_urls:
+      - https://www.cdc.gov/
+      - https://www.cdc.gov/about/
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
