@@ -61,3 +61,51 @@ targets:
       postLoadDelay: 2000
       max_pages: 25
       maxTimeoutMs: 120000
+
+  - id: openpaymentsdata-cms-gov
+    name: Open Payments Data (CMS)
+    base_url: https://openpaymentsdata.cms.gov
+    include_paths:
+      - "/*"
+    priority_urls:
+      - https://openpaymentsdata.cms.gov/
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
+
+  - id: data-medicaid-gov
+    name: Medicaid Data Portal
+    base_url: https://data.medicaid.gov
+    include_paths:
+      - "/*"
+    priority_urls:
+      - https://data.medicaid.gov/
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
+
+  - id: data-healthcare-gov
+    name: Healthcare Data Portal
+    base_url: https://data.healthcare.gov
+    include_paths:
+      - "/datasets*"
+    priority_urls:
+      - https://data.healthcare.gov/datasets
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
+
+  - id: data-cms-gov
+    name: CMS Data Portal
+    base_url: https://data.cms.gov
+    include_paths:
+      - "/*"
+    priority_urls:
+      - https://data.cms.gov/
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
