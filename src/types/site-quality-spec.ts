@@ -19,7 +19,7 @@ export const A11yViolationSchema = z.object({
 export const PageScanReportSchema = z.object({
   url: z.string().url(),
   timestamp: z.string().datetime(),
-  status: z.enum(['COMPLETED', 'TIMEOUT', 'WAF_BLOCKED', 'FAILED']),
+  status: z.enum(['COMPLETED', 'TIMEOUT', 'WAF_BLOCKED', 'FAILED', 'SKIPPED_UNCHANGED']),
   errorMessage: z.string().nullable(),
 
   // 1. Technology Fingerprint Profile (wappalyzer-next)

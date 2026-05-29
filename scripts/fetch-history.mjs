@@ -15,6 +15,13 @@ async function fetchText(url) {
   return response.text();
 }
 
+async function writeCachedFile(historyCacheDir, relativePath, body) {
+  const outputPath = path.resolve(process.cwd(), historyCacheDir, relativePath);
+  const outputDir = path.dirname(outputPath);
+  await mkdir(outputDir, { recursive: true });
+  await writeFile(outputPath, body, 'utf8');
+}
+
 async function main() {
   const baseUrl = process.env.VITAL_PAGES_BASE_URL;
   const historyCacheDir = process.env.VITAL_HISTORY_CACHE_DIR || '.history-cache';
@@ -27,6 +34,23 @@ async function main() {
   const trimmedBase = baseUrl.replace(/\/+$/, '');
   const runsCacheDir = path.resolve(process.cwd(), historyCacheDir, 'runs');
   await mkdir(runsCacheDir, { recursive: true });
+
+  async function fetchOptionalRunArtifact(relativePath) {
+    try {
+      const response = await fetch(`${trimmedBase}/runs/${relativePath}`, {
+        headers: { 'User-Agent': 'vital-core-history-fetch/1.0' }
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      await writeCachedFile(historyCacheDir, `runs/${relativePath}`, await response.text());
+      console.log(`✅ Restored optional history artifact: runs/${relativePath}`);
+    } catch {
+      // Optional artifacts should not fail the scan pipeline.
+    }
+  }
 
   const indexUrl = `${trimmedBase}/runs/index.json`;
   const indexText = await fetchText(indexUrl);
@@ -60,12 +84,10 @@ async function main() {
       continue;
     }
 
-    const outputPath = path.resolve(process.cwd(), historyCacheDir, artifactPath);
-    const outputDir = path.dirname(outputPath);
-    await mkdir(outputDir, { recursive: true });
-    await writeFile(outputPath, artifactText, 'utf8');
+    await writeCachedFile(historyCacheDir, artifactPath, artifactText);
   }
 
+  await fetchOptionalRunArtifact('page-state.json');
   console.log(`Restored historical run index and ${runs.length} referenced run entries.`);
 }
 
