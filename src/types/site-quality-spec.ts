@@ -1,0 +1,81 @@
+import { z } from 'zod';
+
+export const IssueSeveritySchema = z.enum(['critical', 'serious', 'moderate', 'minor']);
+
+// Structure aligned with ACCESSIBILITY.md bug reporting requirements
+export const A11yViolationSchema = z.object({
+  id: z.string(),                  // axe-core rule name (e.g., 'color-contrast')
+  severity: IssueSeveritySchema,
+  description: z.string(),
+  helpUrl: z.string().url(),
+  impactedCriteria: z.array(z.string()), // Section 508 / WCAG mapping (e.g., '508-302.1')
+  instances: z.array(z.object({
+    html: z.string(),              // Failing element markup snippet
+    target: z.array(z.string()),   // CSS Selector array
+    failureSummary: z.string()     // Remediation suggestion
+  }))
+});
+
+export const PageScanReportSchema = z.object({
+  url: z.string().url(),
+  timestamp: z.string().datetime(),
+  status: z.enum(['COMPLETED', 'TIMEOUT', 'WAF_BLOCKED', 'FAILED']),
+  errorMessage: z.string().nullable(),
+
+  // 1. Technology Fingerprint Profile (wappalyzer-next)
+  technologyStack: z.array(z.object({
+    name: z.string(),
+    category: z.string(),
+    version: z.string().nullable()
+  })),
+
+  // 2. Live Browser Session Evaluation
+  liveAudits: z.object({
+    lighthouse: z.object({
+      performanceScore: z.number().nullable(), // 0-100 scale
+      carbonEstimateGrams: z.number().nullable() // open-susty weight calculation
+    }).nullable(),
+    accessibilityViolations: z.array(A11yViolationSchema)
+  }).nullable(),
+
+  // 3. Offline Snapshot Diagnostics (Executed entirely local via file cache)
+  offlineAudits: z.object({
+    overlayDetected: z.object({
+      found: z.boolean(),
+      provider: z.string().nullable(), // Name of overlay discovered (e.g., 'UserWay')
+      evidence: z.string().nullable()  // Script signature or snippet string
+    }),
+    designSystem: z.object({
+      usesUSWDS: z.boolean(),
+      versionDetected: z.string().nullable()
+    }),
+    contentMetrics: z.object({
+      readabilityScore: z.number().nullable(), // Flesch-Kincaid index metric
+      suspiciousAltTextCount: z.number(),      // Occurrences of 'image.png', 'blank', etc.
+      suspiciousAltInstances: z.array(z.object({
+        imgHtml: z.string(),
+        invalidValue: z.string()
+      }))
+    }),
+    linkHealth: z.object({
+      totalChecked: z.number(),
+      brokenCount: z.number(),
+      brokenLinks: z.array(z.object({
+        sourceUrl: z.string(),
+        targetUrl: z.string(),
+        statusCode: z.number().nullable()
+      }))
+    })
+  }).nullable()
+});
+
+export const TargetScanResultSchema = z.object({
+  targetId: z.string(),
+  domain: z.string(),
+  scanDurationMs: z.number(),
+  pagesScanned: z.array(PageScanReportSchema)
+});
+
+export type A11yViolation = z.infer<typeof A11yViolationSchema>;
+export type PageScanReport = z.infer<typeof PageScanReportSchema>;
+export type TargetScanResult = z.infer<typeof TargetScanResultSchema>;
