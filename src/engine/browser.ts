@@ -3,6 +3,8 @@ import * as path from 'path';
 import { chromium, Browser, Page } from 'playwright';
 import { TargetConfig } from '../types/profile';
 import { PageScanReport } from '../types/site-quality-spec';
+import { LiveWorker } from './workers/live-worker';
+import { OfflineWorker } from './workers/offline-worker';
 
 export class ResilientBrowserEngine {
   private static SNAPSHOT_DIR = path.resolve(process.cwd(), 'tmp/html-snapshots');
@@ -59,14 +61,20 @@ export class ResilientBrowserEngine {
         // 3. Extract fully rendered HTML string state
         const hydratedHtml = await page.content();
 
-        // 4. Clean URL into a cross-platform safe filename
+        // 4. Run Live browser evaluations in memory (Axe Core Automation)
+        console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
+        baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
+
+        // 5. Generate offline local analysis metrics from DOM snapshot
+        baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
+
+        // 6. Clean URL into a cross-platform safe filename
         const safeFilename = this.sanitizeUrlToFilename(url);
         const snapshotPath = path.join(this.SNAPSHOT_DIR, safeFilename);
 
         fs.writeFileSync(snapshotPath, hydratedHtml, 'utf8');
         console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
 
-        // Track live performance/accessibility audit anchors here if needed in Phase 4
         baseReport.status = 'COMPLETED';
 
       } catch (error: any) {

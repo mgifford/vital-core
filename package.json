@@ -7,6 +7,7 @@
     "validate": "npx tsx test-phase1.ts",
     "validate-phase2": "npx tsx test-phase2.ts",
     "validate-phase3": "npx tsx test-phase3.ts",
+    "validate-phase4": "npx tsx test-phase4.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +24,8 @@
   },
   "homepage": "https://github.com/mgifford/vital-core#readme",
   "dependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "cheerio": "^1.2.0",
     "picomatch": "^4.0.4",
     "playwright": "^1.60.0",
     "sitemapper": "^4.1.6",
@@ -30,6 +33,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.35",
     "@types/node": "^25.9.1",
     "@types/picomatch": "^4.0.3",
     "tsx": "^4.22.3",
