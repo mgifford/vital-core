@@ -1,0 +1,62 @@
+name: Execute Continuous Web Quality Compliance Scan
+
+on:
+  schedule:
+    # Triggers every Friday night at midnight UTC
+    - cron: '0 0 * * 5'
+  workflow_dispatch:
+    # Allows repository maintainers to manually execute an on-demand scan
+
+# Explicitly set permissions for native, secure GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  compliance-scan:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Repository Code
+        uses: actions/checkout@v4
+
+      - name: Initialize Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Monolithic Project Dependencies
+        run: npm ci
+
+      - name: Cache and Install Playwright Chromium Binary
+        run: npx playwright install chromium --with-deps
+
+      - name: Run VITAL-Core Core Orchestrator Pipeline
+        run: npx tsx src/index.ts profiles/us-health.yml
+
+      - name: Upload Local Snapshots as Workflow Artifacts (Debugging/Audit)
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-cached-html-snapshots
+          path: tmp/html-snapshots/
+          retention-days: 7
+
+      - name: Setup GitHub Pages Deployment Context
+        uses: actions/configure-pages@v4
+
+      - name: Package Generated Static Dashboard Build
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist/'
+
+      - name: Deploy Compiled Dashboard directly to GitHub Pages Engine
+        id: deployment
+        uses: actions/deploy-pages@v4
