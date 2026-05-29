@@ -32,7 +32,7 @@ async function runVerification() {
       throw new Error("Failure: The resolved execution matrix came back empty.");
     }
 
-    const prioritySeedFound = executionQueue.includes("https://www.cms.gov/medicare/physician-fee-schedule/search");
+    const prioritySeedFound = executionQueue.some(url => url === "https://www.cms.gov/medicare/physician-fee-schedule/search");
     if (!prioritySeedFound) {
       throw new Error("Failure: Specific seed requirements were dropped or out-prioritized.");
     }

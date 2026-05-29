@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vital-core — US Government Website Quality Scanner</title>
+  <style>
+    :root {
+      --color-bg: #f0f4f8;
+      --color-surface: #ffffff;
+      --color-primary: #1a4480;
+      --color-primary-dark: #162e51;
+      --color-accent: #005ea2;
+      --color-accent-light: #d9e8f6;
+      --color-text: #1b1b1b;
+      --color-muted: #565c65;
+      --color-border: #dfe1e2;
+      --color-success: #168318;
+      --color-warning: #936f38;
+      --color-phase-badge: #e8f0fb;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,.08);
+      --max-width: 960px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    /* ── Banner ── */
+    .uswds-banner {
+      background: var(--color-primary-dark);
+      color: #fff;
+      font-size: .85rem;
+      padding: .4rem 1.5rem;
+      text-align: center;
+      letter-spacing: .01em;
+    }
+
+    /* ── Hero ── */
+    header.hero {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 3.5rem 1.5rem 3rem;
+      text-align: center;
+    }
+    header.hero h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: .5rem;
+    }
+    header.hero h1 span { color: #7dc7ff; }
+    header.hero p {
+      font-size: 1.15rem;
+      max-width: 620px;
+      margin: 0 auto 1.5rem;
+      opacity: .9;
+    }
+    .hero-badges { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+    .badge {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 20px;
+      padding: .3rem .9rem;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+
+    /* ── Layout ── */
+    main { max-width: var(--max-width); margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── Section heading ── */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      margin-bottom: 1.25rem;
+      padding-bottom: .4rem;
+      border-bottom: 3px solid var(--color-accent);
+      display: inline-block;
+    }
+
+    /* ── Phase Status Cards ── */
+    .phases { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 3rem; }
+    .phase-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.5rem;
+      position: relative;
+    }
+    .phase-card .phase-num {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: var(--color-accent);
+      background: var(--color-phase-badge);
+      border-radius: 4px;
+      padding: .15rem .5rem;
+      display: inline-block;
+      margin-bottom: .5rem;
+    }
+    .phase-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; color: var(--color-primary-dark); }
+    .phase-card p { font-size: .9rem; color: var(--color-muted); }
+    .status-dot {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .status-dot.done { background: var(--color-success); }
+    .status-dot.in-progress { background: var(--color-warning); }
+    .status-dot.planned { background: var(--color-border); }
+    .status-label { font-size: .72rem; font-weight: 600; margin-top: .75rem; display: flex; align-items: center; gap: .4rem; }
+    .status-label.done { color: var(--color-success); }
+    .status-label.in-progress { color: var(--color-warning); }
+    .status-label.planned { color: var(--color-muted); }
+
+    /* ── Feature Grid ── */
+    .features { margin-bottom: 3rem; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+    .feature-item {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .feature-item .icon { font-size: 1.5rem; margin-bottom: .5rem; }
+    .feature-item h4 { font-size: .95rem; font-weight: 700; color: var(--color-primary-dark); margin-bottom: .3rem; }
+    .feature-item p { font-size: .85rem; color: var(--color-muted); }
+
+    /* ── Targets Table ── */
+    .targets { margin-bottom: 3rem; }
+    .targets-table { width: 100%; border-collapse: collapse; background: var(--color-surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .targets-table th {
+      background: var(--color-primary);
+      color: #fff;
+      text-align: left;
+      padding: .75rem 1rem;
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+    }
+    .targets-table td { padding: .7rem 1rem; font-size: .875rem; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    .targets-table tr:last-child td { border-bottom: none; }
+    .targets-table tr:hover td { background: var(--color-accent-light); }
+    .tag {
+      display: inline-block;
+      background: var(--color-phase-badge);
+      color: var(--color-accent);
+      border-radius: 4px;
+      padding: .1rem .45rem;
+      font-size: .75rem;
+      font-weight: 600;
+      margin: .1rem .1rem 0 0;
+    }
+
+    /* ── Architecture ── */
+    .architecture { margin-bottom: 3rem; }
+    .arch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .arch-node {
+      background: var(--color-surface);
+      border: 2px solid var(--color-accent-light);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+    }
+    .arch-node .arch-icon { font-size: 2rem; margin-bottom: .4rem; }
+    .arch-node h4 { font-size: .85rem; font-weight: 700; color: var(--color-primary-dark); }
+    .arch-node p { font-size: .78rem; color: var(--color-muted); margin-top: .2rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--color-primary-dark);
+      color: rgba(255,255,255,.75);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .85rem;
+    }
+    footer a { color: #7dc7ff; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      header.hero h1 { font-size: 1.8rem; }
+      .phases, .feature-grid, .arch-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="uswds-banner">
+    🇺🇸 &nbsp;An open-source quality scanning pipeline for U.S. federal government websites &nbsp;·&nbsp;
+    <a href="https://github.com/mgifford/vital-core" style="color:#7dc7ff;">View on GitHub</a>
+  </div>
+
+  <header class="hero">
+    <h1><span>vital</span>-core</h1>
+    <p>A serverless, spec-driven quality scanner that checks accessibility, performance, plain language, and sustainability for U.S. government websites — powered by GitHub Actions.</p>
+    <div class="hero-badges">
+      <span class="badge">🔓 Open Source</span>
+      <span class="badge">⚡ GitHub Actions</span>
+      <span class="badge">♿ Section 508</span>
+      <span class="badge">🌱 Sustainability</span>
+      <span class="badge">📊 WCAG 2.2</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Build Phases ── -->
+    <h2 class="section-title">Build Phases</h2>
+    <div class="phases">
+
+      <div class="phase-card">
+        <span class="status-dot done"></span>
+        <div class="phase-num">PHASE 1</div>
+        <h3>Data Schema &amp; Profile Ingestion</h3>
+        <p>Zod-validated YAML profiles define scan targets, glob path filters, priority URLs, and execution ceilings.</p>
+        <div class="status-label done">✔ Complete</div>
+      </div>
+
+      <div class="phase-card">
+        <span class="status-dot done"></span>
+        <div class="phase-num">PHASE 2</div>
+        <h3>Target Discovery &amp; Path Filter Matrix</h3>
+        <p>Sitemap crawling via <code>sitemapper</code>, glob filtering via <code>picomatch</code>, priority seed injection, and max-page throttling.</p>
+        <div class="status-label done">✔ Complete</div>
+      </div>
+
+      <div class="phase-card">
+        <span class="status-dot planned"></span>
+        <div class="phase-num">PHASE 3</div>
+        <h3>Live Browser Accessibility Auditing</h3>
+        <p>Playwright-driven axe-core + alfa evaluations after DOM hydration, with FPC impact mapping to Section 508 criteria.</p>
+        <div class="status-label planned">○ Planned</div>
+      </div>
+
+      <div class="phase-card">
+        <span class="status-dot planned"></span>
+        <div class="phase-num">PHASE 4</div>
+        <h3>Offline Snapshot Diagnostics</h3>
+        <p>Local HTML cache analysis: USWDS detection, overlay fingerprinting, alt-text heuristics, and Flesch-Kincaid scoring.</p>
+        <div class="status-label planned">○ Planned</div>
+      </div>
+
+      <div class="phase-card">
+        <span class="status-dot planned"></span>
+        <div class="phase-num">PHASE 5</div>
+        <h3>Hyperlink Health &amp; Tech Fingerprinting</h3>
+        <p>Async HTTP HEAD checks for broken links, wappalyzer-next platform detection, and Core Web Vitals via Lighthouse.</p>
+        <div class="status-label planned">○ Planned</div>
+      </div>
+
+      <div class="phase-card">
+        <span class="status-dot planned"></span>
+        <div class="phase-num">PHASE 6</div>
+        <h3>Dashboard &amp; Automated Ticketing</h3>
+        <p>Flat JSON reports compiled into a responsive GitHub Pages dashboard; Markdown tickets formatted to the ACCESSIBILITY.md spec.</p>
+        <div class="status-label planned">○ Planned</div>
+      </div>
+
+    </div>
+
+    <!-- ── Key Features ── -->
+    <div class="features">
+      <h2 class="section-title">Key Features</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <div class="icon">🗺️</div>
+          <h4>Glob-Filtered Sitemap Parsing</h4>
+          <p>Parses remote <code>sitemap.xml</code> and cross-references entries with picomatch wildcard rules to isolate targeted paths.</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🚦</div>
+          <h4>Priority Seed Injection</h4>
+          <p>High-value URLs are forced to the front of the execution queue, guaranteeing they are audited regardless of crawl depth limits.</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">♿</div>
+          <h4>Section 508 / WCAG Auditing</h4>
+          <p>Hydrated DOM axe-core evaluations map violations directly to Section 508 Functional Performance Criteria.</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">📝</div>
+          <h4>Plain Language Scoring</h4>
+          <p>Flesch-Kincaid Reading Ease scores enforce compliance with the Plain Writing Act of 2010 on every scanned page.</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🌱</div>
+          <h4>Carbon &amp; Sustainability Metrics</h4>
+          <p>Estimates CO₂ per visit using Sustainable Web Design model calculations derived from live network transfer data.</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">⚙️</div>
+          <h4>100% Serverless via GitHub Actions</h4>
+          <p>No cloud infrastructure costs. Every scan runs on GitHub-hosted runners on a cron schedule, fully automated.</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🛡️</div>
+          <h4>Single-Hit Bandwidth Protection</h4>
+          <p>Pages are fetched exactly once. Raw HTML is cached locally, and all offline audits run against the snapshot to protect federal bandwidth.</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🎫</div>
+          <h4>Automated Accessibility Tickets</h4>
+          <p>Violations are transformed into ACCESSIBILITY.md-formatted Markdown tickets, ready to paste into GitHub Issues or Jira.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Active Scan Targets ── -->
+    <div class="targets">
+      <h2 class="section-title">Active Scan Targets</h2>
+      <table class="targets-table">
+        <thead>
+          <tr>
+            <th>Agency</th>
+            <th>Domain</th>
+            <th>Path Filters</th>
+            <th>Max Pages</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Centers for Medicare &amp; Medicaid Services</strong></td>
+            <td><a href="https://www.cms.gov" target="_blank" rel="noopener">cms.gov</a></td>
+            <td><span class="tag">/medicare/*</span><span class="tag">/medicaid/*</span></td>
+            <td>30</td>
+          </tr>
+          <tr>
+            <td><strong>U.S. Dept. of Health &amp; Human Services</strong></td>
+            <td><a href="https://www.hhs.gov" target="_blank" rel="noopener">hhs.gov</a></td>
+            <td><span class="tag">/healthcare/*</span><span class="tag">/programs/*</span></td>
+            <td>25</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Engine Architecture ── -->
+    <div class="architecture">
+      <h2 class="section-title">Engine Architecture</h2>
+      <div class="arch-grid">
+        <div class="arch-node">
+          <div class="arch-icon">📄</div>
+          <h4>Profile Parser</h4>
+          <p>Zod-validated YAML ingestion</p>
+        </div>
+        <div class="arch-node">
+          <div class="arch-icon">🔍</div>
+          <h4>Discovery Engine</h4>
+          <p>Sitemap + glob URL resolution</p>
+        </div>
+        <div class="arch-node">
+          <div class="arch-icon">🌐</div>
+          <h4>Browser Runner</h4>
+          <p>Playwright headless Chromium</p>
+        </div>
+        <div class="arch-node">
+          <div class="arch-icon">💾</div>
+          <h4>Snapshot Cache</h4>
+          <p>Local HTML for offline audits</p>
+        </div>
+        <div class="arch-node">
+          <div class="arch-icon">📊</div>
+          <h4>Report Compiler</h4>
+          <p>JSON → dashboard + tickets</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>
+      <strong>vital-core</strong> is open source under the
+      <a href="https://github.com/mgifford/vital-core/blob/main/LICENSE">AGPL-3.0 License</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/mgifford/vital-core">GitHub Repository</a>
+      &nbsp;·&nbsp;
+      Built for U.S. federal digital accessibility &amp; quality
+    </p>
+  </footer>
+
+</body>
+</html>
