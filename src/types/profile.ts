@@ -13,7 +13,7 @@ export const TargetConfigSchema = z.object({
   sitemap_url: z.string().url().optional(),
   include_paths: z.array(z.string()).default([]), // Glob patterns for path-filtering
   priority_urls: z.array(z.string().url()).default([]), // Forced execution URLs
-  settings: TargetSettingsSchema.default({})
+  settings: TargetSettingsSchema.default({ postLoadDelay: 2000, max_pages: 25, maxTimeoutMs: 120000 })
 });
 
 export const ProfileSchema = z.object({
