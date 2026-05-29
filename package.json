@@ -1,0 +1,32 @@
+{
+  "name": "vital-core",
+  "version": "1.0.0",
+  "description": "A quality scanner for websites built for the US government.",
+  "main": "index.js",
+  "scripts": {
+    "validate": "npx tsx test-phase1.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgifford/vital-core.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "AGPL-3.0",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mgifford/vital-core/issues"
+  },
+  "homepage": "https://github.com/mgifford/vital-core#readme",
+  "dependencies": {
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  }
+}
