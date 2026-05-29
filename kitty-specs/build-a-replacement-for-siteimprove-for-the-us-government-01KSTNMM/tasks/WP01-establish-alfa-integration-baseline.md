@@ -36,3 +36,7 @@ tags: []
 - Alfa worker module and integration hooks.
 - Test coverage for Alfa invocation and output capture.
 - Updated docs for local/CI execution.
+
+## Activity Log
+
+- 2026-05-29T21:26:07Z – unknown – Moved to in_progress
