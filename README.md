@@ -5,7 +5,18 @@ A quality scanner for websites built for the US government.
 
 - Install dependencies: `npm ci`
 - Run automated tests and validators: `npm test`
+- Run CI-safe full validation with coverage: `npm run test:ci`
+- Run optional live/network-heavy phase checks: `npm run test:phase:live`
 - Run a scan locally: `npm run scan`
+
+## Testing Infrastructure
+
+The project splits testing into two tiers:
+
+- CI-safe checks (`npm test` / `npm run test:ci`): type validation, profile contract checks, and deterministic unit tests.
+- Live phase checks (`npm run test:phase:live`): network and browser-dependent validations for discovery/browser/worker/reporter flows.
+
+Coverage reports are generated to `coverage/` and uploaded by the CI workflow (`.github/workflows/ci-tests.yml`).
 
 ## Third-Party Tool Submodules
 
