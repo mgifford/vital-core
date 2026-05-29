@@ -33,7 +33,7 @@ export const PageScanReportSchema = z.object({
   liveAudits: z.object({
     lighthouse: z.object({
       performanceScore: z.number().nullable(), // 0-100 scale
-      carbonEstimateGrams: z.number().nullable() // open-susty weight calculation
+      energyEstimateKwh: z.number().nullable() // SWD model energy calculation per page visit
     }).nullable(),
     accessibilityViolations: z.array(A11yViolationSchema)
   }).nullable(),

@@ -24,7 +24,7 @@ try {
           { name: "React", category: "JavaScript Frameworks", version: "18.2.0" }
         ],
         liveAudits: {
-          lighthouse: { performanceScore: 78, carbonEstimateGrams: 0.42 },
+          lighthouse: { performanceScore: 78, energyEstimateKwh: 0.42 },
           accessibilityViolations: []
         },
         offlineAudits: {
