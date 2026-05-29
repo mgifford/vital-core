@@ -6,7 +6,7 @@ async function verifyPhase4Workers() {
     console.log("⏳ Instantiating Phase 4 Data Worker validation routine...");
     
     const profile = ProfileParser.loadProfile('profiles/us-health.yml');
-    const target = profile.targets.find(t => t.id === 'cms-main');
+    const target = profile.targets.find(t => t.id === 'cms-gov');
     if (!target) throw new Error("Could not read targets footprint matrix.");
 
     // Isolate configuration boundary criteria to a single page check

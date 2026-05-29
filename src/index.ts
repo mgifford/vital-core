@@ -3,6 +3,7 @@ import { TargetDiscoveryEngine } from './engine/discovery';
 import { ResilientBrowserEngine } from './engine/browser';
 import { BugExporter } from './engine/reporters/bug-exporter';
 import { DashboardCompiler } from './engine/reporters/dashboard-compiler';
+import { RunHistoryReporter } from './engine/reporters/run-history';
 import { TargetScanResult, PageScanReport } from './types/site-quality-spec';
 
 async function main() {
@@ -52,7 +53,11 @@ async function main() {
     console.log(`\n📊 Compiling executive compliance dashboard UI...`);
     DashboardCompiler.compileStaticDashboard(globalAccumulatedResults);
 
-    const totalDurationSec = ((Date.now() - startTime) / 1000).toFixed(2);
+    const totalDurationMs = Date.now() - startTime;
+    const runEntry = RunHistoryReporter.persistRunHistory(globalAccumulatedResults, profilePath, totalDurationMs);
+    console.log(`🗃️ Updated persistent run history index with run ${runEntry.runId}.`);
+
+    const totalDurationSec = (totalDurationMs / 1000).toFixed(2);
     console.log(`\n🏁 VITAL-Core Execution Loop Completed Successfully in ${totalDurationSec}s.`);
 
   } catch (error: any) {

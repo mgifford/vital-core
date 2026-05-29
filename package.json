@@ -10,7 +10,15 @@
     "validate-phase4": "npx tsx test-phase4.ts",
     "validate-phase5": "npx tsx test-phase5.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "validate:types": "tsc --noEmit",
+    "validate:profile": "npx tsx test-phase1.ts",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "test": "npm run validate:types && npm run validate:profile && npm run test:unit",
+    "submodules:init": "git submodule update --init --recursive",
+    "submodules:update": "git submodule update --remote --merge --recursive",
+    "history:fetch": "node scripts/fetch-history.mjs",
+    "scan": "npx tsx src/index.ts profiles/us-health.yml"
   },
   "repository": {
     "type": "git",
@@ -38,6 +46,7 @@
     "@types/node": "^25.9.1",
     "@types/picomatch": "^4.0.3",
     "tsx": "^4.22.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
   }
 }
