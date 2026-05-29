@@ -1,0 +1,33 @@
+version: "1.0"
+profile: "US Health"
+description: "Quality scanner profile targeting US federal health agency websites."
+
+targets:
+  - id: cms-gov
+    name: Centers for Medicare & Medicaid Services
+    base_url: https://www.cms.gov
+    sitemap_url: https://www.cms.gov/sitemap.xml
+    include_paths:
+      - "/medicare/*"
+      - "/medicaid/*"
+    priority_urls:
+      - https://www.cms.gov/medicare/physician-fee-schedule/search
+      - https://www.cms.gov/about-cms
+    settings:
+      postLoadDelay: 2500
+      max_pages: 30
+      maxTimeoutMs: 120000
+
+  - id: hhs-gov
+    name: U.S. Department of Health & Human Services
+    base_url: https://www.hhs.gov
+    sitemap_url: https://www.hhs.gov/sitemap.xml
+    include_paths:
+      - "/healthcare/*"
+      - "/programs/*"
+    priority_urls:
+      - https://www.hhs.gov/healthcare/index.html
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
