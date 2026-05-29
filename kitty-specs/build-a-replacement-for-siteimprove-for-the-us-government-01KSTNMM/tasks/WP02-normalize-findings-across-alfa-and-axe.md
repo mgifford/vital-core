@@ -36,3 +36,7 @@ tags: []
 - Shared normalized finding types/contracts.
 - Adapter logic for both engines.
 - Unit tests for schema and mapping correctness.
+
+## Activity Log
+
+- 2026-05-29T23:07:13Z – unknown – Started WP02 T001: canonical normalized finding schema and tests
