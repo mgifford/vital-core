@@ -22,6 +22,7 @@
     "submodules:init": "git submodule update --init --recursive",
     "submodules:update": "git submodule update --remote --merge --recursive",
     "history:fetch": "node scripts/fetch-history.mjs",
+    "inventory:export": "node scripts/export-target-inventory.mjs",
     "scan": "npx tsx src/index.ts profiles/us-health.yml"
   },
   "repository": {

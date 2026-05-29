@@ -31,3 +31,33 @@ targets:
       postLoadDelay: 2000
       max_pages: 25
       maxTimeoutMs: 120000
+
+  - id: medicare-gov
+    name: Medicare.gov
+    base_url: https://www.medicare.gov
+    sitemap_url: https://www.medicare.gov/sitemap.xml
+    include_paths:
+      - "/coverage/*"
+      - "/basics/*"
+    priority_urls:
+      - https://www.medicare.gov/basics
+      - https://www.medicare.gov/coverage
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
+
+  - id: medicaid-gov
+    name: Medicaid.gov
+    base_url: https://www.medicaid.gov
+    sitemap_url: https://www.medicaid.gov/sitemap.xml
+    include_paths:
+      - "/medicaid/*"
+      - "/state-overviews/*"
+    priority_urls:
+      - https://www.medicaid.gov/medicaid/index.html
+      - https://www.medicaid.gov/state-overviews/index.html
+    settings:
+      postLoadDelay: 2000
+      max_pages: 25
+      maxTimeoutMs: 120000
