@@ -29,7 +29,7 @@ export class LiveWorker {
     return {
       lighthouse: {
         performanceScore: 100, // Placeholder target for Phase 5 runner wrapper integration
-        carbonEstimateGrams: 0.25
+        energyEstimateKwh: 0.25
       },
       accessibilityViolations: mappedViolations
     };

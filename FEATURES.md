@@ -2,7 +2,7 @@
 
 These are the anticipated features for this project.
 
-`vital-core` synthesizes the capabilities of specialized automated web quality, accessibility, sustainability, and data extraction engines into a singular, high-performance, spec-driven pipeline. Operating 100% serverless via GitHub Actions and Playwright caching, it protects federal target bandwidth using a **Single-Hit, Multi-Yield** execution lifecycle.
+`vital-core` synthesizes the capabilities of specialized automated web quality, accessibility, performance, and data extraction engines into a singular, high-performance, spec-driven pipeline. Operating 100% serverless via GitHub Actions and Playwright caching, it protects federal target bandwidth using a **Single-Hit, Multi-Yield** execution lifecycle.
 
 ---
 
@@ -63,11 +63,11 @@ These are the anticipated features for this project.
 
 ---
 
-## 🌱 7. Digital Sustainability & Performance
+## 🔋 7. Digital Performance & Energy Efficiency
 
 *Derived from `open-susty-scans` and Google Lighthouse.*
 
-* **Page Weight & Carbon Tracking:** Tracks data transfers and page-bloat metrics during live network rendering. It uses page metrics to estimate carbon emissions per visit, pairing web accessibility with environmental sustainability.
+* **Page Weight & Energy Tracking:** Tracks data transfers and page-bloat metrics during live network rendering. It uses page metrics to estimate energy consumption per visit, pairing web accessibility with responsible resource use.
 * **Core Web Vitals:** Measures crucial metrics like Largest Contentful Paint (LCP) and Cumulative Layout Shift (CLS) directly within the pipeline's headless engine to find heavy components that degrade performance on low-bandwidth connections.
 
 ---
@@ -154,12 +154,12 @@ Offline text and anchor validation processes handled entirely within the local r
 
 ---
 
-### 5. Sustainability & Compliance Reporting
+### 5. Performance & Compliance Reporting
 
 The systems that transform technical numbers into readable executive metrics and developer instructions.
 
-* **Digital Sustainability Estimations:** Powered by metrics from **`open-susty-scans`**.
-* *Mechanism:* Computes the overall page footprint using uncompressed byte-transfer data from the network log. It applies the Sustainable Web Design model to log a real-world carbon estimation metric per visit.
+* **Digital Performance Estimations:** Powered by metrics from **`open-susty-scans`**.
+* *Mechanism:* Computes the overall page footprint using uncompressed byte-transfer data from the network log. It applies the SWD model to log a real-world energy consumption metric per visit.
 
 
 * **Continuous Automation Workflow:** Powered by native **GitHub Actions Runner Environment Actions** (`actions/upload-pages-artifact`, `actions/deploy-pages`).
