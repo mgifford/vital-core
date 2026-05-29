@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout Source Repository Code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Initialize Node.js Environment
         uses: actions/setup-node@v4
@@ -36,11 +38,19 @@ jobs:
       - name: Install Monolithic Project Dependencies
         run: npm ci
 
+      - name: Restore historical run data from current Pages site
+        env:
+          VITAL_PAGES_BASE_URL: ${{ vars.VITAL_PAGES_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+          VITAL_HISTORY_CACHE_DIR: .history-cache
+        run: npm run history:fetch
+
       - name: Cache and Install Playwright Chromium Binary
         run: npx playwright install chromium --with-deps
 
       - name: Run VITAL-Core Core Orchestrator Pipeline
-        run: npx tsx src/index.ts profiles/us-health.yml
+        env:
+          VITAL_HISTORY_CACHE_DIR: .history-cache
+        run: npm run scan
 
       - name: Upload Local Snapshots as Workflow Artifacts (Debugging/Audit)
         uses: actions/upload-artifact@v4

@@ -10,9 +10,9 @@ async function verifyPhase3() {
 
     // 1. Resolve configuration metadata
     const profile = ProfileParser.loadProfile('profiles/us-health.yml');
-    const cmsTarget = profile.targets.find(t => t.id === 'cms-main');
+    const cmsTarget = profile.targets.find(t => t.id === 'cms-gov');
 
-    if (!cmsTarget) throw new Error("Could not parse cms-main configuration.");
+    if (!cmsTarget) throw new Error("Could not parse cms-gov configuration.");
 
     // Tighten properties for this local test to keep it lightning-fast
     cmsTarget.settings.max_pages = 2; 

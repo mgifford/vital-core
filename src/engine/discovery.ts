@@ -35,7 +35,14 @@ export class TargetDiscoveryEngine {
       
       // Compile glob matches into a unified test configuration
       const isMatch = picomatch(target.include_paths);
-      filteredUrls = sitemapUrls.filter(url => isMatch(url));
+      filteredUrls = sitemapUrls.filter(url => {
+        try {
+          const pathname = new URL(url).pathname;
+          return isMatch(pathname) || isMatch(url);
+        } catch {
+          return isMatch(url);
+        }
+      });
       
       console.log(`🎯 Post-filter calculation: ${filteredUrls.length} URLs matched constraints.`);
     }
