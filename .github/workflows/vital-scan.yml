@@ -6,6 +6,12 @@ on:
     - cron: '0 0 * * 5'
   workflow_dispatch:
     # Allows repository maintainers to manually execute an on-demand scan
+    inputs:
+      force_rescan:
+        description: 'Force full rescan of all discovered pages (ignore unchanged-page cache)'
+        required: false
+        type: boolean
+        default: false
 
 # Explicitly set permissions for native, secure GitHub Pages deployment
 permissions:
@@ -50,6 +56,7 @@ jobs:
       - name: Run VITAL-Core Core Orchestrator Pipeline
         env:
           VITAL_HISTORY_CACHE_DIR: .history-cache
+          FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || 'false' }}
         run: npm run scan
 
       - name: Upload Local Snapshots as Workflow Artifacts (Debugging/Audit)

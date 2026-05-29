@@ -18,7 +18,10 @@ export class BugExporter {
 
     // Filter pages that encountered severe issues
     const problematicPages = targetResult.pagesScanned.filter(
-      p => p.status !== 'COMPLETED' || (p.liveAudits?.accessibilityViolations.length ?? 0) > 0 || (p.offlineAudits?.contentMetrics.suspiciousAltTextCount ?? 0) > 0
+      p =>
+        (p.status !== 'COMPLETED' && p.status !== 'SKIPPED_UNCHANGED') ||
+        (p.liveAudits?.accessibilityViolations.length ?? 0) > 0 ||
+        (p.offlineAudits?.contentMetrics.suspiciousAltTextCount ?? 0) > 0
     );
 
     if (problematicPages.length === 0) {

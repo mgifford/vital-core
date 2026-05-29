@@ -3,12 +3,14 @@ import { TargetDiscoveryEngine } from './engine/discovery';
 import { ResilientBrowserEngine } from './engine/browser';
 import { BugExporter } from './engine/reporters/bug-exporter';
 import { DashboardCompiler } from './engine/reporters/dashboard-compiler';
+import { PageStateCache } from './engine/reporters/page-state-cache';
 import { RunHistoryReporter } from './engine/reporters/run-history';
 import { TargetScanResult, PageScanReport } from './types/site-quality-spec';
 
 async function main() {
   const startTime = Date.now();
   const profilePath = process.argv[2] || 'profiles/us-health.yml';
+  const forceRescan = /^(1|true|yes)$/i.test(process.env.FORCE_RESCAN || '');
   
   console.log(`🚀 Initalizing VITAL-Core Run Engine using profile: ${profilePath}`);
   
@@ -16,6 +18,11 @@ async function main() {
     // 1. Ingest Configuration Profile
     const profile = ProfileParser.loadProfile(profilePath);
     const globalAccumulatedResults: TargetScanResult[] = [];
+    const pageState = PageStateCache.load();
+
+    if (forceRescan) {
+      console.log('🔁 FORCE_RESCAN enabled. All pages will be scanned regardless of change state.');
+    }
 
     // 2. Loop Through Targets Sequentially to Protect Bandwidth
     for (const target of profile.targets) {
@@ -30,7 +37,10 @@ async function main() {
       }
 
       // 4. Run Browser Session (Live tests + Snapshot Generation + Offline Tests)
-      const rawPageReports = await ResilientBrowserEngine.executeSnapshotSession(target, urlQueue);
+      const rawPageReports = await ResilientBrowserEngine.executeSnapshotSession(target, urlQueue, {
+        forceRescan,
+        pageState
+      });
       
       // Enforce strict Type casting verification for generated scan reports
       const completedPageScans: PageScanReport[] = rawPageReports as PageScanReport[];
@@ -52,6 +62,7 @@ async function main() {
     // 6. Compile global dashboard across all scanned profiles
     console.log(`\n📊 Compiling executive compliance dashboard UI...`);
     DashboardCompiler.compileStaticDashboard(globalAccumulatedResults);
+    PageStateCache.save(pageState);
 
     const totalDurationMs = Date.now() - startTime;
     const runEntry = RunHistoryReporter.persistRunHistory(globalAccumulatedResults, profilePath, totalDurationMs);
