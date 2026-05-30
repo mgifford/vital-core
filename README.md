@@ -86,6 +86,7 @@ Each run now computes a deterministic Federal Quality Index (`0-100`) with a gat
 The score blends accessibility severity density, content quality signals, scan reliability, and link integrity. `BLOCKED` is enforced whenever critical accessibility violations are present.
 
 Per-target quality scoring is also persisted in run artifacts (`targetQuality`) so HHS/CMS and other target domains can be compared side-by-side in reporting.
+Provider confidence rollups are persisted in run artifacts and trends (`providerAttributionTop`) so recurring third-party risk can be monitored over time.
 
 ## Third-Party Tool Submodules
 

@@ -373,6 +373,23 @@ export class DashboardCompiler {
           'Gate: ' + gate + ' • ' + qualityDelta,
           qualityAccent
         );
+
+        const providers = Array.isArray(trends.latest.providerAttributionTop)
+          ? trends.latest.providerAttributionTop
+          : [];
+        const providerSummary = providers.length > 0
+          ? providers
+              .slice(0, 3)
+              .map(item => item.provider + ' (H:' + String(item.high) + ' M:' + String(item.medium) + ' L:' + String(item.low) + ')')
+              .join(' • ')
+          : 'No provider attribution signals in latest run.';
+
+        appendTrendCard(
+          'Top Third-Party Providers',
+          String(providers.length),
+          providerSummary,
+          ''
+        );
       })
       .catch(() => {
         appendTrendCard('Trend Summary', 'Unavailable', 'Trend data could not be loaded.', '');
