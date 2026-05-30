@@ -80,6 +80,9 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('Pages Scanned (Latest Run)');
     expect(html).toContain('id="pages-table"');
     expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');
+    expect(html).toContain('Detected Software (Latest Run)');
+    expect(html).toContain('id="software-table"');
+    expect(html).toContain('Detected On URLs');
     expect(html).toContain('Domain Ongoing Reports');
     expect(html).toContain('Pages Needing Most Improvement');
     expect(js).toContain('runs/domain-ongoing.json');
@@ -94,6 +97,7 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('function toDomainIdSegment(targetId)');
     expect(js).toContain("link.href = 'domains/' + domainIdSegment + '/' + item[1]");
     expect(js).toContain('function populateDomainSelectMenu(targets)');
+    expect(js).toContain('function renderSoftwareDetections()');
     expect(css).toContain('.progress-track');
     expect(css).toContain('.progress-fill');
     expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");

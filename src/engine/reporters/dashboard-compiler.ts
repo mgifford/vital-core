@@ -103,6 +103,21 @@ export class DashboardCompiler {
         <tbody id="pages-body"></tbody>
       </table>
     </div>
+    <div class="card" id="software-detections">
+      <h2>Detected Software (Latest Run)</h2>
+      <table id="software-table">
+        <caption>Technology detected in the latest run and where it was found.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Software</th>
+            <th scope="col">Category</th>
+            <th scope="col">Version</th>
+            <th scope="col">Detected On URLs</th>
+          </tr>
+        </thead>
+        <tbody id="software-body"></tbody>
+      </table>
+    </div>
     <div class="card">
       <h2>Domains Leaderboard</h2>
       <table id="target-table">
@@ -733,6 +748,7 @@ a:focus-visible {
   const historyBodyEl = document.getElementById('history-body');
   const ongoingBodyEl = document.getElementById('ongoing-body');
   const pagesBodyEl = document.getElementById('pages-body');
+  const softwareBodyEl = document.getElementById('software-body');
   const domainPageSelectEl = document.getElementById('domain-page-select');
   const sizeEstimateByTarget = new Map();
   const topUrlsByTarget = new Map();
@@ -740,6 +756,7 @@ a:focus-visible {
   let totalPages = 0;
   let totalViolations = 0;
   const softwareFound = new Set();
+  const softwareDetectedByName = new Map();
   const currentRunUniquePages = new Set();
   const leaderboardRows = [];
   const summaryValueById = new Map();
@@ -1317,6 +1334,59 @@ a:focus-visible {
     pagesBodyEl.appendChild(tr);
   }
 
+  function renderSoftwareDetections() {
+    if (!softwareBodyEl) {
+      return;
+    }
+
+    softwareBodyEl.innerHTML = '';
+    const rows = Array.from(softwareDetectedByName.values())
+      .sort((a, b) => String(a.displayName || '').localeCompare(String(b.displayName || '')));
+
+    if (rows.length === 0) {
+      const emptyRow = document.createElement('tr');
+      const emptyCell = document.createElement('td');
+      emptyCell.colSpan = 4;
+      emptyCell.textContent = 'No software fingerprints were detected in the latest run.';
+      emptyRow.appendChild(emptyCell);
+      softwareBodyEl.appendChild(emptyRow);
+      return;
+    }
+
+    rows.forEach(item => {
+      const tr = document.createElement('tr');
+
+      const nameCell = document.createElement('td');
+      nameCell.textContent = String(item.displayName || 'n/a');
+
+      const categoryCell = document.createElement('td');
+      categoryCell.textContent = Array.from(item.categories).sort((a, b) => a.localeCompare(b)).join(', ') || 'n/a';
+
+      const versionCell = document.createElement('td');
+      versionCell.textContent = Array.from(item.versions).sort((a, b) => a.localeCompare(b)).join(', ') || 'n/a';
+
+      const urlsCell = document.createElement('td');
+      const sortedUrls = Array.from(item.urls).sort((a, b) => a.localeCompare(b));
+      sortedUrls.forEach((url, index) => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        urlsCell.appendChild(link);
+        if (index < sortedUrls.length - 1) {
+          urlsCell.appendChild(document.createTextNode(' | '));
+        }
+      });
+
+      tr.appendChild(nameCell);
+      tr.appendChild(categoryCell);
+      tr.appendChild(versionCell);
+      tr.appendChild(urlsCell);
+      softwareBodyEl.appendChild(tr);
+    });
+  }
+
   async function updateUniqueCoverageFromHistory(indexPayload) {
     if (!indexPayload || !Array.isArray(indexPayload.runs) || indexPayload.runs.length === 0) {
       return;
@@ -1373,9 +1443,34 @@ a:focus-visible {
       }
       const stack = Array.isArray(p && p.technologyStack) ? p.technologyStack : [];
       stack.forEach(tech => {
-        const name = String(tech && tech.name ? tech.name : '').trim().toLowerCase();
+        const displayName = String(tech && tech.name ? tech.name : '').trim();
+        const name = displayName.toLowerCase();
         if (name) {
           softwareFound.add(name);
+
+          const existing = softwareDetectedByName.get(name) || {
+            displayName,
+            categories: new Set(),
+            versions: new Set(),
+            urls: new Set()
+          };
+
+          const category = String(tech && tech.category ? tech.category : '').trim();
+          if (category) {
+            existing.categories.add(category);
+          }
+
+          const version = String(tech && tech.version ? tech.version : '').trim();
+          if (version) {
+            existing.versions.add(version);
+          }
+
+          const pageUrl = String(p && p.url ? p.url : '').trim();
+          if (pageUrl) {
+            existing.urls.add(pageUrl);
+          }
+
+          softwareDetectedByName.set(name, existing);
         }
       });
     });
@@ -1422,6 +1517,7 @@ a:focus-visible {
   addSummaryCard('blocked-total', 'Total Blocked System Issues', String(totalViolations), 'var(--critical-red)');
   addSummaryCard('unique-pages-total', 'Unique Pages Scanned (All Time)', String(currentRunUniquePages.size), '');
   addSummaryCard('unique-pages-week', 'Unique Pages Scanned (This Week)', String(currentRunUniquePages.size), '');
+  renderSoftwareDetections();
   populateDomainSelectMenu(data);
 
   leaderboardRows
