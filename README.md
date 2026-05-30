@@ -52,6 +52,11 @@ Coverage reports are generated to `coverage/` and uploaded by the CI workflow (`
 
 This repository tracks upstream scanner source repositories as submodules to make updates easy and reviewable.
 
+Current tracked submodules include:
+
+- `tools/submodules/axe-core` (Deque axe-core engine)
+- `tools/submodules/standards` (ScanGov standards catalog)
+
 - Initialize submodules: `npm run submodules:init`
 - Update submodules to latest upstream tracked commits: `npm run submodules:update`
 
