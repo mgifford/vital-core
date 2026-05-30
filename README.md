@@ -43,10 +43,12 @@ Path in GitHub UI:
 
 The project splits testing into two tiers:
 
-- CI-safe checks (`npm test` / `npm run test:ci`): type validation, profile contract checks, and deterministic unit tests.
+- CI-safe checks (`npm test` / `npm run test:ci`): type validation, profile contract checks, standards-source integrity checks, and deterministic unit tests.
 - Live phase checks (`npm run test:phase:live`): network and browser-dependent validations for discovery/browser/worker/reporter flows.
 
 Coverage reports are generated to `coverage/` and uploaded by the CI workflow (`.github/workflows/ci-tests.yml`).
+
+Standards-source integrity is validated in Phase 6 (`test-phase6.ts`) and confirms that the ScanGov standards submodule and canonical standards data mappings are present for reporting.
 
 ## Third-Party Tool Submodules
 
