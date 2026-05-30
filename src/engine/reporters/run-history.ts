@@ -61,6 +61,9 @@ interface TrendSummary {
     generatedAt: string;
     pagesScanned: number;
     compliancePercentages: {
+      wcag20AALegalBaseline: number;
+      wcag21AA: number;
+      wcag22AATarget: number;
       accessibilityNoViolations: number;
       performanceThreshold: number;
       plainLanguageGrade: number;
@@ -343,11 +346,28 @@ export class RunHistoryReporter {
         return Number(((count / totalPages) * 100).toFixed(2));
       };
 
+      const passesWcag = (page: TargetScanResult['pagesScanned'][number], versionPrefix: string): boolean => {
+        const violations = page.liveAudits?.accessibilityViolations ?? [];
+        const hasVersionFailure = violations.some(violation =>
+          (violation.impactedCriteria ?? []).some(tag => String(tag || '').toLowerCase().startsWith(versionPrefix))
+        );
+        return !hasVersionFailure;
+      };
+
       return {
         runId: run.runId,
         generatedAt: run.generatedAt,
         pagesScanned: totalPages,
         compliancePercentages: {
+          wcag20AALegalBaseline: percentage(
+            countPassing(page => passesWcag(page, 'wcag2'))
+          ),
+          wcag21AA: percentage(
+            countPassing(page => passesWcag(page, 'wcag21'))
+          ),
+          wcag22AATarget: percentage(
+            countPassing(page => passesWcag(page, 'wcag22'))
+          ),
           accessibilityNoViolations: percentage(
             countPassing(page => (page.liveAudits?.accessibilityViolations.length ?? 0) === 0)
           ),

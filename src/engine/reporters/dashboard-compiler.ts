@@ -116,7 +116,8 @@ export class DashboardCompiler {
     <div class="card">
       <h2>Requirement Compliance Over Time</h2>
       <svg id="compliance-chart" viewBox="0 0 900 260" role="img" aria-label="Requirement compliance percentages across recent runs" style="width:100%; height:auto; border:1px solid var(--border-gray); background:#fff;"></svg>
-      <p id="compliance-caption" style="font-size:0.9rem; margin-top:0.75rem; color:#4d4d4d;">Compliance percentages by requirement across recent runs.</p>
+      <p id="compliance-caption" style="font-size:0.9rem; margin-top:0.75rem; color:#4d4d4d;">Compliance percentages by requirement across recent runs. Legal baseline and target levels are shown separately.</p>
+      <p style="font-size:0.85rem; margin-top:0.4rem; color:#5c5c5c;">Manual testing remains a primary release criterion; automated metrics are indicators, not substitutes for keyboard and assistive-technology validation.</p>
     </div>
     <div class="card">
       <h2>Domain Ongoing Reports</h2>
@@ -449,11 +450,14 @@ export class DashboardCompiler {
       });
 
       const metrics = [
+        { key: 'wcag20AALegalBaseline', label: 'WCAG 2.0 AA legal baseline', color: '#1a7f37' },
+        { key: 'wcag21AA', label: 'WCAG 2.1 AA', color: '#005ea2' },
+        { key: 'wcag22AATarget', label: 'WCAG 2.2 AA target', color: '#9a6700' },
         { key: 'accessibilityNoViolations', label: 'A11y no violations', color: '#b50909' },
-        { key: 'performanceThreshold', label: 'Performance >= 70', color: '#005ea2' },
-        { key: 'plainLanguageGrade', label: 'Plain language grade <= 8', color: '#1a7f37' },
-        { key: 'plainLanguageLinks', label: 'No ambiguous links', color: '#9a6700' },
-        { key: 'completedStatus', label: 'Completed status', color: '#6f42c1' }
+        { key: 'performanceThreshold', label: 'Performance >= 70', color: '#6f42c1' },
+        { key: 'plainLanguageGrade', label: 'Plain language grade <= 8', color: '#b3257a' },
+        { key: 'plainLanguageLinks', label: 'No ambiguous links', color: '#4d4d4d' },
+        { key: 'completedStatus', label: 'Completed status', color: '#2e7d6b' }
       ];
 
       const xForIndex = (index) => {
@@ -604,7 +608,10 @@ export class DashboardCompiler {
         const caption = document.getElementById('compliance-caption');
         if (caption && latestCompliance) {
           caption.textContent =
-            'Latest run: A11y no violations ' + String(Number(latestCompliance.accessibilityNoViolations || 0).toFixed(1)) +
+            'Latest run: WCAG 2.0 AA ' + String(Number(latestCompliance.wcag20AALegalBaseline || 0).toFixed(1)) +
+            '%, WCAG 2.1 AA ' + String(Number(latestCompliance.wcag21AA || 0).toFixed(1)) +
+            '%, WCAG 2.2 AA ' + String(Number(latestCompliance.wcag22AATarget || 0).toFixed(1)) +
+            '%, A11y no violations ' + String(Number(latestCompliance.accessibilityNoViolations || 0).toFixed(1)) +
             '%, Performance>=70 ' + String(Number(latestCompliance.performanceThreshold || 0).toFixed(1)) +
             '%, Grade<=8 ' + String(Number(latestCompliance.plainLanguageGrade || 0).toFixed(1)) +
             '%, No ambiguous links ' + String(Number(latestCompliance.plainLanguageLinks || 0).toFixed(1)) +

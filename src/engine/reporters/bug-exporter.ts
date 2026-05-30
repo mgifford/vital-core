@@ -35,6 +35,11 @@ export class BugExporter {
 
     let md = `# 🛑 Section 508 Compliance Registry: ${targetResult.targetId.toUpperCase()}\n`;
     md += `> **Scan Summary:** Processed completely on ${new Date().toUTCString()} | Duration: ${(targetResult.scanDurationMs / 1000).toFixed(2)}s\n\n`;
+    md += `## 📘 Conformance Policy Context\n`;
+    md += `* **Legal baseline:** WCAG 2.0 AA (federal minimum requirement).\n`;
+    md += `* **Recommended target:** WCAG 2.2 AA where feasible, while keeping WCAG 2.0 / 2.1 / 2.2 distinctions explicit in reporting.\n`;
+    md += `* **AAA guidance:** Encourage AAA improvements where practical, but do not treat automated AAA checks as equivalent to human validation.\n`;
+    md += `* **Manual testing priority:** Keyboard-only and assistive-technology testing should be prioritized above automated AAA score chasing.\n\n`;
 
     // Filter pages that encountered severe issues
     const problematicPages = targetResult.pagesScanned.filter(
@@ -79,9 +84,11 @@ export class BugExporter {
         if (violations.length > 0) {
           md += `### ♿ Technical Accessibility Deficiencies\n`;
           for (const violation of violations) {
+            const standardProfile = this.classifyWcagProfile(violation.impactedCriteria);
             md += `#### 🛑 Rule Triggered: \`${violation.id}\` (${violation.severity.toUpperCase()})\n`;
             md += `* **Description:** ${violation.description}\n`;
             md += `* **Target Standards Alignment:** ${violation.impactedCriteria.map(c => `\`${c}\``).join(', ')}\n`;
+            md += `* **WCAG Scope Classification:** ${standardProfile}\n`;
             md += `* **Primary Rule Guidance (Deque Axe):** [Deque Axe Ruleset Specification](${violation.helpUrl})\n\n`;
             md += `##### 🛠️ Code Failure Snippets:\n`;
 
@@ -205,6 +212,35 @@ export class BugExporter {
     fs.writeFileSync(path.join(this.REPORT_DIR, csvFilename), this.toCsv(csvRows), 'utf8');
 
     return safeFilename;
+  }
+
+  private static classifyWcagProfile(criteria: string[]): string {
+    const labels = new Set<string>();
+
+    for (const criterion of criteria) {
+      const tag = String(criterion || '').toLowerCase();
+      if (tag === 'wcag2a' || tag === 'wcag2aa' || tag.startsWith('wcag2')) {
+        labels.add('WCAG 2.0');
+      }
+      if (tag.startsWith('wcag21')) {
+        labels.add('WCAG 2.1');
+      }
+      if (tag.startsWith('wcag22')) {
+        labels.add('WCAG 2.2');
+      }
+      if (tag.includes('aaa')) {
+        labels.add('AAA');
+      }
+      if (tag.includes('508')) {
+        labels.add('Section 508');
+      }
+    }
+
+    if (labels.size === 0) {
+      return 'Unclassified';
+    }
+
+    return Array.from(labels).join(', ');
   }
 
   private static toCsv(rows: string[][]): string {

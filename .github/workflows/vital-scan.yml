@@ -92,6 +92,7 @@ jobs:
         if: steps.offhours.outputs.should_scan == 'true'
         env:
           VITAL_HISTORY_CACHE_DIR: .history-cache
+          VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}
           FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && 'true') || 'false' }}
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && github.event.schedule == '0 2 1 * *') || 'false' }}
         run: npm run scan

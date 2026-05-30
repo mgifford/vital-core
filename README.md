@@ -97,6 +97,14 @@ The score blends accessibility severity density, content quality signals, scan r
 Per-target quality scoring is also persisted in run artifacts (`targetQuality`) so HHS/CMS and other target domains can be compared side-by-side in reporting.
 Provider confidence rollups are persisted in run artifacts and trends (`providerAttributionTop`) so recurring third-party risk can be monitored over time.
 
+## WCAG Baseline and Targets
+
+- Legal federal baseline remains **WCAG 2.0 AA**.
+- VITAL-Core also tracks progress toward **WCAG 2.1 AA** and **WCAG 2.2 AA** as recommended targets.
+- Reports keep these conformance levels distinct in trend outputs so legal requirements and stretch goals are not conflated.
+- **AAA** is encouraged where practical, but automated AAA checks are treated as advisory only.
+- Manual testing (keyboard-only and assistive technology) is prioritized over automated AAA score chasing.
+
 ## Third-Party Tool Submodules
 
 This repository tracks upstream scanner source repositories as submodules to make updates easy and reviewable.
@@ -162,3 +170,6 @@ Discovery filters now default to:
 - HTML-like URLs only (non-HTML assets such as PDF, DOCX, XLSX, XML, media, fonts, RSS excluded)
 
 You can opt into subdomain crawling per target by setting `settings.include_subdomains: true`.
+
+To keep large URL sets fresh across runs, the scheduled workflow now sets `VITAL_SAMPLING_SEED` per run.
+This rotates sitemap sampling order while keeping each run deterministic and reproducible.

@@ -202,7 +202,8 @@ export class TargetDiscoveryEngine {
   }
 
   private static stableShuffle(urls: string[]): string[] {
-    return [...urls].sort((a, b) => this.hashString(a) - this.hashString(b));
+    const salt = process.env.VITAL_SAMPLING_SEED || '';
+    return [...urls].sort((a, b) => this.hashString(`${salt}:${a}`) - this.hashString(`${salt}:${b}`));
   }
 
   private static hashString(value: string): number {

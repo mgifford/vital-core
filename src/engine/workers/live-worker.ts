@@ -8,7 +8,7 @@ export class LiveWorker {
    */
   public static async runLiveAudits(page: Page) {
     const axeBuilder = new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'section508']);
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'section508']);
 
     const rawResults = await axeBuilder.analyze();
 
