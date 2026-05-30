@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { createHash } from 'crypto';
 import { load } from 'cheerio';
-import { chromium, Browser, Page } from 'playwright';
+import { chromium, firefox, webkit, Browser, BrowserContext, Page } from 'playwright';
 import { TargetConfig } from '../types/profile';
 import { PageScanReport } from '../types/site-quality-spec';
 import { PageStateEntry, PageStateMap } from './reporters/page-state-cache';
@@ -26,8 +26,32 @@ interface PageProbeResult {
   assetFingerprintHash: string | null;
 }
 
+type EngineType = 'chromium' | 'firefox' | 'webkit';
+type EmulatedBrowserFamily = 'chrome' | 'firefox' | 'safari';
+type EmulatedColorScheme = 'light' | 'dark';
+
+interface EmulationProfile {
+  family: EmulatedBrowserFamily;
+  viewportLabel: string;
+  viewport: {
+    width: number;
+    height: number;
+  };
+  colorScheme: EmulatedColorScheme;
+  userAgent: string;
+}
+
 export class ResilientBrowserEngine {
   private static SNAPSHOT_DIR = path.resolve(process.cwd(), 'tmp/html-snapshots');
+  private static readonly BROWSER_FAMILIES: EmulatedBrowserFamily[] = ['chrome', 'firefox', 'safari'];
+  private static readonly VIEWPORT_PRESETS = [
+    { label: 'desktop-standard', width: 1366, height: 768 },
+    { label: 'desktop-wide', width: 1920, height: 1080 },
+    { label: 'tablet-portrait', width: 834, height: 1112 },
+    { label: 'tablet-landscape', width: 1112, height: 834 },
+    { label: 'mobile-portrait', width: 390, height: 844 },
+    { label: 'mobile-landscape', width: 844, height: 390 }
+  ] as const;
 
   /**
    * Orchestrates the browser session lifecycle to scrape target pages and generate snapshots.
@@ -44,10 +68,8 @@ export class ResilientBrowserEngine {
     }
 
     console.log(`🚀 Starting headless browser session for target: ${target.id}`);
-    const browser: Browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 VitalCore/1.0'
-    });
+    const engine = this.selectEngineForTarget(target.id);
+    const browser: Browser = await this.launchBrowser(engine);
     
     const reports: Partial<PageScanReport>[] = [];
     const settings = target.settings;
@@ -55,6 +77,7 @@ export class ResilientBrowserEngine {
     const forceRescan = options.forceRescan === true;
 
     for (const url of urlQueue) {
+      const emulation = this.selectEmulationProfile(target.id, url);
       const probe = await this.probePageChange(url, pageState?.[url], settings.maxTimeoutMs);
       
       const baseReport: Partial<PageScanReport> = {
@@ -82,6 +105,15 @@ export class ResilientBrowserEngine {
       }
 
       console.log(`🌐 Navigating to: ${url}`);
+      console.log(
+        `🧭 Emulation profile: ${emulation.family}/${emulation.viewportLabel}/${emulation.colorScheme} (${emulation.viewport.width}x${emulation.viewport.height})`
+      );
+
+      const context: BrowserContext = await browser.newContext({
+        userAgent: emulation.userAgent,
+        viewport: emulation.viewport,
+        colorScheme: emulation.colorScheme
+      });
       const page: Page = await context.newPage();
       page.setDefaultNavigationTimeout(settings.maxTimeoutMs);
       page.setDefaultTimeout(settings.maxTimeoutMs);
@@ -167,6 +199,7 @@ export class ResilientBrowserEngine {
         }
       } finally {
         await page.close();
+        await context.close();
         reports.push(baseReport);
       }
     }
@@ -174,6 +207,81 @@ export class ResilientBrowserEngine {
     await browser.close();
     console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
     return reports;
+  }
+
+  private static selectEngineForTarget(targetId: string): EngineType {
+    const allowMultiEngine = /^(1|true|yes)$/i.test(process.env.VITAL_ENABLE_MULTI_ENGINE || '');
+    if (!allowMultiEngine) {
+      return 'chromium';
+    }
+
+    const index = this.seededIndex(`engine:${targetId}`, 3);
+    if (index === 1) {
+      return 'firefox';
+    }
+    if (index === 2) {
+      return 'webkit';
+    }
+    return 'chromium';
+  }
+
+  private static async launchBrowser(engine: EngineType): Promise<Browser> {
+    try {
+      if (engine === 'firefox') {
+        return await firefox.launch({ headless: true });
+      }
+      if (engine === 'webkit') {
+        return await webkit.launch({ headless: true });
+      }
+      return await chromium.launch({ headless: true });
+    } catch (error: any) {
+      console.warn(`⚠️ Browser engine '${engine}' unavailable (${error.message}). Falling back to chromium.`);
+      return await chromium.launch({ headless: true });
+    }
+  }
+
+  private static selectEmulationProfile(targetId: string, url: string): EmulationProfile {
+    const family = this.BROWSER_FAMILIES[this.seededIndex(`family:${targetId}:${url}`, this.BROWSER_FAMILIES.length)] || 'chrome';
+    const viewport = this.VIEWPORT_PRESETS[this.seededIndex(`viewport:${targetId}:${url}`, this.VIEWPORT_PRESETS.length)] || this.VIEWPORT_PRESETS[0];
+    const colorScheme: EmulatedColorScheme = this.seededIndex(`colorscheme:${targetId}:${url}`, 2) === 0 ? 'light' : 'dark';
+
+    return {
+      family,
+      viewportLabel: viewport.label,
+      viewport: {
+        width: viewport.width,
+        height: viewport.height
+      },
+      colorScheme,
+      userAgent: this.userAgentForFamily(family)
+    };
+  }
+
+  private static userAgentForFamily(family: EmulatedBrowserFamily): string {
+    if (family === 'firefox') {
+      return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0 VitalCore/1.0';
+    }
+
+    if (family === 'safari') {
+      return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15 VitalCore/1.0';
+    }
+
+    return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 VitalCore/1.0';
+  }
+
+  private static seededIndex(seedKey: string, modulo: number): number {
+    if (modulo <= 1) {
+      return 0;
+    }
+
+    const globalSeed = process.env.VITAL_SAMPLING_SEED || new Date().toISOString().slice(0, 13);
+    const digest = createHash('sha256').update(`${globalSeed}:${seedKey}`).digest('hex');
+    const integer = Number.parseInt(digest.slice(0, 8), 16);
+    if (!Number.isFinite(integer)) {
+      return 0;
+    }
+
+    return Math.abs(integer) % modulo;
   }
 
   /**

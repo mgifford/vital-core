@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult } from '../../types/site-quality-spec';
-import { QualityIndexReporter } from './quality-index';
+import { QualityIndexReporter, TargetQualityIndexEntry } from './quality-index';
 
 export class DashboardCompiler {
   private static DIST_DIR = path.resolve(process.cwd(), 'dist');
@@ -26,7 +26,9 @@ export class DashboardCompiler {
       .replace(/\u2028/g, '\\u2028')
       .replace(/\u2029/g, '\\u2029');
 
-    const targetQualityPayload = JSON.stringify(QualityIndexReporter.buildTargetQualityIndex(allResults))
+    const targetQualityIndex = QualityIndexReporter.buildTargetQualityIndex(allResults);
+
+    const targetQualityPayload = JSON.stringify(targetQualityIndex)
       .replace(/</g, '\\u003c')
       .replace(/>/g, '\\u003e')
       .replace(/&/g, '\\u0026')
@@ -141,7 +143,162 @@ export class DashboardCompiler {
 </html>`;
 
     fs.writeFileSync(path.join(this.DIST_DIR, 'index.html'), htmlContent, 'utf8');
+    this.writeDomainSubpages(allResults, targetQualityIndex);
     console.log(`📊 Static dashboard assets successfully compiled to dist/index.html`);
+  }
+
+  private static writeDomainSubpages(allResults: TargetScanResult[], targetQualityIndex: TargetQualityIndexEntry[]): void {
+    const domainsRoot = path.join(this.DIST_DIR, 'domains');
+    fs.mkdirSync(domainsRoot, { recursive: true });
+
+    for (const target of allResults) {
+      const safeTargetId = this.sanitizePathSegment(target.targetId);
+      const domainDir = path.join(domainsRoot, safeTargetId);
+      fs.mkdirSync(domainDir, { recursive: true });
+
+      const quality = targetQualityIndex.find(item => String(item.targetId || '') === String(target.targetId || '')) || null;
+      const pages = Array.isArray(target.pagesScanned) ? target.pagesScanned : [];
+
+      const accessibilityRows = pages
+        .flatMap(page => {
+          const violations = page?.liveAudits?.accessibilityViolations || [];
+          return violations.map(v => `
+            <tr>
+              <td>${this.escapeHtml(page.url)}</td>
+              <td>${this.escapeHtml(v.id)}</td>
+              <td>${this.escapeHtml(v.severity)}</td>
+              <td>${this.escapeHtml(v.description)}</td>
+            </tr>`);
+        })
+        .join('');
+
+      const performanceRows = pages
+        .map(page => {
+          const lighthouse = page?.liveAudits?.lighthouse;
+          return `
+            <tr>
+              <td>${this.escapeHtml(page.url)}</td>
+              <td>${this.escapeHtml(lighthouse?.performanceScore ?? 'n/a')}</td>
+              <td>${this.escapeHtml(lighthouse?.firstContentfulPaintMs ?? 'n/a')}</td>
+              <td>${this.escapeHtml(lighthouse?.largestContentfulPaintMs ?? 'n/a')}</td>
+              <td>${this.escapeHtml(lighthouse?.speedIndexMs ?? 'n/a')}</td>
+            </tr>`;
+        })
+        .join('');
+
+      const contentRows = pages
+        .map(page => {
+          const content = page?.offlineAudits?.contentMetrics;
+          return `
+            <tr>
+              <td>${this.escapeHtml(page.url)}</td>
+              <td>${this.escapeHtml(content?.fleschKincaidGrade ?? 'n/a')}</td>
+              <td>${this.escapeHtml(content?.averageSentenceLength ?? 'n/a')}</td>
+              <td>${this.escapeHtml(content?.ambiguousLinkTextCount ?? 'n/a')}</td>
+              <td>${this.escapeHtml(content?.suspiciousAltTextCount ?? 'n/a')}</td>
+            </tr>`;
+        })
+        .join('');
+
+      const thirdPartyRows = pages
+        .map(page => {
+          const impact = page?.thirdPartyImpact;
+          const providers = Array.isArray(impact?.likelyIntroducedByProviders) ? impact?.likelyIntroducedByProviders.join(', ') : 'n/a';
+          return `
+            <tr>
+              <td>${this.escapeHtml(page.url)}</td>
+              <td>${this.escapeHtml(impact?.regressionDetected ? 'yes' : 'no')}</td>
+              <td>${this.escapeHtml(impact?.addedByJavaScriptCount ?? 'n/a')}</td>
+              <td>${this.escapeHtml(providers)}</td>
+            </tr>`;
+        })
+        .join('');
+
+      const sharedNav = `
+        <p>
+          <a href="../../index.html">Main dashboard</a> |
+          <a href="index.html">Domain overview</a> |
+          <a href="accessibility.html">Accessibility</a> |
+          <a href="performance.html">Performance</a> |
+          <a href="content.html">Content</a> |
+          <a href="third-party.html">Third-party impact</a>
+        </p>`;
+
+      const overviewHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(String(target.targetId).toUpperCase())} Domain Overview</title>
+  <link rel="stylesheet" href="../../assets/dashboard.css">
+</head>
+<body>
+  <header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Domain Reports</h1></header>
+  <main>
+    <div class="card">
+      <h2>Overview</h2>
+      ${sharedNav}
+      <p><strong>Domain:</strong> ${this.escapeHtml(target.domain)}</p>
+      <p><strong>Pages in latest run:</strong> ${this.escapeHtml(pages.length)}</p>
+      <p><strong>Scan duration (latest run):</strong> ${this.escapeHtml(Math.round(target.scanDurationMs / 1000))}s</p>
+      <p><strong>Quality gate:</strong> ${this.escapeHtml(String((quality && quality.gateStatus) || 'n/a'))}</p>
+      <p><strong>Quality score:</strong> ${this.escapeHtml(String((quality && quality.score) || 'n/a'))}</p>
+    </div>
+  </main>
+</body>
+</html>`;
+
+      const accessibilityHtml = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
+<body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</h1></header><main><div class="card"><h2>Accessibility Findings</h2>${sharedNav}
+<table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="4">No accessibility violations in latest run.</td></tr>'}</tbody></table>
+</div></main></body></html>`;
+
+      const performanceHtml = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
+<body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</h1></header><main><div class="card"><h2>Lighthouse Metrics</h2>${sharedNav}
+<table><thead><tr><th>URL</th><th>Perf</th><th>FCP (ms)</th><th>LCP (ms)</th><th>Speed Index (ms)</th></tr></thead><tbody>${performanceRows || '<tr><td colspan="5">No performance data available.</td></tr>'}</tbody></table>
+</div></main></body></html>`;
+
+      const contentHtml = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Content</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
+<body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Content Quality</h1></header><main><div class="card"><h2>Content Metrics</h2>${sharedNav}
+<table><thead><tr><th>URL</th><th>Grade</th><th>Avg Sentence Length</th><th>Ambiguous Links</th><th>Suspicious Alt Text</th></tr></thead><tbody>${contentRows || '<tr><td colspan="5">No content metrics available.</td></tr>'}</tbody></table>
+</div></main></body></html>`;
+
+      const thirdPartyHtml = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
+<body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</h1></header><main><div class="card"><h2>JavaScript Regression Signals</h2>${sharedNav}
+<table><thead><tr><th>URL</th><th>Regression Detected</th><th>Added Violations</th><th>Likely Providers</th></tr></thead><tbody>${thirdPartyRows || '<tr><td colspan="4">No third-party impact data available.</td></tr>'}</tbody></table>
+</div></main></body></html>`;
+
+      fs.writeFileSync(path.join(domainDir, 'index.html'), overviewHtml, 'utf8');
+      fs.writeFileSync(path.join(domainDir, 'accessibility.html'), accessibilityHtml, 'utf8');
+      fs.writeFileSync(path.join(domainDir, 'performance.html'), performanceHtml, 'utf8');
+      fs.writeFileSync(path.join(domainDir, 'content.html'), contentHtml, 'utf8');
+      fs.writeFileSync(path.join(domainDir, 'third-party.html'), thirdPartyHtml, 'utf8');
+    }
+  }
+
+  private static sanitizePathSegment(value: string): string {
+    return String(value || 'unknown')
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '') || 'unknown';
+  }
+
+  private static escapeHtml(value: unknown): string {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   private static buildDashboardCss(): string {
@@ -901,9 +1058,36 @@ a:hover {
       const domainBreak = document.createElement('br');
       const domainSmall = document.createElement('small');
       domainSmall.textContent = String(target.domain || '');
+      const domainLinks = document.createElement('div');
+      domainLinks.className = 'small-muted-inline small-block-gap';
+
+      const domainIdSegment = String(target.targetId || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9-_]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || 'unknown';
+      const domainPages = [
+        ['Overview', 'index.html'],
+        ['Accessibility', 'accessibility.html'],
+        ['Performance', 'performance.html'],
+        ['Content', 'content.html'],
+        ['Third-party', 'third-party.html']
+      ];
+
+      domainPages.forEach((item, linkIndex) => {
+        const link = document.createElement('a');
+        link.href = 'domains/' + domainIdSegment + '/' + item[1];
+        link.textContent = item[0];
+        domainLinks.appendChild(link);
+
+        if (linkIndex < domainPages.length - 1) {
+          domainLinks.appendChild(document.createTextNode(' | '));
+        }
+      });
       domainCell.appendChild(domainStrong);
       domainCell.appendChild(domainBreak);
       domainCell.appendChild(domainSmall);
+      domainCell.appendChild(domainLinks);
 
       const pagesCell = document.createElement('td');
       const scannedCount = Array.isArray(target.pagesScanned) ? target.pagesScanned.length : 0;

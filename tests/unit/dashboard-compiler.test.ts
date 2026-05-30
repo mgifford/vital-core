@@ -39,9 +39,16 @@ describe('DashboardCompiler', () => {
     const outputPath = path.resolve(process.cwd(), 'dist/index.html');
     const jsPath = path.resolve(process.cwd(), 'dist/assets/dashboard.js');
     const cssPath = path.resolve(process.cwd(), 'dist/assets/dashboard.css');
+    const domainOverviewPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/index.html');
+    const domainA11yPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/accessibility.html');
+    const domainPerformancePath = path.resolve(process.cwd(), 'dist/domains/cms-gov/performance.html');
+    const domainContentPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/content.html');
+    const domainThirdPartyPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/third-party.html');
     const html = fs.readFileSync(outputPath, 'utf8');
     const js = fs.readFileSync(jsPath, 'utf8');
     const css = fs.readFileSync(cssPath, 'utf8');
+    const domainOverviewHtml = fs.readFileSync(domainOverviewPath, 'utf8');
+    const domainA11yHtml = fs.readFileSync(domainA11yPath, 'utf8');
 
     expect(html).toContain('\\u003cscript\\u003ealert(1)\\u003c/script\\u003e');
     expect(html).not.toContain('\"><script>alert(1)</script>');
@@ -68,6 +75,8 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('Coverage: ');
     expect(js).toContain('data-progress-fill-target-id');
     expect(js).toContain('data-progress-meta-target-id');
+    expect(js).toContain('const domainIdSegment = String(target.targetId || \'\')');
+    expect(js).toContain("link.href = 'domains/' + domainIdSegment + '/' + item[1]");
     expect(css).toContain('.progress-track');
     expect(css).toContain('.progress-fill');
     expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");
@@ -82,6 +91,12 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('requirementComplianceOverTime');
     expect(html).toContain('Live Scan Ticker');
     expect(css).toContain('.compliance-chart');
+    expect(domainOverviewHtml).toContain('Domain Reports');
+    expect(domainOverviewHtml).toContain('Domain overview');
+    expect(domainA11yHtml).toContain('Accessibility Findings');
+    expect(fs.existsSync(domainPerformancePath)).toBe(true);
+    expect(fs.existsSync(domainContentPath)).toBe(true);
+    expect(fs.existsSync(domainThirdPartyPath)).toBe(true);
   });
 
   it('renders Lighthouse threshold legend in both leaderboard and ongoing sections', () => {

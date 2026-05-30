@@ -30,6 +30,7 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  VITAL_ENABLE_MULTI_ENGINE: ${{ vars.VITAL_ENABLE_MULTI_ENGINE || 'false' }}
 
 concurrency:
   group: 'pages'
@@ -63,8 +64,16 @@ jobs:
           VITAL_HISTORY_CACHE_DIR: .history-cache
         run: npm run history:fetch
 
-      - name: Cache and Install Playwright Chromium Binary
-        run: npx playwright install chromium --with-deps
+      - name: Install Playwright Browser Binaries
+        run: |
+          set -euo pipefail
+          if [[ "${VITAL_ENABLE_MULTI_ENGINE}" == "true" ]]; then
+            echo "Installing Chromium + Firefox + WebKit for multi-engine mode..."
+            npx playwright install chromium firefox webkit --with-deps
+          else
+            echo "Installing Chromium only (default mode)."
+            npx playwright install chromium --with-deps
+          fi
 
       - name: Determine scan mode for current time window
         id: offhours
@@ -124,6 +133,7 @@ jobs:
           VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '30' || steps.offhours.outputs.scan_intensity == 'light' && '21' || '7' }}
           VITAL_UPDATED_WITHIN_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '7' }}
           VITAL_MAX_RUN_MINUTES: '52'
+          VITAL_ENABLE_MULTI_ENGINE: ${{ env.VITAL_ENABLE_MULTI_ENGINE }}
         run: npm run scan
 
       - name: Verify required generated dashboard artifacts exist
