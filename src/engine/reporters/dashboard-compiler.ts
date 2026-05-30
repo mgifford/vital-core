@@ -123,6 +123,7 @@ export class DashboardCompiler {
 
     let totalPages = 0;
     let totalViolations = 0;
+    const softwareFound = new Set();
     const leaderboardRows = [];
 
     function buildRecommendations(quality, targetViolations, jsRegressionPages) {
@@ -161,6 +162,13 @@ export class DashboardCompiler {
         if (p.thirdPartyImpact?.regressionDetected) {
           jsRegressionPages += 1;
         }
+        const stack = Array.isArray(p.technologyStack) ? p.technologyStack : [];
+        stack.forEach(tech => {
+          const name = String(tech?.name || '').trim().toLowerCase();
+          if (name) {
+            softwareFound.add(name);
+          }
+        });
       });
       totalViolations += targetViolations;
 
@@ -200,7 +208,7 @@ export class DashboardCompiler {
       domainCell.appendChild(domainSmall);
 
       const pagesCell = document.createElement('td');
-      pagesCell.textContent = String(target.pagesScanned.length) + ' recent page(s)';
+      pagesCell.textContent = String(target.pagesScanned.length) + ' pages';
 
       const scoreCell = document.createElement('td');
       if (row.quality) {
@@ -246,7 +254,7 @@ export class DashboardCompiler {
 
     const summaryCards = [
       { title: 'Ecosystem Targets Evaluated', value: String(data.length), color: '' },
-      { title: 'Total Endpoint Footprints Checked', value: String(totalPages), color: '' },
+      { title: 'Software found', value: String(softwareFound.size), color: '' },
       { title: 'Total Blocked System Issues', value: String(totalViolations), color: 'var(--critical-red)' }
     ];
 
