@@ -50,6 +50,16 @@ Coverage reports are generated to `coverage/` and uploaded by the CI workflow (`
 
 Standards-source integrity is validated in Phase 6 (`test-phase6.ts`) and confirms that the ScanGov standards submodule and canonical standards data mappings are present for reporting.
 
+## Page Technology Profiling
+
+Each scanned page now includes a CMS/framework technology fingerprint in `technologyStack`, powered by `wappalyzer-next`.
+
+- Default command: `wappalyzer`
+- Override command path: set `VITAL_WAPPALYZER_CMD`
+- If the command is unavailable or fails, scans continue and `technologyStack` is reported as an empty list.
+
+Install options for `wappalyzer-next` are documented upstream: https://github.com/s0md3v/wappalyzer-next
+
 ## Third-Party Tool Submodules
 
 This repository tracks upstream scanner source repositories as submodules to make updates easy and reviewable.

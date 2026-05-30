@@ -7,6 +7,7 @@ import { PageScanReport } from '../types/site-quality-spec';
 import { PageStateEntry, PageStateMap } from './reporters/page-state-cache';
 import { LiveWorker } from './workers/live-worker';
 import { OfflineWorker } from './workers/offline-worker';
+import { TechnologyWorker } from './workers/technology-worker';
 
 interface SnapshotSessionOptions {
   forceRescan?: boolean;
@@ -96,14 +97,17 @@ export class ResilientBrowserEngine {
         const hydratedHtml = await page.content();
         const contentHash = this.hashContent(hydratedHtml);
 
-        // 4. Run Live browser evaluations in memory (Axe Core Automation)
+        // 4. Detect CMS/framework tooling footprint for page profile reporting
+        baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
+
+        // 5. Run Live browser evaluations in memory (Axe Core Automation)
         console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
         baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
 
-        // 5. Generate offline local analysis metrics from DOM snapshot
+        // 6. Generate offline local analysis metrics from DOM snapshot
         baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
 
-        // 6. Clean URL into a cross-platform safe filename
+        // 7. Clean URL into a cross-platform safe filename
         const safeFilename = this.sanitizeUrlToFilename(url);
         const snapshotPath = path.join(this.SNAPSHOT_DIR, safeFilename);
 
