@@ -35,4 +35,16 @@ describe('Workflow contracts', () => {
     expect(content).toContain('Run axe smoke checks against docs');
     expect(content).toContain('node scripts/run-axe-site-check.mjs');
   });
+
+  it('tracks failed workflow runs with issues', () => {
+    const workflowPath = path.resolve(process.cwd(), '.github/workflows/monitor-actions-failures.yml');
+    const content = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(content).toContain('on:');
+    expect(content).toContain('workflow_run:');
+    expect(content).toContain("github.event.workflow_run.conclusion == 'failure'");
+    expect(content).toContain('issues: write');
+    expect(content).toContain('actions/github-script@v7');
+    expect(content).toContain("labels: ['automated', 'ci-failure']");
+  });
 });
