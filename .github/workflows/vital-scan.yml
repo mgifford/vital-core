@@ -165,7 +165,7 @@ jobs:
           VITAL_TIMEOUT_BACKOFF_THRESHOLD: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '2' || '3' }}
           VITAL_TIMEOUT_BACKOFF_STEP_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '15000' || steps.offhours.outputs.scan_intensity == 'light' && '10000' || '5000' }}
           VITAL_TIMEOUT_BACKOFF_MAX_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '60000' || steps.offhours.outputs.scan_intensity == 'light' && '45000' || '30000' }}
-          VITAL_MAX_RUN_MINUTES: '52'
+          VITAL_MAX_RUN_MINUTES: '2'
           VITAL_ENABLE_MULTI_ENGINE: ${{ env.VITAL_ENABLE_MULTI_ENGINE }}
         run: npm run scan
 
