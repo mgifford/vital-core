@@ -46,7 +46,9 @@ describe('TargetDiscoveryEngine', () => {
         postLoadDelay: 2000,
         max_pages: 10,
         maxTimeoutMs: 120000,
-        include_subdomains: false
+        include_subdomains: false,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: true
       }
     };
 
@@ -72,7 +74,9 @@ describe('TargetDiscoveryEngine', () => {
         postLoadDelay: 2000,
         max_pages: 10,
         maxTimeoutMs: 120000,
-        include_subdomains: false
+        include_subdomains: false,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: true
       }
     };
 
@@ -112,7 +116,9 @@ describe('TargetDiscoveryEngine', () => {
         postLoadDelay: 2000,
         max_pages: 10,
         maxTimeoutMs: 120000,
-        include_subdomains: false
+        include_subdomains: false,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: true
       }
     };
 
@@ -146,11 +152,51 @@ describe('TargetDiscoveryEngine', () => {
         postLoadDelay: 2000,
         max_pages: 10,
         maxTimeoutMs: 120000,
-        include_subdomains: false
+        include_subdomains: false,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: true
       }
     };
 
     const queue = await TargetDiscoveryEngine.discoverUrls(target);
     expect(queue).toEqual(['https://www.cms.gov/about-cms', 'https://www.cms.gov/medicare']);
+  });
+
+  it('limits over-represented template patterns while keeping priority URLs first', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/newsroom/press-releases/2026-01-01/update-a',
+        'https://www.cms.gov/newsroom/press-releases/2026-01-02/update-b',
+        'https://www.cms.gov/newsroom/press-releases/2026-01-03/update-c',
+        'https://www.cms.gov/newsroom/press-releases/2026-01-04/update-d',
+        'https://www.cms.gov/medicare/index.html',
+        'https://www.cms.gov/medicaid/index.html',
+        'https://www.cms.gov/about-cms'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: ['https://www.cms.gov/contact-us'],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 6,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 2,
+        sitemap_sample_stochastic: true
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    expect(queue[0]).toBe('https://www.cms.gov/contact-us');
+    expect(queue.length).toBe(6);
+
+    const pressReleaseUrls = queue.filter(url => url.includes('/newsroom/press-releases/'));
+    expect(pressReleaseUrls.length).toBeLessThanOrEqual(2);
   });
 });

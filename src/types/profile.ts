@@ -4,7 +4,9 @@ export const TargetSettingsSchema = z.object({
   postLoadDelay: z.number().default(2000), // Settle time in ms for dynamic frameworks
   max_pages: z.number().default(25),      // Maximum crawl threshold to prevent runner timeouts
   maxTimeoutMs: z.number().default(120000), // 2-minute hard limit per page
-  include_subdomains: z.boolean().default(false) // Keep scans constrained to base host by default
+  include_subdomains: z.boolean().default(false), // Keep scans constrained to base host by default
+  sitemap_template_sample_cap: z.number().int().min(1).default(3), // Max URLs per inferred template pattern
+  sitemap_sample_stochastic: z.boolean().default(true) // Use deterministic pseudo-random ordering for sitemap sampling
 });
 
 export const TargetConfigSchema = z.object({
@@ -14,7 +16,14 @@ export const TargetConfigSchema = z.object({
   sitemap_url: z.string().url().optional(),
   include_paths: z.array(z.string()).default([]), // Glob patterns for path-filtering
   priority_urls: z.array(z.string().url()).default([]), // Forced execution URLs
-  settings: TargetSettingsSchema.default({ postLoadDelay: 2000, max_pages: 25, maxTimeoutMs: 120000, include_subdomains: false })
+  settings: TargetSettingsSchema.default({
+    postLoadDelay: 2000,
+    max_pages: 25,
+    maxTimeoutMs: 120000,
+    include_subdomains: false,
+    sitemap_template_sample_cap: 3,
+    sitemap_sample_stochastic: true
+  })
 });
 
 export const ProfileSchema = z.object({

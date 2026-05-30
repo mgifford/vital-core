@@ -361,6 +361,21 @@ export class DashboardCompiler {
       return sign + String(value) + suffix;
     }
 
+    function formatDuration(ms) {
+      const totalSeconds = Math.max(0, Math.round(Number(ms || 0) / 1000));
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (hours > 0) {
+        return String(hours) + 'h ' + String(minutes) + 'm ' + String(seconds) + 's';
+      }
+      if (minutes > 0) {
+        return String(minutes) + 'm ' + String(seconds) + 's';
+      }
+      return String(seconds) + 's';
+    }
+
     fetch('runs/trends.json')
       .then(response => (response.ok ? response.json() : null))
       .then(trends => {
@@ -393,7 +408,7 @@ export class DashboardCompiler {
 
         appendTrendCard(
           'Average Scan Duration',
-          (Number(trends.rollingAverage?.scanDurationMs || 0) / 1000).toFixed(2) + 's',
+          formatDuration(trends.rollingAverage?.scanDurationMs || 0),
           'Based on last ' + String(trends.windowSize || 0) + ' run(s)',
           ''
         );

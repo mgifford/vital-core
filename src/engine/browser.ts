@@ -80,68 +80,72 @@ export class ResilientBrowserEngine {
 
       console.log(`🌐 Navigating to: ${url}`);
       const page: Page = await context.newPage();
+      page.setDefaultNavigationTimeout(settings.maxTimeoutMs);
+      page.setDefaultTimeout(settings.maxTimeoutMs);
       const scannedAt = new Date().toISOString();
 
       try {
-        // 1. Navigation with strict 2-minute hard boundary
-        await page.goto(url, {
-          waitUntil: 'networkidle',
-          timeout: settings.maxTimeoutMs
-        });
-
-        // 2. Hydration Settle Buffer (Let slow API grids map to the DOM)
-        if (settings.postLoadDelay > 0) {
-          console.log(`⏱️ Applying load buffer of ${settings.postLoadDelay}ms for dynamic scripts...`);
-          await page.waitForTimeout(settings.postLoadDelay);
-        }
-
-        // 3. Extract fully rendered HTML string state
-        const hydratedHtml = await page.content();
-        const contentHash = this.hashContent(hydratedHtml);
-
-        // 4. Detect CMS/framework tooling footprint for page profile reporting
-        baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
-
-        // 5. Generate offline local analysis metrics from DOM snapshot
-        baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
-
-        // 6. Run Live browser evaluations in memory (Axe Core Automation)
-        console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
-        baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
-
-        // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
-        if (baseReport.offlineAudits) {
-          baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
-            browser,
-            url,
-            maxTimeoutMs: settings.maxTimeoutMs,
-            postLoadDelay: settings.postLoadDelay,
-            htmlSnapshot: hydratedHtml,
-            technologyStack: baseReport.technologyStack,
-            offlineAudits: baseReport.offlineAudits,
-            baselineLiveAudits: baseReport.liveAudits
+        await this.runWithTimeout(async () => {
+          // 1. Navigation with strict maxTimeoutMs boundary
+          await page.goto(url, {
+            waitUntil: 'networkidle',
+            timeout: settings.maxTimeoutMs
           });
-        }
 
-        // 8. Clean URL into a cross-platform safe filename
-        const safeFilename = this.sanitizeUrlToFilename(url);
-        const snapshotPath = path.join(this.SNAPSHOT_DIR, safeFilename);
+          // 2. Hydration Settle Buffer (Let slow API grids map to the DOM)
+          if (settings.postLoadDelay > 0) {
+            console.log(`⏱️ Applying load buffer of ${settings.postLoadDelay}ms for dynamic scripts...`);
+            await page.waitForTimeout(settings.postLoadDelay);
+          }
 
-        fs.writeFileSync(snapshotPath, hydratedHtml, 'utf8');
-        console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
+          // 3. Extract fully rendered HTML string state
+          const hydratedHtml = await page.content();
+          const contentHash = this.hashContent(hydratedHtml);
 
-        baseReport.status = 'COMPLETED';
+          // 4. Detect CMS/framework tooling footprint for page profile reporting
+          baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
 
-        if (pageState) {
-          this.writePageState(pageState, url, { ...probe, contentHash }, true, scannedAt);
-        }
+          // 5. Generate offline local analysis metrics from DOM snapshot
+          baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
+
+          // 6. Run Live browser evaluations in memory (Axe Core Automation)
+          console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
+          baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
+
+          // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
+          if (baseReport.offlineAudits) {
+            baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
+              browser,
+              url,
+              maxTimeoutMs: settings.maxTimeoutMs,
+              postLoadDelay: settings.postLoadDelay,
+              htmlSnapshot: hydratedHtml,
+              technologyStack: baseReport.technologyStack,
+              offlineAudits: baseReport.offlineAudits,
+              baselineLiveAudits: baseReport.liveAudits
+            });
+          }
+
+          // 8. Clean URL into a cross-platform safe filename
+          const safeFilename = this.sanitizeUrlToFilename(url);
+          const snapshotPath = path.join(this.SNAPSHOT_DIR, safeFilename);
+
+          fs.writeFileSync(snapshotPath, hydratedHtml, 'utf8');
+          console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
+
+          baseReport.status = 'COMPLETED';
+
+          if (pageState) {
+            this.writePageState(pageState, url, { ...probe, contentHash }, true, scannedAt);
+          }
+        }, settings.maxTimeoutMs);
 
       } catch (error: any) {
         baseReport.status = 'FAILED';
         
         if (error.name === 'TimeoutError' || error.message.includes('timeout')) {
           baseReport.status = 'TIMEOUT';
-          baseReport.errorMessage = `Page execution exceeded strict ${settings.maxTimeoutMs / 1000}s limit.`;
+          baseReport.errorMessage = `Page scan exceeded strict ${settings.maxTimeoutMs / 1000}s limit and was cancelled.`;
         } else {
           baseReport.errorMessage = error.message;
         }
@@ -276,6 +280,22 @@ export class ResilientBrowserEngine {
 
   private static hashContent(content: string): string {
     return createHash('sha256').update(content).digest('hex');
+  }
+
+  private static async runWithTimeout<T>(operation: () => Promise<T>, timeoutMs: number): Promise<T> {
+    let timeoutHandle: NodeJS.Timeout | null = null;
+
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutHandle = setTimeout(() => reject(new Error(`timeout after ${timeoutMs}ms`)), timeoutMs);
+    });
+
+    try {
+      return await Promise.race([operation(), timeoutPromise]);
+    } finally {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+      }
+    }
   }
 
   private static writePageState(
