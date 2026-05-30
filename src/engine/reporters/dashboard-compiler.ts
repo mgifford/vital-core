@@ -82,15 +82,14 @@ export class DashboardCompiler {
       </p>
     </div>
     <div class="card">
-      <h2>Target Operational Vectors</h2>
+      <h2>Domains Leaderboard</h2>
       <table id="target-table">
         <thead>
           <tr>
-            <th>Ecosystem Domain</th>
-            <th>Pages Monitored</th>
-            <th>Accessibility Health</th>
-            <th>Quality Index</th>
-            <th>Remediation Blueprint</th>
+            <th>Domains</th>
+            <th>Pages (recent pages)</th>
+            <th>Score</th>
+            <th>Recommendations</th>
           </tr>
         </thead>
         <tbody id="target-body"></tbody>
@@ -124,6 +123,34 @@ export class DashboardCompiler {
 
     let totalPages = 0;
     let totalViolations = 0;
+    const leaderboardRows = [];
+
+    function buildRecommendations(quality, targetViolations, jsRegressionPages) {
+      const actions = [];
+      if (!quality) {
+        actions.push('Run quality index computation for this target.');
+      } else {
+        if (quality.gateStatus === 'BLOCKED') {
+          actions.push('Address critical issues first to remove BLOCKED status.');
+        } else if (quality.gateStatus === 'WARNING') {
+          actions.push('Prioritize serious violations to improve score this cycle.');
+        } else {
+          actions.push('Maintain momentum and target incremental score gains.');
+        }
+      }
+
+      if (targetViolations > 0) {
+        actions.push('Resolve top recurring page-level failures in latest run.');
+      }
+      if (jsRegressionPages > 0) {
+        actions.push('Review third-party JS regressions with provider owners.');
+      }
+      if (actions.length === 0) {
+        actions.push('No immediate recommendations. Keep monitoring trend stability.');
+      }
+
+      return actions.slice(0, 2).join(' ');
+    }
 
     data.forEach(target => {
       let targetViolations = 0;
@@ -137,11 +164,34 @@ export class DashboardCompiler {
       });
       totalViolations += targetViolations;
 
+      const quality = targetQualityMap.get(target.targetId);
+      leaderboardRows.push({
+        target,
+        targetViolations,
+        jsRegressionPages,
+        quality,
+        score: quality ? Number(quality.score) : -1
+      });
+    });
+
+    leaderboardRows
+      .sort((a, b) => {
+        if (b.score !== a.score) {
+          return b.score - a.score;
+        }
+        if (a.targetViolations !== b.targetViolations) {
+          return a.targetViolations - b.targetViolations;
+        }
+        return String(a.target.targetId).localeCompare(String(b.target.targetId));
+      })
+      .forEach((row, index) => {
+      const target = row.target;
+
       const tr = document.createElement('tr');
 
       const domainCell = document.createElement('td');
       const domainStrong = document.createElement('strong');
-      domainStrong.textContent = String(target.targetId || '').toUpperCase();
+      domainStrong.textContent = '#' + String(index + 1) + ' ' + String(target.targetId || '').toUpperCase();
       const domainBreak = document.createElement('br');
       const domainSmall = document.createElement('small');
       domainSmall.textContent = String(target.domain || '');
@@ -150,55 +200,47 @@ export class DashboardCompiler {
       domainCell.appendChild(domainSmall);
 
       const pagesCell = document.createElement('td');
-      pagesCell.textContent = String(target.pagesScanned.length) + ' paths';
+      pagesCell.textContent = String(target.pagesScanned.length) + ' recent page(s)';
 
-      const healthCell = document.createElement('td');
-      const badge = document.createElement('span');
-      badge.className = ('badge ' + (targetViolations > 0 ? 'alert' : '')).trim();
-      badge.textContent = String(targetViolations) + ' Active Failures';
-      healthCell.appendChild(badge);
-      if (jsRegressionPages > 0) {
-        const regressionLine = document.createElement('div');
-        regressionLine.style.marginTop = '0.4rem';
-        regressionLine.style.fontSize = '0.85rem';
-        regressionLine.textContent = String(jsRegressionPages) + ' page(s) with JS-driven a11y regression';
-        healthCell.appendChild(regressionLine);
-      }
-
-      const qualityCell = document.createElement('td');
-      const quality = targetQualityMap.get(target.targetId);
-      if (quality) {
+      const scoreCell = document.createElement('td');
+      if (row.quality) {
         const qualityBadge = document.createElement('span');
         qualityBadge.className = 'badge';
-        if (quality.gateStatus !== 'PASS') {
+        if (row.quality.gateStatus !== 'PASS') {
           qualityBadge.className += ' alert';
         }
-        qualityBadge.textContent = String(Number(quality.score).toFixed(2)) + ' (' + quality.gateStatus + ')';
-        qualityCell.appendChild(qualityBadge);
+        qualityBadge.textContent = String(Number(row.quality.score).toFixed(2)) + ' (' + row.quality.gateStatus + ')';
+        scoreCell.appendChild(qualityBadge);
       } else {
-        qualityCell.textContent = 'n/a';
+        scoreCell.textContent = 'n/a';
       }
 
-      const reportCell = document.createElement('td');
+      const recommendationsCell = document.createElement('td');
+      const recommendationText = buildRecommendations(row.quality, row.targetViolations, row.jsRegressionPages);
+      const recommendationBody = document.createElement('div');
+      recommendationBody.textContent = recommendationText;
+
+      const reportLinks = document.createElement('div');
+      reportLinks.style.marginTop = '0.45rem';
+      reportLinks.style.fontSize = '0.85rem';
       const reportMdLink = document.createElement('a');
       reportMdLink.href = 'reports/' + target.targetId + '_issues.md';
-      reportMdLink.textContent = 'Markdown';
-
+      reportMdLink.textContent = 'Details';
       const divider = document.createTextNode(' | ');
-
       const reportCsvLink = document.createElement('a');
       reportCsvLink.href = 'reports/' + target.targetId + '_issues.csv';
-      reportCsvLink.textContent = 'CSV';
+      reportCsvLink.textContent = 'Data';
+      reportLinks.appendChild(reportMdLink);
+      reportLinks.appendChild(divider);
+      reportLinks.appendChild(reportCsvLink);
 
-      reportCell.appendChild(reportMdLink);
-      reportCell.appendChild(divider);
-      reportCell.appendChild(reportCsvLink);
+      recommendationsCell.appendChild(recommendationBody);
+      recommendationsCell.appendChild(reportLinks);
 
       tr.appendChild(domainCell);
       tr.appendChild(pagesCell);
-      tr.appendChild(healthCell);
-      tr.appendChild(qualityCell);
-      tr.appendChild(reportCell);
+      tr.appendChild(scoreCell);
+      tr.appendChild(recommendationsCell);
       tbodyEl.appendChild(tr);
     });
 
