@@ -81,6 +81,10 @@ export class ResilientBrowserEngine {
     const settings = target.settings;
     const pageState = options.pageState;
     const forceRescan = options.forceRescan === true;
+    const timeoutOverrideMs = this.readDelaySetting('VITAL_MAX_TIMEOUT_MS', 0);
+    const effectiveMaxTimeoutMs = timeoutOverrideMs > 0
+      ? Math.min(settings.maxTimeoutMs, timeoutOverrideMs)
+      : settings.maxTimeoutMs;
     const sameSiteDelayMs = this.readDelaySetting('VITAL_SAME_SITE_DELAY_MS', this.DEFAULT_SAME_SITE_DELAY_MS);
     const timeoutBackoffThreshold = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_THRESHOLD', this.DEFAULT_TIMEOUT_BACKOFF_THRESHOLD);
     const timeoutBackoffStepMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_STEP_MS', this.DEFAULT_TIMEOUT_BACKOFF_STEP_MS);
@@ -110,7 +114,7 @@ export class ResilientBrowserEngine {
 
       previousHost = currentHost;
       const emulation = this.selectEmulationProfile(target.id, url);
-      const probe = await this.probePageChange(url, pageState?.[url], settings.maxTimeoutMs);
+      const probe = await this.probePageChange(url, pageState?.[url], effectiveMaxTimeoutMs);
       
       const baseReport: Partial<PageScanReport> = {
         url,
@@ -148,8 +152,8 @@ export class ResilientBrowserEngine {
         colorScheme: emulation.colorScheme
       });
       const page: Page = await context.newPage();
-      page.setDefaultNavigationTimeout(settings.maxTimeoutMs);
-      page.setDefaultTimeout(settings.maxTimeoutMs);
+      page.setDefaultNavigationTimeout(effectiveMaxTimeoutMs);
+      page.setDefaultTimeout(effectiveMaxTimeoutMs);
       const scannedAt = new Date().toISOString();
 
       try {
@@ -157,7 +161,7 @@ export class ResilientBrowserEngine {
           // 1. Navigation with strict maxTimeoutMs boundary
           await page.goto(url, {
             waitUntil: 'networkidle',
-            timeout: settings.maxTimeoutMs
+            timeout: effectiveMaxTimeoutMs
           });
 
           // 2. Hydration Settle Buffer (Let slow API grids map to the DOM)
@@ -189,7 +193,7 @@ export class ResilientBrowserEngine {
             baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
               browser,
               url,
-              maxTimeoutMs: settings.maxTimeoutMs,
+              maxTimeoutMs: effectiveMaxTimeoutMs,
               postLoadDelay: settings.postLoadDelay,
               htmlSnapshot: hydratedHtml,
               technologyStack: baseReport.technologyStack,
@@ -206,7 +210,7 @@ export class ResilientBrowserEngine {
           console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
 
           // 9. Run Lighthouse performance against the local cached snapshot to track page load quality over time.
-          const lighthouse = await LighthouseWorker.auditCachedSnapshot(snapshotPath, settings.maxTimeoutMs);
+          const lighthouse = await LighthouseWorker.auditCachedSnapshot(snapshotPath, effectiveMaxTimeoutMs);
           if (baseReport.liveAudits) {
             baseReport.liveAudits.lighthouse = lighthouse;
           }
@@ -217,14 +221,14 @@ export class ResilientBrowserEngine {
           if (pageState) {
             this.writePageState(pageState, url, { ...probe, contentHash, assetFingerprintHash }, true, scannedAt);
           }
-        }, settings.maxTimeoutMs);
+        }, effectiveMaxTimeoutMs);
 
       } catch (error: any) {
         baseReport.status = 'FAILED';
         
         if (this.isTimeoutError(error)) {
           baseReport.status = 'TIMEOUT';
-          baseReport.errorMessage = `Page scan exceeded strict ${settings.maxTimeoutMs / 1000}s limit and was cancelled.`;
+          baseReport.errorMessage = `Page scan exceeded strict ${effectiveMaxTimeoutMs / 1000}s limit and was cancelled.`;
           consecutiveTimeouts += 1;
         } else {
           baseReport.errorMessage = error.message;

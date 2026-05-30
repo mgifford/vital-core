@@ -179,6 +179,7 @@ This rotates sitemap sampling order while keeping each run deterministic and rep
 To reduce load on upstream sites and avoid bursty same-domain traffic, page scans apply a base pause before each consecutive request to the same host.
 When repeated timeouts occur on a host, VITAL-Core adds extra cooldown before the next same-host request.
 
+- `VITAL_MAX_TIMEOUT_MS` (default workflow values by intensity: standard `30000`, light `35000`, ultra_light `45000`, deep `60000`)
 - `VITAL_SAME_SITE_DELAY_MS` (default: `1500`)
 - `VITAL_TIMEOUT_BACKOFF_THRESHOLD` (default: `2`)
 - `VITAL_TIMEOUT_BACKOFF_STEP_MS` (default: `10000`)
