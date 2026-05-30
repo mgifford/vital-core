@@ -145,6 +145,12 @@ export class BugExporter {
           md += `* **JS Disabled Violations:** ${thirdPartyImpact.jsDisabledViolationCount}\n`;
           md += `* **Violations Introduced by JS:** ${thirdPartyImpact.addedByJavaScriptCount}\n`;
           md += `* **Potentially Responsible Rules:** ${thirdPartyImpact.highRiskRules.map(rule => `\`${rule}\``).join(', ') || 'n/a'}\n`;
+          md += `* **Likely Third-Party Providers:** ${thirdPartyImpact.likelyIntroducedByProviders.join(', ') || 'Unknown'}\n`;
+          if (thirdPartyImpact.ruleToLikelyProviders.length > 0) {
+            md += `* **Rule Attribution:** ${thirdPartyImpact.ruleToLikelyProviders
+              .map(item => `\`${item.ruleId}\` -> ${item.providers.join('|') || 'Unknown'}`)
+              .join('; ')}\n`;
+          }
           md += `* **Trigger Evidence:** ${thirdPartyImpact.triggeredBy.join('; ')}\n\n`;
 
           csvRows.push([
@@ -159,7 +165,7 @@ export class BugExporter {
             'wcag2a;wcag2aa;section508',
             '',
             '',
-            `Added by JS: ${thirdPartyImpact.addedByJavaScriptCount}; Rules: ${thirdPartyImpact.highRiskRules.join('|')}`,
+            `Added by JS: ${thirdPartyImpact.addedByJavaScriptCount}; Rules: ${thirdPartyImpact.highRiskRules.join('|')}; Providers: ${thirdPartyImpact.likelyIntroducedByProviders.join('|')}`,
             '',
             ''
           ]);

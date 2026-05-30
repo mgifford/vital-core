@@ -70,6 +70,7 @@ Per-page output includes `thirdPartyImpact` with:
 - JS-enabled vs JS-disabled violation counts
 - regression flag (`regressionDetected`)
 - potentially JS-introduced high-risk rules (`highRiskRules`)
+- likely provider attribution (`likelyIntroducedByProviders` and `ruleToLikelyProviders`)
 
 When regressions are detected, bug reports include a dedicated third-party JavaScript regression section.
 

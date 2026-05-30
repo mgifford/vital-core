@@ -37,6 +37,19 @@ export class ThirdPartyImpactWorker {
     { reason: 'Third-party iframe embeds present', pattern: /<iframe[^>]+src=["']https?:\/\//i }
   ];
 
+  private static readonly KNOWN_PROVIDER_PATTERNS: Array<{ provider: string; pattern: RegExp }> = [
+    { provider: 'Google Tag Manager', pattern: /googletagmanager\.com|gtm\.js/i },
+    { provider: 'Google Analytics', pattern: /google-analytics\.com|analytics\.js|gtag\(/i },
+    { provider: 'Adobe Analytics', pattern: /adobedtm\.com|omtrdc\.net|adobe\.com\/analytics/i },
+    { provider: 'Zendesk', pattern: /zendesk\.com|zdassets\.com|zendesk/i },
+    { provider: 'Intercom', pattern: /intercom\.io|intercomcdn\.com/i },
+    { provider: 'Drift', pattern: /drift\.com/i },
+    { provider: 'UserWay', pattern: /userway/i },
+    { provider: 'AccessiBe', pattern: /accessibe|acsbapp\.com/i },
+    { provider: 'AudioEye', pattern: /audioeye/i },
+    { provider: 'Cloudflare', pattern: /cloudflare\.com|challenges\.cloudflare\.com/i }
+  ];
+
   public static findTriggerReasons(
     htmlSnapshot: string,
     technologyStack: TechEntry[],
@@ -78,9 +91,13 @@ export class ThirdPartyImpactWorker {
         jsDisabledViolationCount: baselineViolations.length,
         addedByJavaScriptCount: 0,
         removedByJavaScriptCount: 0,
-        highRiskRules: []
+        highRiskRules: [],
+        likelyIntroducedByProviders: [],
+        ruleToLikelyProviders: []
       };
     }
+
+    const providers = this.extractLikelyProviders(options.htmlSnapshot, options.technologyStack);
 
     const jsDisabledViolations = await this.scanWithJavaScriptDisabled(
       options.browser,
@@ -103,8 +120,35 @@ export class ThirdPartyImpactWorker {
       jsDisabledViolationCount: jsDisabledViolations.length,
       addedByJavaScriptCount: addedByJs.length,
       removedByJavaScriptCount: removedByJs.length,
-      highRiskRules: addedByJs
+      highRiskRules: addedByJs,
+      likelyIntroducedByProviders: providers,
+      ruleToLikelyProviders: addedByJs.map(ruleId => ({
+        ruleId,
+        providers
+      }))
     };
+  }
+
+  public static extractLikelyProviders(htmlSnapshot: string, technologyStack: TechEntry[]): string[] {
+    const providers = new Set<string>();
+
+    const scriptSrcMatches = htmlSnapshot.match(/<script[^>]+src=["']([^"']+)["']/gi) ?? [];
+    for (const scriptTag of scriptSrcMatches) {
+      for (const signature of this.KNOWN_PROVIDER_PATTERNS) {
+        if (signature.pattern.test(scriptTag)) {
+          providers.add(signature.provider);
+        }
+      }
+    }
+
+    for (const tech of technologyStack) {
+      const signature = this.KNOWN_PROVIDER_PATTERNS.find(item => item.pattern.test(`${tech.name} ${tech.category}`));
+      if (signature) {
+        providers.add(signature.provider);
+      }
+    }
+
+    return Array.from(providers).sort();
   }
 
   private static async scanWithJavaScriptDisabled(

@@ -36,4 +36,18 @@ describe('ThirdPartyImpactWorker', () => {
 
     expect(reasons).toContain('Accessibility overlay detected: UserWay');
   });
+
+  it('extracts likely provider attribution from script origins and technology labels', () => {
+    const providers = ThirdPartyImpactWorker.extractLikelyProviders(
+      '<script src="https://www.googletagmanager.com/gtm.js"></script><script src="https://widget.intercom.io/widget/app.js"></script>',
+      [
+        { name: 'Zendesk Chat', category: 'Live chat', version: null },
+        { name: 'Drupal', category: 'CMS', version: '10' }
+      ]
+    );
+
+    expect(providers).toContain('Google Tag Manager');
+    expect(providers).toContain('Intercom');
+    expect(providers).toContain('Zendesk');
+  });
 });

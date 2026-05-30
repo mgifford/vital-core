@@ -38,7 +38,12 @@ export const PageScanReportSchema = z.object({
     jsDisabledViolationCount: z.number(),
     addedByJavaScriptCount: z.number(),
     removedByJavaScriptCount: z.number(),
-    highRiskRules: z.array(z.string())
+    highRiskRules: z.array(z.string()),
+    likelyIntroducedByProviders: z.array(z.string()),
+    ruleToLikelyProviders: z.array(z.object({
+      ruleId: z.string(),
+      providers: z.array(z.string())
+    }))
   }).nullable().optional(),
 
   // 2. Live Browser Session Evaluation
