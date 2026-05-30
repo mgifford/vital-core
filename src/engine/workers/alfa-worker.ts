@@ -19,14 +19,11 @@ export class AlfaWorker {
     command = process.env.VITAL_ALFA_CMD || 'alfa',
     runner: ExecRunner = execFileAsync as ExecRunner
   ): Promise<PageAlfaAudit> {
-    const commandAttempts: string[][] = [
-      ['--format', 'json', url],
-      ['audit', '--format', 'json', url]
-    ];
+    const commandAttempts = this.buildCommandAttempts(command, url);
 
-    for (const args of commandAttempts) {
+    for (const attempt of commandAttempts) {
       try {
-        const { stdout } = await runner(command, args, {
+        const { stdout } = await runner(attempt.file, attempt.args, {
           timeout: this.DEFAULT_TIMEOUT_MS,
           maxBuffer: this.DEFAULT_MAX_BUFFER
         });
@@ -52,6 +49,22 @@ export class AlfaWorker {
       errorMessage: message,
       rawResults: null
     };
+  }
+
+  private static buildCommandAttempts(command: string, url: string): Array<{ file: string; args: string[] }> {
+    const attempts: Array<{ file: string; args: string[] }> = [
+      { file: command, args: ['--format', 'json', url] },
+      { file: command, args: ['audit', '--format', 'json', url] }
+    ];
+
+    if (command === 'alfa') {
+      attempts.push(
+        { file: 'npx', args: ['--yes', '@siteimprove/alfa-cli', '--format', 'json', url] },
+        { file: 'npx', args: ['--yes', '@siteimprove/alfa-cli', 'audit', '--format', 'json', url] }
+      );
+    }
+
+    return attempts;
   }
 
   private static parseJson(stdout: string): unknown {

@@ -1,5 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { PageScanReport } from '../../types/site-quality-spec';
 
 type TechnologyEntry = PageScanReport['technologyStack'][number];
@@ -23,10 +25,11 @@ const execFileAsync = promisify(execFile);
 export class TechnologyWorker {
   private static readonly DEFAULT_TIMEOUT_MS = 45000;
   private static readonly DEFAULT_MAX_BUFFER = 2 * 1024 * 1024;
+  private static readonly LOCAL_WAPPALYZER_NEXT_PATH = path.resolve(process.cwd(), '.tools', 'wappalyzer-next', 'bin', 'wappalyzer');
 
   public static async detectTechnologyStack(
     url: string,
-    command = process.env.VITAL_WAPPALYZER_CMD || 'wappalyzer',
+    command = process.env.VITAL_WAPPALYZER_CMD || this.resolveDefaultCommand(),
     runner: ExecRunner = execFileAsync as ExecRunner
   ): Promise<TechnologyEntry[]> {
     try {
@@ -53,6 +56,14 @@ export class TechnologyWorker {
       console.warn(`⚠️ Technology fingerprinting skipped for ${url}: ${error.message}`);
       return [];
     }
+  }
+
+  private static resolveDefaultCommand(): string {
+    if (fs.existsSync(this.LOCAL_WAPPALYZER_NEXT_PATH)) {
+      return this.LOCAL_WAPPALYZER_NEXT_PATH;
+    }
+
+    return 'wappalyzer';
   }
 
   private static parseJson(stdout: string): WappalyzerResponse {
