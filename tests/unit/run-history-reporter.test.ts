@@ -285,4 +285,111 @@ describe('RunHistoryReporter', () => {
     expect(JSON.parse(fs.readFileSync(sharedPath, 'utf8')).from).toBe('dist');
     expect(fs.existsSync(ignoredPath)).toBe(false);
   });
+
+  it('includes completed, timeout, and skipped counts in api target summaries', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-history-api-targets-'));
+    process.chdir(tmpDir);
+
+    const result: TargetScanResult = {
+      targetId: 'gamma',
+      domain: 'https://gamma.example.org',
+      scanDurationMs: 1800,
+      pagesScanned: [
+        {
+          url: 'https://gamma.example.org/a',
+          timestamp: new Date().toISOString(),
+          status: 'COMPLETED',
+          errorMessage: null,
+          technologyStack: [],
+          liveAudits: {
+            lighthouse: null,
+            accessibilityViolations: [
+              {
+                id: 'color-contrast',
+                severity: 'serious',
+                description: 'Insufficient contrast',
+                helpUrl: 'https://example.org/help',
+                impactedCriteria: ['wcag2aa'],
+                instances: [
+                  {
+                    html: '<a>link</a>',
+                    target: ['a'],
+                    failureSummary: 'Text contrast is too low'
+                  }
+                ]
+              }
+            ]
+          },
+          offlineAudits: {
+            overlayDetected: { found: false, provider: null, evidence: null },
+            designSystem: { usesUSWDS: false, versionDetected: null },
+            contentMetrics: {
+              readabilityScore: 60,
+              suspiciousAltTextCount: 0,
+              suspiciousAltInstances: []
+            },
+            linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+          }
+        },
+        {
+          url: 'https://gamma.example.org/b',
+          timestamp: new Date().toISOString(),
+          status: 'TIMEOUT',
+          errorMessage: 'Navigation timeout',
+          technologyStack: [],
+          liveAudits: { lighthouse: null, accessibilityViolations: [] },
+          offlineAudits: {
+            overlayDetected: { found: false, provider: null, evidence: null },
+            designSystem: { usesUSWDS: false, versionDetected: null },
+            contentMetrics: {
+              readabilityScore: 60,
+              suspiciousAltTextCount: 0,
+              suspiciousAltInstances: []
+            },
+            linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+          }
+        },
+        {
+          url: 'https://gamma.example.org/c',
+          timestamp: new Date().toISOString(),
+          status: 'SKIPPED_UNCHANGED',
+          errorMessage: null,
+          technologyStack: [],
+          liveAudits: { lighthouse: null, accessibilityViolations: [] },
+          offlineAudits: {
+            overlayDetected: { found: false, provider: null, evidence: null },
+            designSystem: { usesUSWDS: false, versionDetected: null },
+            contentMetrics: {
+              readabilityScore: 60,
+              suspiciousAltTextCount: 0,
+              suspiciousAltInstances: []
+            },
+            linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+          }
+        }
+      ]
+    };
+
+    RunHistoryReporter.persistRunHistory([result], 'profiles/us-health.yml', 1800);
+
+    const apiTargetsPath = path.resolve(tmpDir, 'dist/api/targets.json');
+    const apiTargets = JSON.parse(fs.readFileSync(apiTargetsPath, 'utf8')) as {
+      targets: Array<{
+        targetId: string;
+        pagesScanned: number;
+        completedPages: number;
+        timeoutPages: number;
+        skippedUnchangedPages: number;
+        totalViolations: number;
+      }>;
+    };
+
+    expect(apiTargets.targets.length).toBe(1);
+    expect(apiTargets.targets[0].targetId).toBe('gamma');
+    expect(apiTargets.targets[0].pagesScanned).toBe(3);
+    expect(apiTargets.targets[0].completedPages).toBe(1);
+    expect(apiTargets.targets[0].timeoutPages).toBe(1);
+    expect(apiTargets.targets[0].skippedUnchangedPages).toBe(1);
+    expect(apiTargets.targets[0].totalViolations).toBe(1);
+  });
 });

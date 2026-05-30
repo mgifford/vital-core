@@ -26,6 +26,14 @@ describe('Workflow contracts', () => {
     expect(content).toContain('dist/runs/page-state.json');
   });
 
+  it('enforces a strict 2-minute scan runtime budget', () => {
+    const workflowPath = path.resolve(process.cwd(), '.github/workflows/vital-scan.yml');
+    const content = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(content).toContain("VITAL_MAX_RUN_MINUTES: '2'");
+    expect(content).not.toContain("VITAL_MAX_RUN_MINUTES: '52'");
+  });
+
   it('runs link and axe quality gates for docs', () => {
     const workflowPath = path.resolve(process.cwd(), '.github/workflows/pages-quality-gate.yml');
     const content = fs.readFileSync(workflowPath, 'utf8');

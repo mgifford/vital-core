@@ -97,7 +97,13 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('function toDomainIdSegment(targetId)');
     expect(js).toContain("link.href = 'domains/' + domainIdSegment + '/' + item[1]");
     expect(js).toContain('function populateDomainSelectMenu(targets)');
+    expect(js).toContain("domainPageSelectEl.addEventListener('change'");
+    expect(js).toContain("window.location.href = selected");
     expect(js).toContain('function renderSoftwareDetections()');
+    expect(js).toContain('softwareDetectedByName');
+    expect(js).toContain('existing.urls.add(pageUrl)');
+    expect(js).toContain("link.target = '_blank'");
+    expect(js).toContain("link.rel = 'noopener noreferrer'");
     expect(css).toContain('.progress-track');
     expect(css).toContain('.progress-fill');
     expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");
