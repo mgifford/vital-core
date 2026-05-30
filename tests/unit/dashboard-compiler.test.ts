@@ -37,31 +37,43 @@ describe('DashboardCompiler', () => {
     DashboardCompiler.compileStaticDashboard(payload);
 
     const outputPath = path.resolve(process.cwd(), 'dist/index.html');
+    const jsPath = path.resolve(process.cwd(), 'dist/assets/dashboard.js');
+    const cssPath = path.resolve(process.cwd(), 'dist/assets/dashboard.css');
     const html = fs.readFileSync(outputPath, 'utf8');
+    const js = fs.readFileSync(jsPath, 'utf8');
+    const css = fs.readFileSync(cssPath, 'utf8');
 
     expect(html).toContain('\\u003cscript\\u003ealert(1)\\u003c/script\\u003e');
     expect(html).not.toContain('\"><script>alert(1)</script>');
-    expect(html).toContain('Federal Quality Index');
+    expect(html).toContain('assets/dashboard.css');
+    expect(html).toContain('assets/dashboard.js');
+    expect(html).toContain('vital-dashboard-data');
+    expect(html).toContain('vital-dashboard-target-quality');
+    expect(js).toContain('Federal Quality Index');
     expect(html).toContain('Domains Leaderboard');
     expect(html).toContain('Pages / Estimated Size');
     expect(html).toContain('Recommendations');
-    expect(html).toContain('Top Third-Party Providers');
-    expect(html).toContain('URL Freshness');
+    expect(js).toContain('Unique Pages Scanned (All Time)');
+    expect(js).toContain('Unique Pages Scanned (This Week)');
+    expect(js).toContain('Top Third-Party Providers');
+    expect(js).toContain('URL Freshness');
     expect(html).toContain('Domain Ongoing Reports');
     expect(html).toContain('Pages Needing Most Improvement');
-    expect(html).toContain('runs/domain-ongoing.json');
-    expect(html).toContain('runs/top-task-seeds.json');
-    expect(html).toContain('Estimated size: ~');
-    expect(html).toContain("lighthouseLabel.textContent = 'Lighthouse: '");
-    expect(html).toContain("{ label: 'Perf', key: 'performance'");
+    expect(js).toContain('runs/domain-ongoing.json');
+    expect(js).toContain('runs/top-task-seeds.json');
+    expect(js).toContain('Estimated size: ~');
+    expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");
+    expect(js).toContain("{ label: 'Perf', key: 'performance'");
+    expect(js).toContain('fetchJsonWithRetry');
+    expect(js).toContain('api.github.com/repos/');
     expect(html).toContain('Lighthouse thresholds used for color cues');
     expect(html).toContain('Perf (green ≥ 90, amber 70-89, red &lt; 70)');
     expect(html).toContain('SI (green ≤ 3400ms, amber 3401-5800ms, red &gt; 5800ms)');
     expect(html).toContain('Requirement Compliance Over Time');
     expect(html).toContain('compliance-chart');
-    expect(html).toContain('requirementComplianceOverTime');
+    expect(js).toContain('requirementComplianceOverTime');
     expect(html).toContain('Live Scan Ticker');
-    expect(html).toContain('api.github.com/repos/');
+    expect(css).toContain('.compliance-chart');
   });
 
   it('renders Lighthouse threshold legend in both leaderboard and ongoing sections', () => {
