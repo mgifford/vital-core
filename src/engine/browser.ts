@@ -10,6 +10,7 @@ import { LiveWorker } from './workers/live-worker';
 import { LighthouseWorker } from './workers/lighthouse-worker';
 import { OfflineWorker } from './workers/offline-worker';
 import { TechnologyWorker } from './workers/technology-worker';
+import { AlfaWorker } from './workers/alfa-worker';
 import { ThirdPartyImpactWorker } from './workers/third-party-impact-worker';
 
 interface SnapshotSessionOptions {
@@ -85,6 +86,7 @@ export class ResilientBrowserEngine {
         timestamp: new Date().toISOString(),
         status: 'COMPLETED',
         errorMessage: null,
+        alfaAudits: null,
         technologyStack: [],
         thirdPartyImpact: null,
         liveAudits: null,
@@ -147,6 +149,9 @@ export class ResilientBrowserEngine {
           // 6. Run Live browser evaluations in memory (Axe Core Automation)
           console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
           baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
+
+          // 6b. Capture raw Alfa results for this page to support future consensus mapping.
+          baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url);
 
           // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
           if (baseReport.offlineAudits) {

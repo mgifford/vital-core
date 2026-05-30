@@ -16,11 +16,21 @@ export const A11yViolationSchema = z.object({
   }))
 });
 
+export const PageAlfaAuditSchema = z.object({
+  executed: z.boolean(),
+  findingsCount: z.number().nullable(),
+  errorMessage: z.string().nullable(),
+  rawResults: z.unknown().nullable()
+});
+
 export const PageScanReportSchema = z.object({
   url: z.string().url(),
   timestamp: z.string().datetime(),
   status: z.enum(['COMPLETED', 'TIMEOUT', 'WAF_BLOCKED', 'FAILED', 'SKIPPED_UNCHANGED']),
   errorMessage: z.string().nullable(),
+
+  // 0. Raw Alfa scan capture for future normalized consensus mapping
+  alfaAudits: PageAlfaAuditSchema.nullable().optional(),
 
   // 1. Technology Fingerprint Profile (wappalyzer-next)
   technologyStack: z.array(z.object({
@@ -117,5 +127,6 @@ export const TargetScanResultSchema = z.object({
 });
 
 export type A11yViolation = z.infer<typeof A11yViolationSchema>;
+export type PageAlfaAudit = z.infer<typeof PageAlfaAuditSchema>;
 export type PageScanReport = z.infer<typeof PageScanReportSchema>;
 export type TargetScanResult = z.infer<typeof TargetScanResultSchema>;
