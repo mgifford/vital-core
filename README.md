@@ -75,6 +75,15 @@ Per-page output includes `thirdPartyImpact` with:
 
 When regressions are detected, bug reports include a dedicated third-party JavaScript regression section.
 
+### Optional Supplemental Remediation Catalog
+
+Each axe finding already includes primary Deque rule guidance via the rule `helpUrl` and failure summary output. VITAL-Core can now optionally add supplemental pattern-based remediation advice using Purple-AI catalog data.
+
+- Default source path: `tools/submodules/purple-ai`
+- Optional override: set `VITAL_PURPLE_AI_DIR`
+- If catalog data is missing or no match exists, reports continue with Deque guidance only.
+- Supplemental guidance is labeled as `curated-purple-ai` with confidence (`HIGH` exact match, `MEDIUM` fuzzy match).
+
 ## Federal Quality Index
 
 Each run now computes a deterministic Federal Quality Index (`0-100`) with a gate status (`PASS`, `WARNING`, `BLOCKED`) and persists it in:
@@ -96,6 +105,7 @@ Current tracked submodules include:
 
 - `tools/submodules/axe-core` (Deque axe-core engine)
 - `tools/submodules/standards` (ScanGov standards catalog)
+- `tools/submodules/purple-ai` (GovTechSG Purple-AI remediation response catalog)
 
 - Initialize submodules: `npm run submodules:init`
 - Update submodules to latest upstream tracked commits: `npm run submodules:update`

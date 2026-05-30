@@ -6,6 +6,7 @@ This repository tracks selected third-party scanner sources as Git submodules fo
 
 - `tools/submodules/axe-core` -> https://github.com/dequelabs/axe-core
 - `tools/submodules/standards` -> https://github.com/ScanGov/standards
+- `tools/submodules/purple-ai` -> https://github.com/GovTechSG/purple-ai
 
 ## Why submodules here
 

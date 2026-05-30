@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult } from '../../types/site-quality-spec';
+import { RemediationAdvisor } from './remediation-advisor';
 
 export class BugExporter {
   private static REPORT_DIR = path.resolve(process.cwd(), 'dist/reports');
@@ -29,6 +30,8 @@ export class BugExporter {
     if (!fs.existsSync(this.REPORT_DIR)) {
       fs.mkdirSync(this.REPORT_DIR, { recursive: true });
     }
+
+    const remediationAdvisor = new RemediationAdvisor();
 
     let md = `# 🛑 Section 508 Compliance Registry: ${targetResult.targetId.toUpperCase()}\n`;
     md += `> **Scan Summary:** Processed completely on ${new Date().toUTCString()} | Duration: ${(targetResult.scanDurationMs / 1000).toFixed(2)}s\n\n`;
@@ -79,7 +82,7 @@ export class BugExporter {
             md += `#### 🛑 Rule Triggered: \`${violation.id}\` (${violation.severity.toUpperCase()})\n`;
             md += `* **Description:** ${violation.description}\n`;
             md += `* **Target Standards Alignment:** ${violation.impactedCriteria.map(c => `\`${c}\``).join(', ')}\n`;
-            md += `* **Detailed Resolution Requirements:** [Deque Axe Ruleset Specification](${violation.helpUrl})\n\n`;
+            md += `* **Primary Rule Guidance (Deque Axe):** [Deque Axe Ruleset Specification](${violation.helpUrl})\n\n`;
             md += `##### 🛠️ Code Failure Snippets:\n`;
 
             violation.instances.forEach((instance, idx) => {
@@ -87,6 +90,16 @@ export class BugExporter {
               md += `* **Target DOM Coordinate:** \`${instance.target.join(' -> ')}\`\n`;
               md += `* **Failing Source Node Code:**\n \`\`\`html\n ${instance.html}\n \`\`\`\n`;
               md += `* **Remediation Action Path:** ${instance.failureSummary}\n\n`;
+
+              const supplemental = remediationAdvisor.getSupplemental(violation.id, instance.html);
+              if (supplemental) {
+                md += `* **Supplemental Pattern Advice (${supplemental.source}, ${supplemental.confidence} confidence):** ${supplemental.advice}\n`;
+                md += `* **Supplemental Match Signature:** \`${supplemental.matchedLabel}\`\n`;
+                if (supplemental.catalogLastUpdated) {
+                  md += `* **Supplemental Catalog Last Updated:** ${supplemental.catalogLastUpdated}\n`;
+                }
+                md += `\n`;
+              }
 
               csvRows.push([
                 targetResult.targetId,

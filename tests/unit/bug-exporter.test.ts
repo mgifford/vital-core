@@ -1,11 +1,47 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { BugExporter } from '../../src/engine/reporters/bug-exporter';
 import { TargetScanResult } from '../../src/types/site-quality-spec';
 
+const ORIGINAL_PURPLE_DIR = process.env.VITAL_PURPLE_AI_DIR;
+
+afterEach(() => {
+  if (ORIGINAL_PURPLE_DIR === undefined) {
+    delete process.env.VITAL_PURPLE_AI_DIR;
+  } else {
+    process.env.VITAL_PURPLE_AI_DIR = ORIGINAL_PURPLE_DIR;
+  }
+});
+
 describe('BugExporter', () => {
   it('writes markdown and csv issue reports for a target', () => {
+    const fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-purple-bug-exporter-'));
+    fs.mkdirSync(path.join(fixtureDir, 'results'), { recursive: true });
+    fs.writeFileSync(
+      path.join(fixtureDir, 'catalog.json'),
+      JSON.stringify(
+        {
+          lastUpdated: '2026-05-29T00:00:00.000Z',
+          'image-alt': ['img_src']
+        },
+        null,
+        2
+      )
+    );
+    fs.writeFileSync(
+      path.join(fixtureDir, 'results', 'image-alt.json'),
+      JSON.stringify(
+        {
+          img_src: 'Use concise alt text describing the image purpose in page context.'
+        },
+        null,
+        2
+      )
+    );
+    process.env.VITAL_PURPLE_AI_DIR = fixtureDir;
+
     const payload: TargetScanResult = {
       targetId: 'sample-target',
       domain: 'https://example.org',
@@ -64,7 +100,11 @@ describe('BugExporter', () => {
     expect(fs.existsSync(csvPath)).toBe(true);
 
     const csvText = fs.readFileSync(csvPath, 'utf8');
+    const markdownText = fs.readFileSync(markdownPath, 'utf8');
+
     expect(csvText).toContain('target_id,page_url,status,error_message,severity,rule_id');
     expect(csvText).toContain('sample-target,https://example.org/page,COMPLETED,,serious,image-alt');
+    expect(markdownText).toContain('**Primary Rule Guidance (Deque Axe):** [Deque Axe Ruleset Specification]');
+    expect(markdownText).toContain('Supplemental Pattern Advice (curated-purple-ai, HIGH confidence)');
   });
 });
