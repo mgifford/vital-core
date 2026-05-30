@@ -1,42 +1,36 @@
-name: Deploy to GitHub Pages
+name: Validate Docs Bundle
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'docs/**'
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate-docs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+      - name: Validate docs bundle shape
+        run: |
+          set -euo pipefail
+          required_files=(
+            "docs/index.html"
+          )
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/
+          missing=0
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "Missing required docs file: $file"
+              missing=1
+            fi
+          done
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          if [[ "$missing" -ne 0 ]]; then
+            echo "Docs bundle validation failed."
+            exit 1
+          fi
+
+          echo "Docs bundle validation passed."

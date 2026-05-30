@@ -1,0 +1,38 @@
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { describe, expect, it } from 'vitest';
+
+describe('Workflow contracts', () => {
+  it('keeps docs workflow as validation-only (no Pages deployment)', () => {
+    const workflowPath = path.resolve(process.cwd(), '.github/workflows/deploy-pages.yml');
+    const content = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(content).toContain('name: Validate Docs Bundle');
+    expect(content).toContain('workflow_dispatch:');
+    expect(content).not.toContain('actions/deploy-pages@');
+    expect(content).not.toContain('actions/upload-pages-artifact@');
+    expect(content).not.toContain('pages: write');
+  });
+
+  it('requires generated dist artifacts before scan deployment', () => {
+    const workflowPath = path.resolve(process.cwd(), '.github/workflows/vital-scan.yml');
+    const content = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(content).toContain('Verify required generated dashboard artifacts exist');
+    expect(content).toContain('dist/index.html');
+    expect(content).toContain('dist/runs/latest.json');
+    expect(content).toContain('dist/runs/index.json');
+    expect(content).toContain('dist/runs/trends.json');
+    expect(content).toContain('dist/runs/page-state.json');
+  });
+
+  it('runs link and axe quality gates for docs', () => {
+    const workflowPath = path.resolve(process.cwd(), '.github/workflows/pages-quality-gate.yml');
+    const content = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(content).toContain('lycheeverse/lychee-action@v2');
+    expect(content).toContain('Install Playwright Chromium');
+    expect(content).toContain('Run axe smoke checks against docs');
+    expect(content).toContain('node scripts/run-axe-site-check.mjs');
+  });
+});

@@ -67,6 +67,32 @@ jobs:
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && github.event.schedule == '0 2 1 * *') || 'false' }}
         run: npm run scan
 
+      - name: Verify required generated dashboard artifacts exist
+        run: |
+          set -euo pipefail
+          required_files=(
+            "dist/index.html"
+            "dist/runs/latest.json"
+            "dist/runs/index.json"
+            "dist/runs/trends.json"
+            "dist/runs/page-state.json"
+          )
+
+          missing=0
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "Missing required generated file: $file"
+              missing=1
+            fi
+          done
+
+          if [[ "$missing" -ne 0 ]]; then
+            echo "Dashboard artifact preflight failed."
+            exit 1
+          fi
+
+          echo "Dashboard artifact preflight passed."
+
       - name: Upload Local Snapshots as Workflow Artifacts (Debugging/Audit)
         uses: actions/upload-artifact@v4
         with:

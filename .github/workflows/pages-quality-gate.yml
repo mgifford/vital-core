@@ -1,0 +1,73 @@
+name: Pages Quality Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'scripts/run-axe-site-check.mjs'
+      - '.github/workflows/pages-quality-gate.yml'
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check links in docs
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: true
+          args: --verbose --no-progress docs/**/*.html
+
+      - name: Initialize Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Start local docs server
+        run: |
+          python3 -m http.server 4173 --directory docs >/tmp/vital-docs-server.log 2>&1 &
+          echo $! > /tmp/vital-docs-server.pid
+
+      - name: Wait for local docs server
+        run: |
+          set -euo pipefail
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then
+              echo "Docs server is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Docs server failed to start"
+          cat /tmp/vital-docs-server.log || true
+          exit 1
+
+      - name: Run axe smoke checks against docs
+        env:
+          A11Y_SITE_DIR: docs
+          A11Y_BASE_URL: http://127.0.0.1:4173
+        run: node scripts/run-axe-site-check.mjs
+
+      - name: Stop local docs server
+        if: always()
+        run: |
+          if [[ -f /tmp/vital-docs-server.pid ]]; then
+            kill "$(cat /tmp/vital-docs-server.pid)" || true
+          fi
