@@ -7,6 +7,30 @@ A quality scanner for websites built for the US government.
 - Agent operating guide: AGENTS.md
 - Accessibility reporting standard: ACCESSIBILITY.md
 
+## Branch Protection Setup
+
+To prevent regressions, protect `main` in GitHub settings and require these status checks before merge:
+
+1. `CI Test and Validation / test`
+2. `Governance Guardrails / required-files`
+3. `Governance Guardrails / governance-rationale`
+4. `Pages Quality Gate / quality-gate`
+
+Recommended branch protection options:
+
+- Require a pull request before merging.
+- Require status checks to pass before merging.
+- Require branches to be up to date before merging.
+- Require conversation resolution before merging.
+- Restrict force pushes and branch deletion.
+
+Path in GitHub UI:
+
+1. `Settings`
+2. `Branches`
+3. `Add branch protection rule`
+4. Branch name pattern: `main`
+
 ## Common Commands
 
 - Install dependencies: `npm ci`
