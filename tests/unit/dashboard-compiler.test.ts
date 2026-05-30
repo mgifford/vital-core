@@ -41,5 +41,6 @@ describe('DashboardCompiler', () => {
 
     expect(html).toContain('\\u003cscript\\u003ealert(1)\\u003c/script\\u003e');
     expect(html).not.toContain('\"><script>alert(1)</script>');
+    expect(html).toContain('Federal Quality Index');
   });
 });

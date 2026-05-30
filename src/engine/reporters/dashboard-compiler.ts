@@ -318,6 +318,24 @@ export class DashboardCompiler {
           'Based on last ' + String(trends.windowSize || 0) + ' run(s)',
           ''
         );
+
+        const qualityScore = Number(trends.latest.qualityIndexScore || 0).toFixed(2);
+        const qualityDelta = delta
+          ? 'Delta vs previous: ' + formatDelta(Number(Number(delta.qualityIndexScore || 0).toFixed(2)), ' points')
+          : 'Delta vs previous: n/a';
+        const gate = String(trends.latest.qualityGateStatus || 'WARNING');
+        const qualityAccent = gate === 'BLOCKED'
+          ? 'var(--critical-red)'
+          : gate === 'WARNING'
+            ? '#9a6700'
+            : '#1a7f37';
+
+        appendTrendCard(
+          'Federal Quality Index',
+          qualityScore + ' / 100',
+          'Gate: ' + gate + ' • ' + qualityDelta,
+          qualityAccent
+        );
       })
       .catch(() => {
         appendTrendCard('Trend Summary', 'Unavailable', 'Trend data could not be loaded.', '');

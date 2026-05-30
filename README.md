@@ -60,6 +60,16 @@ Each scanned page now includes a CMS/framework technology fingerprint in `techno
 
 Install options for `wappalyzer-next` are documented upstream: https://github.com/s0md3v/wappalyzer-next
 
+## Federal Quality Index
+
+Each run now computes a deterministic Federal Quality Index (`0-100`) with a gate status (`PASS`, `WARNING`, `BLOCKED`) and persists it in:
+
+- `dist/runs/latest.json`
+- `dist/runs/index.json`
+- `dist/runs/trends.json`
+
+The score blends accessibility severity density, content quality signals, scan reliability, and link integrity. `BLOCKED` is enforced whenever critical accessibility violations are present.
+
 ## Third-Party Tool Submodules
 
 This repository tracks upstream scanner source repositories as submodules to make updates easy and reviewable.

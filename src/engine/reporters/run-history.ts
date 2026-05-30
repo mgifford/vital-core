@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult } from '../../types/site-quality-spec';
+import { QualityIndexReporter, QualityIndexResult } from './quality-index';
 
 interface RunEntry {
   runId: string;
@@ -10,6 +11,8 @@ interface RunEntry {
   targetsScanned: number;
   pagesScanned: number;
   totalViolations: number;
+  qualityIndexScore: number;
+  qualityGateStatus: QualityIndexResult['gateStatus'];
   artifactPath: string;
 }
 
@@ -29,6 +32,8 @@ interface TrendSummary {
     totalViolations: number;
     scanDurationMs: number;
     violationsPerPage: number;
+    qualityIndexScore: number;
+    qualityGateStatus: QualityIndexResult['gateStatus'];
   };
   deltaFromPrevious: {
     targetsScanned: number;
@@ -36,12 +41,14 @@ interface TrendSummary {
     totalViolations: number;
     scanDurationMs: number;
     violationsPerPage: number;
+    qualityIndexScore: number;
   } | null;
   rollingAverage: {
     pagesScanned: number;
     totalViolations: number;
     scanDurationMs: number;
     violationsPerPage: number;
+    qualityIndexScore: number;
   };
 }
 
@@ -75,12 +82,14 @@ export class RunHistoryReporter {
     }, 0);
 
     const artifactPath = `runs/${runId}.json`;
+    const qualityIndex = QualityIndexReporter.buildQualityIndex(allResults);
 
     const latestPayload = {
       runId,
       generatedAt,
       profilePath,
       scanDurationMs: totalDurationMs,
+      qualityIndex,
       results: allResults
     };
 
@@ -92,6 +101,8 @@ export class RunHistoryReporter {
       targetsScanned: allResults.length,
       pagesScanned,
       totalViolations,
+      qualityIndexScore: qualityIndex.score,
+      qualityGateStatus: qualityIndex.gateStatus,
       artifactPath
     };
 
@@ -136,7 +147,7 @@ export class RunHistoryReporter {
       return {
         updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : new Date(0).toISOString(),
         latestRunId: typeof parsed.latestRunId === 'string' ? parsed.latestRunId : '',
-        runs: parsed.runs.filter(this.isRunEntry)
+        runs: parsed.runs.filter(this.isRunEntry).map(this.withQualityDefaults)
       };
     } catch {
       return {
@@ -163,6 +174,17 @@ export class RunHistoryReporter {
       typeof run.totalViolations === 'number' &&
       typeof run.artifactPath === 'string'
     );
+  }
+
+  private static withQualityDefaults(run: RunEntry): RunEntry {
+    return {
+      ...run,
+      qualityIndexScore: typeof run.qualityIndexScore === 'number' ? run.qualityIndexScore : 0,
+      qualityGateStatus:
+        run.qualityGateStatus === 'PASS' || run.qualityGateStatus === 'WARNING' || run.qualityGateStatus === 'BLOCKED'
+          ? run.qualityGateStatus
+          : 'WARNING'
+    };
   }
 
   private static restoreCachedHistory(): void {
@@ -198,7 +220,9 @@ export class RunHistoryReporter {
       targetsScanned: 0,
       pagesScanned: 0,
       totalViolations: 0,
-      scanDurationMs: 0
+      scanDurationMs: 0,
+      qualityIndexScore: 0,
+      qualityGateStatus: 'WARNING' as const
     };
 
     const previous = windowedRuns[1] ?? null;
@@ -216,7 +240,9 @@ export class RunHistoryReporter {
         pagesScanned: latest.pagesScanned,
         totalViolations: latest.totalViolations,
         scanDurationMs: latest.scanDurationMs,
-        violationsPerPage: Number(latestViolationsPerPage.toFixed(4))
+        violationsPerPage: Number(latestViolationsPerPage.toFixed(4)),
+        qualityIndexScore: Number((latest.qualityIndexScore ?? 0).toFixed(2)),
+        qualityGateStatus: latest.qualityGateStatus ?? 'WARNING'
       },
       deltaFromPrevious: previous
         ? {
@@ -224,7 +250,8 @@ export class RunHistoryReporter {
             pagesScanned: latest.pagesScanned - previous.pagesScanned,
             totalViolations: latest.totalViolations - previous.totalViolations,
             scanDurationMs: latest.scanDurationMs - previous.scanDurationMs,
-            violationsPerPage: Number((latestViolationsPerPage - previousViolationsPerPage).toFixed(4))
+            violationsPerPage: Number((latestViolationsPerPage - previousViolationsPerPage).toFixed(4)),
+            qualityIndexScore: Number(((latest.qualityIndexScore ?? 0) - (previous.qualityIndexScore ?? 0)).toFixed(2))
           }
         : null,
       rollingAverage: average
@@ -237,7 +264,8 @@ export class RunHistoryReporter {
         pagesScanned: 0,
         totalViolations: 0,
         scanDurationMs: 0,
-        violationsPerPage: 0
+        violationsPerPage: 0,
+        qualityIndexScore: 0
       };
     }
 
@@ -249,7 +277,10 @@ export class RunHistoryReporter {
       pagesScanned: Number((totalPages / runs.length).toFixed(2)),
       totalViolations: Number((totalViolations / runs.length).toFixed(2)),
       scanDurationMs: Number((totalDurationMs / runs.length).toFixed(2)),
-      violationsPerPage: totalPages > 0 ? Number((totalViolations / totalPages).toFixed(4)) : 0
+      violationsPerPage: totalPages > 0 ? Number((totalViolations / totalPages).toFixed(4)) : 0,
+      qualityIndexScore: Number(
+        (runs.reduce((sum, run) => sum + (run.qualityIndexScore ?? 0), 0) / runs.length).toFixed(2)
+      )
     };
   }
 }
