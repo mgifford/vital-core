@@ -43,5 +43,6 @@ describe('DashboardCompiler', () => {
     expect(html).not.toContain('\"><script>alert(1)</script>');
     expect(html).toContain('Federal Quality Index');
     expect(html).toContain('Quality Index');
+    expect(html).toContain('Top Third-Party Providers');
   });
 });

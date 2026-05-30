@@ -39,6 +39,7 @@ interface TrendSummary {
     qualityIndexScore: number;
     qualityGateStatus: QualityIndexResult['gateStatus'];
     targetQuality: TargetQualityIndexEntry[];
+    providerAttributionTop: ProviderAttributionRollupEntry[];
   };
   deltaFromPrevious: {
     targetsScanned: number;
@@ -55,6 +56,14 @@ interface TrendSummary {
     violationsPerPage: number;
     qualityIndexScore: number;
   };
+}
+
+interface ProviderAttributionRollupEntry {
+  provider: string;
+  high: number;
+  medium: number;
+  low: number;
+  score: number;
 }
 
 export class RunHistoryReporter {
@@ -89,6 +98,7 @@ export class RunHistoryReporter {
     const artifactPath = `runs/${runId}.json`;
     const qualityIndex = QualityIndexReporter.buildQualityIndex(allResults);
     const targetQuality = QualityIndexReporter.buildTargetQualityIndex(allResults);
+    const providerAttributionTop = this.computeProviderAttributionRollup(allResults);
 
     const latestPayload = {
       runId,
@@ -97,6 +107,7 @@ export class RunHistoryReporter {
       scanDurationMs: totalDurationMs,
       qualityIndex,
       targetQuality,
+      providerAttributionTop,
       results: allResults
     };
 
@@ -250,7 +261,8 @@ export class RunHistoryReporter {
         violationsPerPage: Number(latestViolationsPerPage.toFixed(4)),
         qualityIndexScore: Number((latest.qualityIndexScore ?? 0).toFixed(2)),
         qualityGateStatus: latest.qualityGateStatus ?? 'WARNING',
-        targetQuality: this.readTargetQualitySnapshot(latest)
+        targetQuality: this.readTargetQualitySnapshot(latest),
+        providerAttributionTop: this.readProviderAttributionRollupSnapshot(latest)
       },
       deltaFromPrevious: previous
         ? {
@@ -322,5 +334,72 @@ export class RunHistoryReporter {
     } catch {
       return [];
     }
+  }
+
+  private static readProviderAttributionRollupSnapshot(run: RunEntry): ProviderAttributionRollupEntry[] {
+    if (!run.artifactPath) {
+      return [];
+    }
+
+    const artifactFullPath = path.resolve(process.cwd(), 'dist', run.artifactPath);
+    if (!fs.existsSync(artifactFullPath)) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(fs.readFileSync(artifactFullPath, 'utf8')) as {
+        providerAttributionTop?: ProviderAttributionRollupEntry[];
+      };
+
+      if (!Array.isArray(parsed.providerAttributionTop)) {
+        return [];
+      }
+
+      return parsed.providerAttributionTop.filter(item =>
+        item &&
+        typeof item.provider === 'string' &&
+        typeof item.high === 'number' &&
+        typeof item.medium === 'number' &&
+        typeof item.low === 'number' &&
+        typeof item.score === 'number'
+      );
+    } catch {
+      return [];
+    }
+  }
+
+  private static computeProviderAttributionRollup(allResults: TargetScanResult[]): ProviderAttributionRollupEntry[] {
+    const byProvider = new Map<string, ProviderAttributionRollupEntry>();
+
+    for (const target of allResults) {
+      for (const page of target.pagesScanned) {
+        const attributions = page.thirdPartyImpact?.providerAttribution ?? [];
+        for (const attribution of attributions) {
+          const current = byProvider.get(attribution.provider) ?? {
+            provider: attribution.provider,
+            high: 0,
+            medium: 0,
+            low: 0,
+            score: 0
+          };
+
+          if (attribution.confidence === 'HIGH') current.high += 1;
+          if (attribution.confidence === 'MEDIUM') current.medium += 1;
+          if (attribution.confidence === 'LOW') current.low += 1;
+          current.score += attribution.score;
+
+          byProvider.set(attribution.provider, current);
+        }
+      }
+    }
+
+    return Array.from(byProvider.values())
+      .sort((a, b) => {
+        if (b.high !== a.high) return b.high - a.high;
+        if (b.medium !== a.medium) return b.medium - a.medium;
+        if (b.score !== a.score) return b.score - a.score;
+        return a.provider.localeCompare(b.provider);
+      })
+      .slice(0, 10);
   }
 }

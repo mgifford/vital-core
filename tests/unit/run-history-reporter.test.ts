@@ -83,6 +83,7 @@ describe('RunHistoryReporter', () => {
     const latest = JSON.parse(fs.readFileSync(latestPath, 'utf8')) as {
       qualityIndex: { score: number; gateStatus: string };
       targetQuality: Array<{ targetId: string; score: number; gateStatus: string }>;
+      providerAttributionTop: Array<{ provider: string; high: number; medium: number; low: number; score: number }>;
     };
 
     expect(latest.qualityIndex.score).toBeGreaterThanOrEqual(0);
@@ -90,9 +91,10 @@ describe('RunHistoryReporter', () => {
     expect(Array.isArray(latest.targetQuality)).toBe(true);
     expect(latest.targetQuality.length).toBeGreaterThan(0);
     expect(latest.targetQuality[0].targetId).toBeTruthy();
+    expect(Array.isArray(latest.providerAttributionTop)).toBe(true);
 
     const trends = JSON.parse(fs.readFileSync(trendsPath, 'utf8')) as {
-      latest: { totalViolations: number };
+      latest: { totalViolations: number; providerAttributionTop: Array<{ provider: string }> };
       deltaFromPrevious: { totalViolations: number } | null;
       rollingAverage: { violationsPerPage: number };
       windowSize: number;
@@ -103,6 +105,7 @@ describe('RunHistoryReporter', () => {
     expect(trends.deltaFromPrevious?.totalViolations).toBe(2);
     expect(trends.rollingAverage.violationsPerPage).toBeGreaterThan(0);
     expect(trends.windowSize).toBe(2);
+    expect(Array.isArray(trends.latest.providerAttributionTop)).toBe(true);
   });
 
   it('recovers from malformed index.json content', () => {
