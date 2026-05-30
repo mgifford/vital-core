@@ -5,6 +5,23 @@ import { TargetScanResult } from '../../types/site-quality-spec';
 export class BugExporter {
   private static REPORT_DIR = path.resolve(process.cwd(), 'dist/reports');
 
+  private static csvHeader = [
+    'target_id',
+    'page_url',
+    'status',
+    'error_message',
+    'severity',
+    'rule_id',
+    'description',
+    'help_url',
+    'impacted_criteria',
+    'selector',
+    'html_snippet',
+    'failure_summary',
+    'suspicious_alt_value',
+    'suspicious_alt_html'
+  ];
+
   /**
    * Generates formatted Markdown issue documentation for a scanned target
    */
@@ -24,6 +41,8 @@ export class BugExporter {
         (p.offlineAudits?.contentMetrics.suspiciousAltTextCount ?? 0) > 0
     );
 
+    const csvRows: string[][] = [];
+
     if (problematicPages.length === 0) {
       md += `## 🎉 Zero Flagged Violations\nAll audited paths perfectly satisfied validation criteria.\n`;
     } else {
@@ -33,6 +52,22 @@ export class BugExporter {
 
         if (page.errorMessage) {
           md += `* **Error Context:** \`${page.errorMessage}\`\n`;
+          csvRows.push([
+            targetResult.targetId,
+            page.url,
+            page.status,
+            page.errorMessage,
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
+          ]);
           continue;
         }
 
@@ -52,6 +87,23 @@ export class BugExporter {
               md += `* **Target DOM Coordinate:** \`${instance.target.join(' -> ')}\`\n`;
               md += `* **Failing Source Node Code:**\n \`\`\`html\n ${instance.html}\n \`\`\`\n`;
               md += `* **Remediation Action Path:** ${instance.failureSummary}\n\n`;
+
+              csvRows.push([
+                targetResult.targetId,
+                page.url,
+                page.status,
+                '',
+                violation.severity,
+                violation.id,
+                violation.description,
+                violation.helpUrl,
+                violation.impactedCriteria.join('; '),
+                instance.target.join(' -> '),
+                instance.html,
+                instance.failureSummary,
+                '',
+                ''
+              ]);
             });
           }
         }
@@ -63,6 +115,23 @@ export class BugExporter {
           md += `Found **${content.suspiciousAltTextCount}** instances of missing or generic alt patterns (e.g., 'image.png', 'screenshot').\n\n`;
           content.suspiciousAltInstances.forEach((inst, idx) => {
             md += `${idx + 1}. **Target Code Matrix:** \`${inst.imgHtml}\` | **Value Identified:** *"${inst.invalidValue}"*\n`;
+
+            csvRows.push([
+              targetResult.targetId,
+              page.url,
+              page.status,
+              '',
+              'moderate',
+              'suspicious-alt-text',
+              'Suspicious or missing alternative text pattern detected.',
+              '',
+              '',
+              '',
+              '',
+              '',
+              inst.invalidValue,
+              inst.imgHtml
+            ]);
           });
           md += `\n`;
         }
@@ -70,7 +139,24 @@ export class BugExporter {
     }
 
     const safeFilename = `${targetResult.targetId}_issues.md`;
+    const csvFilename = `${targetResult.targetId}_issues.csv`;
+
     fs.writeFileSync(path.join(this.REPORT_DIR, safeFilename), md, 'utf8');
+    fs.writeFileSync(path.join(this.REPORT_DIR, csvFilename), this.toCsv(csvRows), 'utf8');
+
     return safeFilename;
+  }
+
+  private static toCsv(rows: string[][]): string {
+    const serializedRows = [this.csvHeader, ...rows].map(cols => cols.map(this.escapeCsvField).join(','));
+    return serializedRows.join('\n') + '\n';
+  }
+
+  private static escapeCsvField(value: string): string {
+    const text = String(value ?? '');
+    if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+    return text;
   }
 }
