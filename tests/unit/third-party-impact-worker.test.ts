@@ -50,4 +50,26 @@ describe('ThirdPartyImpactWorker', () => {
     expect(providers).toContain('Intercom');
     expect(providers).toContain('Zendesk');
   });
+
+  it('scores provider confidence based on independent evidence signals', () => {
+    const attribution = ThirdPartyImpactWorker.buildProviderAttribution(
+      '<script src="https://www.googletagmanager.com/gtm.js"></script><script src="https://www.googletagmanager.com/gtm.js?id=2"></script>',
+      [
+        { name: 'Google Tag Manager', category: 'Tag Manager', version: null }
+      ],
+      {
+        overlayDetected: { found: true, provider: 'Google Tag Manager', evidence: 'gtm.js' },
+        designSystem: { usesUSWDS: true, versionDetected: '3' },
+        contentMetrics: { readabilityScore: 60, suspiciousAltTextCount: 0, suspiciousAltInstances: [] },
+        linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+      }
+    );
+
+    expect(attribution.length).toBeGreaterThan(0);
+    expect(attribution[0].provider).toBe('Google Tag Manager');
+    expect(attribution[0].confidence).toBe('HIGH');
+    expect(attribution[0].signals).toContain('script-origin');
+    expect(attribution[0].signals).toContain('technology-label');
+    expect(attribution[0].signals).toContain('overlay-evidence');
+  });
 });

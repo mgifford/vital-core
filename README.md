@@ -71,6 +71,7 @@ Per-page output includes `thirdPartyImpact` with:
 - regression flag (`regressionDetected`)
 - potentially JS-introduced high-risk rules (`highRiskRules`)
 - likely provider attribution (`likelyIntroducedByProviders` and `ruleToLikelyProviders`)
+- provider confidence labels (`providerAttribution` and `ruleToProviderAttribution`) using weighted evidence signals
 
 When regressions are detected, bug reports include a dedicated third-party JavaScript regression section.
 

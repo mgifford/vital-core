@@ -146,9 +146,21 @@ export class BugExporter {
           md += `* **Violations Introduced by JS:** ${thirdPartyImpact.addedByJavaScriptCount}\n`;
           md += `* **Potentially Responsible Rules:** ${thirdPartyImpact.highRiskRules.map(rule => `\`${rule}\``).join(', ') || 'n/a'}\n`;
           md += `* **Likely Third-Party Providers:** ${thirdPartyImpact.likelyIntroducedByProviders.join(', ') || 'Unknown'}\n`;
+          if (thirdPartyImpact.providerAttribution.length > 0) {
+            md += `* **Provider Confidence:** ${thirdPartyImpact.providerAttribution
+              .map(item => `${item.provider} (${item.confidence}, score ${item.score})`)
+              .join('; ')}\n`;
+          }
           if (thirdPartyImpact.ruleToLikelyProviders.length > 0) {
             md += `* **Rule Attribution:** ${thirdPartyImpact.ruleToLikelyProviders
               .map(item => `\`${item.ruleId}\` -> ${item.providers.join('|') || 'Unknown'}`)
+              .join('; ')}\n`;
+          }
+          if (thirdPartyImpact.ruleToProviderAttribution.length > 0) {
+            md += `* **Rule Attribution Confidence:** ${thirdPartyImpact.ruleToProviderAttribution
+              .map(item => `${item.ruleId} -> ${item.providers
+                .map(provider => `${provider.provider}:${provider.confidence}`)
+                .join('|')}`)
               .join('; ')}\n`;
           }
           md += `* **Trigger Evidence:** ${thirdPartyImpact.triggeredBy.join('; ')}\n\n`;
@@ -165,7 +177,7 @@ export class BugExporter {
             'wcag2a;wcag2aa;section508',
             '',
             '',
-            `Added by JS: ${thirdPartyImpact.addedByJavaScriptCount}; Rules: ${thirdPartyImpact.highRiskRules.join('|')}; Providers: ${thirdPartyImpact.likelyIntroducedByProviders.join('|')}`,
+            `Added by JS: ${thirdPartyImpact.addedByJavaScriptCount}; Rules: ${thirdPartyImpact.highRiskRules.join('|')}; Providers: ${thirdPartyImpact.providerAttribution.map(item => `${item.provider}:${item.confidence}`).join('|')}`,
             '',
             ''
           ]);
