@@ -2,8 +2,10 @@ name: Execute Continuous Web Quality Compliance Scan
 
 on:
   schedule:
-    # Weekly full rescan in US off-hours (Friday 23:00 ET / 20:00 PT during standard time)
-    - cron: '0 4 * * 6'
+    # Hourly incremental scans for continuous progress visibility
+    - cron: '0 * * * *'
+    # Daily deep refresh in US off-hours (00:00 ET / 21:00 PT during standard time)
+    - cron: '0 5 * * *'
     # Monthly priority URL validation refresh in US off-hours
     - cron: '0 2 1 * *'
   workflow_dispatch:
@@ -63,13 +65,23 @@ jobs:
       - name: Cache and Install Playwright Chromium Binary
         run: npx playwright install chromium --with-deps
 
-      - name: Determine whether scan should run in current time window
+      - name: Determine scan mode for current time window
         id: offhours
         run: |
           set -euo pipefail
           if [[ "${{ github.event_name }}" != "schedule" ]]; then
             echo "should_scan=true" >> "$GITHUB_OUTPUT"
-            echo "Manual run detected. Proceeding without off-hours restriction."
+            echo "scan_intensity=standard" >> "$GITHUB_OUTPUT"
+            echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
+            echo "Manual run detected. Running full incremental scan path."
+            exit 0
+          fi
+
+          if [[ "${{ github.event.schedule }}" == '0 5 * * *' || "${{ github.event.schedule }}" == '0 2 1 * *' ]]; then
+            echo "should_scan=true" >> "$GITHUB_OUTPUT"
+            echo "scan_intensity=deep" >> "$GITHUB_OUTPUT"
+            echo "deep_refresh=true" >> "$GITHUB_OUTPUT"
+            echo "Deep refresh schedule detected. Running expanded scan mode."
             exit 0
           fi
 
@@ -78,23 +90,38 @@ jobs:
           pt_day=$(TZ=America/Los_Angeles date +%u)
           pt_hour=$(TZ=America/Los_Angeles date +%H)
 
-          # Skip only when both regions are within weekday business hours.
+          # Weekday load bands:
+          # - light: edge work hours
+          # - ultra_light: peak overlap hours (highest traffic)
+          # - standard: all off-hours and weekends
           if [[ "$et_day" -ge 1 && "$et_day" -le 5 && "$et_hour" -ge 9 && "$pt_day" -ge 1 && "$pt_day" -le 5 && "$pt_hour" -lt 17 ]]; then
-            echo "should_scan=false" >> "$GITHUB_OUTPUT"
-            echo "Scheduled scan fell within weekday office hours (ET/PT). Skipping run to reduce site load."
-            exit 0
-          fi
+            echo "should_scan=true" >> "$GITHUB_OUTPUT"
+            echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
 
-          echo "should_scan=true" >> "$GITHUB_OUTPUT"
-          echo "Off-hours window confirmed. Proceeding with scheduled scan."
+            # Peak overlap in North America business hours: 11:00-16:59 ET.
+            if [[ "$et_hour" -ge 11 && "$et_hour" -lt 17 ]]; then
+              echo "scan_intensity=ultra_light" >> "$GITHUB_OUTPUT"
+              echo "Peak business-hours overlap detected. Running extra-light incremental scan mode."
+            else
+              echo "scan_intensity=light" >> "$GITHUB_OUTPUT"
+              echo "Business-hours edge window detected. Running light incremental scan mode."
+            fi
+          else
+            echo "should_scan=true" >> "$GITHUB_OUTPUT"
+            echo "scan_intensity=standard" >> "$GITHUB_OUTPUT"
+            echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
+            echo "Off-hours window detected. Running standard incremental scan mode."
+          fi
 
       - name: Run VITAL-Core Core Orchestrator Pipeline
         if: steps.offhours.outputs.should_scan == 'true'
         env:
           VITAL_HISTORY_CACHE_DIR: .history-cache
           VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}
-          FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && 'true') || 'false' }}
+          FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && steps.offhours.outputs.deep_refresh == 'true') || 'false' }}
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && github.event.schedule == '0 2 1 * *') || 'false' }}
+          VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '30' || steps.offhours.outputs.scan_intensity == 'light' && '21' || '7' }}
+          VITAL_UPDATED_WITHIN_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '7' }}
         run: npm run scan
 
       - name: Verify required generated dashboard artifacts exist
