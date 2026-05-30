@@ -24,6 +24,16 @@ async function main() {
   const forcePrioritySeedRefresh = /^(1|true|yes)$/i.test(process.env.FORCE_PRIORITY_SEED_REFRESH || '');
   const revalidateAfterDays = Number.parseInt(process.env.VITAL_REVALIDATE_AFTER_DAYS || '7', 10);
   const updatedWithinDays = Number.parseInt(process.env.VITAL_UPDATED_WITHIN_DAYS || '7', 10);
+  const maxRunMinutes = Number.parseInt(process.env.VITAL_MAX_RUN_MINUTES || '0', 10);
+  const hasRuntimeDeadline = Number.isFinite(maxRunMinutes) && maxRunMinutes > 0;
+  const runtimeDeadlineMs = hasRuntimeDeadline ? startTime + (maxRunMinutes * 60 * 1000) : null;
+
+  const shouldStopForRuntimeBudget = () => {
+    if (!runtimeDeadlineMs) {
+      return false;
+    }
+    return Date.now() >= runtimeDeadlineMs;
+  };
   
   console.log(`🚀 Initalizing VITAL-Core Run Engine using profile: ${profilePath}`);
   
@@ -78,10 +88,27 @@ async function main() {
     // We scan small batches in round-robin order and naturally focus remaining targets once smaller queues are exhausted.
     const roundRobinBatchSize = 2;
     let round = 1;
+    let stoppedForBudget = false;
     while (scanPlans.some(plan => plan.nextOffset < plan.discoveredUrls.length)) {
+      if (shouldStopForRuntimeBudget()) {
+        stoppedForBudget = true;
+        console.warn(
+          `⏱️ Runtime budget reached (${maxRunMinutes} minutes). Stopping new scan batches to allow graceful publish.`
+        );
+        break;
+      }
+
       console.log(`\n🔄 Starting round-robin scan cycle ${round}...`);
 
       for (const plan of scanPlans) {
+        if (shouldStopForRuntimeBudget()) {
+          stoppedForBudget = true;
+          console.warn(
+            `⏱️ Runtime budget reached (${maxRunMinutes} minutes) mid-cycle. Ending scan loop after current progress.`
+          );
+          break;
+        }
+
         if (plan.nextOffset >= plan.discoveredUrls.length) {
           continue;
         }
@@ -103,7 +130,15 @@ async function main() {
         plan.nextOffset += batch.length;
       }
 
+      if (stoppedForBudget) {
+        break;
+      }
+
       round += 1;
+    }
+
+    if (stoppedForBudget) {
+      console.log('🧾 Partial run completed within runtime budget. Persisting collected findings and dashboards.');
     }
 
     // 4. Build target-level outputs once all interleaved scan rounds complete.

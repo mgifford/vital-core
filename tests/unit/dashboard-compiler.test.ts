@@ -62,6 +62,13 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('runs/domain-ongoing.json');
     expect(js).toContain('runs/top-task-seeds.json');
     expect(js).toContain('Estimated size: ~');
+    expect(js).toContain('estimateDomainCompletion');
+    expect(js).toContain('formatEtaHours');
+    expect(js).toContain('Coverage: ');
+    expect(js).toContain('data-progress-fill-target-id');
+    expect(js).toContain('data-progress-meta-target-id');
+    expect(css).toContain('.progress-track');
+    expect(css).toContain('.progress-fill');
     expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");
     expect(js).toContain("{ label: 'Perf', key: 'performance'");
     expect(js).toContain('fetchJsonWithRetry');
