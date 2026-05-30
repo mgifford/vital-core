@@ -33,10 +33,11 @@ env:
 
 concurrency:
   group: 'pages'
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   compliance-scan:
+    timeout-minutes: 58
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -122,6 +123,7 @@ jobs:
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && github.event.schedule == '0 2 1 * *') || 'false' }}
           VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '30' || steps.offhours.outputs.scan_intensity == 'light' && '21' || '7' }}
           VITAL_UPDATED_WITHIN_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '7' }}
+          VITAL_MAX_RUN_MINUTES: '52'
         run: npm run scan
 
       - name: Verify required generated dashboard artifacts exist

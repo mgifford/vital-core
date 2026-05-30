@@ -260,7 +260,28 @@ a:hover {
 }
 .small-block-gap {
   margin-top: 0.45rem;
-}`;
+}
+.progress-wrap {
+  margin-top: 0.5rem;
+}
+.progress-track {
+  width: 100%;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: #e6eaf0;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #0071bc 0%, #2e7d6b 100%);
+}
+.progress-meta {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  color: #4d4d4d;
+}
+`;
   }
 
   private static buildDashboardJs(): string {
@@ -344,6 +365,60 @@ a:hover {
     }
 
     return 'Estimated size: ~' + new Intl.NumberFormat('en-US').format(Math.max(0, Math.round(value))) + ' pages';
+  }
+
+  function formatNumber(value) {
+    return new Intl.NumberFormat('en-US').format(Math.max(0, Math.round(Number(value) || 0)));
+  }
+
+  function estimateDomainCompletion(scannedCount, estimatedTotal, scanDurationMs) {
+    const scanned = Math.max(0, Number(scannedCount) || 0);
+    const estimated = Number.isFinite(Number(estimatedTotal)) ? Math.max(0, Math.round(Number(estimatedTotal))) : null;
+    const durationMs = Math.max(0, Number(scanDurationMs) || 0);
+
+    const coverageRatio = estimated && estimated > 0 ? Math.min(1, scanned / estimated) : null;
+    const pagesRemaining = estimated && estimated > scanned ? estimated - scanned : 0;
+    const pagesPerHour = durationMs > 0 ? (scanned / durationMs) * 3600000 : 0;
+    const etaHours = pagesPerHour > 0 && pagesRemaining > 0 ? pagesRemaining / pagesPerHour : null;
+    const weeklyCapacity = Math.max(0, Math.round(pagesPerHour * 24 * 7));
+    const weeklyFeasible = estimated ? weeklyCapacity >= estimated : null;
+
+    return {
+      coverageRatio,
+      etaHours,
+      weeklyFeasible,
+      estimated
+    };
+  }
+
+  function buildCoverageMetaText(completion) {
+    const coveragePct = completion.coverageRatio === null
+      ? 'Coverage: n/a'
+      : 'Coverage: ' + String(Math.round(completion.coverageRatio * 100)) + '%';
+
+    const weeklyTarget = completion.weeklyFeasible === null
+      ? 'Weekly target: n/a'
+      : (completion.weeklyFeasible ? 'On track for weekly full coverage' : 'Likely needs more than one week');
+
+    return coveragePct + ' | ' + formatEtaHours(completion.etaHours) + ' | ' + weeklyTarget;
+  }
+
+  function formatEtaHours(hours) {
+    if (typeof hours !== 'number' || !Number.isFinite(hours) || hours <= 0) {
+      return 'ETA: n/a';
+    }
+
+    if (hours < 24) {
+      return 'ETA: ~' + String(Math.ceil(hours)) + 'h';
+    }
+
+    const days = hours / 24;
+    if (days < 14) {
+      return 'ETA: ~' + String(Math.ceil(days)) + 'd';
+    }
+
+    const weeks = days / 7;
+    return 'ETA: ~' + weeks.toFixed(1) + 'w';
   }
 
   function buildRecommendations(quality, targetViolations, jsRegressionPages) {
@@ -488,13 +563,14 @@ a:hover {
   function getNextScheduledScanUtc(nowDate) {
     const now = new Date(nowDate);
 
-    const weekly = new Date(now.getTime());
-    const day = weekly.getUTCDay();
-    const daysUntilSaturday = (6 - day + 7) % 7;
-    weekly.setUTCDate(weekly.getUTCDate() + daysUntilSaturday);
-    weekly.setUTCHours(4, 0, 0, 0);
-    if (weekly <= now) {
-      weekly.setUTCDate(weekly.getUTCDate() + 7);
+    const hourly = new Date(now.getTime());
+    hourly.setUTCMinutes(0, 0, 0);
+    hourly.setUTCHours(hourly.getUTCHours() + 1);
+
+    const daily = new Date(now.getTime());
+    daily.setUTCHours(5, 0, 0, 0);
+    if (daily <= now) {
+      daily.setUTCDate(daily.getUTCDate() + 1);
     }
 
     const monthly = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 2, 0, 0, 0));
@@ -502,7 +578,7 @@ a:hover {
       monthly.setUTCMonth(monthly.getUTCMonth() + 1);
     }
 
-    return weekly < monthly ? weekly : monthly;
+    return [hourly, daily, monthly].sort((a, b) => a.getTime() - b.getTime())[0];
   }
 
   function appendTrendCard(title, value, subtitle, accentColor) {
@@ -822,14 +898,44 @@ a:hover {
       domainCell.appendChild(domainSmall);
 
       const pagesCell = document.createElement('td');
+      const scannedCount = Array.isArray(target.pagesScanned) ? target.pagesScanned.length : 0;
+      const initialEstimate = sizeEstimateByTarget.get(target.targetId);
+      const initialCompletion = estimateDomainCompletion(scannedCount, initialEstimate, target.scanDurationMs);
       const scannedText = document.createElement('div');
-      scannedText.textContent = String((Array.isArray(target.pagesScanned) ? target.pagesScanned.length : 0)) + ' pages scanned';
+      scannedText.setAttribute('data-scanned-summary-target-id', String(target.targetId || ''));
+      if (initialCompletion.estimated && initialCompletion.estimated > 0) {
+        scannedText.textContent = formatNumber(scannedCount) + ' / ' + formatNumber(initialCompletion.estimated) + ' pages scanned';
+      } else {
+        scannedText.textContent = formatNumber(scannedCount) + ' pages scanned';
+      }
       const estimateText = document.createElement('div');
       estimateText.className = 'small-muted-inline';
       estimateText.setAttribute('data-size-estimate-target-id', String(target.targetId || ''));
       estimateText.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(target.targetId));
+
+      const progressWrap = document.createElement('div');
+      progressWrap.className = 'progress-wrap';
+
+      const progressTrack = document.createElement('div');
+      progressTrack.className = 'progress-track';
+      const progressFill = document.createElement('div');
+      progressFill.className = 'progress-fill';
+      progressFill.setAttribute('data-progress-fill-target-id', String(target.targetId || ''));
+      progressFill.style.width = initialCompletion.coverageRatio === null
+        ? '0%'
+        : String(Math.max(0, Math.min(100, Math.round(initialCompletion.coverageRatio * 100)))) + '%';
+      progressTrack.appendChild(progressFill);
+
+      const progressMeta = document.createElement('div');
+      progressMeta.className = 'progress-meta';
+      progressMeta.setAttribute('data-progress-meta-target-id', String(target.targetId || ''));
+      progressMeta.textContent = buildCoverageMetaText(initialCompletion);
+
+      progressWrap.appendChild(progressTrack);
+      progressWrap.appendChild(progressMeta);
       pagesCell.appendChild(scannedText);
       pagesCell.appendChild(estimateText);
+      pagesCell.appendChild(progressWrap);
 
       const scoreCell = document.createElement('td');
       if (row.quality) {
@@ -920,6 +1026,39 @@ a:hover {
       estimateNodes.forEach(node => {
         const targetId = node.getAttribute('data-size-estimate-target-id') || '';
         node.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(targetId));
+      });
+
+      const scannedSummaryNodes = document.querySelectorAll('[data-scanned-summary-target-id]');
+      scannedSummaryNodes.forEach(node => {
+        const targetId = node.getAttribute('data-scanned-summary-target-id') || '';
+        const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
+        const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
+        const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
+        if (completion.estimated && completion.estimated > 0) {
+          node.textContent = formatNumber(scannedCount) + ' / ' + formatNumber(completion.estimated) + ' pages scanned';
+        } else {
+          node.textContent = formatNumber(scannedCount) + ' pages scanned';
+        }
+      });
+
+      const progressFillNodes = document.querySelectorAll('[data-progress-fill-target-id]');
+      progressFillNodes.forEach(node => {
+        const targetId = node.getAttribute('data-progress-fill-target-id') || '';
+        const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
+        const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
+        const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
+        node.style.width = completion.coverageRatio === null
+          ? '0%'
+          : String(Math.max(0, Math.min(100, Math.round(completion.coverageRatio * 100)))) + '%';
+      });
+
+      const progressMetaNodes = document.querySelectorAll('[data-progress-meta-target-id]');
+      progressMetaNodes.forEach(node => {
+        const targetId = node.getAttribute('data-progress-meta-target-id') || '';
+        const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
+        const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
+        const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
+        node.textContent = buildCoverageMetaText(completion);
       });
 
       const topUrlNodes = document.querySelectorAll('[data-top-urls-target-id]');
