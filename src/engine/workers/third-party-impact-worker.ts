@@ -6,6 +6,7 @@ type TechEntry = PageScanReport['technologyStack'][number];
 type OfflineEntry = NonNullable<PageScanReport['offlineAudits']>;
 type LiveEntry = NonNullable<PageScanReport['liveAudits']>;
 type ThirdPartyImpact = NonNullable<PageScanReport['thirdPartyImpact']>;
+type ProviderAttribution = ThirdPartyImpact['providerAttribution'][number];
 
 interface EvaluationOptions {
   browser: Browser;
@@ -50,6 +51,12 @@ export class ThirdPartyImpactWorker {
     { provider: 'Cloudflare', pattern: /cloudflare\.com|challenges\.cloudflare\.com/i }
   ];
 
+  private static readonly SIGNAL_WEIGHTS = {
+    scriptOrigin: 3,
+    technologyLabel: 2,
+    overlayEvidence: 3
+  } as const;
+
   public static findTriggerReasons(
     htmlSnapshot: string,
     technologyStack: TechEntry[],
@@ -92,12 +99,19 @@ export class ThirdPartyImpactWorker {
         addedByJavaScriptCount: 0,
         removedByJavaScriptCount: 0,
         highRiskRules: [],
+        providerAttribution: [],
         likelyIntroducedByProviders: [],
-        ruleToLikelyProviders: []
+        ruleToLikelyProviders: [],
+        ruleToProviderAttribution: []
       };
     }
 
-    const providers = this.extractLikelyProviders(options.htmlSnapshot, options.technologyStack);
+    const providerAttribution = this.buildProviderAttribution(
+      options.htmlSnapshot,
+      options.technologyStack,
+      options.offlineAudits
+    );
+    const providers = providerAttribution.map(item => item.provider);
 
     const jsDisabledViolations = await this.scanWithJavaScriptDisabled(
       options.browser,
@@ -121,34 +135,89 @@ export class ThirdPartyImpactWorker {
       addedByJavaScriptCount: addedByJs.length,
       removedByJavaScriptCount: removedByJs.length,
       highRiskRules: addedByJs,
+      providerAttribution,
       likelyIntroducedByProviders: providers,
       ruleToLikelyProviders: addedByJs.map(ruleId => ({
         ruleId,
         providers
+      })),
+      ruleToProviderAttribution: addedByJs.map(ruleId => ({
+        ruleId,
+        providers: providerAttribution.map(item => ({
+          provider: item.provider,
+          confidence: item.confidence,
+          score: item.score
+        }))
       }))
     };
   }
 
   public static extractLikelyProviders(htmlSnapshot: string, technologyStack: TechEntry[]): string[] {
-    const providers = new Set<string>();
+    return this.buildProviderAttribution(htmlSnapshot, technologyStack, null).map(item => item.provider);
+  }
+
+  public static buildProviderAttribution(
+    htmlSnapshot: string,
+    technologyStack: TechEntry[],
+    offlineAudits: OfflineEntry | null
+  ): ProviderAttribution[] {
+    const evidence = new Map<string, { score: number; signals: Set<string> }>();
+
+    const addSignal = (provider: string, signal: string, weight: number) => {
+      const existing = evidence.get(provider) ?? { score: 0, signals: new Set<string>() };
+      existing.score += weight;
+      existing.signals.add(signal);
+      evidence.set(provider, existing);
+    };
 
     const scriptSrcMatches = htmlSnapshot.match(/<script[^>]+src=["']([^"']+)["']/gi) ?? [];
     for (const scriptTag of scriptSrcMatches) {
       for (const signature of this.KNOWN_PROVIDER_PATTERNS) {
         if (signature.pattern.test(scriptTag)) {
-          providers.add(signature.provider);
+          addSignal(signature.provider, 'script-origin', this.SIGNAL_WEIGHTS.scriptOrigin);
         }
       }
     }
 
     for (const tech of technologyStack) {
-      const signature = this.KNOWN_PROVIDER_PATTERNS.find(item => item.pattern.test(`${tech.name} ${tech.category}`));
-      if (signature) {
-        providers.add(signature.provider);
+      for (const signature of this.KNOWN_PROVIDER_PATTERNS) {
+        const techLabel = `${tech.name} ${tech.category}`;
+        const providerNameMatch = techLabel.toLowerCase().includes(signature.provider.toLowerCase());
+        if (signature.pattern.test(techLabel) || providerNameMatch) {
+          addSignal(signature.provider, 'technology-label', this.SIGNAL_WEIGHTS.technologyLabel);
+        }
       }
     }
 
-    return Array.from(providers).sort();
+    if (offlineAudits?.overlayDetected.found && offlineAudits.overlayDetected.provider) {
+      addSignal(offlineAudits.overlayDetected.provider, 'overlay-evidence', this.SIGNAL_WEIGHTS.overlayEvidence);
+    }
+
+    const attribution = Array.from(evidence.entries())
+      .map(([provider, value]) => ({
+        provider,
+        score: value.score,
+        confidence: this.scoreToConfidence(value.score),
+        signals: Array.from(value.signals).sort()
+      }))
+      .sort((a, b) => {
+        if (b.score !== a.score) {
+          return b.score - a.score;
+        }
+        return a.provider.localeCompare(b.provider);
+      });
+
+    return attribution;
+  }
+
+  private static scoreToConfidence(score: number): ProviderAttribution['confidence'] {
+    if (score >= 5) {
+      return 'HIGH';
+    }
+    if (score >= 2) {
+      return 'MEDIUM';
+    }
+    return 'LOW';
   }
 
   private static async scanWithJavaScriptDisabled(

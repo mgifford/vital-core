@@ -39,10 +39,24 @@ export const PageScanReportSchema = z.object({
     addedByJavaScriptCount: z.number(),
     removedByJavaScriptCount: z.number(),
     highRiskRules: z.array(z.string()),
+    providerAttribution: z.array(z.object({
+      provider: z.string(),
+      confidence: z.enum(['HIGH', 'MEDIUM', 'LOW']),
+      score: z.number(),
+      signals: z.array(z.string())
+    })),
     likelyIntroducedByProviders: z.array(z.string()),
     ruleToLikelyProviders: z.array(z.object({
       ruleId: z.string(),
       providers: z.array(z.string())
+    })),
+    ruleToProviderAttribution: z.array(z.object({
+      ruleId: z.string(),
+      providers: z.array(z.object({
+        provider: z.string(),
+        confidence: z.enum(['HIGH', 'MEDIUM', 'LOW']),
+        score: z.number()
+      }))
     }))
   }).nullable().optional(),
 
