@@ -1,6 +1,12 @@
 # vital-core
 A quality scanner for websites built for the US government. 
 
+## Governance and Guidance
+
+- Project constitution: CONSTITUTION.md
+- Agent operating guide: AGENTS.md
+- Accessibility reporting standard: ACCESSIBILITY.md
+
 ## Common Commands
 
 - Install dependencies: `npm ci`
@@ -35,6 +41,7 @@ Scheduled scans publish:
 - `runs/index.json` (historical run index)
 - `runs/<run-id>.json` (timestamped run artifacts)
 - `runs/page-state.json` (per-URL change metadata for incremental rescans)
+- `runs/top-task-seeds.json` (monthly DuckDuckGo-derived priority URL seeds)
 
 The scan workflow restores previously published run history before generating a new run, then merges and republishes the updated index.
 
@@ -54,3 +61,25 @@ To override this and force a full rescan:
 - Or run locally with `FORCE_RESCAN=true npm run scan`.
 
 If your Pages base URL differs from the default `https://<owner>.github.io/<repo>`, set a repository variable named `VITAL_PAGES_BASE_URL`.
+
+## Monthly Top-URL Validation Seeding
+
+VITAL-Core now seeds each target queue with high-priority URLs derived from DuckDuckGo `site:` results.
+
+- Seed cache artifact: `dist/runs/top-task-seeds.json`
+- Automatic refresh: monthly during scheduled scan workflow (first day of month)
+- Staleness policy: refresh when seed cache is older than 31 days
+- Manual local refresh: `npm run seeds:refresh`
+
+Discovery order is:
+
+1. DuckDuckGo priority seeds
+2. Profile `priority_urls`
+3. Filtered sitemap URLs
+
+Discovery filters now default to:
+
+- Host scope only (`target.base_url` host only; no wildcard subdomain fan-out)
+- HTML-like URLs only (non-HTML assets such as PDF, DOCX, XLSX, XML, media, fonts, RSS excluded)
+
+You can opt into subdomain crawling per target by setting `settings.include_subdomains: true`.
