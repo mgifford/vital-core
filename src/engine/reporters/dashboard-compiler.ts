@@ -1547,6 +1547,31 @@ a:hover {
         : 'No provider attribution signals in latest run.';
       appendTrendCard('Top Third-Party Providers', String(providers.length), providerSummary, '');
 
+      const consensus = trends.latest.consensus || {
+        consensusFailure: 0,
+        alfaOnlyFailure: 0,
+        axeOnlyFailure: 0,
+        totalCorrelatedFindings: 0
+      };
+      appendTrendCard(
+        'Consensus Failures',
+        String(consensus.consensusFailure || 0),
+        'Detected by both Alfa and Axe in latest run.',
+        'var(--critical-red)'
+      );
+      appendTrendCard(
+        'Alfa-only Failures',
+        String(consensus.alfaOnlyFailure || 0),
+        'Detected only by Alfa in latest run.',
+        '#9a6700'
+      );
+      appendTrendCard(
+        'Axe-only Failures',
+        String(consensus.axeOnlyFailure || 0),
+        'Detected only by Axe in latest run.',
+        '#005ea2'
+      );
+
       const freshness = trends.latest.urlFreshness || {};
       const newUrlPercent = Number(freshness.newUrlPercent || 0).toFixed(2);
       const newUrls = Number(freshness.newUrls || 0);

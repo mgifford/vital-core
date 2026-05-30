@@ -63,6 +63,9 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('Unique Pages Scanned (All Time)');
     expect(js).toContain('Unique Pages Scanned (This Week)');
     expect(js).toContain('Top Third-Party Providers');
+    expect(js).toContain('Consensus Failures');
+    expect(js).toContain('Alfa-only Failures');
+    expect(js).toContain('Axe-only Failures');
     expect(js).toContain('URL Freshness');
     expect(html).toContain('Pages Scanned (Latest Run)');
     expect(html).toContain('id="pages-table"');
