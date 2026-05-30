@@ -173,3 +173,19 @@ You can opt into subdomain crawling per target by setting `settings.include_subd
 
 To keep large URL sets fresh across runs, the scheduled workflow now sets `VITAL_SAMPLING_SEED` per run.
 This rotates sitemap sampling order while keeping each run deterministic and reproducible.
+
+## Scan Politeness and Adaptive Timeout Backoff
+
+To reduce load on upstream sites and avoid bursty same-domain traffic, page scans apply a base pause before each consecutive request to the same host.
+When repeated timeouts occur on a host, VITAL-Core adds extra cooldown before the next same-host request.
+
+- `VITAL_SAME_SITE_DELAY_MS` (default: `1500`)
+- `VITAL_TIMEOUT_BACKOFF_THRESHOLD` (default: `2`)
+- `VITAL_TIMEOUT_BACKOFF_STEP_MS` (default: `10000`)
+- `VITAL_TIMEOUT_BACKOFF_MAX_MS` (default: `60000`)
+
+Example behavior with defaults:
+
+- First and second consecutive timeouts use base same-site delay only.
+- Third consecutive timeout adds `10000ms` backoff.
+- Fourth adds `20000ms`, capped at `60000ms`.

@@ -140,6 +140,10 @@ jobs:
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && steps.offhours.outputs.monthly_seed_refresh == 'true') || 'false' }}
           VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '30' || steps.offhours.outputs.scan_intensity == 'light' && '21' || '7' }}
           VITAL_UPDATED_WITHIN_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '7' }}
+          VITAL_SAME_SITE_DELAY_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '5000' || steps.offhours.outputs.scan_intensity == 'light' && '3000' || '1500' }}
+          VITAL_TIMEOUT_BACKOFF_THRESHOLD: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '1' || '2' }}
+          VITAL_TIMEOUT_BACKOFF_STEP_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '20000' || steps.offhours.outputs.scan_intensity == 'light' && '15000' || '10000' }}
+          VITAL_TIMEOUT_BACKOFF_MAX_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '120000' || steps.offhours.outputs.scan_intensity == 'light' && '90000' || '60000' }}
           VITAL_MAX_RUN_MINUTES: '52'
           VITAL_ENABLE_MULTI_ENGINE: ${{ env.VITAL_ENABLE_MULTI_ENGINE }}
         run: npm run scan

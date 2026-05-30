@@ -10,7 +10,7 @@ describe('DashboardCompiler', () => {
       {
         targetId: 'cms-gov',
         domain: 'https://example.org\"><script>alert(1)</script>',
-        scanDurationMs: 1000,
+        scanDurationMs: 3133490,
         pagesScanned: [
           {
             url: 'https://example.org',
@@ -56,6 +56,7 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('assets/dashboard.js');
     expect(html).toContain('vital-dashboard-data');
     expect(html).toContain('vital-dashboard-target-quality');
+    expect(html).toContain('href="#run-history"');
     expect(js).toContain('Federal Quality Index');
     expect(html).toContain('Domains Leaderboard');
     expect(html).toContain('Pages / Estimated Size');
@@ -67,6 +68,9 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('Alfa-only Failures');
     expect(js).toContain('Axe-only Failures');
     expect(js).toContain('URL Freshness');
+    expect(js).toContain('function formatDateTimeForViewer(value)');
+    expect(js).toContain('formatDateTimeForViewer(page.timestamp)');
+    expect(js).toContain('formatDateTimeForViewer(run.generatedAt)');
     expect(html).toContain('Pages Scanned (Latest Run)');
     expect(html).toContain('id="pages-table"');
     expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');
@@ -99,6 +103,8 @@ describe('DashboardCompiler', () => {
     expect(css).toContain('.compliance-chart');
     expect(domainOverviewHtml).toContain('Domain Reports');
     expect(domainOverviewHtml).toContain('Domain overview');
+    expect(domainOverviewHtml).toContain('Scan duration (latest run):</strong> 52m 14s');
+    expect(js).toContain('durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : \'n/a\';');
     expect(domainA11yHtml).toContain('Accessibility Findings');
     expect(fs.existsSync(domainPerformancePath)).toBe(true);
     expect(fs.existsSync(domainContentPath)).toBe(true);

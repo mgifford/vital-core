@@ -54,6 +54,11 @@ export class ResilientBrowserEngine {
     { label: 'mobile-landscape', width: 844, height: 390 }
   ] as const;
 
+  private static readonly DEFAULT_SAME_SITE_DELAY_MS = 1500;
+  private static readonly DEFAULT_TIMEOUT_BACKOFF_THRESHOLD = 2;
+  private static readonly DEFAULT_TIMEOUT_BACKOFF_STEP_MS = 10000;
+  private static readonly DEFAULT_TIMEOUT_BACKOFF_MAX_MS = 60000;
+
   /**
    * Orchestrates the browser session lifecycle to scrape target pages and generate snapshots.
    */
@@ -76,8 +81,34 @@ export class ResilientBrowserEngine {
     const settings = target.settings;
     const pageState = options.pageState;
     const forceRescan = options.forceRescan === true;
+    const sameSiteDelayMs = this.readDelaySetting('VITAL_SAME_SITE_DELAY_MS', this.DEFAULT_SAME_SITE_DELAY_MS);
+    const timeoutBackoffThreshold = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_THRESHOLD', this.DEFAULT_TIMEOUT_BACKOFF_THRESHOLD);
+    const timeoutBackoffStepMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_STEP_MS', this.DEFAULT_TIMEOUT_BACKOFF_STEP_MS);
+    const timeoutBackoffMaxMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_MAX_MS', this.DEFAULT_TIMEOUT_BACKOFF_MAX_MS);
+    let previousHost: string | null = null;
+    let consecutiveTimeouts = 0;
 
     for (const url of urlQueue) {
+      const currentHost = this.safeHost(url);
+      if (previousHost && currentHost && previousHost === currentHost) {
+        const timeoutBackoffMs = this.computeTimeoutBackoff(
+          consecutiveTimeouts,
+          timeoutBackoffThreshold,
+          timeoutBackoffStepMs,
+          timeoutBackoffMaxMs
+        );
+        const totalDelayMs = sameSiteDelayMs + timeoutBackoffMs;
+
+        if (totalDelayMs > 0) {
+          const timeoutSuffix = timeoutBackoffMs > 0
+            ? ` (includes ${timeoutBackoffMs}ms timeout backoff after ${consecutiveTimeouts} consecutive timeout(s))`
+            : '';
+          console.log(`⏸️ Politeness pause for ${target.id}: waiting ${totalDelayMs}ms before next same-site request${timeoutSuffix}.`);
+          await this.sleep(totalDelayMs);
+        }
+      }
+
+      previousHost = currentHost;
       const emulation = this.selectEmulationProfile(target.id, url);
       const probe = await this.probePageChange(url, pageState?.[url], settings.maxTimeoutMs);
       
@@ -181,6 +212,7 @@ export class ResilientBrowserEngine {
           }
 
           baseReport.status = 'COMPLETED';
+          consecutiveTimeouts = 0;
 
           if (pageState) {
             this.writePageState(pageState, url, { ...probe, contentHash, assetFingerprintHash }, true, scannedAt);
@@ -190,11 +222,13 @@ export class ResilientBrowserEngine {
       } catch (error: any) {
         baseReport.status = 'FAILED';
         
-        if (error.name === 'TimeoutError' || error.message.includes('timeout')) {
+        if (this.isTimeoutError(error)) {
           baseReport.status = 'TIMEOUT';
           baseReport.errorMessage = `Page scan exceeded strict ${settings.maxTimeoutMs / 1000}s limit and was cancelled.`;
+          consecutiveTimeouts += 1;
         } else {
           baseReport.errorMessage = error.message;
+          consecutiveTimeouts = 0;
         }
 
         console.warn(`⚠️ Skipping assessment loop for ${url}: ${baseReport.errorMessage}`);
@@ -205,6 +239,9 @@ export class ResilientBrowserEngine {
       } finally {
         await page.close();
         await context.close();
+        if (baseReport.status === 'SKIPPED_UNCHANGED' || baseReport.status === 'COMPLETED') {
+          consecutiveTimeouts = 0;
+        }
         reports.push(baseReport);
       }
     }
@@ -496,6 +533,57 @@ export class ResilientBrowserEngine {
         clearTimeout(timeoutHandle);
       }
     }
+  }
+
+  private static isTimeoutError(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+      return false;
+    }
+
+    const candidate = error as { name?: unknown; message?: unknown };
+    const name = typeof candidate.name === 'string' ? candidate.name : '';
+    const message = typeof candidate.message === 'string' ? candidate.message.toLowerCase() : '';
+    return name === 'TimeoutError' || message.includes('timeout');
+  }
+
+  private static computeTimeoutBackoff(
+    consecutiveTimeouts: number,
+    threshold: number,
+    stepMs: number,
+    maxMs: number
+  ): number {
+    if (consecutiveTimeouts < threshold) {
+      return 0;
+    }
+
+    const multiplier = consecutiveTimeouts - threshold + 1;
+    return Math.min(multiplier * stepMs, maxMs);
+  }
+
+  private static readDelaySetting(envName: string, fallback: number): number {
+    const raw = process.env[envName];
+    if (!raw) {
+      return fallback;
+    }
+
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed < 0) {
+      return fallback;
+    }
+
+    return parsed;
+  }
+
+  private static safeHost(url: string): string | null {
+    try {
+      return new URL(url).hostname.toLowerCase();
+    } catch {
+      return null;
+    }
+  }
+
+  private static async sleep(ms: number): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, ms));
   }
 
   private static writePageState(

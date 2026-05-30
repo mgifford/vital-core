@@ -71,6 +71,8 @@ export class DashboardCompiler {
         <a href="runs/domain-ongoing.json">Domain Ongoing Reports JSON</a>
         &nbsp;|&nbsp;
         <a href="runs/top-task-seeds.json">Domain Size Estimate JSON</a>
+        &nbsp;|&nbsp;
+        <a href="#run-history">Jump to Run History</a>
       </p>
     </div>
     <div class="card">
@@ -109,7 +111,7 @@ export class DashboardCompiler {
         SI (green ≤ 3400ms, amber 3401-5800ms, red &gt; 5800ms).
       </p>
     </div>
-    <div class="card">
+    <div class="card" id="run-history">
       <h2>Run History</h2>
       <table id="history-table">
         <thead>
@@ -257,7 +259,7 @@ export class DashboardCompiler {
       ${sharedNav}
       <p><strong>Domain:</strong> ${this.escapeHtml(target.domain)}</p>
       <p><strong>Pages in latest run:</strong> ${this.escapeHtml(pages.length)}</p>
-      <p><strong>Scan duration (latest run):</strong> ${this.escapeHtml(Math.round(target.scanDurationMs / 1000))}s</p>
+      <p><strong>Scan duration (latest run):</strong> ${this.escapeHtml(this.formatHumanDuration(target.scanDurationMs))}</p>
       <p><strong>Quality gate:</strong> ${this.escapeHtml(String((quality && quality.gateStatus) || 'n/a'))}</p>
       <p><strong>Quality score:</strong> ${this.escapeHtml(String((quality && quality.score) || 'n/a'))}</p>
     </div>
@@ -318,10 +320,28 @@ export class DashboardCompiler {
       .replace(/'/g, '&#39;');
   }
 
+  private static formatHumanDuration(durationMs: number): string {
+    const totalSeconds = Math.max(0, Math.ceil(Number(durationMs || 0) / 1000));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return String(hours) + 'h ' + String(minutes) + 'm';
+    }
+    if (minutes > 0) {
+      return String(minutes) + 'm ' + String(seconds) + 's';
+    }
+    return String(seconds) + 's';
+  }
+
   private static buildDashboardCss(): string {
     return `:root {
   --gov-blue: #112e51;
   --gov-light-blue: #005ea2;
+  --link-color: #005ea2;
+  --link-visited-color: #5b2d90;
+  --focus-ring-color: #005ea2;
   --dark-gray: #212121;
   --light-bg: #f0f4f8;
   --critical-red: #b50909;
@@ -333,7 +353,10 @@ export class DashboardCompiler {
 }
 html[data-theme='dark'] {
   --gov-blue: #0b1f36;
-  --gov-light-blue: #2e7fd4;
+  --gov-light-blue: #7cc4ff;
+  --link-color: #7cc4ff;
+  --link-visited-color: #c9b7ff;
+  --focus-ring-color: #9dd1ff;
   --dark-gray: #e6edf5;
   --light-bg: #0f1722;
   --critical-red: #ff7f7f;
@@ -346,7 +369,10 @@ html[data-theme='dark'] {
 @media (prefers-color-scheme: dark) {
   html:not([data-theme='light']) {
     --gov-blue: #0b1f36;
-    --gov-light-blue: #2e7fd4;
+    --gov-light-blue: #7cc4ff;
+    --link-color: #7cc4ff;
+    --link-visited-color: #c9b7ff;
+    --focus-ring-color: #9dd1ff;
     --dark-gray: #e6edf5;
     --light-bg: #0f1722;
     --critical-red: #ff7f7f;
@@ -434,12 +460,21 @@ th {
   font-weight: 600;
 }
 a {
-  color: var(--gov-light-blue);
-  text-decoration: none;
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
   font-weight: 600;
+}
+a:visited {
+  color: var(--link-visited-color);
 }
 a:hover {
   text-decoration: underline;
+}
+a:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  text-decoration-thickness: 0.14em;
 }
 .muted-small {
   font-size: 0.9rem;
@@ -895,18 +930,39 @@ a:hover {
   }
 
   function formatDuration(ms) {
-    const totalSeconds = Math.max(0, Math.round(Number(ms || 0) / 1000));
+    const totalSeconds = Math.max(0, Math.ceil(Number(ms || 0) / 1000));
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
     if (hours > 0) {
-      return String(hours) + 'h ' + String(minutes) + 'm ' + String(seconds) + 's';
+      return String(hours) + 'h ' + String(minutes) + 'm';
     }
     if (minutes > 0) {
       return String(minutes) + 'm ' + String(seconds) + 's';
     }
     return String(seconds) + 's';
+  }
+
+  function formatDateTimeForViewer(value) {
+    const parsed = new Date(value || '');
+    if (Number.isNaN(parsed.getTime())) {
+      return String(value || 'n/a');
+    }
+
+    try {
+      return new Intl.DateTimeFormat(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short'
+      }).format(parsed);
+    } catch {
+      return parsed.toLocaleString();
+    }
   }
 
   function drawComplianceChart(series) {
@@ -1043,7 +1099,7 @@ a:hover {
 
     const tsCell = document.createElement('td');
     const ts = new Date(run.generatedAt);
-    tsCell.textContent = Number.isNaN(ts.getTime()) ? String(run.generatedAt || '') : ts.toISOString();
+    tsCell.textContent = Number.isNaN(ts.getTime()) ? String(run.generatedAt || '') : formatDateTimeForViewer(run.generatedAt);
 
     const targetsCell = document.createElement('td');
     targetsCell.textContent = String(run.targetsScanned || 0);
@@ -1056,7 +1112,7 @@ a:hover {
 
     const durationCell = document.createElement('td');
     const durationMs = Number(run.scanDurationMs || 0);
-    durationCell.textContent = Number.isFinite(durationMs) ? (durationMs / 1000).toFixed(2) + 's' : 'n/a';
+    durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : 'n/a';
 
     const dataCell = document.createElement('td');
     const link = document.createElement('a');
@@ -1105,7 +1161,7 @@ a:hover {
     const scannedAtCell = document.createElement('td');
     const timestamp = page && page.timestamp ? new Date(page.timestamp) : null;
     scannedAtCell.textContent = timestamp && !Number.isNaN(timestamp.getTime())
-      ? timestamp.toISOString()
+      ? formatDateTimeForViewer(page.timestamp)
       : 'n/a';
 
     tr.appendChild(domainCell);
