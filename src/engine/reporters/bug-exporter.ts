@@ -135,6 +135,35 @@ export class BugExporter {
           });
           md += `\n`;
         }
+
+        // Output Third-Party JavaScript Accessibility Regression Signal
+        const thirdPartyImpact = page.thirdPartyImpact;
+        if (thirdPartyImpact?.evaluated && thirdPartyImpact.regressionDetected) {
+          md += `### 🧩 Third-Party JavaScript Accessibility Regression\n`;
+          md += `Third-party script patterns were detected and this page was re-evaluated with JavaScript disabled.\n\n`;
+          md += `* **JS Enabled Violations:** ${thirdPartyImpact.baselineViolationCount}\n`;
+          md += `* **JS Disabled Violations:** ${thirdPartyImpact.jsDisabledViolationCount}\n`;
+          md += `* **Violations Introduced by JS:** ${thirdPartyImpact.addedByJavaScriptCount}\n`;
+          md += `* **Potentially Responsible Rules:** ${thirdPartyImpact.highRiskRules.map(rule => `\`${rule}\``).join(', ') || 'n/a'}\n`;
+          md += `* **Trigger Evidence:** ${thirdPartyImpact.triggeredBy.join('; ')}\n\n`;
+
+          csvRows.push([
+            targetResult.targetId,
+            page.url,
+            page.status,
+            '',
+            'serious',
+            'third-party-js-regression',
+            'Accessibility regressions detected when comparing JS-enabled and JS-disabled audits.',
+            '',
+            'wcag2a;wcag2aa;section508',
+            '',
+            '',
+            `Added by JS: ${thirdPartyImpact.addedByJavaScriptCount}; Rules: ${thirdPartyImpact.highRiskRules.join('|')}`,
+            '',
+            ''
+          ]);
+        }
       }
     }
 

@@ -29,6 +29,18 @@ export const PageScanReportSchema = z.object({
     version: z.string().nullable()
   })),
 
+  // 1b. Third-party JavaScript impact profiling (JS enabled vs JS disabled comparison)
+  thirdPartyImpact: z.object({
+    evaluated: z.boolean(),
+    triggeredBy: z.array(z.string()),
+    regressionDetected: z.boolean(),
+    baselineViolationCount: z.number(),
+    jsDisabledViolationCount: z.number(),
+    addedByJavaScriptCount: z.number(),
+    removedByJavaScriptCount: z.number(),
+    highRiskRules: z.array(z.string())
+  }).nullable().optional(),
+
   // 2. Live Browser Session Evaluation
   liveAudits: z.object({
     lighthouse: z.object({

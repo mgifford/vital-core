@@ -80,6 +80,17 @@ describe('RunHistoryReporter', () => {
     expect(index.runs.length).toBe(2);
     expect(index.runs[0].runId).toBeTruthy();
 
+    const latest = JSON.parse(fs.readFileSync(latestPath, 'utf8')) as {
+      qualityIndex: { score: number; gateStatus: string };
+      targetQuality: Array<{ targetId: string; score: number; gateStatus: string }>;
+    };
+
+    expect(latest.qualityIndex.score).toBeGreaterThanOrEqual(0);
+    expect(['PASS', 'WARNING', 'BLOCKED']).toContain(latest.qualityIndex.gateStatus);
+    expect(Array.isArray(latest.targetQuality)).toBe(true);
+    expect(latest.targetQuality.length).toBeGreaterThan(0);
+    expect(latest.targetQuality[0].targetId).toBeTruthy();
+
     const trends = JSON.parse(fs.readFileSync(trendsPath, 'utf8')) as {
       latest: { totalViolations: number };
       deltaFromPrevious: { totalViolations: number } | null;

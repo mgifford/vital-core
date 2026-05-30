@@ -8,6 +8,7 @@ import { PageStateEntry, PageStateMap } from './reporters/page-state-cache';
 import { LiveWorker } from './workers/live-worker';
 import { OfflineWorker } from './workers/offline-worker';
 import { TechnologyWorker } from './workers/technology-worker';
+import { ThirdPartyImpactWorker } from './workers/third-party-impact-worker';
 
 interface SnapshotSessionOptions {
   forceRescan?: boolean;
@@ -59,6 +60,7 @@ export class ResilientBrowserEngine {
         status: 'COMPLETED',
         errorMessage: null,
         technologyStack: [],
+        thirdPartyImpact: null,
         liveAudits: null,
         offlineAudits: null
       };
@@ -100,14 +102,28 @@ export class ResilientBrowserEngine {
         // 4. Detect CMS/framework tooling footprint for page profile reporting
         baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
 
-        // 5. Run Live browser evaluations in memory (Axe Core Automation)
+        // 5. Generate offline local analysis metrics from DOM snapshot
+        baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
+
+        // 6. Run Live browser evaluations in memory (Axe Core Automation)
         console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
         baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
 
-        // 6. Generate offline local analysis metrics from DOM snapshot
-        baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
+        // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
+        if (baseReport.offlineAudits) {
+          baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
+            browser,
+            url,
+            maxTimeoutMs: settings.maxTimeoutMs,
+            postLoadDelay: settings.postLoadDelay,
+            htmlSnapshot: hydratedHtml,
+            technologyStack: baseReport.technologyStack,
+            offlineAudits: baseReport.offlineAudits,
+            baselineLiveAudits: baseReport.liveAudits
+          });
+        }
 
-        // 7. Clean URL into a cross-platform safe filename
+        // 8. Clean URL into a cross-platform safe filename
         const safeFilename = this.sanitizeUrlToFilename(url);
         const snapshotPath = path.join(this.SNAPSHOT_DIR, safeFilename);
 

@@ -60,6 +60,19 @@ Each scanned page now includes a CMS/framework technology fingerprint in `techno
 
 Install options for `wappalyzer-next` are documented upstream: https://github.com/s0md3v/wappalyzer-next
 
+### Third-Party JavaScript Accessibility Impact
+
+For pages with suspicious third-party signals (for example: tag managers, chat widgets, overlays, third-party iframes), VITAL-Core runs a second accessibility audit with JavaScript disabled and compares the results.
+
+Per-page output includes `thirdPartyImpact` with:
+
+- trigger evidence (`triggeredBy`)
+- JS-enabled vs JS-disabled violation counts
+- regression flag (`regressionDetected`)
+- potentially JS-introduced high-risk rules (`highRiskRules`)
+
+When regressions are detected, bug reports include a dedicated third-party JavaScript regression section.
+
 ## Federal Quality Index
 
 Each run now computes a deterministic Federal Quality Index (`0-100`) with a gate status (`PASS`, `WARNING`, `BLOCKED`) and persists it in:
@@ -69,6 +82,8 @@ Each run now computes a deterministic Federal Quality Index (`0-100`) with a gat
 - `dist/runs/trends.json`
 
 The score blends accessibility severity density, content quality signals, scan reliability, and link integrity. `BLOCKED` is enforced whenever critical accessibility violations are present.
+
+Per-target quality scoring is also persisted in run artifacts (`targetQuality`) so HHS/CMS and other target domains can be compared side-by-side in reporting.
 
 ## Third-Party Tool Submodules
 

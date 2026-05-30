@@ -29,6 +29,14 @@ export interface QualityIndexResult {
   };
 }
 
+export interface TargetQualityIndexEntry {
+  targetId: string;
+  score: number;
+  gateStatus: QualityIndexResult['gateStatus'];
+  pagesScanned: number;
+  totalViolations: number;
+}
+
 const WEIGHTS = {
   accessibility: 0.6,
   contentQuality: 0.15,
@@ -125,5 +133,20 @@ export class QualityIndexReporter {
         }
       }
     };
+  }
+
+  public static buildTargetQualityIndex(allResults: TargetScanResult[]): TargetQualityIndexEntry[] {
+    return allResults
+      .map(result => {
+        const targetQuality = this.buildQualityIndex([result]);
+        return {
+          targetId: result.targetId,
+          score: targetQuality.score,
+          gateStatus: targetQuality.gateStatus,
+          pagesScanned: result.pagesScanned.length,
+          totalViolations: targetQuality.evidence.violations.total
+        };
+      })
+      .sort((a, b) => a.targetId.localeCompare(b.targetId));
   }
 }

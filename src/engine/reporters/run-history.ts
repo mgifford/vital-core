@@ -1,7 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult } from '../../types/site-quality-spec';
-import { QualityIndexReporter, QualityIndexResult } from './quality-index';
+import {
+  QualityIndexReporter,
+  QualityIndexResult,
+  TargetQualityIndexEntry
+} from './quality-index';
 
 interface RunEntry {
   runId: string;
@@ -34,6 +38,7 @@ interface TrendSummary {
     violationsPerPage: number;
     qualityIndexScore: number;
     qualityGateStatus: QualityIndexResult['gateStatus'];
+    targetQuality: TargetQualityIndexEntry[];
   };
   deltaFromPrevious: {
     targetsScanned: number;
@@ -83,6 +88,7 @@ export class RunHistoryReporter {
 
     const artifactPath = `runs/${runId}.json`;
     const qualityIndex = QualityIndexReporter.buildQualityIndex(allResults);
+    const targetQuality = QualityIndexReporter.buildTargetQualityIndex(allResults);
 
     const latestPayload = {
       runId,
@@ -90,6 +96,7 @@ export class RunHistoryReporter {
       profilePath,
       scanDurationMs: totalDurationMs,
       qualityIndex,
+      targetQuality,
       results: allResults
     };
 
@@ -242,7 +249,8 @@ export class RunHistoryReporter {
         scanDurationMs: latest.scanDurationMs,
         violationsPerPage: Number(latestViolationsPerPage.toFixed(4)),
         qualityIndexScore: Number((latest.qualityIndexScore ?? 0).toFixed(2)),
-        qualityGateStatus: latest.qualityGateStatus ?? 'WARNING'
+        qualityGateStatus: latest.qualityGateStatus ?? 'WARNING',
+        targetQuality: this.readTargetQualitySnapshot(latest)
       },
       deltaFromPrevious: previous
         ? {
@@ -282,5 +290,37 @@ export class RunHistoryReporter {
         (runs.reduce((sum, run) => sum + (run.qualityIndexScore ?? 0), 0) / runs.length).toFixed(2)
       )
     };
+  }
+
+  private static readTargetQualitySnapshot(run: RunEntry): TargetQualityIndexEntry[] {
+    if (!run.artifactPath) {
+      return [];
+    }
+
+    const artifactFullPath = path.resolve(process.cwd(), 'dist', run.artifactPath);
+    if (!fs.existsSync(artifactFullPath)) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(fs.readFileSync(artifactFullPath, 'utf8')) as {
+        targetQuality?: TargetQualityIndexEntry[];
+      };
+
+      if (!Array.isArray(parsed.targetQuality)) {
+        return [];
+      }
+
+      return parsed.targetQuality.filter(item =>
+        item &&
+        typeof item.targetId === 'string' &&
+        typeof item.score === 'number' &&
+        (item.gateStatus === 'PASS' || item.gateStatus === 'WARNING' || item.gateStatus === 'BLOCKED') &&
+        typeof item.pagesScanned === 'number' &&
+        typeof item.totalViolations === 'number'
+      );
+    } catch {
+      return [];
+    }
   }
 }

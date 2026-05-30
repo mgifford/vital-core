@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult } from '../../types/site-quality-spec';
+import { QualityIndexReporter } from './quality-index';
 
 export class DashboardCompiler {
   private static DIST_DIR = path.resolve(process.cwd(), 'dist');
@@ -14,6 +15,13 @@ export class DashboardCompiler {
     }
 
     const jsonPayload = JSON.stringify(allResults)
+      .replace(/</g, '\\u003c')
+      .replace(/>/g, '\\u003e')
+      .replace(/&/g, '\\u0026')
+      .replace(/\u2028/g, '\\u2028')
+      .replace(/\u2029/g, '\\u2029');
+
+    const targetQualityPayload = JSON.stringify(QualityIndexReporter.buildTargetQualityIndex(allResults))
       .replace(/</g, '\\u003c')
       .replace(/>/g, '\\u003e')
       .replace(/&/g, '\\u0026')
@@ -81,6 +89,7 @@ export class DashboardCompiler {
             <th>Ecosystem Domain</th>
             <th>Pages Monitored</th>
             <th>Accessibility Health</th>
+            <th>Quality Index</th>
             <th>Remediation Blueprint</th>
           </tr>
         </thead>
@@ -106,6 +115,8 @@ export class DashboardCompiler {
   </main>
   <script>
     const data = ${jsonPayload};
+    const targetQuality = ${targetQualityPayload};
+    const targetQualityMap = new Map(targetQuality.map(item => [item.targetId, item]));
     const summaryEl = document.getElementById('summary');
     const trendSummaryEl = document.getElementById('trend-summary');
     const tbodyEl = document.getElementById('target-body');
@@ -116,9 +127,13 @@ export class DashboardCompiler {
 
     data.forEach(target => {
       let targetViolations = 0;
+      let jsRegressionPages = 0;
       target.pagesScanned.forEach(p => {
         totalPages++;
         targetViolations += p.liveAudits?.accessibilityViolations.length || 0;
+        if (p.thirdPartyImpact?.regressionDetected) {
+          jsRegressionPages += 1;
+        }
       });
       totalViolations += targetViolations;
 
@@ -142,6 +157,27 @@ export class DashboardCompiler {
       badge.className = ('badge ' + (targetViolations > 0 ? 'alert' : '')).trim();
       badge.textContent = String(targetViolations) + ' Active Failures';
       healthCell.appendChild(badge);
+      if (jsRegressionPages > 0) {
+        const regressionLine = document.createElement('div');
+        regressionLine.style.marginTop = '0.4rem';
+        regressionLine.style.fontSize = '0.85rem';
+        regressionLine.textContent = String(jsRegressionPages) + ' page(s) with JS-driven a11y regression';
+        healthCell.appendChild(regressionLine);
+      }
+
+      const qualityCell = document.createElement('td');
+      const quality = targetQualityMap.get(target.targetId);
+      if (quality) {
+        const qualityBadge = document.createElement('span');
+        qualityBadge.className = 'badge';
+        if (quality.gateStatus !== 'PASS') {
+          qualityBadge.className += ' alert';
+        }
+        qualityBadge.textContent = String(Number(quality.score).toFixed(2)) + ' (' + quality.gateStatus + ')';
+        qualityCell.appendChild(qualityBadge);
+      } else {
+        qualityCell.textContent = 'n/a';
+      }
 
       const reportCell = document.createElement('td');
       const reportMdLink = document.createElement('a');
@@ -161,6 +197,7 @@ export class DashboardCompiler {
       tr.appendChild(domainCell);
       tr.appendChild(pagesCell);
       tr.appendChild(healthCell);
+      tr.appendChild(qualityCell);
       tr.appendChild(reportCell);
       tbodyEl.appendChild(tr);
     });
@@ -244,7 +281,7 @@ export class DashboardCompiler {
       .catch(() => {
         const errorRow = document.createElement('tr');
         const errorCell = document.createElement('td');
-        errorCell.colSpan = 6;
+          errorCell.colSpan = 6;
         errorCell.textContent = 'Run history index could not be loaded.';
         errorRow.appendChild(errorCell);
         historyBodyEl.appendChild(errorRow);
