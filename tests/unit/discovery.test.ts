@@ -283,7 +283,7 @@ describe('TargetDiscoveryEngine', () => {
     ]);
   });
 
-  it('skips previously scanned priority and seeded URLs by default', async () => {
+  it('always includes priority URLs even when previously scanned', async () => {
     fetchMock.mockResolvedValue({
       sites: [
         'https://www.cms.gov/news/new-page',
@@ -337,7 +337,10 @@ describe('TargetDiscoveryEngine', () => {
       }
     });
 
-    expect(queue).toEqual(['https://www.cms.gov/news/new-page']);
+    expect(queue).toEqual([
+      'https://www.cms.gov/news/old-page',
+      'https://www.cms.gov/news/new-page'
+    ]);
   });
 
   it('does not cap pages when max_pages and sitemap_template_sample_cap are null', async () => {
