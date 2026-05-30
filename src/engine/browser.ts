@@ -85,6 +85,8 @@ export class ResilientBrowserEngine {
     const effectiveMaxTimeoutMs = timeoutOverrideMs > 0
       ? Math.min(settings.maxTimeoutMs, timeoutOverrideMs)
       : settings.maxTimeoutMs;
+    const auditScope = String(process.env.VITAL_AUDIT_SCOPE || 'full').toLowerCase();
+    const accessibilityOnly = auditScope === 'accessibility' || auditScope === 'a11y';
     const sameSiteDelayMs = this.readDelaySetting('VITAL_SAME_SITE_DELAY_MS', this.DEFAULT_SAME_SITE_DELAY_MS);
     const timeoutBackoffThreshold = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_THRESHOLD', this.DEFAULT_TIMEOUT_BACKOFF_THRESHOLD);
     const timeoutBackoffStepMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_STEP_MS', this.DEFAULT_TIMEOUT_BACKOFF_STEP_MS);
@@ -175,31 +177,35 @@ export class ResilientBrowserEngine {
           const contentHash = this.hashContent(hydratedHtml);
           const assetFingerprintHash = this.computeAssetFingerprint(hydratedHtml, url);
 
-          // 4. Detect CMS/framework tooling footprint for page profile reporting
-          baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
+          if (!accessibilityOnly) {
+            // 4. Detect CMS/framework tooling footprint for page profile reporting
+            baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
 
-          // 5. Generate offline local analysis metrics from DOM snapshot
-          baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
+            // 5. Generate offline local analysis metrics from DOM snapshot
+            baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
+          }
 
           // 6. Run Live browser evaluations in memory (Axe Core Automation)
           console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
           baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
 
-          // 6b. Capture raw Alfa results for this page to support future consensus mapping.
-          baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url);
+          if (!accessibilityOnly) {
+            // 6b. Capture raw Alfa results for this page to support future consensus mapping.
+            baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url);
 
-          // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
-          if (baseReport.offlineAudits) {
-            baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
-              browser,
-              url,
-              maxTimeoutMs: effectiveMaxTimeoutMs,
-              postLoadDelay: settings.postLoadDelay,
-              htmlSnapshot: hydratedHtml,
-              technologyStack: baseReport.technologyStack,
-              offlineAudits: baseReport.offlineAudits,
-              baselineLiveAudits: baseReport.liveAudits
-            });
+            // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
+            if (baseReport.offlineAudits) {
+              baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
+                browser,
+                url,
+                maxTimeoutMs: effectiveMaxTimeoutMs,
+                postLoadDelay: settings.postLoadDelay,
+                htmlSnapshot: hydratedHtml,
+                technologyStack: baseReport.technologyStack || [],
+                offlineAudits: baseReport.offlineAudits,
+                baselineLiveAudits: baseReport.liveAudits
+              });
+            }
           }
 
           // 8. Clean URL into a cross-platform safe filename
@@ -210,9 +216,11 @@ export class ResilientBrowserEngine {
           console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
 
           // 9. Run Lighthouse performance against the local cached snapshot to track page load quality over time.
-          const lighthouse = await LighthouseWorker.auditCachedSnapshot(snapshotPath, effectiveMaxTimeoutMs);
-          if (baseReport.liveAudits) {
-            baseReport.liveAudits.lighthouse = lighthouse;
+          if (!accessibilityOnly) {
+            const lighthouse = await LighthouseWorker.auditCachedSnapshot(snapshotPath, effectiveMaxTimeoutMs);
+            if (baseReport.liveAudits) {
+              baseReport.liveAudits.lighthouse = lighthouse;
+            }
           }
 
           baseReport.status = 'COMPLETED';

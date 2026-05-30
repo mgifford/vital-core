@@ -71,6 +71,13 @@ jobs:
             npx playwright install chromium --with-deps
           fi
 
+      - name: Install Wappalyzer Next CLI (isolated venv)
+        run: |
+          set -euo pipefail
+          python3 -m venv .tools/wappalyzer-next
+          .tools/wappalyzer-next/bin/python -m pip install --upgrade pip
+          .tools/wappalyzer-next/bin/pip install 'git+https://github.com/s0md3v/wappalyzer-next.git'
+
       - name: Determine scan mode for current time window
         id: offhours
         run: |
@@ -80,6 +87,7 @@ jobs:
             echo "scan_intensity=standard" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
             echo "monthly_seed_refresh=false" >> "$GITHUB_OUTPUT"
+            echo "audit_scope=full" >> "$GITHUB_OUTPUT"
             echo "Manual run detected. Running full incremental scan path."
             exit 0
           fi
@@ -92,6 +100,7 @@ jobs:
             echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "scan_intensity=deep" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=true" >> "$GITHUB_OUTPUT"
+            echo "audit_scope=full" >> "$GITHUB_OUTPUT"
             if [[ "$utc_dom" == "01" && "$utc_hour" == "02" ]]; then
               echo "monthly_seed_refresh=true" >> "$GITHUB_OUTPUT"
             else
@@ -115,6 +124,7 @@ jobs:
           if [[ "$et_day" -ge 1 && "$et_day" -le 5 && "$et_hour" -ge 9 && "$pt_day" -ge 1 && "$pt_day" -le 5 && "$pt_hour" -lt 17 ]]; then
             echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
+            echo "audit_scope=accessibility" >> "$GITHUB_OUTPUT"
 
             # Peak overlap in North America business hours: 11:00-16:59 ET.
             if [[ "$et_hour" -ge 11 && "$et_hour" -lt 17 ]]; then
@@ -128,6 +138,14 @@ jobs:
             echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "scan_intensity=standard" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
+
+            # Off-hours runs are accessibility-first by default, with full audit rotation every 6 UTC hours.
+            if (( 10#$utc_hour % 6 == 0 )); then
+              echo "audit_scope=full" >> "$GITHUB_OUTPUT"
+            else
+              echo "audit_scope=accessibility" >> "$GITHUB_OUTPUT"
+            fi
+
             echo "Off-hours window detected. Running standard incremental scan mode."
           fi
 
@@ -136,6 +154,8 @@ jobs:
         env:
           VITAL_HISTORY_CACHE_DIR: .history-cache
           VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}
+          VITAL_WAPPALYZER_CMD: .tools/wappalyzer-next/bin/wappalyzer
+          VITAL_AUDIT_SCOPE: ${{ steps.offhours.outputs.audit_scope || 'full' }}
           FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && steps.offhours.outputs.deep_refresh == 'true') || 'false' }}
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && steps.offhours.outputs.monthly_seed_refresh == 'true') || 'false' }}
           VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '30' || steps.offhours.outputs.scan_intensity == 'light' && '21' || '7' }}

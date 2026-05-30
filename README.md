@@ -190,3 +190,12 @@ Example behavior with defaults:
 - First and second consecutive timeouts use base same-site delay only.
 - Third consecutive timeout adds `10000ms` backoff.
 - Fourth adds `20000ms`, capped at `60000ms`.
+
+## Accessibility-First Audit Scope Rotation
+
+To prioritize faster hourly accessibility coverage, VITAL-Core supports scoped audit execution:
+
+- `VITAL_AUDIT_SCOPE=accessibility`: runs accessibility checks only (skips technology fingerprinting, Alfa, third-party differential checks, and Lighthouse).
+- `VITAL_AUDIT_SCOPE=full`: runs all supplemental checks.
+
+Scheduled workflow behavior now defaults to accessibility-first scans during business-hour windows and most off-hours cycles, with full audit rotation every 6 UTC hours (plus deep refresh windows and manual runs).
