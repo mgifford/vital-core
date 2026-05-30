@@ -2,9 +2,9 @@ name: Execute Continuous Web Quality Compliance Scan
 
 on:
   schedule:
-    # Triggers every Friday night at midnight UTC
-    - cron: '0 0 * * 5'
-    # Triggers on the first day of every month for priority URL validation refresh
+    # Weekly full rescan in US off-hours (Friday 23:00 ET / 20:00 PT during standard time)
+    - cron: '0 4 * * 6'
+    # Monthly priority URL validation refresh in US off-hours
     - cron: '0 2 1 * *'
   workflow_dispatch:
     # Allows repository maintainers to manually execute an on-demand scan
@@ -63,14 +63,41 @@ jobs:
       - name: Cache and Install Playwright Chromium Binary
         run: npx playwright install chromium --with-deps
 
+      - name: Determine whether scan should run in current time window
+        id: offhours
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" != "schedule" ]]; then
+            echo "should_scan=true" >> "$GITHUB_OUTPUT"
+            echo "Manual run detected. Proceeding without off-hours restriction."
+            exit 0
+          fi
+
+          et_day=$(TZ=America/New_York date +%u)
+          et_hour=$(TZ=America/New_York date +%H)
+          pt_day=$(TZ=America/Los_Angeles date +%u)
+          pt_hour=$(TZ=America/Los_Angeles date +%H)
+
+          # Skip only when both regions are within weekday business hours.
+          if [[ "$et_day" -ge 1 && "$et_day" -le 5 && "$et_hour" -ge 9 && "$pt_day" -ge 1 && "$pt_day" -le 5 && "$pt_hour" -lt 17 ]]; then
+            echo "should_scan=false" >> "$GITHUB_OUTPUT"
+            echo "Scheduled scan fell within weekday office hours (ET/PT). Skipping run to reduce site load."
+            exit 0
+          fi
+
+          echo "should_scan=true" >> "$GITHUB_OUTPUT"
+          echo "Off-hours window confirmed. Proceeding with scheduled scan."
+
       - name: Run VITAL-Core Core Orchestrator Pipeline
+        if: steps.offhours.outputs.should_scan == 'true'
         env:
           VITAL_HISTORY_CACHE_DIR: .history-cache
-          FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || 'false' }}
+          FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && 'true') || 'false' }}
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && github.event.schedule == '0 2 1 * *') || 'false' }}
         run: npm run scan
 
       - name: Verify required generated dashboard artifacts exist
+        if: steps.offhours.outputs.should_scan == 'true'
         run: |
           set -euo pipefail
           required_files=(
@@ -97,6 +124,7 @@ jobs:
           echo "Dashboard artifact preflight passed."
 
       - name: Upload Local Snapshots as Workflow Artifacts (Debugging/Audit)
+        if: steps.offhours.outputs.should_scan == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: raw-cached-html-snapshots
@@ -104,13 +132,16 @@ jobs:
           retention-days: 7
 
       - name: Setup GitHub Pages Deployment Context
+        if: steps.offhours.outputs.should_scan == 'true'
         uses: actions/configure-pages@v4
 
       - name: Package Generated Static Dashboard Build
+        if: steps.offhours.outputs.should_scan == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'dist/'
 
       - name: Deploy Compiled Dashboard directly to GitHub Pages Engine
+        if: steps.offhours.outputs.should_scan == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
