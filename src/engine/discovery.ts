@@ -84,19 +84,134 @@ export class TargetDiscoveryEngine {
         .forEach(url => uniqueUrlSet.add(url));
     }
 
-    // Append standard sitemap results down the chain
-    filteredUrls.forEach(url => uniqueUrlSet.add(url));
+    // 4. Maximum Execution Ceiling Throttling Guard + Template-aware sitemap sampling
+    const ceilingLimit = target.settings?.max_pages ?? 25;
+    if (uniqueUrlSet.size >= ceilingLimit) {
+      const priorityOnlyQueue = Array.from(uniqueUrlSet).slice(0, ceilingLimit);
+      console.log(`✂️ Truncating active queue from ${uniqueUrlSet.size} to ${ceilingLimit} pages (per max_pages limit).`);
+      return priorityOnlyQueue;
+    }
+
+    const remainingSlots = Math.max(ceilingLimit - uniqueUrlSet.size, 0);
+    const templateSampleCap = target.settings?.sitemap_template_sample_cap ?? 3;
+    const useStochasticSampling = target.settings?.sitemap_sample_stochastic ?? true;
+
+    const sampledSitemapUrls = this.sampleSitemapUrls(
+      filteredUrls,
+      remainingSlots,
+      templateSampleCap,
+      useStochasticSampling
+    );
+    sampledSitemapUrls.forEach(url => uniqueUrlSet.add(url));
 
     const finalMergedQueue = Array.from(uniqueUrlSet);
 
-    // 4. Maximum Execution Ceiling Throttling Guard
-    const ceilingLimit = target.settings?.max_pages ?? 25;
-    if (finalMergedQueue.length > ceilingLimit) {
-      console.log(`✂️ Truncating active queue from ${finalMergedQueue.length} to ${ceilingLimit} pages (per max_pages limit).`);
-      return finalMergedQueue.slice(0, ceilingLimit);
+    return finalMergedQueue;
+  }
+
+  private static sampleSitemapUrls(
+    sitemapUrls: string[],
+    remainingSlots: number,
+    templateSampleCap: number,
+    useStochasticSampling: boolean
+  ): string[] {
+    if (remainingSlots <= 0 || sitemapUrls.length === 0) {
+      return [];
     }
 
-    return finalMergedQueue;
+    const groups = new Map<string, string[]>();
+    for (const url of sitemapUrls) {
+      const key = this.inferTemplateKey(url);
+      const bucket = groups.get(key) || [];
+      bucket.push(url);
+      groups.set(key, bucket);
+    }
+
+    const perGroupOrdered = Array.from(groups.values()).map(urls =>
+      useStochasticSampling ? this.stableShuffle(urls) : [...urls]
+    );
+
+    const picked: string[] = [];
+    const perGroupCounts = new Array<number>(perGroupOrdered.length).fill(0);
+    let progressed = true;
+
+    while (picked.length < remainingSlots && progressed) {
+      progressed = false;
+      for (let i = 0; i < perGroupOrdered.length; i += 1) {
+        if (picked.length >= remainingSlots) {
+          break;
+        }
+        if (perGroupCounts[i] >= templateSampleCap) {
+          continue;
+        }
+        const bucket = perGroupOrdered[i];
+        const idx = perGroupCounts[i];
+        if (idx >= bucket.length) {
+          continue;
+        }
+
+        picked.push(bucket[idx]);
+        perGroupCounts[i] += 1;
+        progressed = true;
+      }
+    }
+
+    return picked;
+  }
+
+  private static inferTemplateKey(url: string): string {
+    try {
+      const parsed = new URL(url);
+      const segments = parsed.pathname
+        .split('/')
+        .filter(Boolean)
+        .map(segment => this.normalizeTemplateSegment(segment));
+
+      if (segments.length === 0) {
+        return '/';
+      }
+
+      const capped = segments.length > 3
+        ? [...segments.slice(0, 2), ':tail']
+        : segments;
+
+      return '/' + capped.join('/');
+    } catch {
+      return '/unknown';
+    }
+  }
+
+  private static normalizeTemplateSegment(segment: string): string {
+    const token = segment.toLowerCase();
+    if (/^\d+$/.test(token)) {
+      return ':num';
+    }
+    if (/^[0-9a-f]{8,}$/.test(token)) {
+      return ':id';
+    }
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(token)) {
+      return ':uuid';
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(token) || /^\d{4}\/\d{2}\/\d{2}$/.test(token)) {
+      return ':date';
+    }
+    if ((token.includes('-') && token.split('-').length >= 4) || /[a-z].*\d|\d.*[a-z]/.test(token)) {
+      return ':slug';
+    }
+    return token;
+  }
+
+  private static stableShuffle(urls: string[]): string[] {
+    return [...urls].sort((a, b) => this.hashString(a) - this.hashString(b));
+  }
+
+  private static hashString(value: string): number {
+    let hash = 5381;
+    for (let i = 0; i < value.length; i += 1) {
+      hash = ((hash << 5) + hash) + value.charCodeAt(i);
+      hash |= 0;
+    }
+    return hash >>> 0;
   }
 
   private static normalizeUrl(rawUrl: string): string | null {
