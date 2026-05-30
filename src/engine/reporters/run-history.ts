@@ -40,6 +40,11 @@ interface TrendSummary {
     qualityGateStatus: QualityIndexResult['gateStatus'];
     targetQuality: TargetQualityIndexEntry[];
     providerAttributionTop: ProviderAttributionRollupEntry[];
+    urlFreshness: {
+      newUrls: number;
+      carriedOverUrls: number;
+      newUrlPercent: number;
+    };
   };
   deltaFromPrevious: {
     targetsScanned: number;
@@ -290,6 +295,9 @@ export class RunHistoryReporter {
 
     const previous = windowedRuns[1] ?? null;
     const average = this.calculateRollingAverage(windowedRuns);
+    const latestPayload = this.readRunPayload(latest);
+    const previousPayload = previous ? this.readRunPayload(previous) : null;
+    const urlFreshness = this.computeUrlFreshness(latestPayload, previousPayload);
 
     const latestViolationsPerPage = latest.pagesScanned > 0 ? latest.totalViolations / latest.pagesScanned : 0;
     const previousViolationsPerPage = previous && previous.pagesScanned > 0 ? previous.totalViolations / previous.pagesScanned : 0;
@@ -307,7 +315,8 @@ export class RunHistoryReporter {
         qualityIndexScore: Number((latest.qualityIndexScore ?? 0).toFixed(2)),
         qualityGateStatus: latest.qualityGateStatus ?? 'WARNING',
         targetQuality: this.readTargetQualitySnapshot(latest),
-        providerAttributionTop: this.readProviderAttributionRollupSnapshot(latest)
+        providerAttributionTop: this.readProviderAttributionRollupSnapshot(latest),
+        urlFreshness
       },
       deltaFromPrevious: previous
         ? {
@@ -321,6 +330,37 @@ export class RunHistoryReporter {
         : null,
       rollingAverage: average,
       requirementComplianceOverTime: this.buildRequirementComplianceOverTime(windowedRuns)
+    };
+  }
+
+  private static computeUrlFreshness(
+    latestPayload: { results: TargetScanResult[] } | null,
+    previousPayload: { results: TargetScanResult[] } | null
+  ): TrendSummary['latest']['urlFreshness'] {
+    const latestUrls = new Set(
+      (latestPayload?.results ?? [])
+        .flatMap(result => result.pagesScanned)
+        .map(page => page.url)
+        .filter((url): url is string => typeof url === 'string' && url.length > 0)
+    );
+
+    const previousUrls = new Set(
+      (previousPayload?.results ?? [])
+        .flatMap(result => result.pagesScanned)
+        .map(page => page.url)
+        .filter((url): url is string => typeof url === 'string' && url.length > 0)
+    );
+
+    const newUrls = Array.from(latestUrls).filter(url => !previousUrls.has(url)).length;
+    const carriedOverUrls = Array.from(latestUrls).filter(url => previousUrls.has(url)).length;
+    const newUrlPercent = latestUrls.size > 0
+      ? Number(((newUrls / latestUrls.size) * 100).toFixed(2))
+      : 0;
+
+    return {
+      newUrls,
+      carriedOverUrls,
+      newUrlPercent
     };
   }
 

@@ -688,6 +688,18 @@ export class DashboardCompiler {
           ''
         );
 
+        const freshness = trends.latest.urlFreshness || {};
+        const newUrlPercent = Number(freshness.newUrlPercent || 0).toFixed(2);
+        const newUrls = Number(freshness.newUrls || 0);
+        const carriedOverUrls = Number(freshness.carriedOverUrls || 0);
+
+        appendTrendCard(
+          'URL Freshness',
+          newUrlPercent + '% new',
+          'New: ' + String(newUrls) + ' • Carried over: ' + String(carriedOverUrls),
+          ''
+        );
+
         const complianceSeries = Array.isArray(trends.requirementComplianceOverTime)
           ? trends.requirementComplianceOverTime
           : [];

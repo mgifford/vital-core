@@ -19,6 +19,7 @@ describe('TargetDiscoveryEngine', () => {
   beforeEach(() => {
     fetchMock.mockReset();
     PrioritySeedStore.setActiveSnapshotForTesting(null);
+    delete process.env.VITAL_SAMPLING_SEED;
     vi.spyOn(console, 'log').mockImplementation(() => undefined);
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
   });
@@ -198,5 +199,45 @@ describe('TargetDiscoveryEngine', () => {
 
     const pressReleaseUrls = queue.filter(url => url.includes('/newsroom/press-releases/'));
     expect(pressReleaseUrls.length).toBeLessThanOrEqual(2);
+  });
+
+  it('rotates sampled sitemap groups when VITAL_SAMPLING_SEED changes', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/group-a/page-1',
+        'https://www.cms.gov/group-b/page-1',
+        'https://www.cms.gov/group-c/page-1',
+        'https://www.cms.gov/group-d/page-1',
+        'https://www.cms.gov/group-e/page-1',
+        'https://www.cms.gov/group-f/page-1'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 3,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 1,
+        sitemap_sample_stochastic: true
+      }
+    };
+
+    process.env.VITAL_SAMPLING_SEED = 'seed-one';
+    const queueOne = await TargetDiscoveryEngine.discoverUrls(target);
+
+    process.env.VITAL_SAMPLING_SEED = 'seed-two';
+    const queueTwo = await TargetDiscoveryEngine.discoverUrls(target);
+
+    expect(queueOne).toHaveLength(3);
+    expect(queueTwo).toHaveLength(3);
+    expect(queueOne).not.toEqual(queueTwo);
   });
 });

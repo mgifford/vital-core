@@ -127,9 +127,21 @@ export class TargetDiscoveryEngine {
       groups.set(key, bucket);
     }
 
-    const perGroupOrdered = Array.from(groups.values()).map(urls =>
-      useStochasticSampling ? this.stableShuffle(urls) : [...urls]
-    );
+    const groupEntries = Array.from(groups.entries()).map(([key, urls]) => ({
+      key,
+      urls: useStochasticSampling ? this.stableShuffle(urls) : [...urls]
+    }));
+
+    const seed = process.env.VITAL_SAMPLING_SEED || '';
+    const orderedGroups = useStochasticSampling
+      ? [...groupEntries].sort(
+          (a, b) =>
+            this.hashString(`${seed}:group:${a.key}`) -
+            this.hashString(`${seed}:group:${b.key}`)
+        )
+      : groupEntries;
+
+    const perGroupOrdered = orderedGroups.map(entry => entry.urls);
 
     const picked: string[] = [];
     const perGroupCounts = new Array<number>(perGroupOrdered.length).fill(0);

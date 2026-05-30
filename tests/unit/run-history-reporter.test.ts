@@ -96,7 +96,15 @@ describe('RunHistoryReporter', () => {
     expect(Array.isArray(latest.providerAttributionTop)).toBe(true);
 
     const trends = JSON.parse(fs.readFileSync(trendsPath, 'utf8')) as {
-      latest: { totalViolations: number; providerAttributionTop: Array<{ provider: string }> };
+      latest: {
+        totalViolations: number;
+        providerAttributionTop: Array<{ provider: string }>;
+        urlFreshness: {
+          newUrls: number;
+          carriedOverUrls: number;
+          newUrlPercent: number;
+        };
+      };
       deltaFromPrevious: { totalViolations: number } | null;
       rollingAverage: { violationsPerPage: number };
       windowSize: number;
@@ -122,6 +130,10 @@ describe('RunHistoryReporter', () => {
     expect(trends.rollingAverage.violationsPerPage).toBeGreaterThan(0);
     expect(trends.windowSize).toBe(2);
     expect(Array.isArray(trends.latest.providerAttributionTop)).toBe(true);
+    expect(trends.latest.urlFreshness.newUrls).toBeGreaterThanOrEqual(0);
+    expect(trends.latest.urlFreshness.carriedOverUrls).toBeGreaterThanOrEqual(0);
+    expect(trends.latest.urlFreshness.newUrlPercent).toBeGreaterThanOrEqual(0);
+    expect(trends.latest.urlFreshness.newUrlPercent).toBeLessThanOrEqual(100);
     expect(Array.isArray(trends.requirementComplianceOverTime)).toBe(true);
     expect(trends.requirementComplianceOverTime.length).toBeGreaterThan(0);
     expect(trends.requirementComplianceOverTime[0].runId).toBeTruthy();

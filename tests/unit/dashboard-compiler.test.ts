@@ -46,6 +46,7 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('Pages (recent pages)');
     expect(html).toContain('Recommendations');
     expect(html).toContain('Top Third-Party Providers');
+    expect(html).toContain('URL Freshness');
     expect(html).toContain('Domain Ongoing Reports');
     expect(html).toContain('Pages Needing Most Improvement');
     expect(html).toContain('runs/domain-ongoing.json');
