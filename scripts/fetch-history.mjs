@@ -1,8 +1,25 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+const REQUEST_TIMEOUT_MS = Number.parseInt(process.env.VITAL_HISTORY_FETCH_TIMEOUT_MS || '20000', 10);
+
+async function fetchWithTimeout(url, init = {}) {
+  const controller = new AbortController();
+  const timeoutMs = Number.isFinite(REQUEST_TIMEOUT_MS) && REQUEST_TIMEOUT_MS > 0 ? REQUEST_TIMEOUT_MS : 20000;
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, {
+      ...init,
+      signal: controller.signal
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchText(url) {
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     headers: {
       'User-Agent': 'vital-core-history-fetcher'
     }
@@ -37,7 +54,7 @@ async function main() {
 
   async function fetchOptionalRunArtifact(relativePath) {
     try {
-      const response = await fetch(`${trimmedBase}/runs/${relativePath}`, {
+        const response = await fetchWithTimeout(`${trimmedBase}/runs/${relativePath}`, {
         headers: { 'User-Agent': 'vital-core-history-fetch/1.0' }
       });
 

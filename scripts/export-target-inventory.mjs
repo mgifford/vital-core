@@ -115,7 +115,7 @@ function buildScanStartRows(profilePathValue) {
     },
     {
       mode: 'github_actions_schedule',
-      command: 'workflow: .github/workflows/vital-scan.yml (cron: 0 0 * * 5)',
+      command: 'workflow: .github/workflows/vital-scan.yml (cron: 0 4 * * 6 and 0 2 1 * *)',
       profilePath: 'profiles/us-health.yml',
       notes: 'Scheduled scan with history restore and Pages deployment.'
     },
