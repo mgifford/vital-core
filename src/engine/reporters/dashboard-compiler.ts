@@ -372,6 +372,14 @@ a:hover {
   }
 
   function estimateDomainCompletion(scannedCount, estimatedTotal, scanDurationMs) {
+    // Conservative weekly throughput model aligned with workflow intensity policy:
+    // weekday off-hours at standard speed + weekday light/ultra-light windows + weekends standard.
+    const THROTTLED_WEEKLY_SCAN_HOURS =
+      (5 * 16 * 1.0) +   // Weekday off-hours (standard)
+      (5 * 2 * 0.45) +   // Weekday edge business hours (light)
+      (5 * 6 * 0.25) +   // Weekday peak business hours (ultra-light)
+      (2 * 24 * 1.0);    // Weekends (standard)
+
     const scanned = Math.max(0, Number(scannedCount) || 0);
     const estimated = Number.isFinite(Number(estimatedTotal)) ? Math.max(0, Math.round(Number(estimatedTotal))) : null;
     const durationMs = Math.max(0, Number(scanDurationMs) || 0);
@@ -380,7 +388,7 @@ a:hover {
     const pagesRemaining = estimated && estimated > scanned ? estimated - scanned : 0;
     const pagesPerHour = durationMs > 0 ? (scanned / durationMs) * 3600000 : 0;
     const etaHours = pagesPerHour > 0 && pagesRemaining > 0 ? pagesRemaining / pagesPerHour : null;
-    const weeklyCapacity = Math.max(0, Math.round(pagesPerHour * 24 * 7));
+    const weeklyCapacity = Math.max(0, Math.round(pagesPerHour * THROTTLED_WEEKLY_SCAN_HOURS));
     const weeklyFeasible = estimated ? weeklyCapacity >= estimated : null;
 
     return {

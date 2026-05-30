@@ -63,6 +63,7 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('runs/top-task-seeds.json');
     expect(js).toContain('Estimated size: ~');
     expect(js).toContain('estimateDomainCompletion');
+    expect(js).toContain('THROTTLED_WEEKLY_SCAN_HOURS');
     expect(js).toContain('formatEtaHours');
     expect(js).toContain('Coverage: ');
     expect(js).toContain('data-progress-fill-target-id');
