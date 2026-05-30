@@ -2,12 +2,8 @@ name: Execute Continuous Web Quality Compliance Scan
 
 on:
   schedule:
-    # Hourly incremental scans for continuous progress visibility
+    # Single hourly trigger; special modes are derived from UTC day/hour below.
     - cron: '0 * * * *'
-    # Daily deep refresh in US off-hours (00:00 ET / 21:00 PT during standard time)
-    - cron: '0 5 * * *'
-    # Monthly priority URL validation refresh in US off-hours
-    - cron: '0 2 1 * *'
   workflow_dispatch:
     # Allows repository maintainers to manually execute an on-demand scan
     inputs:
@@ -83,17 +79,29 @@ jobs:
             echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "scan_intensity=standard" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
+            echo "monthly_seed_refresh=false" >> "$GITHUB_OUTPUT"
             echo "Manual run detected. Running full incremental scan path."
             exit 0
           fi
 
-          if [[ "${{ github.event.schedule }}" == '0 5 * * *' || "${{ github.event.schedule }}" == '0 2 1 * *' ]]; then
+          utc_hour=$(TZ=UTC date +%H)
+          utc_dom=$(TZ=UTC date +%d)
+
+          # Deep daily refresh at 05:00 UTC and monthly seed refresh at 02:00 UTC on day 1.
+          if [[ "$utc_hour" == "05" || ("$utc_dom" == "01" && "$utc_hour" == "02") ]]; then
             echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "scan_intensity=deep" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=true" >> "$GITHUB_OUTPUT"
+            if [[ "$utc_dom" == "01" && "$utc_hour" == "02" ]]; then
+              echo "monthly_seed_refresh=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "monthly_seed_refresh=false" >> "$GITHUB_OUTPUT"
+            fi
             echo "Deep refresh schedule detected. Running expanded scan mode."
             exit 0
           fi
+
+          echo "monthly_seed_refresh=false" >> "$GITHUB_OUTPUT"
 
           et_day=$(TZ=America/New_York date +%u)
           et_hour=$(TZ=America/New_York date +%H)
@@ -129,7 +137,7 @@ jobs:
           VITAL_HISTORY_CACHE_DIR: .history-cache
           VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}
           FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && steps.offhours.outputs.deep_refresh == 'true') || 'false' }}
-          FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && github.event.schedule == '0 2 1 * *') || 'false' }}
+          FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && steps.offhours.outputs.monthly_seed_refresh == 'true') || 'false' }}
           VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '30' || steps.offhours.outputs.scan_intensity == 'light' && '21' || '7' }}
           VITAL_UPDATED_WITHIN_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '7' }}
           VITAL_MAX_RUN_MINUTES: '52'
