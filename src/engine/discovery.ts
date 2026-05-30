@@ -119,7 +119,6 @@ export class TargetDiscoveryEngine {
         .filter((url): url is string => Boolean(url))
         .filter(url => this.isLikelyHtmlUrl(url))
         .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
-        .filter(url => shouldIncludeUrl(url))
         .forEach(url => uniqueUrlSet.add(url));
     }
 

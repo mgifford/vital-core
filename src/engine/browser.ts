@@ -87,6 +87,7 @@ export class ResilientBrowserEngine {
       : settings.maxTimeoutMs;
     const auditScope = String(process.env.VITAL_AUDIT_SCOPE || 'full').toLowerCase();
     const accessibilityOnly = auditScope === 'accessibility' || auditScope === 'a11y';
+    const navigationWaitUntil: 'networkidle' | 'domcontentloaded' = accessibilityOnly ? 'domcontentloaded' : 'networkidle';
     const sameSiteDelayMs = this.readDelaySetting('VITAL_SAME_SITE_DELAY_MS', this.DEFAULT_SAME_SITE_DELAY_MS);
     const timeoutBackoffThreshold = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_THRESHOLD', this.DEFAULT_TIMEOUT_BACKOFF_THRESHOLD);
     const timeoutBackoffStepMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_STEP_MS', this.DEFAULT_TIMEOUT_BACKOFF_STEP_MS);
@@ -162,7 +163,7 @@ export class ResilientBrowserEngine {
         await this.runWithTimeout(async () => {
           // 1. Navigation with strict maxTimeoutMs boundary
           await page.goto(url, {
-            waitUntil: 'networkidle',
+            waitUntil: navigationWaitUntil,
             timeout: effectiveMaxTimeoutMs
           });
 
