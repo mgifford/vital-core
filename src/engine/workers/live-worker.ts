@@ -27,10 +27,7 @@ export class LiveWorker {
     }));
 
     return {
-      lighthouse: {
-        performanceScore: 100, // Placeholder target for Phase 5 runner wrapper integration
-        energyEstimateKwh: 0.25
-      },
+      lighthouse: null,
       accessibilityViolations: mappedViolations
     };
   }

@@ -6,6 +6,7 @@ import { TargetConfig } from '../types/profile';
 import { PageScanReport } from '../types/site-quality-spec';
 import { PageStateEntry, PageStateMap } from './reporters/page-state-cache';
 import { LiveWorker } from './workers/live-worker';
+import { LighthouseWorker } from './workers/lighthouse-worker';
 import { OfflineWorker } from './workers/offline-worker';
 import { TechnologyWorker } from './workers/technology-worker';
 import { ThirdPartyImpactWorker } from './workers/third-party-impact-worker';
@@ -132,6 +133,12 @@ export class ResilientBrowserEngine {
 
           fs.writeFileSync(snapshotPath, hydratedHtml, 'utf8');
           console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
+
+          // 9. Run Lighthouse performance against the local cached snapshot to track page load quality over time.
+          const lighthouse = await LighthouseWorker.auditCachedSnapshot(snapshotPath, settings.maxTimeoutMs);
+          if (baseReport.liveAudits) {
+            baseReport.liveAudits.lighthouse = lighthouse;
+          }
 
           baseReport.status = 'COMPLETED';
 
