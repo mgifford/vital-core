@@ -85,6 +85,12 @@ export const PageScanReportSchema = z.object({
     }),
     contentMetrics: z.object({
       readabilityScore: z.number().nullable(), // Flesch-Kincaid index metric
+      fleschKincaidGrade: z.number().nullable().optional(),
+      averageSentenceLength: z.number().nullable().optional(),
+      passiveVoiceSentenceRatio: z.number().nullable().optional(),
+      longSentenceCount: z.number().optional(),
+      unexplainedAcronymCount: z.number().optional(),
+      ambiguousLinkTextCount: z.number().optional(),
       suspiciousAltTextCount: z.number(),      // Occurrences of 'image.png', 'blank', etc.
       suspiciousAltInstances: z.array(z.object({
         imgHtml: z.string(),
