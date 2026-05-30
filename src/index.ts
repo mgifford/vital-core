@@ -5,12 +5,14 @@ import { BugExporter } from './engine/reporters/bug-exporter';
 import { DashboardCompiler } from './engine/reporters/dashboard-compiler';
 import { PageStateCache } from './engine/reporters/page-state-cache';
 import { RunHistoryReporter } from './engine/reporters/run-history';
+import { PrioritySeedStore } from './engine/priority-seeds';
 import { TargetScanResult, PageScanReport } from './types/site-quality-spec';
 
 async function main() {
   const startTime = Date.now();
   const profilePath = process.argv[2] || 'profiles/us-health.yml';
   const forceRescan = /^(1|true|yes)$/i.test(process.env.FORCE_RESCAN || '');
+  const forcePrioritySeedRefresh = /^(1|true|yes)$/i.test(process.env.FORCE_PRIORITY_SEED_REFRESH || '');
   
   console.log(`🚀 Initalizing VITAL-Core Run Engine using profile: ${profilePath}`);
   
@@ -19,6 +21,17 @@ async function main() {
     const profile = ProfileParser.loadProfile(profilePath);
     const globalAccumulatedResults: TargetScanResult[] = [];
     const pageState = PageStateCache.load();
+
+    const prioritySeedState = await PrioritySeedStore.initialize(profile.targets, {
+      forceRefresh: forcePrioritySeedRefresh,
+      maxAgeDays: 31,
+      perTargetLimit: 12
+    });
+
+    console.log(
+      `🧭 Priority URL seeds ${prioritySeedState.refreshed ? 'refreshed' : 'loaded'} ` +
+        `(${prioritySeedState.targetCount} targets, generated ${prioritySeedState.generatedAt}).`
+    );
 
     if (forceRescan) {
       console.log('🔁 FORCE_RESCAN enabled. All pages will be scanned regardless of change state.');

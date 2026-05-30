@@ -88,6 +88,7 @@ async function main() {
   }
 
   await fetchOptionalRunArtifact('page-state.json');
+  await fetchOptionalRunArtifact('top-task-seeds.json');
   console.log(`Restored historical run index and ${runs.length} referenced run entries.`);
 }
 

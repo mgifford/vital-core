@@ -144,10 +144,19 @@ export class DashboardCompiler {
       healthCell.appendChild(badge);
 
       const reportCell = document.createElement('td');
-      const reportLink = document.createElement('a');
-      reportLink.href = 'reports/' + target.targetId + '_issues.md';
-      reportLink.textContent = 'View Markdown Ticket System';
-      reportCell.appendChild(reportLink);
+      const reportMdLink = document.createElement('a');
+      reportMdLink.href = 'reports/' + target.targetId + '_issues.md';
+      reportMdLink.textContent = 'Markdown';
+
+      const divider = document.createTextNode(' | ');
+
+      const reportCsvLink = document.createElement('a');
+      reportCsvLink.href = 'reports/' + target.targetId + '_issues.csv';
+      reportCsvLink.textContent = 'CSV';
+
+      reportCell.appendChild(reportMdLink);
+      reportCell.appendChild(divider);
+      reportCell.appendChild(reportCsvLink);
 
       tr.appendChild(domainCell);
       tr.appendChild(pagesCell);

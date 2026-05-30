@@ -4,11 +4,18 @@ on:
   schedule:
     # Triggers every Friday night at midnight UTC
     - cron: '0 0 * * 5'
+    # Triggers on the first day of every month for priority URL validation refresh
+    - cron: '0 2 1 * *'
   workflow_dispatch:
     # Allows repository maintainers to manually execute an on-demand scan
     inputs:
       force_rescan:
         description: 'Force full rescan of all discovered pages (ignore unchanged-page cache)'
+        required: false
+        type: boolean
+        default: false
+      force_priority_seed_refresh:
+        description: 'Force refresh monthly DuckDuckGo priority URL seeds before scanning'
         required: false
         type: boolean
         default: false
@@ -57,6 +64,7 @@ jobs:
         env:
           VITAL_HISTORY_CACHE_DIR: .history-cache
           FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || 'false' }}
+          FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && github.event.schedule == '0 2 1 * *') || 'false' }}
         run: npm run scan
 
       - name: Upload Local Snapshots as Workflow Artifacts (Debugging/Audit)

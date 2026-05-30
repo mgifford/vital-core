@@ -1,6 +1,10 @@
 import Sitemapper from 'sitemapper';
 import picomatch from 'picomatch';
 import { TargetConfig } from '../types/profile';
+import { PrioritySeedStore } from './priority-seeds';
+
+const NON_HTML_EXTENSION_PATTERN = /\.(?:png|jpe?g|gif|webp|svg|ico|pdf|doc|docx|xml|xlsx|xls|pptx?|zip|gz|mp4|mp3|woff2?|ttf|eot|json|csv)$/i;
+const RSS_FEED_PATTERN = /\/(feed|rss|atom)(?:\/|$|\?)/i;
 
 export class TargetDiscoveryEngine {
   /**
@@ -9,6 +13,8 @@ export class TargetDiscoveryEngine {
    */
   public static async discoverUrls(target: TargetConfig): Promise<string[]> {
     let sitemapUrls: string[] = [];
+    const includeSubdomains = target.settings?.include_subdomains ?? false;
+    const canonicalBaseHost = this.canonicalizeHost(new URL(target.base_url).hostname);
     
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
@@ -29,13 +35,19 @@ export class TargetDiscoveryEngine {
     }
 
     // 2. Glob Filter Matrix Evaluation
-    let filteredUrls = sitemapUrls;
+    const normalizedUrls = sitemapUrls
+      .map(url => this.normalizeUrl(url))
+      .filter((url): url is string => Boolean(url))
+      .filter(url => this.isLikelyHtmlUrl(url))
+      .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains));
+
+    let filteredUrls = normalizedUrls;
     if (target.include_paths && target.include_paths.length > 0) {
       console.log(`🎛️ Filtering sitemap links against ${target.include_paths.length} path constraints...`);
       
       // Compile glob matches into a unified test configuration
       const isMatch = picomatch(target.include_paths);
-      filteredUrls = sitemapUrls.filter(url => {
+      filteredUrls = normalizedUrls.filter(url => {
         try {
           const pathname = new URL(url).pathname;
           return isMatch(pathname) || isMatch(url);
@@ -50,10 +62,26 @@ export class TargetDiscoveryEngine {
     // 3. Strategic Merge & Deduplication Array Sequence
     // We instantiate a Set with priority items first to preserve execution ordering
     const uniqueUrlSet = new Set<string>();
+
+    // Insert monthly-seeded top-task URLs from DuckDuckGo before broad sitemap crawl output.
+    const seededUrls = PrioritySeedStore.getSeedUrls(target);
+    if (seededUrls.length > 0) {
+      seededUrls
+        .map(url => this.normalizeUrl(url))
+        .filter((url): url is string => Boolean(url))
+        .filter(url => this.isLikelyHtmlUrl(url))
+        .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
+        .forEach(url => uniqueUrlSet.add(url));
+    }
     
     // Force target specific high-priority nodes to the front of the line
     if (target.priority_urls && target.priority_urls.length > 0) {
-      target.priority_urls.forEach(url => uniqueUrlSet.add(url));
+      target.priority_urls
+        .map(url => this.normalizeUrl(url))
+        .filter((url): url is string => Boolean(url))
+        .filter(url => this.isLikelyHtmlUrl(url))
+        .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
+        .forEach(url => uniqueUrlSet.add(url));
     }
 
     // Append standard sitemap results down the chain
@@ -69,5 +97,54 @@ export class TargetDiscoveryEngine {
     }
 
     return finalMergedQueue;
+  }
+
+  private static normalizeUrl(rawUrl: string): string | null {
+    try {
+      const parsed = new URL(rawUrl);
+      if (!/^https?:$/i.test(parsed.protocol)) {
+        return null;
+      }
+
+      parsed.hash = '';
+      return parsed.toString();
+    } catch {
+      return null;
+    }
+  }
+
+  private static isLikelyHtmlUrl(url: string): boolean {
+    try {
+      const parsed = new URL(url);
+      const pathname = parsed.pathname.toLowerCase();
+      if (NON_HTML_EXTENSION_PATTERN.test(pathname)) {
+        return false;
+      }
+
+      if (RSS_FEED_PATTERN.test(pathname)) {
+        return false;
+      }
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private static isWithinHostScope(url: string, canonicalBaseHost: string, includeSubdomains: boolean): boolean {
+    try {
+      const host = this.canonicalizeHost(new URL(url).hostname);
+      if (includeSubdomains) {
+        return host === canonicalBaseHost || host.endsWith(`.${canonicalBaseHost}`);
+      }
+
+      return host === canonicalBaseHost;
+    } catch {
+      return false;
+    }
+  }
+
+  private static canonicalizeHost(hostname: string): string {
+    return hostname.toLowerCase().replace(/\.$/, '');
   }
 }
