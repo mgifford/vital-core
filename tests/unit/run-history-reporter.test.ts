@@ -93,4 +93,101 @@ describe('RunHistoryReporter', () => {
     expect(trends.rollingAverage.violationsPerPage).toBeGreaterThan(0);
     expect(trends.windowSize).toBe(2);
   });
+
+  it('recovers from malformed index.json content', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-history-invalid-json-'));
+    process.chdir(tmpDir);
+
+    const runsDir = path.resolve(tmpDir, 'dist/runs');
+    fs.mkdirSync(runsDir, { recursive: true });
+    fs.writeFileSync(path.join(runsDir, 'index.json'), '{ not-valid-json', 'utf8');
+
+    const entry = RunHistoryReporter.persistRunHistory([makeResult('alpha', 1)], 'profiles/us-health.yml', 900);
+    const index = JSON.parse(fs.readFileSync(path.join(runsDir, 'index.json'), 'utf8')) as {
+      latestRunId: string;
+      runs: Array<{ runId: string }>;
+    };
+
+    expect(index.latestRunId).toBe(entry.runId);
+    expect(index.runs.length).toBe(1);
+  });
+
+  it('ignores malformed historical entries and computes zero-page trends safely', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-history-filter-'));
+    process.chdir(tmpDir);
+
+    const runsDir = path.resolve(tmpDir, 'dist/runs');
+    fs.mkdirSync(runsDir, { recursive: true });
+
+    const seedIndex = {
+      updatedAt: new Date().toISOString(),
+      latestRunId: 'seed-run',
+      runs: [
+        {
+          runId: 'seed-run',
+          generatedAt: new Date().toISOString(),
+          profilePath: 'profiles/us-health.yml',
+          scanDurationMs: 100,
+          targetsScanned: 1,
+          pagesScanned: 0,
+          totalViolations: 0,
+          artifactPath: 'runs/seed-run.json'
+        },
+        {
+          runId: 123,
+          generatedAt: null,
+          profilePath: {},
+          scanDurationMs: 'oops'
+        }
+      ]
+    };
+
+    fs.writeFileSync(path.join(runsDir, 'index.json'), JSON.stringify(seedIndex, null, 2), 'utf8');
+
+    RunHistoryReporter.persistRunHistory([makeResult('alpha', 2)], 'profiles/us-health.yml', 1100);
+
+    const index = JSON.parse(fs.readFileSync(path.join(runsDir, 'index.json'), 'utf8')) as {
+      runs: Array<{ runId: string }>;
+    };
+    const trends = JSON.parse(fs.readFileSync(path.join(runsDir, 'trends.json'), 'utf8')) as {
+      latest: { violationsPerPage: number };
+      deltaFromPrevious: { violationsPerPage: number } | null;
+      rollingAverage: { violationsPerPage: number };
+    };
+
+    expect(index.runs.some(r => r.runId === 'seed-run')).toBe(true);
+    expect(index.runs.some(r => r.runId === '123')).toBe(false);
+    expect(trends.latest.violationsPerPage).toBeGreaterThanOrEqual(0);
+    expect(trends.deltaFromPrevious).not.toBeNull();
+    expect(trends.deltaFromPrevious?.violationsPerPage).toBeGreaterThanOrEqual(0);
+    expect(trends.rollingAverage.violationsPerPage).toBeGreaterThanOrEqual(0);
+  });
+
+  it('restores cached history files without clobbering existing run artifacts', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-history-cache-'));
+    process.chdir(tmpDir);
+
+    const cacheRunsDir = path.resolve(tmpDir, '.history-cache/runs');
+    fs.mkdirSync(cacheRunsDir, { recursive: true });
+    fs.writeFileSync(path.join(cacheRunsDir, 'cached-only.json'), JSON.stringify({ from: 'cache' }), 'utf8');
+    fs.writeFileSync(path.join(cacheRunsDir, 'shared.json'), JSON.stringify({ from: 'cache' }), 'utf8');
+    fs.writeFileSync(path.join(cacheRunsDir, 'ignore.txt'), 'not-json', 'utf8');
+
+    const distRunsDir = path.resolve(tmpDir, 'dist/runs');
+    fs.mkdirSync(distRunsDir, { recursive: true });
+    fs.writeFileSync(path.join(distRunsDir, 'shared.json'), JSON.stringify({ from: 'dist' }), 'utf8');
+
+    process.env.VITAL_HISTORY_CACHE_DIR = '.history-cache';
+
+    RunHistoryReporter.persistRunHistory([makeResult('alpha', 1)], 'profiles/us-health.yml', 800);
+
+    const cachedOnlyPath = path.join(distRunsDir, 'cached-only.json');
+    const sharedPath = path.join(distRunsDir, 'shared.json');
+    const ignoredPath = path.join(distRunsDir, 'ignore.txt');
+
+    expect(fs.existsSync(cachedOnlyPath)).toBe(true);
+    expect(JSON.parse(fs.readFileSync(cachedOnlyPath, 'utf8')).from).toBe('cache');
+    expect(JSON.parse(fs.readFileSync(sharedPath, 'utf8')).from).toBe('dist');
+    expect(fs.existsSync(ignoredPath)).toBe(false);
+  });
 });
