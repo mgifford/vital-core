@@ -101,6 +101,7 @@ describe('TargetDiscoveryEngine', () => {
           domain: 'https://www.cms.gov',
           fetchedAt: new Date().toISOString(),
           source: 'duckduckgo',
+          estimatedIndexedPages: 1200,
           topUrls: ['https://www.cms.gov/medicare']
         }
       ]

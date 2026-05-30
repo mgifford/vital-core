@@ -9,6 +9,7 @@ interface PrioritySeedTarget {
   domain: string;
   fetchedAt: string;
   source: 'duckduckgo';
+  estimatedIndexedPages: number | null;
   topUrls: string[];
 }
 
@@ -126,6 +127,10 @@ export class PrioritySeedStore {
             .map(entry => ({
               ...entry,
               source: 'duckduckgo' as const,
+              estimatedIndexedPages:
+                typeof entry.estimatedIndexedPages === 'number' && Number.isFinite(entry.estimatedIndexedPages)
+                  ? entry.estimatedIndexedPages
+                  : null,
               topUrls: entry.topUrls.filter(url => typeof url === 'string')
             }))
         };
@@ -189,6 +194,7 @@ export class PrioritySeedStore {
 
         const html = await response.text();
         const topUrls = this.extractDuckDuckGoUrls(html, host).slice(0, perTargetLimit);
+        const estimatedIndexedPages = this.extractDuckDuckGoEstimatedResultCount(html);
 
         if (topUrls.length === 0) {
           continue;
@@ -200,6 +206,7 @@ export class PrioritySeedStore {
           domain: target.base_url,
           fetchedAt: new Date().toISOString(),
           source: 'duckduckgo',
+          estimatedIndexedPages,
           topUrls
         });
       } catch (error: any) {
@@ -245,6 +252,23 @@ export class PrioritySeedStore {
     });
 
     return Array.from(links);
+  }
+
+  private static extractDuckDuckGoEstimatedResultCount(html: string): number | null {
+    const $ = load(html);
+    const pageText = $('body').text().replace(/\s+/g, ' ');
+    const match = pageText.match(/([0-9][0-9,\.\s]{0,20})\s+results?/i);
+    if (!match) {
+      return null;
+    }
+
+    const digitsOnly = (match[1] || '').replace(/\D+/g, '');
+    if (!digitsOnly) {
+      return null;
+    }
+
+    const parsed = Number(digitsOnly);
+    return Number.isFinite(parsed) ? parsed : null;
   }
 
   private static resolveDuckDuckGoHref(href: string | undefined): string | null {

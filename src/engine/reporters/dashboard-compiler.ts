@@ -86,6 +86,8 @@ export class DashboardCompiler {
         <a href="runs/trends.json">Trend Summary JSON</a>
         &nbsp;|&nbsp;
         <a href="runs/domain-ongoing.json">Domain Ongoing Reports JSON</a>
+        &nbsp;|&nbsp;
+        <a href="runs/top-task-seeds.json">Domain Size Estimate JSON</a>
       </p>
     </div>
     <div class="card">
@@ -94,7 +96,7 @@ export class DashboardCompiler {
         <thead>
           <tr>
             <th>Domains</th>
-            <th>Pages (recent pages)</th>
+            <th>Pages / Estimated Size</th>
             <th>Score</th>
             <th>Recommendations</th>
           </tr>
@@ -151,11 +153,20 @@ export class DashboardCompiler {
     const tbodyEl = document.getElementById('target-body');
     const historyBodyEl = document.getElementById('history-body');
     const ongoingBodyEl = document.getElementById('ongoing-body');
+    const sizeEstimateByTarget = new Map();
 
     let totalPages = 0;
     let totalViolations = 0;
     const softwareFound = new Set();
     const leaderboardRows = [];
+
+    function formatEstimatedDomainSize(value) {
+      if (typeof value !== 'number' || !Number.isFinite(value)) {
+        return 'Estimated size: n/a';
+      }
+
+      return 'Estimated size: ~' + new Intl.NumberFormat('en-US').format(Math.max(0, Math.round(value))) + ' pages';
+    }
 
     function buildRecommendations(quality, targetViolations, jsRegressionPages) {
       const actions = [];
@@ -239,7 +250,15 @@ export class DashboardCompiler {
       domainCell.appendChild(domainSmall);
 
       const pagesCell = document.createElement('td');
-      pagesCell.textContent = String(target.pagesScanned.length) + ' pages';
+      const scannedText = document.createElement('div');
+      scannedText.textContent = String(target.pagesScanned.length) + ' pages scanned';
+      const estimateText = document.createElement('div');
+      estimateText.style.fontSize = '0.85rem';
+      estimateText.style.color = '#4d4d4d';
+      estimateText.setAttribute('data-size-estimate-target-id', String(target.targetId || ''));
+      estimateText.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(target.targetId));
+      pagesCell.appendChild(scannedText);
+      pagesCell.appendChild(estimateText);
 
       const scoreCell = document.createElement('td');
       if (row.quality) {
@@ -282,6 +301,26 @@ export class DashboardCompiler {
       tr.appendChild(recommendationsCell);
       tbodyEl.appendChild(tr);
     });
+
+    fetch('runs/top-task-seeds.json')
+      .then(response => (response.ok ? response.json() : null))
+      .then(snapshot => {
+        const targets = Array.isArray(snapshot?.targets) ? snapshot.targets : [];
+        targets.forEach(entry => {
+          if (entry && typeof entry.targetId === 'string' && typeof entry.estimatedIndexedPages === 'number') {
+            sizeEstimateByTarget.set(entry.targetId, entry.estimatedIndexedPages);
+          }
+        });
+
+        const estimateNodes = document.querySelectorAll('[data-size-estimate-target-id]');
+        estimateNodes.forEach(node => {
+          const targetId = node.getAttribute('data-size-estimate-target-id') || '';
+          node.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(targetId));
+        });
+      })
+      .catch(() => {
+        // Keep best-effort display with n/a when seed snapshot is unavailable.
+      });
 
     const summaryCards = [
       { title: 'Ecosystem Targets Evaluated', value: String(data.length), color: '' },

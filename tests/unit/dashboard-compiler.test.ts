@@ -43,13 +43,15 @@ describe('DashboardCompiler', () => {
     expect(html).not.toContain('\"><script>alert(1)</script>');
     expect(html).toContain('Federal Quality Index');
     expect(html).toContain('Domains Leaderboard');
-    expect(html).toContain('Pages (recent pages)');
+    expect(html).toContain('Pages / Estimated Size');
     expect(html).toContain('Recommendations');
     expect(html).toContain('Top Third-Party Providers');
     expect(html).toContain('URL Freshness');
     expect(html).toContain('Domain Ongoing Reports');
     expect(html).toContain('Pages Needing Most Improvement');
     expect(html).toContain('runs/domain-ongoing.json');
+    expect(html).toContain('runs/top-task-seeds.json');
+    expect(html).toContain('Estimated size: ~');
     expect(html).toContain('Requirement Compliance Over Time');
     expect(html).toContain('compliance-chart');
     expect(html).toContain('requirementComplianceOverTime');
