@@ -69,6 +69,11 @@ export class DashboardCompiler {
     <h1>🩺 VITAL-Core // Federal Quality &amp; Accessibility Registry</h1>
   </header>
   <main>
+    <div id="live-scan-status" class="card" aria-live="polite">
+      <h2>Live Scan Ticker</h2>
+      <p id="live-scan-primary">Checking scan status...</p>
+      <p id="live-scan-secondary" style="font-size:0.9rem; color:#4d4d4d; margin-top:0.4rem;"></p>
+    </div>
     <div id="summary" class="metric-grid"></div>
     <div id="trend-summary" class="metric-grid"></div>
     <div class="card">
@@ -141,6 +146,8 @@ export class DashboardCompiler {
     const targetQualityMap = new Map(targetQuality.map(item => [item.targetId, item]));
     const summaryEl = document.getElementById('summary');
     const trendSummaryEl = document.getElementById('trend-summary');
+    const liveScanPrimaryEl = document.getElementById('live-scan-primary');
+    const liveScanSecondaryEl = document.getElementById('live-scan-secondary');
     const tbodyEl = document.getElementById('target-body');
     const historyBodyEl = document.getElementById('history-body');
     const ongoingBodyEl = document.getElementById('ongoing-body');
@@ -524,6 +531,90 @@ export class DashboardCompiler {
       }
       return String(seconds) + 's';
     }
+
+    function getRepoFromPageLocation() {
+      try {
+        const owner = String(window.location.hostname || '').split('.')[0];
+        const pathBits = String(window.location.pathname || '').split('/').filter(Boolean);
+        const repo = pathBits.length > 0 ? pathBits[0] : 'vital-core';
+        if (!owner || !repo) {
+          return { owner: 'mgifford', repo: 'vital-core' };
+        }
+        return { owner, repo };
+      } catch {
+        return { owner: 'mgifford', repo: 'vital-core' };
+      }
+    }
+
+    function getNextScheduledScanUtc(nowDate) {
+      const now = new Date(nowDate);
+
+      const weekly = new Date(now.getTime());
+      const day = weekly.getUTCDay();
+      const daysUntilSaturday = (6 - day + 7) % 7;
+      weekly.setUTCDate(weekly.getUTCDate() + daysUntilSaturday);
+      weekly.setUTCHours(4, 0, 0, 0);
+      if (weekly <= now) {
+        weekly.setUTCDate(weekly.getUTCDate() + 7);
+      }
+
+      const monthly = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 2, 0, 0, 0));
+      if (monthly <= now) {
+        monthly.setUTCMonth(monthly.getUTCMonth() + 1);
+      }
+
+      return weekly < monthly ? weekly : monthly;
+    }
+
+    async function updateLiveScanTicker() {
+      const repoInfo = getRepoFromPageLocation();
+      const workflowApi = 'https://api.github.com/repos/' + repoInfo.owner + '/' + repoInfo.repo + '/actions/workflows/vital-scan.yml/runs?per_page=1';
+
+      let runInfo = null;
+      let latestPublished = null;
+
+      try {
+        const runResponse = await fetch(workflowApi, { headers: { Accept: 'application/vnd.github+json' } });
+        if (runResponse.ok) {
+          const payload = await runResponse.json();
+          runInfo = Array.isArray(payload.workflow_runs) ? payload.workflow_runs[0] : null;
+        }
+      } catch {
+        // Ignore and fallback to published data only.
+      }
+
+      try {
+        const latestResponse = await fetch('runs/latest.json');
+        if (latestResponse.ok) {
+          latestPublished = await latestResponse.json();
+        }
+      } catch {
+        // Ignore and render best-effort status.
+      }
+
+      const nextScheduled = getNextScheduledScanUtc(new Date());
+      const lastPublishedAt = latestPublished?.generatedAt ? new Date(latestPublished.generatedAt).toISOString() : 'unknown';
+
+      if (runInfo && (runInfo.status === 'in_progress' || runInfo.status === 'queued')) {
+        const started = runInfo.run_started_at ? new Date(runInfo.run_started_at).toISOString() : 'unknown';
+        liveScanPrimaryEl.textContent = 'Scanning now: ' + String(runInfo.name || 'Execute Continuous Web Quality Compliance Scan');
+        liveScanSecondaryEl.textContent =
+          'Status: ' + String(runInfo.status) +
+          ' | Started: ' + started +
+          ' | Last published run: ' + lastPublishedAt +
+          ' | Expected next page refresh after run completion.';
+      } else {
+        const conclusion = runInfo?.conclusion ? String(runInfo.conclusion) : 'unknown';
+        liveScanPrimaryEl.textContent = 'No active scan right now.';
+        liveScanSecondaryEl.textContent =
+          'Last published run: ' + lastPublishedAt +
+          ' | Last workflow conclusion: ' + conclusion +
+          ' | Next scheduled scan: ' + nextScheduled.toISOString() + '.';
+      }
+    }
+
+    updateLiveScanTicker();
+    setInterval(updateLiveScanTicker, 30000);
 
     fetch('runs/trends.json')
       .then(response => (response.ok ? response.json() : null))

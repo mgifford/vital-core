@@ -52,5 +52,7 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('Requirement Compliance Over Time');
     expect(html).toContain('compliance-chart');
     expect(html).toContain('requirementComplianceOverTime');
+    expect(html).toContain('Live Scan Ticker');
+    expect(html).toContain('api.github.com/repos/');
   });
 });
