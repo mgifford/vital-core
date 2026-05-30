@@ -69,12 +69,20 @@ describe('RunHistoryReporter', () => {
     const indexPath = path.resolve(tmpDir, 'dist/runs/index.json');
     const trendsPath = path.resolve(tmpDir, 'dist/runs/trends.json');
     const ongoingPath = path.resolve(tmpDir, 'dist/runs/domain-ongoing.json');
+    const apiManifestPath = path.resolve(tmpDir, 'dist/api/index.json');
+    const apiLatestPath = path.resolve(tmpDir, 'dist/api/latest.json');
+    const apiTargetsPath = path.resolve(tmpDir, 'dist/api/targets.json');
+    const apiRunsPath = path.resolve(tmpDir, 'dist/api/runs.json');
     const artifactPath = path.resolve(tmpDir, 'dist', entry.artifactPath);
 
     expect(fs.existsSync(latestPath)).toBe(true);
     expect(fs.existsSync(indexPath)).toBe(true);
     expect(fs.existsSync(trendsPath)).toBe(true);
     expect(fs.existsSync(ongoingPath)).toBe(true);
+    expect(fs.existsSync(apiManifestPath)).toBe(true);
+    expect(fs.existsSync(apiLatestPath)).toBe(true);
+    expect(fs.existsSync(apiTargetsPath)).toBe(true);
+    expect(fs.existsSync(apiRunsPath)).toBe(true);
     expect(fs.existsSync(artifactPath)).toBe(true);
 
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as { runs: Array<{ runId: string; totalViolations: number; pagesScanned: number }> };
@@ -137,6 +145,17 @@ describe('RunHistoryReporter', () => {
       reports: Array<{ targetId: string; suggestions: string[]; pagesNeedingMostImprovement: Array<{ url: string }> }>;
       windowSize: number;
     };
+    const apiManifest = JSON.parse(fs.readFileSync(apiManifestPath, 'utf8')) as {
+      apiVersion: string;
+      endpoints: { latest: string; targets: string; runs: string };
+    };
+    const apiLatest = JSON.parse(fs.readFileSync(apiLatestPath, 'utf8')) as {
+      run: { runId: string; pagesScanned: number; qualityGateStatus: string };
+    };
+    const apiTargets = JSON.parse(fs.readFileSync(apiTargetsPath, 'utf8')) as {
+      runId: string;
+      targets: Array<{ targetId: string; pagesScanned: number; completedPages: number }>;
+    };
 
     expect(trends.latest.totalViolations).toBe(5);
     expect(trends.deltaFromPrevious).not.toBeNull();
@@ -158,6 +177,15 @@ describe('RunHistoryReporter', () => {
     expect(ongoing.reports.length).toBeGreaterThan(0);
     expect(ongoing.reports[0].targetId).toBeTruthy();
     expect(Array.isArray(ongoing.reports[0].suggestions)).toBe(true);
+    expect(apiManifest.apiVersion).toBe('v1');
+    expect(apiManifest.endpoints.latest).toBe('api/latest.json');
+    expect(apiManifest.endpoints.targets).toBe('api/targets.json');
+    expect(apiLatest.run.runId).toBeTruthy();
+    expect(apiLatest.run.pagesScanned).toBeGreaterThanOrEqual(0);
+    expect(['PASS', 'WARNING', 'BLOCKED']).toContain(apiLatest.run.qualityGateStatus);
+    expect(apiTargets.runId).toBeTruthy();
+    expect(Array.isArray(apiTargets.targets)).toBe(true);
+    expect(apiTargets.targets[0].targetId).toBeTruthy();
   });
 
   it('recovers from malformed index.json content', () => {

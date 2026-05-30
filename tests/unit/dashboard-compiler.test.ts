@@ -57,6 +57,12 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('vital-dashboard-data');
     expect(html).toContain('vital-dashboard-target-quality');
     expect(html).toContain('href="#run-history"');
+    expect(html).toContain('Jump to domain page');
+    expect(html).toContain('id="domain-page-select"');
+    expect(html).toContain('api/index.json');
+    expect(html).toContain('github.com/mgifford/vital-core');
+    expect(html).toContain('independent open source project');
+    expect(html).toContain('not affiliated with, endorsed by, or operated by');
     expect(js).toContain('Federal Quality Index');
     expect(html).toContain('Domains Leaderboard');
     expect(html).toContain('Pages / Estimated Size');
@@ -85,8 +91,9 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('Coverage: ');
     expect(js).toContain('data-progress-fill-target-id');
     expect(js).toContain('data-progress-meta-target-id');
-    expect(js).toContain('const domainIdSegment = String(target.targetId || \'\')');
+    expect(js).toContain('function toDomainIdSegment(targetId)');
     expect(js).toContain("link.href = 'domains/' + domainIdSegment + '/' + item[1]");
+    expect(js).toContain('function populateDomainSelectMenu(targets)');
     expect(css).toContain('.progress-track');
     expect(css).toContain('.progress-fill');
     expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");
@@ -103,6 +110,7 @@ describe('DashboardCompiler', () => {
     expect(css).toContain('.compliance-chart');
     expect(domainOverviewHtml).toContain('Domain Reports');
     expect(domainOverviewHtml).toContain('Domain overview');
+    expect(domainOverviewHtml).toContain('independent open source project');
     expect(domainOverviewHtml).toContain('Scan duration (latest run):</strong> 52m 14s');
     expect(js).toContain('durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : \'n/a\';');
     expect(domainA11yHtml).toContain('Accessibility Findings');

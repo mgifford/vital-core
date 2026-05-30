@@ -127,6 +127,10 @@ export class RunHistoryReporter {
     return path.resolve(process.cwd(), 'dist/runs');
   }
 
+  private static get distApiDir(): string {
+    return path.resolve(process.cwd(), 'dist/api');
+  }
+
   public static persistRunHistory(
     allResults: TargetScanResult[],
     profilePath: string,
@@ -198,11 +202,13 @@ export class RunHistoryReporter {
     };
 
     fs.writeFileSync(path.join(this.distRunsDir, 'index.json'), JSON.stringify(nextIndex, null, 2), 'utf8');
+    const trendSummary = this.buildTrendSummary(nextIndex);
     fs.writeFileSync(
       path.join(this.distRunsDir, 'trends.json'),
-      JSON.stringify(this.buildTrendSummary(nextIndex), null, 2),
+      JSON.stringify(trendSummary, null, 2),
       'utf8'
     );
+    this.writeApiInterface(nextIndex, latestPayload, targetQuality, trendSummary);
     fs.writeFileSync(
       path.join(this.distRunsDir, 'domain-ongoing.json'),
       JSON.stringify(this.buildDomainOngoingReports(nextIndex), null, 2),
@@ -210,6 +216,104 @@ export class RunHistoryReporter {
     );
 
     return runEntry;
+  }
+
+  private static writeApiInterface(
+    index: RunIndex,
+    latestPayload: {
+      runId: string;
+      generatedAt: string;
+      profilePath: string;
+      scanDurationMs: number;
+      qualityIndex: QualityIndexResult;
+      results: TargetScanResult[];
+    },
+    targetQuality: TargetQualityIndexEntry[],
+    trendSummary: TrendSummary
+  ): void {
+    if (!fs.existsSync(this.distApiDir)) {
+      fs.mkdirSync(this.distApiDir, { recursive: true });
+    }
+
+    const qualityByTarget = new Map(targetQuality.map(item => [String(item.targetId || ''), item]));
+
+    const targets = latestPayload.results
+      .map(result => {
+        const pages = Array.isArray(result.pagesScanned) ? result.pagesScanned : [];
+        const completedPages = pages.filter(page => page.status === 'COMPLETED').length;
+        const timeoutPages = pages.filter(page => page.status === 'TIMEOUT').length;
+        const skippedUnchangedPages = pages.filter(page => page.status === 'SKIPPED_UNCHANGED').length;
+        const totalViolations = pages.reduce((sum, page) => sum + (page.liveAudits?.accessibilityViolations.length ?? 0), 0);
+        const quality = qualityByTarget.get(String(result.targetId || ''));
+
+        return {
+          targetId: result.targetId,
+          domain: result.domain,
+          pagesScanned: pages.length,
+          completedPages,
+          timeoutPages,
+          skippedUnchangedPages,
+          totalViolations,
+          quality: {
+            score: typeof quality?.score === 'number' ? Number(quality.score.toFixed(2)) : null,
+            gateStatus: quality?.gateStatus ?? null
+          }
+        };
+      })
+      .sort((a, b) => String(a.targetId || '').localeCompare(String(b.targetId || '')));
+
+    const latestApi = {
+      apiVersion: 'v1',
+      generatedAt: latestPayload.generatedAt,
+      run: {
+        runId: latestPayload.runId,
+        profilePath: latestPayload.profilePath,
+        scanDurationMs: latestPayload.scanDurationMs,
+        targetsScanned: latestPayload.results.length,
+        pagesScanned: trendSummary.latest.pagesScanned,
+        completedPages: latestPayload.results
+          .flatMap(result => result.pagesScanned)
+          .filter(page => page.status === 'COMPLETED').length,
+        totalViolations: trendSummary.latest.totalViolations,
+        qualityIndexScore: Number((latestPayload.qualityIndex.score ?? 0).toFixed(2)),
+        qualityGateStatus: latestPayload.qualityIndex.gateStatus,
+        consensus: trendSummary.latest.consensus,
+        urlFreshness: trendSummary.latest.urlFreshness
+      }
+    };
+
+    const runsApi = {
+      apiVersion: 'v1',
+      generatedAt: new Date().toISOString(),
+      latestRunId: index.latestRunId,
+      runs: index.runs.slice(0, 100)
+    };
+
+    const targetsApi = {
+      apiVersion: 'v1',
+      generatedAt: latestPayload.generatedAt,
+      runId: latestPayload.runId,
+      targets
+    };
+
+    const manifest = {
+      apiVersion: 'v1',
+      generatedAt: new Date().toISOString(),
+      latestRunId: index.latestRunId,
+      endpoints: {
+        latest: 'api/latest.json',
+        runs: 'api/runs.json',
+        targets: 'api/targets.json',
+        trendSummary: 'runs/trends.json',
+        runIndex: 'runs/index.json',
+        latestRawRun: 'runs/latest.json'
+      }
+    };
+
+    fs.writeFileSync(path.join(this.distApiDir, 'latest.json'), JSON.stringify(latestApi, null, 2), 'utf8');
+    fs.writeFileSync(path.join(this.distApiDir, 'runs.json'), JSON.stringify(runsApi, null, 2), 'utf8');
+    fs.writeFileSync(path.join(this.distApiDir, 'targets.json'), JSON.stringify(targetsApi, null, 2), 'utf8');
+    fs.writeFileSync(path.join(this.distApiDir, 'index.json'), JSON.stringify(manifest, null, 2), 'utf8');
   }
 
   private static loadExistingIndex(): RunIndex {

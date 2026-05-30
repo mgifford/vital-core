@@ -35,6 +35,8 @@ export class DashboardCompiler {
       .replace(/\u2028/g, '\\u2028')
       .replace(/\u2029/g, '\\u2029');
 
+    const siteFooterHtml = this.buildSiteFooterHtml();
+
     fs.writeFileSync(path.join(this.ASSETS_DIR, 'dashboard.css'), this.buildDashboardCss(), 'utf8');
     fs.writeFileSync(path.join(this.ASSETS_DIR, 'dashboard.js'), this.buildDashboardJs(), 'utf8');
 
@@ -48,7 +50,15 @@ export class DashboardCompiler {
 </head>
 <body>
   <header>
-    <h1>🩺 VITAL-Core // Federal Quality &amp; Accessibility Registry</h1>
+    <div class="header-main">
+      <h1>🩺 VITAL-Core // Federal Quality &amp; Accessibility Registry</h1>
+      <nav class="quick-domain-nav" aria-label="Quick domain navigation">
+        <label for="domain-page-select">Jump to domain page</label>
+        <select id="domain-page-select">
+          <option value="">Select domain report page...</option>
+        </select>
+      </nav>
+    </div>
     <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch color theme">Switch to dark mode</button>
   </header>
   <main>
@@ -71,6 +81,8 @@ export class DashboardCompiler {
         <a href="runs/domain-ongoing.json">Domain Ongoing Reports JSON</a>
         &nbsp;|&nbsp;
         <a href="runs/top-task-seeds.json">Domain Size Estimate JSON</a>
+        &nbsp;|&nbsp;
+        <a href="api/index.json">API Endpoint Manifest JSON</a>
         &nbsp;|&nbsp;
         <a href="#run-history">Jump to Run History</a>
       </p>
@@ -155,6 +167,7 @@ export class DashboardCompiler {
       </p>
     </div>
   </main>
+${siteFooterHtml}
   <script id="vital-dashboard-data" type="application/json">${jsonPayload}</script>
   <script id="vital-dashboard-target-quality" type="application/json">${targetQualityPayload}</script>
   <script defer src="assets/dashboard.js"></script>
@@ -169,6 +182,7 @@ export class DashboardCompiler {
   private static writeDomainSubpages(allResults: TargetScanResult[], targetQualityIndex: TargetQualityIndexEntry[]): void {
     const domainsRoot = path.join(this.DIST_DIR, 'domains');
     fs.mkdirSync(domainsRoot, { recursive: true });
+    const siteFooterHtml = this.buildSiteFooterHtml();
 
     for (const target of allResults) {
       const safeTargetId = this.sanitizePathSegment(target.targetId);
@@ -264,6 +278,7 @@ export class DashboardCompiler {
       <p><strong>Quality score:</strong> ${this.escapeHtml(String((quality && quality.score) || 'n/a'))}</p>
     </div>
   </main>
+  ${siteFooterHtml}
 </body>
 </html>`;
 
@@ -272,28 +287,28 @@ export class DashboardCompiler {
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</h1></header><main><div class="card"><h2>Accessibility Findings</h2>${sharedNav}
 <table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="4">No accessibility violations in latest run.</td></tr>'}</tbody></table>
-</div></main></body></html>`;
+</div></main>${siteFooterHtml}</body></html>`;
 
       const performanceHtml = `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</h1></header><main><div class="card"><h2>Lighthouse Metrics</h2>${sharedNav}
 <table><thead><tr><th>URL</th><th>Perf</th><th>FCP (ms)</th><th>LCP (ms)</th><th>Speed Index (ms)</th></tr></thead><tbody>${performanceRows || '<tr><td colspan="5">No performance data available.</td></tr>'}</tbody></table>
-</div></main></body></html>`;
+</div></main>${siteFooterHtml}</body></html>`;
 
       const contentHtml = `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Content</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Content Quality</h1></header><main><div class="card"><h2>Content Metrics</h2>${sharedNav}
 <table><thead><tr><th>URL</th><th>Grade</th><th>Avg Sentence Length</th><th>Ambiguous Links</th><th>Suspicious Alt Text</th></tr></thead><tbody>${contentRows || '<tr><td colspan="5">No content metrics available.</td></tr>'}</tbody></table>
-</div></main></body></html>`;
+</div></main>${siteFooterHtml}</body></html>`;
 
       const thirdPartyHtml = `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</h1></header><main><div class="card"><h2>JavaScript Regression Signals</h2>${sharedNav}
 <table><thead><tr><th>URL</th><th>Regression Detected</th><th>Added Violations</th><th>Likely Providers</th></tr></thead><tbody>${thirdPartyRows || '<tr><td colspan="4">No third-party impact data available.</td></tr>'}</tbody></table>
-</div></main></body></html>`;
+</div></main>${siteFooterHtml}</body></html>`;
 
       fs.writeFileSync(path.join(domainDir, 'index.html'), overviewHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'accessibility.html'), accessibilityHtml, 'utf8');
@@ -318,6 +333,19 @@ export class DashboardCompiler {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  private static buildSiteFooterHtml(): string {
+    return `
+  <footer class="site-footer">
+    <p>
+      <strong>Project:</strong>
+      <a href="https://github.com/mgifford/vital-core" target="_blank" rel="noopener noreferrer">github.com/mgifford/vital-core</a>
+    </p>
+    <p>
+      VITAL-Core is an independent open source project. It is not affiliated with, endorsed by, or operated by the websites and agencies scanned by this dashboard.
+    </p>
+  </footer>`;
   }
 
   private static formatHumanDuration(durationMs: number): string {
@@ -400,6 +428,34 @@ header {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
+.header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.quick-domain-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.quick-domain-nav label {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.quick-domain-nav select {
+  min-width: 280px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.92rem;
+}
+.quick-domain-nav select option {
+  color: #111111;
 }
 h1 {
   margin: 0;
@@ -515,6 +571,16 @@ a:focus-visible {
   outline: 3px solid #ffffff;
   outline-offset: 2px;
 }
+@media (max-width: 920px) {
+  header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .quick-domain-nav select {
+    min-width: 220px;
+  }
+}
 .small-block-gap {
   margin-top: 0.45rem;
 }
@@ -537,6 +603,16 @@ a:focus-visible {
   margin-top: 0.35rem;
   font-size: 0.82rem;
   color: #4d4d4d;
+}
+.site-footer {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 1rem;
+  font-size: 0.92rem;
+  color: var(--muted-color);
+}
+.site-footer p {
+  margin: 0.35rem 0;
 }
 `;
   }
@@ -657,6 +733,7 @@ a:focus-visible {
   const historyBodyEl = document.getElementById('history-body');
   const ongoingBodyEl = document.getElementById('ongoing-body');
   const pagesBodyEl = document.getElementById('pages-body');
+  const domainPageSelectEl = document.getElementById('domain-page-select');
   const sizeEstimateByTarget = new Map();
   const topUrlsByTarget = new Map();
 
@@ -762,6 +839,73 @@ a:focus-visible {
     }
 
     return actions.slice(0, 2).join(' ');
+  }
+
+  function toDomainIdSegment(targetId) {
+    return String(targetId || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '') || 'unknown';
+  }
+
+  function populateDomainSelectMenu(targets) {
+    if (!domainPageSelectEl) {
+      return;
+    }
+
+    domainPageSelectEl.innerHTML = '';
+
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Select domain report page...';
+    domainPageSelectEl.appendChild(placeholder);
+
+    if (!Array.isArray(targets) || targets.length === 0) {
+      domainPageSelectEl.disabled = true;
+      return;
+    }
+
+    domainPageSelectEl.disabled = false;
+
+    const domainPages = [
+      ['Overview', 'index.html'],
+      ['Accessibility', 'accessibility.html'],
+      ['Performance', 'performance.html'],
+      ['Content', 'content.html'],
+      ['Third-party', 'third-party.html']
+    ];
+
+    targets
+      .slice()
+      .sort((a, b) => String(a.targetId || '').localeCompare(String(b.targetId || '')))
+      .forEach(target => {
+        const group = document.createElement('optgroup');
+        group.label = String(target.targetId || '').toUpperCase() + ' - ' + String(target.domain || 'n/a');
+
+        const segment = toDomainIdSegment(target.targetId);
+        domainPages.forEach((entry, index) => {
+          const option = document.createElement('option');
+          option.value = 'domains/' + segment + '/' + entry[1];
+          option.textContent = entry[0];
+          if (index === 0) {
+            option.textContent = 'Overview';
+          }
+          group.appendChild(option);
+        });
+        domainPageSelectEl.appendChild(group);
+      });
+
+    if (domainPageSelectEl.dataset.bound !== 'true') {
+      domainPageSelectEl.addEventListener('change', function () {
+        const selected = String(domainPageSelectEl.value || '');
+        if (!selected) {
+          return;
+        }
+        window.location.href = selected;
+      });
+      domainPageSelectEl.dataset.bound = 'true';
+    }
   }
 
   function summarizeLighthouseMetrics(pagesScanned) {
@@ -1278,6 +1422,7 @@ a:focus-visible {
   addSummaryCard('blocked-total', 'Total Blocked System Issues', String(totalViolations), 'var(--critical-red)');
   addSummaryCard('unique-pages-total', 'Unique Pages Scanned (All Time)', String(currentRunUniquePages.size), '');
   addSummaryCard('unique-pages-week', 'Unique Pages Scanned (This Week)', String(currentRunUniquePages.size), '');
+  populateDomainSelectMenu(data);
 
   leaderboardRows
     .sort((a, b) => {
@@ -1302,11 +1447,7 @@ a:focus-visible {
       const domainLinks = document.createElement('div');
       domainLinks.className = 'small-muted-inline small-block-gap';
 
-      const domainIdSegment = String(target.targetId || '')
-        .toLowerCase()
-        .replace(/[^a-z0-9-_]/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '') || 'unknown';
+      const domainIdSegment = toDomainIdSegment(target.targetId);
       const domainPages = [
         ['Overview', 'index.html'],
         ['Accessibility', 'accessibility.html'],
