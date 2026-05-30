@@ -22,6 +22,8 @@ async function main() {
   const profilePath = process.argv[2] || 'profiles/us-health.yml';
   const forceRescan = /^(1|true|yes)$/i.test(process.env.FORCE_RESCAN || '');
   const forcePrioritySeedRefresh = /^(1|true|yes)$/i.test(process.env.FORCE_PRIORITY_SEED_REFRESH || '');
+  const revalidateAfterDays = Number.parseInt(process.env.VITAL_REVALIDATE_AFTER_DAYS || '7', 10);
+  const updatedWithinDays = Number.parseInt(process.env.VITAL_UPDATED_WITHIN_DAYS || '7', 10);
   
   console.log(`🚀 Initalizing VITAL-Core Run Engine using profile: ${profilePath}`);
   
@@ -30,6 +32,7 @@ async function main() {
     const profile = ProfileParser.loadProfile(profilePath);
     const globalAccumulatedResults: TargetScanResult[] = [];
     const pageState = PageStateCache.load();
+    const previouslyScannedUrls = new Set(Object.keys(pageState));
 
     const prioritySeedState = await PrioritySeedStore.initialize(profile.targets, {
       forceRefresh: forcePrioritySeedRefresh,
@@ -50,7 +53,13 @@ async function main() {
     const scanPlans: TargetScanPlan[] = [];
     for (const target of profile.targets) {
       console.log(`\n===== Planning Target: ${target.name} (${target.id}) =====`);
-      const urlQueue = await TargetDiscoveryEngine.discoverUrls(target);
+      const urlQueue = await TargetDiscoveryEngine.discoverUrls(target, {
+          pageState,
+        previouslyScannedUrls,
+          skipPreviouslyScanned: !forceRescan,
+          revalidateAfterDays: Number.isFinite(revalidateAfterDays) ? revalidateAfterDays : 7,
+          updatedWithinDays: Number.isFinite(updatedWithinDays) ? updatedWithinDays : 7
+      });
       if (urlQueue.length === 0) {
         console.warn(`⚠️ No URLs discovered for target ${target.id}. Skipping...`);
         continue;

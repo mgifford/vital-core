@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TargetDiscoveryEngine } from '../../src/engine/discovery';
 import { PrioritySeedStore } from '../../src/engine/priority-seeds';
 import { TargetConfig } from '../../src/types/profile';
+import { PageStateMap } from '../../src/engine/reporters/page-state-cache';
 
 const { fetchMock } = vi.hoisted(() => ({
   fetchMock: vi.fn()
@@ -240,5 +241,250 @@ describe('TargetDiscoveryEngine', () => {
     expect(queueOne).toHaveLength(3);
     expect(queueTwo).toHaveLength(3);
     expect(queueOne).not.toEqual(queueTwo);
+  });
+
+  it('prioritizes URLs not previously scanned when filling sitemap sample slots', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/a/page-1',
+        'https://www.cms.gov/a/page-2',
+        'https://www.cms.gov/b/page-1',
+        'https://www.cms.gov/b/page-2'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 2,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 1,
+        sitemap_sample_stochastic: false
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+      previouslyScannedUrls: new Set([
+        'https://www.cms.gov/a/page-1',
+        'https://www.cms.gov/b/page-1'
+      ])
+    });
+
+    expect(queue).toEqual([
+      'https://www.cms.gov/a/page-2',
+      'https://www.cms.gov/b/page-2'
+    ]);
+  });
+
+  it('skips previously scanned priority and seeded URLs by default', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/news/new-page',
+        'https://www.cms.gov/news/old-page'
+      ]
+    });
+
+    PrioritySeedStore.setActiveSnapshotForTesting({
+      generatedAt: new Date().toISOString(),
+      strategy: 'duckduckgo-site-query',
+      targets: [
+        {
+          targetId: 'cms-gov',
+          host: 'cms.gov',
+          domain: 'https://www.cms.gov',
+          fetchedAt: new Date().toISOString(),
+          source: 'duckduckgo',
+          estimatedIndexedPages: 500,
+          topUrls: ['https://www.cms.gov/news/old-page']
+        }
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: ['https://www.cms.gov/news/old-page'],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 10,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: false
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+      pageState: {
+        'https://www.cms.gov/news/old-page': {
+          etag: null,
+          lastModified: null,
+          contentHash: null,
+          assetFingerprintHash: null,
+          lastCheckedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          lastScannedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      }
+    });
+
+    expect(queue).toEqual(['https://www.cms.gov/news/new-page']);
+  });
+
+  it('does not cap pages when max_pages and sitemap_template_sample_cap are null', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/a/page-1',
+        'https://www.cms.gov/a/page-2',
+        'https://www.cms.gov/b/page-1',
+        'https://www.cms.gov/b/page-2',
+        'https://www.cms.gov/c/page-1'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    expect(queue).toHaveLength(5);
+  });
+
+  it('revalidates cached pages older than configured threshold', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/stale-page',
+        'https://www.cms.gov/fresh-page'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false
+      }
+    };
+
+    const now = Date.now();
+    const pageState: PageStateMap = {
+      'https://www.cms.gov/stale-page': {
+        etag: null,
+        lastModified: null,
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(now - 9 * 24 * 60 * 60 * 1000).toISOString(),
+        lastScannedAt: new Date(now - 9 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      'https://www.cms.gov/fresh-page': {
+        etag: null,
+        lastModified: null,
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        lastScannedAt: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString()
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+      pageState,
+      revalidateAfterDays: 7,
+      skipPreviouslyScanned: true
+    });
+
+    expect(queue).toEqual(['https://www.cms.gov/stale-page']);
+  });
+
+  it('prioritizes pages updated in the last week before top seed URLs', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/updated-recently',
+        'https://www.cms.gov/other-page'
+      ]
+    });
+
+    PrioritySeedStore.setActiveSnapshotForTesting({
+      generatedAt: new Date().toISOString(),
+      strategy: 'duckduckgo-site-query',
+      targets: [
+        {
+          targetId: 'cms-gov',
+          host: 'cms.gov',
+          domain: 'https://www.cms.gov',
+          fetchedAt: new Date().toISOString(),
+          source: 'duckduckgo',
+          estimatedIndexedPages: 100,
+          topUrls: ['https://www.cms.gov/top-task-seed']
+        }
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false
+      }
+    };
+
+    const pageState: PageStateMap = {
+      'https://www.cms.gov/updated-recently': {
+        etag: null,
+        lastModified: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        lastScannedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+      pageState,
+      skipPreviouslyScanned: false,
+      updatedWithinDays: 7
+    });
+
+    expect(queue[0]).toBe('https://www.cms.gov/updated-recently');
+    expect(queue[1]).toBe('https://www.cms.gov/top-task-seed');
   });
 });

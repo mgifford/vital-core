@@ -8,7 +8,7 @@ function assert(condition: unknown, message: string): void {
 }
 
 try {
-  console.log('⏳ Running Phase 6 standards source validation...');
+  console.log('⏳ Running standards source validation...');
 
   const repoRoot = process.cwd();
   const standardsRoot = path.resolve(repoRoot, 'tools/submodules/standards');
@@ -47,8 +47,8 @@ try {
     'Submodule README does not appear to be the expected ScanGov Standards repository.'
   );
 
-  console.log('✅ Phase 6 passed: ScanGov standards submodule and data mappings validated.');
+  console.log('✅ Standards source validation passed.');
 } catch (err: any) {
-  console.error('❌ Phase 6 failed:', err.message);
+  console.error('❌ Standards source validation failed:', err.message);
   process.exit(1);
 }

@@ -48,7 +48,7 @@ The project splits testing into two tiers:
 
 Coverage reports are generated to `coverage/` and uploaded by the CI workflow (`.github/workflows/ci-tests.yml`).
 
-Standards-source integrity is validated in Phase 6 (`test-phase6.ts`) and confirms that the ScanGov standards submodule and canonical standards data mappings are present for reporting.
+Standards-source integrity is validated by `tests/smoke/validate-standards-source.ts` and confirms that the ScanGov standards submodule and canonical standards data mappings are present for reporting.
 
 ## Page Technology Profiling
 

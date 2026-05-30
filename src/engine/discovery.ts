@@ -2,6 +2,7 @@ import Sitemapper from 'sitemapper';
 import picomatch from 'picomatch';
 import { TargetConfig } from '../types/profile';
 import { PrioritySeedStore } from './priority-seeds';
+import type { PageStateMap } from './reporters/page-state-cache';
 
 const NON_HTML_EXTENSION_PATTERN = /\.(?:png|jpe?g|gif|webp|svg|ico|pdf|doc|docx|xml|xlsx|xls|pptx?|zip|gz|mp4|mp3|woff2?|ttf|eot|json|csv)$/i;
 const RSS_FEED_PATTERN = /\/(feed|rss|atom)(?:\/|$|\?)/i;
@@ -11,10 +12,24 @@ export class TargetDiscoveryEngine {
    * Discovers and prioritizes URLs to scan for a given target configuration.
    * @param target The validated target configuration profile
    */
-  public static async discoverUrls(target: TargetConfig): Promise<string[]> {
+  public static async discoverUrls(
+    target: TargetConfig,
+    options: {
+      pageState?: PageStateMap;
+      previouslyScannedUrls?: Set<string>;
+      skipPreviouslyScanned?: boolean;
+      revalidateAfterDays?: number;
+      updatedWithinDays?: number;
+    } = {}
+  ): Promise<string[]> {
     let sitemapUrls: string[] = [];
     const includeSubdomains = target.settings?.include_subdomains ?? false;
     const canonicalBaseHost = this.canonicalizeHost(new URL(target.base_url).hostname);
+    const pageState = options.pageState ?? {};
+    const previouslyScannedUrls = options.previouslyScannedUrls ?? new Set<string>(Object.keys(pageState));
+    const skipPreviouslyScanned = options.skipPreviouslyScanned ?? true;
+    const revalidateAfterDays = options.revalidateAfterDays ?? 7;
+    const updatedWithinDays = options.updatedWithinDays ?? 7;
     
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
@@ -63,6 +78,28 @@ export class TargetDiscoveryEngine {
     // We instantiate a Set with priority items first to preserve execution ordering
     const uniqueUrlSet = new Set<string>();
 
+    const shouldIncludeUrl = (url: string): boolean => {
+      if (!skipPreviouslyScanned) {
+        return true;
+      }
+
+      if (!previouslyScannedUrls.has(url)) {
+        return true;
+      }
+
+      return this.isDueForRevalidation(pageState[url], revalidateAfterDays);
+    };
+
+    const isRecentlyUpdatedUrl = (url: string): boolean => {
+      return this.wasUpdatedWithinWindow(pageState[url], updatedWithinDays);
+    };
+
+    // Always scan recently updated URLs first when we have metadata from prior checks.
+    filteredUrls
+      .filter(url => shouldIncludeUrl(url))
+      .filter(url => isRecentlyUpdatedUrl(url))
+      .forEach(url => uniqueUrlSet.add(url));
+
     // Insert monthly-seeded top-task URLs from DuckDuckGo before broad sitemap crawl output.
     const seededUrls = PrioritySeedStore.getSeedUrls(target);
     if (seededUrls.length > 0) {
@@ -71,6 +108,7 @@ export class TargetDiscoveryEngine {
         .filter((url): url is string => Boolean(url))
         .filter(url => this.isLikelyHtmlUrl(url))
         .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
+        .filter(url => shouldIncludeUrl(url))
         .forEach(url => uniqueUrlSet.add(url));
     }
     
@@ -81,26 +119,33 @@ export class TargetDiscoveryEngine {
         .filter((url): url is string => Boolean(url))
         .filter(url => this.isLikelyHtmlUrl(url))
         .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
+        .filter(url => shouldIncludeUrl(url))
         .forEach(url => uniqueUrlSet.add(url));
     }
 
-    // 4. Maximum Execution Ceiling Throttling Guard + Template-aware sitemap sampling
-    const ceilingLimit = target.settings?.max_pages ?? 25;
-    if (uniqueUrlSet.size >= ceilingLimit) {
+    // 4. Optional execution ceiling + template-aware sitemap sampling
+    const ceilingLimit = target.settings?.max_pages ?? null;
+    const hasCeilingLimit = typeof ceilingLimit === 'number';
+    if (hasCeilingLimit && uniqueUrlSet.size >= ceilingLimit) {
       const priorityOnlyQueue = Array.from(uniqueUrlSet).slice(0, ceilingLimit);
       console.log(`✂️ Truncating active queue from ${uniqueUrlSet.size} to ${ceilingLimit} pages (per max_pages limit).`);
       return priorityOnlyQueue;
     }
 
-    const remainingSlots = Math.max(ceilingLimit - uniqueUrlSet.size, 0);
-    const templateSampleCap = target.settings?.sitemap_template_sample_cap ?? 3;
+    const remainingSlots = hasCeilingLimit
+      ? Math.max(ceilingLimit - uniqueUrlSet.size, 0)
+      : Number.POSITIVE_INFINITY;
+    const templateSampleCap = target.settings?.sitemap_template_sample_cap ?? null;
     const useStochasticSampling = target.settings?.sitemap_sample_stochastic ?? true;
 
+    const candidateSitemapUrls = filteredUrls.filter(url => shouldIncludeUrl(url));
+
     const sampledSitemapUrls = this.sampleSitemapUrls(
-      filteredUrls,
+      candidateSitemapUrls,
       remainingSlots,
-      templateSampleCap,
-      useStochasticSampling
+      templateSampleCap ?? Number.POSITIVE_INFINITY,
+      useStochasticSampling,
+      previouslyScannedUrls
     );
     sampledSitemapUrls.forEach(url => uniqueUrlSet.add(url));
 
@@ -113,7 +158,8 @@ export class TargetDiscoveryEngine {
     sitemapUrls: string[],
     remainingSlots: number,
     templateSampleCap: number,
-    useStochasticSampling: boolean
+    useStochasticSampling: boolean,
+    previouslyScannedUrls: Set<string>
   ): string[] {
     if (remainingSlots <= 0 || sitemapUrls.length === 0) {
       return [];
@@ -127,10 +173,16 @@ export class TargetDiscoveryEngine {
       groups.set(key, bucket);
     }
 
-    const groupEntries = Array.from(groups.entries()).map(([key, urls]) => ({
-      key,
-      urls: useStochasticSampling ? this.stableShuffle(urls) : [...urls]
-    }));
+    const groupEntries = Array.from(groups.entries()).map(([key, urls]) => {
+      const orderedUrls = useStochasticSampling ? this.stableShuffle(urls) : [...urls];
+      const unseen = orderedUrls.filter(url => !previouslyScannedUrls.has(url));
+      const seen = orderedUrls.filter(url => previouslyScannedUrls.has(url));
+
+      return {
+        key,
+        urls: [...unseen, ...seen]
+      };
+    });
 
     const seed = process.env.VITAL_SAMPLING_SEED || '';
     const orderedGroups = useStochasticSampling
@@ -214,8 +266,36 @@ export class TargetDiscoveryEngine {
   }
 
   private static stableShuffle(urls: string[]): string[] {
-    const salt = process.env.VITAL_SAMPLING_SEED || '';
+    const salt = process.env.VITAL_SAMPLING_SEED || `${new Date().toISOString().slice(0, 10)}:daily`;
     return [...urls].sort((a, b) => this.hashString(`${salt}:${a}`) - this.hashString(`${salt}:${b}`));
+  }
+
+  private static isDueForRevalidation(entry: PageStateMap[string] | undefined, revalidateAfterDays: number): boolean {
+    if (!entry) {
+      return true;
+    }
+
+    const lastChecked = Date.parse(entry.lastCheckedAt || '');
+    if (!Number.isFinite(lastChecked)) {
+      return true;
+    }
+
+    const ageMs = Date.now() - lastChecked;
+    return ageMs >= revalidateAfterDays * 24 * 60 * 60 * 1000;
+  }
+
+  private static wasUpdatedWithinWindow(entry: PageStateMap[string] | undefined, updatedWithinDays: number): boolean {
+    if (!entry?.lastModified) {
+      return false;
+    }
+
+    const lastModified = Date.parse(entry.lastModified);
+    if (!Number.isFinite(lastModified)) {
+      return false;
+    }
+
+    const ageMs = Date.now() - lastModified;
+    return ageMs >= 0 && ageMs <= updatedWithinDays * 24 * 60 * 60 * 1000;
   }
 
   private static hashString(value: string): number {

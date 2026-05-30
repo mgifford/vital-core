@@ -11,6 +11,10 @@ export class BugExporter {
     'page_url',
     'status',
     'error_message',
+    'lighthouse_performance_score',
+    'lighthouse_first_contentful_paint_ms',
+    'lighthouse_largest_contentful_paint_ms',
+    'lighthouse_speed_index_ms',
     'severity',
     'rule_id',
     'description',
@@ -58,6 +62,12 @@ export class BugExporter {
         md += `--- \n\n## 📄 Page Context: [${page.url}](${page.url})\n`;
         md += `* **Result Execution Status:** \`${page.status}\`\n`;
 
+        const lighthouse = page.liveAudits?.lighthouse;
+        md += `* **Lighthouse Performance Score:** ${this.formatMetric(lighthouse?.performanceScore)}\n`;
+        md += `* **First Contentful Paint (ms):** ${this.formatMetric(lighthouse?.firstContentfulPaintMs)}\n`;
+        md += `* **Largest Contentful Paint (ms):** ${this.formatMetric(lighthouse?.largestContentfulPaintMs)}\n`;
+        md += `* **Speed Index (ms):** ${this.formatMetric(lighthouse?.speedIndexMs)}\n`;
+
         if (page.errorMessage) {
           md += `* **Error Context:** \`${page.errorMessage}\`\n`;
           csvRows.push([
@@ -65,6 +75,10 @@ export class BugExporter {
             page.url,
             page.status,
             page.errorMessage,
+            this.formatMetric(lighthouse?.performanceScore),
+            this.formatMetric(lighthouse?.firstContentfulPaintMs),
+            this.formatMetric(lighthouse?.largestContentfulPaintMs),
+            this.formatMetric(lighthouse?.speedIndexMs),
             '',
             '',
             '',
@@ -113,6 +127,10 @@ export class BugExporter {
                 page.url,
                 page.status,
                 '',
+                this.formatMetric(lighthouse?.performanceScore),
+                this.formatMetric(lighthouse?.firstContentfulPaintMs),
+                this.formatMetric(lighthouse?.largestContentfulPaintMs),
+                this.formatMetric(lighthouse?.speedIndexMs),
                 violation.severity,
                 violation.id,
                 violation.description,
@@ -141,6 +159,10 @@ export class BugExporter {
               page.url,
               page.status,
               '',
+              this.formatMetric(lighthouse?.performanceScore),
+              this.formatMetric(lighthouse?.firstContentfulPaintMs),
+              this.formatMetric(lighthouse?.largestContentfulPaintMs),
+              this.formatMetric(lighthouse?.speedIndexMs),
               'moderate',
               'suspicious-alt-text',
               'Suspicious or missing alternative text pattern detected.',
@@ -190,6 +212,10 @@ export class BugExporter {
             page.url,
             page.status,
             '',
+            this.formatMetric(lighthouse?.performanceScore),
+            this.formatMetric(lighthouse?.firstContentfulPaintMs),
+            this.formatMetric(lighthouse?.largestContentfulPaintMs),
+            this.formatMetric(lighthouse?.speedIndexMs),
             'serious',
             'third-party-js-regression',
             'Accessibility regressions detected when comparing JS-enabled and JS-disabled audits.',
@@ -246,6 +272,12 @@ export class BugExporter {
   private static toCsv(rows: string[][]): string {
     const serializedRows = [this.csvHeader, ...rows].map(cols => cols.map(this.escapeCsvField).join(','));
     return serializedRows.join('\n') + '\n';
+  }
+
+  private static formatMetric(value: number | null | undefined): string {
+    return typeof value === 'number' && Number.isFinite(value)
+      ? String(Math.round(value))
+      : 'n/a';
   }
 
   private static escapeCsvField(value: string): string {

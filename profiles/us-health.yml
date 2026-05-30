@@ -15,7 +15,6 @@ targets:
       - https://www.cms.gov/about-cms
     settings:
       postLoadDelay: 2500
-      max_pages: 30
       maxTimeoutMs: 120000
 
   - id: hhs-gov
@@ -29,7 +28,6 @@ targets:
       - https://www.hhs.gov/healthcare/index.html
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: medicare-gov
@@ -44,7 +42,6 @@ targets:
       - https://www.medicare.gov/coverage
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: medicaid-gov
@@ -59,7 +56,6 @@ targets:
       - https://www.medicaid.gov/state-overviews/index.html
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: openpaymentsdata-cms-gov
@@ -71,7 +67,6 @@ targets:
       - https://openpaymentsdata.cms.gov/
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: data-medicaid-gov
@@ -83,7 +78,6 @@ targets:
       - https://data.medicaid.gov/
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: data-healthcare-gov
@@ -95,7 +89,6 @@ targets:
       - https://data.healthcare.gov/datasets
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: data-cms-gov
@@ -107,7 +100,6 @@ targets:
       - https://data.cms.gov/
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: healthcare-gov
@@ -123,7 +115,6 @@ targets:
       - https://www.healthcare.gov/quick-guide/
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000
 
   - id: cdc-gov
@@ -139,5 +130,4 @@ targets:
       - https://www.cdc.gov/about/
     settings:
       postLoadDelay: 2000
-      max_pages: 25
       maxTimeoutMs: 120000

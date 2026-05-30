@@ -103,6 +103,12 @@ export class DashboardCompiler {
         </thead>
         <tbody id="target-body"></tbody>
       </table>
+      <p style="font-size:0.85rem; margin-top:0.6rem; color:#4d4d4d;">
+        Lighthouse thresholds used for color cues: Perf (green ≥ 90, amber 70-89, red &lt; 70),
+        FCP (green ≤ 1800ms, amber 1801-3000ms, red &gt; 3000ms),
+        LCP (green ≤ 2500ms, amber 2501-4000ms, red &gt; 4000ms),
+        SI (green ≤ 3400ms, amber 3401-5800ms, red &gt; 5800ms).
+      </p>
     </div>
     <div class="card">
       <h2>Run History</h2>
@@ -140,6 +146,12 @@ export class DashboardCompiler {
         </thead>
         <tbody id="ongoing-body"></tbody>
       </table>
+      <p style="font-size:0.85rem; margin-top:0.6rem; color:#4d4d4d;">
+        Lighthouse thresholds used for color cues: Perf (green ≥ 90, amber 70-89, red &lt; 70),
+        FCP (green ≤ 1800ms, amber 1801-3000ms, red &gt; 3000ms),
+        LCP (green ≤ 2500ms, amber 2501-4000ms, red &gt; 4000ms),
+        SI (green ≤ 3400ms, amber 3401-5800ms, red &gt; 5800ms).
+      </p>
     </div>
   </main>
   <script>
@@ -154,6 +166,7 @@ export class DashboardCompiler {
     const historyBodyEl = document.getElementById('history-body');
     const ongoingBodyEl = document.getElementById('ongoing-body');
     const sizeEstimateByTarget = new Map();
+    const topUrlsByTarget = new Map();
 
     let totalPages = 0;
     let totalViolations = 0;
@@ -193,6 +206,75 @@ export class DashboardCompiler {
       }
 
       return actions.slice(0, 2).join(' ');
+    }
+
+    function summarizeLighthouseMetrics(pagesScanned) {
+      const performance = [];
+      const fcp = [];
+      const lcp = [];
+      const speedIndex = [];
+
+      (Array.isArray(pagesScanned) ? pagesScanned : []).forEach(page => {
+        const lighthouse = page?.liveAudits?.lighthouse;
+        if (typeof lighthouse?.performanceScore === 'number') {
+          performance.push(lighthouse.performanceScore);
+        }
+        if (typeof lighthouse?.firstContentfulPaintMs === 'number') {
+          fcp.push(lighthouse.firstContentfulPaintMs);
+        }
+        if (typeof lighthouse?.largestContentfulPaintMs === 'number') {
+          lcp.push(lighthouse.largestContentfulPaintMs);
+        }
+        if (typeof lighthouse?.speedIndexMs === 'number') {
+          speedIndex.push(lighthouse.speedIndexMs);
+        }
+      });
+
+      const average = values => {
+        if (!Array.isArray(values) || values.length === 0) {
+          return null;
+        }
+        return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+      };
+
+      return {
+        performance: average(performance),
+        fcp: average(fcp),
+        lcp: average(lcp),
+        speedIndex: average(speedIndex)
+      };
+    }
+
+    function metricColor(metric, value) {
+      if (typeof value !== 'number' || !Number.isFinite(value)) {
+        return '#4d4d4d';
+      }
+
+      if (metric === 'performance') {
+        if (value >= 90) return '#1a7f37';
+        if (value >= 70) return '#9a6700';
+        return 'var(--critical-red)';
+      }
+
+      if (metric === 'fcp') {
+        if (value <= 1800) return '#1a7f37';
+        if (value <= 3000) return '#9a6700';
+        return 'var(--critical-red)';
+      }
+
+      if (metric === 'lcp') {
+        if (value <= 2500) return '#1a7f37';
+        if (value <= 4000) return '#9a6700';
+        return 'var(--critical-red)';
+      }
+
+      if (metric === 'speedIndex') {
+        if (value <= 3400) return '#1a7f37';
+        if (value <= 5800) return '#9a6700';
+        return 'var(--critical-red)';
+      }
+
+      return '#4d4d4d';
     }
 
     data.forEach(target => {
@@ -278,6 +360,41 @@ export class DashboardCompiler {
       const recommendationBody = document.createElement('div');
       recommendationBody.textContent = recommendationText;
 
+      const topUrlsBlock = document.createElement('div');
+      topUrlsBlock.style.marginTop = '0.45rem';
+      topUrlsBlock.style.fontSize = '0.85rem';
+      topUrlsBlock.style.color = '#4d4d4d';
+      topUrlsBlock.setAttribute('data-top-urls-target-id', String(target.targetId || ''));
+      topUrlsBlock.textContent = 'Top popular URLs: loading...';
+
+      const lighthouseSummary = summarizeLighthouseMetrics(target.pagesScanned);
+      const lighthouseBlock = document.createElement('div');
+      lighthouseBlock.style.marginTop = '0.45rem';
+      lighthouseBlock.style.fontSize = '0.85rem';
+      lighthouseBlock.style.color = '#4d4d4d';
+
+      const lighthouseLabel = document.createElement('span');
+      lighthouseLabel.textContent = 'Lighthouse: ';
+      lighthouseBlock.appendChild(lighthouseLabel);
+
+      const metrics = [
+        { label: 'Perf', key: 'performance', value: lighthouseSummary.performance, suffix: '' },
+        { label: 'FCP', key: 'fcp', value: lighthouseSummary.fcp, suffix: 'ms' },
+        { label: 'LCP', key: 'lcp', value: lighthouseSummary.lcp, suffix: 'ms' },
+        { label: 'SI', key: 'speedIndex', value: lighthouseSummary.speedIndex, suffix: 'ms' }
+      ];
+
+      metrics.forEach((metric, idx) => {
+        const metricSpan = document.createElement('span');
+        metricSpan.style.color = metricColor(metric.key, metric.value);
+        metricSpan.textContent = metric.label + ' ' + String(metric.value ?? 'n/a') + metric.suffix;
+        lighthouseBlock.appendChild(metricSpan);
+
+        if (idx < metrics.length - 1) {
+          lighthouseBlock.appendChild(document.createTextNode(' | '));
+        }
+      });
+
       const reportLinks = document.createElement('div');
       reportLinks.style.marginTop = '0.45rem';
       reportLinks.style.fontSize = '0.85rem';
@@ -293,6 +410,8 @@ export class DashboardCompiler {
       reportLinks.appendChild(reportCsvLink);
 
       recommendationsCell.appendChild(recommendationBody);
+      recommendationsCell.appendChild(lighthouseBlock);
+      recommendationsCell.appendChild(topUrlsBlock);
       recommendationsCell.appendChild(reportLinks);
 
       tr.appendChild(domainCell);
@@ -310,6 +429,10 @@ export class DashboardCompiler {
           if (entry && typeof entry.targetId === 'string' && typeof entry.estimatedIndexedPages === 'number') {
             sizeEstimateByTarget.set(entry.targetId, entry.estimatedIndexedPages);
           }
+          if (entry && typeof entry.targetId === 'string' && Array.isArray(entry.topUrls)) {
+            const safeTopUrls = entry.topUrls.filter(url => typeof url === 'string').slice(0, 3);
+            topUrlsByTarget.set(entry.targetId, safeTopUrls);
+          }
         });
 
         const estimateNodes = document.querySelectorAll('[data-size-estimate-target-id]');
@@ -317,9 +440,45 @@ export class DashboardCompiler {
           const targetId = node.getAttribute('data-size-estimate-target-id') || '';
           node.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(targetId));
         });
+
+        const topUrlNodes = document.querySelectorAll('[data-top-urls-target-id]');
+        topUrlNodes.forEach(node => {
+          const targetId = node.getAttribute('data-top-urls-target-id') || '';
+          const topUrls = topUrlsByTarget.get(targetId) || [];
+
+          while (node.firstChild) {
+            node.removeChild(node.firstChild);
+          }
+
+          if (!Array.isArray(topUrls) || topUrls.length === 0) {
+            node.textContent = 'Top popular URLs: n/a';
+            return;
+          }
+
+          const label = document.createElement('span');
+          label.textContent = 'Top popular URLs: ';
+          node.appendChild(label);
+
+          topUrls.forEach((url, index) => {
+            const link = document.createElement('a');
+            link.href = String(url);
+            link.textContent = String(url);
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            node.appendChild(link);
+
+            if (index < topUrls.length - 1) {
+              node.appendChild(document.createTextNode(' | '));
+            }
+          });
+        });
       })
       .catch(() => {
         // Keep best-effort display with n/a when seed snapshot is unavailable.
+        const topUrlNodes = document.querySelectorAll('[data-top-urls-target-id]');
+        topUrlNodes.forEach(node => {
+          node.textContent = 'Top popular URLs: n/a';
+        });
       });
 
     const summaryCards = [

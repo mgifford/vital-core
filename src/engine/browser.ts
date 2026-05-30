@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { createHash } from 'crypto';
+import { load } from 'cheerio';
 import { chromium, Browser, Page } from 'playwright';
 import { TargetConfig } from '../types/profile';
 import { PageScanReport } from '../types/site-quality-spec';
@@ -22,6 +23,7 @@ interface PageProbeResult {
   etag: string | null;
   lastModified: string | null;
   contentHash: string | null;
+  assetFingerprintHash: string | null;
 }
 
 export class ResilientBrowserEngine {
@@ -102,6 +104,7 @@ export class ResilientBrowserEngine {
           // 3. Extract fully rendered HTML string state
           const hydratedHtml = await page.content();
           const contentHash = this.hashContent(hydratedHtml);
+          const assetFingerprintHash = this.computeAssetFingerprint(hydratedHtml, url);
 
           // 4. Detect CMS/framework tooling footprint for page profile reporting
           baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
@@ -143,7 +146,7 @@ export class ResilientBrowserEngine {
           baseReport.status = 'COMPLETED';
 
           if (pageState) {
-            this.writePageState(pageState, url, { ...probe, contentHash }, true, scannedAt);
+            this.writePageState(pageState, url, { ...probe, contentHash, assetFingerprintHash }, true, scannedAt);
           }
         }, settings.maxTimeoutMs);
 
@@ -202,7 +205,8 @@ export class ResilientBrowserEngine {
             reason: 'Skipped unchanged page based on matching ETag.',
             etag,
             lastModified,
-            contentHash: previousState.contentHash
+            contentHash: previousState.contentHash,
+            assetFingerprintHash: previousState.assetFingerprintHash
           };
         }
 
@@ -212,7 +216,8 @@ export class ResilientBrowserEngine {
             reason: 'Skipped unchanged page based on matching Last-Modified header.',
             etag,
             lastModified,
-            contentHash: previousState.contentHash
+            contentHash: previousState.contentHash,
+            assetFingerprintHash: previousState.assetFingerprintHash
           };
         }
       }
@@ -220,23 +225,31 @@ export class ResilientBrowserEngine {
       if (!etag && !lastModified && previousState?.contentHash) {
         try {
           const getResponse = await this.fetchWithTimeout(url, { method: 'GET' }, timeoutMs);
-          const contentHash = this.hashContent(await getResponse.text());
-          if (contentHash === previousState.contentHash) {
+          const html = await getResponse.text();
+          const contentHash = this.hashContent(html);
+          const assetFingerprintHash = this.computeAssetFingerprint(html, url);
+
+          if (
+            contentHash === previousState.contentHash &&
+            (!previousState.assetFingerprintHash || assetFingerprintHash === previousState.assetFingerprintHash)
+          ) {
             return {
               unchanged: true,
-              reason: 'Skipped unchanged page based on matching lightweight content hash.',
+              reason: 'Skipped unchanged page based on matching HTML + asset fingerprint hash.',
               etag,
               lastModified,
-              contentHash
+              contentHash,
+              assetFingerprintHash
             };
           }
 
           return {
             unchanged: false,
-            reason: 'Page changed based on lightweight content hash comparison.',
+            reason: 'Page changed based on HTML + asset fingerprint hash comparison.',
             etag,
             lastModified,
-            contentHash
+            contentHash,
+            assetFingerprintHash
           };
         } catch {
           // Fall through to changed=true when lightweight fetch fails.
@@ -248,7 +261,8 @@ export class ResilientBrowserEngine {
         reason: 'Page appears changed or no prior state available.',
         etag,
         lastModified,
-        contentHash: previousState?.contentHash ?? null
+        contentHash: previousState?.contentHash ?? null,
+        assetFingerprintHash: previousState?.assetFingerprintHash ?? null
       };
     } catch {
       return {
@@ -256,7 +270,8 @@ export class ResilientBrowserEngine {
         reason: 'Change probe failed; scanning page to avoid missing updates.',
         etag: previousState?.etag ?? null,
         lastModified: previousState?.lastModified ?? null,
-        contentHash: previousState?.contentHash ?? null
+        contentHash: previousState?.contentHash ?? null,
+        assetFingerprintHash: previousState?.assetFingerprintHash ?? null
       };
     }
   }
@@ -289,6 +304,71 @@ export class ResilientBrowserEngine {
     return createHash('sha256').update(content).digest('hex');
   }
 
+  private static computeAssetFingerprint(html: string, pageUrl: string): string {
+    const $ = load(html);
+
+    const styleUrls = new Set<string>();
+    $('link[rel="stylesheet"][href]').each((_, element) => {
+      const href = ($(element).attr('href') || '').trim();
+      const resolved = this.resolveAssetUrl(pageUrl, href);
+      if (resolved) {
+        styleUrls.add(resolved);
+      }
+    });
+
+    const scriptUrls = new Set<string>();
+    $('script[src]').each((_, element) => {
+      const src = ($(element).attr('src') || '').trim();
+      const resolved = this.resolveAssetUrl(pageUrl, src);
+      if (resolved) {
+        scriptUrls.add(resolved);
+      }
+    });
+
+    const inlineScriptHashes: string[] = [];
+    $('script:not([src])').each((_, element) => {
+      const text = ($(element).html() || '').trim();
+      if (text) {
+        inlineScriptHashes.push(this.hashContent(text));
+      }
+    });
+
+    const inlineStyleHashes: string[] = [];
+    $('style').each((_, element) => {
+      const text = ($(element).html() || '').trim();
+      if (text) {
+        inlineStyleHashes.push(this.hashContent(text));
+      }
+    });
+
+    const fingerprintPayload = JSON.stringify({
+      styleUrls: Array.from(styleUrls).sort(),
+      scriptUrls: Array.from(scriptUrls).sort(),
+      inlineScriptHashes: inlineScriptHashes.sort(),
+      inlineStyleHashes: inlineStyleHashes.sort()
+    });
+
+    return this.hashContent(fingerprintPayload);
+  }
+
+  private static resolveAssetUrl(baseUrl: string, candidate: string): string | null {
+    if (!candidate) {
+      return null;
+    }
+
+    try {
+      const parsed = new URL(candidate, baseUrl);
+      if (!/^https?:$/i.test(parsed.protocol)) {
+        return null;
+      }
+
+      parsed.hash = '';
+      return parsed.toString();
+    } catch {
+      return null;
+    }
+  }
+
   private static async runWithTimeout<T>(operation: () => Promise<T>, timeoutMs: number): Promise<T> {
     let timeoutHandle: NodeJS.Timeout | null = null;
 
@@ -317,6 +397,7 @@ export class ResilientBrowserEngine {
       etag: probe.etag,
       lastModified: probe.lastModified,
       contentHash: probe.contentHash,
+      assetFingerprintHash: probe.assetFingerprintHash,
       lastCheckedAt: new Date().toISOString(),
       lastScannedAt: scanned ? scannedAt : previous?.lastScannedAt || ''
     };

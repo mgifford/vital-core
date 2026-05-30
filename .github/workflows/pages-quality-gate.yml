@@ -29,7 +29,14 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           fail: true
-          args: --verbose --no-progress docs/**/*.html
+          args: >-
+            --verbose
+            --no-progress
+            --timeout 20
+            --max-retries 3
+            --retry-wait-time 5
+            --accept 200,429
+            docs/**/*.html
 
       - name: Initialize Node.js environment
         uses: actions/setup-node@v4

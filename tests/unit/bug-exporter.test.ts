@@ -54,7 +54,13 @@ describe('BugExporter', () => {
           errorMessage: null,
           technologyStack: [],
           liveAudits: {
-            lighthouse: null,
+            lighthouse: {
+              performanceScore: 88,
+              energyEstimateKwh: null,
+              firstContentfulPaintMs: 1200,
+              largestContentfulPaintMs: 2100,
+              speedIndexMs: 3000
+            },
             accessibilityViolations: [
               {
                 id: 'image-alt',
@@ -102,9 +108,15 @@ describe('BugExporter', () => {
     const csvText = fs.readFileSync(csvPath, 'utf8');
     const markdownText = fs.readFileSync(markdownPath, 'utf8');
 
-    expect(csvText).toContain('target_id,page_url,status,error_message,severity,rule_id');
-    expect(csvText).toContain('sample-target,https://example.org/page,COMPLETED,,serious,image-alt');
+    expect(csvText).toContain(
+      'target_id,page_url,status,error_message,lighthouse_performance_score,lighthouse_first_contentful_paint_ms,lighthouse_largest_contentful_paint_ms,lighthouse_speed_index_ms'
+    );
+    expect(csvText).toContain('sample-target,https://example.org/page,COMPLETED,,88,1200,2100,3000,serious,image-alt');
     expect(markdownText).toContain('**Primary Rule Guidance (Deque Axe):** [Deque Axe Ruleset Specification]');
+    expect(markdownText).toContain('**Lighthouse Performance Score:** 88');
+    expect(markdownText).toContain('**First Contentful Paint (ms):** 1200');
+    expect(markdownText).toContain('**Largest Contentful Paint (ms):** 2100');
+    expect(markdownText).toContain('**Speed Index (ms):** 3000');
     expect(markdownText).toContain('Supplemental Pattern Advice (curated-purple-ai, HIGH confidence)');
   });
 });

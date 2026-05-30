@@ -5,6 +5,7 @@ export interface PageStateEntry {
   etag: string | null;
   lastModified: string | null;
   contentHash: string | null;
+  assetFingerprintHash: string | null;
   lastCheckedAt: string;
   lastScannedAt: string;
 }
@@ -46,6 +47,8 @@ export class PageStateCache {
           etag: typeof candidate.etag === 'string' ? candidate.etag : null,
           lastModified: typeof candidate.lastModified === 'string' ? candidate.lastModified : null,
           contentHash: typeof candidate.contentHash === 'string' ? candidate.contentHash : null,
+          assetFingerprintHash:
+            typeof candidate.assetFingerprintHash === 'string' ? candidate.assetFingerprintHash : null,
           lastCheckedAt: typeof candidate.lastCheckedAt === 'string' ? candidate.lastCheckedAt : '',
           lastScannedAt: typeof candidate.lastScannedAt === 'string' ? candidate.lastScannedAt : ''
         };
