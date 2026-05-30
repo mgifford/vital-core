@@ -79,6 +79,8 @@ export class DashboardCompiler {
         <a href="runs/index.json">Historical Run Index JSON</a>
         &nbsp;|&nbsp;
         <a href="runs/trends.json">Trend Summary JSON</a>
+        &nbsp;|&nbsp;
+        <a href="runs/domain-ongoing.json">Domain Ongoing Reports JSON</a>
       </p>
     </div>
     <div class="card">
@@ -111,6 +113,26 @@ export class DashboardCompiler {
         <tbody id="history-body"></tbody>
       </table>
     </div>
+    <div class="card">
+      <h2>Requirement Compliance Over Time</h2>
+      <svg id="compliance-chart" viewBox="0 0 900 260" role="img" aria-label="Requirement compliance percentages across recent runs" style="width:100%; height:auto; border:1px solid var(--border-gray); background:#fff;"></svg>
+      <p id="compliance-caption" style="font-size:0.9rem; margin-top:0.75rem; color:#4d4d4d;">Compliance percentages by requirement across recent runs.</p>
+    </div>
+    <div class="card">
+      <h2>Domain Ongoing Reports</h2>
+      <table id="ongoing-table">
+        <thead>
+          <tr>
+            <th>Domain</th>
+            <th>Period</th>
+            <th>Quality Indicators</th>
+            <th>Suggested Improvements</th>
+            <th>Pages Needing Most Improvement</th>
+          </tr>
+        </thead>
+        <tbody id="ongoing-body"></tbody>
+      </table>
+    </div>
   </main>
   <script>
     const data = ${jsonPayload};
@@ -120,6 +142,7 @@ export class DashboardCompiler {
     const trendSummaryEl = document.getElementById('trend-summary');
     const tbodyEl = document.getElementById('target-body');
     const historyBodyEl = document.getElementById('history-body');
+    const ongoingBodyEl = document.getElementById('ongoing-body');
 
     let totalPages = 0;
     let totalViolations = 0;
@@ -364,6 +387,120 @@ export class DashboardCompiler {
       trendSummaryEl.appendChild(wrapper);
     }
 
+    function drawComplianceChart(series) {
+      const chart = document.getElementById('compliance-chart');
+      if (!chart) {
+        return;
+      }
+
+      while (chart.firstChild) {
+        chart.removeChild(chart.firstChild);
+      }
+
+      if (!Array.isArray(series) || series.length === 0) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', '20');
+        text.setAttribute('y', '130');
+        text.setAttribute('fill', '#555');
+        text.textContent = 'No compliance trend data available yet.';
+        chart.appendChild(text);
+        return;
+      }
+
+      const width = 900;
+      const height = 260;
+      const margin = { left: 60, right: 24, top: 16, bottom: 40 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+
+      const axis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      axis.setAttribute('x1', String(margin.left));
+      axis.setAttribute('y1', String(margin.top + plotHeight));
+      axis.setAttribute('x2', String(margin.left + plotWidth));
+      axis.setAttribute('y2', String(margin.top + plotHeight));
+      axis.setAttribute('stroke', '#7c7c7c');
+      chart.appendChild(axis);
+
+      const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      yAxis.setAttribute('x1', String(margin.left));
+      yAxis.setAttribute('y1', String(margin.top));
+      yAxis.setAttribute('x2', String(margin.left));
+      yAxis.setAttribute('y2', String(margin.top + plotHeight));
+      yAxis.setAttribute('stroke', '#7c7c7c');
+      chart.appendChild(yAxis);
+
+      [0, 25, 50, 75, 100].forEach(value => {
+        const y = margin.top + plotHeight - ((value / 100) * plotHeight);
+        const grid = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        grid.setAttribute('x1', String(margin.left));
+        grid.setAttribute('y1', String(y));
+        grid.setAttribute('x2', String(margin.left + plotWidth));
+        grid.setAttribute('y2', String(y));
+        grid.setAttribute('stroke', '#ececec');
+        chart.appendChild(grid);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', '10');
+        label.setAttribute('y', String(y + 4));
+        label.setAttribute('fill', '#555');
+        label.setAttribute('font-size', '12');
+        label.textContent = String(value) + '%';
+        chart.appendChild(label);
+      });
+
+      const metrics = [
+        { key: 'accessibilityNoViolations', label: 'A11y no violations', color: '#b50909' },
+        { key: 'performanceThreshold', label: 'Performance >= 70', color: '#005ea2' },
+        { key: 'plainLanguageGrade', label: 'Plain language grade <= 8', color: '#1a7f37' },
+        { key: 'plainLanguageLinks', label: 'No ambiguous links', color: '#9a6700' },
+        { key: 'completedStatus', label: 'Completed status', color: '#6f42c1' }
+      ];
+
+      const xForIndex = (index) => {
+        if (series.length === 1) {
+          return margin.left + (plotWidth / 2);
+        }
+        return margin.left + ((index / (series.length - 1)) * plotWidth);
+      };
+
+      const yForPercent = (percent) => margin.top + plotHeight - ((Math.max(0, Math.min(100, Number(percent) || 0)) / 100) * plotHeight);
+
+      metrics.forEach(metric => {
+        const points = series.map((entry, index) => {
+          const value = entry.compliancePercentages?.[metric.key];
+          return String(xForIndex(index)) + ',' + String(yForPercent(value));
+        }).join(' ');
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        line.setAttribute('fill', 'none');
+        line.setAttribute('stroke', metric.color);
+        line.setAttribute('stroke-width', '2.5');
+        line.setAttribute('points', points);
+        chart.appendChild(line);
+      });
+
+      const legendStartX = margin.left;
+      metrics.forEach((metric, index) => {
+        const y = margin.top + 10 + (index * 16);
+        const swatch = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        swatch.setAttribute('x1', String(legendStartX));
+        swatch.setAttribute('y1', String(y));
+        swatch.setAttribute('x2', String(legendStartX + 14));
+        swatch.setAttribute('y2', String(y));
+        swatch.setAttribute('stroke', metric.color);
+        swatch.setAttribute('stroke-width', '3');
+        chart.appendChild(swatch);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', String(legendStartX + 20));
+        text.setAttribute('y', String(y + 4));
+        text.setAttribute('fill', '#333');
+        text.setAttribute('font-size', '12');
+        text.textContent = metric.label;
+        chart.appendChild(text);
+      });
+    }
+
     function formatDelta(value, suffix) {
       const sign = value > 0 ? '+' : '';
       return sign + String(value) + suffix;
@@ -455,9 +592,101 @@ export class DashboardCompiler {
           providerSummary,
           ''
         );
+
+        const complianceSeries = Array.isArray(trends.requirementComplianceOverTime)
+          ? trends.requirementComplianceOverTime
+          : [];
+        drawComplianceChart(complianceSeries);
+
+        const latestCompliance = complianceSeries.length > 0
+          ? complianceSeries[complianceSeries.length - 1].compliancePercentages
+          : null;
+        const caption = document.getElementById('compliance-caption');
+        if (caption && latestCompliance) {
+          caption.textContent =
+            'Latest run: A11y no violations ' + String(Number(latestCompliance.accessibilityNoViolations || 0).toFixed(1)) +
+            '%, Performance>=70 ' + String(Number(latestCompliance.performanceThreshold || 0).toFixed(1)) +
+            '%, Grade<=8 ' + String(Number(latestCompliance.plainLanguageGrade || 0).toFixed(1)) +
+            '%, No ambiguous links ' + String(Number(latestCompliance.plainLanguageLinks || 0).toFixed(1)) +
+            '%, Completed ' + String(Number(latestCompliance.completedStatus || 0).toFixed(1)) + '%.';
+        }
       })
       .catch(() => {
         appendTrendCard('Trend Summary', 'Unavailable', 'Trend data could not be loaded.', '');
+        drawComplianceChart([]);
+      });
+
+    fetch('runs/domain-ongoing.json')
+      .then(response => (response.ok ? response.json() : null))
+      .then(payload => {
+        const reports = Array.isArray(payload?.reports) ? payload.reports : [];
+        if (reports.length === 0) {
+          const row = document.createElement('tr');
+          const cell = document.createElement('td');
+          cell.colSpan = 5;
+          cell.textContent = 'No ongoing domain reports available yet.';
+          row.appendChild(cell);
+          ongoingBodyEl.appendChild(row);
+          return;
+        }
+
+        reports.forEach(report => {
+          const row = document.createElement('tr');
+
+          const domainCell = document.createElement('td');
+          const strong = document.createElement('strong');
+          strong.textContent = String(report.targetId || '').toUpperCase();
+          const br = document.createElement('br');
+          const small = document.createElement('small');
+          small.textContent = String(report.domain || '');
+          domainCell.appendChild(strong);
+          domainCell.appendChild(br);
+          domainCell.appendChild(small);
+
+          const periodCell = document.createElement('td');
+          const periodStart = String(report.period?.start || '').slice(0, 10);
+          const periodEnd = String(report.period?.end || '').slice(0, 10);
+          const runCount = Number(report.period?.runCount || 0);
+          periodCell.textContent = periodStart + ' to ' + periodEnd + ' (' + String(runCount) + ' run(s))';
+
+          const indicatorsCell = document.createElement('td');
+          const indicators = report.qualityIndicators || {};
+          indicatorsCell.textContent =
+            'V/Page: ' + String(Number(indicators.violationsPerPage || 0).toFixed(3)) +
+            ' | Perf: ' + String(indicators.averagePerformanceScore ?? 'n/a') +
+            ' | Grade: ' + String(indicators.averageFleschKincaidGrade ?? 'n/a') +
+            ' | Completion: ' + String(Number(indicators.completionRate || 0).toFixed(1)) + '%';
+
+          const suggestionsCell = document.createElement('td');
+          const suggestions = Array.isArray(report.suggestions) ? report.suggestions : [];
+          suggestionsCell.textContent = suggestions.slice(0, 2).join(' ');
+
+          const pagesCell = document.createElement('td');
+          const pages = Array.isArray(report.pagesNeedingMostImprovement) ? report.pagesNeedingMostImprovement : [];
+          if (pages.length === 0) {
+            pagesCell.textContent = 'No high-priority pages identified in latest run.';
+          } else {
+            pagesCell.textContent = pages
+              .slice(0, 3)
+              .map(item => '[score ' + String(item.priorityScore) + '] ' + String(item.url || ''))
+              .join(' | ');
+          }
+
+          row.appendChild(domainCell);
+          row.appendChild(periodCell);
+          row.appendChild(indicatorsCell);
+          row.appendChild(suggestionsCell);
+          row.appendChild(pagesCell);
+          ongoingBodyEl.appendChild(row);
+        });
+      })
+      .catch(() => {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 5;
+        cell.textContent = 'Domain ongoing reports could not be loaded.';
+        row.appendChild(cell);
+        ongoingBodyEl.appendChild(row);
       });
   </script>
 </body>

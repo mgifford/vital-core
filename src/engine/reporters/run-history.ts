@@ -56,6 +56,18 @@ interface TrendSummary {
     violationsPerPage: number;
     qualityIndexScore: number;
   };
+  requirementComplianceOverTime: Array<{
+    runId: string;
+    generatedAt: string;
+    pagesScanned: number;
+    compliancePercentages: {
+      accessibilityNoViolations: number;
+      performanceThreshold: number;
+      plainLanguageGrade: number;
+      plainLanguageLinks: number;
+      completedStatus: number;
+    };
+  }>;
 }
 
 interface ProviderAttributionRollupEntry {
@@ -64,6 +76,31 @@ interface ProviderAttributionRollupEntry {
   medium: number;
   low: number;
   score: number;
+}
+
+interface DomainOngoingReport {
+  targetId: string;
+  domain: string;
+  period: {
+    start: string;
+    end: string;
+    runCount: number;
+  };
+  qualityIndicators: {
+    pagesObserved: number;
+    completionRate: number;
+    violationsPerPage: number;
+    averagePerformanceScore: number | null;
+    averageFleschKincaidGrade: number | null;
+    averagePassiveVoiceRatio: number | null;
+    averageAmbiguousLinkTextCount: number;
+  };
+  suggestions: string[];
+  pagesNeedingMostImprovement: Array<{
+    url: string;
+    priorityScore: number;
+    reasons: string[];
+  }>;
 }
 
 export class RunHistoryReporter {
@@ -140,6 +177,11 @@ export class RunHistoryReporter {
     fs.writeFileSync(
       path.join(this.distRunsDir, 'trends.json'),
       JSON.stringify(this.buildTrendSummary(nextIndex), null, 2),
+      'utf8'
+    );
+    fs.writeFileSync(
+      path.join(this.distRunsDir, 'domain-ongoing.json'),
+      JSON.stringify(this.buildDomainOngoingReports(nextIndex), null, 2),
       'utf8'
     );
 
@@ -274,8 +316,60 @@ export class RunHistoryReporter {
             qualityIndexScore: Number(((latest.qualityIndexScore ?? 0) - (previous.qualityIndexScore ?? 0)).toFixed(2))
           }
         : null,
-      rollingAverage: average
+      rollingAverage: average,
+      requirementComplianceOverTime: this.buildRequirementComplianceOverTime(windowedRuns)
     };
+  }
+
+  private static buildRequirementComplianceOverTime(runs: RunEntry[]): TrendSummary['requirementComplianceOverTime'] {
+    const chronologicalRuns = [...runs].reverse();
+
+    return chronologicalRuns.map(run => {
+      const payload = this.readRunPayload(run);
+      const pages = payload?.results.flatMap(result => result.pagesScanned) ?? [];
+      const totalPages = pages.length;
+
+      const countPassing = (predicate: (page: TargetScanResult['pagesScanned'][number]) => boolean): number => {
+        if (totalPages === 0) {
+          return 0;
+        }
+        return pages.reduce((sum, page) => sum + (predicate(page) ? 1 : 0), 0);
+      };
+
+      const percentage = (count: number): number => {
+        if (totalPages === 0) {
+          return 0;
+        }
+        return Number(((count / totalPages) * 100).toFixed(2));
+      };
+
+      return {
+        runId: run.runId,
+        generatedAt: run.generatedAt,
+        pagesScanned: totalPages,
+        compliancePercentages: {
+          accessibilityNoViolations: percentage(
+            countPassing(page => (page.liveAudits?.accessibilityViolations.length ?? 0) === 0)
+          ),
+          performanceThreshold: percentage(
+            countPassing(page => {
+              const perf = page.liveAudits?.lighthouse?.performanceScore;
+              return typeof perf === 'number' && perf >= 70;
+            })
+          ),
+          plainLanguageGrade: percentage(
+            countPassing(page => {
+              const grade = page.offlineAudits?.contentMetrics.fleschKincaidGrade;
+              return typeof grade === 'number' && grade <= 8;
+            })
+          ),
+          plainLanguageLinks: percentage(
+            countPassing(page => (page.offlineAudits?.contentMetrics.ambiguousLinkTextCount ?? 0) === 0)
+          ),
+          completedStatus: percentage(countPassing(page => page.status === 'COMPLETED'))
+        }
+      };
+    });
   }
 
   private static calculateRollingAverage(runs: RunEntry[]): TrendSummary['rollingAverage'] {
@@ -401,5 +495,187 @@ export class RunHistoryReporter {
         return a.provider.localeCompare(b.provider);
       })
       .slice(0, 10);
+  }
+
+  private static buildDomainOngoingReports(index: RunIndex): {
+    generatedAt: string;
+    windowSize: number;
+    reports: DomainOngoingReport[];
+  } {
+    const windowedRuns = index.runs.slice(0, 8);
+    const runPayloads = windowedRuns
+      .map(run => ({ run, payload: this.readRunPayload(run) }))
+      .filter(item => item.payload !== null) as Array<{ run: RunEntry; payload: { results: TargetScanResult[] } }>;
+
+    const byTarget = new Map<string, {
+      domain: string;
+      runs: Array<{ run: RunEntry; result: TargetScanResult }>;
+    }>();
+
+    for (const item of runPayloads) {
+      for (const result of item.payload.results) {
+        const current = byTarget.get(result.targetId) ?? {
+          domain: result.domain,
+          runs: []
+        };
+        current.runs.push({ run: item.run, result });
+        byTarget.set(result.targetId, current);
+      }
+    }
+
+    const reports = Array.from(byTarget.entries())
+      .map(([targetId, target]) => this.buildDomainOngoingReport(targetId, target.domain, target.runs))
+      .sort((a, b) => a.targetId.localeCompare(b.targetId));
+
+    return {
+      generatedAt: new Date().toISOString(),
+      windowSize: windowedRuns.length,
+      reports
+    };
+  }
+
+  private static readRunPayload(run: RunEntry): { results: TargetScanResult[] } | null {
+    const artifactFullPath = path.resolve(process.cwd(), 'dist', run.artifactPath);
+    if (!fs.existsSync(artifactFullPath)) {
+      return null;
+    }
+
+    try {
+      const parsed = JSON.parse(fs.readFileSync(artifactFullPath, 'utf8')) as { results?: TargetScanResult[] };
+      if (!Array.isArray(parsed.results)) {
+        return null;
+      }
+
+      return { results: parsed.results };
+    } catch {
+      return null;
+    }
+  }
+
+  private static buildDomainOngoingReport(
+    targetId: string,
+    domain: string,
+    runs: Array<{ run: RunEntry; result: TargetScanResult }>
+  ): DomainOngoingReport {
+    const sortedRuns = [...runs].sort((a, b) => b.run.generatedAt.localeCompare(a.run.generatedAt));
+    const allPages = sortedRuns.flatMap(entry => entry.result.pagesScanned);
+
+    const pagesObserved = allPages.length;
+    const completedPages = allPages.filter(page => page.status === 'COMPLETED').length;
+    const completionRate = pagesObserved > 0 ? (completedPages / pagesObserved) * 100 : 0;
+    const totalViolations = allPages.reduce((sum, page) => sum + (page.liveAudits?.accessibilityViolations.length ?? 0), 0);
+    const violationsPerPage = pagesObserved > 0 ? totalViolations / pagesObserved : 0;
+
+    const performanceScores = allPages
+      .map(page => page.liveAudits?.lighthouse?.performanceScore)
+      .filter((value): value is number => typeof value === 'number');
+    const gradeScores = allPages
+      .map(page => page.offlineAudits?.contentMetrics.fleschKincaidGrade)
+      .filter((value): value is number => typeof value === 'number');
+    const passiveRatios = allPages
+      .map(page => page.offlineAudits?.contentMetrics.passiveVoiceSentenceRatio)
+      .filter((value): value is number => typeof value === 'number');
+    const ambiguousLinkAverage = pagesObserved > 0
+      ? allPages.reduce((sum, page) => sum + (page.offlineAudits?.contentMetrics.ambiguousLinkTextCount ?? 0), 0) / pagesObserved
+      : 0;
+
+    const suggestions: string[] = [];
+    if (violationsPerPage > 0.8) {
+      suggestions.push('Reduce recurring accessibility defects on high-traffic templates first.');
+    }
+    if (performanceScores.length > 0 && this.average(performanceScores) < 70) {
+      suggestions.push('Improve performance budget for slow pages (images, scripts, and blocking assets).');
+    }
+    if (gradeScores.length > 0 && this.average(gradeScores) > 8) {
+      suggestions.push('Simplify page language to target a Grade 8 reading level.');
+    }
+    if (passiveRatios.length > 0 && this.average(passiveRatios) > 15) {
+      suggestions.push('Lower passive voice usage in primary content and instructions.');
+    }
+    if (ambiguousLinkAverage > 0.2) {
+      suggestions.push('Replace ambiguous link text with specific action-oriented labels.');
+    }
+    if (suggestions.length === 0) {
+      suggestions.push('Maintain quality indicators and continue incremental improvements.');
+    }
+
+    const latestPages = sortedRuns[0]?.result.pagesScanned ?? [];
+    const pagesNeedingMostImprovement = latestPages
+      .map(page => {
+        const reasons: string[] = [];
+        let priorityScore = 0;
+
+        const violations = page.liveAudits?.accessibilityViolations.length ?? 0;
+        if (violations > 0) {
+          priorityScore += violations * 2;
+          reasons.push(`${violations} accessibility violation(s)`);
+        }
+
+        const perf = page.liveAudits?.lighthouse?.performanceScore;
+        if (typeof perf === 'number' && perf < 70) {
+          const penalty = Math.ceil((70 - perf) / 10);
+          priorityScore += penalty;
+          reasons.push(`Low performance score (${perf})`);
+        }
+
+        const grade = page.offlineAudits?.contentMetrics.fleschKincaidGrade;
+        if (typeof grade === 'number' && grade > 8) {
+          const penalty = Math.ceil(grade - 8);
+          priorityScore += penalty;
+          reasons.push(`High reading grade (${grade.toFixed(1)})`);
+        }
+
+        const ambiguousLinks = page.offlineAudits?.contentMetrics.ambiguousLinkTextCount ?? 0;
+        if (ambiguousLinks > 0) {
+          priorityScore += ambiguousLinks;
+          reasons.push(`${ambiguousLinks} ambiguous link text occurrence(s)`);
+        }
+
+        if (page.status !== 'COMPLETED') {
+          priorityScore += 3;
+          reasons.push(`Page status: ${page.status}`);
+        }
+
+        return {
+          url: page.url,
+          priorityScore,
+          reasons
+        };
+      })
+      .filter(page => page.priorityScore > 0)
+      .sort((a, b) => b.priorityScore - a.priorityScore)
+      .slice(0, 5);
+
+    const periodEnd = sortedRuns[0]?.run.generatedAt ?? new Date().toISOString();
+    const periodStart = sortedRuns[sortedRuns.length - 1]?.run.generatedAt ?? periodEnd;
+
+    return {
+      targetId,
+      domain,
+      period: {
+        start: periodStart,
+        end: periodEnd,
+        runCount: sortedRuns.length
+      },
+      qualityIndicators: {
+        pagesObserved,
+        completionRate: Number(completionRate.toFixed(2)),
+        violationsPerPage: Number(violationsPerPage.toFixed(3)),
+        averagePerformanceScore: performanceScores.length > 0 ? Number(this.average(performanceScores).toFixed(2)) : null,
+        averageFleschKincaidGrade: gradeScores.length > 0 ? Number(this.average(gradeScores).toFixed(2)) : null,
+        averagePassiveVoiceRatio: passiveRatios.length > 0 ? Number(this.average(passiveRatios).toFixed(2)) : null,
+        averageAmbiguousLinkTextCount: Number(ambiguousLinkAverage.toFixed(2))
+      },
+      suggestions,
+      pagesNeedingMostImprovement
+    };
+  }
+
+  private static average(values: number[]): number {
+    if (values.length === 0) {
+      return 0;
+    }
+
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
   }
 }

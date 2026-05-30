@@ -68,11 +68,13 @@ describe('RunHistoryReporter', () => {
     const latestPath = path.resolve(tmpDir, 'dist/runs/latest.json');
     const indexPath = path.resolve(tmpDir, 'dist/runs/index.json');
     const trendsPath = path.resolve(tmpDir, 'dist/runs/trends.json');
+    const ongoingPath = path.resolve(tmpDir, 'dist/runs/domain-ongoing.json');
     const artifactPath = path.resolve(tmpDir, 'dist', entry.artifactPath);
 
     expect(fs.existsSync(latestPath)).toBe(true);
     expect(fs.existsSync(indexPath)).toBe(true);
     expect(fs.existsSync(trendsPath)).toBe(true);
+    expect(fs.existsSync(ongoingPath)).toBe(true);
     expect(fs.existsSync(artifactPath)).toBe(true);
 
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as { runs: Array<{ runId: string; totalViolations: number; pagesScanned: number }> };
@@ -98,6 +100,20 @@ describe('RunHistoryReporter', () => {
       deltaFromPrevious: { totalViolations: number } | null;
       rollingAverage: { violationsPerPage: number };
       windowSize: number;
+      requirementComplianceOverTime: Array<{
+        runId: string;
+        compliancePercentages: {
+          accessibilityNoViolations: number;
+          performanceThreshold: number;
+          plainLanguageGrade: number;
+          plainLanguageLinks: number;
+          completedStatus: number;
+        };
+      }>;
+    };
+    const ongoing = JSON.parse(fs.readFileSync(ongoingPath, 'utf8')) as {
+      reports: Array<{ targetId: string; suggestions: string[]; pagesNeedingMostImprovement: Array<{ url: string }> }>;
+      windowSize: number;
     };
 
     expect(trends.latest.totalViolations).toBe(5);
@@ -106,6 +122,15 @@ describe('RunHistoryReporter', () => {
     expect(trends.rollingAverage.violationsPerPage).toBeGreaterThan(0);
     expect(trends.windowSize).toBe(2);
     expect(Array.isArray(trends.latest.providerAttributionTop)).toBe(true);
+    expect(Array.isArray(trends.requirementComplianceOverTime)).toBe(true);
+    expect(trends.requirementComplianceOverTime.length).toBeGreaterThan(0);
+    expect(trends.requirementComplianceOverTime[0].runId).toBeTruthy();
+    expect(typeof trends.requirementComplianceOverTime[0].compliancePercentages.completedStatus).toBe('number');
+    expect(ongoing.windowSize).toBeGreaterThan(0);
+    expect(Array.isArray(ongoing.reports)).toBe(true);
+    expect(ongoing.reports.length).toBeGreaterThan(0);
+    expect(ongoing.reports[0].targetId).toBeTruthy();
+    expect(Array.isArray(ongoing.reports[0].suggestions)).toBe(true);
   });
 
   it('recovers from malformed index.json content', () => {
