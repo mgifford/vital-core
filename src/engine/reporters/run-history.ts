@@ -6,6 +6,7 @@ import {
   QualityIndexResult,
   TargetQualityIndexEntry
 } from './quality-index';
+import { ConsensusPrioritizer, ConsensusSummary } from './consensus-prioritizer';
 
 interface RunEntry {
   runId: string;
@@ -17,6 +18,9 @@ interface RunEntry {
   totalViolations: number;
   qualityIndexScore: number;
   qualityGateStatus: QualityIndexResult['gateStatus'];
+  consensusFailure: number;
+  alfaOnlyFailure: number;
+  axeOnlyFailure: number;
   artifactPath: string;
 }
 
@@ -45,6 +49,7 @@ interface TrendSummary {
       carriedOverUrls: number;
       newUrlPercent: number;
     };
+    consensus: ConsensusSummary;
   };
   deltaFromPrevious: {
     targetsScanned: number;
@@ -53,6 +58,9 @@ interface TrendSummary {
     scanDurationMs: number;
     violationsPerPage: number;
     qualityIndexScore: number;
+    consensusFailure: number;
+    alfaOnlyFailure: number;
+    axeOnlyFailure: number;
   } | null;
   rollingAverage: {
     pagesScanned: number;
@@ -60,6 +68,9 @@ interface TrendSummary {
     scanDurationMs: number;
     violationsPerPage: number;
     qualityIndexScore: number;
+    consensusFailure: number;
+    alfaOnlyFailure: number;
+    axeOnlyFailure: number;
   };
   requirementComplianceOverTime: Array<{
     runId: string;
@@ -144,6 +155,7 @@ export class RunHistoryReporter {
     const qualityIndex = QualityIndexReporter.buildQualityIndex(allResults);
     const targetQuality = QualityIndexReporter.buildTargetQualityIndex(allResults);
     const providerAttributionTop = this.computeProviderAttributionRollup(allResults);
+    const consensusSummary = ConsensusPrioritizer.buildSummary(allResults);
 
     const latestPayload = {
       runId,
@@ -153,6 +165,7 @@ export class RunHistoryReporter {
       qualityIndex,
       targetQuality,
       providerAttributionTop,
+      consensusSummary,
       results: allResults
     };
 
@@ -166,6 +179,9 @@ export class RunHistoryReporter {
       totalViolations,
       qualityIndexScore: qualityIndex.score,
       qualityGateStatus: qualityIndex.gateStatus,
+      consensusFailure: consensusSummary.consensusFailure,
+      alfaOnlyFailure: consensusSummary.alfaOnlyFailure,
+      axeOnlyFailure: consensusSummary.axeOnlyFailure,
       artifactPath
     };
 
@@ -251,7 +267,10 @@ export class RunHistoryReporter {
       qualityGateStatus:
         run.qualityGateStatus === 'PASS' || run.qualityGateStatus === 'WARNING' || run.qualityGateStatus === 'BLOCKED'
           ? run.qualityGateStatus
-          : 'WARNING'
+          : 'WARNING',
+      consensusFailure: typeof run.consensusFailure === 'number' ? run.consensusFailure : 0,
+      alfaOnlyFailure: typeof run.alfaOnlyFailure === 'number' ? run.alfaOnlyFailure : 0,
+      axeOnlyFailure: typeof run.axeOnlyFailure === 'number' ? run.axeOnlyFailure : 0
     };
   }
 
@@ -316,7 +335,8 @@ export class RunHistoryReporter {
         qualityGateStatus: latest.qualityGateStatus ?? 'WARNING',
         targetQuality: this.readTargetQualitySnapshot(latest),
         providerAttributionTop: this.readProviderAttributionRollupSnapshot(latest),
-        urlFreshness
+        urlFreshness,
+        consensus: this.readConsensusSummarySnapshot(latest)
       },
       deltaFromPrevious: previous
         ? {
@@ -325,7 +345,10 @@ export class RunHistoryReporter {
             totalViolations: latest.totalViolations - previous.totalViolations,
             scanDurationMs: latest.scanDurationMs - previous.scanDurationMs,
             violationsPerPage: Number((latestViolationsPerPage - previousViolationsPerPage).toFixed(4)),
-            qualityIndexScore: Number(((latest.qualityIndexScore ?? 0) - (previous.qualityIndexScore ?? 0)).toFixed(2))
+            qualityIndexScore: Number(((latest.qualityIndexScore ?? 0) - (previous.qualityIndexScore ?? 0)).toFixed(2)),
+            consensusFailure: latest.consensusFailure - previous.consensusFailure,
+            alfaOnlyFailure: latest.alfaOnlyFailure - previous.alfaOnlyFailure,
+            axeOnlyFailure: latest.axeOnlyFailure - previous.axeOnlyFailure
           }
         : null,
       rollingAverage: average,
@@ -439,13 +462,19 @@ export class RunHistoryReporter {
         totalViolations: 0,
         scanDurationMs: 0,
         violationsPerPage: 0,
-        qualityIndexScore: 0
+        qualityIndexScore: 0,
+        consensusFailure: 0,
+        alfaOnlyFailure: 0,
+        axeOnlyFailure: 0
       };
     }
 
     const totalPages = runs.reduce((sum, run) => sum + run.pagesScanned, 0);
     const totalViolations = runs.reduce((sum, run) => sum + run.totalViolations, 0);
     const totalDurationMs = runs.reduce((sum, run) => sum + run.scanDurationMs, 0);
+    const totalConsensusFailure = runs.reduce((sum, run) => sum + (run.consensusFailure ?? 0), 0);
+    const totalAlfaOnlyFailure = runs.reduce((sum, run) => sum + (run.alfaOnlyFailure ?? 0), 0);
+    const totalAxeOnlyFailure = runs.reduce((sum, run) => sum + (run.axeOnlyFailure ?? 0), 0);
 
     return {
       pagesScanned: Number((totalPages / runs.length).toFixed(2)),
@@ -454,8 +483,59 @@ export class RunHistoryReporter {
       violationsPerPage: totalPages > 0 ? Number((totalViolations / totalPages).toFixed(4)) : 0,
       qualityIndexScore: Number(
         (runs.reduce((sum, run) => sum + (run.qualityIndexScore ?? 0), 0) / runs.length).toFixed(2)
-      )
+      ),
+      consensusFailure: Number((totalConsensusFailure / runs.length).toFixed(2)),
+      alfaOnlyFailure: Number((totalAlfaOnlyFailure / runs.length).toFixed(2)),
+      axeOnlyFailure: Number((totalAxeOnlyFailure / runs.length).toFixed(2))
     };
+  }
+
+  private static readConsensusSummarySnapshot(run: RunEntry): ConsensusSummary {
+    if (!run.artifactPath) {
+      return {
+        consensusFailure: run.consensusFailure ?? 0,
+        alfaOnlyFailure: run.alfaOnlyFailure ?? 0,
+        axeOnlyFailure: run.axeOnlyFailure ?? 0,
+        totalCorrelatedFindings: (run.consensusFailure ?? 0) + (run.alfaOnlyFailure ?? 0) + (run.axeOnlyFailure ?? 0)
+      };
+    }
+
+    const artifactFullPath = path.resolve(process.cwd(), 'dist', run.artifactPath);
+    if (!fs.existsSync(artifactFullPath)) {
+      return {
+        consensusFailure: run.consensusFailure ?? 0,
+        alfaOnlyFailure: run.alfaOnlyFailure ?? 0,
+        axeOnlyFailure: run.axeOnlyFailure ?? 0,
+        totalCorrelatedFindings: (run.consensusFailure ?? 0) + (run.alfaOnlyFailure ?? 0) + (run.axeOnlyFailure ?? 0)
+      };
+    }
+
+    try {
+      const parsed = JSON.parse(fs.readFileSync(artifactFullPath, 'utf8')) as {
+        consensusSummary?: ConsensusSummary;
+      };
+
+      const summary = parsed.consensusSummary;
+      if (!summary) {
+        throw new Error('Missing summary');
+      }
+
+      return {
+        consensusFailure: typeof summary.consensusFailure === 'number' ? summary.consensusFailure : 0,
+        alfaOnlyFailure: typeof summary.alfaOnlyFailure === 'number' ? summary.alfaOnlyFailure : 0,
+        axeOnlyFailure: typeof summary.axeOnlyFailure === 'number' ? summary.axeOnlyFailure : 0,
+        totalCorrelatedFindings: typeof summary.totalCorrelatedFindings === 'number'
+          ? summary.totalCorrelatedFindings
+          : 0
+      };
+    } catch {
+      return {
+        consensusFailure: run.consensusFailure ?? 0,
+        alfaOnlyFailure: run.alfaOnlyFailure ?? 0,
+        axeOnlyFailure: run.axeOnlyFailure ?? 0,
+        totalCorrelatedFindings: (run.consensusFailure ?? 0) + (run.alfaOnlyFailure ?? 0) + (run.axeOnlyFailure ?? 0)
+      };
+    }
   }
 
   private static readTargetQualitySnapshot(run: RunEntry): TargetQualityIndexEntry[] {

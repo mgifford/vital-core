@@ -86,6 +86,12 @@ describe('RunHistoryReporter', () => {
       qualityIndex: { score: number; gateStatus: string };
       targetQuality: Array<{ targetId: string; score: number; gateStatus: string }>;
       providerAttributionTop: Array<{ provider: string; high: number; medium: number; low: number; score: number }>;
+      consensusSummary: {
+        consensusFailure: number;
+        alfaOnlyFailure: number;
+        axeOnlyFailure: number;
+        totalCorrelatedFindings: number;
+      };
     };
 
     expect(latest.qualityIndex.score).toBeGreaterThanOrEqual(0);
@@ -94,6 +100,8 @@ describe('RunHistoryReporter', () => {
     expect(latest.targetQuality.length).toBeGreaterThan(0);
     expect(latest.targetQuality[0].targetId).toBeTruthy();
     expect(Array.isArray(latest.providerAttributionTop)).toBe(true);
+    expect(latest.consensusSummary.totalCorrelatedFindings).toBeGreaterThanOrEqual(0);
+    expect(latest.consensusSummary.axeOnlyFailure).toBeGreaterThanOrEqual(0);
 
     const trends = JSON.parse(fs.readFileSync(trendsPath, 'utf8')) as {
       latest: {
@@ -104,9 +112,15 @@ describe('RunHistoryReporter', () => {
           carriedOverUrls: number;
           newUrlPercent: number;
         };
+        consensus: {
+          consensusFailure: number;
+          alfaOnlyFailure: number;
+          axeOnlyFailure: number;
+          totalCorrelatedFindings: number;
+        };
       };
-      deltaFromPrevious: { totalViolations: number } | null;
-      rollingAverage: { violationsPerPage: number };
+      deltaFromPrevious: { totalViolations: number; consensusFailure: number } | null;
+      rollingAverage: { violationsPerPage: number; axeOnlyFailure: number };
       windowSize: number;
       requirementComplianceOverTime: Array<{
         runId: string;
@@ -134,6 +148,7 @@ describe('RunHistoryReporter', () => {
     expect(trends.latest.urlFreshness.carriedOverUrls).toBeGreaterThanOrEqual(0);
     expect(trends.latest.urlFreshness.newUrlPercent).toBeGreaterThanOrEqual(0);
     expect(trends.latest.urlFreshness.newUrlPercent).toBeLessThanOrEqual(100);
+    expect(trends.latest.consensus.totalCorrelatedFindings).toBeGreaterThanOrEqual(0);
     expect(Array.isArray(trends.requirementComplianceOverTime)).toBe(true);
     expect(trends.requirementComplianceOverTime.length).toBeGreaterThan(0);
     expect(trends.requirementComplianceOverTime[0].runId).toBeTruthy();
@@ -203,7 +218,7 @@ describe('RunHistoryReporter', () => {
     const trends = JSON.parse(fs.readFileSync(path.join(runsDir, 'trends.json'), 'utf8')) as {
       latest: { violationsPerPage: number };
       deltaFromPrevious: { violationsPerPage: number } | null;
-      rollingAverage: { violationsPerPage: number };
+      rollingAverage: { violationsPerPage: number; axeOnlyFailure: number };
     };
 
     expect(index.runs.some(r => r.runId === 'seed-run')).toBe(true);
@@ -212,6 +227,7 @@ describe('RunHistoryReporter', () => {
     expect(trends.deltaFromPrevious).not.toBeNull();
     expect(trends.deltaFromPrevious?.violationsPerPage).toBeGreaterThanOrEqual(0);
     expect(trends.rollingAverage.violationsPerPage).toBeGreaterThanOrEqual(0);
+    expect(trends.rollingAverage.axeOnlyFailure).toBeGreaterThanOrEqual(0);
   });
 
   it('restores cached history files without clobbering existing run artifacts', () => {
