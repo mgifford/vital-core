@@ -64,6 +64,9 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('Unique Pages Scanned (This Week)');
     expect(js).toContain('Top Third-Party Providers');
     expect(js).toContain('URL Freshness');
+    expect(html).toContain('Pages Scanned (Latest Run)');
+    expect(html).toContain('id="pages-table"');
+    expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');
     expect(html).toContain('Domain Ongoing Reports');
     expect(html).toContain('Pages Needing Most Improvement');
     expect(js).toContain('runs/domain-ongoing.json');

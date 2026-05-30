@@ -49,6 +49,7 @@ export class DashboardCompiler {
 <body>
   <header>
     <h1>🩺 VITAL-Core // Federal Quality &amp; Accessibility Registry</h1>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch color theme">Switch to dark mode</button>
   </header>
   <main>
     <div id="live-scan-status" class="card" aria-live="polite">
@@ -71,6 +72,22 @@ export class DashboardCompiler {
         &nbsp;|&nbsp;
         <a href="runs/top-task-seeds.json">Domain Size Estimate JSON</a>
       </p>
+    </div>
+    <div class="card">
+      <h2>Pages Scanned (Latest Run)</h2>
+      <table id="pages-table">
+        <caption>Latest run page-level scan results by domain, URL, and status.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Violations</th>
+            <th scope="col">Scanned At</th>
+          </tr>
+        </thead>
+        <tbody id="pages-body"></tbody>
+      </table>
     </div>
     <div class="card">
       <h2>Domains Leaderboard</h2>
@@ -309,13 +326,43 @@ export class DashboardCompiler {
   --light-bg: #f0f4f8;
   --critical-red: #b50909;
   --border-gray: #d6d7d9;
+  --surface-bg: #ffffff;
+  --text-color: #212121;
+  --muted-color: #4d4d4d;
+  --table-header-bg: #f0f4f8;
+}
+html[data-theme='dark'] {
+  --gov-blue: #0b1f36;
+  --gov-light-blue: #2e7fd4;
+  --dark-gray: #e6edf5;
+  --light-bg: #0f1722;
+  --critical-red: #ff7f7f;
+  --border-gray: #324355;
+  --surface-bg: #162231;
+  --text-color: #e6edf5;
+  --muted-color: #c5d0dc;
+  --table-header-bg: #203144;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme='light']) {
+    --gov-blue: #0b1f36;
+    --gov-light-blue: #2e7fd4;
+    --dark-gray: #e6edf5;
+    --light-bg: #0f1722;
+    --critical-red: #ff7f7f;
+    --border-gray: #324355;
+    --surface-bg: #162231;
+    --text-color: #e6edf5;
+    --muted-color: #c5d0dc;
+    --table-header-bg: #203144;
+  }
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
   background: var(--light-bg);
-  color: var(--dark-gray);
+  color: var(--text-color);
   line-height: 1.5;
 }
 header {
@@ -323,6 +370,10 @@ header {
   color: white;
   padding: 1.5rem 2rem;
   border-bottom: 4px solid var(--gov-light-blue);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 h1 {
   margin: 0;
@@ -342,7 +393,7 @@ main {
   margin-bottom: 2rem;
 }
 .card {
-  background: white;
+  background: var(--surface-bg);
   border-radius: 4px;
   border: 1px solid var(--border-gray);
   padding: 1.5rem;
@@ -379,7 +430,7 @@ th, td {
   font-size: 0.95rem;
 }
 th {
-  background: var(--light-bg);
+  background: var(--table-header-bg);
   font-weight: 600;
 }
 a {
@@ -392,18 +443,18 @@ a:hover {
 }
 .muted-small {
   font-size: 0.9rem;
-  color: #4d4d4d;
+  color: var(--muted-color);
   margin-top: 0.4rem;
 }
 .muted-tiny {
   font-size: 0.85rem;
   margin-top: 0.4rem;
-  color: #5c5c5c;
+  color: var(--muted-color);
 }
 .legend-note {
   font-size: 0.85rem;
   margin-top: 0.6rem;
-  color: #4d4d4d;
+  color: var(--muted-color);
 }
 .compliance-chart {
   width: 100%;
@@ -413,7 +464,21 @@ a:hover {
 }
 .small-muted-inline {
   font-size: 0.85rem;
-  color: #4d4d4d;
+  color: var(--muted-color);
+}
+.theme-toggle {
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.theme-toggle:focus {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
 }
 .small-block-gap {
   margin-top: 0.45rem;
@@ -463,6 +528,55 @@ a:hover {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  function getInitialTheme() {
+    try {
+      const stored = localStorage.getItem('vital.theme');
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+    } catch {
+      // Ignore storage access issues.
+    }
+
+    try {
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+    } catch {
+      return 'light';
+    }
+  }
+
+  function applyTheme(theme) {
+    const nextTheme = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+
+    if (themeToggleEl) {
+      const label = nextTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+      themeToggleEl.textContent = label;
+      themeToggleEl.setAttribute('aria-label', label);
+    }
+  }
+
+  function initThemeToggle() {
+    applyTheme(getInitialTheme());
+
+    if (!themeToggleEl) {
+      return;
+    }
+
+    themeToggleEl.addEventListener('click', function () {
+      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      try {
+        localStorage.setItem('vital.theme', next);
+      } catch {
+        // Ignore storage access issues.
+      }
+    });
+  }
+
   async function fetchJsonWithRetry(url, options) {
     const retries = Number(options && options.retries) || 2;
     const timeoutMs = Number(options && options.timeoutMs) || REQUEST_TIMEOUT_MS;
@@ -503,9 +617,11 @@ a:hover {
   const trendSummaryEl = document.getElementById('trend-summary');
   const liveScanPrimaryEl = document.getElementById('live-scan-primary');
   const liveScanSecondaryEl = document.getElementById('live-scan-secondary');
+  const themeToggleEl = document.getElementById('theme-toggle');
   const tbodyEl = document.getElementById('target-body');
   const historyBodyEl = document.getElementById('history-body');
   const ongoingBodyEl = document.getElementById('ongoing-body');
+  const pagesBodyEl = document.getElementById('pages-body');
   const sizeEstimateByTarget = new Map();
   const topUrlsByTarget = new Map();
 
@@ -958,6 +1074,49 @@ a:hover {
     historyBodyEl.appendChild(tr);
   }
 
+  function appendLatestPageRow(target, page) {
+    const tr = document.createElement('tr');
+
+    const domainCell = document.createElement('td');
+    domainCell.textContent = String(target && target.targetId ? target.targetId : 'n/a').toUpperCase();
+
+    const urlCell = document.createElement('td');
+    const url = page && typeof page.url === 'string' ? page.url : '';
+    if (url) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.textContent = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      urlCell.appendChild(link);
+    } else {
+      urlCell.textContent = 'n/a';
+    }
+
+    const statusCell = document.createElement('td');
+    statusCell.textContent = String(page && page.status ? page.status : 'UNKNOWN');
+
+    const violationsCell = document.createElement('td');
+    const violations = page && page.liveAudits && Array.isArray(page.liveAudits.accessibilityViolations)
+      ? page.liveAudits.accessibilityViolations.length
+      : 0;
+    violationsCell.textContent = String(violations);
+
+    const scannedAtCell = document.createElement('td');
+    const timestamp = page && page.timestamp ? new Date(page.timestamp) : null;
+    scannedAtCell.textContent = timestamp && !Number.isNaN(timestamp.getTime())
+      ? timestamp.toISOString()
+      : 'n/a';
+
+    tr.appendChild(domainCell);
+    tr.appendChild(urlCell);
+    tr.appendChild(statusCell);
+    tr.appendChild(violationsCell);
+    tr.appendChild(scannedAtCell);
+
+    pagesBodyEl.appendChild(tr);
+  }
+
   async function updateUniqueCoverageFromHistory(indexPayload) {
     if (!indexPayload || !Array.isArray(indexPayload.runs) || indexPayload.runs.length === 0) {
       return;
@@ -1031,6 +1190,32 @@ a:hover {
       score: quality ? Number(quality.score) : -1
     });
   });
+
+  const latestPages = [];
+  data.forEach(target => {
+    const pages = Array.isArray(target && target.pagesScanned) ? target.pagesScanned : [];
+    pages.forEach(page => {
+      latestPages.push({
+        target,
+        page,
+        ts: Date.parse(String(page && page.timestamp ? page.timestamp : '')) || 0
+      });
+    });
+  });
+
+  if (latestPages.length === 0) {
+    const emptyRow = document.createElement('tr');
+    const emptyCell = document.createElement('td');
+    emptyCell.colSpan = 5;
+    emptyCell.textContent = 'No page-level scan records are available in the latest run.';
+    emptyRow.appendChild(emptyCell);
+    pagesBodyEl.appendChild(emptyRow);
+  } else {
+    latestPages
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, 300)
+      .forEach(entry => appendLatestPageRow(entry.target, entry.page));
+  }
 
   addSummaryCard('targets-total', 'Ecosystem Targets Evaluated', String(data.length), '');
   addSummaryCard('software-total', 'Software found', String(softwareFound.size), '');
@@ -1315,6 +1500,7 @@ a:hover {
       historyBodyEl.appendChild(errorRow);
     });
 
+  initThemeToggle();
   updateLiveScanTicker();
   setInterval(updateLiveScanTicker, 30000);
 
