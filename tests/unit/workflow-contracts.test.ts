@@ -40,6 +40,9 @@ describe('Workflow contracts', () => {
     expect(content).toContain('VITAL_BATCH_SIZE_MAX: ${{');
     expect(content).toContain("VITAL_TIMEOUT_BACKOFF_THRESHOLD: '1'");
     expect(content).toContain("steps.offhours.outputs.scan_intensity == 'ultra_light' && '60000'");
+    expect(content).toContain('Configure browser engine mode for this run');
+    expect(content).toContain('steps.engine_mode.outputs.enable_multi_engine');
+    expect(content).toContain('Install Playwright Firefox and WebKit (off-hours/deep)');
   });
 
   it('runs link and axe quality gates for docs', () => {

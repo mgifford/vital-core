@@ -26,7 +26,6 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-  VITAL_ENABLE_MULTI_ENGINE: ${{ vars.VITAL_ENABLE_MULTI_ENGINE || 'false' }}
 
 concurrency:
   group: 'pages'
@@ -60,16 +59,8 @@ jobs:
           VITAL_HISTORY_CACHE_DIR: .history-cache
         run: npm run history:fetch
 
-      - name: Install Playwright Browser Binaries
-        run: |
-          set -euo pipefail
-          if [[ "${VITAL_ENABLE_MULTI_ENGINE}" == "true" ]]; then
-            echo "Installing Chromium + Firefox + WebKit for multi-engine mode..."
-            npx playwright install chromium firefox webkit --with-deps
-          else
-            echo "Installing Chromium only (default mode)."
-            npx playwright install chromium --with-deps
-          fi
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
 
       - name: Install Wappalyzer Next CLI (isolated venv)
         run: |
@@ -149,6 +140,24 @@ jobs:
             echo "Off-hours window detected. Running standard incremental scan mode."
           fi
 
+      - name: Configure browser engine mode for this run
+        id: engine_mode
+        run: |
+          set -euo pipefail
+          intensity="${{ steps.offhours.outputs.scan_intensity }}"
+
+          if [[ "$intensity" == "deep" || "$intensity" == "standard" ]]; then
+            echo "enable_multi_engine=true" >> "$GITHUB_OUTPUT"
+            echo "Engine mode: multi-engine (off-hours/deep window)."
+          else
+            echo "enable_multi_engine=false" >> "$GITHUB_OUTPUT"
+            echo "Engine mode: chromium-only (business-hours window)."
+          fi
+
+      - name: Install Playwright Firefox and WebKit (off-hours/deep)
+        if: steps.engine_mode.outputs.enable_multi_engine == 'true'
+        run: npx playwright install firefox webkit --with-deps
+
       - name: Run VITAL-Core Core Orchestrator Pipeline
         if: steps.offhours.outputs.should_scan == 'true'
         env:
@@ -170,7 +179,7 @@ jobs:
           VITAL_BATCH_SIZE_BASE: '1'
           VITAL_BATCH_SIZE_MAX: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '10' || steps.offhours.outputs.scan_intensity == 'standard' && '6' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '2' }}
           VITAL_BATCH_ESCALATION_SECONDS: '45'
-          VITAL_ENABLE_MULTI_ENGINE: ${{ env.VITAL_ENABLE_MULTI_ENGINE }}
+          VITAL_ENABLE_MULTI_ENGINE: ${{ steps.engine_mode.outputs.enable_multi_engine }}
         run: npm run scan
 
       - name: Verify required generated dashboard artifacts exist
