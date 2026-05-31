@@ -35,6 +35,7 @@ jobs:
 
       - name: Check links in docs
         uses: lycheeverse/lychee-action@v2
+        # Accept 403 for bot-protected external government URLs and 429 for rate limiting.
         with:
           fail: true
           args: >-
@@ -43,7 +44,6 @@ jobs:
             --timeout 20
             --max-retries 3
             --retry-wait-time 5
-            # Accept 403 for known bot-protected external government URLs and 429 for rate limiting.
             --accept 200,403,429
             docs/**/*.html
 
