@@ -87,6 +87,7 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('Recommendations');
     expect(js).toContain('Unique Pages Scanned (All Time)');
     expect(js).toContain('Unique Pages Scanned (This Week)');
+    expect(js).toContain('const thisWeek = new Set(currentRunUniquePages);');
     expect(js).toContain('Top Third-Party Providers');
     expect(js).toContain('Consensus Failures');
     expect(js).toContain('Alfa-only Failures');
@@ -100,6 +101,7 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('Runs Recorded Today');
     expect(js).toContain('Pages Scanned Today');
     expect(js).toContain('Pages Scanned (Retained History)');
+    expect(js).toContain('Array.isArray(artifact.results)');
     expect(js).toContain('emptyCell.colSpan = 5;');
     expect(js).toContain('errorCell.colSpan = 5;');
     expect(html).toContain('Pages Scanned (Latest Run)');

@@ -1741,7 +1741,7 @@ a:focus-visible {
     }
 
     const allTime = new Set(currentRunUniquePages);
-    const thisWeek = new Set();
+    const thisWeek = new Set(currentRunUniquePages);
     const now = Date.now();
     const weekWindowMs = 7 * 24 * 60 * 60 * 1000;
 
@@ -1753,7 +1753,7 @@ a:focus-visible {
       }
 
       const artifact = await fetchJsonWithRetry(artifactPath, { retries: 1, timeoutMs: 5000 });
-      const targets = artifact && Array.isArray(artifact.targets) ? artifact.targets : [];
+      const targets = artifact && Array.isArray(artifact.results) ? artifact.results : [];
 
       targets.forEach(target => {
         const pages = target && Array.isArray(target.pagesScanned) ? target.pagesScanned : [];
