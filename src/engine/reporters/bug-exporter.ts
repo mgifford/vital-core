@@ -58,8 +58,36 @@ export class BugExporter {
     if (problematicPages.length === 0) {
       md += `## 🎉 Zero Flagged Violations\nAll audited paths perfectly satisfied validation criteria.\n`;
     } else {
-      for (const page of problematicPages) {
-        md += `--- \n\n## 📄 Page Context: [${page.url}](${page.url})\n`;
+      const pageNavigation = problematicPages.map((page, index) => {
+        const pageAnchor = this.buildAnchorId(`page-${index + 1}-${page.url}`);
+        return `- [Page report ${index + 1}: ${page.url}](#${pageAnchor})`;
+      });
+
+      md += `## 🔎 Report Navigation\n`;
+      md += `${pageNavigation.join('\n')}\n\n`;
+
+      problematicPages.forEach((page, index) => {
+        const pageAnchor = this.buildAnchorId(`page-${index + 1}-${page.url}`);
+        const violations = page.liveAudits?.accessibilityViolations || [];
+        const content = page.offlineAudits?.contentMetrics;
+        const thirdPartyImpact = page.thirdPartyImpact;
+
+        const pageSectionLinks: string[] = [];
+        if (violations.length > 0) {
+          pageSectionLinks.push(`[Accessibility deficiencies](#${pageAnchor}-accessibility-deficiencies)`);
+        }
+        if (content && content.suspiciousAltTextCount > 0) {
+          pageSectionLinks.push(`[Alternative text anomalies](#${pageAnchor}-alternative-text-anomalies)`);
+        }
+        if (thirdPartyImpact?.evaluated && thirdPartyImpact.regressionDetected) {
+          pageSectionLinks.push(`[Third-party JavaScript regression](#${pageAnchor}-third-party-regression)`);
+        }
+
+        md += `--- \n\n<a id="${pageAnchor}" tabindex="-1"></a>\n`;
+        md += `## 📄 Page Context: [${page.url}](${page.url})\n`;
+        if (pageSectionLinks.length > 0) {
+          md += `* Jump to section: ${pageSectionLinks.join(' | ')}\n`;
+        }
         md += `* **Result Execution Status:** \`${page.status}\`\n`;
 
         const lighthouse = page.liveAudits?.lighthouse;
@@ -90,12 +118,12 @@ export class BugExporter {
             '',
             ''
           ]);
-          continue;
+          return;
         }
 
         // Output Core Accessibility Violations
-        const violations = page.liveAudits?.accessibilityViolations || [];
         if (violations.length > 0) {
+          md += `<a id="${pageAnchor}-accessibility-deficiencies" tabindex="-1"></a>\n`;
           md += `### ♿ Technical Accessibility Deficiencies\n`;
           for (const violation of violations) {
             const standardProfile = this.classifyWcagProfile(violation.impactedCriteria);
@@ -147,8 +175,8 @@ export class BugExporter {
         }
 
         // Output Structural Content Concerns (Alt-Text & Readability)
-        const content = page.offlineAudits?.contentMetrics;
         if (content && content.suspiciousAltTextCount > 0) {
+          md += `<a id="${pageAnchor}-alternative-text-anomalies" tabindex="-1"></a>\n`;
           md += `### 📝 Alternative Text Anomalies\n`;
           md += `Found **${content.suspiciousAltTextCount}** instances of missing or generic alt patterns (e.g., 'image.png', 'screenshot').\n\n`;
           content.suspiciousAltInstances.forEach((inst, idx) => {
@@ -179,8 +207,8 @@ export class BugExporter {
         }
 
         // Output Third-Party JavaScript Accessibility Regression Signal
-        const thirdPartyImpact = page.thirdPartyImpact;
         if (thirdPartyImpact?.evaluated && thirdPartyImpact.regressionDetected) {
+          md += `<a id="${pageAnchor}-third-party-regression" tabindex="-1"></a>\n`;
           md += `### 🧩 Third-Party JavaScript Accessibility Regression\n`;
           md += `Third-party script patterns were detected and this page was re-evaluated with JavaScript disabled.\n\n`;
           md += `* **JS Enabled Violations:** ${thirdPartyImpact.baselineViolationCount}\n`;
@@ -228,7 +256,7 @@ export class BugExporter {
             ''
           ]);
         }
-      }
+      });
     }
 
     const safeFilename = `${targetResult.targetId}_issues.md`;
@@ -286,5 +314,13 @@ export class BugExporter {
       return `"${text.replace(/"/g, '""')}"`;
     }
     return text;
+  }
+
+  private static buildAnchorId(value: string): string {
+    return String(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 80) || 'section';
   }
 }
