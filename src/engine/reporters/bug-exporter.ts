@@ -273,14 +273,13 @@ export class BugExporter {
 
     for (const criterion of criteria) {
       const tag = String(criterion || '').toLowerCase();
-      if (tag === 'wcag2a' || tag === 'wcag2aa' || tag.startsWith('wcag2')) {
-        labels.add('WCAG 2.0');
-      }
-      if (tag.startsWith('wcag21')) {
-        labels.add('WCAG 2.1');
-      }
+      // Check in reverse version order to avoid wcag21/wcag22 matching wcag2 prefix
       if (tag.startsWith('wcag22')) {
         labels.add('WCAG 2.2');
+      } else if (tag.startsWith('wcag21')) {
+        labels.add('WCAG 2.1');
+      } else if (tag === 'wcag2a' || tag === 'wcag2aa' || tag === 'wcag2aaa') {
+        labels.add('WCAG 2.0');
       }
       if (tag.includes('aaa')) {
         labels.add('AAA');

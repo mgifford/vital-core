@@ -9,6 +9,8 @@ export const A11yViolationSchema = z.object({
   description: z.string(),
   helpUrl: z.string().url(),
   impactedCriteria: z.array(z.string()), // Section 508 / WCAG mapping (e.g., '508-302.1')
+  /** Minimum WCAG version that introduced this criterion: '2.0', '2.1', '2.2', 'section508', or 'best-practice'. */
+  wcagVersion: z.enum(['2.0', '2.1', '2.2', 'section508', 'best-practice']).optional(),
   instances: z.array(z.object({
     html: z.string(),              // Failing element markup snippet
     target: z.array(z.string()),   // CSS Selector array
