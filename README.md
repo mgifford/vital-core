@@ -54,7 +54,7 @@ Standards-source integrity is validated by `tests/smoke/validate-standards-sourc
 
 Each scanned page now includes a CMS/framework technology fingerprint in `technologyStack`, powered by `wappalyzer-next`.
 
-- Default command: `wappalyzer`
+- Default command: `.tools/wappalyzer-next/bin/wappalyzer` when available (isolated local installation)
 - Override command path: set `VITAL_WAPPALYZER_CMD`
 - If the command is unavailable or fails, scans continue and `technologyStack` is reported as an empty list.
 
@@ -129,8 +129,27 @@ Scheduled scans publish:
 - `runs/<run-id>.json` (timestamped run artifacts)
 - `runs/page-state.json` (per-URL change metadata for incremental rescans)
 - `runs/top-task-seeds.json` (monthly DuckDuckGo-derived priority URL seeds)
+- `api/index.json` (stable API endpoint manifest)
+- `api/latest.json` (latest run summary for API consumers)
+- `api/targets.json` (latest per-target aggregated metrics)
+- `api/runs.json` (recent run index for API consumers)
 
 The scan workflow restores previously published run history before generating a new run, then merges and republishes the updated index.
+
+## Dashboard Navigation and Attribution
+
+The dashboard includes a dominant header domain selector so users can jump directly to any domain report page:
+
+- Domain overview
+- Accessibility
+- Performance
+- Content
+- Third-party impact
+
+Each generated page also includes a footer linking to the main repository and clarifying non-affiliation:
+
+- Project repo: `https://github.com/mgifford/vital-core`
+- Disclaimer: VITAL-Core is an independent open source project and is not affiliated with or endorsed by scanned agencies/sites.
 
 ## Incremental Scanning for Scale
 

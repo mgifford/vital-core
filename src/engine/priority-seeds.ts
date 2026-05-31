@@ -189,16 +189,21 @@ export class PrioritySeedStore {
 
         if (!response.ok) {
           console.warn(`⚠️ DuckDuckGo seeding failed for ${target.id}: HTTP ${response.status}`);
+          results.push({
+            targetId: target.id,
+            host,
+            domain: target.base_url,
+            fetchedAt: new Date().toISOString(),
+            source: 'duckduckgo',
+            estimatedIndexedPages: null,
+            topUrls: []
+          });
           continue;
         }
 
         const html = await response.text();
         const topUrls = this.extractDuckDuckGoUrls(html, host).slice(0, perTargetLimit);
         const estimatedIndexedPages = this.extractDuckDuckGoEstimatedResultCount(html);
-
-        if (topUrls.length === 0) {
-          continue;
-        }
 
         results.push({
           targetId: target.id,
@@ -211,6 +216,15 @@ export class PrioritySeedStore {
         });
       } catch (error: any) {
         console.warn(`⚠️ DuckDuckGo seeding failed for ${target.id}: ${error.message}`);
+        results.push({
+          targetId: target.id,
+          host,
+          domain: target.base_url,
+          fetchedAt: new Date().toISOString(),
+          source: 'duckduckgo',
+          estimatedIndexedPages: null,
+          topUrls: []
+        });
       }
     }
 
