@@ -420,6 +420,15 @@ ${siteFooterHtml}
 
       const quality = targetQualityIndex.find(item => String(item.targetId || '') === String(target.targetId || '')) || null;
       const pages = Array.isArray(target.pagesScanned) ? target.pagesScanned : [];
+      const statusCounts = pages.reduce((acc, page) => {
+        const status = String(page?.status || 'UNKNOWN');
+        acc.set(status, (acc.get(status) || 0) + 1);
+        return acc;
+      }, new Map<string, number>());
+      const statusSummaryText = Array.from(statusCounts.entries())
+        .sort((a, b) => b[1] - a[1])
+        .map(([status, count]) => `${status}: ${count}`)
+        .join(' | ') || 'No page statuses recorded in latest run.';
 
       const accessibilityRows = pages
         .flatMap(page => {
@@ -437,6 +446,9 @@ ${siteFooterHtml}
       const performanceRows = pages
         .map(page => {
           const lighthouse = page?.liveAudits?.lighthouse;
+          if (!lighthouse) {
+            return '';
+          }
           return `
             <tr>
               <td>${this.escapeHtml(page.url)}</td>
@@ -451,6 +463,9 @@ ${siteFooterHtml}
       const contentRows = pages
         .map(page => {
           const content = page?.offlineAudits?.contentMetrics;
+          if (!content) {
+            return '';
+          }
           return `
             <tr>
               <td>${this.escapeHtml(page.url)}</td>
@@ -465,6 +480,9 @@ ${siteFooterHtml}
       const thirdPartyRows = pages
         .map(page => {
           const impact = page?.thirdPartyImpact;
+          if (!impact) {
+            return '';
+          }
           const providers = Array.isArray(impact?.likelyIntroducedByProviders) ? impact?.likelyIntroducedByProviders.join(', ') : 'n/a';
           return `
             <tr>
@@ -515,6 +533,7 @@ ${siteFooterHtml}
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</h1></header><main><div class="card"><h2>Accessibility Findings</h2>${sharedNav}
+    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
 <table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="4">No accessibility violations in latest run.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
@@ -522,21 +541,24 @@ ${siteFooterHtml}
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</h1></header><main><div class="card"><h2>Lighthouse Metrics</h2>${sharedNav}
-<table><thead><tr><th>URL</th><th>Perf</th><th>FCP (ms)</th><th>LCP (ms)</th><th>Speed Index (ms)</th></tr></thead><tbody>${performanceRows || '<tr><td colspan="5">No performance data available.</td></tr>'}</tbody></table>
+    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+    <table><thead><tr><th>URL</th><th>Perf</th><th>FCP (ms)</th><th>LCP (ms)</th><th>Speed Index (ms)</th></tr></thead><tbody>${performanceRows || '<tr><td colspan="5">No performance data available in the latest run. This usually means pages were skipped unchanged or no full Lighthouse samples were collected.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
       const contentHtml = `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Content</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Content Quality</h1></header><main><div class="card"><h2>Content Metrics</h2>${sharedNav}
-<table><thead><tr><th>URL</th><th>Grade</th><th>Avg Sentence Length</th><th>Ambiguous Links</th><th>Suspicious Alt Text</th></tr></thead><tbody>${contentRows || '<tr><td colspan="5">No content metrics available.</td></tr>'}</tbody></table>
+    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+    <table><thead><tr><th>URL</th><th>Grade</th><th>Avg Sentence Length</th><th>Ambiguous Links</th><th>Suspicious Alt Text</th></tr></thead><tbody>${contentRows || '<tr><td colspan="5">No content metrics available in the latest run. Grade appears only when pages are completed with offline content analysis.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
       const thirdPartyHtml = `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</h1></header><main><div class="card"><h2>JavaScript Regression Signals</h2>${sharedNav}
-<table><thead><tr><th>URL</th><th>Regression Detected</th><th>Added Violations</th><th>Likely Providers</th></tr></thead><tbody>${thirdPartyRows || '<tr><td colspan="4">No third-party impact data available.</td></tr>'}</tbody></table>
+    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+    <table><thead><tr><th>URL</th><th>Regression Detected</th><th>Added Violations</th><th>Likely Providers</th></tr></thead><tbody>${thirdPartyRows || '<tr><td colspan="4">No third-party impact data available in the latest run.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
       fs.writeFileSync(path.join(domainDir, 'index.html'), overviewHtml, 'utf8');
