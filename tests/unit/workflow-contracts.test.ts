@@ -38,8 +38,13 @@ describe('Workflow contracts', () => {
     const workflowPath = path.resolve(process.cwd(), '.github/workflows/pages-quality-gate.yml');
     const content = fs.readFileSync(workflowPath, 'utf8');
 
+    expect(content).toContain('concurrency:');
+    expect(content).toContain('cancel-in-progress: true');
+    expect(content).toContain('timeout-minutes: 15');
     expect(content).toContain('lycheeverse/lychee-action@v2');
     expect(content).toContain('--accept 200,403,429');
+    expect(content).toContain('Run docs CI guardrail tests');
+    expect(content).toContain('tests/unit/docs-accessibility-guardrails.test.ts');
     expect(content).toContain('Install Playwright Chromium');
     expect(content).toContain('Run axe smoke checks against docs');
     expect(content).toContain('node scripts/run-axe-site-check.mjs');

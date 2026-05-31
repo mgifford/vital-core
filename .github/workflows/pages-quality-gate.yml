@@ -9,6 +9,9 @@ on:
       - 'docs/**'
       - 'scripts/run-axe-site-check.mjs'
       - '.github/workflows/pages-quality-gate.yml'
+      - '.github/workflows/monitor-actions-failures.yml'
+      - 'tests/unit/docs-accessibility-guardrails.test.ts'
+      - 'tests/unit/workflow-contracts.test.ts'
       - 'package.json'
       - 'package-lock.json'
 
@@ -18,9 +21,14 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
+concurrency:
+  group: pages-quality-gate-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,6 +43,7 @@ jobs:
             --timeout 20
             --max-retries 3
             --retry-wait-time 5
+            # Accept 403 for known bot-protected external government URLs and 429 for rate limiting.
             --accept 200,403,429
             docs/**/*.html
 
@@ -46,6 +55,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run docs CI guardrail tests
+        run: npx vitest run tests/unit/docs-accessibility-guardrails.test.ts tests/unit/workflow-contracts.test.ts
 
       - name: Install Playwright Chromium
         run: npx playwright install chromium --with-deps
