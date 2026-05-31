@@ -160,15 +160,15 @@ jobs:
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && steps.offhours.outputs.monthly_seed_refresh == 'true') || 'false' }}
           VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '0' || steps.offhours.outputs.scan_intensity == 'ultra_light' && '7' || steps.offhours.outputs.scan_intensity == 'light' && '4' || '2' }}
           VITAL_UPDATED_WITHIN_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '7' || steps.offhours.outputs.scan_intensity == 'light' && '10' || '14' }}
-          VITAL_MAX_TIMEOUT_MS: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '60000' || steps.offhours.outputs.scan_intensity == 'ultra_light' && '45000' || steps.offhours.outputs.scan_intensity == 'light' && '35000' || '30000' }}
-          VITAL_SAME_SITE_DELAY_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '4000' || steps.offhours.outputs.scan_intensity == 'light' && '2000' || '1000' }}
-          VITAL_TIMEOUT_BACKOFF_THRESHOLD: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '2' || '3' }}
-          VITAL_TIMEOUT_BACKOFF_STEP_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '15000' || steps.offhours.outputs.scan_intensity == 'light' && '10000' || '5000' }}
-          VITAL_TIMEOUT_BACKOFF_MAX_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '60000' || steps.offhours.outputs.scan_intensity == 'light' && '45000' || '30000' }}
+          VITAL_MAX_TIMEOUT_MS: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '90000' || steps.offhours.outputs.scan_intensity == 'ultra_light' && '60000' || steps.offhours.outputs.scan_intensity == 'light' && '50000' || '45000' }}
+          VITAL_SAME_SITE_DELAY_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '6000' || steps.offhours.outputs.scan_intensity == 'light' && '3000' || '1500' }}
+          VITAL_TIMEOUT_BACKOFF_THRESHOLD: '1'
+          VITAL_TIMEOUT_BACKOFF_STEP_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '20000' || steps.offhours.outputs.scan_intensity == 'light' && '15000' || '8000' }}
+          VITAL_TIMEOUT_BACKOFF_MAX_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '90000' || steps.offhours.outputs.scan_intensity == 'light' && '70000' || '50000' }}
           VITAL_MAX_RUN_MINUTES: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '14' || steps.offhours.outputs.scan_intensity == 'standard' && '8' || steps.offhours.outputs.scan_intensity == 'light' && '4' || '3' }}
           VITAL_DYNAMIC_BATCH_ENABLE: 'true'
-          VITAL_BATCH_SIZE_BASE: '2'
-          VITAL_BATCH_SIZE_MAX: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '12' || steps.offhours.outputs.scan_intensity == 'standard' && '8' || steps.offhours.outputs.scan_intensity == 'light' && '5' || '4' }}
+          VITAL_BATCH_SIZE_BASE: '1'
+          VITAL_BATCH_SIZE_MAX: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '10' || steps.offhours.outputs.scan_intensity == 'standard' && '6' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '2' }}
           VITAL_BATCH_ESCALATION_SECONDS: '45'
           VITAL_ENABLE_MULTI_ENGINE: ${{ env.VITAL_ENABLE_MULTI_ENGINE }}
         run: npm run scan

@@ -39,9 +39,17 @@ async function main() {
     return Date.now() >= runtimeDeadlineMs;
   };
 
-  const getAdaptiveBatchSize = (timeoutCount: number, completedCount: number): number => {
+  const getAdaptiveBatchSize = (
+    timeoutCount: number,
+    completedCount: number,
+    targetTimeoutStreak: number
+  ): number => {
     if (!dynamicBatchEnabled || !runtimeDeadlineMs) {
       return baseBatchSize;
+    }
+
+    if (targetTimeoutStreak > 0) {
+      return 1;
     }
 
     const remainingMs = runtimeDeadlineMs - Date.now();
@@ -118,6 +126,7 @@ async function main() {
     // We scan small batches in round-robin order and naturally focus remaining targets once smaller queues are exhausted.
     let timeoutCount = 0;
     let completedCount = 0;
+    const targetTimeoutStreaks = new Map<string, number>();
     let round = 1;
     let stoppedForBudget = false;
     while (scanPlans.some(plan => plan.nextOffset < plan.discoveredUrls.length)) {
@@ -144,7 +153,8 @@ async function main() {
           continue;
         }
 
-        const roundRobinBatchSize = getAdaptiveBatchSize(timeoutCount, completedCount);
+        const targetTimeoutStreak = targetTimeoutStreaks.get(plan.target.id) || 0;
+        const roundRobinBatchSize = getAdaptiveBatchSize(timeoutCount, completedCount, targetTimeoutStreak);
         const batch = plan.discoveredUrls.slice(plan.nextOffset, plan.nextOffset + roundRobinBatchSize);
         const batchStart = plan.nextOffset + 1;
         const batchEnd = plan.nextOffset + batch.length;
@@ -158,6 +168,13 @@ async function main() {
         });
       
         const completedPageScans: PageScanReport[] = rawPageReports as PageScanReport[];
+        const batchTimeouts = completedPageScans.filter(report => report && report.status === 'TIMEOUT').length;
+        if (batchTimeouts > 0) {
+          targetTimeoutStreaks.set(plan.target.id, (targetTimeoutStreaks.get(plan.target.id) || 0) + batchTimeouts);
+        } else {
+          targetTimeoutStreaks.set(plan.target.id, 0);
+        }
+
         completedPageScans.forEach(report => {
           completedCount += 1;
           if (report && report.status === 'TIMEOUT') {
