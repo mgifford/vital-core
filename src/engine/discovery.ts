@@ -109,7 +109,10 @@ export class TargetDiscoveryEngine {
         return true;
       }
 
-      return this.isDueForRevalidation(pageState[url], revalidateAfterDays);
+      return (
+        this.isDueForRevalidation(pageState[url], revalidateAfterDays) ||
+        this.wasUpdatedWithinWindow(pageState[url], updatedWithinDays)
+      );
     };
 
     const isRecentlyUpdatedUrl = (url: string): boolean => {

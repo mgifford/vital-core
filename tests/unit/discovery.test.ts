@@ -581,4 +581,61 @@ describe('TargetDiscoveryEngine', () => {
     expect(queue[0]).toBe('https://www.cms.gov/updated-recently');
     expect(queue[1]).toBe('https://www.cms.gov/top-task-seed');
   });
+
+  it('includes recently updated cached pages even when revalidation age is not met', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/updated-recently',
+        'https://www.cms.gov/fresh-but-not-updated'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
+      }
+    };
+
+    const now = Date.now();
+    const pageState: PageStateMap = {
+      'https://www.cms.gov/updated-recently': {
+        etag: null,
+        lastModified: new Date(now - 24 * 60 * 60 * 1000).toISOString(),
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(now - 24 * 60 * 60 * 1000).toISOString(),
+        lastScannedAt: new Date(now - 24 * 60 * 60 * 1000).toISOString()
+      },
+      'https://www.cms.gov/fresh-but-not-updated': {
+        etag: null,
+        lastModified: new Date(now - 20 * 24 * 60 * 60 * 1000).toISOString(),
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(now - 24 * 60 * 60 * 1000).toISOString(),
+        lastScannedAt: new Date(now - 24 * 60 * 60 * 1000).toISOString()
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+      pageState,
+      skipPreviouslyScanned: true,
+      revalidateAfterDays: 7,
+      updatedWithinDays: 7
+    });
+
+    expect(queue).toContain('https://www.cms.gov/updated-recently');
+    expect(queue).not.toContain('https://www.cms.gov/fresh-but-not-updated');
+  });
 });
