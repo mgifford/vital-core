@@ -95,6 +95,7 @@ export class ResilientBrowserEngine {
     let previousHost: string | null = null;
     let consecutiveTimeouts = 0;
 
+    try {
     for (const url of urlQueue) {
       const currentHost = this.safeHost(url);
       if (previousHost && currentHost && previousHost === currentHost) {
@@ -149,20 +150,23 @@ export class ResilientBrowserEngine {
         `🧭 Emulation profile: ${emulation.family}/${emulation.viewportLabel}/${emulation.colorScheme} (${emulation.viewport.width}x${emulation.viewport.height})`
       );
 
-      const context: BrowserContext = await browser.newContext({
-        userAgent: emulation.userAgent,
-        viewport: emulation.viewport,
-        colorScheme: emulation.colorScheme
-      });
-      const page: Page = await context.newPage();
-      page.setDefaultNavigationTimeout(effectiveMaxTimeoutMs);
-      page.setDefaultTimeout(effectiveMaxTimeoutMs);
+      let context: BrowserContext | null = null;
+      let page: Page | null = null;
       const scannedAt = new Date().toISOString();
 
       try {
+        context = await browser.newContext({
+          userAgent: emulation.userAgent,
+          viewport: emulation.viewport,
+          colorScheme: emulation.colorScheme
+        });
+        page = await context.newPage();
+        page.setDefaultNavigationTimeout(effectiveMaxTimeoutMs);
+        page.setDefaultTimeout(effectiveMaxTimeoutMs);
+        const activePage = page;
         await this.runWithTimeout(async () => {
           // 1. Navigation with strict maxTimeoutMs boundary
-          await page.goto(url, {
+          await activePage.goto(url, {
             waitUntil: navigationWaitUntil,
             timeout: effectiveMaxTimeoutMs
           });
@@ -170,11 +174,11 @@ export class ResilientBrowserEngine {
           // 2. Hydration Settle Buffer (Let slow API grids map to the DOM)
           if (settings.postLoadDelay > 0) {
             console.log(`⏱️ Applying load buffer of ${settings.postLoadDelay}ms for dynamic scripts...`);
-            await page.waitForTimeout(settings.postLoadDelay);
+            await activePage.waitForTimeout(settings.postLoadDelay);
           }
 
           // 3. Extract fully rendered HTML string state
-          const hydratedHtml = await page.content();
+          const hydratedHtml = await activePage.content();
           const contentHash = this.hashContent(hydratedHtml);
           const assetFingerprintHash = this.computeAssetFingerprint(hydratedHtml, url);
 
@@ -188,7 +192,7 @@ export class ResilientBrowserEngine {
 
           // 6. Run Live browser evaluations in memory (Axe Core Automation)
           console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
-          baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
+          baseReport.liveAudits = await LiveWorker.runLiveAudits(activePage);
 
           // 6b. Alfa — always runs alongside axe for independent ACT-rules cross-check.
           // Siteimprove Alfa and Deque axe use different rule sets; running both improves
@@ -249,20 +253,21 @@ export class ResilientBrowserEngine {
         console.warn(`⚠️ Skipping assessment loop for ${url}: ${baseReport.errorMessage}`);
 
         if (pageState) {
-          this.writePageState(pageState, url, probe, true, scannedAt);
+          this.writePageState(pageState, url, probe, false, scannedAt);
         }
       } finally {
-        await page.close();
-        await context.close();
+        if (page) { await page.close(); }
+        if (context) { await context.close(); }
         if (baseReport.status === 'SKIPPED_UNCHANGED' || baseReport.status === 'COMPLETED') {
           consecutiveTimeouts = 0;
         }
         reports.push(baseReport);
       }
     }
-
-    await browser.close();
-    console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+    } finally {
+      await browser.close();
+      console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+    }
     return reports;
   }
 

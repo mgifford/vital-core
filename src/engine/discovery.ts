@@ -121,6 +121,11 @@ export class TargetDiscoveryEngine {
         return true;
       }
 
+      // Always re-queue pages that exist in pageState but were never successfully scanned.
+      if (!pageState[url]?.lastScannedAt) {
+        return true;
+      }
+
       if (this.isDueForRevalidation(pageState[url], revalidateAfterDays)) {
         return true;
       }
