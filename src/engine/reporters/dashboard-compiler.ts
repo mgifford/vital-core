@@ -78,6 +78,8 @@ export class DashboardCompiler {
       <p>
         <a href="#pages-scanned-latest-run">Pages Scanned (Latest Run)</a>
         &nbsp;|&nbsp;
+        <a href="#detected-software-latest-run">Detected Software (Latest Run)</a>
+        &nbsp;|&nbsp;
         <a href="#run-history">Run History</a>
         &nbsp;|&nbsp;
         <a href="#blocked-system-issues">Blocked System Issues</a>
@@ -116,6 +118,8 @@ export class DashboardCompiler {
         &nbsp;|&nbsp;
         <a href="runs/top-task-seeds.json">Domain Size Estimate JSON</a>
         &nbsp;|&nbsp;
+        <a href="runs/software-by-domain.json">Software by Domain JSON</a>
+        &nbsp;|&nbsp;
         <a href="api/index.json">API Endpoint Manifest JSON</a>
         &nbsp;|&nbsp;
         <a href="failures/index.html">Failures &amp; Skips View</a>
@@ -152,13 +156,13 @@ export class DashboardCompiler {
     <div class="card" id="software-detections">
       <h2 id="detected-software-latest-run" tabindex="-1">Detected Software (Latest Run)</h2>
       <table id="software-table">
-        <caption>Technology detected in the latest run and where it was found.</caption>
+        <caption>Technology detected in the latest run, aggregated by domain.</caption>
         <thead>
           <tr>
-            <th scope="col">Software</th>
-            <th scope="col">Category</th>
-            <th scope="col">Version</th>
-            <th scope="col">Detected On URLs</th>
+            <th scope="col">Domain</th>
+            <th scope="col">Technologies Detected</th>
+            <th scope="col">Categories</th>
+            <th scope="col">Versions</th>
           </tr>
         </thead>
         <tbody id="software-body"></tbody>
@@ -1001,7 +1005,7 @@ a:focus-visible {
   let totalPages = 0;
   let totalViolations = 0;
   const softwareFound = new Set();
-  const softwareDetectedByName = new Map();
+  const softwareByDomain = new Map();
   const blockedEntries = [];
   const currentRunUniquePages = new Set();
   const leaderboardRows = [];
@@ -1017,6 +1021,18 @@ a:focus-visible {
 
   function formatNumber(value) {
     return new Intl.NumberFormat('en-US').format(Math.max(0, Math.round(Number(value) || 0)));
+  }
+
+  function formatLimitedList(values, maxItems) {
+    const list = Array.isArray(values) ? values.filter(Boolean) : [];
+    const limit = Math.max(1, Number(maxItems) || 1);
+    const shown = list.slice(0, limit);
+    const hidden = Math.max(0, list.length - shown.length);
+    const base = shown.join(', ');
+    if (hidden <= 0) {
+      return base || 'n/a';
+    }
+    return base + ' +' + String(hidden) + ' more';
   }
 
   function estimateDomainCompletion(scannedCount, estimatedTotal, scanDurationMs) {
@@ -1688,8 +1704,8 @@ a:focus-visible {
     }
 
     softwareBodyEl.innerHTML = '';
-    const rows = Array.from(softwareDetectedByName.values())
-      .sort((a, b) => String(a.displayName || '').localeCompare(String(b.displayName || '')));
+    const rows = Array.from(softwareByDomain.values())
+      .sort((a, b) => String(a.targetId || '').localeCompare(String(b.targetId || '')));
 
     if (rows.length === 0) {
       const emptyRow = document.createElement('tr');
@@ -1704,33 +1720,41 @@ a:focus-visible {
     rows.forEach(item => {
       const tr = document.createElement('tr');
 
-      const nameCell = document.createElement('td');
-      nameCell.textContent = String(item.displayName || 'n/a');
+      const domainCell = document.createElement('td');
+      const domainStrong = document.createElement('strong');
+      domainStrong.textContent = String(item.targetId || 'n/a').toUpperCase();
+      const domainBreak = document.createElement('br');
+      const domainSmall = document.createElement('small');
+      domainSmall.textContent = String(item.domain || 'n/a');
+      domainCell.appendChild(domainStrong);
+      domainCell.appendChild(domainBreak);
+      domainCell.appendChild(domainSmall);
+
+      const technologies = Array.from(item.technologies.values())
+        .map(tech => String(tech.displayName || '').trim())
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b));
+
+      const technologiesCell = document.createElement('td');
+      technologiesCell.textContent =
+        String(technologies.length) + ' total: ' + formatLimitedList(technologies, 10);
 
       const categoryCell = document.createElement('td');
-      categoryCell.textContent = Array.from(item.categories).sort((a, b) => a.localeCompare(b)).join(', ') || 'n/a';
+      categoryCell.textContent = formatLimitedList(
+        Array.from(item.categories).sort((a, b) => a.localeCompare(b)),
+        8
+      );
 
       const versionCell = document.createElement('td');
-      versionCell.textContent = Array.from(item.versions).sort((a, b) => a.localeCompare(b)).join(', ') || 'n/a';
+      versionCell.textContent = formatLimitedList(
+        Array.from(item.versions).sort((a, b) => a.localeCompare(b)),
+        8
+      );
 
-      const urlsCell = document.createElement('td');
-      const sortedUrls = Array.from(item.urls).sort((a, b) => a.localeCompare(b));
-      sortedUrls.forEach((url, index) => {
-        const link = document.createElement('a');
-        link.href = url;
-        link.textContent = url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        urlsCell.appendChild(link);
-        if (index < sortedUrls.length - 1) {
-          urlsCell.appendChild(document.createTextNode(' | '));
-        }
-      });
-
-      tr.appendChild(nameCell);
+      tr.appendChild(domainCell);
+      tr.appendChild(technologiesCell);
       tr.appendChild(categoryCell);
       tr.appendChild(versionCell);
-      tr.appendChild(urlsCell);
       softwareBodyEl.appendChild(tr);
     });
   }
@@ -1806,37 +1830,45 @@ a:focus-visible {
         jsRegressionPages += 1;
       }
       const stack = Array.isArray(p && p.technologyStack) ? p.technologyStack : [];
+      const targetId = String(target && target.targetId ? target.targetId : 'unknown');
+      const domain = String(target && target.domain ? target.domain : '');
+      const domainAggregate = softwareByDomain.get(targetId) || {
+        targetId,
+        domain,
+        categories: new Set(),
+        versions: new Set(),
+        technologies: new Map()
+      };
+
       stack.forEach(tech => {
         const displayName = String(tech && tech.name ? tech.name : '').trim();
         const name = displayName.toLowerCase();
         if (name) {
           softwareFound.add(name);
 
-          const existing = softwareDetectedByName.get(name) || {
+          const existing = domainAggregate.technologies.get(name) || {
             displayName,
             categories: new Set(),
-            versions: new Set(),
-            urls: new Set()
+            versions: new Set()
           };
 
           const category = String(tech && tech.category ? tech.category : '').trim();
           if (category) {
             existing.categories.add(category);
+            domainAggregate.categories.add(category);
           }
 
           const version = String(tech && tech.version ? tech.version : '').trim();
           if (version) {
             existing.versions.add(version);
+            domainAggregate.versions.add(version);
           }
 
-          const pageUrl = String(p && p.url ? p.url : '').trim();
-          if (pageUrl) {
-            existing.urls.add(pageUrl);
-          }
-
-          softwareDetectedByName.set(name, existing);
+          domainAggregate.technologies.set(name, existing);
         }
       });
+
+      softwareByDomain.set(targetId, domainAggregate);
     });
     totalViolations += targetViolations;
 

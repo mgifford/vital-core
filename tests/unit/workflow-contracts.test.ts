@@ -23,6 +23,7 @@ describe('Workflow contracts', () => {
     expect(content).toContain('dist/runs/latest.json');
     expect(content).toContain('dist/runs/index.json');
     expect(content).toContain('dist/runs/trends.json');
+    expect(content).toContain('dist/runs/software-by-domain.json');
     expect(content).toContain('dist/runs/page-state.json');
   });
 

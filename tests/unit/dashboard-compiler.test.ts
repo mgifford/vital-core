@@ -71,12 +71,14 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('href="#run-history"');
     expect(html).toContain('In-page section navigation');
     expect(html).toContain('href="#pages-scanned-latest-run"');
+    expect(html).toContain('href="#detected-software-latest-run"');
     expect(html).toContain('id="pages-scanned-latest-run"');
     expect(html).toContain('id="run-history-heading"');
     expect(html).toContain('id="blocked-system-issues"');
     expect(html).toContain('Jump to domain page');
     expect(html).toContain('id="domain-page-select"');
     expect(html).toContain('api/index.json');
+    expect(html).toContain('runs/software-by-domain.json');
     expect(html).toContain('failures/index.html');
     expect(html).toContain('github.com/mgifford/vital-core');
     expect(html).toContain('independent open source project');
@@ -122,7 +124,8 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('Total Accessibility Violations');
     expect(html).toContain('Detected Software (Latest Run)');
     expect(html).toContain('id="software-table"');
-    expect(html).toContain('Detected On URLs');
+    expect(html).toContain('Technology detected in the latest run, aggregated by domain.');
+    expect(html).toContain('Technologies Detected');
     expect(html).toContain('Domain Ongoing Reports');
     expect(html).toContain('Pages Needing Most Improvement');
     expect(js).toContain('runs/domain-ongoing.json');
@@ -140,10 +143,9 @@ describe('DashboardCompiler', () => {
     expect(js).toContain("domainPageSelectEl.addEventListener('change'");
     expect(js).toContain("window.location.href = selected");
     expect(js).toContain('function renderSoftwareDetections()');
-    expect(js).toContain('softwareDetectedByName');
-    expect(js).toContain('existing.urls.add(pageUrl)');
-    expect(js).toContain("link.target = '_blank'");
-    expect(js).toContain("link.rel = 'noopener noreferrer'");
+    expect(js).toContain('softwareByDomain');
+    expect(js).toContain('function formatLimitedList(values, maxItems)');
+    expect(js).toContain("String(item.targetId || 'n/a').toUpperCase()");
     expect(css).toContain('.progress-track');
     expect(css).toContain('.progress-fill');
     expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");

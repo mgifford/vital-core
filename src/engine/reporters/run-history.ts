@@ -122,6 +122,36 @@ interface DomainOngoingReport {
   }>;
 }
 
+interface SoftwareByDomainPayload {
+  generatedAt: string;
+  runId: string;
+  aggregatedByDomain: Array<{
+    targetId: string;
+    domain: string;
+    technologiesDetected: number;
+    technologies: Array<{
+      name: string;
+      categories: string[];
+      versions: string[];
+      urlCount: number;
+    }>;
+  }>;
+  detailedByDomain: Array<{
+    targetId: string;
+    domain: string;
+    pages: Array<{
+      url: string;
+      status: string;
+      timestamp: string;
+      technologies: Array<{
+        name: string;
+        category: string;
+        version: string;
+      }>;
+    }>;
+  }>;
+}
+
 export class RunHistoryReporter {
   private static get distRunsDir(): string {
     return path.resolve(process.cwd(), 'dist/runs');
@@ -191,6 +221,11 @@ export class RunHistoryReporter {
 
     fs.writeFileSync(path.join(this.distRunsDir, `${runId}.json`), JSON.stringify(latestPayload, null, 2), 'utf8');
     fs.writeFileSync(path.join(this.distRunsDir, 'latest.json'), JSON.stringify(latestPayload, null, 2), 'utf8');
+    fs.writeFileSync(
+      path.join(this.distRunsDir, 'software-by-domain.json'),
+      JSON.stringify(this.buildSoftwareByDomainPayload(allResults, runId, generatedAt), null, 2),
+      'utf8'
+    );
 
     const existingIndex = this.loadExistingIndex();
     const mergedRuns = [runEntry, ...existingIndex.runs.filter(run => run.runId !== runId)].slice(0, 200);
@@ -306,7 +341,8 @@ export class RunHistoryReporter {
         targets: 'api/targets.json',
         trendSummary: 'runs/trends.json',
         runIndex: 'runs/index.json',
-        latestRawRun: 'runs/latest.json'
+        latestRawRun: 'runs/latest.json',
+        softwareByDomain: 'runs/software-by-domain.json'
       }
     };
 
@@ -375,6 +411,99 @@ export class RunHistoryReporter {
       consensusFailure: typeof run.consensusFailure === 'number' ? run.consensusFailure : 0,
       alfaOnlyFailure: typeof run.alfaOnlyFailure === 'number' ? run.alfaOnlyFailure : 0,
       axeOnlyFailure: typeof run.axeOnlyFailure === 'number' ? run.axeOnlyFailure : 0
+    };
+  }
+
+  private static buildSoftwareByDomainPayload(
+    allResults: TargetScanResult[],
+    runId: string,
+    generatedAt: string
+  ): SoftwareByDomainPayload {
+    const aggregatedByDomain: SoftwareByDomainPayload['aggregatedByDomain'] = [];
+    const detailedByDomain: SoftwareByDomainPayload['detailedByDomain'] = [];
+
+    allResults.forEach(result => {
+      const pages = Array.isArray(result.pagesScanned) ? result.pagesScanned : [];
+      const technologyRollup = new Map<
+        string,
+        {
+          name: string;
+          categories: Set<string>;
+          versions: Set<string>;
+          urls: Set<string>;
+        }
+      >();
+
+      const detailedPages = pages
+        .map(page => {
+          const technologies = Array.isArray(page.technologyStack) ? page.technologyStack : [];
+          const normalizedTechnologies = technologies
+            .map(tech => ({
+              name: String(tech?.name || '').trim(),
+              category: String(tech?.category || '').trim(),
+              version: String(tech?.version || '').trim()
+            }))
+            .filter(tech => tech.name.length > 0);
+
+          const pageUrl = String(page.url || '');
+          normalizedTechnologies.forEach(tech => {
+            const key = tech.name.toLowerCase();
+            const existing = technologyRollup.get(key) || {
+              name: tech.name,
+              categories: new Set<string>(),
+              versions: new Set<string>(),
+              urls: new Set<string>()
+            };
+
+            if (tech.category) {
+              existing.categories.add(tech.category);
+            }
+            if (tech.version) {
+              existing.versions.add(tech.version);
+            }
+            if (pageUrl) {
+              existing.urls.add(pageUrl);
+            }
+
+            technologyRollup.set(key, existing);
+          });
+
+          return {
+            url: pageUrl,
+            status: String(page.status || ''),
+            timestamp: String(page.timestamp || ''),
+            technologies: normalizedTechnologies
+          };
+        })
+        .filter(page => page.technologies.length > 0)
+        .sort((a, b) => a.url.localeCompare(b.url));
+
+      aggregatedByDomain.push({
+        targetId: String(result.targetId || ''),
+        domain: String(result.domain || ''),
+        technologiesDetected: technologyRollup.size,
+        technologies: Array.from(technologyRollup.values())
+          .map(tech => ({
+            name: tech.name,
+            categories: Array.from(tech.categories).sort((a, b) => a.localeCompare(b)),
+            versions: Array.from(tech.versions).sort((a, b) => a.localeCompare(b)),
+            urlCount: tech.urls.size
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name))
+      });
+
+      detailedByDomain.push({
+        targetId: String(result.targetId || ''),
+        domain: String(result.domain || ''),
+        pages: detailedPages
+      });
+    });
+
+    return {
+      generatedAt,
+      runId,
+      aggregatedByDomain: aggregatedByDomain.sort((a, b) => a.targetId.localeCompare(b.targetId)),
+      detailedByDomain: detailedByDomain.sort((a, b) => a.targetId.localeCompare(b.targetId))
     };
   }
 
