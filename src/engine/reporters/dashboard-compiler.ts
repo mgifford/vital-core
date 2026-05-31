@@ -2432,16 +2432,16 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
         'var(--critical-red)'
       );
       appendTrendCard(
-        'Alfa-only Failures',
-        String(consensus.alfaOnlyFailure || 0),
-        'Detected only by Alfa in latest run.',
-        '#9a6700'
-      );
-      appendTrendCard(
         'Axe-only Failures',
         String(consensus.axeOnlyFailure || 0),
         'Detected only by Axe in latest run.',
         '#005ea2'
+      );
+      appendTrendCard(
+        'Alfa-only Failures',
+        String(consensus.alfaOnlyFailure || 0),
+        'Detected only by Alfa in latest run.',
+        '#9a6700'
       );
 
       const freshness = trends.latest.urlFreshness || {};
