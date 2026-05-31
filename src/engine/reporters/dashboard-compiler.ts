@@ -67,14 +67,26 @@ export class DashboardCompiler {
   </header>
   <main>
     <div id="live-scan-status" class="card" aria-live="polite">
-      <h2>Live Scan Ticker</h2>
+      <h2 id="live-scan-ticker" tabindex="-1">Live Scan Ticker</h2>
       <p id="live-scan-primary">Checking scan status...</p>
       <p id="live-scan-secondary" class="muted-small"></p>
     </div>
     <div id="summary" class="metric-grid"></div>
     <div id="trend-summary" class="metric-grid"></div>
+    <nav class="card section-links" aria-label="In-page section navigation">
+      <h2 id="jump-links" tabindex="-1">Jump To Sections</h2>
+      <p>
+        <a href="#pages-scanned-latest-run">Pages Scanned (Latest Run)</a>
+        &nbsp;|&nbsp;
+        <a href="#run-history">Run History</a>
+        &nbsp;|&nbsp;
+        <a href="#blocked-system-issues">Blocked System Issues</a>
+        &nbsp;|&nbsp;
+        <a href="#domain-ongoing-reports">Domain Ongoing Reports</a>
+      </p>
+    </nav>
     <div class="card" id="blocked-issues">
-      <h2>Blocked System Issues (Latest Run)</h2>
+      <h2 id="blocked-system-issues" tabindex="-1">Blocked System Issues (Latest Run)</h2>
       <p class="muted-small">Pages that were blocked, timed out, or failed to scan. See the failures view for the full audit trail.</p>
       <p><a href="failures/index.html">Open failures and skips view</a></p>
       <table id="blocked-issues-table">
@@ -92,7 +104,7 @@ export class DashboardCompiler {
       </table>
     </div>
     <div class="card">
-      <h2>Run Data Exports</h2>
+      <h2 id="run-data-exports" tabindex="-1">Run Data Exports</h2>
       <p>
         <a href="runs/latest.json">Latest Full Run JSON</a>
         &nbsp;|&nbsp;
@@ -112,23 +124,33 @@ export class DashboardCompiler {
       </p>
     </div>
     <div class="card">
-      <h2>Pages Scanned (Latest Run)</h2>
-      <table id="pages-table">
-        <caption>Latest run page-level scan results by domain, URL, and status.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Domain</th>
-            <th scope="col">URL</th>
-            <th scope="col">Status</th>
-            <th scope="col">Violations</th>
-            <th scope="col">Scanned At</th>
-          </tr>
-        </thead>
-        <tbody id="pages-body"></tbody>
-      </table>
+      <h2 id="pages-scanned-latest-run" tabindex="-1">Pages Scanned (Latest Run)</h2>
+      <p id="pages-status-summary" class="muted-small">Loading latest page status summary...</p>
+      <details id="pages-status-guide" class="status-guide">
+        <summary>Status guide and latest run breakdown</summary>
+        <p><strong>COMPLETED</strong> means the page was fetched and audited in this run.</p>
+        <p><strong>SKIPPED_UNCHANGED</strong> means the page was recently scanned and unchanged, so the scanner reused prior evidence to save time and budget.</p>
+        <ul id="pages-status-breakdown" class="status-breakdown"></ul>
+      </details>
+      <details id="pages-results-table" open>
+        <summary>Show page-level results table</summary>
+        <table id="pages-table">
+          <caption>Latest run page-level scan results by domain, URL, and status.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Domain</th>
+              <th scope="col">URL</th>
+              <th scope="col">Status</th>
+              <th scope="col">Violations</th>
+              <th scope="col">Scanned At</th>
+            </tr>
+          </thead>
+          <tbody id="pages-body"></tbody>
+        </table>
+      </details>
     </div>
     <div class="card" id="software-detections">
-      <h2>Detected Software (Latest Run)</h2>
+      <h2 id="detected-software-latest-run" tabindex="-1">Detected Software (Latest Run)</h2>
       <table id="software-table">
         <caption>Technology detected in the latest run and where it was found.</caption>
         <thead>
@@ -143,7 +165,7 @@ export class DashboardCompiler {
       </table>
     </div>
     <div class="card">
-      <h2>Domains Leaderboard</h2>
+      <h2 id="domains-leaderboard" tabindex="-1">Domains Leaderboard</h2>
       <table id="target-table">
         <thead>
           <tr>
@@ -163,7 +185,7 @@ export class DashboardCompiler {
       </p>
     </div>
     <div class="card" id="run-history">
-      <h2>Run History</h2>
+      <h2 id="run-history-heading" tabindex="-1">Run History</h2>
       <table id="history-table">
         <thead>
           <tr>
@@ -178,13 +200,13 @@ export class DashboardCompiler {
       </table>
     </div>
     <div class="card">
-      <h2>Requirement Compliance Over Time</h2>
+      <h2 id="requirement-compliance-over-time" tabindex="-1">Requirement Compliance Over Time</h2>
       <svg id="compliance-chart" class="compliance-chart" viewBox="0 0 900 260" role="img" aria-label="Requirement compliance percentages across recent runs"></svg>
       <p id="compliance-caption" class="muted-small">Compliance percentages by requirement across recent runs. Legal baseline and target levels are shown separately.</p>
       <p class="muted-tiny">Manual testing remains a primary release criterion; automated metrics are indicators, not substitutes for keyboard and assistive-technology validation.</p>
     </div>
     <div class="card">
-      <h2>Domain Ongoing Reports</h2>
+      <h2 id="domain-ongoing-reports" tabindex="-1">Domain Ongoing Reports</h2>
       <table id="ongoing-table">
         <thead>
           <tr>
@@ -690,6 +712,38 @@ main {
   border-bottom: 2px solid var(--light-bg);
   padding-bottom: 0.5rem;
 }
+.card h2:target {
+  scroll-margin-top: 5rem;
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 3px;
+}
+.section-links p {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.status-guide {
+  margin-top: 0.75rem;
+}
+.status-guide summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+.status-breakdown {
+  margin: 0.6rem 0 0 1.1rem;
+  padding: 0;
+}
+.status-breakdown li {
+  margin: 0.25rem 0;
+}
+#pages-results-table {
+  margin-top: 0.75rem;
+}
+#pages-results-table > summary {
+  font-weight: 600;
+  cursor: pointer;
+}
 .badge {
   display: inline-block;
   padding: 0.2rem 0.5rem;
@@ -936,6 +990,8 @@ a:focus-visible {
   const historyBodyEl = document.getElementById('history-body');
   const ongoingBodyEl = document.getElementById('ongoing-body');
   const pagesBodyEl = document.getElementById('pages-body');
+  const pagesStatusSummaryEl = document.getElementById('pages-status-summary');
+  const pagesStatusBreakdownEl = document.getElementById('pages-status-breakdown');
   const blockedBodyEl = document.getElementById('blocked-issues-body');
   const softwareBodyEl = document.getElementById('software-body');
   const domainPageSelectEl = document.getElementById('domain-page-select');
@@ -1520,6 +1576,53 @@ a:focus-visible {
     pagesBodyEl.appendChild(tr);
   }
 
+  function renderPagesStatusSummary(latestPages) {
+    const counts = new Map();
+    latestPages.forEach(entry => {
+      const status = String(entry && entry.page && entry.page.status ? entry.page.status : 'UNKNOWN');
+      counts.set(status, (counts.get(status) || 0) + 1);
+    });
+
+    const completed = Number(counts.get('COMPLETED') || 0);
+    const skippedUnchanged = Number(counts.get('SKIPPED_UNCHANGED') || 0);
+    const timedOut = Number(counts.get('TIMEOUT') || 0);
+    const failed = Number(counts.get('FAILED') || 0) + Number(counts.get('WAF_BLOCKED') || 0);
+
+    if (pagesStatusSummaryEl) {
+      pagesStatusSummaryEl.textContent =
+        'Latest run summary: ' +
+        String(latestPages.length) + ' pages total • ' +
+        String(completed) + ' COMPLETED • ' +
+        String(skippedUnchanged) + ' SKIPPED_UNCHANGED • ' +
+        String(timedOut) + ' TIMEOUT • ' +
+        String(failed) + ' FAILED/WAF_BLOCKED.';
+    }
+
+    if (!pagesStatusBreakdownEl) {
+      return;
+    }
+
+    while (pagesStatusBreakdownEl.firstChild) {
+      pagesStatusBreakdownEl.removeChild(pagesStatusBreakdownEl.firstChild);
+    }
+
+    const ordered = Array.from(counts.entries())
+      .sort((a, b) => String(a[0]).localeCompare(String(b[0])));
+
+    if (ordered.length === 0) {
+      const empty = document.createElement('li');
+      empty.textContent = 'No page status data available in the latest run.';
+      pagesStatusBreakdownEl.appendChild(empty);
+      return;
+    }
+
+    ordered.forEach(([status, count]) => {
+      const item = document.createElement('li');
+      item.textContent = String(status) + ': ' + String(count);
+      pagesStatusBreakdownEl.appendChild(item);
+    });
+  }
+
   function renderBlockedIssues() {
     if (!blockedBodyEl) {
       return;
@@ -1772,6 +1875,7 @@ a:focus-visible {
       .slice(0, 300)
       .forEach(entry => appendLatestPageRow(entry.target, entry.page));
   }
+  renderPagesStatusSummary(latestPages);
 
   addSummaryCard('targets-total', 'Ecosystem Targets Evaluated', String(data.length), '');
   addSummaryCard('software-total', 'Software found', String(softwareFound.size), '');
