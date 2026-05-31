@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { TargetScanResult } from '../../types/site-quality-spec';
+import { TargetScanResult, PageScanReport } from '../../types/site-quality-spec';
 import { QualityIndexReporter, TargetQualityIndexEntry } from './quality-index';
 import { DiscoveryNonHtmlExclusion } from '../discovery';
 
@@ -423,13 +423,43 @@ ${siteFooterHtml}
 
       const quality = targetQualityIndex.find(item => String(item.targetId || '') === String(target.targetId || '')) || null;
       const pages = Array.isArray(target.pagesScanned) ? target.pagesScanned : [];
+
+      // Load historical page data from the previous run so that pages skipped as
+      // SKIPPED_UNCHANGED (or not queued at all due to runtime budget) still appear
+      // with their last-known audit findings.
+      const historicalPages = this.loadHistoricalPagesForTarget(String(target.targetId));
+      const currentPageUrls = new Set(pages.map(p => String(p?.url || '')));
+      const historicalByUrl = new Map(historicalPages.map(p => [String(p.url || ''), p]));
+
+      // For pages in the current run that were skipped without audit data, substitute
+      // their equivalent from the previous run if available.
+      const currentPagesSupplemented: PageScanReport[] = pages.map(page => {
+        if (page?.liveAudits !== null) {
+          return page;
+        }
+        const hist = historicalByUrl.get(String(page?.url || ''));
+        if (hist?.liveAudits) {
+          return { ...hist, status: page?.status ?? hist.status, timestamp: page?.timestamp ?? hist.timestamp };
+        }
+        return page;
+      });
+
+      // Add pages from the previous run that did not appear in this run at all.
+      const supplementalPages = historicalPages.filter(p => !currentPageUrls.has(String(p?.url || '')));
+
+      // allKnownPages: use for violation stats and the accessibility table so that
+      // accumulated findings remain visible across runs where pages are unchanged.
+      const allKnownPages: PageScanReport[] = [...currentPagesSupplemented, ...supplementalPages];
+      const hasHistoricalData = supplementalPages.length > 0 ||
+        currentPagesSupplemented.some((p, i) => p !== pages[i]);
+
       const completedPages = pages.filter(page => page?.status === 'COMPLETED').length;
       const skippedPages = pages.filter(page => page?.status === 'SKIPPED_UNCHANGED').length;
       const timeoutPages = pages.filter(page => page?.status === 'TIMEOUT').length;
       const failedPages = pages.filter(page => page?.status === 'FAILED').length;
       const wafBlockedPages = pages.filter(page => page?.status === 'WAF_BLOCKED').length;
       const blockedPages = timeoutPages + failedPages + wafBlockedPages;
-      const allViolations = pages.flatMap(page => page?.liveAudits?.accessibilityViolations || []);
+      const allViolations = allKnownPages.flatMap(page => page?.liveAudits?.accessibilityViolations || []);
       const totalViolations = allViolations.length;
       const wcag20Count = allViolations.filter(v =>
         this.deriveWcagVersion(v.wcagVersion ? [v.wcagVersion] : (v.impactedCriteria || [])) === '2.0'
@@ -447,7 +477,7 @@ ${siteFooterHtml}
           return acc;
         }, new Map<string, number>());
       const topRuleRows = Array.from(
-        pages
+        allKnownPages
           .flatMap(page => page?.liveAudits?.accessibilityViolations || [])
           .reduce((acc, violation) => {
             const ruleId = String(violation?.id || '').trim();
@@ -511,7 +541,7 @@ ${siteFooterHtml}
         .map(([status, count]) => `${status}: ${count}`)
         .join(' | ') || 'No page statuses recorded in latest run.';
 
-      const accessibilityRows = pages
+      const accessibilityRows = allKnownPages
         .flatMap(page => {
           const violations = page?.liveAudits?.accessibilityViolations || [];
           return violations.map(v => {
@@ -644,7 +674,8 @@ ${siteFooterHtml}
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</h1></header><main><div class="card"><h2>Accessibility Findings</h2>${sharedNav}
     <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
-<table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>WCAG</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="5">No accessibility violations in latest run.</td></tr>'}</tbody></table>
+    ${hasHistoricalData ? '<p><em>Note: Some findings are from a previous scan run. Pages that were unchanged since the last scan are shown with their most recent known data.</em></p>' : ''}
+<table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>WCAG</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="5">No accessibility violations found across current and recent runs.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
       const performanceHtml = `<!DOCTYPE html>
@@ -677,6 +708,61 @@ ${siteFooterHtml}
       fs.writeFileSync(path.join(domainDir, 'content.html'), contentHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'third-party.html'), thirdPartyHtml, 'utf8');
     }
+  }
+
+  /**
+   * Loads pages from the previous run's latest.json in the history cache that belong to
+   * the given target. Only pages that have liveAudits data are returned, since pages
+   * without audit data don't help supplement SKIPPED_UNCHANGED entries.
+   */
+  private static loadHistoricalPagesForTarget(targetId: string): PageScanReport[] {
+    const historyCacheDir = process.env.VITAL_HISTORY_CACHE_DIR;
+    if (!historyCacheDir) {
+      return [];
+    }
+
+    const latestPath = path.resolve(process.cwd(), historyCacheDir, 'runs', 'latest.json');
+    if (!fs.existsSync(latestPath)) {
+      return [];
+    }
+
+    try {
+      const raw = fs.readFileSync(latestPath, 'utf8');
+      const parsed = JSON.parse(raw) as unknown;
+      if (!parsed || typeof parsed !== 'object') {
+        return [];
+      }
+
+      const results = (parsed as Record<string, unknown>).results;
+      if (!Array.isArray(results)) {
+        return [];
+      }
+
+      for (const result of results) {
+        if (!result || typeof result !== 'object') {
+          continue;
+        }
+        const r = result as Record<string, unknown>;
+        if (String(r.targetId || '') !== String(targetId || '')) {
+          continue;
+        }
+        const pagesScanned = r.pagesScanned;
+        if (!Array.isArray(pagesScanned)) {
+          return [];
+        }
+        return pagesScanned.filter((p: unknown): p is PageScanReport => {
+          if (!p || typeof p !== 'object') {
+            return false;
+          }
+          const page = p as Record<string, unknown>;
+          return typeof page.url === 'string' && page.liveAudits != null;
+        }) as PageScanReport[];
+      }
+    } catch {
+      // Gracefully ignore corrupt or unreadable history cache
+    }
+
+    return [];
   }
 
   private static sanitizePathSegment(value: string): string {
