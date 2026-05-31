@@ -55,6 +55,14 @@ export class TargetDiscoveryEngine {
         const response = await mapper.fetch();
         sitemapUrls = response.sites || [];
         console.log(`📦 Discovered ${sitemapUrls.length} raw URLs within remote sitemap.`);
+        if (sitemapUrls.length === 0) {
+          console.warn(
+            `⚠️ Sitemap returned 0 URLs for ${target.id} (${target.sitemap_url}). ` +
+            `The sitemap may be blocked (403/Cloudflare), return a non-XML response, ` +
+            `or be a sitemap index that exceeded the fetch timeout. ` +
+            `Falling back to priority seed URLs.`
+          );
+        }
       } catch (error: any) {
         // Resiliency Guard: A corrupted or blocked sitemap should never crash the runner
         console.warn(`⚠️ Warning: Unable to parse sitemap for ${target.id}: ${error.message}. Falling back to priority seed URLs.`);

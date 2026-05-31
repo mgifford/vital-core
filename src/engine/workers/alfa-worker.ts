@@ -21,13 +21,18 @@ export class AlfaWorker {
     runner: ExecRunner = execFileAsync as ExecRunner
   ): Promise<PageAlfaAudit> {
     const commandAttempts = this.buildCommandAttempts(command, url);
+    const attemptErrors: string[] = [];
 
     for (const attempt of commandAttempts) {
       try {
-        const { stdout } = await runner(attempt.file, attempt.args, {
+        const { stdout, stderr } = await runner(attempt.file, attempt.args, {
           timeout: this.DEFAULT_TIMEOUT_MS,
           maxBuffer: this.DEFAULT_MAX_BUFFER
         });
+
+        if (stderr && stderr.trim()) {
+          console.debug(`[alfa] stderr from '${attempt.file}': ${stderr.trim().slice(0, 500)}`);
+        }
 
         const rawResults = this.parseJson(stdout);
         return {
@@ -36,13 +41,16 @@ export class AlfaWorker {
           errorMessage: null,
           rawResults
         };
-      } catch {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        attemptErrors.push(`[${attempt.file}]: ${msg.slice(0, 300)}`);
         // Try the next command signature.
       }
     }
 
+    const detail = attemptErrors.map((e, i) => `  attempt ${i + 1}: ${e}`).join('\n');
     const message = `Alfa scan skipped for ${url}: command '${command}' unavailable or failed.`;
-    console.warn(`⚠️ ${message}`);
+    console.warn(`⚠️ ${message}\n${detail}`);
 
     return {
       executed: false,

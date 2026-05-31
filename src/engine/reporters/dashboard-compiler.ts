@@ -63,7 +63,10 @@ export class DashboardCompiler {
         </select>
       </nav>
     </div>
-    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch color theme">Switch to dark mode</button>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode">
+      <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
   </header>
   <main>
     <div id="live-scan-status" class="card" aria-live="polite">
@@ -966,11 +969,21 @@ a:focus-visible {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
   border-radius: 999px;
-  padding: 0.5rem 0.85rem;
+  padding: 0.45rem 0.6rem;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
+.theme-icon { display: none; }
+/* Light mode: show moon (clicking will switch to dark) */
+html[data-theme='light'] .theme-icon-moon,
+html:not([data-theme='dark']) .theme-icon-moon { display: inline; }
+/* Dark mode: show sun (clicking will switch to light) */
+html[data-theme='dark'] .theme-icon-sun { display: inline; }
 .theme-toggle:focus {
   outline: 3px solid #ffffff;
   outline-offset: 2px;
@@ -1068,7 +1081,6 @@ a:focus-visible {
 
     if (themeToggleEl) {
       const label = nextTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
-      themeToggleEl.textContent = label;
       themeToggleEl.setAttribute('aria-label', label);
     }
   }

@@ -20,7 +20,7 @@ targets:
   - id: hhs-gov
     name: U.S. Department of Health & Human Services
     base_url: https://www.hhs.gov
-    sitemap_url: https://www.hhs.gov/sitemap.xml
+    # sitemap_url omitted: Akamai CDN returns 403 for all automated requests to /sitemap.xml
     include_paths:
       - "/healthcare/*"
       - "/programs/*"
@@ -105,7 +105,7 @@ targets:
   - id: healthcare-gov
     name: HealthCare.gov
     base_url: https://www.healthcare.gov
-    sitemap_url: https://www.healthcare.gov/sitemap.xml
+    sitemap_url: https://www.healthcare.gov/sitemap-index.xml
     include_paths:
       - "/coverage/*"
       - "/quick-guide/*"
@@ -120,7 +120,7 @@ targets:
   - id: cdc-gov
     name: CDC.gov
     base_url: https://www.cdc.gov
-    sitemap_url: https://www.cdc.gov/sitemap.xml
+    sitemap_url: https://www.cdc.gov/wcms-auto-sitemap-index.xml
     include_paths:
       - "/about/*"
       - "/chronicdisease/*"
@@ -135,7 +135,7 @@ targets:
   - id: nih-gov
     name: National Institutes of Health
     base_url: https://www.nih.gov
-    sitemap_url: https://www.nih.gov/sitemap.xml
+    # sitemap_url omitted: Cloudflare bot protection blocks all automated requests to /sitemap.xml
     include_paths:
       - "/health-information/*"
       - "/news-events/*"
