@@ -89,6 +89,38 @@ export class PrioritySeedStore {
     this.activeSnapshot = snapshot;
   }
 
+  /**
+   * Performs an on-demand DuckDuckGo site: query for a single target and returns
+   * the discovered URLs. Used as a real-time fallback when a sitemap returns 0 URLs.
+   */
+  public static async fetchLiveUrls(target: TargetConfig, limit = 20): Promise<string[]> {
+    const host = this.canonicalizeHost(new URL(target.base_url).hostname);
+    const query = encodeURIComponent(`site:${host}`);
+    const endpoint = `https://duckduckgo.com/html/?q=${query}`;
+
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          'User-Agent': 'vital-core-priority-seed/1.0',
+          Accept: 'text/html,application/xhtml+xml'
+        }
+      });
+
+      if (!response.ok) {
+        console.warn(`⚠️ DuckDuckGo fallback query failed for ${target.id}: HTTP ${response.status}`);
+        return [];
+      }
+
+      const html = await response.text();
+      const urls = this.extractDuckDuckGoUrls(html, host).slice(0, limit);
+      console.log(`🦆 DuckDuckGo fallback discovered ${urls.length} URLs for ${target.id} (site:${host}).`);
+      return urls;
+    } catch (error: any) {
+      console.warn(`⚠️ DuckDuckGo fallback query failed for ${target.id}: ${error.message}`);
+      return [];
+    }
+  }
+
   private static loadSnapshot(): { sourcePath: string; snapshot: PrioritySeedSnapshot } | null {
     for (const candidatePath of this.getCandidatePaths()) {
       if (!fs.existsSync(candidatePath)) {
