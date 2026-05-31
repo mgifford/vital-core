@@ -644,9 +644,14 @@ export class RunHistoryReporter {
 
       const passesWcag = (page: TargetScanResult['pagesScanned'][number], versionPrefix: string): boolean => {
         const violations = page.liveAudits?.accessibilityViolations ?? [];
-        const hasVersionFailure = violations.some(violation =>
-          (violation.impactedCriteria ?? []).some(tag => String(tag || '').toLowerCase().startsWith(versionPrefix))
-        );
+        const hasVersionFailure = violations.some(violation => {
+          const tags = (violation.impactedCriteria ?? []).map(t => String(t || '').toLowerCase());
+          if (versionPrefix === 'wcag2') {
+            // WCAG 2.0 only: match wcag2a/wcag2aa/wcag2aaa but NOT wcag21* or wcag22*
+            return tags.some(t => t === 'wcag2a' || t === 'wcag2aa' || t === 'wcag2aaa');
+          }
+          return tags.some(t => t.startsWith(versionPrefix));
+        });
         return !hasVersionFailure;
       };
 

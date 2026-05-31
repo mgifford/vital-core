@@ -426,12 +426,18 @@ ${siteFooterHtml}
       const failedPages = pages.filter(page => page?.status === 'FAILED').length;
       const wafBlockedPages = pages.filter(page => page?.status === 'WAF_BLOCKED').length;
       const blockedPages = timeoutPages + failedPages + wafBlockedPages;
-      const totalViolations = pages.reduce(
-        (sum, page) => sum + (Array.isArray(page?.liveAudits?.accessibilityViolations) ? page.liveAudits.accessibilityViolations.length : 0),
-        0
-      );
-      const severityCounts = pages
-        .flatMap(page => page?.liveAudits?.accessibilityViolations || [])
+      const allViolations = pages.flatMap(page => page?.liveAudits?.accessibilityViolations || []);
+      const totalViolations = allViolations.length;
+      const wcag20Count = allViolations.filter(v =>
+        this.deriveWcagVersion(v.wcagVersion ? [v.wcagVersion] : (v.impactedCriteria || [])) === '2.0'
+      ).length;
+      const wcag21Count = allViolations.filter(v =>
+        this.deriveWcagVersion(v.wcagVersion ? [v.wcagVersion] : (v.impactedCriteria || [])) === '2.1'
+      ).length;
+      const wcag22Count = allViolations.filter(v =>
+        this.deriveWcagVersion(v.wcagVersion ? [v.wcagVersion] : (v.impactedCriteria || [])) === '2.2'
+      ).length;
+      const severityCounts = allViolations
         .reduce((acc, violation) => {
           const severity = String(violation?.severity || 'unknown').toLowerCase();
           acc.set(severity, (acc.get(severity) || 0) + 1);
@@ -505,13 +511,17 @@ ${siteFooterHtml}
       const accessibilityRows = pages
         .flatMap(page => {
           const violations = page?.liveAudits?.accessibilityViolations || [];
-          return violations.map(v => `
+          return violations.map(v => {
+            const wcagVer = v.wcagVersion || this.deriveWcagVersion(v.impactedCriteria || []);
+            return `
             <tr>
               <td>${this.escapeHtml(page.url)}</td>
               <td>${this.escapeHtml(v.id)}</td>
               <td>${this.escapeHtml(v.severity)}</td>
+              <td>${this.escapeHtml(wcagVer)}</td>
               <td>${this.escapeHtml(v.description)}</td>
-            </tr>`);
+            </tr>`;
+          });
         })
         .join('');
 
@@ -598,6 +608,7 @@ ${siteFooterHtml}
       <p><strong>Status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
       <p><strong>Completed:</strong> ${this.escapeHtml(completedPages)} | <strong>Skipped unchanged:</strong> ${this.escapeHtml(skippedPages)} | <strong>Blocked:</strong> ${this.escapeHtml(blockedPages)}</p>
       <p><strong>Total accessibility violations:</strong> ${this.escapeHtml(totalViolations)} (critical: ${this.escapeHtml(severityCounts.get('critical') || 0)}, serious: ${this.escapeHtml(severityCounts.get('serious') || 0)}, moderate: ${this.escapeHtml(severityCounts.get('moderate') || 0)}, minor: ${this.escapeHtml(severityCounts.get('minor') || 0)})</p>
+      <p><strong>By WCAG version:</strong> WCAG 2.0 AA (legal baseline): ${this.escapeHtml(wcag20Count)} &nbsp;|&nbsp; WCAG 2.1 AA (recommended): ${this.escapeHtml(wcag21Count)} &nbsp;|&nbsp; WCAG 2.2 AA (target): ${this.escapeHtml(wcag22Count)}</p>
       <p><strong>Detected software (top):</strong> ${softwareSummary || 'n/a'}</p>
     </div>
 
@@ -630,7 +641,7 @@ ${siteFooterHtml}
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</h1></header><main><div class="card"><h2>Accessibility Findings</h2>${sharedNav}
     <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
-<table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="4">No accessibility violations in latest run.</td></tr>'}</tbody></table>
+<table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>WCAG</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="5">No accessibility violations in latest run.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
       const performanceHtml = `<!DOCTYPE html>
@@ -680,6 +691,20 @@ ${siteFooterHtml}
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  /**
+   * Derives the minimum WCAG version that introduced a criterion from raw axe tags.
+   * Mirrors LiveWorker.classifyWcagVersion but works on both wcagVersion strings
+   * and raw impactedCriteria tags for backward compatibility with older run data.
+   */
+  private static deriveWcagVersion(criteria: string[]): '2.0' | '2.1' | '2.2' | 'section508' | 'best-practice' {
+    const tags = criteria.map(s => String(s || '').toLowerCase());
+    if (tags.some(t => t === '2.2' || t.startsWith('wcag22'))) return '2.2';
+    if (tags.some(t => t === '2.1' || t.startsWith('wcag21'))) return '2.1';
+    if (tags.some(t => t === '2.0' || t === 'wcag2a' || t === 'wcag2aa' || t === 'wcag2aaa')) return '2.0';
+    if (tags.some(t => t === 'section508' || t.includes('508'))) return 'section508';
+    return 'best-practice';
   }
 
   private static buildSiteFooterHtml(): string {
