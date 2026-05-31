@@ -823,7 +823,6 @@ a:focus-visible {
   private static buildDashboardJs(): string {
     return String.raw`(function () {
   const REQUEST_TIMEOUT_MS = 8000;
-  const RUNTIME_BUDGET_MINUTES = 2;
 
   function readEmbeddedJson(id, fallback) {
     const element = document.getElementById(id);
@@ -2106,7 +2105,7 @@ a:focus-visible {
       appendTrendCard(
         'Average Scan Duration',
         formatDuration((trends.rollingAverage && trends.rollingAverage.scanDurationMs) || 0),
-        'Based on last ' + String(trends.windowSize || 0) + ' run(s) • Runtime budget cap: ' + String(RUNTIME_BUDGET_MINUTES) + 'm',
+        'Based on last ' + String(trends.windowSize || 0) + ' run(s) • Runtime budget is intensity-based by schedule window.',
         ''
       );
 

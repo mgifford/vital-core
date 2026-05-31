@@ -30,10 +30,11 @@ describe('Workflow contracts', () => {
     const workflowPath = path.resolve(process.cwd(), '.github/workflows/vital-scan.yml');
     const content = fs.readFileSync(workflowPath, 'utf8');
 
+    expect(content).toContain("- cron: '*/10 * * * *'");
     expect(content).toContain('VITAL_MAX_RUN_MINUTES: ${{');
-    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'deep' && '12'");
-    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'standard' && '6'");
-    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'light' && '3'");
+    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'deep' && '14'");
+    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'standard' && '8'");
+    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'light' && '4'");
     expect(content).toContain("VITAL_DYNAMIC_BATCH_ENABLE: 'true'");
     expect(content).toContain("VITAL_BATCH_SIZE_BASE: '2'");
     expect(content).toContain('VITAL_BATCH_SIZE_MAX: ${{');
