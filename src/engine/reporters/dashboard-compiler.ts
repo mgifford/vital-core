@@ -73,6 +73,24 @@ export class DashboardCompiler {
     </div>
     <div id="summary" class="metric-grid"></div>
     <div id="trend-summary" class="metric-grid"></div>
+    <div class="card" id="blocked-issues">
+      <h2>Blocked System Issues (Latest Run)</h2>
+      <p class="muted-small">Pages that were blocked, timed out, or failed to scan. See the failures view for the full audit trail.</p>
+      <p><a href="failures/index.html">Open failures and skips view</a></p>
+      <table id="blocked-issues-table">
+        <caption>Blocked, timeout, and failed pages with reasons from the latest run.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Reason</th>
+            <th scope="col">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="blocked-issues-body"></tbody>
+      </table>
+    </div>
     <div class="card">
       <h2>Run Data Exports</h2>
       <p>
@@ -920,6 +938,7 @@ a:focus-visible {
   const historyBodyEl = document.getElementById('history-body');
   const ongoingBodyEl = document.getElementById('ongoing-body');
   const pagesBodyEl = document.getElementById('pages-body');
+  const blockedBodyEl = document.getElementById('blocked-issues-body');
   const softwareBodyEl = document.getElementById('software-body');
   const domainPageSelectEl = document.getElementById('domain-page-select');
   const sizeEstimateByTarget = new Map();
@@ -929,6 +948,7 @@ a:focus-visible {
   let totalViolations = 0;
   const softwareFound = new Set();
   const softwareDetectedByName = new Map();
+  const blockedEntries = [];
   const currentRunUniquePages = new Set();
   const leaderboardRows = [];
   const summaryValueById = new Map();
@@ -1506,6 +1526,65 @@ a:focus-visible {
     pagesBodyEl.appendChild(tr);
   }
 
+  function renderBlockedIssues() {
+    if (!blockedBodyEl) {
+      return;
+    }
+
+    blockedBodyEl.innerHTML = '';
+
+    if (blockedEntries.length === 0) {
+      const emptyRow = document.createElement('tr');
+      const emptyCell = document.createElement('td');
+      emptyCell.colSpan = 5;
+      emptyCell.textContent = 'No blocked, timeout, or failed pages in the latest run.';
+      emptyRow.appendChild(emptyCell);
+      blockedBodyEl.appendChild(emptyRow);
+      return;
+    }
+
+    blockedEntries
+      .slice()
+      .sort((a, b) => (Number(b.ts) || 0) - (Number(a.ts) || 0))
+      .slice(0, 200)
+      .forEach(entry => {
+        const tr = document.createElement('tr');
+
+        const domainCell = document.createElement('td');
+        domainCell.textContent = String(entry.targetId || 'n/a').toUpperCase();
+
+        const urlCell = document.createElement('td');
+        if (entry.url) {
+          const link = document.createElement('a');
+          link.href = entry.url;
+          link.textContent = entry.url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          urlCell.appendChild(link);
+        } else {
+          urlCell.textContent = 'n/a';
+        }
+
+        const statusCell = document.createElement('td');
+        statusCell.textContent = String(entry.status || 'UNKNOWN');
+
+        const reasonCell = document.createElement('td');
+        reasonCell.textContent = String(entry.reason || 'No explicit error message was recorded.');
+
+        const tsCell = document.createElement('td');
+        tsCell.textContent = entry.timestamp
+          ? formatDateTimeForViewer(entry.timestamp)
+          : 'n/a';
+
+        tr.appendChild(domainCell);
+        tr.appendChild(urlCell);
+        tr.appendChild(statusCell);
+        tr.appendChild(reasonCell);
+        tr.appendChild(tsCell);
+        blockedBodyEl.appendChild(tr);
+      });
+  }
+
   function renderSoftwareDetections() {
     if (!softwareBodyEl) {
       return;
@@ -1607,6 +1686,22 @@ a:focus-visible {
       if (p && typeof p.url === 'string' && p.url) {
         currentRunUniquePages.add(p.url);
       }
+      const pageStatus = String(p && p.status ? p.status : 'UNKNOWN');
+      if (pageStatus === 'FAILED' || pageStatus === 'WAF_BLOCKED' || pageStatus === 'TIMEOUT') {
+        const fallbackReason = pageStatus === 'WAF_BLOCKED'
+          ? 'Blocked by anti-bot or web application firewall controls.'
+          : pageStatus === 'TIMEOUT'
+            ? 'Scan timed out before audit completion.'
+            : 'Page scan failed before audit completion.';
+        blockedEntries.push({
+          targetId: String(target && target.targetId ? target.targetId : ''),
+          url: String(p && p.url ? p.url : ''),
+          status: pageStatus,
+          reason: String((p && p.errorMessage) || fallbackReason),
+          timestamp: String((p && p.timestamp) || ''),
+          ts: Date.parse(String((p && p.timestamp) || '')) || 0
+        });
+      }
       targetViolations += p && p.liveAudits && Array.isArray(p.liveAudits.accessibilityViolations)
         ? p.liveAudits.accessibilityViolations.length
         : 0;
@@ -1686,9 +1781,11 @@ a:focus-visible {
 
   addSummaryCard('targets-total', 'Ecosystem Targets Evaluated', String(data.length), '');
   addSummaryCard('software-total', 'Software found', String(softwareFound.size), '');
-  addSummaryCard('blocked-total', 'Total Blocked System Issues', String(totalViolations), 'var(--critical-red)');
+  addSummaryCard('blocked-total', 'Total Blocked System Issues', String(blockedEntries.length), blockedEntries.length > 0 ? 'var(--critical-red)' : '');
+  addSummaryCard('violations-total', 'Total Accessibility Violations', String(totalViolations), totalViolations > 0 ? 'var(--critical-red)' : '');
   addSummaryCard('unique-pages-total', 'Unique Pages Scanned (All Time)', String(currentRunUniquePages.size), '');
   addSummaryCard('unique-pages-week', 'Unique Pages Scanned (This Week)', String(currentRunUniquePages.size), '');
+  renderBlockedIssues();
   renderSoftwareDetections();
   populateDomainSelectMenu(data);
 
