@@ -93,6 +93,12 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('Pages Scanned (Latest Run)');
     expect(html).toContain('id="pages-table"');
     expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');
+    expect(html).toContain('Blocked System Issues (Latest Run)');
+    expect(html).toContain('id="blocked-issues-table"');
+    expect(html).toContain('Open failures and skips view');
+    expect(js).toContain('function renderBlockedIssues()');
+    expect(js).toContain('No blocked, timeout, or failed pages in the latest run.');
+    expect(js).toContain('Total Accessibility Violations');
     expect(html).toContain('Detected Software (Latest Run)');
     expect(html).toContain('id="software-table"');
     expect(html).toContain('Detected On URLs');
