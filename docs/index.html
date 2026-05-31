@@ -29,6 +29,15 @@
       color: var(--color-text);
       line-height: 1.6;
     }
+    a {
+      color: var(--color-accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    a:hover,
+    a:focus-visible {
+      text-decoration-thickness: 2px;
+    }
 
     /* ── Banner ── */
     .uswds-banner {
@@ -186,8 +195,7 @@
       padding: 1.5rem;
       font-size: .85rem;
     }
-    footer a { color: #7dc7ff; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer a { color: #7dc7ff; }
 
     @media (max-width: 600px) {
       header.hero h1 { font-size: 1.8rem; }
