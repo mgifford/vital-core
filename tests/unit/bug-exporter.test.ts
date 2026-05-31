@@ -118,5 +118,10 @@ describe('BugExporter', () => {
     expect(markdownText).toContain('**Largest Contentful Paint (ms):** 2100');
     expect(markdownText).toContain('**Speed Index (ms):** 3000');
     expect(markdownText).toContain('Supplemental Pattern Advice (curated-purple-ai, HIGH confidence)');
+    expect(markdownText).toContain('## 🔎 Report Navigation');
+    expect(markdownText).toContain('Page report 1: https://example.org/page');
+    expect(markdownText).toContain('<a id="page-1-https-example-org-page" tabindex="-1"></a>');
+    expect(markdownText).toContain('Jump to section: [Accessibility deficiencies](#page-1-https-example-org-page-accessibility-deficiencies)');
+    expect(markdownText).toContain('<a id="page-1-https-example-org-page-accessibility-deficiencies" tabindex="-1"></a>');
   });
 });
