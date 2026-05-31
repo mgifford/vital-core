@@ -131,3 +131,33 @@ targets:
     settings:
       postLoadDelay: 2000
       maxTimeoutMs: 120000
+
+  - id: nih-gov
+    name: National Institutes of Health
+    base_url: https://www.nih.gov
+    sitemap_url: https://www.nih.gov/sitemap.xml
+    include_paths:
+      - "/health-information/*"
+      - "/news-events/*"
+      - "/research-training/*"
+    priority_urls:
+      - https://www.nih.gov/
+      - https://www.nih.gov/health-information
+    settings:
+      postLoadDelay: 2000
+      maxTimeoutMs: 120000
+
+  - id: health-gov
+    name: Health.gov
+    base_url: https://health.gov
+    sitemap_url: https://health.gov/sitemap.xml
+    include_paths:
+      - "/our-work/*"
+      - "/news/*"
+      - "/*"
+    priority_urls:
+      - https://health.gov/
+      - https://health.gov/our-work/
+    settings:
+      postLoadDelay: 2000
+      maxTimeoutMs: 120000
