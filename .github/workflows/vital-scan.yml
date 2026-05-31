@@ -17,6 +17,11 @@ on:
         required: false
         type: boolean
         default: false
+      clear_history:
+        description: 'Discard all prior run history and start a clean baseline (use with force_rescan=true)'
+        required: false
+        type: boolean
+        default: false
 
 # Explicitly set permissions for native, secure GitHub Pages deployment
 permissions:
@@ -54,6 +59,7 @@ jobs:
         run: npm ci
 
       - name: Restore historical run data from current Pages site
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.clear_history == true) }}
         env:
           VITAL_PAGES_BASE_URL: ${{ vars.VITAL_PAGES_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
           VITAL_HISTORY_CACHE_DIR: .history-cache
@@ -164,6 +170,7 @@ jobs:
           VITAL_HISTORY_CACHE_DIR: .history-cache
           VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}
           VITAL_WAPPALYZER_CMD: .tools/wappalyzer-next/bin/wappalyzer
+          VITAL_ALFA_CMD: node_modules/.bin/alfa
           VITAL_AUDIT_SCOPE: ${{ steps.offhours.outputs.audit_scope || 'full' }}
           FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && steps.offhours.outputs.deep_refresh == 'true') || 'false' }}
           FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && steps.offhours.outputs.monthly_seed_refresh == 'true') || 'false' }}

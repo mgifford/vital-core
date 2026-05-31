@@ -50,12 +50,45 @@ Coverage reports are generated to `coverage/` and uploaded by the CI workflow (`
 
 Standards-source integrity is validated by `tests/smoke/validate-standards-source.ts` and confirms that the ScanGov standards submodule and canonical standards data mappings are present for reporting.
 
-## Page Technology Profiling
+## Scan Tool Stack
 
-Each scanned page now includes a CMS/framework technology fingerprint in `technologyStack`, powered by `wappalyzer-next`.
+VITAL-Core runs up to six workers per page. Workers 2–6 are skipped when `VITAL_AUDIT_SCOPE=accessibility` or `a11y`.
 
-- Default command: `.tools/wappalyzer-next/bin/wappalyzer` when available (isolated local installation)
-- Override command path: set `VITAL_WAPPALYZER_CMD`
+| # | Tool | What it produces |
+|---|------|-----------------|
+| 1 | **axe-core** via `@axe-core/playwright` | WCAG 2.x / Section 508 violations (always runs) |
+| 2 | **Siteimprove Alfa CLI** | Independent ACT-rules accessibility audit against live URL (always runs) |
+| 3 | **Google Lighthouse** | Performance (FCP, LCP, Speed Index), accessibility, SEO, best-practices, and experimental agentic-browsing scores |
+| 4 | **wappalyzer-next** | CMS / framework / analytics tech fingerprint (`--scan-type full`) |
+| 5 | **Cheerio** (offline) | Alt-text, readability, overlay detection, USWDS presence, ambiguous links |
+| 6 | **axe-core** (JS disabled) | Third-party script regression delta |
+
+### Environment variables
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `VITAL_ALFA_CMD` | `alfa` | Path to alfa binary. Use `node_modules/.bin/alfa` locally and in CI. |
+| `VITAL_WAPPALYZER_CMD` | _(empty — tool skipped if unset)_ | Path to wappalyzer-next binary. |
+| `VITAL_AUDIT_SCOPE` | `full` | Set to `accessibility` or `a11y` to run workers 3–6 only (axe + alfa still run). |
+| `VITAL_SCAN_INTENSITY` | `standard` | `deep` enables Firefox + WebKit in addition to Chromium. |
+
+### Alfa accessibility auditing
+
+Alfa and axe both run on every page. Alfa provides independent ACT-rules coverage from Siteimprove; axe provides Deque coverage. Running both improves overall issue detection.
+
+Alfa requires `@siteimprove/alfa-formatter-json` to be installed (it is in `dependencies`) and the `VITAL_ALFA_CMD` environment variable to point to the binary:
+
+```sh
+VITAL_ALFA_CMD=node_modules/.bin/alfa npx tsx src/index.ts profiles/local-test.yml
+```
+
+Alfa serializes the full DOM tree into its JSON output. Complex pages can produce 4–10 MB of output per page; the worker uses a 10 MB buffer limit.
+
+### Page Technology Profiling
+
+Each scanned page includes a CMS/framework technology fingerprint in `technologyStack`, powered by **wappalyzer-next** (the open-source fork — the original Wappalyzer requires a paid commercial license and will not run without one) using `--scan-type full`.
+
+- Default command: `.tools/wappalyzer-next/bin/wappalyzer` when `VITAL_WAPPALYZER_CMD` is set
 - If the command is unavailable or fails, scans continue and `technologyStack` is reported as an empty list.
 
 Install options for `wappalyzer-next` are documented upstream: https://github.com/s0md3v/wappalyzer-next

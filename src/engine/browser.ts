@@ -190,10 +190,12 @@ export class ResilientBrowserEngine {
           console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
           baseReport.liveAudits = await LiveWorker.runLiveAudits(page);
 
-          if (!accessibilityOnly) {
-            // 6b. Capture raw Alfa results for this page to support future consensus mapping.
-            baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url);
+          // 6b. Alfa — always runs alongside axe for independent ACT-rules cross-check.
+          // Siteimprove Alfa and Deque axe use different rule sets; running both improves
+          // issue coverage. Alfa fetches the live URL independently of the browser session.
+          baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url);
 
+          if (!accessibilityOnly) {
             // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
             if (baseReport.offlineAudits) {
               baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
@@ -216,9 +218,9 @@ export class ResilientBrowserEngine {
           fs.writeFileSync(snapshotPath, hydratedHtml, 'utf8');
           console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
 
-          // 9. Run Lighthouse performance against the local cached snapshot to track page load quality over time.
+          // 9. Run Lighthouse performance audit against the live URL.
           if (!accessibilityOnly) {
-            const lighthouse = await LighthouseWorker.auditCachedSnapshot(snapshotPath, effectiveMaxTimeoutMs);
+            const lighthouse = await LighthouseWorker.auditLiveUrl(url, effectiveMaxTimeoutMs);
             if (baseReport.liveAudits) {
               baseReport.liveAudits.lighthouse = lighthouse;
             }

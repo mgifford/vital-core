@@ -77,7 +77,11 @@ export const PageScanReportSchema = z.object({
       energyEstimateKwh: z.number().nullable(), // SWD model energy calculation per page visit
       firstContentfulPaintMs: z.number().nullable().optional(),
       largestContentfulPaintMs: z.number().nullable().optional(),
-      speedIndexMs: z.number().nullable().optional()
+      speedIndexMs: z.number().nullable().optional(),
+      accessibilityScore: z.number().nullable().optional(), // 0-100 scale
+      seoScore: z.number().nullable().optional(),           // 0-100 scale
+      bestPracticesScore: z.number().nullable().optional(), // 0-100 scale
+      agenticScore: z.number().nullable().optional()        // experimental: agentic browsing pass ratio 0-100
     }).nullable(),
     accessibilityViolations: z.array(A11yViolationSchema)
   }).nullable(),

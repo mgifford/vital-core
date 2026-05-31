@@ -21,8 +21,12 @@ This file tracks what is currently working in VITAL-Core and what is still being
 
 ### Auditing and Data Collection
 
-- Live accessibility audits in browser context.
-- Offline snapshot analysis for content and structural checks.
+- **axe-core** (always): Live WCAG 2.x / Section 508 accessibility audit via Playwright in-browser, run on every page regardless of scope setting.
+- **Alfa** (always): Independent ACT-rules accessibility audit via Siteimprove Alfa CLI (`node_modules/.bin/alfa`) against live URLs. Runs alongside axe on every page for cross-engine issue coverage. Requires `@siteimprove/alfa-formatter-json` installed and `VITAL_ALFA_CMD` set. Output buffer is 10 MB to handle large DOM serialization.
+- **Lighthouse** (full scope): Five category scores — performance (FCP, LCP, Speed Index), accessibility, SEO, best-practices, and the experimental agentic-browsing pass ratio — via Google Lighthouse against the live URL. Requires Chrome installed.
+- **Wappalyzer-next** (full scope): CMS/framework/analytics tech fingerprinting via wappalyzer-next CLI using `--scan-type full`. Requires `VITAL_WAPPALYZER_CMD` set. Note: the original Wappalyzer is proprietary and requires a paid license; wappalyzer-next is the open-source fork.
+- **Offline / Cheerio** (full scope): Alt-text quality, ambiguous link text, readability (Flesch-Kincaid grade), USWDS presence, and accessibility overlay detection from the HTML snapshot.
+- **Third-party impact** (full scope): Second axe pass with JS disabled to isolate how much tag managers, overlays, and chat widgets worsen the accessibility score.
 - Technology fingerprinting with resilient command handling and fallback parsing.
 - Third-party impact analysis and consensus summaries in run outputs.
 

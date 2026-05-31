@@ -84,7 +84,9 @@ export class TechnologyWorker {
   }
 
   private static buildCommandAttempts(command: string, url: string): Array<{ file: string; args: string[] }> {
-    const args = ['-i', url, '--scan-type', 'balanced', '-oJ', '-'];
+    // full scan is required — balanced returns no results for many gov sites.
+    // -oJ without a filename argument writes JSON to stdout.
+    const args = ['--scan-type', 'full', '-oJ', '-i', url];
     const attempts: Array<{ file: string; args: string[] }> = [];
 
     if (command && command.trim() !== '') {

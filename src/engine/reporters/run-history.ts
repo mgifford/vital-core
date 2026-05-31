@@ -1051,4 +1051,181 @@ export class RunHistoryReporter {
 
     return values.reduce((sum, value) => sum + value, 0) / values.length;
   }
+
+  // ---------------------------------------------------------------------------
+  // CSV + flat-violations JSON exports
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Escapes a single CSV cell value: wraps in double-quotes if the value
+   * contains commas, quotes, or newlines; internal quotes are doubled.
+   */
+  private static escapeCsvCell(value: unknown): string {
+    const str = String(value ?? '');
+    if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+      return '"' + str.replace(/"/g, '""') + '"';
+    }
+
+    return str;
+  }
+
+  /**
+   * Builds a CSV document with one row per scanned page.
+   * Column layout is inspired by open-scans' report.csv format, adapted to the
+   * fields that vital-core actually produces.
+   */
+  public static buildRunCsv(
+    allResults: TargetScanResult[],
+    runId: string,
+    generatedAt: string
+  ): string {
+    const headers = [
+      'run_id', 'generated_at',
+      'target_id', 'domain',
+      'url', 'status', 'timestamp',
+      // Alfa
+      'alfa_executed', 'alfa_findings', 'alfa_error',
+      // axe
+      'axe_executed', 'axe_violations', 'axe_violation_instances', 'axe_failed_rules', 'axe_error',
+      // Lighthouse
+      'lighthouse_performance', 'fcp_ms', 'lcp_ms', 'speed_index_ms',
+      // Offline
+      'overlay_detected', 'overlay_provider',
+      'flesch_kincaid_grade', 'ambiguous_links', 'suspicious_alt_count',
+      // Tech
+      'tech_count', 'tech_stack',
+      // Third-party
+      'third_party_regression'
+    ];
+
+    const rows: string[] = [headers.join(',')];
+
+    for (const result of allResults) {
+      const targetId = String(result.targetId || '');
+      const domain = String(result.domain || '');
+      const pages = Array.isArray(result.pagesScanned) ? result.pagesScanned : [];
+
+      for (const page of pages) {
+        const alfa = page.alfaAudits;
+        const live = page.liveAudits;
+        const offline = page.offlineAudits;
+        const lh = live?.lighthouse ?? null;
+
+        const axeViolations = live ? live.accessibilityViolations.length : 0;
+        const axeInstances = live
+          ? live.accessibilityViolations.reduce((sum, v) => sum + (Array.isArray(v.instances) ? v.instances.length : 0), 0)
+          : 0;
+        const axeFailedRules = live
+          ? live.accessibilityViolations.map(v => v.id).join(';')
+          : '';
+
+        const tech = Array.isArray(page.technologyStack) ? page.technologyStack : [];
+
+        const cells = [
+          runId, generatedAt,
+          targetId, domain,
+          page.url || '', page.status || '', page.timestamp || '',
+          // Alfa
+          alfa ? (alfa.executed ? 'true' : 'false') : 'false',
+          alfa ? String(alfa.findingsCount ?? 0) : '0',
+          alfa?.errorMessage || '',
+          // axe
+          live ? 'true' : 'false',
+          String(axeViolations),
+          String(axeInstances),
+          axeFailedRules,
+          '',  // axe_error — axe errors surface as page status=FAILED
+          // Lighthouse
+          lh?.performanceScore != null ? String(lh.performanceScore) : '',
+          lh?.firstContentfulPaintMs != null ? String(lh.firstContentfulPaintMs) : '',
+          lh?.largestContentfulPaintMs != null ? String(lh.largestContentfulPaintMs) : '',
+          lh?.speedIndexMs != null ? String(lh.speedIndexMs) : '',
+          // Offline
+          offline?.overlayDetected?.found ? 'true' : 'false',
+          offline?.overlayDetected?.provider || '',
+          offline?.contentMetrics?.fleschKincaidGrade != null ? String(offline.contentMetrics.fleschKincaidGrade) : '',
+          offline?.contentMetrics?.ambiguousLinkTextCount != null ? String(offline.contentMetrics.ambiguousLinkTextCount) : '',
+          offline?.contentMetrics?.suspiciousAltTextCount != null ? String(offline.contentMetrics.suspiciousAltTextCount) : '',
+          // Tech
+          String(tech.length),
+          tech.map(t => t.name).join(';'),
+          // Third-party
+          page.thirdPartyImpact?.regressionDetected ? 'true' : 'false'
+        ].map(v => this.escapeCsvCell(v));
+
+        rows.push(cells.join(','));
+      }
+    }
+
+    return rows.join('\n') + '\n';
+  }
+
+  /**
+   * Flat JSON array — one record per axe violation _instance_ (not per rule).
+   * Useful for filtering, pivoting, and feeding into other tools.
+   */
+  public static buildViolationsFlatJson(
+    allResults: TargetScanResult[],
+    runId: string,
+    generatedAt: string
+  ): {
+    generatedAt: string;
+    runId: string;
+    totalInstances: number;
+    violations: Array<{
+      run_id: string;
+      target_id: string;
+      domain: string;
+      url: string;
+      page_timestamp: string;
+      engine: 'axe';
+      rule_id: string;
+      severity: string;
+      wcag_criteria: string;
+      description: string;
+      help_url: string;
+      instance_html: string;
+      instance_target: string;
+      failure_summary: string;
+    }>;
+  } {
+    const violations: ReturnType<typeof this.buildViolationsFlatJson>['violations'] = [];
+
+    for (const result of allResults) {
+      const targetId = String(result.targetId || '');
+      const domain = String(result.domain || '');
+      const pages = Array.isArray(result.pagesScanned) ? result.pagesScanned : [];
+
+      for (const page of pages) {
+        const pageViolations = page.liveAudits?.accessibilityViolations ?? [];
+
+        for (const violation of pageViolations) {
+          const wcagCriteria = (violation.impactedCriteria ?? [])
+            .filter(c => c.startsWith('wcag'))
+            .join(';');
+
+          for (const instance of (Array.isArray(violation.instances) ? violation.instances : [])) {
+            violations.push({
+              run_id: runId,
+              target_id: targetId,
+              domain,
+              url: String(page.url || ''),
+              page_timestamp: String(page.timestamp || ''),
+              engine: 'axe',
+              rule_id: violation.id,
+              severity: violation.severity,
+              wcag_criteria: wcagCriteria,
+              description: violation.description,
+              help_url: violation.helpUrl,
+              instance_html: String(instance.html || ''),
+              instance_target: Array.isArray(instance.target) ? instance.target.join(' ') : String(instance.target || ''),
+              failure_summary: String(instance.failureSummary || '')
+            });
+          }
+        }
+      }
+    }
+
+    return { generatedAt, runId, totalInstances: violations.length, violations };
+  }
 }

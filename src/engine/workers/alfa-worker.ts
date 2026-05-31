@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import * as path from 'node:path';
 import { PageAlfaAudit } from '../../types/site-quality-spec';
 
 type ExecRunner = (
@@ -12,7 +13,7 @@ const execFileAsync = promisify(execFile);
 
 export class AlfaWorker {
   private static readonly DEFAULT_TIMEOUT_MS = 45000;
-  private static readonly DEFAULT_MAX_BUFFER = 2 * 1024 * 1024;
+  private static readonly DEFAULT_MAX_BUFFER = 10 * 1024 * 1024;
 
   public static async runAlfaAudits(
     url: string,
@@ -52,15 +53,22 @@ export class AlfaWorker {
   }
 
   private static buildCommandAttempts(command: string, url: string): Array<{ file: string; args: string[] }> {
+    // alfa CLI requires the 'audit' subcommand and '--format json' (not '-f json').
+    // @siteimprove/alfa-formatter-json must be installed for JSON output to work.
+    const alfaArgs = ['audit', '--format', 'json', '--outcome', 'failed', '--timeout', '30000', url];
     const attempts: Array<{ file: string; args: string[] }> = [
-      { file: command, args: ['--format', 'json', url] },
-      { file: command, args: ['audit', '--format', 'json', url] }
+      { file: command, args: alfaArgs }
     ];
 
-    if (command === 'alfa') {
+    // Fallback: try the local node_modules binary when command is unresolvable
+    const localBin = path.resolve(process.cwd(), 'node_modules/.bin/alfa');
+    if (command !== localBin) {
+      attempts.push({ file: localBin, args: alfaArgs });
+    }
+
+    if (command === 'alfa' || command === localBin) {
       attempts.push(
-        { file: 'npx', args: ['--yes', '@siteimprove/alfa-cli', '--format', 'json', url] },
-        { file: 'npx', args: ['--yes', '@siteimprove/alfa-cli', 'audit', '--format', 'json', url] }
+        { file: 'npx', args: ['--yes', '@siteimprove/alfa-cli', ...alfaArgs] }
       );
     }
 

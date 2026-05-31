@@ -28,7 +28,7 @@ describe('TechnologyWorker', () => {
     ]);
     expect(mockRunner).toHaveBeenCalledWith(
       command,
-      ['-i', 'https://www.cms.gov', '--scan-type', 'balanced', '-oJ', '-'],
+      ['--scan-type', 'full', '-oJ', '-i', 'https://www.cms.gov'],
       expect.objectContaining({ timeout: expect.any(Number), maxBuffer: expect.any(Number) })
     );
   });

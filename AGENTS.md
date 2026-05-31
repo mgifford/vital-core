@@ -13,6 +13,32 @@ Build and maintain a government web quality scanner that produces high-confidenc
 3. Practical developer remediation guidance
 4. Efficient scanning of high-value pages
 
+## Scan Tool Inventory
+
+Every URL in the scan queue is processed by these workers in order. Workers 3–6 are skipped when `VITAL_AUDIT_SCOPE=accessibility` or `VITAL_AUDIT_SCOPE=a11y`.
+
+| # | Worker file | Tool | What it produces | Gated by scope |
+|---|-------------|------|-----------------|---------------|
+| 1 | `live-worker.ts` | **axe-core** via `@axe-core/playwright` | WCAG 2.x / Section 508 violations (in-browser) | No — always runs |
+| 2 | `alfa-worker.ts` | **Siteimprove Alfa CLI** (`@siteimprove/alfa-cli`) | Independent ACT-rules audit against live URL | No — always runs |
+| 3 | `lighthouse-worker.ts` | **Google Lighthouse** (`lighthouse` + `chrome-launcher`) | Performance, accessibility, SEO, best-practices, and agentic-browsing scores | Yes |
+| 4 | `technology-worker.ts` | **wappalyzer-next** CLI (`--scan-type full`) | CMS / framework / analytics tech fingerprint | Yes |
+| 5 | `offline-worker.ts` | **Cheerio** (HTML parser) | Alt-text quality, readability (Flesch-Kincaid), overlay detection, USWDS presence, ambiguous links | Yes |
+| 6 | `third-party-impact-worker.ts` | **axe-core** (second pass, JS disabled) | Regression delta caused by third-party scripts | Yes, and only when offline audits ran |
+
+### Required environment variables for tools
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `VITAL_ALFA_CMD` | `alfa` (must be in PATH) | Path to alfa CLI binary. Set to `node_modules/.bin/alfa` in CI. |
+| `VITAL_WAPPALYZER_CMD` | _(empty — tool skipped if unset)_ | Path to wappalyzer-next binary. Set to `.tools/wappalyzer-next/bin/wappalyzer` in CI. |
+| `VITAL_AUDIT_SCOPE` | `full` | Set to `accessibility` or `a11y` to run workers 3–6 only (axe + alfa still run). |
+| `VITAL_SCAN_INTENSITY` | `standard` | Controls multi-engine browser mode (`deep` enables Firefox + WebKit). |
+
+### Known size limits
+
+Alfa serializes the full DOM tree and HTTP response into its JSON output. A complex page can produce 4–10 MB of raw output. The alfa worker uses a 10 MB `maxBuffer` to accommodate this.
+
 ## Repository Rules for Agents
 
 1. Keep changes small, reviewable, and test-backed.
