@@ -36,8 +36,10 @@ describe('Workflow contracts', () => {
     expect(content).toContain("steps.offhours.outputs.scan_intensity == 'standard' && '8'");
     expect(content).toContain("steps.offhours.outputs.scan_intensity == 'light' && '4'");
     expect(content).toContain("VITAL_DYNAMIC_BATCH_ENABLE: 'true'");
-    expect(content).toContain("VITAL_BATCH_SIZE_BASE: '2'");
+    expect(content).toContain("VITAL_BATCH_SIZE_BASE: '1'");
     expect(content).toContain('VITAL_BATCH_SIZE_MAX: ${{');
+    expect(content).toContain("VITAL_TIMEOUT_BACKOFF_THRESHOLD: '1'");
+    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'ultra_light' && '60000'");
   });
 
   it('runs link and axe quality gates for docs', () => {
