@@ -39,6 +39,7 @@ describe('Workflow contracts', () => {
     const content = fs.readFileSync(workflowPath, 'utf8');
 
     expect(content).toContain('lycheeverse/lychee-action@v2');
+    expect(content).toContain('--accept 200,403,429');
     expect(content).toContain('Install Playwright Chromium');
     expect(content).toContain('Run axe smoke checks against docs');
     expect(content).toContain('node scripts/run-axe-site-check.mjs');
@@ -54,5 +55,8 @@ describe('Workflow contracts', () => {
     expect(content).toContain('issues: write');
     expect(content).toContain('actions/github-script@v7');
     expect(content).toContain("labels: ['automated', 'ci-failure']");
+    expect(content).toContain("github.event.workflow_run.conclusion == 'success'");
+    expect(content).toContain('Close matching failure tracking issue');
+    expect(content).toContain("state_reason: 'completed'");
   });
 });

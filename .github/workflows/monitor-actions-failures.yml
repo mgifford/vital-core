@@ -113,6 +113,7 @@ jobs:
             const marker = `<!-- workflow-key:${workflowKey} -->`;
             const workflowSummaryMarker = `Workflow: ${run.name}`;
             const branchSummaryMarker = `Branch: ${run.head_branch}`;
+            const legacyTitle = `Workflow failure: ${run.name} on ${run.head_branch}`;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
 
@@ -128,7 +129,8 @@ jobs:
               const body = issue.body || '';
               return (
                 body.includes(marker) ||
-                (body.includes(workflowSummaryMarker) && body.includes(branchSummaryMarker))
+                (body.includes(workflowSummaryMarker) && body.includes(branchSummaryMarker)) ||
+                issue.title.trim() === legacyTitle
               );
             });
             if (matches.length === 0) {
@@ -161,7 +163,8 @@ jobs:
                 owner,
                 repo,
                 issue_number: issue.number,
-                state: 'closed'
+                state: 'closed',
+                state_reason: 'completed'
               });
 
               core.info(`Closed failure issue #${issue.number}`);
