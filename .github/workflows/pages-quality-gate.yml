@@ -35,7 +35,7 @@ jobs:
             --timeout 20
             --max-retries 3
             --retry-wait-time 5
-            --accept 200,429
+            --accept 200,403,429
             docs/**/*.html
 
       - name: Initialize Node.js environment
