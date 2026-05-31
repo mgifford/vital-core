@@ -3,6 +3,9 @@ import * as path from 'path';
 import { TargetScanResult, PageScanReport } from '../../types/site-quality-spec';
 import { QualityIndexReporter, TargetQualityIndexEntry } from './quality-index';
 import { DiscoveryNonHtmlExclusion } from '../discovery';
+import { DomainRatingScorer } from './domain-rating';
+import { DomainAccessibilityRating, LetterGrade } from '../../types/domain-rating';
+import { PrioritySeedSnapshot } from '../priority-seeds';
 
 export class DashboardCompiler {
   private static DIST_DIR = path.resolve(process.cwd(), 'dist');
@@ -13,7 +16,7 @@ export class DashboardCompiler {
    */
   public static compileStaticDashboard(
     allResults: TargetScanResult[],
-    options: { nonHtmlDiscoveryExclusions?: DiscoveryNonHtmlExclusion[] } = {}
+    options: { nonHtmlDiscoveryExclusions?: DiscoveryNonHtmlExclusion[]; prioritySeedSnapshot?: PrioritySeedSnapshot | null } = {}
   ): void {
     if (!fs.existsSync(this.DIST_DIR)) {
       fs.mkdirSync(this.DIST_DIR, { recursive: true });
@@ -38,6 +41,12 @@ export class DashboardCompiler {
       .replace(/&/g, '\\u0026')
       .replace(/\u2028/g, '\\u2028')
       .replace(/\u2029/g, '\\u2029');
+
+    const domainRatings = DomainRatingScorer.buildAllDomainRatings(
+      allResults,
+      options.prioritySeedSnapshot ?? null
+    );
+    const accessibilityGradesHtml = this.buildAccessibilityGradesHtml(domainRatings);
 
     const siteFooterHtml = this.buildSiteFooterHtml();
 
@@ -86,6 +95,8 @@ export class DashboardCompiler {
         <a href="#run-history">Run History</a>
         &nbsp;|&nbsp;
         <a href="#blocked-system-issues">Blocked System Issues</a>
+        &nbsp;|&nbsp;
+        <a href="#domain-accessibility-grades">Domain Accessibility Grades</a>
         &nbsp;|&nbsp;
         <a href="#domain-ongoing-reports">Domain Ongoing Reports</a>
       </p>
@@ -211,6 +222,11 @@ export class DashboardCompiler {
       <svg id="compliance-chart" class="compliance-chart" viewBox="0 0 900 260" role="img" aria-label="Requirement compliance percentages across recent runs"></svg>
       <p id="compliance-caption" class="muted-small">Compliance percentages by requirement across recent runs. Legal baseline and target levels are shown separately.</p>
       <p class="muted-tiny">Manual testing remains a primary release criterion; automated metrics are indicators, not substitutes for keyboard and assistive-technology validation.</p>
+    </div>
+    <div class="card">
+      <h2 id="domain-accessibility-grades" tabindex="-1">Domain Accessibility Grades (WCAG 2.2 AA)</h2>
+      <p class="muted-small">Scores reflect severity-weighted penalties for critical, serious, moderate, and minor WCAG 2.2 AA violations. Systemic failures (same rule on ≥3 pages) and violations on high-traffic pages (DuckDuckGo seed list) are penalised more heavily. Sorted best grade first.</p>
+      ${accessibilityGradesHtml}
     </div>
     <div class="card">
       <h2 id="domain-ongoing-reports" tabindex="-1">Domain Ongoing Reports</h2>
@@ -809,6 +825,62 @@ ${siteFooterHtml}
   </footer>`;
   }
 
+  /** Builds the server-rendered grades table HTML for the dashboard. */
+  private static buildAccessibilityGradesHtml(ratings: DomainAccessibilityRating[]): string {
+    if (ratings.length === 0) {
+      return `<p>No domain ratings available for the latest run.</p>`;
+    }
+
+    const rows = ratings.map(r => {
+      const gradeClass = this.gradeToColorClass(r.letterGrade);
+      const { critical, serious, moderate, minor } = r.breakdown;
+      const priorityPagesText = r.priorityPageCoverage.totalPriorityPages > 0
+        ? `${r.priorityPageCoverage.pagesWithViolations} / ${r.priorityPageCoverage.totalPriorityPages}`
+        : 'n/a';
+      const driver = DomainRatingScorer.buildPenaltyDriverSummary(r);
+
+      return `
+        <tr>
+          <td><a href="domains/${this.sanitizePathSegment(r.targetId)}/accessibility.html">${this.escapeHtml(r.targetId.toUpperCase())}</a></td>
+          <td><span class="grade-badge ${this.escapeHtml(gradeClass)}" aria-label="Grade ${this.escapeHtml(r.letterGrade)}">${this.escapeHtml(r.letterGrade)}</span></td>
+          <td>${this.escapeHtml(r.numericScore)}</td>
+          <td>${this.escapeHtml(critical.rawCount)}</td>
+          <td>${this.escapeHtml(serious.rawCount)}</td>
+          <td>${this.escapeHtml(moderate.rawCount)}</td>
+          <td>${this.escapeHtml(minor.rawCount)}</td>
+          <td>${this.escapeHtml(priorityPagesText)}</td>
+          <td class="muted-small">${this.escapeHtml(driver)}</td>
+        </tr>`;
+    }).join('');
+
+    return `
+      <table id="accessibility-grades-table">
+        <caption>Domain accessibility grades sorted best-first. Grade scale: A+ (97–100) · A (93–96) · A− (90–92) · B+ (87–89) · B (83–86) · B− (80–82) · C+ (77–79) · C (73–76) · C− (70–72) · D+ (67–69) · D (63–66) · D− (&lt;63).</caption>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">Grade</th>
+            <th scope="col">Score</th>
+            <th scope="col">Critical</th>
+            <th scope="col">Serious</th>
+            <th scope="col">Moderate</th>
+            <th scope="col">Minor</th>
+            <th scope="col">Priority-page violations</th>
+            <th scope="col">Main penalty driver</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  /** Maps a letter grade to a CSS class name for colour coding. */
+  private static gradeToColorClass(grade: LetterGrade): string {
+    if (grade === 'A+' || grade === 'A' || grade === 'A-') return 'grade-a';
+    if (grade === 'B+' || grade === 'B' || grade === 'B-') return 'grade-b';
+    if (grade === 'C+' || grade === 'C' || grade === 'C-') return 'grade-c';
+    return 'grade-d';
+  }
+
   private static formatHumanDuration(durationMs: number): string {
     const totalSeconds = Math.max(0, Math.ceil(Number(durationMs || 0) / 1000));
     const hours = Math.floor(totalSeconds / 3600);
@@ -992,6 +1064,52 @@ main {
 .badge.alert {
   background: #fbeae5;
   color: var(--critical-red);
+}
+.grade-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  min-width: 2.4rem;
+  text-align: center;
+}
+.grade-a {
+  background: #d4edda;
+  color: #155724;
+}
+.grade-b {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+.grade-c {
+  background: #fff3cd;
+  color: #856404;
+}
+.grade-d {
+  background: #fbeae5;
+  color: var(--critical-red);
+}
+html[data-theme='dark'] .grade-a,
+html:not([data-theme='light']) .grade-a {
+  background: #1a4a2a;
+  color: #a8d5b5;
+}
+html[data-theme='dark'] .grade-b,
+html:not([data-theme='light']) .grade-b {
+  background: #0a2d38;
+  color: #82c8d8;
+}
+html[data-theme='dark'] .grade-c,
+html:not([data-theme='light']) .grade-c {
+  background: #3d2e00;
+  color: #f0c04a;
+}
+html[data-theme='dark'] .grade-d,
+html:not([data-theme='light']) .grade-d {
+  background: #3d0a0a;
+  color: #ff9f9f;
 }
 table {
   width: 100%;

@@ -89,6 +89,11 @@ export class PrioritySeedStore {
     this.activeSnapshot = snapshot;
   }
 
+  /** Returns the currently loaded snapshot, or null if not yet initialised. */
+  public static getActiveSnapshot(): PrioritySeedSnapshot | null {
+    return this.activeSnapshot;
+  }
+
   /**
    * Performs an on-demand DuckDuckGo site: query for a single target and returns
    * the discovered URLs. Used as a real-time fallback when a sitemap returns 0 URLs.

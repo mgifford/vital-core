@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult } from '../../types/site-quality-spec';
 import { RemediationAdvisor } from './remediation-advisor';
+import { DomainRatingScorer } from './domain-rating';
+import { DomainAccessibilityRating } from '../../types/domain-rating';
 
 export class BugExporter {
   private static REPORT_DIR = path.resolve(process.cwd(), 'dist/reports');
@@ -29,8 +31,12 @@ export class BugExporter {
 
   /**
    * Generates formatted Markdown issue documentation for a scanned target
+   *
+   * @param targetResult Scan results for the target.
+   * @param seedUrls     Optional DuckDuckGo priority-page seed URLs for the target.
+   *                     When provided, the accessibility grade reflects page popularity.
    */
-  public static exportMarkdownReport(targetResult: TargetScanResult): string {
+  public static exportMarkdownReport(targetResult: TargetScanResult, seedUrls: string[] = []): string {
     if (!fs.existsSync(this.REPORT_DIR)) {
       fs.mkdirSync(this.REPORT_DIR, { recursive: true });
     }
@@ -44,6 +50,8 @@ export class BugExporter {
     md += `* **Recommended target:** WCAG 2.2 AA where feasible, while keeping WCAG 2.0 / 2.1 / 2.2 distinctions explicit in reporting.\n`;
     md += `* **AAA guidance:** Encourage AAA improvements where practical, but do not treat automated AAA checks as equivalent to human validation.\n`;
     md += `* **Manual testing priority:** Keyboard-only and assistive-technology testing should be prioritized above automated AAA score chasing.\n\n`;
+
+    md += this.buildAccessibilityGradeSection(targetResult, seedUrls);
 
     // Filter pages that encountered severe issues
     const problematicPages = targetResult.pagesScanned.filter(
@@ -321,5 +329,33 @@ export class BugExporter {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 80) || 'section';
+  }
+
+  private static buildAccessibilityGradeSection(targetResult: TargetScanResult, seedUrls: string[]): string {
+    const rating: DomainAccessibilityRating = DomainRatingScorer.buildDomainRating(targetResult, seedUrls);
+    const driver = DomainRatingScorer.buildPenaltyDriverSummary(rating);
+    const { breakdown: bd, priorityPageCoverage: ppc } = rating;
+
+    let section = `## ♿ Accessibility Grade\n\n`;
+    section += `| Metric | Value |\n`;
+    section += `|--------|-------|\n`;
+    section += `| **Grade** | **${rating.letterGrade}** |\n`;
+    section += `| **Score** | ${rating.numericScore} / 100 |\n`;
+    section += `| **Summary** | ${driver} |\n`;
+    section += `| Priority pages scanned | ${ppc.totalPriorityPages} |\n`;
+    section += `| Priority pages with violations | ${ppc.pagesWithViolations} |\n`;
+    section += `\n`;
+
+    section += `### Severity Breakdown\n\n`;
+    section += `| Severity | Instances | Unique Rules | Systemic Rules | Priority-Page Pairs | Weighted Penalty |\n`;
+    section += `|----------|-----------|--------------|----------------|---------------------|------------------|\n`;
+    for (const sev of ['critical', 'serious', 'moderate', 'minor'] as const) {
+      const b = bd[sev];
+      section += `| ${sev.charAt(0).toUpperCase() + sev.slice(1)} | ${b.rawCount} | ${b.uniqueRuleCount} | ${b.systemicCount} | ${b.priorityPageCount} | ${b.weightedPenalty} |\n`;
+    }
+    section += `\n`;
+    section += `> **Grade scale:** A+ (97–100) · A (93–96) · A− (90–92) · B+ (87–89) · B (83–86) · B− (80–82) · C+ (77–79) · C (73–76) · C− (70–72) · D+ (67–69) · D (63–66) · D− (<63)\n\n`;
+
+    return section;
   }
 }

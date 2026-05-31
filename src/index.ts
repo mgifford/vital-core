@@ -209,7 +209,8 @@ async function main() {
 
       // 5. Generate individual Markdown Bug Ticket Artifact for this target
       console.log(`📝 Exporting Section 508 developer tickets...`);
-      BugExporter.exportMarkdownReport(targetResult);
+      const seedUrls = PrioritySeedStore.getSeedUrls(plan.target);
+      BugExporter.exportMarkdownReport(targetResult, seedUrls);
 
       globalAccumulatedResults.push(targetResult);
     }
@@ -218,7 +219,8 @@ async function main() {
     console.log(`\n📊 Compiling executive compliance dashboard UI...`);
     const discoveryNonHtmlExclusions = TargetDiscoveryEngine.consumeNonHtmlExclusions();
     DashboardCompiler.compileStaticDashboard(globalAccumulatedResults, {
-      nonHtmlDiscoveryExclusions: discoveryNonHtmlExclusions
+      nonHtmlDiscoveryExclusions: discoveryNonHtmlExclusions,
+      prioritySeedSnapshot: PrioritySeedStore.getActiveSnapshot()
     });
     PageStateCache.save(pageState);
 
