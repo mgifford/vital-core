@@ -24,6 +24,7 @@ async function main() {
   const forcePrioritySeedRefresh = /^(1|true|yes)$/i.test(process.env.FORCE_PRIORITY_SEED_REFRESH || '');
   const revalidateAfterDays = Number.parseInt(process.env.VITAL_REVALIDATE_AFTER_DAYS || '7', 10);
   const updatedWithinDays = Number.parseInt(process.env.VITAL_UPDATED_WITHIN_DAYS || '7', 10);
+  const updatedRecheckHours = Number.parseInt(process.env.VITAL_UPDATED_RECHECK_HOURS || '12', 10);
   const maxRunMinutes = Number.parseInt(process.env.VITAL_MAX_RUN_MINUTES || '0', 10);
   const hasRuntimeDeadline = Number.isFinite(maxRunMinutes) && maxRunMinutes > 0;
   const runtimeDeadlineMs = hasRuntimeDeadline ? startTime + (maxRunMinutes * 60 * 1000) : null;
@@ -106,7 +107,8 @@ async function main() {
         previouslyScannedUrls,
           skipPreviouslyScanned: !forceRescan,
           revalidateAfterDays: Number.isFinite(revalidateAfterDays) ? revalidateAfterDays : 7,
-          updatedWithinDays: Number.isFinite(updatedWithinDays) ? updatedWithinDays : 7
+            updatedWithinDays: Number.isFinite(updatedWithinDays) ? updatedWithinDays : 7,
+            updatedRecheckHours: Number.isFinite(updatedRecheckHours) ? updatedRecheckHours : 12
       });
       if (urlQueue.length === 0) {
         console.warn(`⚠️ No URLs discovered for target ${target.id}. Skipping...`);

@@ -30,6 +30,7 @@ export class TargetDiscoveryEngine {
       skipPreviouslyScanned?: boolean;
       revalidateAfterDays?: number;
       updatedWithinDays?: number;
+      updatedRecheckHours?: number;
     } = {}
   ): Promise<string[]> {
     let sitemapUrls: string[] = [];
@@ -40,6 +41,7 @@ export class TargetDiscoveryEngine {
     const skipPreviouslyScanned = options.skipPreviouslyScanned ?? true;
     const revalidateAfterDays = options.revalidateAfterDays ?? 7;
     const updatedWithinDays = options.updatedWithinDays ?? 7;
+    const updatedRecheckHours = options.updatedRecheckHours ?? 12;
     
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
@@ -109,9 +111,15 @@ export class TargetDiscoveryEngine {
         return true;
       }
 
+      if (this.isDueForRevalidation(pageState[url], revalidateAfterDays)) {
+        return true;
+      }
+
+      // Recently updated pages are useful to revisit, but only after a cooldown
+      // so they do not dominate every incremental run.
       return (
-        this.isDueForRevalidation(pageState[url], revalidateAfterDays) ||
-        this.wasUpdatedWithinWindow(pageState[url], updatedWithinDays)
+        this.wasUpdatedWithinWindow(pageState[url], updatedWithinDays) &&
+        this.hasElapsedUpdatedRecheckCooldown(pageState[url], updatedRecheckHours)
       );
     };
 
@@ -334,6 +342,27 @@ export class TargetDiscoveryEngine {
 
     const ageMs = Date.now() - lastModified;
     return ageMs >= 0 && ageMs <= updatedWithinDays * 24 * 60 * 60 * 1000;
+  }
+
+  private static hasElapsedUpdatedRecheckCooldown(
+    entry: PageStateMap[string] | undefined,
+    updatedRecheckHours: number
+  ): boolean {
+    if (!entry) {
+      return true;
+    }
+
+    if (!Number.isFinite(updatedRecheckHours) || updatedRecheckHours <= 0) {
+      return true;
+    }
+
+    const lastChecked = Date.parse(entry.lastCheckedAt || '');
+    if (!Number.isFinite(lastChecked)) {
+      return true;
+    }
+
+    const ageMs = Date.now() - lastChecked;
+    return ageMs >= updatedRecheckHours * 60 * 60 * 1000;
   }
 
   private static hashString(value: string): number {
