@@ -34,7 +34,17 @@ describe('DashboardCompiler', () => {
       }
     ];
 
-    DashboardCompiler.compileStaticDashboard(payload);
+    DashboardCompiler.compileStaticDashboard(payload, {
+      nonHtmlDiscoveryExclusions: [
+        {
+          targetId: 'cms-gov',
+          url: 'https://example.org/files/guide.pdf',
+          reason: 'Excluded non-HTML extension from sitemap URL',
+          source: 'sitemap',
+          excludedAt: new Date().toISOString()
+        }
+      ]
+    });
 
     const outputPath = path.resolve(process.cwd(), 'dist/index.html');
     const jsPath = path.resolve(process.cwd(), 'dist/assets/dashboard.js');
@@ -44,11 +54,13 @@ describe('DashboardCompiler', () => {
     const domainPerformancePath = path.resolve(process.cwd(), 'dist/domains/cms-gov/performance.html');
     const domainContentPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/content.html');
     const domainThirdPartyPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/third-party.html');
+    const failuresPath = path.resolve(process.cwd(), 'dist/failures/index.html');
     const html = fs.readFileSync(outputPath, 'utf8');
     const js = fs.readFileSync(jsPath, 'utf8');
     const css = fs.readFileSync(cssPath, 'utf8');
     const domainOverviewHtml = fs.readFileSync(domainOverviewPath, 'utf8');
     const domainA11yHtml = fs.readFileSync(domainA11yPath, 'utf8');
+    const failuresHtml = fs.readFileSync(failuresPath, 'utf8');
 
     expect(html).toContain('\\u003cscript\\u003ealert(1)\\u003c/script\\u003e');
     expect(html).not.toContain('\"><script>alert(1)</script>');
@@ -60,6 +72,7 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('Jump to domain page');
     expect(html).toContain('id="domain-page-select"');
     expect(html).toContain('api/index.json');
+    expect(html).toContain('failures/index.html');
     expect(html).toContain('github.com/mgifford/vital-core');
     expect(html).toContain('independent open source project');
     expect(html).toContain('not affiliated with, endorsed by, or operated by');
@@ -124,9 +137,16 @@ describe('DashboardCompiler', () => {
     expect(domainOverviewHtml).toContain('Scan duration (latest run):</strong> 52m 14s');
     expect(js).toContain('durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : \'n/a\';');
     expect(domainA11yHtml).toContain('Accessibility Findings');
+    expect(failuresHtml).toContain('Failures, Timeouts, and Skipped Pages');
+    expect(failuresHtml).toContain('Failed/WAF/Timeout');
+    expect(failuresHtml).toContain('PDF/DOCX URLs Seen');
+    expect(failuresHtml).toContain('Excluded at Discovery (Non-HTML)');
+    expect(failuresHtml).toContain('EXCLUDED_AT_DISCOVERY');
+    expect(failuresHtml).toContain('Back to main dashboard');
     expect(fs.existsSync(domainPerformancePath)).toBe(true);
     expect(fs.existsSync(domainContentPath)).toBe(true);
     expect(fs.existsSync(domainThirdPartyPath)).toBe(true);
+    expect(fs.existsSync(failuresPath)).toBe(true);
   });
 
   it('renders Lighthouse threshold legend in both leaderboard and ongoing sections', () => {

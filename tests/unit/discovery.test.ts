@@ -20,6 +20,7 @@ describe('TargetDiscoveryEngine', () => {
   beforeEach(() => {
     fetchMock.mockReset();
     PrioritySeedStore.setActiveSnapshotForTesting(null);
+    TargetDiscoveryEngine.resetNonHtmlExclusionsForTesting();
     delete process.env.VITAL_SAMPLING_SEED;
     vi.spyOn(console, 'log').mockImplementation(() => undefined);
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
@@ -50,7 +51,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
-        sitemap_sample_stochastic: true
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false
       }
     };
 
@@ -78,7 +80,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
-        sitemap_sample_stochastic: true
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false
       }
     };
 
@@ -121,7 +124,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
-        sitemap_sample_stochastic: true
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false
       }
     };
 
@@ -133,12 +137,13 @@ describe('TargetDiscoveryEngine', () => {
     ]);
   });
 
-  it('filters out off-host and non-html sitemap entries', async () => {
+  it('filters out off-host and non-html sitemap entries, including .pdf and .docx', async () => {
     fetchMock.mockResolvedValue({
       sites: [
         'https://www.cms.gov/about-cms',
         'https://data.cms.gov/',
         'https://www.cms.gov/files/document/manual.pdf',
+        'https://www.cms.gov/files/document/notice.docx',
         'https://www.cms.gov/feed',
         'https://www.cms.gov/medicare'
       ]
@@ -157,12 +162,50 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
-        sitemap_sample_stochastic: true
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false
       }
     };
 
     const queue = await TargetDiscoveryEngine.discoverUrls(target);
     expect(queue).toEqual(['https://www.cms.gov/about-cms', 'https://www.cms.gov/medicare']);
+  });
+
+  it('records non-html exclusions discovered during sitemap filtering', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/about-cms',
+        'https://www.cms.gov/files/document/manual.pdf',
+        'https://www.cms.gov/files/document/notice.docx',
+        'https://www.cms.gov/feed'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/*'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 10,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false
+      }
+    };
+
+    await TargetDiscoveryEngine.discoverUrls(target);
+    const exclusions = TargetDiscoveryEngine.consumeNonHtmlExclusions();
+
+    expect(exclusions.length).toBe(3);
+    expect(exclusions.some(entry => entry.url.endsWith('.pdf'))).toBe(true);
+    expect(exclusions.some(entry => entry.url.endsWith('.docx'))).toBe(true);
+    expect(exclusions.some(entry => entry.url.includes('/feed'))).toBe(true);
   });
 
   it('limits over-represented template patterns while keeping priority URLs first', async () => {
@@ -191,7 +234,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 2,
-        sitemap_sample_stochastic: true
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false
       }
     };
 
@@ -228,7 +272,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 1,
-        sitemap_sample_stochastic: true
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false
       }
     };
 
@@ -241,6 +286,47 @@ describe('TargetDiscoveryEngine', () => {
     expect(queueOne).toHaveLength(3);
     expect(queueTwo).toHaveLength(3);
     expect(queueOne).not.toEqual(queueTwo);
+  });
+
+  it('supports unique-page focus by selecting one URL per template group first', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/newsroom/press-releases/2026-01-01/update-a',
+        'https://www.cms.gov/newsroom/press-releases/2026-01-02/update-b',
+        'https://www.cms.gov/newsroom/press-releases/2026-01-03/update-c',
+        'https://www.cms.gov/medicare/coverage/page-1',
+        'https://www.cms.gov/medicare/coverage/page-2',
+        'https://www.cms.gov/about-cms',
+        'https://www.cms.gov/contact-us'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 6,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: true
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const pressReleaseUrls = queue.filter(url => url.includes('/newsroom/press-releases/'));
+    const coverageUrls = queue.filter(url => url.includes('/medicare/coverage/'));
+
+    expect(pressReleaseUrls).toHaveLength(1);
+    expect(coverageUrls).toHaveLength(1);
+    expect(queue).toContain('https://www.cms.gov/about-cms');
+    expect(queue).toContain('https://www.cms.gov/contact-us');
   });
 
   it('prioritizes URLs not previously scanned when filling sitemap sample slots', async () => {
@@ -266,7 +352,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 1,
-        sitemap_sample_stochastic: false
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
       }
     };
 
@@ -320,7 +407,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
-        sitemap_sample_stochastic: false
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
       }
     };
 
@@ -367,7 +455,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: null,
-        sitemap_sample_stochastic: false
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
       }
     };
 
@@ -396,7 +485,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: null,
-        sitemap_sample_stochastic: false
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
       }
     };
 
@@ -466,7 +556,8 @@ describe('TargetDiscoveryEngine', () => {
         maxTimeoutMs: 120000,
         include_subdomains: false,
         sitemap_template_sample_cap: null,
-        sitemap_sample_stochastic: false
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
       }
     };
 

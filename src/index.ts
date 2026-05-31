@@ -159,7 +159,10 @@ async function main() {
 
     // 6. Compile global dashboard across all scanned profiles
     console.log(`\n📊 Compiling executive compliance dashboard UI...`);
-    DashboardCompiler.compileStaticDashboard(globalAccumulatedResults);
+    const discoveryNonHtmlExclusions = TargetDiscoveryEngine.consumeNonHtmlExclusions();
+    DashboardCompiler.compileStaticDashboard(globalAccumulatedResults, {
+      nonHtmlDiscoveryExclusions: discoveryNonHtmlExclusions
+    });
     PageStateCache.save(pageState);
 
     const totalDurationMs = Date.now() - startTime;

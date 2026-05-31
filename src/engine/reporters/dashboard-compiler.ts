@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult } from '../../types/site-quality-spec';
 import { QualityIndexReporter, TargetQualityIndexEntry } from './quality-index';
+import { DiscoveryNonHtmlExclusion } from '../discovery';
 
 export class DashboardCompiler {
   private static DIST_DIR = path.resolve(process.cwd(), 'dist');
@@ -10,7 +11,10 @@ export class DashboardCompiler {
   /**
    * Compiles global scan runs into an interactive, flat HTML single-page app
    */
-  public static compileStaticDashboard(allResults: TargetScanResult[]): void {
+  public static compileStaticDashboard(
+    allResults: TargetScanResult[],
+    options: { nonHtmlDiscoveryExclusions?: DiscoveryNonHtmlExclusion[] } = {}
+  ): void {
     if (!fs.existsSync(this.DIST_DIR)) {
       fs.mkdirSync(this.DIST_DIR, { recursive: true });
     }
@@ -83,6 +87,8 @@ export class DashboardCompiler {
         <a href="runs/top-task-seeds.json">Domain Size Estimate JSON</a>
         &nbsp;|&nbsp;
         <a href="api/index.json">API Endpoint Manifest JSON</a>
+        &nbsp;|&nbsp;
+        <a href="failures/index.html">Failures &amp; Skips View</a>
         &nbsp;|&nbsp;
         <a href="#run-history">Jump to Run History</a>
       </p>
@@ -190,8 +196,173 @@ ${siteFooterHtml}
 </html>`;
 
     fs.writeFileSync(path.join(this.DIST_DIR, 'index.html'), htmlContent, 'utf8');
+    this.writeFailuresPage(allResults, options.nonHtmlDiscoveryExclusions ?? []);
     this.writeDomainSubpages(allResults, targetQualityIndex);
     console.log(`📊 Static dashboard assets successfully compiled to dist/index.html`);
+  }
+
+  private static writeFailuresPage(allResults: TargetScanResult[], discoveryExclusions: DiscoveryNonHtmlExclusion[]): void {
+    const failuresDir = path.join(this.DIST_DIR, 'failures');
+    fs.mkdirSync(failuresDir, { recursive: true });
+
+    const siteFooterHtml = this.buildSiteFooterHtml();
+    const failureEntries: Array<{ targetId: string; url: string; status: string; timestamp: string; reason: string }> = [];
+    const skippedEntries: Array<{ targetId: string; url: string; status: string; timestamp: string; reason: string }> = [];
+    const timeoutEntries: Array<{ targetId: string; url: string; status: string; timestamp: string; reason: string }> = [];
+    const nonHtmlEntries: Array<{ targetId: string; url: string; status: string; timestamp: string; reason: string }> = [];
+
+    allResults.forEach(target => {
+      const pages = Array.isArray(target.pagesScanned) ? target.pagesScanned : [];
+      pages.forEach(page => {
+        const url = String(page?.url || '');
+        const status = String(page?.status || 'UNKNOWN');
+        const entry = {
+          targetId: String(target.targetId || 'unknown'),
+          url,
+          status,
+          timestamp: String(page?.timestamp || ''),
+          reason: String(page?.errorMessage || '')
+        };
+
+        if (status === 'SKIPPED_UNCHANGED') {
+          skippedEntries.push(entry);
+        }
+        if (status === 'TIMEOUT') {
+          timeoutEntries.push(entry);
+          failureEntries.push(entry);
+        }
+        if (status === 'FAILED' || status === 'WAF_BLOCKED') {
+          failureEntries.push(entry);
+        }
+        if (/\.(pdf|docx)(?:$|[?#])/i.test(url)) {
+          nonHtmlEntries.push(entry);
+        }
+      });
+    });
+
+    const discoveryNonHtmlEntries = (Array.isArray(discoveryExclusions) ? discoveryExclusions : []).map(entry => ({
+      targetId: String(entry?.targetId || 'unknown'),
+      url: String(entry?.url || ''),
+      status: 'EXCLUDED_AT_DISCOVERY',
+      timestamp: String(entry?.excludedAt || ''),
+      reason: String(entry?.reason || 'Excluded during discovery')
+    }));
+
+    const formatRows = (entries: Array<{ targetId: string; url: string; status: string; timestamp: string; reason: string }>, emptyMessage: string): string => {
+      if (!Array.isArray(entries) || entries.length === 0) {
+        return `<tr><td colspan="5">${this.escapeHtml(emptyMessage)}</td></tr>`;
+      }
+
+      return entries
+        .slice()
+        .sort((a, b) => Date.parse(String(b.timestamp || '')) - Date.parse(String(a.timestamp || '')))
+        .slice(0, 500)
+        .map(entry => `
+          <tr>
+            <td>${this.escapeHtml(String(entry.targetId || '').toUpperCase())}</td>
+            <td><a href="${this.escapeHtml(entry.url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(entry.url)}</a></td>
+            <td>${this.escapeHtml(entry.status)}</td>
+            <td>${this.escapeHtml(entry.timestamp || 'n/a')}</td>
+            <td>${this.escapeHtml(entry.reason || 'n/a')}</td>
+          </tr>`)
+        .join('');
+    };
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VITAL-Core Failures and Skips</title>
+  <link rel="stylesheet" href="../assets/dashboard.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>VITAL-Core Failures, Timeouts, and Skipped Pages</h1>
+      <p><a href="../index.html">Back to main dashboard</a></p>
+    </div>
+  </header>
+  <main>
+    <div class="metric-grid">
+      <div class="card"><h2>Failed/WAF/Timeout</h2><p style="font-size:2rem;font-weight:bold">${failureEntries.length}</p></div>
+      <div class="card"><h2>Skipped Unchanged</h2><p style="font-size:2rem;font-weight:bold">${skippedEntries.length}</p></div>
+      <div class="card"><h2>Timeout Only</h2><p style="font-size:2rem;font-weight:bold">${timeoutEntries.length}</p></div>
+      <div class="card"><h2>PDF/DOCX URLs Seen</h2><p style="font-size:2rem;font-weight:bold">${nonHtmlEntries.length}</p></div>
+      <div class="card"><h2>Excluded at Discovery</h2><p style="font-size:2rem;font-weight:bold">${discoveryNonHtmlEntries.length}</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Failures and Timeouts</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody>${formatRows(failureEntries, 'No failed, blocked, or timeout pages in latest run.')}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Skipped Unchanged Pages</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody>${formatRows(skippedEntries, 'No pages were skipped as unchanged in latest run.')}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>PDF/DOCX URLs Seen in Page Reports</h2>
+      <p class="muted-small">These URLs are expected to be excluded at discovery time. If any appear here, they bypassed the HTML-only filter and should be investigated.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody>${formatRows(nonHtmlEntries, 'No PDF/DOCX URLs were included in latest page reports.')}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Excluded at Discovery (Non-HTML)</h2>
+      <p class="muted-small">URLs filtered out during discovery before scan queue creation (for example PDFs, DOCX, feeds, and other non-HTML resources).</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody>${formatRows(discoveryNonHtmlEntries, 'No non-HTML URLs were excluded during discovery in latest run.')}</tbody>
+      </table>
+    </div>
+  </main>
+${siteFooterHtml}
+</body>
+</html>`;
+
+    fs.writeFileSync(path.join(failuresDir, 'index.html'), htmlContent, 'utf8');
   }
 
   private static writeDomainSubpages(allResults: TargetScanResult[], targetQualityIndex: TargetQualityIndexEntry[]): void {

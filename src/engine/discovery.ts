@@ -7,7 +7,17 @@ import type { PageStateMap } from './reporters/page-state-cache';
 const NON_HTML_EXTENSION_PATTERN = /\.(?:png|jpe?g|gif|webp|svg|ico|pdf|doc|docx|xml|xlsx|xls|pptx?|zip|gz|mp4|mp3|woff2?|ttf|eot|json|csv)$/i;
 const RSS_FEED_PATTERN = /\/(feed|rss|atom)(?:\/|$|\?)/i;
 
+export interface DiscoveryNonHtmlExclusion {
+  targetId: string;
+  url: string;
+  reason: string;
+  source: 'sitemap';
+  excludedAt: string;
+}
+
 export class TargetDiscoveryEngine {
+  private static nonHtmlExclusions: DiscoveryNonHtmlExclusion[] = [];
+
   /**
    * Discovers and prioritizes URLs to scan for a given target configuration.
    * @param target The validated target configuration profile
@@ -50,11 +60,23 @@ export class TargetDiscoveryEngine {
     }
 
     // 2. Glob Filter Matrix Evaluation
-    const normalizedUrls = sitemapUrls
+    const normalizedUrls: string[] = [];
+    sitemapUrls
       .map(url => this.normalizeUrl(url))
       .filter((url): url is string => Boolean(url))
-      .filter(url => this.isLikelyHtmlUrl(url))
-      .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains));
+      .forEach(url => {
+        const htmlClassification = this.classifyHtmlUrl(url);
+        if (!htmlClassification.isHtml) {
+          this.recordNonHtmlExclusion(target.id, url, htmlClassification.reason || 'Non-HTML resource');
+          return;
+        }
+
+        if (!this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains)) {
+          return;
+        }
+
+        normalizedUrls.push(url);
+      });
 
     let filteredUrls = normalizedUrls;
     if (target.include_paths && target.include_paths.length > 0) {
@@ -136,13 +158,17 @@ export class TargetDiscoveryEngine {
       : Number.POSITIVE_INFINITY;
     const templateSampleCap = target.settings?.sitemap_template_sample_cap ?? null;
     const useStochasticSampling = target.settings?.sitemap_sample_stochastic ?? true;
+    const uniquePageFocus = target.settings?.unique_page_focus ?? false;
+    const effectiveTemplateSampleCap = uniquePageFocus
+      ? 1
+      : (templateSampleCap ?? Number.POSITIVE_INFINITY);
 
     const candidateSitemapUrls = filteredUrls.filter(url => shouldIncludeUrl(url));
 
     const sampledSitemapUrls = this.sampleSitemapUrls(
       candidateSitemapUrls,
       remainingSlots,
-      templateSampleCap ?? Number.POSITIVE_INFINITY,
+      effectiveTemplateSampleCap,
       useStochasticSampling,
       previouslyScannedUrls
     );
@@ -151,6 +177,16 @@ export class TargetDiscoveryEngine {
     const finalMergedQueue = Array.from(uniqueUrlSet);
 
     return finalMergedQueue;
+  }
+
+  public static consumeNonHtmlExclusions(): DiscoveryNonHtmlExclusion[] {
+    const snapshot = [...this.nonHtmlExclusions];
+    this.nonHtmlExclusions = [];
+    return snapshot;
+  }
+
+  public static resetNonHtmlExclusionsForTesting(): void {
+    this.nonHtmlExclusions = [];
   }
 
   private static sampleSitemapUrls(
@@ -321,21 +357,35 @@ export class TargetDiscoveryEngine {
   }
 
   private static isLikelyHtmlUrl(url: string): boolean {
+    return this.classifyHtmlUrl(url).isHtml;
+  }
+
+  private static classifyHtmlUrl(url: string): { isHtml: boolean; reason: string | null } {
     try {
       const parsed = new URL(url);
       const pathname = parsed.pathname.toLowerCase();
       if (NON_HTML_EXTENSION_PATTERN.test(pathname)) {
-        return false;
+        return { isHtml: false, reason: 'Excluded non-HTML extension from sitemap URL' };
       }
 
       if (RSS_FEED_PATTERN.test(pathname)) {
-        return false;
+        return { isHtml: false, reason: 'Excluded RSS/feed endpoint from sitemap URL' };
       }
 
-      return true;
+      return { isHtml: true, reason: null };
     } catch {
-      return false;
+      return { isHtml: false, reason: 'Excluded malformed URL from sitemap URL list' };
     }
+  }
+
+  private static recordNonHtmlExclusion(targetId: string, url: string, reason: string): void {
+    this.nonHtmlExclusions.push({
+      targetId,
+      url,
+      reason,
+      source: 'sitemap',
+      excludedAt: new Date().toISOString()
+    });
   }
 
   private static isWithinHostScope(url: string, canonicalBaseHost: string, includeSubdomains: boolean): boolean {
