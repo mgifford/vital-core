@@ -27,12 +27,42 @@ async function main() {
   const maxRunMinutes = Number.parseInt(process.env.VITAL_MAX_RUN_MINUTES || '0', 10);
   const hasRuntimeDeadline = Number.isFinite(maxRunMinutes) && maxRunMinutes > 0;
   const runtimeDeadlineMs = hasRuntimeDeadline ? startTime + (maxRunMinutes * 60 * 1000) : null;
+  const baseBatchSize = Math.max(1, Number.parseInt(process.env.VITAL_BATCH_SIZE_BASE || '2', 10));
+  const maxBatchSize = Math.max(baseBatchSize, Number.parseInt(process.env.VITAL_BATCH_SIZE_MAX || '6', 10));
+  const escalationSeconds = Math.max(10, Number.parseInt(process.env.VITAL_BATCH_ESCALATION_SECONDS || '45', 10));
+  const dynamicBatchEnabled = !/^(0|false|no)$/i.test(process.env.VITAL_DYNAMIC_BATCH_ENABLE || 'true');
 
   const shouldStopForRuntimeBudget = () => {
     if (!runtimeDeadlineMs) {
       return false;
     }
     return Date.now() >= runtimeDeadlineMs;
+  };
+
+  const getAdaptiveBatchSize = (timeoutCount: number, completedCount: number): number => {
+    if (!dynamicBatchEnabled || !runtimeDeadlineMs) {
+      return baseBatchSize;
+    }
+
+    const remainingMs = runtimeDeadlineMs - Date.now();
+    if (remainingMs <= escalationSeconds * 1000) {
+      return baseBatchSize;
+    }
+
+    const timeoutRatio = completedCount > 0 ? timeoutCount / completedCount : 0;
+    if (timeoutCount >= 3 || timeoutRatio >= 0.2) {
+      return baseBatchSize;
+    }
+
+    if (remainingMs >= escalationSeconds * 4 * 1000) {
+      return maxBatchSize;
+    }
+
+    if (remainingMs >= escalationSeconds * 2 * 1000) {
+      return Math.min(maxBatchSize, baseBatchSize + 2);
+    }
+
+    return Math.min(maxBatchSize, baseBatchSize + 1);
   };
   
   console.log(`🚀 Initalizing VITAL-Core Run Engine using profile: ${profilePath}`);
@@ -86,7 +116,8 @@ async function main() {
 
     // 3. Interleave scans across targets to avoid concentrated domain load.
     // We scan small batches in round-robin order and naturally focus remaining targets once smaller queues are exhausted.
-    const roundRobinBatchSize = 2;
+    let timeoutCount = 0;
+    let completedCount = 0;
     let round = 1;
     let stoppedForBudget = false;
     while (scanPlans.some(plan => plan.nextOffset < plan.discoveredUrls.length)) {
@@ -113,11 +144,12 @@ async function main() {
           continue;
         }
 
+        const roundRobinBatchSize = getAdaptiveBatchSize(timeoutCount, completedCount);
         const batch = plan.discoveredUrls.slice(plan.nextOffset, plan.nextOffset + roundRobinBatchSize);
         const batchStart = plan.nextOffset + 1;
         const batchEnd = plan.nextOffset + batch.length;
         console.log(
-          `🌐 Round ${round}: ${plan.target.id} scanning URLs ${batchStart}-${batchEnd} of ${plan.discoveredUrls.length}`
+          `🌐 Round ${round}: ${plan.target.id} scanning URLs ${batchStart}-${batchEnd} of ${plan.discoveredUrls.length} (batch size ${batch.length})`
         );
 
         const rawPageReports = await ResilientBrowserEngine.executeSnapshotSession(plan.target, batch, {
@@ -126,6 +158,12 @@ async function main() {
         });
       
         const completedPageScans: PageScanReport[] = rawPageReports as PageScanReport[];
+        completedPageScans.forEach(report => {
+          completedCount += 1;
+          if (report && report.status === 'TIMEOUT') {
+            timeoutCount += 1;
+          }
+        });
         plan.completedPages.push(...completedPageScans);
         plan.nextOffset += batch.length;
       }

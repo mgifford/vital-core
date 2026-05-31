@@ -165,7 +165,11 @@ jobs:
           VITAL_TIMEOUT_BACKOFF_THRESHOLD: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '2' || steps.offhours.outputs.scan_intensity == 'light' && '2' || '3' }}
           VITAL_TIMEOUT_BACKOFF_STEP_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '15000' || steps.offhours.outputs.scan_intensity == 'light' && '10000' || '5000' }}
           VITAL_TIMEOUT_BACKOFF_MAX_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '60000' || steps.offhours.outputs.scan_intensity == 'light' && '45000' || '30000' }}
-          VITAL_MAX_RUN_MINUTES: '2'
+          VITAL_MAX_RUN_MINUTES: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '12' || steps.offhours.outputs.scan_intensity == 'standard' && '6' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '2' }}
+          VITAL_DYNAMIC_BATCH_ENABLE: 'true'
+          VITAL_BATCH_SIZE_BASE: '2'
+          VITAL_BATCH_SIZE_MAX: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '8' || steps.offhours.outputs.scan_intensity == 'standard' && '6' || steps.offhours.outputs.scan_intensity == 'light' && '4' || '3' }}
+          VITAL_BATCH_ESCALATION_SECONDS: '45'
           VITAL_ENABLE_MULTI_ENGINE: ${{ env.VITAL_ENABLE_MULTI_ENGINE }}
         run: npm run scan
 

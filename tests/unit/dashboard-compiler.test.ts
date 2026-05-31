@@ -90,6 +90,8 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('function formatDateTimeForViewer(value)');
     expect(js).toContain('formatDateTimeForViewer(page.timestamp)');
     expect(js).toContain('formatDateTimeForViewer(run.generatedAt)');
+    expect(html).not.toContain('<th>Targets</th>');
+    expect(js).not.toContain('targetsCell.textContent = String(run.targetsScanned || 0);');
     expect(html).toContain('Pages Scanned (Latest Run)');
     expect(html).toContain('id="pages-table"');
     expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');

@@ -26,12 +26,17 @@ describe('Workflow contracts', () => {
     expect(content).toContain('dist/runs/page-state.json');
   });
 
-  it('enforces a strict 2-minute scan runtime budget', () => {
+  it('enforces bounded scan runtime and adaptive batch controls', () => {
     const workflowPath = path.resolve(process.cwd(), '.github/workflows/vital-scan.yml');
     const content = fs.readFileSync(workflowPath, 'utf8');
 
-    expect(content).toContain("VITAL_MAX_RUN_MINUTES: '2'");
-    expect(content).not.toContain("VITAL_MAX_RUN_MINUTES: '52'");
+    expect(content).toContain('VITAL_MAX_RUN_MINUTES: ${{');
+    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'deep' && '12'");
+    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'standard' && '6'");
+    expect(content).toContain("steps.offhours.outputs.scan_intensity == 'light' && '3'");
+    expect(content).toContain("VITAL_DYNAMIC_BATCH_ENABLE: 'true'");
+    expect(content).toContain("VITAL_BATCH_SIZE_BASE: '2'");
+    expect(content).toContain('VITAL_BATCH_SIZE_MAX: ${{');
   });
 
   it('runs link and axe quality gates for docs', () => {

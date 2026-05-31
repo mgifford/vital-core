@@ -168,7 +168,6 @@ export class DashboardCompiler {
         <thead>
           <tr>
             <th>Run Timestamp</th>
-            <th>Targets</th>
             <th>Pages</th>
             <th>Violations</th>
             <th>Duration</th>
@@ -1454,9 +1453,6 @@ a:focus-visible {
     const ts = new Date(run.generatedAt);
     tsCell.textContent = Number.isNaN(ts.getTime()) ? String(run.generatedAt || '') : formatDateTimeForViewer(run.generatedAt);
 
-    const targetsCell = document.createElement('td');
-    targetsCell.textContent = String(run.targetsScanned || 0);
-
     const pagesCell = document.createElement('td');
     pagesCell.textContent = String(run.pagesScanned || 0);
 
@@ -1474,7 +1470,6 @@ a:focus-visible {
     dataCell.appendChild(link);
 
     tr.appendChild(tsCell);
-    tr.appendChild(targetsCell);
     tr.appendChild(pagesCell);
     tr.appendChild(violationsCell);
     tr.appendChild(durationCell);
