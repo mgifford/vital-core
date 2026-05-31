@@ -420,6 +420,78 @@ ${siteFooterHtml}
 
       const quality = targetQualityIndex.find(item => String(item.targetId || '') === String(target.targetId || '')) || null;
       const pages = Array.isArray(target.pagesScanned) ? target.pagesScanned : [];
+      const completedPages = pages.filter(page => page?.status === 'COMPLETED').length;
+      const skippedPages = pages.filter(page => page?.status === 'SKIPPED_UNCHANGED').length;
+      const timeoutPages = pages.filter(page => page?.status === 'TIMEOUT').length;
+      const failedPages = pages.filter(page => page?.status === 'FAILED').length;
+      const wafBlockedPages = pages.filter(page => page?.status === 'WAF_BLOCKED').length;
+      const blockedPages = timeoutPages + failedPages + wafBlockedPages;
+      const totalViolations = pages.reduce(
+        (sum, page) => sum + (Array.isArray(page?.liveAudits?.accessibilityViolations) ? page.liveAudits.accessibilityViolations.length : 0),
+        0
+      );
+      const severityCounts = pages
+        .flatMap(page => page?.liveAudits?.accessibilityViolations || [])
+        .reduce((acc, violation) => {
+          const severity = String(violation?.severity || 'unknown').toLowerCase();
+          acc.set(severity, (acc.get(severity) || 0) + 1);
+          return acc;
+        }, new Map<string, number>());
+      const topRuleRows = Array.from(
+        pages
+          .flatMap(page => page?.liveAudits?.accessibilityViolations || [])
+          .reduce((acc, violation) => {
+            const ruleId = String(violation?.id || '').trim();
+            if (!ruleId) {
+              return acc;
+            }
+            acc.set(ruleId, (acc.get(ruleId) || 0) + 1);
+            return acc;
+          }, new Map<string, number>())
+          .entries()
+      )
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([ruleId, count]) => `
+          <tr>
+            <td>${this.escapeHtml(ruleId)}</td>
+            <td>${this.escapeHtml(count)}</td>
+          </tr>`)
+        .join('');
+      const softwareSummary = Array.from(
+        pages
+          .flatMap(page => page?.technologyStack || [])
+          .reduce((acc, tech) => {
+            const techName = String(tech?.name || '').trim();
+            if (!techName) {
+              return acc;
+            }
+            acc.set(techName, (acc.get(techName) || 0) + 1);
+            return acc;
+          }, new Map<string, number>())
+          .entries()
+      )
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, 20)
+        .map(([techName, count]) => `${this.escapeHtml(techName)} (${this.escapeHtml(count)})`)
+        .join(', ');
+      const latestPageRows = pages
+        .slice()
+        .sort((a, b) => Date.parse(String(b?.timestamp || '')) - Date.parse(String(a?.timestamp || '')))
+        .slice(0, 25)
+        .map(page => {
+          const pageViolations = Array.isArray(page?.liveAudits?.accessibilityViolations)
+            ? page.liveAudits.accessibilityViolations.length
+            : 0;
+          return `
+            <tr>
+              <td><a href="${this.escapeHtml(String(page?.url || ''))}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(String(page?.url || 'n/a'))}</a></td>
+              <td>${this.escapeHtml(String(page?.status || 'UNKNOWN'))}</td>
+              <td>${this.escapeHtml(pageViolations)}</td>
+              <td>${this.escapeHtml(String(page?.timestamp || 'n/a'))}</td>
+            </tr>`;
+        })
+        .join('');
       const statusCounts = pages.reduce((acc, page) => {
         const status = String(page?.status || 'UNKNOWN');
         acc.set(status, (acc.get(status) || 0) + 1);
@@ -523,6 +595,30 @@ ${siteFooterHtml}
       <p><strong>Scan duration (latest run):</strong> ${this.escapeHtml(this.formatHumanDuration(target.scanDurationMs))}</p>
       <p><strong>Quality gate:</strong> ${this.escapeHtml(String((quality && quality.gateStatus) || 'n/a'))}</p>
       <p><strong>Quality score:</strong> ${this.escapeHtml(String((quality && quality.score) || 'n/a'))}</p>
+      <p><strong>Status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+      <p><strong>Completed:</strong> ${this.escapeHtml(completedPages)} | <strong>Skipped unchanged:</strong> ${this.escapeHtml(skippedPages)} | <strong>Blocked:</strong> ${this.escapeHtml(blockedPages)}</p>
+      <p><strong>Total accessibility violations:</strong> ${this.escapeHtml(totalViolations)} (critical: ${this.escapeHtml(severityCounts.get('critical') || 0)}, serious: ${this.escapeHtml(severityCounts.get('serious') || 0)}, moderate: ${this.escapeHtml(severityCounts.get('moderate') || 0)}, minor: ${this.escapeHtml(severityCounts.get('minor') || 0)})</p>
+      <p><strong>Detected software (top):</strong> ${softwareSummary || 'n/a'}</p>
+    </div>
+
+    <div class="card">
+      <h2>Top Accessibility Rules (Latest Run)</h2>
+      <table>
+        <thead>
+          <tr><th>Rule ID</th><th>Count</th></tr>
+        </thead>
+        <tbody>${topRuleRows || '<tr><td colspan="2">No accessibility violations in latest run.</td></tr>'}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Recent Page Results (Latest Run)</h2>
+      <table>
+        <thead>
+          <tr><th>URL</th><th>Status</th><th>Violations</th><th>Scanned At (UTC)</th></tr>
+        </thead>
+        <tbody>${latestPageRows || '<tr><td colspan="4">No page results available in latest run.</td></tr>'}</tbody>
+      </table>
     </div>
   </main>
   ${siteFooterHtml}
