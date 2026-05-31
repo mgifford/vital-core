@@ -2038,12 +2038,37 @@ a:focus-visible {
       if (!index || !Array.isArray(index.runs) || index.runs.length === 0) {
         const emptyRow = document.createElement('tr');
         const emptyCell = document.createElement('td');
-        emptyCell.colSpan = 6;
+        emptyCell.colSpan = 5;
         emptyCell.textContent = 'No historical runs available yet.';
         emptyRow.appendChild(emptyCell);
         historyBodyEl.appendChild(emptyRow);
         return;
       }
+
+      const runCount = index.runs.length;
+      const pagesAcrossRetainedRuns = index.runs.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
+      const todayPrefix = new Date().toISOString().slice(0, 10);
+      const runsToday = index.runs.filter(run => String(run && run.generatedAt ? run.generatedAt : '').startsWith(todayPrefix));
+      const pagesToday = runsToday.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
+
+      appendTrendCard(
+        'Runs Recorded Today',
+        String(runsToday.length),
+        'Cadence: hourly schedule plus any manual runs.',
+        ''
+      );
+      appendTrendCard(
+        'Pages Scanned Today',
+        formatNumber(pagesToday),
+        'Sum across today\'s recorded runs in run history.',
+        ''
+      );
+      appendTrendCard(
+        'Pages Scanned (Retained History)',
+        formatNumber(pagesAcrossRetainedRuns),
+        'Total across latest ' + String(runCount) + ' runs retained in runs/index.json.',
+        ''
+      );
 
       index.runs.slice(0, 20).forEach(run => appendHistoryRow(run));
       await updateUniqueCoverageFromHistory(index);
@@ -2051,7 +2076,7 @@ a:focus-visible {
     .catch(() => {
       const errorRow = document.createElement('tr');
       const errorCell = document.createElement('td');
-      errorCell.colSpan = 6;
+      errorCell.colSpan = 5;
       errorCell.textContent = 'Run history index could not be loaded.';
       errorRow.appendChild(errorCell);
       historyBodyEl.appendChild(errorRow);

@@ -92,6 +92,11 @@ describe('DashboardCompiler', () => {
     expect(js).toContain('formatDateTimeForViewer(run.generatedAt)');
     expect(html).not.toContain('<th>Targets</th>');
     expect(js).not.toContain('targetsCell.textContent = String(run.targetsScanned || 0);');
+    expect(js).toContain('Runs Recorded Today');
+    expect(js).toContain('Pages Scanned Today');
+    expect(js).toContain('Pages Scanned (Retained History)');
+    expect(js).toContain('emptyCell.colSpan = 5;');
+    expect(js).toContain('errorCell.colSpan = 5;');
     expect(html).toContain('Pages Scanned (Latest Run)');
     expect(html).toContain('id="pages-table"');
     expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');
