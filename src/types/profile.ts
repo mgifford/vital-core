@@ -6,7 +6,8 @@ export const TargetSettingsSchema = z.object({
   maxTimeoutMs: z.number().default(120000), // 2-minute hard limit per page
   include_subdomains: z.boolean().default(false), // Keep scans constrained to base host by default
   sitemap_template_sample_cap: z.number().int().min(1).nullable().optional().default(null), // Optional per-template sample cap; null means unlimited
-  sitemap_sample_stochastic: z.boolean().default(true) // Use deterministic pseudo-random ordering for sitemap sampling
+  sitemap_sample_stochastic: z.boolean().default(true), // Use deterministic pseudo-random ordering for sitemap sampling
+  unique_page_focus: z.boolean().default(false) // Prioritize template diversity by limiting each template to one page
 });
 
 export const TargetConfigSchema = z.object({
@@ -22,7 +23,8 @@ export const TargetConfigSchema = z.object({
     maxTimeoutMs: 120000,
     include_subdomains: false,
     sitemap_template_sample_cap: null,
-    sitemap_sample_stochastic: true
+    sitemap_sample_stochastic: true,
+    unique_page_focus: false
   })
 });
 
