@@ -449,13 +449,33 @@ ${siteFooterHtml}
 
       // For pages in the current run that were skipped without audit data, substitute
       // their equivalent from the previous run if available.
+      //
+      // We also back-fill individual fields (lighthouse, offlineAudits, thirdPartyImpact)
+      // when the current run was an accessibility-only scan: those pages have liveAudits
+      // set (with axe violations) but the non-accessibility fields are null.  Without this
+      // back-fill the performance/content/third-party subpages would always be empty after
+      // any accessibility-only run even though a prior full run already collected the data.
       const currentPagesSupplemented: PageScanReport[] = pages.map(page => {
-        if (page?.liveAudits !== null) {
+        const hist = historicalByUrl.get(String(page?.url || ''));
+        if (page?.liveAudits === null) {
+          // Page was SKIPPED_UNCHANGED or otherwise had no live audit – substitute entirely.
+          if (hist?.liveAudits) {
+            return { ...hist, status: page?.status ?? hist.status, timestamp: page?.timestamp ?? hist.timestamp };
+          }
           return page;
         }
-        const hist = historicalByUrl.get(String(page?.url || ''));
-        if (hist?.liveAudits) {
-          return { ...hist, status: page?.status ?? hist.status, timestamp: page?.timestamp ?? hist.timestamp };
+        // Page was audited but may be missing non-accessibility data (accessibility-only run).
+        // Back-fill individual fields from history so prior full-scan data is preserved.
+        if (hist && (!page.liveAudits.lighthouse || page.offlineAudits === null || page.thirdPartyImpact == null)) {
+          return {
+            ...page,
+            liveAudits: {
+              ...page.liveAudits,
+              lighthouse: page.liveAudits.lighthouse ?? hist.liveAudits?.lighthouse ?? null
+            },
+            offlineAudits: page.offlineAudits ?? hist.offlineAudits ?? null,
+            thirdPartyImpact: page.thirdPartyImpact ?? hist.thirdPartyImpact ?? null
+          };
         }
         return page;
       });
@@ -574,7 +594,7 @@ ${siteFooterHtml}
         })
         .join('');
 
-      const performanceRows = pages
+      const performanceRows = allKnownPages
         .map(page => {
           const lighthouse = page?.liveAudits?.lighthouse;
           if (!lighthouse) {
@@ -591,7 +611,7 @@ ${siteFooterHtml}
         })
         .join('');
 
-      const contentRows = pages
+      const contentRows = allKnownPages
         .map(page => {
           const content = page?.offlineAudits?.contentMetrics;
           if (!content) {
@@ -608,7 +628,7 @@ ${siteFooterHtml}
         })
         .join('');
 
-      const thirdPartyRows = pages
+      const thirdPartyRows = allKnownPages
         .map(page => {
           const impact = page?.thirdPartyImpact;
           if (!impact) {
