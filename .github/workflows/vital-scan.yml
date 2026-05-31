@@ -79,8 +79,9 @@ jobs:
         id: offhours
         run: |
           set -euo pipefail
+          echo "should_scan=true" >> "$GITHUB_OUTPUT"
+
           if [[ "${{ github.event_name }}" != "schedule" ]]; then
-            echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "scan_intensity=standard" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
             echo "monthly_seed_refresh=false" >> "$GITHUB_OUTPUT"
@@ -94,7 +95,6 @@ jobs:
 
           # Deep daily refresh at 05:00 UTC and monthly seed refresh at 02:00 UTC on day 1.
           if [[ "$utc_hour" == "05" || ("$utc_dom" == "01" && "$utc_hour" == "02") ]]; then
-            echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "scan_intensity=deep" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=true" >> "$GITHUB_OUTPUT"
             echo "audit_scope=full" >> "$GITHUB_OUTPUT"
@@ -119,7 +119,6 @@ jobs:
           # - ultra_light: peak overlap hours (highest traffic)
           # - standard: all off-hours and weekends
           if [[ "$et_day" -ge 1 && "$et_day" -le 5 && "$et_hour" -ge 9 && "$pt_day" -ge 1 && "$pt_day" -le 5 && "$pt_hour" -lt 17 ]]; then
-            echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
             echo "audit_scope=accessibility" >> "$GITHUB_OUTPUT"
 
@@ -132,7 +131,6 @@ jobs:
               echo "Business-hours edge window detected. Running light incremental scan mode."
             fi
           else
-            echo "should_scan=true" >> "$GITHUB_OUTPUT"
             echo "scan_intensity=standard" >> "$GITHUB_OUTPUT"
             echo "deep_refresh=false" >> "$GITHUB_OUTPUT"
 

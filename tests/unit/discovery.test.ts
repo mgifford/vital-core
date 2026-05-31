@@ -464,6 +464,54 @@ describe('TargetDiscoveryEngine', () => {
     expect(queue).toHaveLength(5);
   });
 
+  it('always re-queues pages in pageState that were never successfully scanned', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/failed-page',
+        'https://www.cms.gov/new-page'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
+      }
+    };
+
+    const now = Date.now();
+    const pageState: PageStateMap = {
+      'https://www.cms.gov/failed-page': {
+        etag: null,
+        lastModified: null,
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(now - 30 * 60 * 1000).toISOString(),
+        lastScannedAt: ''
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+      pageState,
+      skipPreviouslyScanned: true,
+      revalidateAfterDays: 7
+    });
+
+    expect(queue).toContain('https://www.cms.gov/failed-page');
+    expect(queue).toContain('https://www.cms.gov/new-page');
+  });
+
   it('revalidates cached pages older than configured threshold', async () => {
     fetchMock.mockResolvedValue({
       sites: [

@@ -5,6 +5,9 @@ on:
     workflows:
       - Execute Continuous Web Quality Compliance Scan
       - Pages Quality Gate
+      - CI Test and Validation
+      - Governance Guardrails
+      - Update Tool Submodules
     branches:
       - main
     types:
