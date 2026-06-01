@@ -46,4 +46,32 @@ describe('AlfaWorker', () => {
     expect(result.errorMessage).toContain('skipped');
     expect(warnSpy).toHaveBeenCalled();
   });
+
+  it('audits local snapshot via file:// URL when htmlSnapshotPath is provided', async () => {
+    const runner = vi.fn().mockResolvedValue({
+      stdout: JSON.stringify({ outcomes: [{ rule: 'r-1', message: 'Issue 1' }] }),
+      stderr: ''
+    });
+
+    const result = await AlfaWorker.runAlfaAudits(
+      'https://www.cms.gov',
+      'alfa',
+      runner,
+      '/tmp/snapshots/www_cms_gov.html'
+    );
+
+    expect(result.executed).toBe(true);
+    expect(result.findingsCount).toBe(1);
+    // Runner must receive the file:// URL, not the live https:// URL
+    expect(runner).toHaveBeenCalledWith(
+      'alfa',
+      expect.arrayContaining(['file:///tmp/snapshots/www_cms_gov.html']),
+      expect.any(Object)
+    );
+    expect(runner).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.arrayContaining(['https://www.cms.gov']),
+      expect.any(Object)
+    );
+  });
 });

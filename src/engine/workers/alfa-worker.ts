@@ -18,9 +18,11 @@ export class AlfaWorker {
   public static async runAlfaAudits(
     url: string,
     command = process.env.VITAL_ALFA_CMD || 'alfa',
-    runner: ExecRunner = execFileAsync as ExecRunner
+    runner: ExecRunner = execFileAsync as ExecRunner,
+    htmlSnapshotPath?: string
   ): Promise<PageAlfaAudit> {
-    const commandAttempts = this.buildCommandAttempts(command, url);
+    const auditTarget = htmlSnapshotPath ? `file://${htmlSnapshotPath}` : url;
+    const commandAttempts = this.buildCommandAttempts(command, auditTarget);
     const attemptErrors: string[] = [];
 
     for (const attempt of commandAttempts) {
