@@ -396,7 +396,12 @@ export class ResilientBrowserEngine {
           }
         }
       } finally {
-        if (page) { await page.close(); }
+        if (page) {
+          // Guard against page.close() hanging when a long-running page.evaluate() (e.g.
+          // from axe-core) is still in-flight inside Chrome after runWithTimeout fires.
+          // Without this deadline the scan loop stalls until the 58-minute job limit kills it.
+          await this.closeWithDeadline(page.close.bind(page), 10_000, `page.close for ${url}`);
+        }
         // Context is kept alive in the pool for reuse by the next same-domain page.
         if (baseReport.status === 'SKIPPED_UNCHANGED' || baseReport.status === 'COMPLETED') {
           consecutiveTimeouts = 0;
@@ -408,10 +413,14 @@ export class ResilientBrowserEngine {
       
       await LighthouseWorker.killChrome();
       // Close all pooled contexts before shutting down the browser.
-      await Promise.all(Array.from(contextPool.values()).map(ctx => ctx.close().catch(() => {})));
+      await Promise.all(
+        Array.from(contextPool.values()).map(ctx =>
+          this.closeWithDeadline(ctx.close.bind(ctx), 10_000, 'context.close').catch(() => {})
+        )
+      );
       
       if (browser) {
-        await browser.close();
+        await this.closeWithDeadline(browser.close.bind(browser), 10_000, `browser.close for ${target.id}`);
         console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
       } else {
         console.log(`⚡ Scan session completed for ${target.id} without launching a browser (all pages unchanged). Total Snapshots generated: 0`);
@@ -803,6 +812,21 @@ export class ResilientBrowserEngine {
       // attaching an extra handler here is a no-op from the caller's perspective.
       operationPromise.catch(() => {});
     }
+  }
+
+  /**
+   * Calls `closeFn()` and resolves once it completes or the deadline elapses — whichever
+   * comes first.  Errors from `closeFn` are silently swallowed so that a stalled
+   * Playwright close operation (e.g. page.close() blocked on a long-running
+   * page.evaluate() from axe-core) can never prevent the session from continuing.
+   */
+  private static async closeWithDeadline(closeFn: () => Promise<void>, deadlineMs: number, label: string): Promise<void> {
+    const deadline = new Promise<void>(resolve => setTimeout(resolve, deadlineMs));
+    const closeOp = closeFn().catch((err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️ ${label} rejected: ${msg}`);
+    });
+    await Promise.race([closeOp, deadline]);
   }
 
   private static isTimeoutError(error: unknown): boolean {
