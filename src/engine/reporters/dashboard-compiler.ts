@@ -6,6 +6,7 @@ import { DiscoveryNonHtmlExclusion } from '../discovery';
 import { DomainRatingScorer } from './domain-rating';
 import { DomainAccessibilityRating, LetterGrade } from '../../types/domain-rating';
 import { PrioritySeedSnapshot } from '../priority-seeds';
+import { UniqueErrorsReporter, UniqueErrorEntry } from './unique-errors';
 
 export class DashboardCompiler {
   private static DIST_DIR = path.resolve(process.cwd(), 'dist');
@@ -34,6 +35,9 @@ export class DashboardCompiler {
     }
     const summaryPayload = this.buildLatestSummary(allResults, targetQualityIndex);
     fs.writeFileSync(path.join(runsDir, 'latest-summary.json'), JSON.stringify(summaryPayload), 'utf8');
+
+    const uniqueErrors = UniqueErrorsReporter.buildUniqueErrors(allResults);
+    fs.writeFileSync(path.join(runsDir, 'unique-errors.json'), JSON.stringify(uniqueErrors), 'utf8');
 
     const domainRatings = DomainRatingScorer.buildAllDomainRatings(
       allResults,
@@ -92,6 +96,8 @@ export class DashboardCompiler {
         <a href="#domain-accessibility-grades">Domain Accessibility Grades</a>
         &nbsp;|&nbsp;
         <a href="#domain-ongoing-reports">Domain Ongoing Reports</a>
+        &nbsp;|&nbsp;
+        <a href="unique-errors/index.html">Cross-Domain Unique Errors</a>
       </p>
     </nav>
     <div class="card" id="blocked-issues">
@@ -128,6 +134,10 @@ export class DashboardCompiler {
         <a href="runs/software-by-domain.json">Software by Domain JSON</a>
         &nbsp;|&nbsp;
         <a href="api/index.json">API Endpoint Manifest JSON</a>
+        &nbsp;|&nbsp;
+        <a href="runs/unique-errors.json">Cross-Domain Unique Errors JSON</a>
+        &nbsp;|&nbsp;
+        <a href="unique-errors/index.html">Cross-Domain Unique Errors View</a>
         &nbsp;|&nbsp;
         <a href="failures/index.html">Failures &amp; Skips View</a>
         &nbsp;|&nbsp;
@@ -252,6 +262,7 @@ ${siteFooterHtml}
     fs.writeFileSync(path.join(this.DIST_DIR, 'index.html'), htmlContent, 'utf8');
     this.writeFailuresPage(allResults, options.nonHtmlDiscoveryExclusions ?? []);
     this.writeDomainSubpages(allResults, targetQualityIndex);
+    this.writeUniqueErrorsPage(uniqueErrors);
     console.log(`📊 Static dashboard assets successfully compiled to dist/index.html`);
   }
 
@@ -1122,6 +1133,122 @@ ${siteFooterHtml}
   }
 
   /**
+   * Generates a dedicated page listing all unique axe-core violations observed
+   * across every scanned domain, ranked by severity and cross-domain breadth.
+   * Written to `dist/unique-errors/index.html`.
+   */
+  private static writeUniqueErrorsPage(uniqueErrors: UniqueErrorEntry[]): void {
+    const uniqueErrorsDir = path.join(this.DIST_DIR, 'unique-errors');
+    fs.mkdirSync(uniqueErrorsDir, { recursive: true });
+
+    const siteFooterHtml = this.buildSiteFooterHtml();
+
+    const systemicErrors = uniqueErrors.filter(e => e.isSystemic);
+    const singleDomainErrors = uniqueErrors.filter(e => !e.isSystemic);
+
+    const totalRules = uniqueErrors.length;
+    const systemicCount = systemicErrors.length;
+
+    const buildRuleRows = (errors: UniqueErrorEntry[]): string => {
+      if (errors.length === 0) {
+        return '<tr><td colspan="7">None detected.</td></tr>';
+      }
+      return errors.map(e => {
+        const safeHelpUrl = (() => {
+          try {
+            const parsed = new URL(e.helpUrl);
+            return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? e.helpUrl : '';
+          } catch { return ''; }
+        })();
+        const domainList = e.domains
+          .map(d => `${this.escapeHtml(d.targetId)} (${this.escapeHtml(d.pageCount)} page${d.pageCount !== 1 ? 's' : ''}, ${this.escapeHtml(d.instanceCount)} instance${d.instanceCount !== 1 ? 's' : ''})`)
+          .join(', ');
+        return `<tr>
+          <td><code>${this.escapeHtml(e.ruleId)}</code>${safeHelpUrl ? ` <a href="${this.escapeHtml(safeHelpUrl)}" target="_blank" rel="noopener noreferrer">↗</a>` : ''}</td>
+          <td class="severity-${this.escapeHtml(e.severity)}">${this.escapeHtml(e.severity.charAt(0).toUpperCase() + e.severity.slice(1))}</td>
+          <td>${this.escapeHtml(e.description)}</td>
+          <td>${this.escapeHtml(String(e.wcagVersion || 'n/a'))}</td>
+          <td>${this.escapeHtml(e.totalDomainCount)}</td>
+          <td>${this.escapeHtml(e.totalPageCount)}</td>
+          <td>${this.escapeHtml(domainList)}</td>
+        </tr>`;
+      }).join('');
+    };
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VITAL-Core Cross-Domain Unique Errors</title>
+  <link rel="stylesheet" href="../assets/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header>
+    <div class="header-main">
+      <h1>VITAL-Core Cross-Domain Unique Accessibility Errors</h1>
+      <p><a href="../index.html">Back to main dashboard</a></p>
+    </div>
+  </header>
+  <main id="main-content">
+    <div class="metric-grid">
+      <div class="card"><h2>Unique Rules</h2><p style="font-size:2rem;font-weight:bold">${this.escapeHtml(totalRules)}</p><p class="muted-small">Distinct axe rule IDs across all domains</p></div>
+      <div class="card"><h2>Cross-Domain (Systemic)</h2><p style="font-size:2rem;font-weight:bold">${this.escapeHtml(systemicCount)}</p><p class="muted-small">Rules firing on ≥${UniqueErrorsReporter.SYSTEMIC_DOMAIN_THRESHOLD} domains — system-level issues</p></div>
+      <div class="card"><h2>Single-Domain</h2><p style="font-size:2rem;font-weight:bold">${this.escapeHtml(singleDomainErrors.length)}</p><p class="muted-small">Rules isolated to one domain</p></div>
+    </div>
+
+    <div class="card">
+      <h2 id="systemic-errors" tabindex="-1">Cross-Domain (Systemic) Errors</h2>
+      <p class="muted-small">These axe-core rules fire on two or more scanned domains. They likely reflect a shared CMS component, shared template, or third-party script — making them high-value targets for system-level remediation.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Rule ID</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Description</th>
+            <th scope="col">WCAG</th>
+            <th scope="col">Domains</th>
+            <th scope="col">Pages</th>
+            <th scope="col">Domain Breakdown</th>
+          </tr>
+        </thead>
+        <tbody>${buildRuleRows(systemicErrors)}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2 id="single-domain-errors" tabindex="-1">Single-Domain Errors</h2>
+      <p class="muted-small">These rules were observed on only one scanned domain in the latest run. They may still be high impact — check the domain accessibility page for details.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Rule ID</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Description</th>
+            <th scope="col">WCAG</th>
+            <th scope="col">Domains</th>
+            <th scope="col">Pages</th>
+            <th scope="col">Domain Breakdown</th>
+          </tr>
+        </thead>
+        <tbody>${buildRuleRows(singleDomainErrors)}</tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Data Export</h2>
+      <p><a href="../runs/unique-errors.json">Download unique-errors.json</a> — machine-readable full report including CSS selector patterns per page.</p>
+    </div>
+  </main>
+${siteFooterHtml}
+</body>
+</html>`;
+
+    fs.writeFileSync(path.join(uniqueErrorsDir, 'index.html'), htmlContent, 'utf8');
+  }
+
+    /**
    * Builds a compact summary payload for `dist/runs/latest-summary.json`.
    * Strips all large per-violation evidence (HTML snippets, descriptions, instances)
    * and per-page offline/alfa audit data that is only needed in pre-rendered domain
