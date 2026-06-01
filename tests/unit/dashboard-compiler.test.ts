@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { describe, expect, it } from 'vitest';
 import { DashboardCompiler } from '../../src/engine/reporters/dashboard-compiler';
@@ -227,5 +228,233 @@ describe('DashboardCompiler', () => {
 
     const legendMatches = html.match(/Lighthouse thresholds used for color cues/g) || [];
     expect(legendMatches.length).toBe(2);
+  });
+
+  it('back-fills lighthouse/content/third-party data from history for SKIPPED_UNCHANGED pages', () => {
+    const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-'));
+    fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
+
+    const historicalRun = {
+      results: [
+        {
+          targetId: 'perf-backfill',
+          domain: 'https://backfill.gov',
+          scanDurationMs: 1000,
+          pagesScanned: [
+            {
+              url: 'https://backfill.gov/page',
+              timestamp: '2024-01-01T00:00:00.000Z',
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: {
+                lighthouse: {
+                  performanceScore: 88,
+                  energyEstimateKwh: null,
+                  firstContentfulPaintMs: 1500,
+                  largestContentfulPaintMs: 2400,
+                  speedIndexMs: 3000
+                },
+                accessibilityViolations: []
+              },
+              offlineAudits: {
+                overlayDetected: { found: false, provider: null, evidence: null },
+                designSystem: { usesUSWDS: false, versionDetected: null },
+                contentMetrics: {
+                  readabilityScore: 70,
+                  fleschKincaidGrade: 9.5,
+                  averageSentenceLength: 18,
+                  ambiguousLinkTextCount: 2,
+                  suspiciousAltTextCount: 1,
+                  suspiciousAltInstances: []
+                },
+                linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+              },
+              thirdPartyImpact: {
+                evaluated: true,
+                triggeredBy: ['Tag manager'],
+                regressionDetected: false,
+                baselineViolationCount: 0,
+                jsDisabledViolationCount: 0,
+                addedByJavaScriptCount: 0,
+                removedByJavaScriptCount: 0,
+                highRiskRules: [],
+                providerAttribution: [],
+                likelyIntroducedByProviders: ['Google Tag Manager'],
+                ruleToLikelyProviders: [],
+                ruleToProviderAttribution: []
+              }
+            }
+          ]
+        }
+      ]
+    };
+    fs.writeFileSync(
+      path.join(historyCacheDir, 'runs', 'latest.json'),
+      JSON.stringify(historicalRun),
+      'utf8'
+    );
+
+    const originalEnv = process.env.VITAL_HISTORY_CACHE_DIR;
+    try {
+      process.env.VITAL_HISTORY_CACHE_DIR = historyCacheDir;
+
+      const payload: TargetScanResult[] = [
+        {
+          targetId: 'perf-backfill',
+          domain: 'https://backfill.gov',
+          scanDurationMs: 500,
+          pagesScanned: [
+            {
+              url: 'https://backfill.gov/page',
+              timestamp: new Date().toISOString(),
+              status: 'SKIPPED_UNCHANGED',
+              errorMessage: 'Content unchanged since last scan.',
+              technologyStack: [],
+              liveAudits: null,
+              offlineAudits: null
+            }
+          ]
+        }
+      ];
+
+      DashboardCompiler.compileStaticDashboard(payload);
+
+      const perfHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/perf-backfill/performance.html'),
+        'utf8'
+      );
+      const contentHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/perf-backfill/content.html'),
+        'utf8'
+      );
+      const thirdPartyHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/perf-backfill/third-party.html'),
+        'utf8'
+      );
+
+      expect(perfHtml).toContain('88');
+      expect(perfHtml).toContain('1500');
+      expect(perfHtml).not.toContain('No performance data available');
+      expect(contentHtml).toContain('9.5');
+      expect(contentHtml).not.toContain('No content metrics available');
+      expect(thirdPartyHtml).toContain('Google Tag Manager');
+      expect(thirdPartyHtml).not.toContain('No third-party impact data available');
+    } finally {
+      process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
+      fs.rmSync(historyCacheDir, { recursive: true, force: true });
+    }
+  });
+
+  it('back-fills lighthouse/content/third-party data from history for accessibility-only run pages', () => {
+    const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-a11y-'));
+    fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
+
+    const historicalRun = {
+      results: [
+        {
+          targetId: 'a11y-only-domain',
+          domain: 'https://a11y-only.gov',
+          scanDurationMs: 1000,
+          pagesScanned: [
+            {
+              url: 'https://a11y-only.gov/page',
+              timestamp: '2024-01-01T00:00:00.000Z',
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: {
+                lighthouse: {
+                  performanceScore: 75,
+                  energyEstimateKwh: null,
+                  firstContentfulPaintMs: 2100,
+                  largestContentfulPaintMs: 3200,
+                  speedIndexMs: 4100
+                },
+                accessibilityViolations: []
+              },
+              offlineAudits: {
+                overlayDetected: { found: false, provider: null, evidence: null },
+                designSystem: { usesUSWDS: false, versionDetected: null },
+                contentMetrics: {
+                  readabilityScore: 55,
+                  fleschKincaidGrade: 12.3,
+                  averageSentenceLength: 22,
+                  ambiguousLinkTextCount: 5,
+                  suspiciousAltTextCount: 0,
+                  suspiciousAltInstances: []
+                },
+                linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+              },
+              thirdPartyImpact: {
+                evaluated: false,
+                triggeredBy: [],
+                regressionDetected: false,
+                baselineViolationCount: 0,
+                jsDisabledViolationCount: 0,
+                addedByJavaScriptCount: 0,
+                removedByJavaScriptCount: 0,
+                highRiskRules: [],
+                providerAttribution: [],
+                likelyIntroducedByProviders: [],
+                ruleToLikelyProviders: [],
+                ruleToProviderAttribution: []
+              }
+            }
+          ]
+        }
+      ]
+    };
+    fs.writeFileSync(
+      path.join(historyCacheDir, 'runs', 'latest.json'),
+      JSON.stringify(historicalRun),
+      'utf8'
+    );
+
+    const originalEnv = process.env.VITAL_HISTORY_CACHE_DIR;
+    try {
+      process.env.VITAL_HISTORY_CACHE_DIR = historyCacheDir;
+
+      // Simulate an accessibility-only COMPLETED page: liveAudits is set (axe ran)
+      // but lighthouse is null, offlineAudits is null, thirdPartyImpact is null.
+      const payload: TargetScanResult[] = [
+        {
+          targetId: 'a11y-only-domain',
+          domain: 'https://a11y-only.gov',
+          scanDurationMs: 600,
+          pagesScanned: [
+            {
+              url: 'https://a11y-only.gov/page',
+              timestamp: new Date().toISOString(),
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: { lighthouse: null, accessibilityViolations: [] },
+              offlineAudits: null
+            }
+          ]
+        }
+      ];
+
+      DashboardCompiler.compileStaticDashboard(payload);
+
+      const perfHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/a11y-only-domain/performance.html'),
+        'utf8'
+      );
+      const contentHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/a11y-only-domain/content.html'),
+        'utf8'
+      );
+
+      expect(perfHtml).toContain('75');
+      expect(perfHtml).toContain('2100');
+      expect(perfHtml).not.toContain('No performance data available');
+      expect(contentHtml).toContain('12.3');
+      expect(contentHtml).not.toContain('No content metrics available');
+    } finally {
+      process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
+      fs.rmSync(historyCacheDir, { recursive: true, force: true });
+    }
   });
 });
