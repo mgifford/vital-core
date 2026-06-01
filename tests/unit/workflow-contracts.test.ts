@@ -44,7 +44,7 @@ describe('Workflow contracts', () => {
     expect(content).toContain('VITAL_UPDATED_RECHECK_HOURS: ${{');
     expect(content).toContain('Configure browser engine mode for this run');
     expect(content).toContain('steps.engine_mode.outputs.enable_multi_engine');
-    expect(content).toContain('Install Playwright Firefox and WebKit (off-hours/deep)');
+    expect(content).toContain('Install Playwright Firefox and WebKit');
   });
 
   it('runs link and axe quality gates for docs', () => {
