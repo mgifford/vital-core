@@ -73,10 +73,10 @@ export class ResilientBrowserEngine {
       fs.mkdirSync(this.SNAPSHOT_DIR, { recursive: true });
     }
 
-    console.log(`🚀 Starting headless browser session for target: ${target.id}`);
+    console.log(`🚀 Starting scan session for target: ${target.id}`);
     const engine = this.selectEngineForTarget(target.id);
-    const browser: Browser = await this.launchBrowser(engine);
-    
+    let browser: Browser | null = null;
+
     const reports: Partial<PageScanReport>[] = [];
     const settings = target.settings;
     const pageState = options.pageState;
@@ -159,6 +159,10 @@ export class ResilientBrowserEngine {
       const scannedAt = new Date().toISOString();
 
       try {
+        if (!browser) {
+          console.log(`🚀 Launching headless browser (${engine}) for target: ${target.id}`);
+          browser = await this.launchBrowser(engine);
+        }
         context = await browser.newContext({
           userAgent: emulation.userAgent,
           viewport: emulation.viewport,
@@ -176,7 +180,9 @@ export class ResilientBrowserEngine {
           });
 
           // 2. Hydration Settle Buffer (Let slow API grids map to the DOM)
-          if (settings.postLoadDelay > 0) {
+          // Skipped in accessibility-only mode: dynamic content settle is not needed
+          // when performance, tech-stack, and third-party impact checks are all bypassed.
+          if (!accessibilityOnly && settings.postLoadDelay > 0) {
             console.log(`⏱️ Applying load buffer of ${settings.postLoadDelay}ms for dynamic scripts...`);
             await activePage.waitForTimeout(settings.postLoadDelay);
           }
@@ -186,25 +192,33 @@ export class ResilientBrowserEngine {
           const contentHash = this.hashContent(hydratedHtml);
           const assetFingerprintHash = this.computeAssetFingerprint(hydratedHtml, url);
 
-          if (!accessibilityOnly) {
-            // 4. Detect CMS/framework tooling footprint for page profile reporting
-            baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
+          // 4. Write snapshot to disk early so Alfa and Wappalyzer can read the local file
+          //    instead of re-fetching the page over HTTP.
+          const safeFilename = this.sanitizeUrlToFilename(url);
+          const snapshotPath = path.join(this.SNAPSHOT_DIR, safeFilename);
+          fs.writeFileSync(snapshotPath, hydratedHtml, 'utf8');
+          console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
 
-            // 5. Generate offline local analysis metrics from DOM snapshot
+          if (!accessibilityOnly) {
+            // 5. Detect CMS/framework tooling footprint for page profile reporting.
+            //    Pass the local snapshot so Wappalyzer reads from disk rather than HTTP.
+            baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url, undefined, undefined, snapshotPath);
+
+            // 6. Generate offline local analysis metrics from DOM snapshot
             baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);
           }
 
-          // 6. Run Live browser evaluations in memory (Axe Core Automation)
+          // 7. Run Live browser evaluations in memory (Axe Core Automation)
           console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
           baseReport.liveAudits = await LiveWorker.runLiveAudits(activePage);
 
-          // 6b. Alfa — always runs alongside axe for independent ACT-rules cross-check.
+          // 7b. Alfa — always runs alongside axe for independent ACT-rules cross-check.
           // Siteimprove Alfa and Deque axe use different rule sets; running both improves
-          // issue coverage. Alfa fetches the live URL independently of the browser session.
-          baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url);
+          // issue coverage. Alfa audits the local HTML snapshot to avoid a redundant HTTP fetch.
+          baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url, undefined, undefined, snapshotPath);
 
           if (!accessibilityOnly) {
-            // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
+            // 8. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
             if (baseReport.offlineAudits) {
               baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
                 browser,
@@ -218,13 +232,6 @@ export class ResilientBrowserEngine {
               });
             }
           }
-
-          // 8. Clean URL into a cross-platform safe filename
-          const safeFilename = this.sanitizeUrlToFilename(url);
-          const snapshotPath = path.join(this.SNAPSHOT_DIR, safeFilename);
-
-          fs.writeFileSync(snapshotPath, hydratedHtml, 'utf8');
-          console.log(`💾 Snapshot safely cached to disk: tmp/html-snapshots/${safeFilename}`);
 
           // 9. Run Lighthouse performance audit against the live URL.
           if (!accessibilityOnly) {
@@ -270,8 +277,12 @@ export class ResilientBrowserEngine {
     }
     } finally {
       await LighthouseWorker.killChrome();
-      await browser.close();
-      console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+      if (browser) {
+        await browser.close();
+        console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+      } else {
+        console.log(`⚡ Scan session completed for ${target.id} without launching a browser (all pages unchanged). Total Snapshots generated: 0`);
+      }
     }
     return reports;
   }

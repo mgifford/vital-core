@@ -30,9 +30,10 @@ export class TechnologyWorker {
   public static async detectTechnologyStack(
     url: string,
     command = process.env.VITAL_WAPPALYZER_CMD || '',
-    runner: ExecRunner = execFileAsync as ExecRunner
+    runner: ExecRunner = execFileAsync as ExecRunner,
+    htmlSnapshotPath?: string
   ): Promise<TechnologyEntry[]> {
-    const attempts = this.buildCommandAttempts(command, url);
+    const attempts = this.buildCommandAttempts(command, url, htmlSnapshotPath);
     let lastErrorMessage = 'wappalyzer-next command unavailable';
 
     if (attempts.length === 0) {
@@ -83,18 +84,33 @@ export class TechnologyWorker {
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private static buildCommandAttempts(command: string, url: string): Array<{ file: string; args: string[] }> {
+  private static buildCommandAttempts(command: string, url: string, htmlSnapshotPath?: string): Array<{ file: string; args: string[] }> {
     // full scan is required — balanced returns no results for many gov sites.
     // -oJ without a filename argument writes JSON to stdout.
-    const args = ['--scan-type', 'full', '-oJ', '-i', url];
+    const snapshotArgs = htmlSnapshotPath
+      ? ['--scan-type', 'full', '-oJ', '-i', `file://${htmlSnapshotPath}`]
+      : null;
+    const urlArgs = ['--scan-type', 'full', '-oJ', '-i', url];
     const attempts: Array<{ file: string; args: string[] }> = [];
 
+    // When a snapshot is available, try file-based invocation first (no live HTTP fetch).
+    // Fall back to the live URL if the tool does not support file:// input.
+    if (snapshotArgs) {
+      if (command && command.trim() !== '') {
+        attempts.push({ file: command, args: snapshotArgs });
+      }
+
+      if (fs.existsSync(this.LOCAL_WAPPALYZER_NEXT_PATH) && command !== this.LOCAL_WAPPALYZER_NEXT_PATH) {
+        attempts.push({ file: this.LOCAL_WAPPALYZER_NEXT_PATH, args: snapshotArgs });
+      }
+    }
+
     if (command && command.trim() !== '') {
-      attempts.push({ file: command, args });
+      attempts.push({ file: command, args: urlArgs });
     }
 
     if (fs.existsSync(this.LOCAL_WAPPALYZER_NEXT_PATH) && command !== this.LOCAL_WAPPALYZER_NEXT_PATH) {
-      attempts.push({ file: this.LOCAL_WAPPALYZER_NEXT_PATH, args });
+      attempts.push({ file: this.LOCAL_WAPPALYZER_NEXT_PATH, args: urlArgs });
     }
 
     return attempts;
