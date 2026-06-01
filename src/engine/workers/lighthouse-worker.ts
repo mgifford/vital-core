@@ -11,23 +11,71 @@ interface LighthouseSummary {
   agenticScore: number | null;
 }
 
+type ChromeHandle = { port: number; kill: () => Promise<void> | void };
+
 export class LighthouseWorker {
+  private static persistentChrome: ChromeHandle | null = null;
+
+  /**
+   * Launches a single shared Chrome instance to be reused across multiple
+   * Lighthouse audits. Call once before auditing a batch of pages and pair
+   * with {@link killChrome} when the batch is complete.
+   */
+  public static async launchChrome(): Promise<void> {
+    if (this.persistentChrome) {
+      return;
+    }
+
+    try {
+      const chromeLauncherModule = await import('chrome-launcher');
+      this.persistentChrome = await chromeLauncherModule.launch({
+        chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']
+      });
+      console.log(`🌐 Persistent Lighthouse Chrome launched on port ${this.persistentChrome.port}`);
+    } catch (error: any) {
+      const message = error?.message ? String(error.message) : 'Unknown error';
+      console.warn(`⚠️ Failed to launch persistent Lighthouse Chrome: ${message}`);
+    }
+  }
+
+  /**
+   * Kills the shared Chrome instance previously started by {@link launchChrome}.
+   */
+  public static async killChrome(): Promise<void> {
+    if (!this.persistentChrome) {
+      return;
+    }
+
+    try {
+      await this.persistentChrome.kill();
+      console.log('🛑 Persistent Lighthouse Chrome terminated.');
+    } catch (error: any) {
+      const message = error?.message ? String(error.message) : 'Unknown error';
+      console.warn(`⚠️ Error while killing persistent Lighthouse Chrome: ${message}`);
+    } finally {
+      this.persistentChrome = null;
+    }
+  }
+
   public static async auditLiveUrl(url: string, maxTimeoutMs: number): Promise<LighthouseSummary> {
-    let chrome: { port: number; kill: () => Promise<void> | void } | null = null;
+    // Use the persistent Chrome instance when available; otherwise launch a
+    // temporary one so that standalone / test calls still work correctly.
+    const usingPersistent = this.persistentChrome !== null;
+    let chrome: ChromeHandle | null = usingPersistent ? this.persistentChrome : null;
 
     try {
       const lighthouseModule = await import('lighthouse');
-      const chromeLauncherModule = await import('chrome-launcher');
-
       const lighthouse = lighthouseModule.default;
-      const launch = chromeLauncherModule.launch;
 
-      chrome = await launch({
-        chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']
-      });
+      if (!usingPersistent) {
+        const chromeLauncherModule = await import('chrome-launcher');
+        chrome = await chromeLauncherModule.launch({
+          chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']
+        });
+      }
 
       const result = await lighthouse(url, {
-        port: chrome.port,
+        port: chrome!.port,
         output: 'json',
         logLevel: 'error',
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'],
@@ -75,7 +123,8 @@ export class LighthouseWorker {
         agenticScore: null
       };
     } finally {
-      if (chrome) {
+      // Only kill Chrome when we launched a temporary instance for this call.
+      if (!usingPersistent && chrome) {
         await chrome.kill();
       }
     }

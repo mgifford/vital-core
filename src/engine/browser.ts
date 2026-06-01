@@ -95,6 +95,10 @@ export class ResilientBrowserEngine {
     let previousHost: string | null = null;
     let consecutiveTimeouts = 0;
 
+    if (!accessibilityOnly) {
+      await LighthouseWorker.launchChrome();
+    }
+
     try {
     for (const url of urlQueue) {
       const currentHost = this.safeHost(url);
@@ -265,6 +269,7 @@ export class ResilientBrowserEngine {
       }
     }
     } finally {
+      await LighthouseWorker.killChrome();
       await browser.close();
       console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
     }
