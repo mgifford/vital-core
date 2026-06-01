@@ -250,13 +250,9 @@ jobs:
           .tools/wappalyzer-next/bin/python -m pip install --upgrade pip
           .tools/wappalyzer-next/bin/pip install -r .github/wappalyzer-requirements.txt
 
-      - name: Install Playwright Firefox and WebKit with system dependencies (off-hours/deep, cache miss)
-        if: needs.setup.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Install Playwright Firefox and WebKit with system dependencies (off-hours/deep)
+        if: needs.setup.outputs.enable_multi_engine == 'true'
         run: npx playwright install firefox webkit --with-deps
-
-      - name: Install Playwright Firefox/WebKit system dependencies (off-hours/deep, cache hit)
-        if: needs.setup.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps firefox webkit
 
       - name: Scan target cluster ${{ matrix.target_id }}
         env:
