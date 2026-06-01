@@ -228,7 +228,7 @@ export class ResilientBrowserEngine {
           if (!accessibilityOnly) {
             // 5. Detect CMS/framework tooling footprint for page profile reporting.
             //    Pass the local snapshot so Wappalyzer reads from disk rather than HTTP.
-            baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url, undefined, undefined, snapshotPath);
+            baseReport.technologyStack = await TechnologyWorker.detectTechnologyStack(url);
 
             // 6. Generate offline local analysis metrics from DOM snapshot
             baseReport.offlineAudits = OfflineWorker.processSnapshot(hydratedHtml);

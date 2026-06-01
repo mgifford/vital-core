@@ -30,10 +30,9 @@ export class TechnologyWorker {
   public static async detectTechnologyStack(
     url: string,
     command = process.env.VITAL_WAPPALYZER_CMD || '',
-    runner: ExecRunner = execFileAsync as ExecRunner,
-    htmlSnapshotPath?: string
+    runner: ExecRunner = execFileAsync as ExecRunner
   ): Promise<TechnologyEntry[]> {
-    const attempts = this.buildCommandAttempts(command, url, htmlSnapshotPath);
+    const attempts = this.buildCommandAttempts(command, url);
     let lastErrorMessage = 'wappalyzer-next command unavailable';
 
     if (attempts.length === 0) {
@@ -49,7 +48,11 @@ export class TechnologyWorker {
           { timeout: this.DEFAULT_TIMEOUT_MS, maxBuffer: this.DEFAULT_MAX_BUFFER }
         );
 
-        return this.parseTechnologyEntries(stdout, url);
+        const entries = this.parseTechnologyEntries(stdout, url);
+        if (entries.length > 0) {
+          console.log(`🔍 Technology fingerprinting detected ${entries.length} item(s) for ${url}: ${entries.map(e => e.name).join(', ')}`);
+        }
+        return entries;
       } catch (error: any) {
         const fallbackStdout = this.extractStdout(error);
         if (fallbackStdout) {
@@ -84,26 +87,11 @@ export class TechnologyWorker {
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  private static buildCommandAttempts(command: string, url: string, htmlSnapshotPath?: string): Array<{ file: string; args: string[] }> {
-    // full scan is required — balanced returns no results for many gov sites.
-    // -oJ without a filename argument writes JSON to stdout.
-    const snapshotArgs = htmlSnapshotPath
-      ? ['--scan-type', 'full', '-oJ', '-i', `file://${htmlSnapshotPath}`]
-      : null;
+  private static buildCommandAttempts(command: string, url: string): Array<{ file: string; args: string[] }> {
+    // wappalyzer-next does not support file:// URIs — it only scans live http(s):// URLs.
+    // Using file:// causes the tool to silently exit 0 with empty JSON, masking the failure.
     const urlArgs = ['--scan-type', 'full', '-oJ', '-i', url];
     const attempts: Array<{ file: string; args: string[] }> = [];
-
-    // When a snapshot is available, try file-based invocation first (no live HTTP fetch).
-    // Fall back to the live URL if the tool does not support file:// input.
-    if (snapshotArgs) {
-      if (command && command.trim() !== '') {
-        attempts.push({ file: command, args: snapshotArgs });
-      }
-
-      if (fs.existsSync(this.LOCAL_WAPPALYZER_NEXT_PATH) && command !== this.LOCAL_WAPPALYZER_NEXT_PATH) {
-        attempts.push({ file: this.LOCAL_WAPPALYZER_NEXT_PATH, args: snapshotArgs });
-      }
-    }
 
     if (command && command.trim() !== '') {
       attempts.push({ file: command, args: urlArgs });
