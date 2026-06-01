@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check links in docs
         uses: lycheeverse/lychee-action@v2
@@ -48,7 +48,7 @@ jobs:
             docs/**/*.html
 
       - name: Initialize Node.js environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: npm
@@ -60,7 +60,7 @@ jobs:
         run: npx vitest run tests/unit/docs-accessibility-guardrails.test.ts tests/unit/workflow-contracts.test.ts
 
       - name: Cache Playwright browser binaries
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright

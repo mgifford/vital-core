@@ -71,7 +71,7 @@ describe('Workflow contracts', () => {
     expect(content).toContain('workflow_run:');
     expect(content).toContain("github.event.workflow_run.conclusion == 'failure'");
     expect(content).toContain('issues: write');
-    expect(content).toContain('actions/github-script@v7');
+    expect(content).toContain('actions/github-script@v9');
     expect(content).toContain("labels: ['automated', 'ci-failure']");
     expect(content).toContain("github.event.workflow_run.conclusion == 'success'");
     expect(content).toContain('Close matching failure tracking issue');

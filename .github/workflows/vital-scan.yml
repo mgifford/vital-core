@@ -48,12 +48,12 @@ jobs:
       targets: ${{ steps.parse_profile.outputs.targets }}
     steps:
       - name: Checkout Source Repository Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
       - name: Initialize Node.js Environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
 
@@ -177,7 +177,7 @@ jobs:
 
       - name: Upload history cache artifact for downstream jobs
         if: steps.offhours.outputs.should_scan == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: history-cache
           path: .history-cache/
@@ -199,12 +199,12 @@ jobs:
         target_id: ${{ fromJson(needs.setup.outputs.targets) }}
     steps:
       - name: Checkout Source Repository Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
       - name: Initialize Node.js Environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: 'npm'
@@ -213,14 +213,14 @@ jobs:
         run: npm ci
 
       - name: Download history cache from setup job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: history-cache
           path: .history-cache/
         continue-on-error: true
 
       - name: Cache Playwright browser binaries
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -236,7 +236,7 @@ jobs:
         run: npx playwright install-deps chromium
 
       - name: Cache Wappalyzer venv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: wappalyzer-cache
         with:
           path: .tools/wappalyzer-next
@@ -284,7 +284,7 @@ jobs:
         run: npm run scan
 
       - name: Upload scan artifact for ${{ matrix.target_id }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: scan-artifact-${{ matrix.target_id }}
           path: dist/scan-artifacts/
@@ -292,7 +292,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload HTML snapshots for ${{ matrix.target_id }} (Debugging/Audit)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: raw-cached-html-snapshots-${{ matrix.target_id }}
           path: tmp/html-snapshots/
@@ -316,12 +316,12 @@ jobs:
       id-token: write
     steps:
       - name: Checkout Source Repository Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
       - name: Initialize Node.js Environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: 'npm'
@@ -330,14 +330,14 @@ jobs:
         run: npm ci
 
       - name: Download history cache
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: history-cache
           path: .history-cache/
         continue-on-error: true
 
       - name: Download all per-target scan artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: scan-artifact-*
           path: dist/scan-artifacts/
@@ -377,13 +377,13 @@ jobs:
           echo "Dashboard artifact preflight passed."
 
       - name: Setup GitHub Pages Deployment Context
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v6
 
       - name: Package Generated Static Dashboard Build
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: 'dist/'
 
       - name: Deploy Compiled Dashboard directly to GitHub Pages Engine
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
