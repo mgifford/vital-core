@@ -176,7 +176,9 @@ export class ResilientBrowserEngine {
           });
 
           // 2. Hydration Settle Buffer (Let slow API grids map to the DOM)
-          if (settings.postLoadDelay > 0) {
+          // Skipped in accessibility-only mode: dynamic content settle is not needed
+          // when performance, tech-stack, and third-party impact checks are all bypassed.
+          if (!accessibilityOnly && settings.postLoadDelay > 0) {
             console.log(`⏱️ Applying load buffer of ${settings.postLoadDelay}ms for dynamic scripts...`);
             await activePage.waitForTimeout(settings.postLoadDelay);
           }
