@@ -111,7 +111,12 @@ export const PageScanReportSchema = z.object({
       suspiciousAltInstances: z.array(z.object({
         imgHtml: z.string(),
         invalidValue: z.string()
-      }))
+      })),
+      wordCount: z.number().optional(),           // Word count in main content area (excl. nav/header/footer)
+      totalImageCount: z.number().optional(),     // All <img> elements on the page
+      contentImageCount: z.number().optional(),   // <img> elements within main content area only
+      misspelledWordCount: z.number().optional(), // Unique misspelled lowercase words in main content
+      misspelledWords: z.array(z.string()).optional() // Up to 20 unique misspelled words
     }),
     linkHealth: z.object({
       totalChecked: z.number(),
