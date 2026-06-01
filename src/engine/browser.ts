@@ -20,6 +20,7 @@ interface SnapshotSessionOptions {
   pageState?: PageStateMap;
   urlManifest?: UrlManifest;
   quarantineConfig?: QuarantineConfig;
+  initialTimeoutStreak?: number;
 }
 
 interface PageProbeResult {
@@ -139,7 +140,7 @@ export class ResilientBrowserEngine {
     const timeoutBackoffStepMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_STEP_MS', this.DEFAULT_TIMEOUT_BACKOFF_STEP_MS);
     const timeoutBackoffMaxMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_MAX_MS', this.DEFAULT_TIMEOUT_BACKOFF_MAX_MS);
     let previousHost: string | null = null;
-    let consecutiveTimeouts = 0;
+    let consecutiveTimeouts = Math.max(0, options.initialTimeoutStreak ?? 0);
     // One BrowserContext per hostname so the HTTP cache is shared across pages of the same domain.
     // Contexts are created on first visit and closed together after all URLs are processed.
     const contextPool = new Map<string, BrowserContext>();
@@ -151,27 +152,27 @@ export class ResilientBrowserEngine {
     try {
     for (const url of urlQueue) {
       const currentHost = this.safeHost(url);
-      if (previousHost && currentHost && previousHost === currentHost) {
-        const sameSiteDelayMs = getSameSiteDelayMs();
-        const delayJitterMs = getDelayJitterMs();
-        const timeoutBackoffMs = this.computeTimeoutBackoff(
-          consecutiveTimeouts,
-          timeoutBackoffThreshold,
-          timeoutBackoffStepMs,
-          timeoutBackoffMaxMs
-        );
-        const totalDelayMs = sameSiteDelayMs + timeoutBackoffMs;
+      const sameHostAsPrevious = Boolean(previousHost && currentHost && previousHost === currentHost);
+      const sameSiteDelayMs = sameHostAsPrevious ? getSameSiteDelayMs() : 0;
+      const delayJitterMs = sameHostAsPrevious ? getDelayJitterMs() : 0;
+      const timeoutBackoffMs = this.computeTimeoutBackoff(
+        consecutiveTimeouts,
+        timeoutBackoffThreshold,
+        timeoutBackoffStepMs,
+        timeoutBackoffMaxMs
+      );
+      const totalDelayMs = sameSiteDelayMs + timeoutBackoffMs;
 
-        if (totalDelayMs > 0 || delayJitterMs > 0) {
-          const jitterMs = delayJitterMs > 0 ? Math.floor(Math.random() * delayJitterMs) : 0;
-          const effectiveDelayMs = totalDelayMs + jitterMs;
-          const timeoutSuffix = timeoutBackoffMs > 0
-            ? ` (includes ${timeoutBackoffMs}ms timeout backoff after ${consecutiveTimeouts} consecutive timeout(s))`
-            : '';
-          const jitterSuffix = jitterMs > 0 ? ` + ${jitterMs}ms jitter` : '';
-          console.log(`⏸️ Politeness pause for ${target.id}: waiting ${effectiveDelayMs}ms before next same-site request${timeoutSuffix}${jitterSuffix}.`);
-          await this.sleep(effectiveDelayMs);
-        }
+      if (totalDelayMs > 0 || delayJitterMs > 0) {
+        const jitterMs = delayJitterMs > 0 ? Math.floor(Math.random() * delayJitterMs) : 0;
+        const effectiveDelayMs = totalDelayMs + jitterMs;
+        const requestScopeSuffix = sameHostAsPrevious ? ' before next same-site request' : ' before next request';
+        const timeoutSuffix = timeoutBackoffMs > 0
+          ? ` (includes ${timeoutBackoffMs}ms timeout backoff after ${consecutiveTimeouts} consecutive timeout(s))`
+          : '';
+        const jitterSuffix = jitterMs > 0 ? ` + ${jitterMs}ms jitter` : '';
+        console.log(`⏸️ Politeness pause for ${target.id}: waiting ${effectiveDelayMs}ms${requestScopeSuffix}${timeoutSuffix}${jitterSuffix}.`);
+        await this.sleep(effectiveDelayMs);
       }
 
       previousHost = currentHost;
