@@ -7,6 +7,15 @@ export const TargetSettingsSchema = z.object({
   include_subdomains: z.boolean().default(false), // Keep scans constrained to base host by default
   sitemap_template_sample_cap: z.number().int().min(1).nullable().optional().default(null), // Optional per-template sample cap; null means unlimited
   sitemap_sample_stochastic: z.boolean().default(true), // Use deterministic pseudo-random ordering for sitemap sampling
+  /**
+   * Controls template diversity when scanning navigation-heavy sites.
+   * Use `unique_page_focus: true` to allow only one page per URL template,
+   * maximising coverage across distinct page types rather than scanning many
+   * pages that share the same layout.  Pair with `sitemap_template_sample_cap`
+   * (e.g. 2–5) for a middle ground: a few samples per template without flooding
+   * the queue with repetitive pages.  These are the correct knobs for
+   * diversity-first scanning — not a crawl-based deduplication strategy.
+   */
   unique_page_focus: z.boolean().default(false), // Prioritize template diversity by limiting each template to one page
   /**
    * CDN-aware throttle profile for polite crawling.

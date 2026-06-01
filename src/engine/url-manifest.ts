@@ -83,6 +83,8 @@ export class UrlManifestStore {
    * the file does not exist or cannot be parsed.
    */
   public static load(targetId: string): UrlManifest {
+    this.restoreCachedManifest(targetId);
+
     const manifestPath = this.getManifestPath(targetId);
     if (!fs.existsSync(manifestPath)) {
       return {};
@@ -130,6 +132,35 @@ export class UrlManifestStore {
       fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
+  }
+
+  /**
+   * If VITAL_HISTORY_CACHE_DIR is set and the target's manifest has not yet
+   * been written to dist/runs/{targetId}/url-manifest.json, copies the cached
+   * version from the history cache.  Mirrors PageStateCache.restoreCachedState().
+   */
+  private static restoreCachedManifest(targetId: string): void {
+    const historyCacheDir = process.env.VITAL_HISTORY_CACHE_DIR;
+    if (!historyCacheDir) {
+      return;
+    }
+
+    const cachedPath = path.resolve(
+      process.cwd(), historyCacheDir, 'runs', targetId, 'url-manifest.json'
+    );
+    if (!fs.existsSync(cachedPath)) {
+      return;
+    }
+
+    const manifestPath = this.getManifestPath(targetId);
+    const dir = path.dirname(manifestPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    if (!fs.existsSync(manifestPath)) {
+      fs.copyFileSync(cachedPath, manifestPath);
+    }
   }
 
   /**

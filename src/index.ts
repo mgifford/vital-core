@@ -56,6 +56,14 @@ function saveSingleTargetArtifacts(
 
   fs.writeFileSync(path.join(artifactDir, 'exclusions.json'), JSON.stringify(exclusions), 'utf8');
 
+  // Copy the url-manifest so the compile job can restore it during the next run.
+  const sourceManifestPath = path.resolve(
+    process.cwd(), 'dist', 'runs', result.targetId, 'url-manifest.json'
+  );
+  if (fs.existsSync(sourceManifestPath)) {
+    fs.copyFileSync(sourceManifestPath, path.join(artifactDir, 'url-manifest.json'));
+  }
+
   console.log(
     `💾 Saved scan artifacts for "${result.targetId}": ` +
       `${result.pagesScanned.length} pages, ${Object.keys(pageStateDelta).length} page-state entries, ` +

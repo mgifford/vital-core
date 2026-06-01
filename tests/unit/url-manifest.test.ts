@@ -16,6 +16,7 @@ function makeTmpDir(): string {
 
 afterEach(() => {
   process.chdir(originalCwd);
+  delete process.env.VITAL_HISTORY_CACHE_DIR;
 });
 
 describe('UrlManifestStore.load', () => {
@@ -101,6 +102,80 @@ describe('UrlManifestStore.load', () => {
     expect(entry.consecutiveFailures).toBe(0);
     expect(entry.cooldownUntil).toBeNull();
     expect(entry.contentHash).toBeNull();
+  });
+
+  it('restores manifest from history cache when VITAL_HISTORY_CACHE_DIR is set and dist copy does not exist', () => {
+    const tmpDir = makeTmpDir();
+    process.chdir(tmpDir);
+
+    const cachedManifestDir = path.join(tmpDir, '.history-cache', 'runs', 'my-target');
+    fs.mkdirSync(cachedManifestDir, { recursive: true });
+    const cachedManifest = {
+      'https://example.gov/': {
+        url: 'https://example.gov/',
+        discoveredAt: '2026-01-01T00:00:00.000Z',
+        lastAttemptedAt: '2026-01-02T00:00:00.000Z',
+        lastSuccessAt: '2026-01-02T00:00:00.000Z',
+        lastStatus: 'COMPLETED',
+        consecutiveFailures: 0,
+        cooldownUntil: null,
+        contentHash: 'cached-hash'
+      }
+    };
+    fs.writeFileSync(
+      path.join(cachedManifestDir, 'url-manifest.json'),
+      JSON.stringify(cachedManifest),
+      'utf8'
+    );
+
+    process.env.VITAL_HISTORY_CACHE_DIR = '.history-cache';
+    const manifest = UrlManifestStore.load('my-target');
+
+    expect(manifest['https://example.gov/']).toBeDefined();
+    expect(manifest['https://example.gov/'].contentHash).toBe('cached-hash');
+
+    // The manifest should have been copied to dist/runs/my-target/url-manifest.json
+    const distPath = path.join(tmpDir, 'dist', 'runs', 'my-target', 'url-manifest.json');
+    expect(fs.existsSync(distPath)).toBe(true);
+  });
+
+  it('does not overwrite existing dist manifest with cached version', () => {
+    const tmpDir = makeTmpDir();
+    process.chdir(tmpDir);
+
+    const distManifestDir = path.join(tmpDir, 'dist', 'runs', 'my-target');
+    fs.mkdirSync(distManifestDir, { recursive: true });
+    const distManifest = {
+      'https://example.gov/': {
+        url: 'https://example.gov/',
+        discoveredAt: '2026-01-01T00:00:00.000Z',
+        lastAttemptedAt: null,
+        lastSuccessAt: null,
+        lastStatus: null,
+        consecutiveFailures: 0,
+        cooldownUntil: null,
+        contentHash: 'dist-hash'
+      }
+    };
+    fs.writeFileSync(
+      path.join(distManifestDir, 'url-manifest.json'),
+      JSON.stringify(distManifest),
+      'utf8'
+    );
+
+    const cachedManifestDir = path.join(tmpDir, '.history-cache', 'runs', 'my-target');
+    fs.mkdirSync(cachedManifestDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(cachedManifestDir, 'url-manifest.json'),
+      JSON.stringify({ 'https://example.gov/': { ...distManifest['https://example.gov/'], contentHash: 'cached-hash' } }),
+      'utf8'
+    );
+
+    process.env.VITAL_HISTORY_CACHE_DIR = '.history-cache';
+    const manifest = UrlManifestStore.load('my-target');
+
+    // dist version wins; cached version must not overwrite it
+    expect(manifest['https://example.gov/'].contentHash).toBe('dist-hash');
   });
 
   it('skips entries whose value is not an object', () => {

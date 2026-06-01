@@ -1,6 +1,11 @@
 version: "1.0"
 profile: "US Health"
 description: "Quality scanner profile targeting US federal health agency websites."
+# Operator note: to control navigation-heavy template diversity, use
+#   unique_page_focus: true      — one page per URL template (strictest diversity)
+#   sitemap_template_sample_cap  — e.g. 2–5 samples per template (balanced)
+# These are the correct levers for diversity-first scanning; do NOT rely on
+# crawl-based deduplication for this purpose.
 
 targets:
   - id: cms-gov
