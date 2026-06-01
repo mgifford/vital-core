@@ -106,6 +106,10 @@ export class ResilientBrowserEngine {
     // Contexts are created on first visit and closed together after all URLs are processed.
     const contextPool = new Map<string, BrowserContext>();
 
+    if (!accessibilityOnly) {
+      await LighthouseWorker.launchChrome();
+    }
+
     try {
     for (const url of urlQueue) {
       const currentHost = this.safeHost(url);
@@ -298,8 +302,11 @@ export class ResilientBrowserEngine {
       }
     }
     } finally {
+      
+      await LighthouseWorker.killChrome();
       // Close all pooled contexts before shutting down the browser.
       await Promise.all(Array.from(contextPool.values()).map(ctx => ctx.close().catch(() => {})));
+      
       if (browser) {
         await browser.close();
         console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
