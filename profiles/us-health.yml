@@ -434,6 +434,80 @@ targets:
     priority_urls:
       - https://www.cdc.gov/
       - https://www.cdc.gov/about/
+      - https://www.cdc.gov/about/leadership/
+      - https://www.cdc.gov/about/organization/
+      - https://www.cdc.gov/about/cdc-foundation.html
+      - https://www.cdc.gov/about/cdc-moving-forward/newcdc-info.html
+      - https://www.cdc.gov/contact/accessibility.html
+      - https://www.cdc.gov/museum/accessibility.htm
+      - https://www.cdc.gov/other/accessibility.html
+      - https://www.cdc.gov/search/index.html
+      - https://www.cdc.gov/search/spanish/index.html
+      - https://www.cdc.gov/spanish/
+      - https://www.cdc.gov/other/languages.html
+      - https://www.cdc.gov/other/helpful.html
+      - https://www.cdc.gov/contact/
+      - https://www.cdc.gov/health-topics.html
+      - https://www.cdc.gov/media/
+      - https://www.cdc.gov/foia/
+      - https://www.cdc.gov/budget/
+      - https://www.cdc.gov/oeeowe/no-fear-act/
+      - https://www.cdc.gov/Other/policies.html
+      - https://www.cdc.gov/other/cookies.html
+      - https://www.cdc.gov/other/disclaimer.html
+      - https://www.cdc.gov/other/egovernment.html
+      - https://www.cdc.gov/other/about_cdcgov.html
+      - https://www.cdc.gov/other/archived-content.html
+      - https://www.cdc.gov/epilepsy/index.html
+      - https://www.cdc.gov/epilepsy/about/index.html
+      - https://www.cdc.gov/epilepsy/about/types-of-seizures.html
+      - https://www.cdc.gov/epilepsy/data-research/facts-stats/data-and-statistics-on-adults-with-active-epilepsy.html
+      - https://www.cdc.gov/epilepsy/site.html
+      - https://www.cdc.gov/salmonella/about/index.html
+      - https://www.cdc.gov/salmonella/reportspubs/surveillance/annual-summary-2013.html
+      - https://www.cdc.gov/salmonella/hcp/clinical-overview/mdr-salmonella-newport.html
+      - https://www.cdc.gov/salmonella/hcp/clinical-overview/xdr-salmonella-ndm1.html
+      - https://www.cdc.gov/salmonella/outbreaks/africana-06-24/investigation.html
+      - https://www.cdc.gov/salmonella/outbreaks/africana-06-24/locations.html
+      - https://www.cdc.gov/salmonella/outbreaks/africana-06-24/timeline.html
+      - https://www.cdc.gov/salmonella/outbreaks/chameleons-05-26/locations.html
+      - https://www.cdc.gov/salmonella/outbreaks/eggs-09-24/locations.html
+      - https://www.cdc.gov/violenceprevention/aces/about.html
+      - https://www.cdc.gov/violenceprevention/aces/ace-brfss.html
+      - https://www.cdc.gov/violenceprevention/fundinghub/fundedprograms/essentialsforchildhoodnofo.html
+      - https://www.cdc.gov/violenceprevention/fundinghub/fundedprograms/research-awards.html
+      - https://www.cdc.gov/violenceprevention/fundinghub/fundingopportunities/nofo-cdc-rfa-ce-23-0005.html
+      - https://www.cdc.gov/violenceprevention/fundinghub/fundingopportunities/nofo-cdc-rfa-ce-24-0027.html
+      - https://www.cdc.gov/alzheimers-dementia/about/alzheimers.html
+      - https://www.cdc.gov/group-a-strep/about/strep-throat.html
+      - https://www.cdc.gov/dengue/prevention/
+      - https://www.cdc.gov/diabetes/living-with/physical-activity.html
+      - https://www.cdc.gov/clean-hands/data-research/facts-stats/
+      - https://www.cdc.gov/measles/data-research/
+      - https://www.cdc.gov/protect-children/index.html
+      - https://www.cdc.gov/cancerscreening/index.html
+      - https://www.cdc.gov/covidvaccines/index.html
+      - https://www.cdc.gov/covidtreatment/index.html
+      - https://www.cdc.gov/covid19-school-testing/index.html
+      - https://www.cdc.gov/labs/strong-lab-safety/
+      - https://www.cdc.gov/media/releases/2026/2026-alert-update-growing-number-of-salmonella-illnesses-and-outbreaks-linked-to-moringa-leaf-products.html
+      - https://www.cdc.gov/media/releases/2026/2026-growing-number-of-salmonella-illnesses-and-outbreaks-linked-to-moringa-leaf-products-consumers.html
+      - https://www.cdc.gov/media/releases/2026/enhanced-ebola-airport-screening-expands-to-atlanta.html
+      - https://www.cdc.gov/museum/index.htm
+      - https://www.cdc.gov/museum/about.htm
+      - https://www.cdc.gov/museum/directions.htm
+      - https://www.cdc.gov/museum/exhibitions_permanent.htm
+      - https://www.cdc.gov/museum/exhibitions_changing.htm
+      - https://www.cdc.gov/museum/tours/index.htm
+      - https://www.cdc.gov/museum/tours/adult.htm
+      - https://www.cdc.gov/museum/education/lessons/flu.html
+      - https://www.cdc.gov/pcd/index.htm
+      - https://www.cdc.gov/wcms/4.0/cdc-wp/data-presentation/line-chart-backup.html
+      - https://www.cdc.gov/wcms/4.0/cdc-wp/test-pages/components/audio.html
+      - https://www.cdc.gov/wcms/4.0/cdc-wp/special-purpose/sort-filter-simple-list/page-h.html
+      - https://www.cdc.gov/wcms/4.0/cdc-wp/navigation/multi-page/project-updates.html
+      - https://www.cdc.gov/wcms/4.0/cdc-wp/image-types/instructions/responsive-image-instructions.html
+      - https://www.cdc.gov/wcms/4.0/cove-demos/cove-world-map-demo.html
     settings:
       postLoadDelay: 2000
       maxTimeoutMs: 120000
@@ -453,13 +527,38 @@ targets:
 
   - id: health-gov
     name: Health.gov
-    base_url: https://health.gov
-    sitemap_url: https://health.gov/sitemap.xml
+    base_url: https://www.health.gov
+    sitemap_url: https://www.health.gov/sitemap.xml
     include_paths:
       - "/**"
     priority_urls:
-      - https://health.gov/
-      - https://health.gov/our-work/
+      - https://www.health.gov/
+      - https://www.health.gov/about-oash
+      - https://www.health.gov/about-oash/contact-us
+      - https://www.health.gov/about-oash/news
+      - https://www.health.gov/about-oash/oash-leadership
+      - https://www.health.gov/about-oash/oash-regional-offices
+      - https://www.health.gov/about-oash/office-assistant-secretary-health-organizational-chart
+      - https://www.health.gov/about-oash/io-programs-initiatives
+      - https://www.health.gov/office-assistant-secretary-health
+      - https://www.health.gov/priorities
+      - https://www.health.gov/careers
+      - https://www.health.gov/careers/current-job-opportunities
+      - https://www.health.gov/careers/future-job-opportunities
+      - https://www.health.gov/careers/how-apply-jobs-oash
+      - https://www.health.gov/careers/pathways-program
+      - https://www.health.gov/careers/understanding-your-eligibility
+      - https://www.health.gov/careers/events-webinars
+      - https://www.health.gov/grants
+      - https://www.health.gov/grants/lifecycle
+      - https://www.health.gov/grants/important-dates
+      - https://www.health.gov/grants/contracts
+      - https://www.health.gov/grants/co-sponsorships
+      - https://www.health.gov/grants/challenge-competitions
+      - https://www.health.gov/all-american-fitness-challenge-competition
+      - https://www.health.gov/advisory-committees/presidential-advisory-council-combating-antibiotic-resistant-bacteria-paccarb
+      - https://www.health.gov/our-work/nutrition-physical-activity/dietary-guidelines
+      - https://www.health.gov/our-work/
     settings:
       postLoadDelay: 2000
       maxTimeoutMs: 120000
