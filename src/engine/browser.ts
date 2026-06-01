@@ -25,6 +25,14 @@ interface PageProbeResult {
   lastModified: string | null;
   contentHash: string | null;
   assetFingerprintHash: string | null;
+  /**
+   * Raw HTML body retrieved during the GET probe, when the server exposes no
+   * cache-validation headers (ETag / Last-Modified).  Present only when a GET
+   * request was actually issued; null otherwise.  For non-SPA pages this is
+   * equivalent to the fully-rendered HTML, so the scan loop can reuse it
+   * directly and avoid an extra `activePage.content()` round-trip.
+   */
+  fetchedHtml: string | null;
 }
 
 type EngineType = 'chromium' | 'firefox' | 'webkit';
@@ -177,10 +185,14 @@ export class ResilientBrowserEngine {
             await activePage.waitForTimeout(settings.postLoadDelay);
           }
 
-          // 3. Extract fully rendered HTML string state
-          const hydratedHtml = await activePage.content();
-          const contentHash = this.hashContent(hydratedHtml);
-          const assetFingerprintHash = this.computeAssetFingerprint(hydratedHtml, url);
+          // 3. Extract fully rendered HTML string state.
+          // When probePageChange already issued a GET (non-SPA pages with no
+          // cache-validation headers), reuse its response body to avoid an
+          // extra activePage.content() IPC round-trip and redundant hash
+          // computation.  Fall back to activePage.content() when unavailable.
+          const hydratedHtml = probe.fetchedHtml ?? await activePage.content();
+          const contentHash = probe.fetchedHtml ? probe.contentHash! : this.hashContent(hydratedHtml);
+          const assetFingerprintHash = probe.fetchedHtml ? probe.assetFingerprintHash! : this.computeAssetFingerprint(hydratedHtml, url);
 
           if (!accessibilityOnly) {
             // 4. Detect CMS/framework tooling footprint for page profile reporting
@@ -376,7 +388,8 @@ export class ResilientBrowserEngine {
             etag,
             lastModified,
             contentHash: previousState.contentHash,
-            assetFingerprintHash: previousState.assetFingerprintHash
+            assetFingerprintHash: previousState.assetFingerprintHash,
+            fetchedHtml: null
           };
         }
 
@@ -387,7 +400,8 @@ export class ResilientBrowserEngine {
             etag,
             lastModified,
             contentHash: previousState.contentHash,
-            assetFingerprintHash: previousState.assetFingerprintHash
+            assetFingerprintHash: previousState.assetFingerprintHash,
+            fetchedHtml: null
           };
         }
       }
@@ -409,17 +423,21 @@ export class ResilientBrowserEngine {
               etag,
               lastModified,
               contentHash,
-              assetFingerprintHash
+              assetFingerprintHash,
+              fetchedHtml: null
             };
           }
 
+          // Page has changed: carry the GET response body forward so the scan
+          // loop can reuse it instead of re-fetching via the browser.
           return {
             unchanged: false,
             reason: 'Page changed based on HTML + asset fingerprint hash comparison.',
             etag,
             lastModified,
             contentHash,
-            assetFingerprintHash
+            assetFingerprintHash,
+            fetchedHtml: html
           };
         } catch {
           // Fall through to changed=true when lightweight fetch fails.
@@ -432,7 +450,8 @@ export class ResilientBrowserEngine {
         etag,
         lastModified,
         contentHash: previousState?.contentHash ?? null,
-        assetFingerprintHash: previousState?.assetFingerprintHash ?? null
+        assetFingerprintHash: previousState?.assetFingerprintHash ?? null,
+        fetchedHtml: null
       };
     } catch {
       return {
@@ -441,7 +460,8 @@ export class ResilientBrowserEngine {
         etag: previousState?.etag ?? null,
         lastModified: previousState?.lastModified ?? null,
         contentHash: previousState?.contentHash ?? null,
-        assetFingerprintHash: previousState?.assetFingerprintHash ?? null
+        assetFingerprintHash: previousState?.assetFingerprintHash ?? null,
+        fetchedHtml: null
       };
     }
   }
