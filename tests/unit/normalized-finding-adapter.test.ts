@@ -28,6 +28,8 @@ describe('NormalizedFindingAdapter', () => {
     const parsed = NormalizedFindingSchema.parse(findings[0]);
     expect(parsed.sourceEngines).toEqual(['axe']);
     expect(parsed.canonicalRuleKey).toBe('axe:image-alt');
+    // image-alt implements W3C ACT rule 23a2a8
+    expect(parsed.standards.act).toContain('23a2a8');
   });
 
   it('maps alfa outcomes into canonical normalized findings', () => {
@@ -38,7 +40,8 @@ describe('NormalizedFindingAdapter', () => {
       rawResults: {
         outcomes: [
           {
-            rule: 'text-alt',
+            // sia-r2 implements W3C ACT rule 23a2a8 (same as axe image-alt)
+            rule: 'sia-r2',
             title: 'Text Alternative',
             message: 'Image lacks a text alternative',
             severity: 'serious',
@@ -55,6 +58,8 @@ describe('NormalizedFindingAdapter', () => {
     expect(findings.length).toBe(1);
     const parsed = NormalizedFindingSchema.parse(findings[0]);
     expect(parsed.sourceEngines).toEqual(['alfa']);
-    expect(parsed.canonicalRuleKey).toBe('alfa:text-alt');
+    expect(parsed.canonicalRuleKey).toBe('alfa:sia-r2');
+    // sia-r2 implements W3C ACT rule 23a2a8
+    expect(parsed.standards.act).toContain('23a2a8');
   });
 });

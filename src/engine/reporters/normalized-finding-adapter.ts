@@ -1,5 +1,6 @@
 import { A11yViolation, PageAlfaAudit } from '../../types/site-quality-spec';
 import { NormalizedFinding } from '../../types/normalized-finding';
+import actMapping from '../../data/act-mapping.json';
 
 interface AlfaOutcomeLike {
   rule?: string;
@@ -20,6 +21,7 @@ export class NormalizedFindingAdapter {
   public static fromAxeViolations(pageUrl: string, violations: A11yViolation[]): NormalizedFinding[] {
     return (Array.isArray(violations) ? violations : []).flatMap(violation => {
       const instances = Array.isArray(violation.instances) ? violation.instances : [];
+      const actIds = this.axeRuleToActIds(violation.id);
 
       return instances.map((instance, index) => ({
         canonicalRuleKey: `axe:${violation.id}`,
@@ -29,7 +31,7 @@ export class NormalizedFindingAdapter {
         severity: violation.severity,
         sourceEngines: ['axe'],
         standards: {
-          act: (violation.impactedCriteria || []).filter(tag => /^act/i.test(tag)),
+          act: actIds,
           wcag: (violation.impactedCriteria || []).filter(tag => /^wcag|^\d+\.\d+\.\d+/.test(tag)),
           section508: (violation.impactedCriteria || []).filter(tag => /^508|^section\s*508/i.test(tag))
         },
@@ -66,6 +68,7 @@ export class NormalizedFindingAdapter {
       const ruleId = String(outcome.rule || outcome.id || `alfa-rule-${index + 1}`);
       const description = String(outcome.description || outcome.message || outcome.title || ruleId);
       const severity = this.normalizeSeverity(outcome.severity);
+      const actIds = this.alfaRuleToActIds(ruleId);
       const target = Array.isArray(outcome.target) ? outcome.target : [];
 
       return {
@@ -76,7 +79,7 @@ export class NormalizedFindingAdapter {
         severity,
         sourceEngines: ['alfa'],
         standards: {
-          act: [],
+          act: actIds,
           wcag: Array.isArray(outcome.wcag) ? outcome.wcag : [],
           section508: Array.isArray(outcome.section508) ? outcome.section508 : []
         },
@@ -145,5 +148,17 @@ export class NormalizedFindingAdapter {
     } catch {
       return null;
     }
+  }
+
+  /** Returns the W3C ACT rule IDs that a given axe rule implements. */
+  public static axeRuleToActIds(axeRuleId: string): string[] {
+    const lookup = actMapping.axeRuleToActIds as Record<string, string[]>;
+    return lookup[axeRuleId] ?? [];
+  }
+
+  /** Returns the W3C ACT rule IDs that a given alfa rule implements. */
+  public static alfaRuleToActIds(alfaRuleId: string): string[] {
+    const lookup = actMapping.alfaRuleToActIds as Record<string, string[]>;
+    return lookup[alfaRuleId] ?? [];
   }
 }

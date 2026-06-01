@@ -97,11 +97,25 @@ export class ConsensusPrioritizer {
   }
 
   private static toCanonicalBase(canonicalRuleKey: string): string {
-    return String(canonicalRuleKey || '')
-      .replace(/^axe:/i, '')
-      .replace(/^alfa:/i, '')
-      .trim()
-      .toLowerCase();
+    const key = String(canonicalRuleKey || '');
+
+    // Prefer the W3C ACT rule ID so that axe and alfa findings for the same ACT rule
+    // are correlated even though the tools use different internal rule identifiers.
+    if (/^axe:/i.test(key)) {
+      const axeRuleId = key.replace(/^axe:/i, '').trim();
+      const actIds = NormalizedFindingAdapter.axeRuleToActIds(axeRuleId);
+      if (actIds.length > 0) return `act:${actIds[0]}`;
+      return axeRuleId.toLowerCase();
+    }
+
+    if (/^alfa:/i.test(key)) {
+      const alfaRuleId = key.replace(/^alfa:/i, '').trim();
+      const actIds = NormalizedFindingAdapter.alfaRuleToActIds(alfaRuleId);
+      if (actIds.length > 0) return `act:${actIds[0]}`;
+      return alfaRuleId.toLowerCase();
+    }
+
+    return key.trim().toLowerCase();
   }
 
   private static severityRank(value: 'critical' | 'serious' | 'moderate' | 'minor'): number {
