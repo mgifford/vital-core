@@ -219,6 +219,34 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
 
     expect(launchSpy).not.toHaveBeenCalled();
   });
+
+  it('applies timeout backoff before the first request when a timeout streak is carried into the batch', async () => {
+    const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
+    vi.spyOn(LighthouseWorker, 'launchChrome').mockResolvedValue(undefined);
+    vi.spyOn(LighthouseWorker, 'killChrome').mockResolvedValue(undefined);
+
+    vi.spyOn(ResilientBrowserEngine as any, 'probePageChange').mockResolvedValue({
+      unchanged: true,
+      reason: 'Skipped unchanged page based on matching ETag.',
+      etag: '"abc123"',
+      lastModified: null,
+      contentHash: null,
+      assetFingerprintHash: null
+    });
+
+    const sleepSpy = vi.spyOn(ResilientBrowserEngine as any, 'sleep').mockResolvedValue(undefined);
+
+    const { reports: results } = await ResilientBrowserEngine.executeSnapshotSession(
+      STUB_TARGET,
+      ['https://example.gov/page-1'],
+      { initialTimeoutStreak: 2 }
+    );
+
+    expect(results).toHaveLength(1);
+    expect(results[0].status).toBe('SKIPPED_UNCHANGED');
+    expect(sleepSpy).toHaveBeenCalledTimes(1);
+    expect(sleepSpy).toHaveBeenCalledWith(10000);
+  });
 });
 
 describe('ResilientBrowserEngine.runWithTimeout', () => {
