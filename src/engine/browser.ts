@@ -597,10 +597,13 @@ export class ResilientBrowserEngine {
     let timeoutHandle: NodeJS.Timeout | null = null;
 
     // Hold a reference to the operation promise so we can attach a no-op
-    // rejection handler when the timeout fires first.  Without this, any late
-    // error emitted by the abandoned promise (e.g. Lighthouse's checkForQuiet
-    // rejecting after Chrome is killed) would become an unhandled rejection and
-    // crash the Node.js process.
+    // rejection handler when the timeout fires first, preventing any late
+    // rejection from operationPromise itself becoming an unhandled rejection.
+    //
+    // Note: this does NOT cover rejections from Promises that are internal to
+    // the operation but not part of its returned Promise chain (e.g. Lighthouse
+    // calls checkForQuiet via a fire-and-forget setTimeout pattern).  Those
+    // are suppressed by the global unhandledRejection handler in src/index.ts.
     const operationPromise = operation();
 
     const timeoutPromise = new Promise<never>((_, reject) => {
@@ -613,10 +616,10 @@ export class ResilientBrowserEngine {
       if (timeoutHandle) {
         clearTimeout(timeoutHandle);
       }
-      // Suppress any rejection that arrives after the timeout already fired.
-      // This is safe: if operationPromise won the race we already returned its
-      // value (or re-threw its error) above, so attaching an extra handler here
-      // is a no-op from the caller's perspective.
+      // Suppress any rejection from operationPromise itself that arrives after
+      // the timeout already fired.  This is safe: if operationPromise won the
+      // race we already returned its value (or re-threw its error) above, so
+      // attaching an extra handler here is a no-op from the caller's perspective.
       operationPromise.catch(() => {});
     }
   }
