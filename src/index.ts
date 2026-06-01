@@ -1,13 +1,16 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { ProfileParser } from './engine/parser';
 import { TargetDiscoveryEngine } from './engine/discovery';
 import { ResilientBrowserEngine } from './engine/browser';
 import { TargetConfig } from './types/profile';
 import { BugExporter } from './engine/reporters/bug-exporter';
 import { DashboardCompiler } from './engine/reporters/dashboard-compiler';
-import { PageStateCache } from './engine/reporters/page-state-cache';
+import { PageStateCache, PageStateMap } from './engine/reporters/page-state-cache';
 import { RunHistoryReporter } from './engine/reporters/run-history';
 import { PrioritySeedStore } from './engine/priority-seeds';
 import { TargetScanResult, PageScanReport } from './types/site-quality-spec';
+import { DiscoveryNonHtmlExclusion } from './engine/discovery';
 
 interface TargetScanPlan {
   target: TargetConfig;
@@ -17,9 +20,45 @@ interface TargetScanPlan {
   completedPages: PageScanReport[];
 }
 
+/**
+ * Persists per-target scan artifacts consumed by the compile-and-deploy job.
+ * Called only when VITAL_TARGET_ID is set (parallel matrix mode).
+ */
+function saveSingleTargetArtifacts(
+  result: TargetScanResult,
+  discoveredUrls: string[],
+  pageState: PageStateMap,
+  exclusions: DiscoveryNonHtmlExclusion[]
+): void {
+  const artifactDir = path.resolve(process.cwd(), 'dist', 'scan-artifacts', result.targetId);
+  if (!fs.existsSync(artifactDir)) {
+    fs.mkdirSync(artifactDir, { recursive: true });
+  }
+
+  fs.writeFileSync(path.join(artifactDir, 'result.json'), JSON.stringify(result), 'utf8');
+
+  // Save only the page-state entries for URLs this target discovered/scanned.
+  const pageStateDelta: PageStateMap = {};
+  for (const url of discoveredUrls) {
+    if (pageState[url]) {
+      pageStateDelta[url] = pageState[url];
+    }
+  }
+  fs.writeFileSync(path.join(artifactDir, 'page-state.json'), JSON.stringify(pageStateDelta), 'utf8');
+
+  fs.writeFileSync(path.join(artifactDir, 'exclusions.json'), JSON.stringify(exclusions), 'utf8');
+
+  console.log(
+    `💾 Saved scan artifacts for "${result.targetId}": ` +
+      `${result.pagesScanned.length} pages, ${Object.keys(pageStateDelta).length} page-state entries, ` +
+      `${exclusions.length} non-HTML exclusions.`
+  );
+}
+
 async function main() {
   const startTime = Date.now();
   const profilePath = process.argv[2] || 'profiles/us-health.yml';
+  const targetIdFilter = process.env.VITAL_TARGET_ID || '';
   const forceRescan = /^(1|true|yes)$/i.test(process.env.FORCE_RESCAN || '');
   const forcePrioritySeedRefresh = /^(1|true|yes)$/i.test(process.env.FORCE_PRIORITY_SEED_REFRESH || '');
   const revalidateAfterDays = Number.parseInt(process.env.VITAL_REVALIDATE_AFTER_DAYS || '7', 10);
@@ -79,13 +118,27 @@ async function main() {
   try {
     // 1. Ingest Configuration Profile
     const profile = ProfileParser.loadProfile(profilePath);
+
+    const activeTargets = targetIdFilter
+      ? profile.targets.filter(t => t.id === targetIdFilter)
+      : profile.targets;
+
+    if (targetIdFilter && activeTargets.length === 0) {
+      throw new Error(`Target not found in profile: ${targetIdFilter}`);
+    }
+
+    if (targetIdFilter) {
+      console.log(`🎯 Single-target mode: scanning only target "${targetIdFilter}".`);
+    }
+
     const globalAccumulatedResults: TargetScanResult[] = [];
     const pageState = PageStateCache.load();
     const previouslyScannedUrls = new Set(Object.keys(pageState));
 
     const prioritySeedState = await PrioritySeedStore.initialize(profile.targets, {
-      forceRefresh: forcePrioritySeedRefresh,
-      maxAgeDays: 31,
+      // In single-target mode, seeds are refreshed once by the setup job; never refresh here.
+      forceRefresh: targetIdFilter ? false : forcePrioritySeedRefresh,
+      maxAgeDays: targetIdFilter ? 90 : 31,
       perTargetLimit: 12
     });
 
@@ -100,7 +153,7 @@ async function main() {
 
     // 2. Discover URLs across all targets first so scan execution can be interleaved.
     const scanPlans: TargetScanPlan[] = [];
-    for (const target of profile.targets) {
+    for (const target of activeTargets) {
       console.log(`\n===== Planning Target: ${target.name} (${target.id}) =====`);
       const urlQueue = await TargetDiscoveryEngine.discoverUrls(target, {
           pageState,
@@ -207,12 +260,34 @@ async function main() {
         pagesScanned: plan.completedPages
       };
 
+      globalAccumulatedResults.push(targetResult);
+    }
+
+    if (targetIdFilter) {
+      // 5a. Single-target mode: save scan artifacts for the compile-and-deploy job.
+      // BugExporter, DashboardCompiler, and RunHistoryReporter are deferred to src/compile.ts.
+      const result = globalAccumulatedResults[0];
+      if (result) {
+        const plan = scanPlans[0];
+        const discoveryExclusions = TargetDiscoveryEngine.consumeNonHtmlExclusions();
+        saveSingleTargetArtifacts(result, plan ? plan.discoveredUrls : [], pageState, discoveryExclusions);
+      }
+      const durationSec = ((Date.now() - startTime) / 1000).toFixed(2);
+      console.log(`\n✅ Single-target scan for "${targetIdFilter}" completed in ${durationSec}s. Artifacts saved.`);
+      return;
+    }
+
+    // 5b. Full-profile mode: generate bug tickets and compile the global dashboard.
+    for (const plan of scanPlans) {
+      const targetResult = globalAccumulatedResults.find(r => r.targetId === plan.target.id);
+      if (!targetResult) {
+        continue;
+      }
+
       // 5. Generate individual Markdown Bug Ticket Artifact for this target
       console.log(`📝 Exporting Section 508 developer tickets...`);
       const seedUrls = PrioritySeedStore.getSeedUrls(plan.target);
       BugExporter.exportMarkdownReport(targetResult, seedUrls);
-
-      globalAccumulatedResults.push(targetResult);
     }
 
     // 6. Compile global dashboard across all scanned profiles
