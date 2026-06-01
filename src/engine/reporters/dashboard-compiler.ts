@@ -569,22 +569,144 @@ ${siteFooterHtml}
         .map(([status, count]) => `${status}: ${count}`)
         .join(' | ') || 'No page statuses recorded in latest run.';
 
-      const accessibilityRows = allKnownPages
-        .flatMap(page => {
-          const violations = page?.liveAudits?.accessibilityViolations || [];
-          return violations.map(v => {
-            const wcagVer = v.wcagVersion || this.deriveWcagVersion(v.impactedCriteria || []);
-            return `
-            <tr>
-              <td>${this.escapeHtml(page.url)}</td>
-              <td>${this.escapeHtml(v.id)}</td>
-              <td>${this.escapeHtml(v.severity)}</td>
-              <td>${this.escapeHtml(wcagVer)}</td>
-              <td>${this.escapeHtml(v.description)}</td>
-            </tr>`;
-          });
-        })
-        .join('');
+      // Group violations by rule for the enhanced accessibility report
+      const ruleGroupMap = new Map<string, {
+        id: string;
+        severity: string;
+        description: string;
+        helpUrl: string;
+        wcagVersion: string;
+        pageCount: number;
+        instanceCount: number;
+        pages: Array<{ url: string; instances: Array<{ html: string; target: string[]; failureSummary: string }> }>;
+      }>();
+      allKnownPages.forEach(page => {
+        const violations = page?.liveAudits?.accessibilityViolations || [];
+        violations.forEach(v => {
+          const wcagVer = v.wcagVersion || this.deriveWcagVersion(v.impactedCriteria || []);
+          if (!ruleGroupMap.has(v.id)) {
+            ruleGroupMap.set(v.id, {
+              id: String(v.id || ''),
+              severity: String(v.severity || 'minor'),
+              description: String(v.description || ''),
+              helpUrl: String(v.helpUrl || ''),
+              wcagVersion: String(wcagVer || 'n/a'),
+              pageCount: 0,
+              instanceCount: 0,
+              pages: []
+            });
+          }
+          const group = ruleGroupMap.get(v.id);
+          if (group) {
+            group.pageCount++;
+            group.instanceCount += Array.isArray(v.instances) ? v.instances.length : 0;
+            group.pages.push({
+              url: String(page.url || ''),
+              instances: (Array.isArray(v.instances) ? v.instances : []).map(inst => ({
+                html: String(inst.html || ''),
+                target: Array.isArray(inst.target) ? inst.target.map(t => String(t || '')) : [],
+                failureSummary: String(inst.failureSummary || '')
+              }))
+            });
+          }
+        });
+      });
+      const a11ySeverityOrder = ['critical', 'serious', 'moderate', 'minor'];
+      const ruleGroupsSorted = Array.from(ruleGroupMap.values()).sort((a, b) => {
+        const si = a11ySeverityOrder.indexOf(a.severity) - a11ySeverityOrder.indexOf(b.severity);
+        return si !== 0 ? si : b.pageCount - a.pageCount;
+      });
+      const topPagesByViolations = allKnownPages
+        .map(page => ({
+          url: String(page?.url || ''),
+          count: Array.isArray(page?.liveAudits?.accessibilityViolations)
+            ? page.liveAudits.accessibilityViolations.length
+            : 0
+        }))
+        .filter(p => p.count > 0)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+      const wcagBestPracticeCount = allViolations.filter(v => {
+        const ver = v.wcagVersion || this.deriveWcagVersion(v.impactedCriteria || []);
+        return ver === 'best-practice';
+      }).length;
+      const wcagSection508Count = allViolations.filter(v => {
+        const ver = v.wcagVersion || this.deriveWcagVersion(v.impactedCriteria || []);
+        return ver === 'section508';
+      }).length;
+      const maxSevCount = Math.max(
+        severityCounts.get('critical') || 0,
+        severityCounts.get('serious') || 0,
+        severityCounts.get('moderate') || 0,
+        severityCounts.get('minor') || 0,
+        1
+      );
+      const buildSevBarRow = (label: string, sev: string, count: number): string => {
+        const pct = Math.round((count / maxSevCount) * 100);
+        return `<div class="a11y-bar-row">
+          <span class="a11y-bar-label severity-${sev}">${this.escapeHtml(label)}</span>
+          <div class="a11y-bar-track" role="img" aria-label="${this.escapeHtml(label)}: ${this.escapeHtml(count)} issue${count !== 1 ? 's' : ''}">
+            <div class="a11y-bar-fill a11y-fill-${sev}" style="width:${pct}%"></div>
+          </div>
+          <span class="a11y-bar-count">${this.escapeHtml(count)}</span>
+        </div>`;
+      };
+      const ruleCardsHtml = ruleGroupsSorted.map(rule => {
+        const sev = String(rule.severity || 'minor').toLowerCase();
+        const ruleAnchor = `rule-${this.sanitizePathSegment(rule.id)}`;
+        const sevLabel = sev.charAt(0).toUpperCase() + sev.slice(1);
+        const pagesDetailHtml = rule.pages.map(p => {
+          const shownInstances = p.instances.slice(0, 5);
+          const moreCount = p.instances.length - shownInstances.length;
+          const instancesHtml = shownInstances.map(inst => {
+            const targetStr = inst.target.join(' → ') || 'element';
+            return `<details class="a11y-instance-details">
+              <summary>${this.escapeHtml(targetStr)}</summary>
+              <div class="a11y-instance-body">
+                ${inst.html ? `<code>${this.escapeHtml(inst.html)}</code>` : ''}
+                ${inst.failureSummary ? `<p><strong>Fix:</strong> ${this.escapeHtml(inst.failureSummary)}</p>` : ''}
+              </div>
+            </details>`;
+          }).join('');
+          return `<div class="a11y-page-entry">
+            <p><a href="${this.escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(p.url)}</a>
+            <span class="muted-small">(${this.escapeHtml(p.instances.length)} instance${p.instances.length !== 1 ? 's' : ''})</span></p>
+            ${instancesHtml}
+            ${moreCount > 0 ? `<p class="muted-small">… and ${this.escapeHtml(moreCount)} more instance${moreCount !== 1 ? 's' : ''} not shown</p>` : ''}
+          </div>`;
+        }).join('');
+        const safeHelpUrl = (() => {
+          try {
+            const parsed = new URL(rule.helpUrl);
+            return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? rule.helpUrl : '';
+          } catch {
+            return '';
+          }
+        })();
+        return `<div class="a11y-rule-card" id="${this.escapeHtml(ruleAnchor)}" data-severity="${this.escapeHtml(sev)}">
+          <div class="a11y-rule-header">
+            <h3>
+              <span class="severity-${sev}">${this.escapeHtml(sevLabel)}</span>
+              <code>${this.escapeHtml(rule.id)}</code>
+              <span class="badge">WCAG ${this.escapeHtml(rule.wcagVersion)}</span>
+              <span class="muted-small">${this.escapeHtml(rule.pageCount)} page${rule.pageCount !== 1 ? 's' : ''}, ${this.escapeHtml(rule.instanceCount)} instance${rule.instanceCount !== 1 ? 's' : ''}</span>
+            </h3>
+          </div>
+          <div class="a11y-rule-body">
+            <p class="a11y-rule-description">${this.escapeHtml(rule.description)}${safeHelpUrl ? ` <a href="${this.escapeHtml(safeHelpUrl)}" target="_blank" rel="noopener noreferrer">Learn more ↗</a>` : ''}</p>
+            <details>
+              <summary>${this.escapeHtml(rule.pageCount)} affected page${rule.pageCount !== 1 ? 's' : ''} — expand to see details</summary>
+              <div class="a11y-pages-list">${pagesDetailHtml}</div>
+            </details>
+          </div>
+        </div>`;
+      }).join('');
+      const topPagesRows = topPagesByViolations.map(p =>
+        `<tr>
+          <td><a href="${this.escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(p.url)}</a></td>
+          <td>${this.escapeHtml(p.count)}</td>
+        </tr>`
+      ).join('');
 
       const performanceRows = allKnownPages
         .map(page => {
@@ -708,12 +830,94 @@ ${siteFooterHtml}
 
       const accessibilityHtml = `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
-<body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Accessibility</h1></header><main><div class="card"><h2>Accessibility Findings</h2>${sharedNav}
-    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
-    ${hasHistoricalData ? '<p><em>Note: Some findings are from a previous scan run. Pages that were unchanged since the last scan are shown with their most recent known data.</em></p>' : ''}
-<table><thead><tr><th>URL</th><th>Rule</th><th>Severity</th><th>WCAG</th><th>Description</th></tr></thead><tbody>${accessibilityRows || '<tr><td colspan="5">No accessibility violations found across current and recent runs.</td></tr>'}</tbody></table>
-</div></main>${siteFooterHtml}</body></html>`;
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(String(target.targetId).toUpperCase())} — Accessibility Report</title>
+  <link rel="stylesheet" href="../../assets/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header>
+    <h1>${this.escapeHtml(String(target.targetId).toUpperCase())} — Accessibility Report</h1>
+  </header>
+  <main id="main-content">
+    <div class="card">
+      <h2>Accessibility Findings</h2>
+      ${sharedNav}
+      <p><strong>Status breakdown (latest run):</strong> ${this.escapeHtml(statusSummaryText)}</p>
+      ${hasHistoricalData ? '<p class="muted-small"><em>Some findings are from a previous scan run. Pages unchanged since the last scan are shown with their most recent known data.</em></p>' : ''}
+    </div>
+
+    <div class="a11y-stat-grid">
+      <div class="card">
+        <h2>By Severity</h2>
+        <div class="a11y-bar-chart">
+          ${buildSevBarRow('Critical', 'critical', severityCounts.get('critical') || 0)}
+          ${buildSevBarRow('Serious', 'serious', severityCounts.get('serious') || 0)}
+          ${buildSevBarRow('Moderate', 'moderate', severityCounts.get('moderate') || 0)}
+          ${buildSevBarRow('Minor', 'minor', severityCounts.get('minor') || 0)}
+        </div>
+      </div>
+      <div class="card">
+        <h2>By WCAG Version</h2>
+        <ul class="a11y-wcag-list">
+          <li><strong>WCAG 2.0 AA</strong> (legal baseline): <span class="badge">${this.escapeHtml(wcag20Count)}</span></li>
+          <li><strong>WCAG 2.1 AA</strong> (recommended): <span class="badge">${this.escapeHtml(wcag21Count)}</span></li>
+          <li><strong>WCAG 2.2 AA</strong> (target): <span class="badge">${this.escapeHtml(wcag22Count)}</span></li>
+          <li><strong>Section 508</strong>: <span class="badge">${this.escapeHtml(wcagSection508Count)}</span></li>
+          <li><strong>Best practice</strong>: <span class="badge">${this.escapeHtml(wcagBestPracticeCount)}</span></li>
+          <li class="a11y-wcag-total"><strong>Total violations:</strong> <span class="badge${totalViolations > 0 ? ' alert' : ''}">${this.escapeHtml(totalViolations)}</span></li>
+        </ul>
+      </div>
+    </div>
+
+    ${topPagesByViolations.length > 0 ? `<div class="card">
+      <h2>Pages with Most Violations</h2>
+      <table>
+        <thead><tr><th>URL</th><th>Violations</th></tr></thead>
+        <tbody>${topPagesRows}</tbody>
+      </table>
+    </div>` : ''}
+
+    <div class="card">
+      <h2 id="issues-heading" tabindex="-1">Issues by Rule</h2>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by severity">
+        <span class="a11y-filter-label">Filter by severity:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter="all">All (${this.escapeHtml(totalViolations)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter="critical">Critical (${this.escapeHtml(severityCounts.get('critical') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter="serious">Serious (${this.escapeHtml(severityCounts.get('serious') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter="moderate">Moderate (${this.escapeHtml(severityCounts.get('moderate') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter="minor">Minor (${this.escapeHtml(severityCounts.get('minor') || 0)})</button>
+      </div>
+      ${ruleCardsHtml || '<p>No accessibility violations found across current and recent runs.</p>'}
+    </div>
+  </main>
+  ${siteFooterHtml}
+  <script>
+(function () {
+  function getInitialTheme() {
+    try { var s = localStorage.getItem('vital.theme'); if (s === 'light' || s === 'dark') return s; } catch (e) {}
+    try { return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch (e) {}
+    return 'light';
+  }
+  document.documentElement.setAttribute('data-theme', getInitialTheme());
+  var filterBtns = document.querySelectorAll('.a11y-filter-btn');
+  filterBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var filter = btn.getAttribute('data-filter') || 'all';
+      filterBtns.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.a11y-rule-card').forEach(function (card) {
+        var sev = card.getAttribute('data-severity') || '';
+        card.setAttribute('data-hidden', filter !== 'all' && sev !== filter ? 'true' : 'false');
+      });
+    });
+  });
+})();
+  </script>
+</body>
+</html>`;
 
       const performanceHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -1361,6 +1565,195 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
 }
 .site-footer p {
   margin: 0.35rem 0;
+}
+/* ── Accessibility report page styles ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--surface-bg);
+  color: var(--link-color);
+  font-weight: bold;
+  text-decoration: none;
+  border: 2px solid var(--link-color);
+  border-radius: 4px;
+  z-index: 9999;
+}
+.skip-link:focus { top: 1rem; }
+.a11y-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.a11y-bar-chart { margin-top: 0.5rem; }
+.a11y-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+}
+.a11y-bar-label {
+  width: 5rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: right;
+  flex-shrink: 0;
+}
+.a11y-bar-track {
+  flex: 1;
+  height: 0.65rem;
+  background: var(--light-bg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.a11y-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+.a11y-bar-count {
+  width: 3rem;
+  font-size: 0.88rem;
+  text-align: right;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.severity-critical { color: #b50909; font-weight: 700; }
+.severity-serious  { color: #6b3300; font-weight: 700; }
+.severity-moderate { color: #5c4500; font-weight: 700; }
+.severity-minor    { color: var(--muted-color); font-weight: 600; }
+html[data-theme='dark'] .severity-critical,
+html:not([data-theme='light']) .severity-critical { color: #ff9f9f; }
+html[data-theme='dark'] .severity-serious,
+html:not([data-theme='light']) .severity-serious  { color: #ffb56e; }
+html[data-theme='dark'] .severity-moderate,
+html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
+.a11y-fill-critical { background: #b50909; }
+.a11y-fill-serious  { background: #9c4400; }
+.a11y-fill-moderate { background: #7d5e00; }
+.a11y-fill-minor    { background: var(--muted-color); }
+.a11y-wcag-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+.a11y-wcag-list li {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border-gray);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+}
+.a11y-wcag-list li:last-child { border-bottom: none; }
+.a11y-wcag-total { margin-top: 0.25rem; }
+.a11y-rule-card {
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 4px;
+  background: var(--surface-bg);
+}
+.a11y-rule-card[data-hidden="true"] { display: none; }
+.a11y-rule-header {
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--border-gray);
+  background: var(--table-header-bg);
+  border-radius: 4px 4px 0 0;
+}
+.a11y-rule-header h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+.a11y-rule-header code {
+  font-size: 0.9rem;
+  background: var(--light-bg);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  color: var(--link-color);
+  font-weight: 700;
+}
+.a11y-rule-body {
+  padding: 0.9rem 1.1rem;
+}
+.a11y-rule-body > details > summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--link-color);
+}
+.a11y-rule-description { margin-bottom: 0.6rem; font-size: 0.93rem; }
+.a11y-pages-list { margin-top: 0.5rem; }
+.a11y-page-entry {
+  margin: 0.5rem 0;
+  padding: 0.55rem 0.75rem;
+  border-left: 3px solid var(--border-gray);
+  font-size: 0.9rem;
+}
+.a11y-page-entry p { margin: 0 0 0.3rem; }
+.a11y-instance-details {
+  margin: 0.3rem 0;
+  border: 1px solid var(--border-gray);
+  border-radius: 3px;
+}
+.a11y-instance-details > summary {
+  cursor: pointer;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--light-bg);
+  border-radius: 3px;
+  word-break: break-all;
+}
+.a11y-instance-body {
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
+}
+.a11y-instance-body code {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: var(--table-header-bg);
+  padding: 0.35rem 0.5rem;
+  border-radius: 3px;
+  margin: 0.2rem 0;
+  font-size: 0.8rem;
+  color: var(--link-color);
+}
+.a11y-instance-body p { margin: 0.3rem 0 0; }
+.a11y-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.a11y-filter-label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.a11y-filter-btn {
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 999px;
+  background: var(--surface-bg);
+  color: var(--text-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+.a11y-filter-btn.active {
+  background: var(--gov-light-blue);
+  color: #ffffff;
+  border-color: var(--gov-light-blue);
+}
+.a11y-filter-btn:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
 }
 `;
   }
