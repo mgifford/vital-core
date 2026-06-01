@@ -102,6 +102,9 @@ export class ResilientBrowserEngine {
     const timeoutBackoffMaxMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_MAX_MS', this.DEFAULT_TIMEOUT_BACKOFF_MAX_MS);
     let previousHost: string | null = null;
     let consecutiveTimeouts = 0;
+    // One BrowserContext per hostname so the HTTP cache is shared across pages of the same domain.
+    // Contexts are created on first visit and closed together after all URLs are processed.
+    const contextPool = new Map<string, BrowserContext>();
 
     try {
     for (const url of urlQueue) {
@@ -158,21 +161,32 @@ export class ResilientBrowserEngine {
         `🧭 Emulation profile: ${emulation.family}/${emulation.viewportLabel}/${emulation.colorScheme} (${emulation.viewport.width}x${emulation.viewport.height})`
       );
 
-      let context: BrowserContext | null = null;
       let page: Page | null = null;
       const scannedAt = new Date().toISOString();
 
       try {
+        // Defer browser launch until a URL actually needs scanning (all-unchanged batches
+        // skip this entirely). Also reuse the context per hostname so the browser's HTTP
+        // cache (JS bundles, CSS, fonts) is shared across pages of the same domain.
+        // The user-agent is fixed at context-creation time; viewport and colorScheme are
+        // applied per-page to preserve emulation variety.
         if (!browser) {
           console.log(`🚀 Launching headless browser (${engine}) for target: ${target.id}`);
           browser = await this.launchBrowser(engine);
         }
-        context = await browser.newContext({
-          userAgent: emulation.userAgent,
-          viewport: emulation.viewport,
-          colorScheme: emulation.colorScheme
-        });
+        const poolKey = currentHost ?? '__unknown__';
+        let context = contextPool.get(poolKey);
+        if (!context) {
+          context = await browser.newContext({
+            userAgent: emulation.userAgent,
+            viewport: emulation.viewport,
+            colorScheme: emulation.colorScheme
+          });
+          contextPool.set(poolKey, context);
+        }
         page = await context.newPage();
+        await page.setViewportSize(emulation.viewport);
+        await page.emulateMedia({ colorScheme: emulation.colorScheme });
         page.setDefaultNavigationTimeout(effectiveMaxTimeoutMs);
         page.setDefaultTimeout(effectiveMaxTimeoutMs);
         const activePage = page;
@@ -229,7 +243,7 @@ export class ResilientBrowserEngine {
             // 8. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
             if (baseReport.offlineAudits) {
               baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
-                browser,
+                browser: browser!,
                 url,
                 maxTimeoutMs: effectiveMaxTimeoutMs,
                 postLoadDelay: settings.postLoadDelay,
@@ -276,7 +290,7 @@ export class ResilientBrowserEngine {
         }
       } finally {
         if (page) { await page.close(); }
-        if (context) { await context.close(); }
+        // Context is kept alive in the pool for reuse by the next same-domain page.
         if (baseReport.status === 'SKIPPED_UNCHANGED' || baseReport.status === 'COMPLETED') {
           consecutiveTimeouts = 0;
         }
@@ -284,6 +298,8 @@ export class ResilientBrowserEngine {
       }
     }
     } finally {
+      // Close all pooled contexts before shutting down the browser.
+      await Promise.all(Array.from(contextPool.values()).map(ctx => ctx.close().catch(() => {})));
       if (browser) {
         await browser.close();
         console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
