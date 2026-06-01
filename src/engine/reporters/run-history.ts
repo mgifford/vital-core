@@ -7,6 +7,7 @@ import {
   TargetQualityIndexEntry
 } from './quality-index';
 import { ConsensusPrioritizer, ConsensusSummary } from './consensus-prioritizer';
+import { SqlitePersister } from './sqlite-persister';
 
 interface RunEntry {
   runId: string;
@@ -267,6 +268,8 @@ export class RunHistoryReporter {
       JSON.stringify(this.buildDomainOngoingReports(nextIndex), null, 2),
       'utf8'
     );
+
+    SqlitePersister.appendRun(allResults, runEntry);
 
     return runEntry;
   }
@@ -564,6 +567,8 @@ export class RunHistoryReporter {
         fs.copyFileSync(src, dest);
       }
     }
+
+    SqlitePersister.restoreCachedDb(historyCacheDir);
   }
 
   private static buildTrendSummary(index: RunIndex): TrendSummary {

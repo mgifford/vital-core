@@ -41,6 +41,13 @@ async function writeCachedFile(historyCacheDir, relativePath, body) {
   await writeFile(outputPath, body, 'utf8');
 }
 
+async function writeCachedBinaryFile(historyCacheDir, relativePath, buffer) {
+  const outputPath = path.resolve(process.cwd(), historyCacheDir, relativePath);
+  const outputDir = path.dirname(outputPath);
+  await mkdir(outputDir, { recursive: true });
+  await writeFile(outputPath, buffer);
+}
+
 async function main() {
   const baseUrl = process.env.VITAL_PAGES_BASE_URL;
   const historyCacheDir = process.env.VITAL_HISTORY_CACHE_DIR || '.history-cache';
@@ -109,6 +116,22 @@ async function main() {
   await fetchOptionalRunArtifact('page-state.json');
   await fetchOptionalRunArtifact('top-task-seeds.json');
   await fetchOptionalRunArtifact('software-by-domain.json');
+
+  // Fetch the SQLite database so SqlitePersister.restoreCachedDb() can seed
+  // dist/vital.db before the next scan run appends new data to it.
+  try {
+    const dbUrl = `${trimmedBase}/vital.db`;
+    const dbResponse = await fetchWithTimeout(dbUrl, {
+      headers: { 'User-Agent': 'vital-core-history-fetch/1.0' }
+    });
+    if (dbResponse.ok) {
+      const dbBuffer = Buffer.from(await dbResponse.arrayBuffer());
+      await writeCachedBinaryFile(historyCacheDir, 'vital.db', dbBuffer);
+      console.log('✅ Restored historical vital.db from cache.');
+    }
+  } catch {
+    // vital.db is optional — do not fail the pipeline if it is unavailable.
+  }
 
   // Fetch per-target url-manifest.json for each target defined in the profile,
   // so UrlManifestStore.restoreCachedManifest() can seed dist/runs/{targetId}/
