@@ -20,6 +20,7 @@ export class LiveWorker {
       helpUrl: v.helpUrl,
       impactedCriteria: v.tags.filter(tag => tag.includes('wcag') || tag.includes('508')),
       wcagVersion: this.classifyWcagVersion(v.tags),
+      sourceEngine: 'axe' as const,
       instances: v.nodes.map(node => ({
         html: node.html,
         target: node.target as string[],

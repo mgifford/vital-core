@@ -1,7 +1,8 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import * as path from 'node:path';
-import { PageAlfaAudit } from '../../types/site-quality-spec';
+import { A11yViolation, PageAlfaAudit } from '../../types/site-quality-spec';
+import { LiveWorker } from './live-worker';
 
 type ExecRunner = (
   file: string,
@@ -104,6 +105,95 @@ export class AlfaWorker {
     }
 
     return JSON.parse(text.slice(start));
+  }
+
+  /**
+   * Converts an alfa audit's raw results into the normalized A11yViolation[] format.
+   * Violations are grouped by rule ID so each rule produces a single A11yViolation
+   * entry with one instance per failing element, matching the axe output shape.
+   */
+  public static toA11yViolations(alfaAudit: PageAlfaAudit): A11yViolation[] {
+    if (!alfaAudit || !alfaAudit.executed || !alfaAudit.rawResults) {
+      return [];
+    }
+
+    const outcomes = this.extractOutcomes(alfaAudit.rawResults);
+
+    // Group by rule ID — A11yViolation has one entry per rule with multiple instances.
+    const ruleMap = new Map<string, {
+      id: string;
+      severity: 'critical' | 'serious' | 'moderate' | 'minor';
+      description: string;
+      helpUrl: string;
+      impactedCriteria: string[];
+      wcagVersion: '2.0' | '2.1' | '2.2' | 'section508' | 'best-practice';
+      instances: Array<{ html: string; target: string[]; failureSummary: string }>;
+    }>();
+
+    for (const outcome of outcomes) {
+      const ruleId = String((outcome as Record<string, unknown>).rule || (outcome as Record<string, unknown>).id || '').trim();
+      if (!ruleId) continue;
+
+      const raw = outcome as Record<string, unknown>;
+      const wcagArr = Array.isArray(raw.wcag) ? (raw.wcag as unknown[]).map(String) : [];
+      const section508Arr = Array.isArray(raw.section508) ? (raw.section508 as unknown[]).map(String) : [];
+      const impactedCriteria = [...wcagArr, ...section508Arr];
+      const wcagVersion = LiveWorker.classifyWcagVersion(wcagArr);
+
+      const rawHelpUrl = typeof raw.helpUrl === 'string' ? raw.helpUrl.trim() : '';
+      let helpUrl: string;
+      try {
+        new URL(rawHelpUrl);
+        helpUrl = rawHelpUrl;
+      } catch {
+        helpUrl = `https://alfa.siteimprove.com/rules/${encodeURIComponent(ruleId)}`;
+      }
+
+      if (!ruleMap.has(ruleId)) {
+        ruleMap.set(ruleId, {
+          id: ruleId,
+          severity: this.normalizeAlfaSeverity(raw.severity),
+          description: String(raw.description || raw.message || raw.title || ruleId),
+          helpUrl,
+          impactedCriteria,
+          wcagVersion,
+          instances: []
+        });
+      }
+
+      const group = ruleMap.get(ruleId)!;
+      group.instances.push({
+        html: String(raw.html || ''),
+        target: Array.isArray(raw.target) ? (raw.target as unknown[]).map(String) : [],
+        failureSummary: String(raw.failureSummary || raw.message || '')
+      });
+    }
+
+    return Array.from(ruleMap.values()).map(group => ({
+      ...group,
+      sourceEngine: 'alfa' as const
+    }));
+  }
+
+  private static extractOutcomes(rawResults: unknown): unknown[] {
+    if (Array.isArray(rawResults)) {
+      return rawResults;
+    }
+
+    if (!rawResults || typeof rawResults !== 'object') {
+      return [];
+    }
+
+    const payload = rawResults as Record<string, unknown>;
+    if (Array.isArray(payload.outcomes)) return payload.outcomes;
+    if (Array.isArray(payload.results)) return payload.results;
+    return [];
+  }
+
+  private static normalizeAlfaSeverity(value: unknown): 'critical' | 'serious' | 'moderate' | 'minor' {
+    const s = String(value || '').toLowerCase();
+    if (s === 'critical' || s === 'serious' || s === 'moderate' || s === 'minor') return s;
+    return 'moderate';
   }
 
   private static estimateFindingsCount(rawResults: unknown): number | null {

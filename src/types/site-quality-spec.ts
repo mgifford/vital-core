@@ -4,13 +4,15 @@ export const IssueSeveritySchema = z.enum(['critical', 'serious', 'moderate', 'm
 
 // Structure aligned with ACCESSIBILITY.md bug reporting requirements
 export const A11yViolationSchema = z.object({
-  id: z.string(),                  // axe-core rule name (e.g., 'color-contrast')
+  id: z.string(),                  // axe-core rule name (e.g., 'color-contrast') or alfa rule ID (e.g., 'sia-r10')
   severity: IssueSeveritySchema,
   description: z.string(),
   helpUrl: z.string().url(),
   impactedCriteria: z.array(z.string()), // Section 508 / WCAG mapping (e.g., '508-302.1')
   /** Minimum WCAG version that introduced this criterion: '2.0', '2.1', '2.2', 'section508', or 'best-practice'. */
   wcagVersion: z.enum(['2.0', '2.1', '2.2', 'section508', 'best-practice']).optional(),
+  /** Which scan engine produced this violation: 'axe' (Deque axe-core) or 'alfa' (Siteimprove Alfa). */
+  sourceEngine: z.enum(['axe', 'alfa']).optional(),
   instances: z.array(z.object({
     html: z.string(),              // Failing element markup snippet
     target: z.array(z.string()),   // CSS Selector array

@@ -1199,8 +1199,9 @@ export class RunHistoryReporter {
   }
 
   /**
-   * Flat JSON array — one record per axe violation _instance_ (not per rule).
-   * Useful for filtering, pivoting, and feeding into other tools.
+   * Flat JSON array — one record per accessibility violation _instance_ (not per rule).
+   * Includes both axe and alfa violations. Useful for filtering, pivoting, and
+   * feeding into other tools.
    */
   public static buildViolationsFlatJson(
     allResults: TargetScanResult[],
@@ -1216,7 +1217,7 @@ export class RunHistoryReporter {
       domain: string;
       url: string;
       page_timestamp: string;
-      engine: 'axe';
+      engine: 'axe' | 'alfa';
       rule_id: string;
       severity: string;
       wcag_criteria: string;
@@ -1242,6 +1243,8 @@ export class RunHistoryReporter {
             .filter(c => c.startsWith('wcag'))
             .join(';');
 
+          const engine: 'axe' | 'alfa' = violation.sourceEngine === 'alfa' ? 'alfa' : 'axe';
+
           for (const instance of (Array.isArray(violation.instances) ? violation.instances : [])) {
             violations.push({
               run_id: runId,
@@ -1249,7 +1252,7 @@ export class RunHistoryReporter {
               domain,
               url: String(page.url || ''),
               page_timestamp: String(page.timestamp || ''),
-              engine: 'axe',
+              engine,
               rule_id: violation.id,
               severity: violation.severity,
               wcag_criteria: wcagCriteria,

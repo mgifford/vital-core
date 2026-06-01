@@ -171,6 +171,16 @@ describe('DashboardCompiler', () => {
     expect(domainOverviewHtml).toContain('Scan duration (latest run):</strong> 52m 14s');
     expect(js).toContain('durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : \'n/a\';');
     expect(domainA11yHtml).toContain('Accessibility Findings');
+    expect(domainA11yHtml).toContain('data-filter-sev="all"');
+    expect(domainA11yHtml).toContain('data-filter-tool="all"');
+    expect(domainA11yHtml).toContain('data-filter-tool="axe"');
+    expect(domainA11yHtml).toContain('data-filter-tool="alfa"');
+    expect(domainA11yHtml).toContain('data-filter-wcag="all"');
+    expect(domainA11yHtml).toContain('data-filter-wcag="2.0"');
+    expect(domainA11yHtml).toContain('data-filter-wcag="2.1"');
+    expect(domainA11yHtml).toContain('data-filter-wcag="2.2"');
+    expect(domainA11yHtml).toContain('data-filter-sev');
+    expect(domainA11yHtml).toContain('applyFilters');
     expect(failuresHtml).toContain('Failures, Timeouts, and Skipped Pages');
     expect(failuresHtml).toContain('Failed/WAF/Timeout');
     expect(failuresHtml).toContain('PDF/DOCX URLs Seen');
@@ -232,6 +242,84 @@ describe('DashboardCompiler', () => {
 
     const legendMatches = html.match(/Lighthouse thresholds used for color cues/g) || [];
     expect(legendMatches.length).toBe(2);
+  });
+
+  it('renders source engine badges and multi-filter bars on the accessibility page', () => {
+    const payload: TargetScanResult[] = [
+      {
+        targetId: 'engine-badge-test',
+        domain: 'https://engine-test.gov',
+        scanDurationMs: 1000,
+        pagesScanned: [
+          {
+            url: 'https://engine-test.gov/page',
+            timestamp: new Date().toISOString(),
+            status: 'COMPLETED',
+            errorMessage: null,
+            technologyStack: [],
+            liveAudits: {
+              lighthouse: null,
+              accessibilityViolations: [
+                {
+                  id: 'color-contrast',
+                  severity: 'serious',
+                  description: 'Elements must meet minimum color contrast ratio thresholds',
+                  helpUrl: 'https://dequeuniversity.com/rules/axe/4.6/color-contrast',
+                  impactedCriteria: ['wcag2aa', 'wcag21aa'],
+                  wcagVersion: '2.0',
+                  sourceEngine: 'axe',
+                  instances: [{ html: '<a href="#">link</a>', target: ['a'], failureSummary: 'Fix contrast' }]
+                },
+                {
+                  id: 'sia-r69',
+                  severity: 'serious',
+                  description: 'Element has sufficient color contrast',
+                  helpUrl: 'https://alfa.siteimprove.com/rules/sia-r69',
+                  impactedCriteria: ['wcag2aa'],
+                  wcagVersion: '2.0',
+                  sourceEngine: 'alfa',
+                  instances: [{ html: '<p>low contrast</p>', target: ['p'], failureSummary: 'Fix contrast' }]
+                },
+                {
+                  id: 'sia-r42',
+                  severity: 'critical',
+                  description: 'Image has name',
+                  helpUrl: 'https://alfa.siteimprove.com/rules/sia-r42',
+                  impactedCriteria: ['wcag2aa'],
+                  wcagVersion: '2.1',
+                  sourceEngine: 'alfa',
+                  instances: [{ html: '<img src="x.png">', target: ['img'], failureSummary: 'Add alt' }]
+                }
+              ]
+            },
+            offlineAudits: null
+          }
+        ]
+      }
+    ];
+
+    DashboardCompiler.compileStaticDashboard(payload);
+
+    const a11yPath = path.resolve(process.cwd(), 'dist/domains/engine-badge-test/accessibility.html');
+    const a11yHtml = fs.readFileSync(a11yPath, 'utf8');
+
+    // Filter bars for tool and WCAG version must be present
+    expect(a11yHtml).toContain('data-filter-tool="axe"');
+    expect(a11yHtml).toContain('data-filter-tool="alfa"');
+    expect(a11yHtml).toContain('data-filter-wcag="2.0"');
+    expect(a11yHtml).toContain('data-filter-wcag="2.1"');
+
+    // Rule cards must have data-sources and data-wcag attributes
+    expect(a11yHtml).toContain('data-sources="axe"');
+    expect(a11yHtml).toContain('data-sources="alfa"');
+
+    // Source engine badges must be present
+    expect(a11yHtml).toContain('source-axe');
+    expect(a11yHtml).toContain('source-alfa');
+
+    // Multi-filter JS must be present
+    expect(a11yHtml).toContain('applyFilters');
+    expect(a11yHtml).toContain('data-filter-sev');
   });
 
   it('back-fills lighthouse/content/third-party data from history for SKIPPED_UNCHANGED pages', () => {
