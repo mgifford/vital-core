@@ -285,7 +285,7 @@ jobs:
           name: scan-artifact-${{ matrix.target_id }}
           path: dist/scan-artifacts/
           retention-days: 1
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Upload HTML snapshots for ${{ matrix.target_id }} (Debugging/Audit)
         uses: actions/upload-artifact@v7
@@ -298,8 +298,9 @@ jobs:
   # ─── Job 3: merge all per-target artifacts, compile the dashboard, and deploy to Pages ───
   compile-and-deploy:
     needs: [setup, scan]
-    # Run even if some scan matrix jobs failed so partial results are still published.
-    if: ${{ !cancelled() && needs.setup.outputs.should_scan == 'true' && needs.scan.result != 'skipped' }}
+    # Run even if some (or all) scan matrix jobs failed or were cancelled so partial results are still published.
+    # Using always() ensures this job runs even when the workflow is manually cancelled mid-run.
+    if: ${{ always() && needs.setup.result == 'success' && needs.setup.outputs.should_scan == 'true' && (needs.scan.result == 'success' || needs.scan.result == 'failure' || needs.scan.result == 'cancelled') }}
     timeout-minutes: 20
     # Pages deployment requires this environment declaration.
     environment:
@@ -338,6 +339,7 @@ jobs:
           pattern: scan-artifact-*
           path: dist/scan-artifacts/
           merge-multiple: true
+        continue-on-error: true
 
       - name: Compile dashboard from collected scan artifacts
         env:
