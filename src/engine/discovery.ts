@@ -3,6 +3,7 @@ import picomatch from 'picomatch';
 import { TargetConfig } from '../types/profile';
 import { PrioritySeedStore } from './priority-seeds';
 import type { PageStateMap } from './reporters/page-state-cache';
+import { UrlManifest, UrlManifestStore } from './url-manifest';
 
 const NON_HTML_EXTENSION_PATTERN = /\.(?:png|jpe?g|gif|webp|svg|ico|pdf|doc|docx|xml|xlsx|xls|pptx?|zip|gz|mp4|mp3|woff2?|ttf|eot|json|csv)$/i;
 const RSS_FEED_PATTERN = /\/(feed|rss|atom)(?:\/|$|\?)/i;
@@ -31,8 +32,11 @@ export class TargetDiscoveryEngine {
       revalidateAfterDays?: number;
       updatedWithinDays?: number;
       updatedRecheckHours?: number;
+      urlManifest?: UrlManifest;
+      rescanWindowDays?: number;
+      includeQuarantined?: boolean;
     } = {}
-  ): Promise<string[]> {
+  ): Promise<{ urls: string[]; skippedRecentlyScanned: number; skippedQuarantined: number }> {
     let sitemapUrls: string[] = [];
     const includeSubdomains = target.settings?.include_subdomains ?? false;
     const canonicalBaseHost = this.canonicalizeHost(new URL(target.base_url).hostname);
@@ -42,6 +46,9 @@ export class TargetDiscoveryEngine {
     const revalidateAfterDays = options.revalidateAfterDays ?? 7;
     const updatedWithinDays = options.updatedWithinDays ?? 7;
     const updatedRecheckHours = options.updatedRecheckHours ?? 12;
+    const urlManifest = options.urlManifest ?? {};
+    const rescanWindowDays = options.rescanWindowDays ?? revalidateAfterDays;
+    const includeQuarantined = options.includeQuarantined ?? false;
     
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
@@ -160,13 +167,21 @@ export class TargetDiscoveryEngine {
         .forEach(url => uniqueUrlSet.add(url));
     }
     
-    // Force target specific high-priority nodes to the front of the line
+    // Force target specific high-priority nodes to the front of the line.
+    // Priority URLs bypass the page-state freshness check (their purpose is to always be
+    // included), but they still respect the quarantine cooldown from the URL manifest to
+    // avoid hammering repeatedly-failing URLs.
     if (target.priority_urls && target.priority_urls.length > 0) {
       target.priority_urls
         .map(url => this.normalizeUrl(url))
         .filter((url): url is string => Boolean(url))
         .filter(url => this.isLikelyHtmlUrl(url))
         .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
+        .filter(url => {
+          if (includeQuarantined) return true;
+          const entry = urlManifest[url];
+          return !entry || !UrlManifestStore.isQuarantined(entry);
+        })
         .forEach(url => uniqueUrlSet.add(url));
     }
 
@@ -176,7 +191,7 @@ export class TargetDiscoveryEngine {
     if (hasCeilingLimit && uniqueUrlSet.size >= ceilingLimit) {
       const priorityOnlyQueue = Array.from(uniqueUrlSet).slice(0, ceilingLimit);
       console.log(`✂️ Truncating active queue from ${uniqueUrlSet.size} to ${ceilingLimit} pages (per max_pages limit).`);
-      return priorityOnlyQueue;
+      return { urls: priorityOnlyQueue, skippedRecentlyScanned: 0, skippedQuarantined: 0 };
     }
 
     const remainingSlots = hasCeilingLimit
@@ -200,9 +215,46 @@ export class TargetDiscoveryEngine {
     );
     sampledSitemapUrls.forEach(url => uniqueUrlSet.add(url));
 
-    const finalMergedQueue = Array.from(uniqueUrlSet);
+    let finalQueue = Array.from(uniqueUrlSet);
 
-    return finalMergedQueue;
+    // 5. Manifest-based filtering: remove URLs that are quarantined or recently succeeded.
+    // This is a discovery-phase optimization — it eliminates even the lightweight probe
+    // HTTP request that would otherwise confirm them as unchanged.
+    let skippedRecentlyScanned = 0;
+    let skippedQuarantined = 0;
+
+    if (Object.keys(urlManifest).length > 0) {
+      if (!includeQuarantined) {
+        const { active, quarantined } = UrlManifestStore.partitionByQuarantine(urlManifest, finalQueue);
+        if (quarantined.length > 0) {
+          skippedQuarantined = quarantined.length;
+          console.log(
+            `🚫 Skipping ${quarantined.length} quarantined URL(s) for ${target.id} ` +
+              `(repeated failures; cooldown active). Use --include-quarantined to override.`
+          );
+        }
+        finalQueue = active;
+      }
+
+      if (skipPreviouslyScanned && rescanWindowDays > 0) {
+        const { needsScan, recentlySucceeded } = UrlManifestStore.partitionByRecency(
+          urlManifest,
+          finalQueue,
+          rescanWindowDays
+        );
+        if (recentlySucceeded.length > 0) {
+          skippedRecentlyScanned = recentlySucceeded.length;
+          console.log(
+            `⏭️ Skipping ${recentlySucceeded.length} URL(s) for ${target.id} ` +
+              `already succeeded within the last ${rescanWindowDays} day(s) ` +
+              `(set VITAL_RESCAN_WINDOW_DAYS=0 or FORCE_RESCAN=true to override).`
+          );
+        }
+        finalQueue = needsScan;
+      }
+    }
+
+    return { urls: finalQueue, skippedRecentlyScanned, skippedQuarantined };
   }
 
   public static consumeNonHtmlExclusions(): DiscoveryNonHtmlExclusion[] {

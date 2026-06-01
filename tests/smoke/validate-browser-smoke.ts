@@ -19,8 +19,8 @@ async function verifyBrowserSmoke() {
       'https://www.cms.gov/medicare/physician-fee-schedule/search'
     ];
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(cmsTarget);
-    const runReports = await ResilientBrowserEngine.executeSnapshotSession(cmsTarget, queue);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(cmsTarget);
+    const { reports: runReports } = await ResilientBrowserEngine.executeSnapshotSession(cmsTarget, queue);
 
     console.log('\n==============================================');
     console.log('📊 RUN ASSESSMENT LIFECYCLE RESULTS');

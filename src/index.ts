@@ -8,9 +8,11 @@ import { BugExporter } from './engine/reporters/bug-exporter';
 import { DashboardCompiler } from './engine/reporters/dashboard-compiler';
 import { PageStateCache, PageStateMap } from './engine/reporters/page-state-cache';
 import { RunHistoryReporter } from './engine/reporters/run-history';
+import { ScanStatusReporter } from './engine/reporters/scan-status-reporter';
 import { PrioritySeedStore } from './engine/priority-seeds';
 import { TargetScanResult, PageScanReport } from './types/site-quality-spec';
 import { DiscoveryNonHtmlExclusion } from './engine/discovery';
+import { UrlManifestStore, UrlManifest } from './engine/url-manifest';
 
 interface TargetScanPlan {
   target: TargetConfig;
@@ -18,6 +20,12 @@ interface TargetScanPlan {
   nextOffset: number;
   startedAtMs: number;
   completedPages: PageScanReport[];
+  skippedRecentlyScanned: number;
+  skippedQuarantined: number;
+  urlManifest: UrlManifest;
+  cdnProvider: string | null;
+  dailyPageBudget: number | null;
+  dailyPagesConsumed: number;
 }
 
 /**
@@ -60,8 +68,10 @@ async function main() {
   const profilePath = process.argv[2] || 'profiles/us-health.yml';
   const targetIdFilter = process.env.VITAL_TARGET_ID || '';
   const forceRescan = /^(1|true|yes)$/i.test(process.env.FORCE_RESCAN || '');
+  const includeQuarantined = /^(1|true|yes)$/i.test(process.env.VITAL_INCLUDE_QUARANTINED || '');
   const forcePrioritySeedRefresh = /^(1|true|yes)$/i.test(process.env.FORCE_PRIORITY_SEED_REFRESH || '');
   const revalidateAfterDays = Number.parseInt(process.env.VITAL_REVALIDATE_AFTER_DAYS || '7', 10);
+  const rescanWindowDays = Number.parseInt(process.env.VITAL_RESCAN_WINDOW_DAYS || String(revalidateAfterDays), 10);
   const updatedWithinDays = Number.parseInt(process.env.VITAL_UPDATED_WITHIN_DAYS || '7', 10);
   const updatedRecheckHours = Number.parseInt(process.env.VITAL_UPDATED_RECHECK_HOURS || '12', 10);
   const maxRunMinutes = Number.parseInt(process.env.VITAL_MAX_RUN_MINUTES || '0', 10);
@@ -71,6 +81,23 @@ async function main() {
   const maxBatchSize = Math.max(baseBatchSize, Number.parseInt(process.env.VITAL_BATCH_SIZE_MAX || '6', 10));
   const escalationSeconds = Math.max(10, Number.parseInt(process.env.VITAL_BATCH_ESCALATION_SECONDS || '45', 10));
   const dynamicBatchEnabled = !/^(0|false|no)$/i.test(process.env.VITAL_DYNAMIC_BATCH_ENABLE || 'true');
+
+  // Scan window: only start new batches within the configured UTC hour window.
+  // VITAL_SCAN_WINDOW_START_HOUR and VITAL_SCAN_WINDOW_END_HOUR are UTC hours (0–23).
+  const scanWindowStartHour = Number.parseInt(process.env.VITAL_SCAN_WINDOW_START_HOUR || '-1', 10);
+  const scanWindowEndHour = Number.parseInt(process.env.VITAL_SCAN_WINDOW_END_HOUR || '-1', 10);
+  const hasScanWindow = Number.isFinite(scanWindowStartHour) && scanWindowStartHour >= 0 &&
+                        Number.isFinite(scanWindowEndHour) && scanWindowEndHour >= 0;
+
+  const isWithinScanWindow = (): boolean => {
+    if (!hasScanWindow) return true;
+    const nowHour = new Date().getUTCHours();
+    // Window may wrap midnight (e.g. 22–06)
+    if (scanWindowStartHour <= scanWindowEndHour) {
+      return nowHour >= scanWindowStartHour && nowHour < scanWindowEndHour;
+    }
+    return nowHour >= scanWindowStartHour || nowHour < scanWindowEndHour;
+  };
 
   const shouldStopForRuntimeBudget = () => {
     if (!runtimeDeadlineMs) {
@@ -114,6 +141,14 @@ async function main() {
   };
   
   console.log(`🚀 Initalizing VITAL-Core Run Engine using profile: ${profilePath}`);
+
+  if (hasScanWindow && !isWithinScanWindow()) {
+    console.warn(
+      `⏰ Current UTC hour (${new Date().getUTCHours()}) is outside the configured scan window ` +
+        `(${scanWindowStartHour}:00–${scanWindowEndHour}:00 UTC). Exiting without scanning.`
+    );
+    process.exit(0);
+  }
   
   try {
     // 1. Ingest Configuration Profile
@@ -150,30 +185,69 @@ async function main() {
     if (forceRescan) {
       console.log('🔁 FORCE_RESCAN enabled. All pages will be scanned regardless of change state.');
     }
+    if (includeQuarantined) {
+      console.log('⚠️ VITAL_INCLUDE_QUARANTINED enabled. Quarantined URLs will be included in the scan queue.');
+    }
 
     // 2. Discover URLs across all targets first so scan execution can be interleaved.
     const scanPlans: TargetScanPlan[] = [];
     for (const target of activeTargets) {
       console.log(`\n===== Planning Target: ${target.name} (${target.id}) =====`);
-      const urlQueue = await TargetDiscoveryEngine.discoverUrls(target, {
-          pageState,
+
+      // Load per-target URL manifest for discovery-phase filtering and quarantine tracking.
+      const urlManifest = UrlManifestStore.load(target.id);
+
+      const discoveryResult = await TargetDiscoveryEngine.discoverUrls(target, {
+        pageState,
         previouslyScannedUrls,
-          skipPreviouslyScanned: !forceRescan,
-          revalidateAfterDays: Number.isFinite(revalidateAfterDays) ? revalidateAfterDays : 7,
-            updatedWithinDays: Number.isFinite(updatedWithinDays) ? updatedWithinDays : 7,
-            updatedRecheckHours: Number.isFinite(updatedRecheckHours) ? updatedRecheckHours : 12
+        skipPreviouslyScanned: !forceRescan,
+        revalidateAfterDays: Number.isFinite(revalidateAfterDays) ? revalidateAfterDays : 7,
+        updatedWithinDays: Number.isFinite(updatedWithinDays) ? updatedWithinDays : 7,
+        updatedRecheckHours: Number.isFinite(updatedRecheckHours) ? updatedRecheckHours : 12,
+        urlManifest,
+        rescanWindowDays: Number.isFinite(rescanWindowDays) ? rescanWindowDays : 7,
+        includeQuarantined: forceRescan || includeQuarantined
       });
+
+      const urlQueue = discoveryResult.urls;
+
+      // Register all discovered URLs in the manifest so their lifecycle is tracked.
+      UrlManifestStore.ensureEntries(urlManifest, urlQueue, new Date().toISOString());
+
+      if (discoveryResult.skippedRecentlyScanned > 0 || discoveryResult.skippedQuarantined > 0) {
+        console.log(
+          `📊 Discovery stats for ${target.id}: ${urlQueue.length} queued, ` +
+            `${discoveryResult.skippedRecentlyScanned} skipped (recently scanned), ` +
+            `${discoveryResult.skippedQuarantined} skipped (quarantined).`
+        );
+      }
+
       if (urlQueue.length === 0) {
         console.warn(`⚠️ No URLs discovered for target ${target.id}. Skipping...`);
+        // Still save the manifest so quarantine state is preserved even for skipped targets.
+        UrlManifestStore.save(target.id, urlManifest);
         continue;
       }
+
+      // Compute effective daily page budget.
+      const configuredBudget = target.settings?.daily_page_budget ?? null;
+      const heuristicBudget = (target.settings?.max_pages ?? null) !== null
+        ? Math.ceil((target.settings.max_pages as number) / 7)
+        : null;
+      const dailyPageBudget = configuredBudget ?? heuristicBudget;
 
       scanPlans.push({
         target,
         discoveredUrls: urlQueue,
         nextOffset: 0,
         startedAtMs: Date.now(),
-        completedPages: []
+        completedPages: [],
+        skippedRecentlyScanned: discoveryResult.skippedRecentlyScanned,
+        skippedQuarantined: discoveryResult.skippedQuarantined,
+        urlManifest,
+        cdnProvider: null,
+        dailyPageBudget,
+        dailyPagesConsumed: 0
       });
     }
 
@@ -208,6 +282,16 @@ async function main() {
           continue;
         }
 
+        // Daily budget check: skip remaining pages for this target if budget exhausted.
+        if (plan.dailyPageBudget !== null && plan.dailyPagesConsumed >= plan.dailyPageBudget) {
+          console.warn(
+            `💰 Daily page budget (${plan.dailyPageBudget}) exhausted for ${plan.target.id}. ` +
+              `Skipping remaining ${plan.discoveredUrls.length - plan.nextOffset} URL(s).`
+          );
+          plan.nextOffset = plan.discoveredUrls.length;
+          continue;
+        }
+
         const targetTimeoutStreak = targetTimeoutStreaks.get(plan.target.id) || 0;
         const roundRobinBatchSize = getAdaptiveBatchSize(timeoutCount, completedCount, targetTimeoutStreak);
         const batch = plan.discoveredUrls.slice(plan.nextOffset, plan.nextOffset + roundRobinBatchSize);
@@ -217,10 +301,17 @@ async function main() {
           `🌐 Round ${round}: ${plan.target.id} scanning URLs ${batchStart}-${batchEnd} of ${plan.discoveredUrls.length} (batch size ${batch.length})`
         );
 
-        const rawPageReports = await ResilientBrowserEngine.executeSnapshotSession(plan.target, batch, {
+        const sessionResult = await ResilientBrowserEngine.executeSnapshotSession(plan.target, batch, {
           forceRescan,
-          pageState
+          pageState,
+          urlManifest: plan.urlManifest
         });
+        const rawPageReports = sessionResult.reports;
+
+        // Capture CDN provider from the first session that detects one.
+        if (plan.cdnProvider === null && sessionResult.cdnProvider !== null) {
+          plan.cdnProvider = sessionResult.cdnProvider;
+        }
       
         const completedPageScans: PageScanReport[] = rawPageReports as PageScanReport[];
         const batchTimeouts = completedPageScans.filter(report => report && report.status === 'TIMEOUT').length;
@@ -234,6 +325,10 @@ async function main() {
           completedCount += 1;
           if (report && report.status === 'TIMEOUT') {
             timeoutCount += 1;
+          }
+          // Count COMPLETED and SKIPPED_UNCHANGED toward the daily budget.
+          if (report && (report.status === 'COMPLETED' || report.status === 'SKIPPED_UNCHANGED')) {
+            plan.dailyPagesConsumed += 1;
           }
         });
         plan.completedPages.push(...completedPageScans);
@@ -261,6 +356,9 @@ async function main() {
       };
 
       globalAccumulatedResults.push(targetResult);
+
+      // Persist the updated URL manifest for this target.
+      UrlManifestStore.save(plan.target.id, plan.urlManifest);
     }
 
     if (targetIdFilter) {
@@ -298,6 +396,43 @@ async function main() {
       prioritySeedSnapshot: PrioritySeedStore.getActiveSnapshot()
     });
     PageStateCache.save(pageState);
+
+    // 7. Generate per-domain scan status report.
+    console.log(`\n📋 Generating scan status report...`);
+    const manifestsMap = new Map<string, UrlManifest>();
+    const cdnProvidersMap = new Map<string, string | null>();
+    const throttleProfilesMap = new Map<string, string>();
+    const dailyBudgetsMap = new Map<string, number | null>();
+    const skippedByRecencyMap = new Map<string, number>();
+    const queueSizesMap = new Map<string, number>();
+
+    for (const plan of scanPlans) {
+      manifestsMap.set(plan.target.id, plan.urlManifest);
+      cdnProvidersMap.set(plan.target.id, plan.cdnProvider);
+      dailyBudgetsMap.set(plan.target.id, plan.dailyPageBudget);
+      skippedByRecencyMap.set(plan.target.id, plan.skippedRecentlyScanned);
+      queueSizesMap.set(plan.target.id, plan.discoveredUrls.length);
+
+      // Resolve throttle profile label for reporting.
+      const explicitProfile = plan.target.settings?.throttle_profile ?? null;
+      if (explicitProfile) {
+        throttleProfilesMap.set(plan.target.id, explicitProfile);
+      } else if (plan.cdnProvider === 'akamai' || plan.cdnProvider === 'cloudflare' || plan.cdnProvider === 'imperva') {
+        throttleProfilesMap.set(plan.target.id, 'conservative');
+      } else {
+        throttleProfilesMap.set(plan.target.id, 'moderate');
+      }
+    }
+
+    const scanStatuses = ScanStatusReporter.buildScanStatus(globalAccumulatedResults, manifestsMap, {
+      cdnProviders: cdnProvidersMap,
+      throttleProfiles: throttleProfilesMap,
+      dailyBudgets: dailyBudgetsMap,
+      skippedByRecency: skippedByRecencyMap,
+      queueSizes: queueSizesMap
+    });
+    ScanStatusReporter.save(scanStatuses);
+    console.log(`📊 Scan status report written to dist/runs/scan-status.json and dist/runs/scan-status.md`);
 
     const totalDurationMs = Date.now() - startTime;
     const runEntry = RunHistoryReporter.persistRunHistory(globalAccumulatedResults, profilePath, totalDurationMs);
