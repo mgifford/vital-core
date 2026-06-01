@@ -28,7 +28,7 @@ export const PageAlfaAuditSchema = z.object({
 export const PageScanReportSchema = z.object({
   url: z.string().url(),
   timestamp: z.string().datetime(),
-  status: z.enum(['COMPLETED', 'TIMEOUT', 'WAF_BLOCKED', 'FAILED', 'SKIPPED_UNCHANGED']),
+  status: z.enum(['COMPLETED', 'TIMEOUT', 'WAF_BLOCKED', 'FAILED', 'SKIPPED_UNCHANGED', 'SKIPPED_NON_HTML', 'NOT_FOUND']),
   errorMessage: z.string().nullable(),
 
   // 0. Raw Alfa scan capture for future normalized consensus mapping

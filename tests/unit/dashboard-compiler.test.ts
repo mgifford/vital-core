@@ -76,7 +76,7 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('href="#detected-software-latest-run"');
     expect(html).toContain('id="pages-scanned-latest-run"');
     expect(html).toContain('id="run-history-heading"');
-    expect(html).toContain('id="blocked-system-issues"');
+    expect(html).toContain('id="blocked_system_issues"');
     expect(html).toContain('Jump to domain page');
     expect(html).toContain('id="domain-page-select"');
     expect(html).toContain('api/index.json');
@@ -116,7 +116,7 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('id="pages-table"');
     expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');
     expect(html).toContain('Blocked System Issues (Latest Run)');
-    expect(html).toContain('id="blocked-issues-table"');
+    expect(html).toContain('id="blocked_issues_table"');
     expect(html).toContain('Open failures and skips view');
     expect(js).toContain('function renderBlockedIssues()');
     expect(js).toContain('function renderPagesStatusSummary(latestPages)');

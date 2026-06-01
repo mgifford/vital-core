@@ -33,6 +33,16 @@ interface PageProbeResult {
    * directly and avoid an extra `activePage.content()` round-trip.
    */
   fetchedHtml: string | null;
+  /**
+   * HTTP status code when the server returned a non-ok response (e.g. 404, 410).
+   * Null for successful responses.
+   */
+  httpErrorStatus: number | null;
+  /**
+   * Base MIME type when the resource is not an HTML document (e.g. 'application/pdf').
+   * Null for HTML resources or when the content type is absent.
+   */
+  nonHtmlContentType: string | null;
 }
 
 type EngineType = 'chromium' | 'firefox' | 'webkit';
@@ -156,6 +166,34 @@ export class ResilientBrowserEngine {
         baseReport.status = 'SKIPPED_UNCHANGED';
         baseReport.errorMessage = probe.reason;
         console.log(`⏭️ Skipping unchanged page: ${url}`);
+
+        if (pageState) {
+          this.writePageState(pageState, url, probe, false, pageState[url]?.lastScannedAt || '');
+        }
+
+        reports.push(baseReport);
+        continue;
+      }
+
+      // Non-HTML resources (PDFs, ZIPs, binaries) cannot be accessibility-scanned.
+      if (probe.nonHtmlContentType) {
+        baseReport.status = 'SKIPPED_NON_HTML';
+        baseReport.errorMessage = `Non-HTML content (${probe.nonHtmlContentType}) is not scannable for accessibility.`;
+        console.log(`⏭️ Skipping non-HTML resource (${probe.nonHtmlContentType}): ${url}`);
+
+        if (pageState) {
+          this.writePageState(pageState, url, probe, false, pageState[url]?.lastScannedAt || '');
+        }
+
+        reports.push(baseReport);
+        continue;
+      }
+
+      // HTTP error pages (4xx/5xx) — record without launching the browser.
+      if (probe.httpErrorStatus) {
+        baseReport.status = 'NOT_FOUND';
+        baseReport.errorMessage = `HTTP ${probe.httpErrorStatus} — the page is not accessible.`;
+        console.log(`⚠️ Skipping HTTP ${probe.httpErrorStatus} page: ${url}`);
 
         if (pageState) {
           this.writePageState(pageState, url, probe, false, pageState[url]?.lastScannedAt || '');
@@ -417,6 +455,41 @@ export class ResilientBrowserEngine {
 
     try {
       const headResponse = await this.fetchWithTimeout(url, { method: 'HEAD' }, timeoutMs, userAgent);
+
+      // Detect non-ok HTTP status (e.g. 404, 410, 503) and surface it so the
+      // scan loop can skip browser navigation for unreachable pages.
+      if (!headResponse.ok) {
+        return {
+          unchanged: false,
+          reason: `HTTP ${headResponse.status} response from server.`,
+          httpErrorStatus: headResponse.status,
+          nonHtmlContentType: null,
+          etag: null,
+          lastModified: null,
+          contentHash: previousState?.contentHash ?? null,
+          assetFingerprintHash: previousState?.assetFingerprintHash ?? null,
+          fetchedHtml: null
+        };
+      }
+
+      // Detect non-HTML content (PDFs, ZIPs, binaries, etc.) so the scan loop
+      // can skip accessibility scanning, which is only meaningful for HTML pages.
+      const rawContentType = headResponse.headers.get('content-type') ?? '';
+      const baseContentType = rawContentType.split(';')[0].trim().toLowerCase();
+      if (baseContentType && !baseContentType.includes('html')) {
+        return {
+          unchanged: false,
+          reason: `Non-HTML content type detected: ${baseContentType}`,
+          httpErrorStatus: null,
+          nonHtmlContentType: baseContentType,
+          etag: null,
+          lastModified: null,
+          contentHash: null,
+          assetFingerprintHash: null,
+          fetchedHtml: null
+        };
+      }
+
       const etag = headResponse.headers.get('etag');
       const lastModified = headResponse.headers.get('last-modified');
 
@@ -425,6 +498,8 @@ export class ResilientBrowserEngine {
           return {
             unchanged: true,
             reason: 'Skipped unchanged page based on matching ETag.',
+            httpErrorStatus: null,
+            nonHtmlContentType: null,
             etag,
             lastModified,
             contentHash: previousState.contentHash,
@@ -437,6 +512,8 @@ export class ResilientBrowserEngine {
           return {
             unchanged: true,
             reason: 'Skipped unchanged page based on matching Last-Modified header.',
+            httpErrorStatus: null,
+            nonHtmlContentType: null,
             etag,
             lastModified,
             contentHash: previousState.contentHash,
@@ -449,6 +526,9 @@ export class ResilientBrowserEngine {
       if (!etag && !lastModified && previousState?.contentHash) {
         try {
           const getResponse = await this.fetchWithTimeout(url, { method: 'GET' }, timeoutMs, userAgent);
+          if (!getResponse.ok) {
+            throw new Error(`GET probe returned ${getResponse.status}`);
+          }
           const html = await getResponse.text();
           const contentHash = this.hashContent(html);
           const assetFingerprintHash = this.computeAssetFingerprint(html, url);
@@ -460,6 +540,8 @@ export class ResilientBrowserEngine {
             return {
               unchanged: true,
               reason: 'Skipped unchanged page based on matching HTML + asset fingerprint hash.',
+              httpErrorStatus: null,
+              nonHtmlContentType: null,
               etag,
               lastModified,
               contentHash,
@@ -473,6 +555,8 @@ export class ResilientBrowserEngine {
           return {
             unchanged: false,
             reason: 'Page changed based on HTML + asset fingerprint hash comparison.',
+            httpErrorStatus: null,
+            nonHtmlContentType: null,
             etag,
             lastModified,
             contentHash,
@@ -487,6 +571,8 @@ export class ResilientBrowserEngine {
       return {
         unchanged: false,
         reason: 'Page appears changed or no prior state available.',
+        httpErrorStatus: null,
+        nonHtmlContentType: null,
         etag,
         lastModified,
         contentHash: previousState?.contentHash ?? null,
@@ -497,6 +583,8 @@ export class ResilientBrowserEngine {
       return {
         unchanged: false,
         reason: 'Change probe failed; scanning page to avoid missing updates.',
+        httpErrorStatus: null,
+        nonHtmlContentType: null,
         etag: previousState?.etag ?? null,
         lastModified: previousState?.lastModified ?? null,
         contentHash: previousState?.contentHash ?? null,
@@ -519,10 +607,6 @@ export class ResilientBrowserEngine {
           'User-Agent': userAgent ?? 'VitalCore/1.0 (+https://github.com/mgifford/vital-core)'
         }
       });
-
-      if (!response.ok) {
-        throw new Error(`Probe failed with status ${response.status}`);
-      }
 
       return response;
     } finally {
