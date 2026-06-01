@@ -596,16 +596,28 @@ export class ResilientBrowserEngine {
   private static async runWithTimeout<T>(operation: () => Promise<T>, timeoutMs: number): Promise<T> {
     let timeoutHandle: NodeJS.Timeout | null = null;
 
+    // Hold a reference to the operation promise so we can attach a no-op
+    // rejection handler when the timeout fires first.  Without this, any late
+    // error emitted by the abandoned promise (e.g. Lighthouse's checkForQuiet
+    // rejecting after Chrome is killed) would become an unhandled rejection and
+    // crash the Node.js process.
+    const operationPromise = operation();
+
     const timeoutPromise = new Promise<never>((_, reject) => {
       timeoutHandle = setTimeout(() => reject(new Error(`timeout after ${timeoutMs}ms`)), timeoutMs);
     });
 
     try {
-      return await Promise.race([operation(), timeoutPromise]);
+      return await Promise.race([operationPromise, timeoutPromise]);
     } finally {
       if (timeoutHandle) {
         clearTimeout(timeoutHandle);
       }
+      // Suppress any rejection that arrives after the timeout already fired.
+      // This is safe: if operationPromise won the race we already returned its
+      // value (or re-threw its error) above, so attaching an extra handler here
+      // is a no-op from the caller's perspective.
+      operationPromise.catch(() => {});
     }
   }
 

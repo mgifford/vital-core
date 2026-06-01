@@ -48,10 +48,15 @@ describe('LighthouseWorker – persistent Chrome lifecycle', () => {
     const chromeLauncherModule = await import('chrome-launcher');
     const launchSpy = vi.spyOn(chromeLauncherModule, 'launch').mockResolvedValue(fakeChrome as any);
 
+    // Stub fetch so the liveness check reports Chrome as alive on the second call.
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true } as Response);
+
     await LighthouseWorker.launchChrome();
     await LighthouseWorker.launchChrome();
 
     expect(launchSpy).toHaveBeenCalledTimes(1);
+
+    fetchSpy.mockRestore();
   });
 
   it('killChrome kills the cached instance and resets state', async () => {
@@ -123,5 +128,44 @@ describe('LighthouseWorker – persistent Chrome lifecycle', () => {
     expect(result.performanceScore).toBeNull();
     expect(result.accessibilityScore).toBeNull();
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Lighthouse audit failed'));
+  });
+
+  it('launchChrome relaunches when the cached Chrome is unresponsive', async () => {
+    const chromeLauncherModule = await import('chrome-launcher');
+    const launchSpy = vi.spyOn(chromeLauncherModule, 'launch').mockResolvedValue(fakeChrome as any);
+
+    // Stub fetch so the liveness check reports the first Chrome as dead
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('ECONNREFUSED'));
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    // Manually seed a stale handle so persistentChrome is non-null
+    await LighthouseWorker.launchChrome();
+    const firstLaunchCount = launchSpy.mock.calls.length;
+
+    // Second call: liveness check fails → should discard the old handle and relaunch
+    await LighthouseWorker.launchChrome();
+
+    expect(launchSpy.mock.calls.length).toBeGreaterThan(firstLaunchCount);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('unresponsive'));
+
+    fetchSpy.mockRestore();
+  });
+
+  it('launchChrome does not relaunch when the cached Chrome is responsive', async () => {
+    const chromeLauncherModule = await import('chrome-launcher');
+    const launchSpy = vi.spyOn(chromeLauncherModule, 'launch').mockResolvedValue(fakeChrome as any);
+
+    // Stub fetch so the liveness check reports Chrome as alive
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true } as Response);
+
+    await LighthouseWorker.launchChrome();
+    const countAfterFirst = launchSpy.mock.calls.length;
+
+    // Second call: liveness check succeeds → should be a no-op
+    await LighthouseWorker.launchChrome();
+
+    expect(launchSpy.mock.calls.length).toBe(countAfterFirst);
+
+    fetchSpy.mockRestore();
   });
 });

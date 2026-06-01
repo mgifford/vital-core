@@ -20,10 +20,20 @@ export class LighthouseWorker {
    * Launches a single shared Chrome instance to be reused across multiple
    * Lighthouse audits. Call once before auditing a batch of pages and pair
    * with {@link killChrome} when the batch is complete.
+   *
+   * If a previously-launched instance is cached but no longer responsive
+   * (e.g. it crashed between scan cycles), the stale handle is discarded and
+   * a fresh Chrome process is started.
    */
   public static async launchChrome(): Promise<void> {
     if (this.persistentChrome) {
-      return;
+      if (await this.isChromeAlive(this.persistentChrome.port)) {
+        return;
+      }
+      console.warn(
+        `⚠️ Persistent Chrome on port ${this.persistentChrome.port} is unresponsive. Discarding stale handle and relaunching...`
+      );
+      this.persistentChrome = null;
     }
 
     try {
@@ -35,6 +45,21 @@ export class LighthouseWorker {
     } catch (error: any) {
       const message = error?.message ? String(error.message) : 'Unknown error';
       console.warn(`⚠️ Failed to launch persistent Lighthouse Chrome: ${message}`);
+    }
+  }
+
+  /**
+   * Probes whether the Chrome DevTools endpoint on the given port is still
+   * accepting connections.  Returns true when Chrome responds within 2 s.
+   */
+  private static async isChromeAlive(port: number): Promise<boolean> {
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/json/version`, {
+        signal: AbortSignal.timeout(2000)
+      });
+      return response.ok;
+    } catch {
+      return false;
     }
   }
 
