@@ -392,4 +392,27 @@ describe('RunHistoryReporter', () => {
     expect(apiTargets.targets[0].skippedUnchangedPages).toBe(1);
     expect(apiTargets.targets[0].totalViolations).toBe(1);
   });
+
+  it('strips heavy alfa raw results from persisted run payloads', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-history-strip-raw-'));
+    process.chdir(tmpDir);
+
+    const result = makeResult('alpha', 1);
+    result.pagesScanned[0].alfaAudits = {
+      executed: true,
+      findingsCount: 1,
+      errorMessage: null,
+      rawResults: { outcomes: Array.from({ length: 1000 }).map((_, i) => ({ id: `finding-${i}`, message: 'x'.repeat(200) })) }
+    };
+
+    RunHistoryReporter.persistRunHistory([result], 'profiles/us-health.yml', 1000);
+
+    const latestPath = path.resolve(tmpDir, 'dist/runs/latest.json');
+    const latest = JSON.parse(fs.readFileSync(latestPath, 'utf8')) as {
+      results: Array<{ pagesScanned: Array<{ alfaAudits?: { rawResults: unknown } | null }> }>;
+    };
+
+    expect(latest.results[0].pagesScanned[0].alfaAudits?.rawResults).toBeNull();
+    expect(result.pagesScanned[0].alfaAudits?.rawResults).not.toBeNull();
+  });
 });

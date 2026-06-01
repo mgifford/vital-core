@@ -200,7 +200,7 @@ export class RunHistoryReporter {
       targetQuality,
       providerAttributionTop,
       consensusSummary,
-      results: allResults
+      results: this.stripHeavyAuditPayloads(allResults)
     };
 
     const runEntry: RunEntry = {
@@ -251,6 +251,21 @@ export class RunHistoryReporter {
     );
 
     return runEntry;
+  }
+
+  private static stripHeavyAuditPayloads(results: TargetScanResult[]): TargetScanResult[] {
+    return results.map(result => ({
+      ...result,
+      pagesScanned: result.pagesScanned.map(page => ({
+        ...page,
+        alfaAudits: page.alfaAudits
+          ? {
+              ...page.alfaAudits,
+              rawResults: null
+            }
+          : page.alfaAudits
+      }))
+    }));
   }
 
   private static writeApiInterface(
