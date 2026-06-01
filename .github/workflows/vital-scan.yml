@@ -65,15 +65,36 @@ jobs:
           VITAL_HISTORY_CACHE_DIR: .history-cache
         run: npm run history:fetch
 
-      - name: Install Playwright Chromium
+      - name: Cache Playwright browser binaries
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-
+
+      - name: Install Playwright Chromium with system dependencies
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium --with-deps
 
+      - name: Install Playwright Chromium system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Cache Wappalyzer venv
+        uses: actions/cache@v4
+        id: wappalyzer-cache
+        with:
+          path: .tools/wappalyzer-next
+          key: wappalyzer-${{ runner.os }}-${{ hashFiles('.github/wappalyzer-requirements.txt') }}
+
       - name: Install Wappalyzer Next CLI (isolated venv)
+        if: steps.wappalyzer-cache.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
           python3 -m venv .tools/wappalyzer-next
           .tools/wappalyzer-next/bin/python -m pip install --upgrade pip
-          .tools/wappalyzer-next/bin/pip install 'git+https://github.com/s0md3v/wappalyzer-next.git'
+          .tools/wappalyzer-next/bin/pip install -r .github/wappalyzer-requirements.txt
 
       - name: Determine scan mode for current time window
         id: offhours
@@ -158,9 +179,13 @@ jobs:
             echo "Engine mode: chromium-only (business-hours window)."
           fi
 
-      - name: Install Playwright Firefox and WebKit (off-hours/deep)
-        if: steps.engine_mode.outputs.enable_multi_engine == 'true'
+      - name: Install Playwright Firefox and WebKit with system dependencies (off-hours/deep, cache miss)
+        if: steps.engine_mode.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install firefox webkit --with-deps
+
+      - name: Install Playwright Firefox/WebKit system dependencies (off-hours/deep, cache hit)
+        if: steps.engine_mode.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps firefox webkit
 
       - name: Run VITAL-Core Core Orchestrator Pipeline
         if: steps.offhours.outputs.should_scan == 'true'
