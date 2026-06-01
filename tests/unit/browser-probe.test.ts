@@ -304,4 +304,36 @@ describe('ResilientBrowserEngine.probePageChange — fetchedHtml field', () => {
     expect(sentHeaders['User-Agent']).toContain('VitalCore/1.0');
     expect(sentHeaders['User-Agent']).not.toContain('Chrome');
   });
+
+  it('sends Accept and Accept-Language headers in every probe request', async () => {
+    const capturedRequests: Array<{ url: string; init: RequestInit }> = [];
+    global.fetch = vi.fn().mockImplementation(async (url: string, init: RequestInit) => {
+      capturedRequests.push({ url, init });
+      return { ok: true, status: 200, headers: new Headers() };
+    });
+
+    await engine.probePageChange('https://example.gov/', undefined, 15000);
+
+    expect(capturedRequests).toHaveLength(1);
+    const sentHeaders = capturedRequests[0]!.init.headers as Record<string, string>;
+    expect(sentHeaders['Accept']).toContain('text/html');
+    expect(sentHeaders['Accept-Language']).toContain('en');
+  });
+
+  it('returns httpErrorStatus null for 403 so the browser can attempt navigation', async () => {
+    global.fetch = makeFetchMock({ headStatus: 403 });
+
+    const result = await engine.probePageChange(
+      'https://example.gov/cdnblocked',
+      undefined,
+      15000
+    );
+
+    // 403 from a CDN probe should NOT be treated as a hard error —
+    // the scan loop will proceed with full browser navigation instead.
+    expect(result.unchanged).toBe(false);
+    expect(result.httpErrorStatus).toBeNull();
+    expect(result.nonHtmlContentType).toBeNull();
+    expect(result.fetchedHtml).toBeNull();
+  });
 });
