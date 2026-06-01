@@ -12,7 +12,7 @@ async function runVerification() {
       throw new Error("Could not locate 'cms-gov' target within profile.");
     }
 
-    const executionQueue = await TargetDiscoveryEngine.discoverUrls(cmsTarget);
+    const { urls: executionQueue } = await TargetDiscoveryEngine.discoverUrls(cmsTarget);
 
     console.log('\n==============================================');
     console.log(`🚀 RESOLVED SCAN TARGETS FOR: ${cmsTarget.name}`);

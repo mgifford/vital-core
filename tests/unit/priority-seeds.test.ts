@@ -23,7 +23,9 @@ describe('PrioritySeedStore', () => {
       include_subdomains: false,
       sitemap_template_sample_cap: 5,
       sitemap_sample_stochastic: true,
-      unique_page_focus: false
+      unique_page_focus: false,
+      throttle_profile: null,
+      daily_page_budget: null
     }
   };
 

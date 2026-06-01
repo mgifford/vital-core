@@ -52,11 +52,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
         sitemap_sample_stochastic: true,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
 
     expect(queue).toEqual([
       'https://www.cms.gov/about-cms',
@@ -81,11 +83,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
         sitemap_sample_stochastic: true,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
 
     expect(queue).toEqual(['https://www.cms.gov/about-cms']);
   });
@@ -125,11 +129,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
         sitemap_sample_stochastic: true,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
     expect(queue.slice(0, 3)).toEqual([
       'https://www.cms.gov/medicare',
       'https://www.cms.gov/about-cms',
@@ -163,11 +169,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
         sitemap_sample_stochastic: true,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
     expect(queue).toEqual(['https://www.cms.gov/about-cms', 'https://www.cms.gov/medicare']);
   });
 
@@ -195,11 +203,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
         sitemap_sample_stochastic: true,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    await TargetDiscoveryEngine.discoverUrls(target);
+    const { } = await TargetDiscoveryEngine.discoverUrls(target);
     const exclusions = TargetDiscoveryEngine.consumeNonHtmlExclusions();
 
     expect(exclusions.length).toBe(3);
@@ -235,11 +245,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 2,
         sitemap_sample_stochastic: true,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
     expect(queue[0]).toBe('https://www.cms.gov/contact-us');
     expect(queue.length).toBe(6);
 
@@ -273,15 +285,17 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 1,
         sitemap_sample_stochastic: true,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
     process.env.VITAL_SAMPLING_SEED = 'seed-one';
-    const queueOne = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queueOne } = await TargetDiscoveryEngine.discoverUrls(target);
 
     process.env.VITAL_SAMPLING_SEED = 'seed-two';
-    const queueTwo = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queueTwo } = await TargetDiscoveryEngine.discoverUrls(target);
 
     expect(queueOne).toHaveLength(3);
     expect(queueTwo).toHaveLength(3);
@@ -315,11 +329,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: true
+        unique_page_focus: true,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
     const pressReleaseUrls = queue.filter(url => url.includes('/newsroom/press-releases/'));
     const coverageUrls = queue.filter(url => url.includes('/medicare/coverage/'));
 
@@ -353,11 +369,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 1,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       previouslyScannedUrls: new Set([
         'https://www.cms.gov/a/page-1',
         'https://www.cms.gov/b/page-1'
@@ -408,11 +426,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: 3,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       pageState: {
         'https://www.cms.gov/news/old-page': {
           etag: null,
@@ -456,11 +476,13 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target);
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
     expect(queue).toHaveLength(5);
   });
 
@@ -486,7 +508,9 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
@@ -502,7 +526,7 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       pageState,
       skipPreviouslyScanned: true,
       revalidateAfterDays: 7
@@ -534,7 +558,9 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
@@ -558,7 +584,7 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       pageState,
       revalidateAfterDays: 7,
       skipPreviouslyScanned: true
@@ -605,7 +631,9 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
@@ -620,7 +648,7 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       pageState,
       skipPreviouslyScanned: false,
       updatedWithinDays: 7
@@ -652,7 +680,9 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
@@ -676,7 +706,7 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       pageState,
       skipPreviouslyScanned: true,
       revalidateAfterDays: 7,
@@ -709,7 +739,9 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
@@ -736,7 +768,7 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       pageState,
       skipPreviouslyScanned: true,
       revalidateAfterDays: 7
@@ -768,7 +800,9 @@ describe('TargetDiscoveryEngine', () => {
         include_subdomains: false,
         sitemap_template_sample_cap: null,
         sitemap_sample_stochastic: false,
-        unique_page_focus: false
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
       }
     };
 
@@ -784,7 +818,7 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
-    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       pageState,
       skipPreviouslyScanned: true,
       revalidateAfterDays: 7,

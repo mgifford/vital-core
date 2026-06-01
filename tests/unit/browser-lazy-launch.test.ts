@@ -14,7 +14,9 @@ const STUB_TARGET = {
     include_subdomains: false,
     sitemap_template_sample_cap: null,
     sitemap_sample_stochastic: true,
-    unique_page_focus: false
+    unique_page_focus: false,
+    throttle_profile: null,
+    daily_page_budget: null
   }
 };
 
@@ -60,7 +62,7 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
       }
     };
 
-    const results = await ResilientBrowserEngine.executeSnapshotSession(
+    const { reports: results } = await ResilientBrowserEngine.executeSnapshotSession(
       STUB_TARGET,
       ['https://example.gov/page-1', 'https://example.gov/page-2'],
       { pageState }
@@ -163,7 +165,7 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
       }
     };
 
-    const results = await ResilientBrowserEngine.executeSnapshotSession(
+    const { reports: results } = await ResilientBrowserEngine.executeSnapshotSession(
       STUB_TARGET,
       ['https://example.gov/page-1', 'https://example.gov/page-2'],
       { pageState }

@@ -12,10 +12,14 @@ import { OfflineWorker } from './workers/offline-worker';
 import { TechnologyWorker } from './workers/technology-worker';
 import { AlfaWorker } from './workers/alfa-worker';
 import { ThirdPartyImpactWorker } from './workers/third-party-impact-worker';
+import { CdnDetector, CdnDetectionResult, ThrottleProfile, THROTTLE_PROFILES } from './cdn-detection';
+import { UrlManifest, UrlManifestStore, QuarantineConfig, DEFAULT_QUARANTINE_CONFIG } from './url-manifest';
 
 interface SnapshotSessionOptions {
   forceRescan?: boolean;
   pageState?: PageStateMap;
+  urlManifest?: UrlManifest;
+  quarantineConfig?: QuarantineConfig;
 }
 
 interface PageProbeResult {
@@ -33,6 +37,8 @@ interface PageProbeResult {
    * directly and avoid an extra `activePage.content()` round-trip.
    */
   fetchedHtml: string | null;
+  /** CDN detection result captured from the HEAD probe response headers. */
+  cdnDetection?: CdnDetectionResult;
 }
 
 type EngineType = 'chromium' | 'firefox' | 'webkit';
@@ -70,12 +76,13 @@ export class ResilientBrowserEngine {
 
   /**
    * Orchestrates the browser session lifecycle to scrape target pages and generate snapshots.
+   * Returns scan reports and the CDN provider detected for this target (if any).
    */
   public static async executeSnapshotSession(
     target: TargetConfig,
     urlQueue: string[],
     options: SnapshotSessionOptions = {}
-  ): Promise<Partial<PageScanReport>[]> {
+  ): Promise<{ reports: Partial<PageScanReport>[]; cdnProvider: string | null }> {
     
     // Ensure local snapshot directory cache layout exists
     if (!fs.existsSync(this.SNAPSHOT_DIR)) {
@@ -89,6 +96,8 @@ export class ResilientBrowserEngine {
     const reports: Partial<PageScanReport>[] = [];
     const settings = target.settings;
     const pageState = options.pageState;
+    const urlManifest = options.urlManifest;
+    const quarantineConfig = options.quarantineConfig ?? DEFAULT_QUARANTINE_CONFIG;
     const forceRescan = options.forceRescan === true;
     const timeoutOverrideMs = this.readDelaySetting('VITAL_MAX_TIMEOUT_MS', 0);
     const effectiveMaxTimeoutMs = timeoutOverrideMs > 0
@@ -97,8 +106,25 @@ export class ResilientBrowserEngine {
     const auditScope = String(process.env.VITAL_AUDIT_SCOPE || 'full').toLowerCase();
     const accessibilityOnly = auditScope === 'accessibility' || auditScope === 'a11y';
     const navigationWaitUntil: 'networkidle' | 'domcontentloaded' = accessibilityOnly ? 'domcontentloaded' : 'networkidle';
-    const sameSiteDelayMs = this.readDelaySetting('VITAL_SAME_SITE_DELAY_MS', this.DEFAULT_SAME_SITE_DELAY_MS);
-    const delayJitterMs = this.readDelaySetting('VITAL_DELAY_JITTER_MS', this.DEFAULT_DELAY_JITTER_MS);
+
+    // Resolve throttle profile: explicit profile setting → CDN auto-detection → env vars → defaults.
+    // CDN detection is deferred to the first probe and applied from the second request onward.
+    let detectedCdn: CdnDetectionResult = { provider: null, confidence: 'LOW', detectedHeaders: [] };
+    const explicitThrottleProfile = settings.throttle_profile ?? null;
+    // Resolve initial throttle profile from explicit setting (CDN not yet detected)
+    let resolvedThrottle: ThrottleProfile = CdnDetector.resolveThrottleProfile(detectedCdn, explicitThrottleProfile);
+    // After first probe the resolved throttle is updated; expose it to callers via detectedCdnProvider below.
+    let cdnProviderApplied: string | null = null;
+
+    // sameSiteDelayMs and delayJitterMs: env vars override the CDN-derived profile.
+    const envSameSiteDelayMs = this.readDelaySetting('VITAL_SAME_SITE_DELAY_MS', -1);
+    const envDelayJitterMs = this.readDelaySetting('VITAL_DELAY_JITTER_MS', -1);
+
+    const getSameSiteDelayMs = () =>
+      envSameSiteDelayMs >= 0 ? envSameSiteDelayMs : resolvedThrottle.sameSiteDelayMs;
+    const getDelayJitterMs = () =>
+      envDelayJitterMs >= 0 ? envDelayJitterMs : resolvedThrottle.jitterMs;
+
     const timeoutBackoffThreshold = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_THRESHOLD', this.DEFAULT_TIMEOUT_BACKOFF_THRESHOLD);
     const timeoutBackoffStepMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_STEP_MS', this.DEFAULT_TIMEOUT_BACKOFF_STEP_MS);
     const timeoutBackoffMaxMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_MAX_MS', this.DEFAULT_TIMEOUT_BACKOFF_MAX_MS);
@@ -116,6 +142,8 @@ export class ResilientBrowserEngine {
     for (const url of urlQueue) {
       const currentHost = this.safeHost(url);
       if (previousHost && currentHost && previousHost === currentHost) {
+        const sameSiteDelayMs = getSameSiteDelayMs();
+        const delayJitterMs = getDelayJitterMs();
         const timeoutBackoffMs = this.computeTimeoutBackoff(
           consecutiveTimeouts,
           timeoutBackoffThreshold,
@@ -139,6 +167,21 @@ export class ResilientBrowserEngine {
       previousHost = currentHost;
       const emulation = this.selectEmulationProfile(target.id, url);
       const probe = await this.probePageChange(url, pageState?.[url], effectiveMaxTimeoutMs, emulation.userAgent);
+
+      // Update CDN detection and throttle profile from the first successful probe.
+      if (probe.cdnDetection && cdnProviderApplied === null) {
+        detectedCdn = probe.cdnDetection;
+        resolvedThrottle = CdnDetector.resolveThrottleProfile(detectedCdn, explicitThrottleProfile);
+        cdnProviderApplied = detectedCdn.provider;
+        if (detectedCdn.provider) {
+          console.log(
+            `🌐 CDN detected for ${target.id}: ${detectedCdn.provider} ` +
+              `(headers: ${detectedCdn.detectedHeaders.join(', ')}). ` +
+              `Applying "${resolvedThrottle.label}" throttle profile ` +
+              `(${resolvedThrottle.sameSiteDelayMs}ms base + ${resolvedThrottle.jitterMs}ms jitter).`
+          );
+        }
+      }
       
       const baseReport: Partial<PageScanReport> = {
         url,
@@ -159,6 +202,9 @@ export class ResilientBrowserEngine {
 
         if (pageState) {
           this.writePageState(pageState, url, probe, false, pageState[url]?.lastScannedAt || '');
+        }
+        if (urlManifest) {
+          UrlManifestStore.recordScanOutcome(urlManifest, url, 'SKIPPED_UNCHANGED', probe.contentHash, new Date().toISOString(), quarantineConfig);
         }
 
         reports.push(baseReport);
@@ -278,6 +324,9 @@ export class ResilientBrowserEngine {
           if (pageState) {
             this.writePageState(pageState, url, { ...probe, contentHash, assetFingerprintHash }, true, scannedAt);
           }
+          if (urlManifest) {
+            UrlManifestStore.recordScanOutcome(urlManifest, url, 'COMPLETED', contentHash, scannedAt, quarantineConfig);
+          }
         }, effectiveMaxTimeoutMs);
 
       } catch (error: any) {
@@ -296,6 +345,17 @@ export class ResilientBrowserEngine {
 
         if (pageState) {
           this.writePageState(pageState, url, probe, false, scannedAt);
+        }
+        if (urlManifest) {
+          const manifestStatus = baseReport.status as 'TIMEOUT' | 'FAILED';
+          UrlManifestStore.recordScanOutcome(urlManifest, url, manifestStatus, null, scannedAt, quarantineConfig);
+          const entry = urlManifest[url];
+          if (entry?.cooldownUntil) {
+            console.warn(
+              `🚫 URL quarantined after ${entry.consecutiveFailures} consecutive failure(s): ${url} ` +
+                `(cooldown until ${entry.cooldownUntil})`
+            );
+          }
         }
       } finally {
         if (page) { await page.close(); }
@@ -319,7 +379,7 @@ export class ResilientBrowserEngine {
         console.log(`⚡ Scan session completed for ${target.id} without launching a browser (all pages unchanged). Total Snapshots generated: 0`);
       }
     }
-    return reports;
+    return { reports, cdnProvider: cdnProviderApplied };
   }
 
   private static selectEngineForTarget(targetId: string): EngineType {
@@ -420,6 +480,13 @@ export class ResilientBrowserEngine {
       const etag = headResponse.headers.get('etag');
       const lastModified = headResponse.headers.get('last-modified');
 
+      // Capture all response headers for CDN fingerprinting.
+      const responseHeaderMap: Record<string, string> = {};
+      headResponse.headers.forEach((value, key) => {
+        responseHeaderMap[key] = value;
+      });
+      const cdnDetection = CdnDetector.detect(responseHeaderMap);
+
       if (previousState) {
         if (etag && previousState.etag && etag === previousState.etag) {
           return {
@@ -429,7 +496,8 @@ export class ResilientBrowserEngine {
             lastModified,
             contentHash: previousState.contentHash,
             assetFingerprintHash: previousState.assetFingerprintHash,
-            fetchedHtml: null
+            fetchedHtml: null,
+            cdnDetection
           };
         }
 
@@ -441,7 +509,8 @@ export class ResilientBrowserEngine {
             lastModified,
             contentHash: previousState.contentHash,
             assetFingerprintHash: previousState.assetFingerprintHash,
-            fetchedHtml: null
+            fetchedHtml: null,
+            cdnDetection
           };
         }
       }
@@ -464,7 +533,8 @@ export class ResilientBrowserEngine {
               lastModified,
               contentHash,
               assetFingerprintHash,
-              fetchedHtml: null
+              fetchedHtml: null,
+              cdnDetection
             };
           }
 
@@ -477,7 +547,8 @@ export class ResilientBrowserEngine {
             lastModified,
             contentHash,
             assetFingerprintHash,
-            fetchedHtml: html
+            fetchedHtml: html,
+            cdnDetection
           };
         } catch {
           // Fall through to changed=true when lightweight fetch fails.
@@ -491,7 +562,8 @@ export class ResilientBrowserEngine {
         lastModified,
         contentHash: previousState?.contentHash ?? null,
         assetFingerprintHash: previousState?.assetFingerprintHash ?? null,
-        fetchedHtml: null
+        fetchedHtml: null,
+        cdnDetection
       };
     } catch {
       return {
