@@ -312,7 +312,8 @@ async function main() {
         const sessionResult = await ResilientBrowserEngine.executeSnapshotSession(plan.target, batch, {
           forceRescan,
           pageState,
-          urlManifest: plan.urlManifest
+          urlManifest: plan.urlManifest,
+          initialTimeoutStreak: targetTimeoutStreak
         });
         const rawPageReports = sessionResult.reports;
 
