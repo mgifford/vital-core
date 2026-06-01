@@ -518,7 +518,24 @@ export class ResilientBrowserEngine {
 
       // Detect non-ok HTTP status (e.g. 404, 410, 503) and surface it so the
       // scan loop can skip browser navigation for unreachable pages.
+      // Exception: 403 is treated as inconclusive — CDNs commonly block lightweight
+      // probes while still serving pages to real browsers.  Return a "proceed"
+      // result so the scan loop falls through to full browser navigation.
       if (!headResponse.ok) {
+        if (headResponse.status === 403) {
+          return {
+            unchanged: false,
+            reason: 'HTTP 403 probe — CDN may be blocking lightweight requests; will attempt browser navigation.',
+            httpErrorStatus: null,
+            nonHtmlContentType: null,
+            etag: null,
+            lastModified: null,
+            contentHash: previousState?.contentHash ?? null,
+            assetFingerprintHash: previousState?.assetFingerprintHash ?? null,
+            fetchedHtml: null
+          };
+        }
+
         return {
           unchanged: false,
           reason: `HTTP ${headResponse.status} response from server.`,
@@ -676,6 +693,8 @@ export class ResilientBrowserEngine {
         redirect: 'follow',
         signal: controller.signal,
         headers: {
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
           'User-Agent': userAgent ?? 'VitalCore/1.0 (+https://github.com/mgifford/vital-core)'
         }
       });
