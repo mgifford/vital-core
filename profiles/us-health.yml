@@ -8,11 +8,11 @@ targets:
     base_url: https://www.cms.gov
     sitemap_url: https://www.cms.gov/sitemap.xml
     include_paths:
-      - "/medicare/**"
-      - "/medicaid/**"
+      - "/**"
     priority_urls:
       - https://www.cms.gov/medicare/physician-fee-schedule/search
       - https://www.cms.gov/about-cms
+      - https://www.cms.gov/
     settings:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
@@ -22,8 +22,7 @@ targets:
     base_url: https://www.hhs.gov
     # sitemap_url omitted: Akamai CDN returns 403 for all automated requests to /sitemap.xml
     include_paths:
-      - "/healthcare/**"
-      - "/programs/**"
+      - "/**"
     priority_urls:
       - https://www.hhs.gov/healthcare/index.html
     settings:
@@ -35,8 +34,7 @@ targets:
     base_url: https://www.medicare.gov
     sitemap_url: https://www.medicare.gov/sitemap.xml
     include_paths:
-      - "/coverage/**"
-      - "/basics/**"
+      - "/**"
     priority_urls:
       - https://www.medicare.gov/basics
       - https://www.medicare.gov/coverage
@@ -49,8 +47,7 @@ targets:
     base_url: https://www.medicaid.gov
     sitemap_url: https://www.medicaid.gov/sitemap.xml
     include_paths:
-      - "/medicaid/**"
-      - "/state-overviews/**"
+      - "/**"
     priority_urls:
       - https://www.medicaid.gov/medicaid/index.html
       - https://www.medicaid.gov/state-overviews/index.html
@@ -84,7 +81,7 @@ targets:
     name: Healthcare Data Portal
     base_url: https://data.healthcare.gov
     include_paths:
-      - "/datasets/**"
+      - "/**"
     priority_urls:
       - https://data.healthcare.gov/datasets
     settings:
@@ -107,9 +104,7 @@ targets:
     base_url: https://www.healthcare.gov
     sitemap_url: https://www.healthcare.gov/sitemap-index.xml
     include_paths:
-      - "/coverage/**"
-      - "/quick-guide/**"
-      - "/glossary/**"
+      - "/**"
     priority_urls:
       - https://www.healthcare.gov/
       - https://www.healthcare.gov/quick-guide/
@@ -122,9 +117,7 @@ targets:
     base_url: https://www.cdc.gov
     sitemap_url: https://www.cdc.gov/wcms-auto-sitemap-index.xml
     include_paths:
-      - "/about/**"
-      - "/chronicdisease/**"
-      - "/vaccines/**"
+      - "/**"
     priority_urls:
       - https://www.cdc.gov/
       - https://www.cdc.gov/about/
@@ -137,9 +130,7 @@ targets:
     base_url: https://www.nih.gov
     # sitemap_url omitted: Cloudflare bot protection blocks all automated requests to /sitemap.xml
     include_paths:
-      - "/health-information/**"
-      - "/news-events/**"
-      - "/research-training/**"
+      - "/**"
     priority_urls:
       - https://www.nih.gov/
       - https://www.nih.gov/health-information
@@ -152,8 +143,6 @@ targets:
     base_url: https://health.gov
     sitemap_url: https://health.gov/sitemap.xml
     include_paths:
-      - "/our-work/**"
-      - "/news/**"
       - "/**"
     priority_urls:
       - https://health.gov/
