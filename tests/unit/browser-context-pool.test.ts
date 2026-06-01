@@ -13,24 +13,24 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Minimal fake Playwright Page / Context / Browser types
 // ---------------------------------------------------------------------------
 interface FakePage {
-  setDefaultNavigationTimeout: ReturnType<typeof vi.fn>;
-  setDefaultTimeout: ReturnType<typeof vi.fn>;
-  setViewportSize: ReturnType<typeof vi.fn>;
-  emulateMedia: ReturnType<typeof vi.fn>;
-  goto: ReturnType<typeof vi.fn>;
-  waitForTimeout: ReturnType<typeof vi.fn>;
-  content: ReturnType<typeof vi.fn>;
-  close: ReturnType<typeof vi.fn>;
+  setDefaultNavigationTimeout: (...args: any[]) => any;
+  setDefaultTimeout: (...args: any[]) => any;
+  setViewportSize: (...args: any[]) => Promise<void>;
+  emulateMedia: (...args: any[]) => Promise<void>;
+  goto: (...args: any[]) => Promise<void>;
+  waitForTimeout: (...args: any[]) => Promise<void>;
+  content: (...args: any[]) => Promise<string>;
+  close: (...args: any[]) => Promise<void>;
 }
 
 interface FakeContext {
-  newPage: ReturnType<typeof vi.fn>;
-  close: ReturnType<typeof vi.fn>;
+  newPage: (...args: any[]) => Promise<FakePage>;
+  close: (...args: any[]) => Promise<void>;
 }
 
 interface FakeBrowser {
-  newContext: ReturnType<typeof vi.fn>;
-  close: ReturnType<typeof vi.fn>;
+  newContext: (...args: any[]) => FakeContext;
+  close: (...args: any[]) => Promise<void>;
 }
 
 function makeFakePage(): FakePage {

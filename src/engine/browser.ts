@@ -73,10 +73,10 @@ export class ResilientBrowserEngine {
       fs.mkdirSync(this.SNAPSHOT_DIR, { recursive: true });
     }
 
-    console.log(`🚀 Starting headless browser session for target: ${target.id}`);
+    console.log(`🚀 Starting scan session for target: ${target.id}`);
     const engine = this.selectEngineForTarget(target.id);
-    const browser: Browser = await this.launchBrowser(engine);
-    
+    let browser: Browser | null = null;
+
     const reports: Partial<PageScanReport>[] = [];
     const settings = target.settings;
     const pageState = options.pageState;
@@ -157,10 +157,15 @@ export class ResilientBrowserEngine {
       const scannedAt = new Date().toISOString();
 
       try {
-        // Reuse the existing context for this hostname so the browser's HTTP cache
-        // (JS bundles, CSS, fonts) is shared across all pages of the same domain.
-        // The user-agent is fixed per context (set at creation); viewport and
-        // colorScheme are applied per-page to preserve emulation variety.
+        // Defer browser launch until a URL actually needs scanning (all-unchanged batches
+        // skip this entirely). Also reuse the context per hostname so the browser's HTTP
+        // cache (JS bundles, CSS, fonts) is shared across pages of the same domain.
+        // The user-agent is fixed at context-creation time; viewport and colorScheme are
+        // applied per-page to preserve emulation variety.
+        if (!browser) {
+          console.log(`🚀 Launching headless browser (${engine}) for target: ${target.id}`);
+          browser = await this.launchBrowser(engine);
+        }
         const poolKey = currentHost ?? '__unknown__';
         let context = contextPool.get(poolKey);
         if (!context) {
@@ -216,7 +221,7 @@ export class ResilientBrowserEngine {
             // 7. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
             if (baseReport.offlineAudits) {
               baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
-                browser,
+                browser: browser!,
                 url,
                 maxTimeoutMs: effectiveMaxTimeoutMs,
                 postLoadDelay: settings.postLoadDelay,
@@ -280,8 +285,12 @@ export class ResilientBrowserEngine {
     } finally {
       // Close all pooled contexts before shutting down the browser.
       await Promise.all(Array.from(contextPool.values()).map(ctx => ctx.close().catch(() => {})));
-      await browser.close();
-      console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+      if (browser) {
+        await browser.close();
+        console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+      } else {
+        console.log(`⚡ Scan session completed for ${target.id} without launching a browser (all pages unchanged). Total Snapshots generated: 0`);
+      }
     }
     return reports;
   }
