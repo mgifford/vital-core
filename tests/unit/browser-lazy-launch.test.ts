@@ -192,6 +192,10 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
     const launchSpy = vi.spyOn(ResilientBrowserEngine as any, 'launchBrowser')
       .mockRejectedValue(new Error('launchBrowser should not have been called'));
 
+    const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
+    vi.spyOn(LighthouseWorker, 'launchChrome').mockResolvedValue(undefined);
+    vi.spyOn(LighthouseWorker, 'killChrome').mockResolvedValue(undefined);
+
     const pageState = {
       'https://example.gov/': {
         etag: '"abc123"',
