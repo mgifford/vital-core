@@ -608,6 +608,12 @@ ${siteFooterHtml}
           if (!content) {
             return '';
           }
+          const imagesDisplay = (content.contentImageCount !== undefined && content.totalImageCount !== undefined)
+            ? `${this.escapeHtml(content.contentImageCount)} / ${this.escapeHtml(content.totalImageCount)}`
+            : 'n/a';
+          const misspellingsDisplay = (content.misspelledWordCount !== undefined && content.misspelledWordCount > 0 && Array.isArray(content.misspelledWords) && content.misspelledWords.length > 0)
+            ? `<details><summary>${this.escapeHtml(content.misspelledWordCount)}</summary><p>${content.misspelledWords.map(w => this.escapeHtml(w)).join(', ')}</p></details>`
+            : this.escapeHtml(content.misspelledWordCount ?? 'n/a');
           return `
             <tr>
               <td>${this.escapeHtml(page.url)}</td>
@@ -615,6 +621,9 @@ ${siteFooterHtml}
               <td>${this.escapeHtml(content?.averageSentenceLength ?? 'n/a')}</td>
               <td>${this.escapeHtml(content?.ambiguousLinkTextCount ?? 'n/a')}</td>
               <td>${this.escapeHtml(content?.suspiciousAltTextCount ?? 'n/a')}</td>
+              <td>${this.escapeHtml(content?.wordCount ?? 'n/a')}</td>
+              <td>${imagesDisplay}</td>
+              <td>${misspellingsDisplay}</td>
             </tr>`;
         })
         .join('');
@@ -718,7 +727,7 @@ ${siteFooterHtml}
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Content</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Content Quality</h1></header><main><div class="card"><h2>Content Metrics</h2>${sharedNav}
     <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
-    <table><thead><tr><th>URL</th><th>Grade</th><th>Avg Sentence Length</th><th>Ambiguous Links</th><th>Suspicious Alt Text</th></tr></thead><tbody>${contentRows || '<tr><td colspan="5">No content metrics available in the latest run. Grade appears only when pages are completed with offline content analysis.</td></tr>'}</tbody></table>
+    <table><thead><tr><th>URL</th><th>Grade</th><th>Avg Sentence Length</th><th>Ambiguous Links</th><th>Suspicious Alt Text</th><th>Word Count</th><th>Content / Total Images</th><th>Misspellings</th></tr></thead><tbody>${contentRows || '<tr><td colspan="8">No content metrics available in the latest run. Grade appears only when pages are completed with offline content analysis.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
       const thirdPartyHtml = `<!DOCTYPE html>
