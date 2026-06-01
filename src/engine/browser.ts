@@ -25,6 +25,14 @@ interface PageProbeResult {
   lastModified: string | null;
   contentHash: string | null;
   assetFingerprintHash: string | null;
+  /**
+   * Raw HTML body retrieved during the GET probe, when the server exposes no
+   * cache-validation headers (ETag / Last-Modified).  Present only when a GET
+   * request was actually issued; null otherwise.  For non-SPA pages this is
+   * equivalent to the fully-rendered HTML, so the scan loop can reuse it
+   * directly and avoid an extra `activePage.content()` round-trip.
+   */
+  fetchedHtml: string | null;
 }
 
 type EngineType = 'chromium' | 'firefox' | 'webkit';
@@ -94,6 +102,9 @@ export class ResilientBrowserEngine {
     const timeoutBackoffMaxMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_MAX_MS', this.DEFAULT_TIMEOUT_BACKOFF_MAX_MS);
     let previousHost: string | null = null;
     let consecutiveTimeouts = 0;
+    // One BrowserContext per hostname so the HTTP cache is shared across pages of the same domain.
+    // Contexts are created on first visit and closed together after all URLs are processed.
+    const contextPool = new Map<string, BrowserContext>();
 
     if (!accessibilityOnly) {
       await LighthouseWorker.launchChrome();
@@ -154,21 +165,32 @@ export class ResilientBrowserEngine {
         `🧭 Emulation profile: ${emulation.family}/${emulation.viewportLabel}/${emulation.colorScheme} (${emulation.viewport.width}x${emulation.viewport.height})`
       );
 
-      let context: BrowserContext | null = null;
       let page: Page | null = null;
       const scannedAt = new Date().toISOString();
 
       try {
+        // Defer browser launch until a URL actually needs scanning (all-unchanged batches
+        // skip this entirely). Also reuse the context per hostname so the browser's HTTP
+        // cache (JS bundles, CSS, fonts) is shared across pages of the same domain.
+        // The user-agent is fixed at context-creation time; viewport and colorScheme are
+        // applied per-page to preserve emulation variety.
         if (!browser) {
           console.log(`🚀 Launching headless browser (${engine}) for target: ${target.id}`);
           browser = await this.launchBrowser(engine);
         }
-        context = await browser.newContext({
-          userAgent: emulation.userAgent,
-          viewport: emulation.viewport,
-          colorScheme: emulation.colorScheme
-        });
+        const poolKey = currentHost ?? '__unknown__';
+        let context = contextPool.get(poolKey);
+        if (!context) {
+          context = await browser.newContext({
+            userAgent: emulation.userAgent,
+            viewport: emulation.viewport,
+            colorScheme: emulation.colorScheme
+          });
+          contextPool.set(poolKey, context);
+        }
         page = await context.newPage();
+        await page.setViewportSize(emulation.viewport);
+        await page.emulateMedia({ colorScheme: emulation.colorScheme });
         page.setDefaultNavigationTimeout(effectiveMaxTimeoutMs);
         page.setDefaultTimeout(effectiveMaxTimeoutMs);
         const activePage = page;
@@ -187,10 +209,14 @@ export class ResilientBrowserEngine {
             await activePage.waitForTimeout(settings.postLoadDelay);
           }
 
-          // 3. Extract fully rendered HTML string state
-          const hydratedHtml = await activePage.content();
-          const contentHash = this.hashContent(hydratedHtml);
-          const assetFingerprintHash = this.computeAssetFingerprint(hydratedHtml, url);
+          // 3. Extract fully rendered HTML string state.
+          // When probePageChange already issued a GET (non-SPA pages with no
+          // cache-validation headers), reuse its response body to avoid an
+          // extra activePage.content() IPC round-trip and redundant hash
+          // computation.  Fall back to activePage.content() when unavailable.
+          const hydratedHtml = probe.fetchedHtml ?? await activePage.content();
+          const contentHash = probe.fetchedHtml ? probe.contentHash! : this.hashContent(hydratedHtml);
+          const assetFingerprintHash = probe.fetchedHtml ? probe.assetFingerprintHash! : this.computeAssetFingerprint(hydratedHtml, url);
 
           // 4. Write snapshot to disk early so Alfa and Wappalyzer can read the local file
           //    instead of re-fetching the page over HTTP.
@@ -221,7 +247,7 @@ export class ResilientBrowserEngine {
             // 8. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
             if (baseReport.offlineAudits) {
               baseReport.thirdPartyImpact = await ThirdPartyImpactWorker.evaluate({
-                browser,
+                browser: browser!,
                 url,
                 maxTimeoutMs: effectiveMaxTimeoutMs,
                 postLoadDelay: settings.postLoadDelay,
@@ -268,7 +294,7 @@ export class ResilientBrowserEngine {
         }
       } finally {
         if (page) { await page.close(); }
-        if (context) { await context.close(); }
+        // Context is kept alive in the pool for reuse by the next same-domain page.
         if (baseReport.status === 'SKIPPED_UNCHANGED' || baseReport.status === 'COMPLETED') {
           consecutiveTimeouts = 0;
         }
@@ -276,7 +302,11 @@ export class ResilientBrowserEngine {
       }
     }
     } finally {
+      
       await LighthouseWorker.killChrome();
+      // Close all pooled contexts before shutting down the browser.
+      await Promise.all(Array.from(contextPool.values()).map(ctx => ctx.close().catch(() => {})));
+      
       if (browser) {
         await browser.close();
         console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
@@ -392,7 +422,8 @@ export class ResilientBrowserEngine {
             etag,
             lastModified,
             contentHash: previousState.contentHash,
-            assetFingerprintHash: previousState.assetFingerprintHash
+            assetFingerprintHash: previousState.assetFingerprintHash,
+            fetchedHtml: null
           };
         }
 
@@ -403,7 +434,8 @@ export class ResilientBrowserEngine {
             etag,
             lastModified,
             contentHash: previousState.contentHash,
-            assetFingerprintHash: previousState.assetFingerprintHash
+            assetFingerprintHash: previousState.assetFingerprintHash,
+            fetchedHtml: null
           };
         }
       }
@@ -425,17 +457,21 @@ export class ResilientBrowserEngine {
               etag,
               lastModified,
               contentHash,
-              assetFingerprintHash
+              assetFingerprintHash,
+              fetchedHtml: null
             };
           }
 
+          // Page has changed: carry the GET response body forward so the scan
+          // loop can reuse it instead of re-fetching via the browser.
           return {
             unchanged: false,
             reason: 'Page changed based on HTML + asset fingerprint hash comparison.',
             etag,
             lastModified,
             contentHash,
-            assetFingerprintHash
+            assetFingerprintHash,
+            fetchedHtml: html
           };
         } catch {
           // Fall through to changed=true when lightweight fetch fails.
@@ -448,7 +484,8 @@ export class ResilientBrowserEngine {
         etag,
         lastModified,
         contentHash: previousState?.contentHash ?? null,
-        assetFingerprintHash: previousState?.assetFingerprintHash ?? null
+        assetFingerprintHash: previousState?.assetFingerprintHash ?? null,
+        fetchedHtml: null
       };
     } catch {
       return {
@@ -457,7 +494,8 @@ export class ResilientBrowserEngine {
         etag: previousState?.etag ?? null,
         lastModified: previousState?.lastModified ?? null,
         contentHash: previousState?.contentHash ?? null,
-        assetFingerprintHash: previousState?.assetFingerprintHash ?? null
+        assetFingerprintHash: previousState?.assetFingerprintHash ?? null,
+        fetchedHtml: null
       };
     }
   }

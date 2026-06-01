@@ -89,6 +89,8 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
     const mockPage = {
       setDefaultNavigationTimeout: vi.fn(),
       setDefaultTimeout: vi.fn(),
+      setViewportSize: vi.fn().mockResolvedValue(undefined),
+      emulateMedia: vi.fn().mockResolvedValue(undefined),
       goto: vi.fn().mockResolvedValue(undefined),
       waitForTimeout: vi.fn().mockResolvedValue(undefined),
       content: vi.fn().mockResolvedValue('<html><body>Hello</body></html>'),
@@ -108,7 +110,8 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
 
     // Stub out the worker methods that require real browser/network connections
     vi.spyOn(ResilientBrowserEngine as any, 'runWithTimeout').mockImplementation(
-      async (fn: () => Promise<unknown>) => fn()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (async (fn: () => Promise<unknown>) => fn()) as any
     );
 
     const { LiveWorker } = await import('../../src/engine/workers/live-worker');
@@ -137,10 +140,10 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
     });
 
     const { ThirdPartyImpactWorker } = await import('../../src/engine/workers/third-party-impact-worker');
-    vi.spyOn(ThirdPartyImpactWorker, 'evaluate').mockResolvedValue(null);
+    vi.spyOn(ThirdPartyImpactWorker, 'evaluate').mockResolvedValue(null as any);
 
     const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
-    vi.spyOn(LighthouseWorker, 'auditLiveUrl').mockResolvedValue(null);
+    vi.spyOn(LighthouseWorker, 'auditLiveUrl').mockResolvedValue(null as any);
 
     const pageState = {
       'https://example.gov/page-1': {

@@ -26,7 +26,8 @@
     "history:fetch": "node scripts/fetch-history.mjs",
     "seeds:refresh": "npx tsx scripts/refresh-priority-seeds.ts",
     "inventory:export": "node scripts/export-target-inventory.mjs",
-    "scan": "npx tsx src/index.ts profiles/us-health.yml"
+    "scan": "npx tsx src/index.ts profiles/us-health.yml",
+    "compile": "npx tsx src/compile.ts profiles/us-health.yml"
   },
   "repository": {
     "type": "git",
