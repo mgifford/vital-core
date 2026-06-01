@@ -312,4 +312,24 @@ async function main() {
   }
 }
 
+// Lighthouse's `waitForCPUIdle` helper calls `checkForQuiet` recursively
+// via `setTimeout(() => checkForQuiet(...))` — a fire-and-forget pattern that
+// creates a Promise with no rejection handler.  When Chrome is killed at the
+// end of a scan session the pending `Runtime.evaluate` inside that callback
+// rejects with a Protocol error.  On Node.js ≥ 15 an unhandled rejection
+// crashes the process, aborting any subsequent scan rounds.
+//
+// We suppress these benign post-shutdown artifacts here instead of letting
+// them propagate as fatal errors.  All other unhandled rejections are
+// re-emitted so that real bugs remain visible.
+process.on('unhandledRejection', (reason: unknown) => {
+  const message = reason instanceof Error ? reason.message : String(reason);
+  if (/protocol error/i.test(message) && /session closed/i.test(message)) {
+    console.warn(`⚠️ Suppressed stale Lighthouse Protocol rejection after Chrome shutdown: ${message}`);
+    return;
+  }
+  // Re-emit as an uncaught exception so Node.js still terminates on real bugs.
+  throw reason;
+});
+
 main();
