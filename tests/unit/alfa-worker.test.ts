@@ -74,4 +74,103 @@ describe('AlfaWorker', () => {
       expect.any(Object)
     );
   });
+
+  describe('toA11yViolations', () => {
+    it('returns empty array for a non-executed audit', () => {
+      const audit = { executed: false, findingsCount: null, errorMessage: 'skip', rawResults: null };
+      expect(AlfaWorker.toA11yViolations(audit)).toEqual([]);
+    });
+
+    it('converts outcomes grouped by rule ID into A11yViolation[]', () => {
+      const audit = {
+        executed: true,
+        findingsCount: 3,
+        errorMessage: null,
+        rawResults: {
+          outcomes: [
+            {
+              rule: 'sia-r10',
+              title: 'Button has accessible name',
+              description: 'Buttons must have an accessible name.',
+              severity: 'serious',
+              html: '<button></button>',
+              target: ['button'],
+              failureSummary: 'Add aria-label or visible text.',
+              helpUrl: 'https://alfa.siteimprove.com/rules/sia-r10',
+              wcag: ['wcag21aa']
+            },
+            {
+              rule: 'sia-r10',
+              title: 'Button has accessible name',
+              description: 'Buttons must have an accessible name.',
+              severity: 'serious',
+              html: '<button class="icon"></button>',
+              target: ['button.icon'],
+              failureSummary: 'Add aria-label.',
+              helpUrl: 'https://alfa.siteimprove.com/rules/sia-r10',
+              wcag: ['wcag21aa']
+            },
+            {
+              rule: 'sia-r62',
+              title: 'Image has alt text',
+              description: 'Images must have alt text.',
+              severity: 'critical',
+              html: '<img src="logo.png">',
+              target: ['img'],
+              failureSummary: 'Add an alt attribute.',
+              helpUrl: 'https://alfa.siteimprove.com/rules/sia-r62',
+              wcag: ['wcag2aa']
+            }
+          ]
+        }
+      };
+
+      const violations = AlfaWorker.toA11yViolations(audit);
+
+      expect(violations).toHaveLength(2);
+      expect(violations.every(v => v.sourceEngine === 'alfa')).toBe(true);
+
+      const r10 = violations.find(v => v.id === 'sia-r10');
+      expect(r10).toBeDefined();
+      expect(r10!.severity).toBe('serious');
+      expect(r10!.instances).toHaveLength(2);
+      expect(r10!.wcagVersion).toBe('2.1');
+      expect(r10!.helpUrl).toBe('https://alfa.siteimprove.com/rules/sia-r10');
+
+      const r62 = violations.find(v => v.id === 'sia-r62');
+      expect(r62).toBeDefined();
+      expect(r62!.severity).toBe('critical');
+      expect(r62!.instances).toHaveLength(1);
+      expect(r62!.wcagVersion).toBe('2.0');
+    });
+
+    it('falls back to a constructed Siteimprove URL when helpUrl is missing', () => {
+      const audit = {
+        executed: true,
+        findingsCount: 1,
+        errorMessage: null,
+        rawResults: [{ rule: 'sia-r5', severity: 'moderate', html: '<div/>', target: [] }]
+      };
+
+      const violations = AlfaWorker.toA11yViolations(audit);
+      expect(violations).toHaveLength(1);
+      expect(violations[0].helpUrl).toBe('https://alfa.siteimprove.com/rules/sia-r5');
+    });
+
+    it('skips outcomes with no rule ID', () => {
+      const audit = {
+        executed: true,
+        findingsCount: 2,
+        errorMessage: null,
+        rawResults: [
+          { rule: 'sia-r1', severity: 'minor', html: '', target: [] },
+          { severity: 'minor', html: '', target: [] } // no rule ID — should be skipped
+        ]
+      };
+
+      const violations = AlfaWorker.toA11yViolations(audit);
+      expect(violations).toHaveLength(1);
+      expect(violations[0].id).toBe('sia-r1');
+    });
+  });
 });

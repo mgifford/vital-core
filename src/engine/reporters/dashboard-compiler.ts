@@ -603,6 +603,7 @@ ${siteFooterHtml}
         description: string;
         helpUrl: string;
         wcagVersion: string;
+        sourceEngines: Set<string>;
         pageCount: number;
         instanceCount: number;
         pages: Array<{ url: string; instances: Array<{ html: string; target: string[]; failureSummary: string }> }>;
@@ -611,20 +612,25 @@ ${siteFooterHtml}
         const violations = page?.liveAudits?.accessibilityViolations || [];
         violations.forEach(v => {
           const wcagVer = v.wcagVersion || this.deriveWcagVersion(v.impactedCriteria || []);
-          if (!ruleGroupMap.has(v.id)) {
-            ruleGroupMap.set(v.id, {
+          // Use a composite key so axe and alfa rules with the same ID are kept separate
+          const engine = String(v.sourceEngine || 'axe');
+          const groupKey = `${engine}:${v.id}`;
+          if (!ruleGroupMap.has(groupKey)) {
+            ruleGroupMap.set(groupKey, {
               id: String(v.id || ''),
               severity: String(v.severity || 'minor'),
               description: String(v.description || ''),
               helpUrl: String(v.helpUrl || ''),
               wcagVersion: String(wcagVer || 'n/a'),
+              sourceEngines: new Set([engine]),
               pageCount: 0,
               instanceCount: 0,
               pages: []
             });
           }
-          const group = ruleGroupMap.get(v.id);
+          const group = ruleGroupMap.get(groupKey);
           if (group) {
+            group.sourceEngines.add(engine);
             group.pageCount++;
             group.instanceCount += Array.isArray(v.instances) ? v.instances.length : 0;
             group.pages.push({
@@ -643,6 +649,12 @@ ${siteFooterHtml}
         const si = a11ySeverityOrder.indexOf(a.severity) - a11ySeverityOrder.indexOf(b.severity);
         return si !== 0 ? si : b.pageCount - a.pageCount;
       });
+      const totalRuleCards = ruleGroupsSorted.length;
+      const axeRuleCount = ruleGroupsSorted.filter(r => r.sourceEngines.has('axe')).length;
+      const alfaRuleCount = ruleGroupsSorted.filter(r => r.sourceEngines.has('alfa')).length;
+      const wcag20RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.0').length;
+      const wcag21RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.1').length;
+      const wcag22RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.2').length;
       const topPagesByViolations = allKnownPages
         .map(page => ({
           url: String(page?.url || ''),
@@ -682,6 +694,13 @@ ${siteFooterHtml}
         const sev = String(rule.severity || 'minor').toLowerCase();
         const ruleAnchor = `rule-${this.sanitizePathSegment(rule.id)}`;
         const sevLabel = sev.charAt(0).toUpperCase() + sev.slice(1);
+        const sourceEnginesArr = Array.from(rule.sourceEngines).sort();
+        const sourcesAttr = sourceEnginesArr.join(',');
+        const sourcesBadgesHtml = sourceEnginesArr.map(eng => {
+          const engLabel = eng === 'axe' ? 'axe' : eng === 'alfa' ? 'alfa' : this.escapeHtml(eng);
+          const engClass = eng === 'axe' ? 'source-axe' : eng === 'alfa' ? 'source-alfa' : '';
+          return `<span class="badge source-engine-badge ${engClass}" title="${this.escapeHtml(eng === 'axe' ? 'Found by Deque axe-core' : eng === 'alfa' ? 'Found by Siteimprove Alfa' : eng)}">${engLabel}</span>`;
+        }).join('');
         const pagesDetailHtml = rule.pages.map(p => {
           const shownInstances = p.instances.slice(0, 5);
           const moreCount = p.instances.length - shownInstances.length;
@@ -710,12 +729,13 @@ ${siteFooterHtml}
             return '';
           }
         })();
-        return `<div class="a11y-rule-card" id="${this.escapeHtml(ruleAnchor)}" data-severity="${this.escapeHtml(sev)}">
+        return `<div class="a11y-rule-card" id="${this.escapeHtml(ruleAnchor)}" data-severity="${this.escapeHtml(sev)}" data-sources="${this.escapeHtml(sourcesAttr)}" data-wcag="${this.escapeHtml(rule.wcagVersion)}">
           <div class="a11y-rule-header">
             <h3>
               <span class="severity-${sev}">${this.escapeHtml(sevLabel)}</span>
               <code>${this.escapeHtml(rule.id)}</code>
               <span class="badge">WCAG ${this.escapeHtml(rule.wcagVersion)}</span>
+              ${sourcesBadgesHtml}
               <span class="muted-small">${this.escapeHtml(rule.pageCount)} page${rule.pageCount !== 1 ? 's' : ''}, ${this.escapeHtml(rule.instanceCount)} instance${rule.instanceCount !== 1 ? 's' : ''}</span>
             </h3>
           </div>
@@ -939,12 +959,25 @@ ${siteFooterHtml}
     <div class="card">
       <h2 id="issues-heading" tabindex="-1">Issues by Rule</h2>
       <div class="a11y-filter-bar" role="group" aria-label="Filter by severity">
-        <span class="a11y-filter-label">Filter by severity:</span>
-        <button class="a11y-filter-btn active" type="button" data-filter="all">All (${this.escapeHtml(totalViolations)})</button>
-        <button class="a11y-filter-btn" type="button" data-filter="critical">Critical (${this.escapeHtml(severityCounts.get('critical') || 0)})</button>
-        <button class="a11y-filter-btn" type="button" data-filter="serious">Serious (${this.escapeHtml(severityCounts.get('serious') || 0)})</button>
-        <button class="a11y-filter-btn" type="button" data-filter="moderate">Moderate (${this.escapeHtml(severityCounts.get('moderate') || 0)})</button>
-        <button class="a11y-filter-btn" type="button" data-filter="minor">Minor (${this.escapeHtml(severityCounts.get('minor') || 0)})</button>
+        <span class="a11y-filter-label">Severity:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-sev="all">All (${this.escapeHtml(totalRuleCards)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="critical">Critical (${this.escapeHtml(severityCounts.get('critical') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="serious">Serious (${this.escapeHtml(severityCounts.get('serious') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="moderate">Moderate (${this.escapeHtml(severityCounts.get('moderate') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="minor">Minor (${this.escapeHtml(severityCounts.get('minor') || 0)})</button>
+      </div>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by scan tool">
+        <span class="a11y-filter-label">Tool:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-tool="all">All tools (${this.escapeHtml(totalRuleCards)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-tool="axe">axe (${this.escapeHtml(axeRuleCount)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-tool="alfa">alfa (${this.escapeHtml(alfaRuleCount)})</button>
+      </div>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by WCAG version">
+        <span class="a11y-filter-label">WCAG:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-wcag="all">All versions (${this.escapeHtml(totalRuleCards)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.0">2.0 (${this.escapeHtml(wcag20RuleCount)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.1">2.1 (${this.escapeHtml(wcag21RuleCount)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.2">2.2 (${this.escapeHtml(wcag22RuleCount)})</button>
       </div>
       ${ruleCardsHtml || '<p>No accessibility violations found across current and recent runs.</p>'}
     </div>
@@ -958,16 +991,47 @@ ${siteFooterHtml}
     return 'light';
   }
   document.documentElement.setAttribute('data-theme', getInitialTheme());
-  var filterBtns = document.querySelectorAll('.a11y-filter-btn');
-  filterBtns.forEach(function (btn) {
+
+  var activeSev = 'all';
+  var activeTool = 'all';
+  var activeWcag = 'all';
+
+  function applyFilters() {
+    document.querySelectorAll('.a11y-rule-card').forEach(function (card) {
+      var sev = card.getAttribute('data-severity') || '';
+      var sources = card.getAttribute('data-sources') || '';
+      var wcag = card.getAttribute('data-wcag') || '';
+      var sevMatch = activeSev === 'all' || sev === activeSev;
+      var toolMatch = activeTool === 'all' || sources.split(',').indexOf(activeTool) !== -1;
+      var wcagMatch = activeWcag === 'all' || wcag === activeWcag;
+      card.setAttribute('data-hidden', (sevMatch && toolMatch && wcagMatch) ? 'false' : 'true');
+    });
+  }
+
+  document.querySelectorAll('[data-filter-sev]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var filter = btn.getAttribute('data-filter') || 'all';
-      filterBtns.forEach(function (b) { b.classList.remove('active'); });
+      activeSev = btn.getAttribute('data-filter-sev') || 'all';
+      document.querySelectorAll('[data-filter-sev]').forEach(function (b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      document.querySelectorAll('.a11y-rule-card').forEach(function (card) {
-        var sev = card.getAttribute('data-severity') || '';
-        card.setAttribute('data-hidden', filter !== 'all' && sev !== filter ? 'true' : 'false');
-      });
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('[data-filter-tool]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeTool = btn.getAttribute('data-filter-tool') || 'all';
+      document.querySelectorAll('[data-filter-tool]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('[data-filter-wcag]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeWcag = btn.getAttribute('data-filter-wcag') || 'all';
+      document.querySelectorAll('[data-filter-wcag]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
     });
   });
 })();
@@ -1788,6 +1852,9 @@ html[data-theme='dark'] .status-alert {
   background: #fbeae5;
   color: var(--critical-red);
 }
+.source-engine-badge { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.source-axe { background: #e8f5e9; color: #1b5e20; }
+.source-alfa { background: #fff3e0; color: #bf360c; }
 .grade-badge {
   display: inline-block;
   padding: 0.2rem 0.6rem;

@@ -332,6 +332,16 @@ export class ResilientBrowserEngine {
           // issue coverage. Alfa audits the local HTML snapshot to avoid a redundant HTTP fetch.
           baseReport.alfaAudits = await AlfaWorker.runAlfaAudits(url, undefined, undefined, snapshotPath);
 
+          // 7c. Merge alfa violations into liveAudits so the dashboard and reports can
+          // show and filter findings by source engine (axe vs alfa).
+          if (baseReport.liveAudits && baseReport.alfaAudits) {
+            const alfaViolations = AlfaWorker.toA11yViolations(baseReport.alfaAudits);
+            baseReport.liveAudits.accessibilityViolations = [
+              ...baseReport.liveAudits.accessibilityViolations,
+              ...alfaViolations
+            ];
+          }
+
           if (!accessibilityOnly) {
             // 8. Compare impact of suspicious third-party scripts by re-auditing with JavaScript disabled
             if (baseReport.offlineAudits) {
