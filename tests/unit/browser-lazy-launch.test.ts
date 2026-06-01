@@ -24,6 +24,11 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
   });
 
   it('does not launch a browser when all queued URLs are unchanged', async () => {
+    // Prevent real Chrome process from being spawned during the test
+    const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
+    vi.spyOn(LighthouseWorker, 'launchChrome').mockResolvedValue(undefined);
+    vi.spyOn(LighthouseWorker, 'killChrome').mockResolvedValue(undefined);
+
     // Stub probePageChange to report all pages unchanged
     vi.spyOn(ResilientBrowserEngine as any, 'probePageChange').mockResolvedValue({
       unchanged: true,
@@ -144,6 +149,8 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
 
     const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
     vi.spyOn(LighthouseWorker, 'auditLiveUrl').mockResolvedValue(null as any);
+    vi.spyOn(LighthouseWorker, 'launchChrome').mockResolvedValue(undefined);
+    vi.spyOn(LighthouseWorker, 'killChrome').mockResolvedValue(undefined);
 
     const pageState = {
       'https://example.gov/page-1': {
