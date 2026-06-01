@@ -1,7 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
-import { parse as parseYaml } from 'yaml';
 
 const REQUEST_TIMEOUT_MS = Number.parseInt(process.env.VITAL_HISTORY_FETCH_TIMEOUT_MS || '20000', 10);
 
