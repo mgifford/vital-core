@@ -23,26 +23,29 @@ on:
         type: boolean
         default: false
 
-# Explicitly set permissions for native, secure GitHub Pages deployment
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
+# Prevent two scan workflows from running simultaneously to avoid a Pages deployment race.
 concurrency:
   group: 'pages'
   cancel-in-progress: false
 
 jobs:
-  compliance-scan:
-    timeout-minutes: 58
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # ─── Job 1: determine scan mode, refresh seeds if needed, fetch and upload history cache ───
+  setup:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      should_scan: ${{ steps.offhours.outputs.should_scan }}
+      scan_intensity: ${{ steps.offhours.outputs.scan_intensity }}
+      deep_refresh: ${{ steps.offhours.outputs.deep_refresh }}
+      monthly_seed_refresh: ${{ steps.offhours.outputs.monthly_seed_refresh }}
+      audit_scope: ${{ steps.offhours.outputs.audit_scope }}
+      enable_multi_engine: ${{ steps.engine_mode.outputs.enable_multi_engine }}
+      # JSON array of target IDs, e.g. '["cms-gov","hhs-gov",...]'
+      targets: ${{ steps.parse_profile.outputs.targets }}
     steps:
       - name: Checkout Source Repository Code
         uses: actions/checkout@v4
@@ -53,48 +56,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'npm'
-
-      - name: Install Monolithic Project Dependencies
-        run: npm ci
-
-      - name: Restore historical run data from current Pages site
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.clear_history == true) }}
-        env:
-          VITAL_PAGES_BASE_URL: ${{ vars.VITAL_PAGES_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
-          VITAL_HISTORY_CACHE_DIR: .history-cache
-        run: npm run history:fetch
-
-      - name: Cache Playwright browser binaries
-        uses: actions/cache@v4
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: playwright-${{ runner.os }}-
-
-      - name: Install Playwright Chromium with system dependencies
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium --with-deps
-
-      - name: Install Playwright Chromium system dependencies
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-
-      - name: Cache Wappalyzer venv
-        uses: actions/cache@v4
-        id: wappalyzer-cache
-        with:
-          path: .tools/wappalyzer-next
-          key: wappalyzer-${{ runner.os }}-${{ hashFiles('.github/wappalyzer-requirements.txt') }}
-
-      - name: Install Wappalyzer Next CLI (isolated venv)
-        if: steps.wappalyzer-cache.outputs.cache-hit != 'true'
-        run: |
-          set -euo pipefail
-          python3 -m venv .tools/wappalyzer-next
-          .tools/wappalyzer-next/bin/python -m pip install --upgrade pip
-          .tools/wappalyzer-next/bin/pip install -r .github/wappalyzer-requirements.txt
 
       - name: Determine scan mode for current time window
         id: offhours
@@ -179,42 +140,214 @@ jobs:
             echo "Engine mode: chromium-only (business-hours window)."
           fi
 
+      - name: Parse profile to extract target IDs for matrix
+        id: parse_profile
+        run: |
+          targets=$(python3 -c "
+          import yaml, json
+          with open('profiles/us-health.yml') as f:
+              profile = yaml.safe_load(f)
+          ids = [t['id'] for t in profile.get('targets', [])]
+          print(json.dumps(ids))
+          ")
+          echo "targets=$targets" >> "$GITHUB_OUTPUT"
+
+      - name: Restore historical run data from current Pages site
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.clear_history == true) && steps.offhours.outputs.should_scan == 'true' }}
+        env:
+          VITAL_PAGES_BASE_URL: ${{ vars.VITAL_PAGES_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+          VITAL_HISTORY_CACHE_DIR: .history-cache
+        run: node scripts/fetch-history.mjs
+
+      - name: Install project dependencies for optional seed refresh
+        if: ${{ steps.offhours.outputs.should_scan == 'true' && ((github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh == true) || steps.offhours.outputs.monthly_seed_refresh == 'true') }}
+        run: npm ci
+
+      - name: Refresh DuckDuckGo priority URL seeds
+        if: ${{ steps.offhours.outputs.should_scan == 'true' && ((github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh == true) || steps.offhours.outputs.monthly_seed_refresh == 'true') }}
+        env:
+          VITAL_HISTORY_CACHE_DIR: .history-cache
+        run: |
+          npm run seeds:refresh profiles/us-health.yml
+          # Copy the refreshed seeds back into the history cache so scan jobs pick them up.
+          mkdir -p .history-cache/runs
+          if [[ -f dist/runs/top-task-seeds.json ]]; then
+            cp dist/runs/top-task-seeds.json .history-cache/runs/top-task-seeds.json
+          fi
+
+      - name: Upload history cache artifact for downstream jobs
+        if: steps.offhours.outputs.should_scan == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: history-cache
+          path: .history-cache/
+          retention-days: 1
+          if-no-files-found: ignore
+
+  # ─── Job 2: scan one target cluster per matrix runner in parallel ───
+  scan:
+    needs: setup
+    if: needs.setup.outputs.should_scan == 'true'
+    timeout-minutes: 58
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        target_id: ${{ fromJson(needs.setup.outputs.targets) }}
+    steps:
+      - name: Checkout Source Repository Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Initialize Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Download history cache from setup job
+        uses: actions/download-artifact@v4
+        with:
+          name: history-cache
+          path: .history-cache/
+        continue-on-error: true
+
+      - name: Cache Playwright browser binaries
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-
+
+      - name: Install Playwright Chromium with system dependencies
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: Install Playwright Chromium system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Cache Wappalyzer venv
+        uses: actions/cache@v4
+        id: wappalyzer-cache
+        with:
+          path: .tools/wappalyzer-next
+          key: wappalyzer-${{ runner.os }}-${{ hashFiles('.github/wappalyzer-requirements.txt') }}
+
+      - name: Install Wappalyzer Next CLI (isolated venv)
+        if: steps.wappalyzer-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          python3 -m venv .tools/wappalyzer-next
+          .tools/wappalyzer-next/bin/python -m pip install --upgrade pip
+          .tools/wappalyzer-next/bin/pip install -r .github/wappalyzer-requirements.txt
+
       - name: Install Playwright Firefox and WebKit with system dependencies (off-hours/deep, cache miss)
-        if: steps.engine_mode.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
+        if: needs.setup.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install firefox webkit --with-deps
 
       - name: Install Playwright Firefox/WebKit system dependencies (off-hours/deep, cache hit)
-        if: steps.engine_mode.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit == 'true'
+        if: needs.setup.outputs.enable_multi_engine == 'true' && steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps firefox webkit
 
-      - name: Run VITAL-Core Core Orchestrator Pipeline
-        if: steps.offhours.outputs.should_scan == 'true'
+      - name: Scan target cluster ${{ matrix.target_id }}
         env:
+          VITAL_TARGET_ID: ${{ matrix.target_id }}
           VITAL_HISTORY_CACHE_DIR: .history-cache
-          VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}
+          VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.target_id }}
           VITAL_WAPPALYZER_CMD: .tools/wappalyzer-next/bin/wappalyzer
           VITAL_ALFA_CMD: node_modules/.bin/alfa
-          VITAL_AUDIT_SCOPE: ${{ steps.offhours.outputs.audit_scope || 'full' }}
-          FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && steps.offhours.outputs.deep_refresh == 'true') || 'false' }}
-          FORCE_PRIORITY_SEED_REFRESH: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_priority_seed_refresh) || (github.event_name == 'schedule' && steps.offhours.outputs.monthly_seed_refresh == 'true') || 'false' }}
-          VITAL_REVALIDATE_AFTER_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '0' || steps.offhours.outputs.scan_intensity == 'ultra_light' && '7' || steps.offhours.outputs.scan_intensity == 'light' && '4' || '2' }}
-          VITAL_UPDATED_WITHIN_DAYS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '7' || steps.offhours.outputs.scan_intensity == 'light' && '10' || '14' }}
-          VITAL_UPDATED_RECHECK_HOURS: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '0' || steps.offhours.outputs.scan_intensity == 'ultra_light' && '24' || steps.offhours.outputs.scan_intensity == 'light' && '12' || '8' }}
-          VITAL_MAX_TIMEOUT_MS: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '90000' || steps.offhours.outputs.scan_intensity == 'ultra_light' && '60000' || steps.offhours.outputs.scan_intensity == 'light' && '50000' || '45000' }}
-          VITAL_SAME_SITE_DELAY_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '6000' || steps.offhours.outputs.scan_intensity == 'light' && '3000' || '1500' }}
+          VITAL_AUDIT_SCOPE: ${{ needs.setup.outputs.audit_scope || 'full' }}
+          FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && needs.setup.outputs.deep_refresh == 'true') || 'false' }}
+          VITAL_REVALIDATE_AFTER_DAYS: ${{ needs.setup.outputs.scan_intensity == 'deep' && '0' || needs.setup.outputs.scan_intensity == 'ultra_light' && '7' || needs.setup.outputs.scan_intensity == 'light' && '4' || '2' }}
+          VITAL_UPDATED_WITHIN_DAYS: ${{ needs.setup.outputs.scan_intensity == 'ultra_light' && '7' || needs.setup.outputs.scan_intensity == 'light' && '10' || '14' }}
+          VITAL_UPDATED_RECHECK_HOURS: ${{ needs.setup.outputs.scan_intensity == 'deep' && '0' || needs.setup.outputs.scan_intensity == 'ultra_light' && '24' || needs.setup.outputs.scan_intensity == 'light' && '12' || '8' }}
+          VITAL_MAX_TIMEOUT_MS: ${{ needs.setup.outputs.scan_intensity == 'deep' && '90000' || needs.setup.outputs.scan_intensity == 'ultra_light' && '60000' || needs.setup.outputs.scan_intensity == 'light' && '50000' || '45000' }}
+          VITAL_SAME_SITE_DELAY_MS: ${{ needs.setup.outputs.scan_intensity == 'ultra_light' && '6000' || needs.setup.outputs.scan_intensity == 'light' && '3000' || '1500' }}
           VITAL_TIMEOUT_BACKOFF_THRESHOLD: '1'
-          VITAL_TIMEOUT_BACKOFF_STEP_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '20000' || steps.offhours.outputs.scan_intensity == 'light' && '15000' || '8000' }}
-          VITAL_TIMEOUT_BACKOFF_MAX_MS: ${{ steps.offhours.outputs.scan_intensity == 'ultra_light' && '90000' || steps.offhours.outputs.scan_intensity == 'light' && '70000' || '50000' }}
-          VITAL_MAX_RUN_MINUTES: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '14' || steps.offhours.outputs.scan_intensity == 'standard' && '8' || steps.offhours.outputs.scan_intensity == 'light' && '4' || '3' }}
+          VITAL_TIMEOUT_BACKOFF_STEP_MS: ${{ needs.setup.outputs.scan_intensity == 'ultra_light' && '20000' || needs.setup.outputs.scan_intensity == 'light' && '15000' || '8000' }}
+          VITAL_TIMEOUT_BACKOFF_MAX_MS: ${{ needs.setup.outputs.scan_intensity == 'ultra_light' && '90000' || needs.setup.outputs.scan_intensity == 'light' && '70000' || '50000' }}
+          VITAL_MAX_RUN_MINUTES: ${{ needs.setup.outputs.scan_intensity == 'deep' && '14' || needs.setup.outputs.scan_intensity == 'standard' && '8' || needs.setup.outputs.scan_intensity == 'light' && '4' || '3' }}
           VITAL_DYNAMIC_BATCH_ENABLE: 'true'
           VITAL_BATCH_SIZE_BASE: '1'
-          VITAL_BATCH_SIZE_MAX: ${{ steps.offhours.outputs.scan_intensity == 'deep' && '10' || steps.offhours.outputs.scan_intensity == 'standard' && '6' || steps.offhours.outputs.scan_intensity == 'light' && '3' || '2' }}
+          VITAL_BATCH_SIZE_MAX: ${{ needs.setup.outputs.scan_intensity == 'deep' && '10' || needs.setup.outputs.scan_intensity == 'standard' && '6' || needs.setup.outputs.scan_intensity == 'light' && '3' || '2' }}
           VITAL_BATCH_ESCALATION_SECONDS: '45'
-          VITAL_ENABLE_MULTI_ENGINE: ${{ steps.engine_mode.outputs.enable_multi_engine }}
+          VITAL_ENABLE_MULTI_ENGINE: ${{ needs.setup.outputs.enable_multi_engine }}
         run: npm run scan
 
+      - name: Upload scan artifact for ${{ matrix.target_id }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-artifact-${{ matrix.target_id }}
+          path: dist/scan-artifacts/
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload HTML snapshots for ${{ matrix.target_id }} (Debugging/Audit)
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-cached-html-snapshots-${{ matrix.target_id }}
+          path: tmp/html-snapshots/
+          retention-days: 1
+          if-no-files-found: ignore
+
+  # ─── Job 3: merge all per-target artifacts, compile the dashboard, and deploy to Pages ───
+  compile-and-deploy:
+    needs: [setup, scan]
+    # Run even if some scan matrix jobs failed so partial results are still published.
+    if: ${{ !cancelled() && needs.setup.outputs.should_scan == 'true' && needs.scan.result != 'skipped' }}
+    timeout-minutes: 20
+    # Pages deployment requires this environment declaration.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout Source Repository Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Initialize Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Download history cache
+        uses: actions/download-artifact@v4
+        with:
+          name: history-cache
+          path: .history-cache/
+        continue-on-error: true
+
+      - name: Download all per-target scan artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: scan-artifact-*
+          path: dist/scan-artifacts/
+          merge-multiple: true
+
+      - name: Compile dashboard from collected scan artifacts
+        env:
+          VITAL_HISTORY_CACHE_DIR: .history-cache
+        run: npm run compile
+
       - name: Verify required generated dashboard artifacts exist
-        if: steps.offhours.outputs.should_scan == 'true'
         run: |
           set -euo pipefail
           required_files=(
@@ -242,25 +375,14 @@ jobs:
 
           echo "Dashboard artifact preflight passed."
 
-      - name: Upload Local Snapshots as Workflow Artifacts (Debugging/Audit)
-        if: steps.offhours.outputs.should_scan == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: raw-cached-html-snapshots
-          path: tmp/html-snapshots/
-          retention-days: 1
-
       - name: Setup GitHub Pages Deployment Context
-        if: steps.offhours.outputs.should_scan == 'true'
         uses: actions/configure-pages@v4
 
       - name: Package Generated Static Dashboard Build
-        if: steps.offhours.outputs.should_scan == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'dist/'
 
       - name: Deploy Compiled Dashboard directly to GitHub Pages Engine
-        if: steps.offhours.outputs.should_scan == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
