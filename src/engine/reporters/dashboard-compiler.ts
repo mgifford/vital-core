@@ -26,21 +26,14 @@ export class DashboardCompiler {
       fs.mkdirSync(this.ASSETS_DIR, { recursive: true });
     }
 
-    const jsonPayload = JSON.stringify(allResults)
-      .replace(/</g, '\\u003c')
-      .replace(/>/g, '\\u003e')
-      .replace(/&/g, '\\u0026')
-      .replace(/\u2028/g, '\\u2028')
-      .replace(/\u2029/g, '\\u2029');
-
     const targetQualityIndex = QualityIndexReporter.buildTargetQualityIndex(allResults);
 
-    const targetQualityPayload = JSON.stringify(targetQualityIndex)
-      .replace(/</g, '\\u003c')
-      .replace(/>/g, '\\u003e')
-      .replace(/&/g, '\\u0026')
-      .replace(/\u2028/g, '\\u2028')
-      .replace(/\u2029/g, '\\u2029');
+    const runsDir = path.join(this.DIST_DIR, 'runs');
+    if (!fs.existsSync(runsDir)) {
+      fs.mkdirSync(runsDir, { recursive: true });
+    }
+    const summaryPayload = this.buildLatestSummary(allResults, targetQualityIndex);
+    fs.writeFileSync(path.join(runsDir, 'latest-summary.json'), JSON.stringify(summaryPayload), 'utf8');
 
     const domainRatings = DomainRatingScorer.buildAllDomainRatings(
       allResults,
@@ -251,8 +244,6 @@ export class DashboardCompiler {
     </div>
   </main>
 ${siteFooterHtml}
-  <script id="vital-dashboard-data" type="application/json">${jsonPayload}</script>
-  <script id="vital-dashboard-target-quality" type="application/json">${targetQualityPayload}</script>
   <script defer src="assets/dashboard.js"></script>
 </body>
 </html>`;
@@ -916,6 +907,87 @@ ${siteFooterHtml}
     return String(seconds) + 's';
   }
 
+  /**
+   * Builds a compact summary payload for `dist/runs/latest-summary.json`.
+   * Strips all large per-violation evidence (HTML snippets, descriptions, instances)
+   * and per-page offline/alfa audit data that is only needed in pre-rendered domain
+   * subpages. The dashboard JS loads this file asynchronously instead of relying on
+   * megabytes of inline JSON embedded in index.html.
+   */
+  private static buildLatestSummary(
+    allResults: TargetScanResult[],
+    targetQuality: TargetQualityIndexEntry[]
+  ): {
+    generatedAt: string;
+    targets: Array<{
+      targetId: string;
+      domain: string;
+      scanDurationMs: number;
+      pagesScanned: Array<{
+        url: string;
+        status: string;
+        errorMessage: string | null;
+        timestamp: string;
+        technologyStack: Array<{ name: string; category: string; version: string | null }>;
+        liveAudits: {
+          lighthouse: {
+            performanceScore: number | null;
+            firstContentfulPaintMs?: number | null;
+            largestContentfulPaintMs?: number | null;
+            speedIndexMs?: number | null;
+          } | null;
+          accessibilityViolations: Array<Record<string, never>>;
+        } | null;
+        thirdPartyImpact: { regressionDetected: boolean } | null;
+      }>;
+    }>;
+    targetQuality: TargetQualityIndexEntry[];
+  } {
+    const targets = allResults.map(target => ({
+      targetId: target.targetId,
+      domain: target.domain,
+      scanDurationMs: target.scanDurationMs,
+      pagesScanned: target.pagesScanned.map(page => ({
+        url: page.url,
+        status: page.status,
+        errorMessage: page.errorMessage,
+        timestamp: page.timestamp,
+        technologyStack: page.technologyStack.map(tech => ({
+          name: tech.name,
+          category: tech.category,
+          version: tech.version
+        })),
+        liveAudits: page.liveAudits
+          ? {
+              lighthouse: page.liveAudits.lighthouse
+                ? {
+                    performanceScore: page.liveAudits.lighthouse.performanceScore,
+                    firstContentfulPaintMs: page.liveAudits.lighthouse.firstContentfulPaintMs,
+                    largestContentfulPaintMs: page.liveAudits.lighthouse.largestContentfulPaintMs,
+                    speedIndexMs: page.liveAudits.lighthouse.speedIndexMs
+                  }
+                : null,
+              // Replace full violation objects with empty stubs to preserve array length
+              // while eliminating large evidence HTML payloads (description, instances, helpUrl).
+              // The dashboard main view only needs the count; detail is in pre-rendered subpages.
+              accessibilityViolations: new Array(
+                page.liveAudits.accessibilityViolations.length
+              ).fill({}) as Array<Record<string, never>>
+            }
+          : null,
+        thirdPartyImpact: page.thirdPartyImpact
+          ? { regressionDetected: page.thirdPartyImpact.regressionDetected }
+          : null
+      }))
+    }));
+
+    return {
+      generatedAt: new Date().toISOString(),
+      targets,
+      targetQuality
+    };
+  }
+
   private static buildDashboardCss(): string {
     return `:root {
   --gov-blue: #112e51;
@@ -1262,20 +1334,6 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
     return String.raw`(function () {
   const REQUEST_TIMEOUT_MS = 8000;
 
-  function readEmbeddedJson(id, fallback) {
-    const element = document.getElementById(id);
-    if (!element) {
-      return fallback;
-    }
-
-    try {
-      const text = String(element.textContent || '');
-      return JSON.parse(text);
-    } catch {
-      return fallback;
-    }
-  }
-
   function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -1361,9 +1419,6 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
     return null;
   }
 
-  const data = readEmbeddedJson('vital-dashboard-data', []);
-  const targetQuality = readEmbeddedJson('vital-dashboard-target-quality', []);
-  const targetQualityMap = new Map(targetQuality.map(item => [item.targetId, item]));
   const summaryEl = document.getElementById('summary');
   const trendSummaryEl = document.getElementById('trend-summary');
   const liveScanPrimaryEl = document.getElementById('live-scan-primary');
@@ -2178,424 +2233,6 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
     setSummaryMetric('unique-pages-week', String(thisWeek.size));
   }
 
-  data.forEach(target => {
-    let targetViolations = 0;
-    let jsRegressionPages = 0;
-    (Array.isArray(target.pagesScanned) ? target.pagesScanned : []).forEach(p => {
-      totalPages += 1;
-      if (p && typeof p.url === 'string' && p.url) {
-        currentRunUniquePages.add(p.url);
-      }
-      const pageStatus = String(p && p.status ? p.status : 'UNKNOWN');
-      if (pageStatus === 'FAILED' || pageStatus === 'WAF_BLOCKED' || pageStatus === 'TIMEOUT') {
-        const fallbackReason = pageStatus === 'WAF_BLOCKED'
-          ? 'Blocked by anti-bot or web application firewall controls.'
-          : pageStatus === 'TIMEOUT'
-            ? 'Scan timed out before audit completion.'
-            : 'Page scan failed before audit completion.';
-        blockedEntries.push({
-          targetId: String(target && target.targetId ? target.targetId : ''),
-          url: String(p && p.url ? p.url : ''),
-          status: pageStatus,
-          reason: String((p && p.errorMessage) || fallbackReason),
-          timestamp: String((p && p.timestamp) || ''),
-          ts: Date.parse(String((p && p.timestamp) || '')) || 0
-        });
-      }
-      targetViolations += p && p.liveAudits && Array.isArray(p.liveAudits.accessibilityViolations)
-        ? p.liveAudits.accessibilityViolations.length
-        : 0;
-      if (p && p.thirdPartyImpact && p.thirdPartyImpact.regressionDetected) {
-        jsRegressionPages += 1;
-      }
-      const stack = Array.isArray(p && p.technologyStack) ? p.technologyStack : [];
-      const targetId = String(target && target.targetId ? target.targetId : 'unknown');
-      const domain = String(target && target.domain ? target.domain : '');
-      const domainAggregate = softwareByDomain.get(targetId) || {
-        targetId,
-        domain,
-        categories: new Set(),
-        versions: new Set(),
-        technologies: new Map()
-      };
-
-      stack.forEach(tech => {
-        const displayName = String(tech && tech.name ? tech.name : '').trim();
-        const name = displayName.toLowerCase();
-        if (name) {
-          softwareFound.add(name);
-
-          const existing = domainAggregate.technologies.get(name) || {
-            displayName,
-            categories: new Set(),
-            versions: new Set()
-          };
-
-          const category = String(tech && tech.category ? tech.category : '').trim();
-          if (category) {
-            existing.categories.add(category);
-            domainAggregate.categories.add(category);
-          }
-
-          const version = String(tech && tech.version ? tech.version : '').trim();
-          if (version) {
-            existing.versions.add(version);
-            domainAggregate.versions.add(version);
-          }
-
-          domainAggregate.technologies.set(name, existing);
-        }
-      });
-
-      softwareByDomain.set(targetId, domainAggregate);
-    });
-    totalViolations += targetViolations;
-
-    const quality = targetQualityMap.get(target.targetId);
-    leaderboardRows.push({
-      target,
-      targetViolations,
-      jsRegressionPages,
-      quality,
-      score: quality ? Number(quality.score) : -1
-    });
-  });
-
-  const latestPages = [];
-  data.forEach(target => {
-    const pages = Array.isArray(target && target.pagesScanned) ? target.pagesScanned : [];
-    pages.forEach(page => {
-      latestPages.push({
-        target,
-        page,
-        ts: Date.parse(String(page && page.timestamp ? page.timestamp : '')) || 0
-      });
-    });
-  });
-
-  if (latestPages.length === 0) {
-    const emptyRow = document.createElement('tr');
-    const emptyCell = document.createElement('td');
-    emptyCell.colSpan = 5;
-    emptyCell.textContent = 'No page-level scan records are available in the latest run.';
-    emptyRow.appendChild(emptyCell);
-    pagesBodyEl.appendChild(emptyRow);
-  } else {
-    latestPages
-      .sort((a, b) => b.ts - a.ts)
-      .slice(0, 300)
-      .forEach(entry => appendLatestPageRow(entry.target, entry.page));
-  }
-  renderPagesStatusSummary(latestPages);
-
-  addSummaryCard('targets-total', 'Ecosystem Targets Evaluated', String(data.length), '');
-  addSummaryCard('software-total', 'Software found', String(softwareFound.size), '');
-  addSummaryCard('blocked-total', 'Total Blocked System Issues', String(blockedEntries.length), blockedEntries.length > 0 ? 'var(--critical-red)' : '');
-  addSummaryCard('violations-total', 'Total Accessibility Violations', String(totalViolations), totalViolations > 0 ? 'var(--critical-red)' : '');
-  addSummaryCard('unique-pages-total', 'Unique Pages Scanned (All Time)', String(currentRunUniquePages.size), '');
-  addSummaryCard('unique-pages-week', 'Unique Pages Scanned (This Week)', String(currentRunUniquePages.size), '');
-  renderBlockedIssues();
-  renderSoftwareDetections();
-  populateDomainSelectMenu(data);
-
-  leaderboardRows
-    .sort((a, b) => {
-      if (b.score !== a.score) {
-        return b.score - a.score;
-      }
-      if (a.targetViolations !== b.targetViolations) {
-        return a.targetViolations - b.targetViolations;
-      }
-      return String(a.target.targetId).localeCompare(String(b.target.targetId));
-    })
-    .forEach((row, index) => {
-      const target = row.target;
-      const tr = document.createElement('tr');
-
-      const domainCell = document.createElement('td');
-      const domainStrong = document.createElement('strong');
-      domainStrong.textContent = '#' + String(index + 1) + ' ' + String(target.targetId || '').toUpperCase();
-      const domainBreak = document.createElement('br');
-      const domainSmall = document.createElement('small');
-      domainSmall.textContent = String(target.domain || '');
-      const domainLinks = document.createElement('div');
-      domainLinks.className = 'small-muted-inline small-block-gap';
-
-      const domainIdSegment = toDomainIdSegment(target.targetId);
-      const domainPages = [
-        ['Overview', 'index.html'],
-        ['Accessibility', 'accessibility.html'],
-        ['Performance', 'performance.html'],
-        ['Content', 'content.html'],
-        ['Third-party', 'third-party.html']
-      ];
-
-      domainPages.forEach((item, linkIndex) => {
-        const link = document.createElement('a');
-        link.href = 'domains/' + domainIdSegment + '/' + item[1];
-        link.textContent = item[0];
-        domainLinks.appendChild(link);
-
-        if (linkIndex < domainPages.length - 1) {
-          domainLinks.appendChild(document.createTextNode(' | '));
-        }
-      });
-      domainCell.appendChild(domainStrong);
-      domainCell.appendChild(domainBreak);
-      domainCell.appendChild(domainSmall);
-      domainCell.appendChild(domainLinks);
-
-      const pagesCell = document.createElement('td');
-      const scannedCount = Array.isArray(target.pagesScanned) ? target.pagesScanned.length : 0;
-      const initialEstimate = sizeEstimateByTarget.get(target.targetId);
-      const initialCompletion = estimateDomainCompletion(scannedCount, initialEstimate, target.scanDurationMs);
-      const scannedText = document.createElement('div');
-      scannedText.setAttribute('data-scanned-summary-target-id', String(target.targetId || ''));
-      if (initialCompletion.estimated && initialCompletion.estimated > 0) {
-        scannedText.textContent = formatNumber(scannedCount) + ' / ' + formatNumber(initialCompletion.estimated) + ' pages scanned';
-      } else {
-        scannedText.textContent = formatNumber(scannedCount) + ' pages scanned';
-      }
-      const estimateText = document.createElement('div');
-      estimateText.className = 'small-muted-inline';
-      estimateText.setAttribute('data-size-estimate-target-id', String(target.targetId || ''));
-      estimateText.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(target.targetId));
-
-      const progressWrap = document.createElement('div');
-      progressWrap.className = 'progress-wrap';
-
-      const progressTrack = document.createElement('div');
-      progressTrack.className = 'progress-track';
-      const progressFill = document.createElement('div');
-      progressFill.className = 'progress-fill';
-      progressFill.setAttribute('data-progress-fill-target-id', String(target.targetId || ''));
-      progressFill.style.width = initialCompletion.coverageRatio === null
-        ? '0%'
-        : String(Math.max(0, Math.min(100, Math.round(initialCompletion.coverageRatio * 100)))) + '%';
-      progressTrack.appendChild(progressFill);
-
-      const progressMeta = document.createElement('div');
-      progressMeta.className = 'progress-meta';
-      progressMeta.setAttribute('data-progress-meta-target-id', String(target.targetId || ''));
-      progressMeta.textContent = buildCoverageMetaText(initialCompletion);
-
-      progressWrap.appendChild(progressTrack);
-      progressWrap.appendChild(progressMeta);
-      pagesCell.appendChild(scannedText);
-      pagesCell.appendChild(estimateText);
-      pagesCell.appendChild(progressWrap);
-
-      const scoreCell = document.createElement('td');
-      if (row.quality) {
-        const qualityBadge = document.createElement('span');
-        qualityBadge.className = 'badge';
-        if (row.quality.gateStatus !== 'PASS') {
-          qualityBadge.className += ' alert';
-        }
-        qualityBadge.textContent = String(Number(row.quality.score).toFixed(2)) + ' (' + row.quality.gateStatus + ')';
-        scoreCell.appendChild(qualityBadge);
-      } else {
-        scoreCell.textContent = 'n/a';
-      }
-
-      const recommendationsCell = document.createElement('td');
-      const recommendationBody = document.createElement('div');
-      recommendationBody.textContent = buildRecommendations(row.quality, row.targetViolations, row.jsRegressionPages);
-
-      const topUrlsBlock = document.createElement('div');
-      topUrlsBlock.className = 'small-muted-inline small-block-gap';
-      topUrlsBlock.setAttribute('data-top-urls-target-id', String(target.targetId || ''));
-      topUrlsBlock.textContent = 'Top popular URLs: loading...';
-
-      const lighthouseSummary = summarizeLighthouseMetrics(target.pagesScanned);
-      const lighthouseBlock = document.createElement('div');
-      lighthouseBlock.className = 'small-muted-inline small-block-gap';
-
-      const lighthouseLabel = document.createElement('span');
-      lighthouseLabel.textContent = 'Lighthouse: ';
-      lighthouseBlock.appendChild(lighthouseLabel);
-
-      const metrics = [
-        { label: 'Perf', key: 'performance', value: lighthouseSummary.performance, suffix: '' },
-        { label: 'FCP', key: 'fcp', value: lighthouseSummary.fcp, suffix: 'ms' },
-        { label: 'LCP', key: 'lcp', value: lighthouseSummary.lcp, suffix: 'ms' },
-        { label: 'SI', key: 'speedIndex', value: lighthouseSummary.speedIndex, suffix: 'ms' }
-      ];
-
-      metrics.forEach((metric, idx) => {
-        const metricSpan = document.createElement('span');
-        metricSpan.style.color = metricColor(metric.key, metric.value);
-        metricSpan.textContent = metric.label + ' ' + String(metric.value === null ? 'n/a' : metric.value) + metric.suffix;
-        lighthouseBlock.appendChild(metricSpan);
-        if (idx < metrics.length - 1) {
-          lighthouseBlock.appendChild(document.createTextNode(' | '));
-        }
-      });
-
-      const reportLinks = document.createElement('div');
-      reportLinks.className = 'small-muted-inline small-block-gap';
-      const reportMdLink = document.createElement('a');
-      reportMdLink.href = 'reports/' + target.targetId + '_issues.md';
-      reportMdLink.textContent = 'Details';
-      const divider = document.createTextNode(' | ');
-      const reportCsvLink = document.createElement('a');
-      reportCsvLink.href = 'reports/' + target.targetId + '_issues.csv';
-      reportCsvLink.textContent = 'Data';
-      reportLinks.appendChild(reportMdLink);
-      reportLinks.appendChild(divider);
-      reportLinks.appendChild(reportCsvLink);
-
-      recommendationsCell.appendChild(recommendationBody);
-      recommendationsCell.appendChild(lighthouseBlock);
-      recommendationsCell.appendChild(topUrlsBlock);
-      recommendationsCell.appendChild(reportLinks);
-
-      tr.appendChild(domainCell);
-      tr.appendChild(pagesCell);
-      tr.appendChild(scoreCell);
-      tr.appendChild(recommendationsCell);
-      tbodyEl.appendChild(tr);
-    });
-
-  fetchJsonWithRetry('runs/top-task-seeds.json', { retries: 2, timeoutMs: 6000 })
-    .then(snapshot => {
-      const targets = Array.isArray(snapshot && snapshot.targets) ? snapshot.targets : [];
-      targets.forEach(entry => {
-        if (entry && typeof entry.targetId === 'string' && typeof entry.estimatedIndexedPages === 'number') {
-          sizeEstimateByTarget.set(entry.targetId, entry.estimatedIndexedPages);
-        }
-        if (entry && typeof entry.targetId === 'string' && Array.isArray(entry.topUrls)) {
-          const safeTopUrls = entry.topUrls.filter(url => typeof url === 'string').slice(0, 3);
-          topUrlsByTarget.set(entry.targetId, safeTopUrls);
-        }
-      });
-
-      const estimateNodes = document.querySelectorAll('[data-size-estimate-target-id]');
-      estimateNodes.forEach(node => {
-        const targetId = node.getAttribute('data-size-estimate-target-id') || '';
-        node.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(targetId));
-      });
-
-      const scannedSummaryNodes = document.querySelectorAll('[data-scanned-summary-target-id]');
-      scannedSummaryNodes.forEach(node => {
-        const targetId = node.getAttribute('data-scanned-summary-target-id') || '';
-        const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
-        const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
-        const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
-        if (completion.estimated && completion.estimated > 0) {
-          node.textContent = formatNumber(scannedCount) + ' / ' + formatNumber(completion.estimated) + ' pages scanned';
-        } else {
-          node.textContent = formatNumber(scannedCount) + ' pages scanned';
-        }
-      });
-
-      const progressFillNodes = document.querySelectorAll('[data-progress-fill-target-id]');
-      progressFillNodes.forEach(node => {
-        const targetId = node.getAttribute('data-progress-fill-target-id') || '';
-        const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
-        const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
-        const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
-        node.style.width = completion.coverageRatio === null
-          ? '0%'
-          : String(Math.max(0, Math.min(100, Math.round(completion.coverageRatio * 100)))) + '%';
-      });
-
-      const progressMetaNodes = document.querySelectorAll('[data-progress-meta-target-id]');
-      progressMetaNodes.forEach(node => {
-        const targetId = node.getAttribute('data-progress-meta-target-id') || '';
-        const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
-        const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
-        const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
-        node.textContent = buildCoverageMetaText(completion);
-      });
-
-      const topUrlNodes = document.querySelectorAll('[data-top-urls-target-id]');
-      topUrlNodes.forEach(node => {
-        const targetId = node.getAttribute('data-top-urls-target-id') || '';
-        const topUrls = topUrlsByTarget.get(targetId) || [];
-        while (node.firstChild) {
-          node.removeChild(node.firstChild);
-        }
-
-        if (!Array.isArray(topUrls) || topUrls.length === 0) {
-          node.textContent = 'Top popular URLs: n/a';
-          return;
-        }
-
-        const label = document.createElement('span');
-        label.textContent = 'Top popular URLs: ';
-        node.appendChild(label);
-
-        topUrls.forEach((url, index) => {
-          const link = document.createElement('a');
-          link.href = String(url);
-          link.textContent = String(url);
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          node.appendChild(link);
-
-          if (index < topUrls.length - 1) {
-            node.appendChild(document.createTextNode(' | '));
-          }
-        });
-      });
-    })
-    .catch(() => {
-      const topUrlNodes = document.querySelectorAll('[data-top-urls-target-id]');
-      topUrlNodes.forEach(node => {
-        node.textContent = 'Top popular URLs: n/a';
-      });
-    });
-
-  fetchJsonWithRetry('runs/index.json', { retries: 2, timeoutMs: 6000 })
-    .then(async index => {
-      if (!index || !Array.isArray(index.runs) || index.runs.length === 0) {
-        const emptyRow = document.createElement('tr');
-        const emptyCell = document.createElement('td');
-        emptyCell.colSpan = 5;
-        emptyCell.textContent = 'No historical runs available yet.';
-        emptyRow.appendChild(emptyCell);
-        historyBodyEl.appendChild(emptyRow);
-        return;
-      }
-
-      const runCount = index.runs.length;
-      const pagesAcrossRetainedRuns = index.runs.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
-      const todayPrefix = new Date().toISOString().slice(0, 10);
-      const runsToday = index.runs.filter(run => String(run && run.generatedAt ? run.generatedAt : '').startsWith(todayPrefix));
-      const pagesToday = runsToday.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
-
-      appendTrendCard(
-        'Runs Recorded Today',
-        String(runsToday.length),
-        'Cadence: hourly schedule plus any manual runs.',
-        ''
-      );
-      appendTrendCard(
-        'Pages Scanned Today',
-        formatNumber(pagesToday),
-        'Sum across today\'s recorded runs in run history.',
-        ''
-      );
-      appendTrendCard(
-        'Pages Scanned (Retained History)',
-        formatNumber(pagesAcrossRetainedRuns),
-        'Total across latest ' + String(runCount) + ' runs retained in runs/index.json.',
-        ''
-      );
-
-      index.runs.slice(0, 20).forEach(run => appendHistoryRow(run));
-      await updateUniqueCoverageFromHistory(index);
-    })
-    .catch(() => {
-      const errorRow = document.createElement('tr');
-      const errorCell = document.createElement('td');
-      errorCell.colSpan = 5;
-      errorCell.textContent = 'Run history index could not be loaded.';
-      errorRow.appendChild(errorCell);
-      historyBodyEl.appendChild(errorRow);
-    });
-
   initThemeToggle();
   updateLiveScanTicker();
   setInterval(updateLiveScanTicker, 30000);
@@ -2763,6 +2400,441 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
       cell.textContent = 'Domain ongoing reports could not be loaded.';
       row.appendChild(cell);
       ongoingBodyEl.appendChild(row);
+    });
+
+  fetchJsonWithRetry('runs/latest-summary.json', { retries: 2, timeoutMs: 8000 })
+    .then(summary => {
+      const data = Array.isArray(summary && summary.targets) ? summary.targets : [];
+      const targetQuality = Array.isArray(summary && summary.targetQuality) ? summary.targetQuality : [];
+      const targetQualityMap = new Map(targetQuality.map(item => [item.targetId, item]));
+
+      data.forEach(target => {
+        let targetViolations = 0;
+        let jsRegressionPages = 0;
+        (Array.isArray(target.pagesScanned) ? target.pagesScanned : []).forEach(p => {
+          totalPages += 1;
+          if (p && typeof p.url === 'string' && p.url) {
+            currentRunUniquePages.add(p.url);
+          }
+          const pageStatus = String(p && p.status ? p.status : 'UNKNOWN');
+          if (pageStatus === 'FAILED' || pageStatus === 'WAF_BLOCKED' || pageStatus === 'TIMEOUT') {
+            const fallbackReason = pageStatus === 'WAF_BLOCKED'
+              ? 'Blocked by anti-bot or web application firewall controls.'
+              : pageStatus === 'TIMEOUT'
+                ? 'Scan timed out before audit completion.'
+                : 'Page scan failed before audit completion.';
+            blockedEntries.push({
+              targetId: String(target && target.targetId ? target.targetId : ''),
+              url: String(p && p.url ? p.url : ''),
+              status: pageStatus,
+              reason: String((p && p.errorMessage) || fallbackReason),
+              timestamp: String((p && p.timestamp) || ''),
+              ts: Date.parse(String((p && p.timestamp) || '')) || 0
+            });
+          }
+          targetViolations += p && p.liveAudits && Array.isArray(p.liveAudits.accessibilityViolations)
+            ? p.liveAudits.accessibilityViolations.length
+            : 0;
+          if (p && p.thirdPartyImpact && p.thirdPartyImpact.regressionDetected) {
+            jsRegressionPages += 1;
+          }
+          const stack = Array.isArray(p && p.technologyStack) ? p.technologyStack : [];
+          const targetId = String(target && target.targetId ? target.targetId : 'unknown');
+          const domain = String(target && target.domain ? target.domain : '');
+          const domainAggregate = softwareByDomain.get(targetId) || {
+            targetId,
+            domain,
+            categories: new Set(),
+            versions: new Set(),
+            technologies: new Map()
+          };
+
+          stack.forEach(tech => {
+            const displayName = String(tech && tech.name ? tech.name : '').trim();
+            const name = displayName.toLowerCase();
+            if (name) {
+              softwareFound.add(name);
+
+              const existing = domainAggregate.technologies.get(name) || {
+                displayName,
+                categories: new Set(),
+                versions: new Set()
+              };
+
+              const category = String(tech && tech.category ? tech.category : '').trim();
+              if (category) {
+                existing.categories.add(category);
+                domainAggregate.categories.add(category);
+              }
+
+              const version = String(tech && tech.version ? tech.version : '').trim();
+              if (version) {
+                existing.versions.add(version);
+                domainAggregate.versions.add(version);
+              }
+
+              domainAggregate.technologies.set(name, existing);
+            }
+          });
+
+          softwareByDomain.set(targetId, domainAggregate);
+        });
+        totalViolations += targetViolations;
+
+        const quality = targetQualityMap.get(target.targetId);
+        leaderboardRows.push({
+          target,
+          targetViolations,
+          jsRegressionPages,
+          quality,
+          score: quality ? Number(quality.score) : -1
+        });
+      });
+
+      const latestPages = [];
+      data.forEach(target => {
+        const pages = Array.isArray(target && target.pagesScanned) ? target.pagesScanned : [];
+        pages.forEach(page => {
+          latestPages.push({
+            target,
+            page,
+            ts: Date.parse(String(page && page.timestamp ? page.timestamp : '')) || 0
+          });
+        });
+      });
+
+      if (latestPages.length === 0) {
+        const emptyRow = document.createElement('tr');
+        const emptyCell = document.createElement('td');
+        emptyCell.colSpan = 5;
+        emptyCell.textContent = 'No page-level scan records are available in the latest run.';
+        emptyRow.appendChild(emptyCell);
+        pagesBodyEl.appendChild(emptyRow);
+      } else {
+        latestPages
+          .sort((a, b) => b.ts - a.ts)
+          .slice(0, 300)
+          .forEach(entry => appendLatestPageRow(entry.target, entry.page));
+      }
+      renderPagesStatusSummary(latestPages);
+
+      addSummaryCard('targets-total', 'Ecosystem Targets Evaluated', String(data.length), '');
+      addSummaryCard('software-total', 'Software found', String(softwareFound.size), '');
+      addSummaryCard('blocked-total', 'Total Blocked System Issues', String(blockedEntries.length), blockedEntries.length > 0 ? 'var(--critical-red)' : '');
+      addSummaryCard('violations-total', 'Total Accessibility Violations', String(totalViolations), totalViolations > 0 ? 'var(--critical-red)' : '');
+      addSummaryCard('unique-pages-total', 'Unique Pages Scanned (All Time)', String(currentRunUniquePages.size), '');
+      addSummaryCard('unique-pages-week', 'Unique Pages Scanned (This Week)', String(currentRunUniquePages.size), '');
+      renderBlockedIssues();
+      renderSoftwareDetections();
+      populateDomainSelectMenu(data);
+
+      leaderboardRows
+        .sort((a, b) => {
+          if (b.score !== a.score) {
+            return b.score - a.score;
+          }
+          if (a.targetViolations !== b.targetViolations) {
+            return a.targetViolations - b.targetViolations;
+          }
+          return String(a.target.targetId).localeCompare(String(b.target.targetId));
+        })
+        .forEach((row, index) => {
+          const target = row.target;
+          const tr = document.createElement('tr');
+
+          const domainCell = document.createElement('td');
+          const domainStrong = document.createElement('strong');
+          domainStrong.textContent = '#' + String(index + 1) + ' ' + String(target.targetId || '').toUpperCase();
+          const domainBreak = document.createElement('br');
+          const domainSmall = document.createElement('small');
+          domainSmall.textContent = String(target.domain || '');
+          const domainLinks = document.createElement('div');
+          domainLinks.className = 'small-muted-inline small-block-gap';
+
+          const domainIdSegment = toDomainIdSegment(target.targetId);
+          const domainPages = [
+            ['Overview', 'index.html'],
+            ['Accessibility', 'accessibility.html'],
+            ['Performance', 'performance.html'],
+            ['Content', 'content.html'],
+            ['Third-party', 'third-party.html']
+          ];
+
+          domainPages.forEach((item, linkIndex) => {
+            const link = document.createElement('a');
+            link.href = 'domains/' + domainIdSegment + '/' + item[1];
+            link.textContent = item[0];
+            domainLinks.appendChild(link);
+
+            if (linkIndex < domainPages.length - 1) {
+              domainLinks.appendChild(document.createTextNode(' | '));
+            }
+          });
+          domainCell.appendChild(domainStrong);
+          domainCell.appendChild(domainBreak);
+          domainCell.appendChild(domainSmall);
+          domainCell.appendChild(domainLinks);
+
+          const pagesCell = document.createElement('td');
+          const scannedCount = Array.isArray(target.pagesScanned) ? target.pagesScanned.length : 0;
+          const initialEstimate = sizeEstimateByTarget.get(target.targetId);
+          const initialCompletion = estimateDomainCompletion(scannedCount, initialEstimate, target.scanDurationMs);
+          const scannedText = document.createElement('div');
+          scannedText.setAttribute('data-scanned-summary-target-id', String(target.targetId || ''));
+          if (initialCompletion.estimated && initialCompletion.estimated > 0) {
+            scannedText.textContent = formatNumber(scannedCount) + ' / ' + formatNumber(initialCompletion.estimated) + ' pages scanned';
+          } else {
+            scannedText.textContent = formatNumber(scannedCount) + ' pages scanned';
+          }
+          const estimateText = document.createElement('div');
+          estimateText.className = 'small-muted-inline';
+          estimateText.setAttribute('data-size-estimate-target-id', String(target.targetId || ''));
+          estimateText.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(target.targetId));
+
+          const progressWrap = document.createElement('div');
+          progressWrap.className = 'progress-wrap';
+
+          const progressTrack = document.createElement('div');
+          progressTrack.className = 'progress-track';
+          const progressFill = document.createElement('div');
+          progressFill.className = 'progress-fill';
+          progressFill.setAttribute('data-progress-fill-target-id', String(target.targetId || ''));
+          progressFill.style.width = initialCompletion.coverageRatio === null
+            ? '0%'
+            : String(Math.max(0, Math.min(100, Math.round(initialCompletion.coverageRatio * 100)))) + '%';
+          progressTrack.appendChild(progressFill);
+
+          const progressMeta = document.createElement('div');
+          progressMeta.className = 'progress-meta';
+          progressMeta.setAttribute('data-progress-meta-target-id', String(target.targetId || ''));
+          progressMeta.textContent = buildCoverageMetaText(initialCompletion);
+
+          progressWrap.appendChild(progressTrack);
+          progressWrap.appendChild(progressMeta);
+          pagesCell.appendChild(scannedText);
+          pagesCell.appendChild(estimateText);
+          pagesCell.appendChild(progressWrap);
+
+          const scoreCell = document.createElement('td');
+          if (row.quality) {
+            const qualityBadge = document.createElement('span');
+            qualityBadge.className = 'badge';
+            if (row.quality.gateStatus !== 'PASS') {
+              qualityBadge.className += ' alert';
+            }
+            qualityBadge.textContent = String(Number(row.quality.score).toFixed(2)) + ' (' + row.quality.gateStatus + ')';
+            scoreCell.appendChild(qualityBadge);
+          } else {
+            scoreCell.textContent = 'n/a';
+          }
+
+          const recommendationsCell = document.createElement('td');
+          const recommendationBody = document.createElement('div');
+          recommendationBody.textContent = buildRecommendations(row.quality, row.targetViolations, row.jsRegressionPages);
+
+          const topUrlsBlock = document.createElement('div');
+          topUrlsBlock.className = 'small-muted-inline small-block-gap';
+          topUrlsBlock.setAttribute('data-top-urls-target-id', String(target.targetId || ''));
+          topUrlsBlock.textContent = 'Top popular URLs: loading...';
+
+          const lighthouseSummary = summarizeLighthouseMetrics(target.pagesScanned);
+          const lighthouseBlock = document.createElement('div');
+          lighthouseBlock.className = 'small-muted-inline small-block-gap';
+
+          const lighthouseLabel = document.createElement('span');
+          lighthouseLabel.textContent = 'Lighthouse: ';
+          lighthouseBlock.appendChild(lighthouseLabel);
+
+          const metrics = [
+            { label: 'Perf', key: 'performance', value: lighthouseSummary.performance, suffix: '' },
+            { label: 'FCP', key: 'fcp', value: lighthouseSummary.fcp, suffix: 'ms' },
+            { label: 'LCP', key: 'lcp', value: lighthouseSummary.lcp, suffix: 'ms' },
+            { label: 'SI', key: 'speedIndex', value: lighthouseSummary.speedIndex, suffix: 'ms' }
+          ];
+
+          metrics.forEach((metric, idx) => {
+            const metricSpan = document.createElement('span');
+            metricSpan.style.color = metricColor(metric.key, metric.value);
+            metricSpan.textContent = metric.label + ' ' + String(metric.value === null ? 'n/a' : metric.value) + metric.suffix;
+            lighthouseBlock.appendChild(metricSpan);
+            if (idx < metrics.length - 1) {
+              lighthouseBlock.appendChild(document.createTextNode(' | '));
+            }
+          });
+
+          const reportLinks = document.createElement('div');
+          reportLinks.className = 'small-muted-inline small-block-gap';
+          const reportMdLink = document.createElement('a');
+          reportMdLink.href = 'reports/' + target.targetId + '_issues.md';
+          reportMdLink.textContent = 'Details';
+          const divider = document.createTextNode(' | ');
+          const reportCsvLink = document.createElement('a');
+          reportCsvLink.href = 'reports/' + target.targetId + '_issues.csv';
+          reportCsvLink.textContent = 'Data';
+          reportLinks.appendChild(reportMdLink);
+          reportLinks.appendChild(divider);
+          reportLinks.appendChild(reportCsvLink);
+
+          recommendationsCell.appendChild(recommendationBody);
+          recommendationsCell.appendChild(lighthouseBlock);
+          recommendationsCell.appendChild(topUrlsBlock);
+          recommendationsCell.appendChild(reportLinks);
+
+          tr.appendChild(domainCell);
+          tr.appendChild(pagesCell);
+          tr.appendChild(scoreCell);
+          tr.appendChild(recommendationsCell);
+          tbodyEl.appendChild(tr);
+        });
+
+      fetchJsonWithRetry('runs/top-task-seeds.json', { retries: 2, timeoutMs: 6000 })
+        .then(snapshot => {
+          const targets = Array.isArray(snapshot && snapshot.targets) ? snapshot.targets : [];
+          targets.forEach(entry => {
+            if (entry && typeof entry.targetId === 'string' && typeof entry.estimatedIndexedPages === 'number') {
+              sizeEstimateByTarget.set(entry.targetId, entry.estimatedIndexedPages);
+            }
+            if (entry && typeof entry.targetId === 'string' && Array.isArray(entry.topUrls)) {
+              const safeTopUrls = entry.topUrls.filter(url => typeof url === 'string').slice(0, 3);
+              topUrlsByTarget.set(entry.targetId, safeTopUrls);
+            }
+          });
+
+          const estimateNodes = document.querySelectorAll('[data-size-estimate-target-id]');
+          estimateNodes.forEach(node => {
+            const targetId = node.getAttribute('data-size-estimate-target-id') || '';
+            node.textContent = formatEstimatedDomainSize(sizeEstimateByTarget.get(targetId));
+          });
+
+          const scannedSummaryNodes = document.querySelectorAll('[data-scanned-summary-target-id]');
+          scannedSummaryNodes.forEach(node => {
+            const targetId = node.getAttribute('data-scanned-summary-target-id') || '';
+            const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
+            const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
+            const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
+            if (completion.estimated && completion.estimated > 0) {
+              node.textContent = formatNumber(scannedCount) + ' / ' + formatNumber(completion.estimated) + ' pages scanned';
+            } else {
+              node.textContent = formatNumber(scannedCount) + ' pages scanned';
+            }
+          });
+
+          const progressFillNodes = document.querySelectorAll('[data-progress-fill-target-id]');
+          progressFillNodes.forEach(node => {
+            const targetId = node.getAttribute('data-progress-fill-target-id') || '';
+            const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
+            const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
+            const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
+            node.style.width = completion.coverageRatio === null
+              ? '0%'
+              : String(Math.max(0, Math.min(100, Math.round(completion.coverageRatio * 100)))) + '%';
+          });
+
+          const progressMetaNodes = document.querySelectorAll('[data-progress-meta-target-id]');
+          progressMetaNodes.forEach(node => {
+            const targetId = node.getAttribute('data-progress-meta-target-id') || '';
+            const match = data.find(target => String(target && target.targetId ? target.targetId : '') === targetId);
+            const scannedCount = match && Array.isArray(match.pagesScanned) ? match.pagesScanned.length : 0;
+            const completion = estimateDomainCompletion(scannedCount, sizeEstimateByTarget.get(targetId), match ? match.scanDurationMs : 0);
+            node.textContent = buildCoverageMetaText(completion);
+          });
+
+          const topUrlNodes = document.querySelectorAll('[data-top-urls-target-id]');
+          topUrlNodes.forEach(node => {
+            const targetId = node.getAttribute('data-top-urls-target-id') || '';
+            const topUrls = topUrlsByTarget.get(targetId) || [];
+            while (node.firstChild) {
+              node.removeChild(node.firstChild);
+            }
+
+            if (!Array.isArray(topUrls) || topUrls.length === 0) {
+              node.textContent = 'Top popular URLs: n/a';
+              return;
+            }
+
+            const label = document.createElement('span');
+            label.textContent = 'Top popular URLs: ';
+            node.appendChild(label);
+
+            topUrls.forEach((url, index) => {
+              const link = document.createElement('a');
+              link.href = String(url);
+              link.textContent = String(url);
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+              node.appendChild(link);
+
+              if (index < topUrls.length - 1) {
+                node.appendChild(document.createTextNode(' | '));
+              }
+            });
+          });
+        })
+        .catch(() => {
+          const topUrlNodes = document.querySelectorAll('[data-top-urls-target-id]');
+          topUrlNodes.forEach(node => {
+            node.textContent = 'Top popular URLs: n/a';
+          });
+        });
+
+      fetchJsonWithRetry('runs/index.json', { retries: 2, timeoutMs: 6000 })
+        .then(async index => {
+          if (!index || !Array.isArray(index.runs) || index.runs.length === 0) {
+            const emptyRow = document.createElement('tr');
+            const emptyCell = document.createElement('td');
+            emptyCell.colSpan = 5;
+            emptyCell.textContent = 'No historical runs available yet.';
+            emptyRow.appendChild(emptyCell);
+            historyBodyEl.appendChild(emptyRow);
+            return;
+          }
+
+          const runCount = index.runs.length;
+          const pagesAcrossRetainedRuns = index.runs.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
+          const todayPrefix = new Date().toISOString().slice(0, 10);
+          const runsToday = index.runs.filter(run => String(run && run.generatedAt ? run.generatedAt : '').startsWith(todayPrefix));
+          const pagesToday = runsToday.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
+
+          appendTrendCard(
+            'Runs Recorded Today',
+            String(runsToday.length),
+            'Cadence: hourly schedule plus any manual runs.',
+            ''
+          );
+          appendTrendCard(
+            'Pages Scanned Today',
+            formatNumber(pagesToday),
+            'Sum across today\'s recorded runs in run history.',
+            ''
+          );
+          appendTrendCard(
+            'Pages Scanned (Retained History)',
+            formatNumber(pagesAcrossRetainedRuns),
+            'Total across latest ' + String(runCount) + ' runs retained in runs/index.json.',
+            ''
+          );
+
+          index.runs.slice(0, 20).forEach(run => appendHistoryRow(run));
+          await updateUniqueCoverageFromHistory(index);
+        })
+        .catch(() => {
+          const errorRow = document.createElement('tr');
+          const errorCell = document.createElement('td');
+          errorCell.colSpan = 5;
+          errorCell.textContent = 'Run history index could not be loaded.';
+          errorRow.appendChild(errorCell);
+          historyBodyEl.appendChild(errorRow);
+        });
+    })
+    .catch(() => {
+      if (summaryEl) {
+        const loadErrCard = document.createElement('div');
+        loadErrCard.className = 'card';
+        const loadErrMsg = document.createElement('p');
+        loadErrMsg.textContent = 'Dashboard summary data could not be loaded. Please try refreshing.';
+        loadErrCard.appendChild(loadErrMsg);
+        summaryEl.appendChild(loadErrCard);
+      }
     });
 })();`;
   }
