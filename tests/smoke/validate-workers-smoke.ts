@@ -12,7 +12,7 @@ async function verifyWorkersSmoke() {
     const singleUrlTestQueue = ['https://www.cms.gov/medicare/physician-fee-schedule/search'];
 
     console.log('🏃 Running analysis pipelines across targeted domain...');
-    const results = await ResilientBrowserEngine.executeSnapshotSession(target, singleUrlTestQueue);
+    const { reports: results } = await ResilientBrowserEngine.executeSnapshotSession(target, singleUrlTestQueue);
     const report = results[0];
 
     console.log('\n==============================================');
