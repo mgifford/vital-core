@@ -94,6 +94,9 @@ export class ResilientBrowserEngine {
     const timeoutBackoffMaxMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_MAX_MS', this.DEFAULT_TIMEOUT_BACKOFF_MAX_MS);
     let previousHost: string | null = null;
     let consecutiveTimeouts = 0;
+    // One BrowserContext per hostname so the HTTP cache is shared across pages of the same domain.
+    // Contexts are created on first visit and closed together after all URLs are processed.
+    const contextPool = new Map<string, BrowserContext>();
 
     try {
     for (const url of urlQueue) {
@@ -150,17 +153,27 @@ export class ResilientBrowserEngine {
         `🧭 Emulation profile: ${emulation.family}/${emulation.viewportLabel}/${emulation.colorScheme} (${emulation.viewport.width}x${emulation.viewport.height})`
       );
 
-      let context: BrowserContext | null = null;
       let page: Page | null = null;
       const scannedAt = new Date().toISOString();
 
       try {
-        context = await browser.newContext({
-          userAgent: emulation.userAgent,
-          viewport: emulation.viewport,
-          colorScheme: emulation.colorScheme
-        });
+        // Reuse the existing context for this hostname so the browser's HTTP cache
+        // (JS bundles, CSS, fonts) is shared across all pages of the same domain.
+        // The user-agent is fixed per context (set at creation); viewport and
+        // colorScheme are applied per-page to preserve emulation variety.
+        const poolKey = currentHost ?? '__unknown__';
+        let context = contextPool.get(poolKey);
+        if (!context) {
+          context = await browser.newContext({
+            userAgent: emulation.userAgent,
+            viewport: emulation.viewport,
+            colorScheme: emulation.colorScheme
+          });
+          contextPool.set(poolKey, context);
+        }
         page = await context.newPage();
+        await page.setViewportSize(emulation.viewport);
+        await page.emulateMedia({ colorScheme: emulation.colorScheme });
         page.setDefaultNavigationTimeout(effectiveMaxTimeoutMs);
         page.setDefaultTimeout(effectiveMaxTimeoutMs);
         const activePage = page;
@@ -257,7 +270,7 @@ export class ResilientBrowserEngine {
         }
       } finally {
         if (page) { await page.close(); }
-        if (context) { await context.close(); }
+        // Context is kept alive in the pool for reuse by the next same-domain page.
         if (baseReport.status === 'SKIPPED_UNCHANGED' || baseReport.status === 'COMPLETED') {
           consecutiveTimeouts = 0;
         }
@@ -265,6 +278,8 @@ export class ResilientBrowserEngine {
       }
     }
     } finally {
+      // Close all pooled contexts before shutting down the browser.
+      await Promise.all(Array.from(contextPool.values()).map(ctx => ctx.close().catch(() => {})));
       await browser.close();
       console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
     }
