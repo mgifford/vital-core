@@ -62,12 +62,13 @@ describe('DashboardCompiler', () => {
     const domainA11yHtml = fs.readFileSync(domainA11yPath, 'utf8');
     const failuresHtml = fs.readFileSync(failuresPath, 'utf8');
 
-    expect(html).toContain('\\u003cscript\\u003ealert(1)\\u003c/script\\u003e');
     expect(html).not.toContain('\"><script>alert(1)</script>');
     expect(html).toContain('assets/dashboard.css');
     expect(html).toContain('assets/dashboard.js');
-    expect(html).toContain('vital-dashboard-data');
-    expect(html).toContain('vital-dashboard-target-quality');
+    expect(html).not.toContain('vital-dashboard-data');
+    expect(html).not.toContain('vital-dashboard-target-quality');
+    expect(domainOverviewHtml).not.toContain('\"><script>alert(1)</script>');
+    expect(domainOverviewHtml).toContain('&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;');
     expect(html).toContain('href="#run-history"');
     expect(html).toContain('In-page section navigation');
     expect(html).toContain('href="#pages-scanned-latest-run"');
@@ -151,7 +152,10 @@ describe('DashboardCompiler', () => {
     expect(js).toContain("lighthouseLabel.textContent = 'Lighthouse: '");
     expect(js).toContain("{ label: 'Perf', key: 'performance'");
     expect(js).toContain('fetchJsonWithRetry');
+    expect(js).toContain('runs/latest-summary.json');
+    expect(js).not.toContain('readEmbeddedJson');
     expect(js).toContain('api.github.com/repos/');
+    expect(fs.existsSync(path.resolve(process.cwd(), 'dist/runs/latest-summary.json'))).toBe(true);
     expect(html).toContain('Lighthouse thresholds used for color cues');
     expect(html).toContain('Perf (green ≥ 90, amber 70-89, red &lt; 70)');
     expect(html).toContain('SI (green ≤ 3400ms, amber 3401-5800ms, red &gt; 5800ms)');
