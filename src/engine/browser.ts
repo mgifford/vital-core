@@ -73,10 +73,10 @@ export class ResilientBrowserEngine {
       fs.mkdirSync(this.SNAPSHOT_DIR, { recursive: true });
     }
 
-    console.log(`🚀 Starting headless browser session for target: ${target.id}`);
+    console.log(`🚀 Starting scan session for target: ${target.id}`);
     const engine = this.selectEngineForTarget(target.id);
-    const browser: Browser = await this.launchBrowser(engine);
-    
+    let browser: Browser | null = null;
+
     const reports: Partial<PageScanReport>[] = [];
     const settings = target.settings;
     const pageState = options.pageState;
@@ -155,6 +155,10 @@ export class ResilientBrowserEngine {
       const scannedAt = new Date().toISOString();
 
       try {
+        if (!browser) {
+          console.log(`🚀 Launching headless browser (${engine}) for target: ${target.id}`);
+          browser = await this.launchBrowser(engine);
+        }
         context = await browser.newContext({
           userAgent: emulation.userAgent,
           viewport: emulation.viewport,
@@ -265,8 +269,12 @@ export class ResilientBrowserEngine {
       }
     }
     } finally {
-      await browser.close();
-      console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+      if (browser) {
+        await browser.close();
+        console.log(`🏁 Browser session terminated for ${target.id}. Total Snapshots generated: ${reports.filter(r => r.status === 'COMPLETED').length}`);
+      } else {
+        console.log(`⚡ Scan session completed for ${target.id} without launching a browser (all pages unchanged). Total Snapshots generated: 0`);
+      }
     }
     return reports;
   }
