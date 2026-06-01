@@ -179,6 +179,10 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
   });
 
   it('does not attempt to close browser when none was launched', async () => {
+    const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
+    vi.spyOn(LighthouseWorker, 'launchChrome').mockResolvedValue(undefined);
+    vi.spyOn(LighthouseWorker, 'killChrome').mockResolvedValue(undefined);
+
     vi.spyOn(ResilientBrowserEngine as any, 'probePageChange').mockResolvedValue({
       unchanged: true,
       reason: 'Skipped unchanged page based on matching ETag.',
