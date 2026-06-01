@@ -687,6 +687,65 @@ describe('TargetDiscoveryEngine', () => {
     expect(queue).not.toContain('https://www.cms.gov/fresh-but-not-updated');
   });
 
+  it('does not requeue a page whose lastCheckedAt is stale but lastScannedAt is recent', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/recently-scanned',
+        'https://www.cms.gov/truly-stale'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false
+      }
+    };
+
+    const now = Date.now();
+    const pageState: PageStateMap = {
+      // lastCheckedAt is stale (9 days), but lastScannedAt is very recent (1 day).
+      // The page should NOT be re-queued because it was scanned recently.
+      'https://www.cms.gov/recently-scanned': {
+        etag: '"abc"',
+        lastModified: null,
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(now - 9 * 24 * 60 * 60 * 1000).toISOString(),
+        lastScannedAt: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Both dates are 9 days old — genuinely due for revalidation.
+      'https://www.cms.gov/truly-stale': {
+        etag: null,
+        lastModified: null,
+        contentHash: null,
+        assetFingerprintHash: null,
+        lastCheckedAt: new Date(now - 9 * 24 * 60 * 60 * 1000).toISOString(),
+        lastScannedAt: new Date(now - 9 * 24 * 60 * 60 * 1000).toISOString()
+      }
+    };
+
+    const queue = await TargetDiscoveryEngine.discoverUrls(target, {
+      pageState,
+      skipPreviouslyScanned: true,
+      revalidateAfterDays: 7
+    });
+
+    expect(queue).not.toContain('https://www.cms.gov/recently-scanned');
+    expect(queue).toContain('https://www.cms.gov/truly-stale');
+  });
+
   it('does not repeatedly requeue recently updated pages before cooldown elapses', async () => {
     fetchMock.mockResolvedValue({
       sites: [
