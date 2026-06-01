@@ -2095,6 +2095,9 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
   const currentRunUniquePages = new Set();
   const leaderboardRows = [];
   const summaryValueById = new Map();
+  const summarySubtitleById = new Map();
+  let pendingConsensusTotalFindings = null;
+  let pendingSoftwareFallback = null;
 
   function formatEstimatedDomainSize(value) {
     if (typeof value !== 'number' || !Number.isFinite(value)) {
@@ -2348,6 +2351,14 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     }
   }
 
+  function setSummarySubtitle(id, subtitle) {
+    const subtitleEl = summarySubtitleById.get(id);
+    if (subtitleEl && subtitle) {
+      subtitleEl.textContent = subtitle;
+      subtitleEl.hidden = false;
+    }
+  }
+
   function addSummaryCard(id, title, value, color) {
     const wrapper = document.createElement('div');
     wrapper.className = 'card';
@@ -2364,10 +2375,17 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     }
     valueEl.textContent = value;
 
+    const subtitleEl = document.createElement('p');
+    subtitleEl.style.marginTop = '0.4rem';
+    subtitleEl.style.fontSize = '0.85rem';
+    subtitleEl.hidden = true;
+
     wrapper.appendChild(heading);
     wrapper.appendChild(valueEl);
+    wrapper.appendChild(subtitleEl);
     summaryEl.appendChild(wrapper);
     summaryValueById.set(id, valueEl);
+    summarySubtitleById.set(id, subtitleEl);
   }
 
   function getRepoFromPageLocation() {
@@ -2972,22 +2990,36 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
         axeOnlyFailure: 0,
         totalCorrelatedFindings: 0
       };
+
+      // True total = unique findings across all tools (consensus + axe-only + alfa-only).
+      // The "Total Accessibility Violations" summary card shows axe-only raw counts by default;
+      // update it here with the cross-tool total once trend data is available.
+      const trueTotal = (consensus.consensusFailure || 0) + (consensus.axeOnlyFailure || 0) + (consensus.alfaOnlyFailure || 0);
+      pendingConsensusTotalFindings = trueTotal;
+      setSummaryMetric('violations-total', String(trueTotal));
+      setSummarySubtitle(
+        'violations-total',
+        'By tool: ' + String(consensus.consensusFailure || 0) + ' consensus (both) · ' +
+        String(consensus.axeOnlyFailure || 0) + ' axe-only · ' +
+        String(consensus.alfaOnlyFailure || 0) + ' alfa-only'
+      );
+
       appendTrendCard(
         'Consensus Failures',
         String(consensus.consensusFailure || 0),
-        'Detected by both Alfa and Axe in latest run.',
+        'Detected by both Alfa and Axe in latest run. Included in Total.',
         'var(--critical-red)'
       );
       appendTrendCard(
         'Axe-only Failures',
         String(consensus.axeOnlyFailure || 0),
-        'Detected only by Axe in latest run.',
+        'Detected only by Axe in latest run. Included in Total.',
         '#005ea2'
       );
       appendTrendCard(
         'Alfa-only Failures',
         String(consensus.alfaOnlyFailure || 0),
-        'Detected only by Alfa in latest run.',
+        'Detected only by Alfa in latest run. Included in Total.',
         '#9a6700'
       );
 
@@ -3205,9 +3237,21 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
       renderPagesStatusSummary(latestPages);
 
       addSummaryCard('targets-total', 'Ecosystem Targets Evaluated', String(data.length), '');
+
+      // Apply software fallback from software-by-domain.json if no tech data from latest-summary.json
+      if (softwareFound.size === 0 && pendingSoftwareFallback) {
+        pendingSoftwareFallback.found.forEach(name => softwareFound.add(name));
+        pendingSoftwareFallback.byDomain.forEach((v, k) => softwareByDomain.set(k, v));
+      }
       addSummaryCard('software-total', 'Software found', String(softwareFound.size), '');
+
       addSummaryCard('blocked-total', 'Total Blocked System Issues', String(blockedEntries.length), blockedEntries.length > 0 ? 'var(--critical-red)' : '');
-      addSummaryCard('violations-total', 'Total Accessibility Violations', String(totalViolations), totalViolations > 0 ? 'var(--critical-red)' : '');
+
+      // Use cross-tool consensus total if already loaded from trends.json, otherwise fall back
+      // to the raw axe violation count until trends data arrives.
+      const displayViolations = pendingConsensusTotalFindings !== null ? pendingConsensusTotalFindings : totalViolations;
+      addSummaryCard('violations-total', 'Total Accessibility Violations', String(displayViolations), displayViolations > 0 ? 'var(--critical-red)' : '');
+
       addSummaryCard('unique-pages-total', 'Unique Pages Scanned (All Time)', String(currentRunUniquePages.size), '');
       addSummaryCard('unique-pages-week', 'Unique Pages Scanned (This Week)', String(currentRunUniquePages.size), '');
       renderBlockedIssues();
@@ -3521,6 +3565,71 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
         loadErrCard.appendChild(loadErrMsg);
         summaryEl.appendChild(loadErrCard);
       }
+    });
+
+  // Fetch software-by-domain.json as a fallback when the latest run was accessibility-only
+  // (and therefore produced no technology stack data).  The file is preserved across runs in
+  // the history cache, so it contains the most-recently detected software even if the
+  // most-recent scan skipped technology fingerprinting.
+  fetchJsonWithRetry('runs/software-by-domain.json', { retries: 2, timeoutMs: 6000 })
+    .then(payload => {
+      if (!payload || !Array.isArray(payload.aggregatedByDomain)) {
+        return;
+      }
+
+      const newFound = new Set();
+      const newByDomain = new Map();
+
+      payload.aggregatedByDomain.forEach(domain => {
+        if (!domain || !Array.isArray(domain.technologies) || domain.technologies.length === 0) {
+          return;
+        }
+        const domainAggregate = {
+          targetId: String(domain.targetId || ''),
+          domain: String(domain.domain || ''),
+          categories: new Set(),
+          versions: new Set(),
+          technologies: new Map()
+        };
+        domain.technologies.forEach(tech => {
+          const displayName = String(tech && tech.name ? tech.name : '').trim();
+          const name = displayName.toLowerCase();
+          if (!name) {
+            return;
+          }
+          newFound.add(name);
+          const existing = {
+            displayName,
+            categories: new Set(Array.isArray(tech.categories) ? tech.categories : []),
+            versions: new Set(Array.isArray(tech.versions) ? tech.versions : [])
+          };
+          (Array.isArray(tech.categories) ? tech.categories : []).forEach(c => domainAggregate.categories.add(c));
+          (Array.isArray(tech.versions) ? tech.versions : []).forEach(v => domainAggregate.versions.add(v));
+          domainAggregate.technologies.set(name, existing);
+        });
+        if (domainAggregate.technologies.size > 0) {
+          newByDomain.set(domainAggregate.targetId, domainAggregate);
+        }
+      });
+
+      if (newFound.size === 0) {
+        return;
+      }
+
+      // Store as pending fallback so the latest-summary.json callback can also use it
+      // when it runs after us.
+      pendingSoftwareFallback = { found: newFound, byDomain: newByDomain };
+
+      // If latest-summary.json has already run and found no software, apply the fallback now.
+      if (softwareFound.size === 0) {
+        newFound.forEach(name => softwareFound.add(name));
+        newByDomain.forEach((v, k) => softwareByDomain.set(k, v));
+        setSummaryMetric('software-total', String(softwareFound.size));
+        renderSoftwareDetections();
+      }
+    })
+    .catch(() => {
+      // software-by-domain.json is optional; ignore failures silently.
     });
 })();`;
   }
