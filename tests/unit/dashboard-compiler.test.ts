@@ -790,4 +790,104 @@ describe('DashboardCompiler', () => {
       fs.rmSync(historyCacheDir, { recursive: true, force: true });
     }
   });
+
+  it('renders a Run History section in accessibility.html when multiple run artifacts are present', () => {
+    const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-runhist-'));
+    fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
+
+    const makeRun = (runId: string, violations: number) => ({
+      results: [
+        {
+          targetId: 'runhist-domain',
+          domain: 'https://runhist.gov',
+          scanDurationMs: 1000,
+          pagesScanned: [
+            {
+              url: 'https://runhist.gov/page1',
+              timestamp: runId,
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: {
+                lighthouse: null,
+                accessibilityViolations: Array.from({ length: violations }, (_, i) => ({
+                  id: `rule-${i}`, impact: 'serious', description: '', help: '', helpUrl: '',
+                  nodes: [], wcagLevel: 'AA', wcagTags: []
+                }))
+              },
+              offlineAudits: null
+            }
+          ]
+        }
+      ]
+    });
+
+    const runId1 = '2024-03-01T00-00-00-000Z';
+    const runId2 = '2024-03-01T00-10-00-000Z';
+    const runId3 = '2024-03-01T00-20-00-000Z';
+
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId1}.json`), JSON.stringify(makeRun(runId1, 3)), 'utf8');
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId2}.json`), JSON.stringify(makeRun(runId2, 5)), 'utf8');
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId3}.json`), JSON.stringify(makeRun(runId3, 2)), 'utf8');
+
+    fs.writeFileSync(
+      path.join(historyCacheDir, 'runs', 'index.json'),
+      JSON.stringify({
+        updatedAt: '2024-03-01T00:20:00.000Z',
+        latestRunId: runId3,
+        runs: [
+          { runId: runId3, generatedAt: '2024-03-01T00:20:00.000Z', artifactPath: `runs/${runId3}.json` },
+          { runId: runId2, generatedAt: '2024-03-01T00:10:00.000Z', artifactPath: `runs/${runId2}.json` },
+          { runId: runId1, generatedAt: '2024-03-01T00:00:00.000Z', artifactPath: `runs/${runId1}.json` }
+        ]
+      }),
+      'utf8'
+    );
+
+    const originalEnv = process.env.VITAL_HISTORY_CACHE_DIR;
+    try {
+      process.env.VITAL_HISTORY_CACHE_DIR = historyCacheDir;
+
+      const payload: TargetScanResult[] = [
+        {
+          targetId: 'runhist-domain',
+          domain: 'https://runhist.gov',
+          scanDurationMs: 500,
+          pagesScanned: [
+            {
+              url: 'https://runhist.gov/page1',
+              timestamp: new Date().toISOString(),
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: { lighthouse: null, accessibilityViolations: [] },
+              offlineAudits: null
+            }
+          ]
+        }
+      ];
+
+      DashboardCompiler.compileStaticDashboard(payload);
+
+      const a11yHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/runhist-domain/accessibility.html'),
+        'utf8'
+      );
+
+      // Run History section heading must be present.
+      expect(a11yHtml).toContain('id="run-history"');
+      expect(a11yHtml).toContain('Run History');
+
+      // Summary line should mention 3 runs.
+      expect(a11yHtml).toContain('3 runs');
+
+      // Violation counts from the historical runs should appear.
+      expect(a11yHtml).toContain('>3<');  // run 1 violations
+      expect(a11yHtml).toContain('>5<');  // run 2 violations
+      expect(a11yHtml).toContain('>2<');  // run 3 violations
+    } finally {
+      process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
+      fs.rmSync(historyCacheDir, { recursive: true, force: true });
+    }
+  });
 });

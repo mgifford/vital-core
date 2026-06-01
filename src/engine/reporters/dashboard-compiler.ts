@@ -437,6 +437,13 @@ ${siteFooterHtml}
     fs.mkdirSync(domainsRoot, { recursive: true });
     const siteFooterHtml = this.buildSiteFooterHtml();
 
+    // Shared artifact cache: each run artifact JSON is read from disk at most once,
+    // regardless of how many domain sub-pages reference it.
+    const artifactCache: Map<string, { results: TargetScanResult[] } | null> = new Map();
+
+    // Load the history index once for all domain compilations.
+    const { cachedRunsDir, indexRuns } = this.loadHistoryIndex();
+
     for (const target of allResults) {
       const safeTargetId = this.sanitizePathSegment(target.targetId);
       const domainDir = path.join(domainsRoot, safeTargetId);
@@ -448,7 +455,14 @@ ${siteFooterHtml}
       // Load historical page data from the previous run so that pages skipped as
       // SKIPPED_UNCHANGED (or not queued at all due to runtime budget) still appear
       // with their last-known audit findings.
-      const historicalPages = this.loadHistoricalPagesForTarget(String(target.targetId));
+      const historicalPages = this.loadHistoricalPagesForTarget(
+        String(target.targetId), cachedRunsDir, indexRuns, artifactCache
+      );
+
+      // Build per-run violation history for this domain from the cached artifacts.
+      const domainRunHistory = cachedRunsDir
+        ? this.buildDomainRunHistory(String(target.targetId), cachedRunsDir, indexRuns, artifactCache)
+        : [];
       const currentPageUrls = new Set(pages.map(p => String(p?.url || '')));
       const historicalByUrl = new Map(historicalPages.map(p => [String(p.url || ''), p]));
 
@@ -788,7 +802,8 @@ ${siteFooterHtml}
           <a href="accessibility.html">Accessibility</a> |
           <a href="performance.html">Performance</a> |
           <a href="content.html">Content</a> |
-          <a href="third-party.html">Third-party impact</a>
+          <a href="third-party.html">Third-party impact</a> |
+          <a href="accessibility.html#run-history">Run history</a>
         </p>`;
 
       const overviewHtml = `<!DOCTYPE html>
@@ -859,7 +874,7 @@ ${siteFooterHtml}
       <h2>Accessibility Findings</h2>
       ${sharedNav}
       <p><strong>Status breakdown (latest run):</strong> ${this.escapeHtml(statusSummaryText)}</p>
-      ${hasHistoricalData ? '<p class="muted-small"><em>Some findings are from a previous scan run. Pages unchanged since the last scan are shown with their most recent known data.</em></p>' : ''}
+      ${hasHistoricalData ? '<p class="muted-small"><em>Some findings are from a previous scan run. Pages unchanged since the last scan are shown with their most recent known data (up to ~33 hours of history).</em></p>' : ''}
     </div>
 
     <div class="a11y-stat-grid">
@@ -891,6 +906,34 @@ ${siteFooterHtml}
         <thead><tr><th>URL</th><th>Violations</th></tr></thead>
         <tbody>${topPagesRows}</tbody>
       </table>
+    </div>` : ''}
+
+    ${domainRunHistory.length > 0 ? `
+    <div class="card" id="run-history">
+      <h2>Run History</h2>
+      <p class="muted-small"><em>Per-run violation counts (pages actively scanned in each run; SKIPPED_UNCHANGED pages contribute to the cumulative findings above but are not recounted here). Covers up to ~33 hours of history.</em></p>
+      <details>
+        <summary>Show / hide run history table (${this.escapeHtml(domainRunHistory.length)} runs)</summary>
+        <table>
+          <thead>
+            <tr>
+              <th>Run</th>
+              <th>Date/Time (UTC)</th>
+              <th>Pages Scanned</th>
+              <th>Violations</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${domainRunHistory.map((r, i) => `
+            <tr>
+              <td>${this.escapeHtml(i + 1)}</td>
+              <td>${this.escapeHtml(r.generatedAt ? new Date(r.generatedAt).toISOString().replace('T', ' ').slice(0, 19) : r.runId)}</td>
+              <td>${this.escapeHtml(r.pagesScanned)}</td>
+              <td>${this.escapeHtml(r.totalViolations)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </details>
     </div>` : ''}
 
     <div class="card">
@@ -982,42 +1025,34 @@ ${siteFooterHtml}
    * recent known data from any of the last MAX_HISTORY_LOOKBACK runs.
    *
    * Falls back to runs/latest.json if no index is found (legacy / local dev).
+   *
+   * Accepts a shared artifactCache so the same run artifact files are not read
+   * from disk more than once across multiple domain compilations in one run.
    */
-  private static loadHistoricalPagesForTarget(targetId: string): PageScanReport[] {
-    const historyCacheDir = process.env.VITAL_HISTORY_CACHE_DIR;
-    if (!historyCacheDir) {
+  private static loadHistoricalPagesForTarget(
+    targetId: string,
+    cachedRunsDir: string | null,
+    indexRuns: Array<{ artifactPath?: unknown }>,
+    artifactCache: Map<string, { results: TargetScanResult[] } | null>
+  ): PageScanReport[] {
+    if (!cachedRunsDir || !fs.existsSync(cachedRunsDir)) {
       return [];
     }
 
-    const cachedRunsDir = path.resolve(process.cwd(), historyCacheDir, 'runs');
-    if (!fs.existsSync(cachedRunsDir)) {
-      return [];
-    }
-
-    // How many recent run artifacts to inspect.  Large enough to bridge several
-    // accessibility-only or timeout-heavy runs, small enough to stay fast.
-    const MAX_HISTORY_LOOKBACK = 10;
+    // Use ALL available run entries (index keeps at most 200, covering ~33 hours
+    // at 10-minute scan intervals – far more than the previous 10-run cap).
+    const MAX_HISTORY_LOOKBACK = 200;
 
     // Collect artifact file paths to inspect, newest run first.
     const artifactPaths: string[] = [];
 
-    const indexPath = path.join(cachedRunsDir, 'index.json');
-    if (fs.existsSync(indexPath)) {
-      try {
-        const index = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as {
-          runs?: Array<{ artifactPath?: unknown }>;
-        };
-        if (Array.isArray(index?.runs)) {
-          for (const run of index.runs.slice(0, MAX_HISTORY_LOOKBACK)) {
-            // artifactPath is relative to the dist root: "runs/{runId}.json"
-            const ap = typeof run?.artifactPath === 'string' ? run.artifactPath : '';
-            if (ap.startsWith('runs/') && ap.endsWith('.json')) {
-              artifactPaths.push(path.join(cachedRunsDir, path.basename(ap)));
-            }
-          }
+    if (indexRuns.length > 0) {
+      for (const run of indexRuns.slice(0, MAX_HISTORY_LOOKBACK)) {
+        // artifactPath is relative to the dist root: "runs/{runId}.json"
+        const ap = typeof run?.artifactPath === 'string' ? run.artifactPath : '';
+        if (ap.startsWith('runs/') && ap.endsWith('.json')) {
+          artifactPaths.push(path.join(cachedRunsDir, path.basename(ap)));
         }
-      } catch {
-        // Ignore a corrupt or missing index; fall through to latest.json fallback.
       }
     }
 
@@ -1040,78 +1075,211 @@ ${siteFooterHtml}
     const bestByUrl = new Map<string, PageScanReport>();
 
     for (const artifactPath of artifactPaths) {
-      if (!fs.existsSync(artifactPath)) {
+      const artifact = this.readCachedArtifact(artifactPath, artifactCache);
+      if (!artifact) {
         continue;
       }
 
-      try {
-        const raw = fs.readFileSync(artifactPath, 'utf8');
-        const parsed = JSON.parse(raw) as unknown;
-        if (!parsed || typeof parsed !== 'object') {
+      for (const result of artifact.results) {
+        if (!result || typeof result !== 'object') {
+          continue;
+        }
+        const r = result as Record<string, unknown>;
+        if (String(r.targetId ?? '') !== String(targetId ?? '')) {
           continue;
         }
 
-        const results = (parsed as Record<string, unknown>).results;
-        if (!Array.isArray(results)) {
-          continue;
+        const pagesScanned = r.pagesScanned;
+        if (!Array.isArray(pagesScanned)) {
+          break;
         }
 
-        for (const result of results) {
-          if (!result || typeof result !== 'object') {
+        for (const p of pagesScanned) {
+          if (!p || typeof p !== 'object') {
             continue;
           }
-          const r = result as Record<string, unknown>;
-          if (String(r.targetId ?? '') !== String(targetId ?? '')) {
+          const page = p as PageScanReport;
+          if (typeof page.url !== 'string' || !page.url || page.liveAudits == null) {
             continue;
           }
 
-          const pagesScanned = r.pagesScanned;
-          if (!Array.isArray(pagesScanned)) {
-            break;
-          }
-
-          for (const p of pagesScanned) {
-            if (!p || typeof p !== 'object') {
-              continue;
-            }
-            const page = p as PageScanReport;
-            if (typeof page.url !== 'string' || !page.url || page.liveAudits == null) {
-              continue;
-            }
-
-            const url = page.url;
-            const existing = bestByUrl.get(url);
-            if (!existing) {
-              // First time we see this URL with liveAudits – record it.
-              bestByUrl.set(url, page);
-            } else {
-              // We already have a newer entry for this URL.  Back-fill any
-              // sub-fields missing from the newer entry using this older run.
-              const existingAudits = existing.liveAudits as NonNullable<PageScanReport['liveAudits']>;
-              const needsLighthouse = !existingAudits.lighthouse && !!page.liveAudits?.lighthouse;
-              const needsOffline = existing.offlineAudits == null && page.offlineAudits != null;
-              const needsThirdParty = existing.thirdPartyImpact == null && page.thirdPartyImpact != null;
-              if (needsLighthouse || needsOffline || needsThirdParty) {
-                bestByUrl.set(url, {
-                  ...existing,
-                  liveAudits: {
-                    ...existingAudits,
-                    lighthouse: existingAudits.lighthouse ?? page.liveAudits?.lighthouse ?? null
-                  },
-                  offlineAudits: existing.offlineAudits ?? page.offlineAudits ?? null,
-                  thirdPartyImpact: existing.thirdPartyImpact ?? page.thirdPartyImpact ?? null
-                });
-              }
+          const url = page.url;
+          const existing = bestByUrl.get(url);
+          if (!existing) {
+            // First time we see this URL with liveAudits – record it.
+            bestByUrl.set(url, page);
+          } else {
+            // We already have a newer entry for this URL.  Back-fill any
+            // sub-fields missing from the newer entry using this older run.
+            const existingAudits = existing.liveAudits as NonNullable<PageScanReport['liveAudits']>;
+            const needsLighthouse = !existingAudits.lighthouse && !!page.liveAudits?.lighthouse;
+            const needsOffline = existing.offlineAudits == null && page.offlineAudits != null;
+            const needsThirdParty = existing.thirdPartyImpact == null && page.thirdPartyImpact != null;
+            if (needsLighthouse || needsOffline || needsThirdParty) {
+              bestByUrl.set(url, {
+                ...existing,
+                liveAudits: {
+                  ...existingAudits,
+                  lighthouse: existingAudits.lighthouse ?? page.liveAudits?.lighthouse ?? null
+                },
+                offlineAudits: existing.offlineAudits ?? page.offlineAudits ?? null,
+                thirdPartyImpact: existing.thirdPartyImpact ?? page.thirdPartyImpact ?? null
+              });
             }
           }
-          break; // Found this target; move to the next artifact.
         }
-      } catch {
-        // Gracefully ignore corrupt or unreadable run artifacts.
+        break; // Found this target; move to the next artifact.
       }
     }
 
     return Array.from(bestByUrl.values());
+  }
+
+  /**
+   * Reads and caches a run artifact from disk.  Subsequent calls for the same
+   * path return the cached value without touching the filesystem.  This prevents
+   * the same (potentially large) artifact from being read N times when N domain
+   * sub-pages are compiled in the same run.
+   */
+  private static readCachedArtifact(
+    fullPath: string,
+    cache: Map<string, { results: TargetScanResult[] } | null>
+  ): { results: TargetScanResult[] } | null {
+    if (cache.has(fullPath)) {
+      return cache.get(fullPath) ?? null;
+    }
+    if (!fs.existsSync(fullPath)) {
+      cache.set(fullPath, null);
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(fs.readFileSync(fullPath, 'utf8')) as unknown;
+      if (!parsed || typeof parsed !== 'object') {
+        cache.set(fullPath, null);
+        return null;
+      }
+      const results = (parsed as Record<string, unknown>).results;
+      if (!Array.isArray(results)) {
+        cache.set(fullPath, null);
+        return null;
+      }
+      const artifact = { results: results as TargetScanResult[] };
+      cache.set(fullPath, artifact);
+      return artifact;
+    } catch {
+      cache.set(fullPath, null);
+      return null;
+    }
+  }
+
+  /**
+   * Loads the run index from the history cache.  Returns the path to the cached
+   * runs directory and the list of run entries (newest first) for shared use
+   * across all domain sub-page compilations.
+   */
+  private static loadHistoryIndex(): {
+    cachedRunsDir: string | null;
+    indexRuns: Array<{ runId?: unknown; generatedAt?: unknown; artifactPath?: unknown }>;
+  } {
+    const historyCacheDir = process.env.VITAL_HISTORY_CACHE_DIR;
+    if (!historyCacheDir) {
+      return { cachedRunsDir: null, indexRuns: [] };
+    }
+
+    const cachedRunsDir = path.resolve(process.cwd(), historyCacheDir, 'runs');
+    if (!fs.existsSync(cachedRunsDir)) {
+      return { cachedRunsDir, indexRuns: [] };
+    }
+
+    const indexPath = path.join(cachedRunsDir, 'index.json');
+    if (!fs.existsSync(indexPath)) {
+      return { cachedRunsDir, indexRuns: [] };
+    }
+
+    try {
+      const parsed = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as {
+        runs?: Array<unknown>;
+      };
+      const runs = Array.isArray(parsed?.runs)
+        ? (parsed.runs as Array<{ runId?: unknown; generatedAt?: unknown; artifactPath?: unknown }>)
+        : [];
+      return { cachedRunsDir, indexRuns: runs };
+    } catch {
+      return { cachedRunsDir, indexRuns: [] };
+    }
+  }
+
+  /**
+   * Builds a chronological list of per-run violation counts for a single domain,
+   * using cached artifacts so files are not re-read across domains.
+   *
+   * Each entry reflects pages that were actively scanned in that run.  Pages
+   * skipped as SKIPPED_UNCHANGED appear with liveAudits=null and contribute 0
+   * violations to the per-run count (their data lives in the accumulated view).
+   */
+  private static buildDomainRunHistory(
+    targetId: string,
+    cachedRunsDir: string,
+    indexRuns: Array<{ runId?: unknown; generatedAt?: unknown; artifactPath?: unknown }>,
+    artifactCache: Map<string, { results: TargetScanResult[] } | null>
+  ): Array<{ runId: string; generatedAt: string; pagesScanned: number; totalViolations: number }> {
+    const MAX_HISTORY_LOOKBACK = 200;
+    const history: Array<{ runId: string; generatedAt: string; pagesScanned: number; totalViolations: number }> = [];
+
+    for (const run of indexRuns.slice(0, MAX_HISTORY_LOOKBACK)) {
+      const ap = typeof run?.artifactPath === 'string' ? run.artifactPath : '';
+      if (!ap.startsWith('runs/') || !ap.endsWith('.json')) {
+        continue;
+      }
+
+      const fullPath = path.join(cachedRunsDir, path.basename(ap));
+      const artifact = this.readCachedArtifact(fullPath, artifactCache);
+      if (!artifact) {
+        continue;
+      }
+
+      let pagesInRun = 0;
+      let violationsInRun = 0;
+      let found = false;
+
+      for (const result of artifact.results) {
+        if (!result || typeof result !== 'object') {
+          continue;
+        }
+        const r = result as Record<string, unknown>;
+        if (String(r.targetId ?? '') !== String(targetId ?? '')) {
+          continue;
+        }
+
+        const pagesScanned = r.pagesScanned;
+        if (!Array.isArray(pagesScanned)) {
+          break;
+        }
+
+        for (const p of pagesScanned) {
+          if (!p || typeof p !== 'object') {
+            continue;
+          }
+          const page = p as PageScanReport;
+          pagesInRun++;
+          violationsInRun += page.liveAudits?.accessibilityViolations.length ?? 0;
+        }
+        found = true;
+        break;
+      }
+
+      if (found) {
+        history.push({
+          runId: String(run?.runId ?? ''),
+          generatedAt: String(run?.generatedAt ?? ''),
+          pagesScanned: pagesInRun,
+          totalViolations: violationsInRun
+        });
+      }
+    }
+
+    // Return oldest-first for chronological display.
+    return history.reverse();
   }
 
   private static sanitizePathSegment(value: string): string {
