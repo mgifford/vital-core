@@ -106,6 +106,7 @@ async function main() {
 
   await fetchOptionalRunArtifact('page-state.json');
   await fetchOptionalRunArtifact('top-task-seeds.json');
+  await fetchOptionalRunArtifact('software-by-domain.json');
   console.log(`Restored historical run index and ${runs.length} referenced run entries.`);
 }
 

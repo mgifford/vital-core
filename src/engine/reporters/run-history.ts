@@ -221,11 +221,29 @@ export class RunHistoryReporter {
 
     fs.writeFileSync(path.join(this.distRunsDir, `${runId}.json`), JSON.stringify(latestPayload, null, 2), 'utf8');
     fs.writeFileSync(path.join(this.distRunsDir, 'latest.json'), JSON.stringify(latestPayload, null, 2), 'utf8');
-    fs.writeFileSync(
-      path.join(this.distRunsDir, 'software-by-domain.json'),
-      JSON.stringify(this.buildSoftwareByDomainPayload(allResults, runId, generatedAt), null, 2),
-      'utf8'
-    );
+
+    const softwarePayload = this.buildSoftwareByDomainPayload(allResults, runId, generatedAt);
+    const hasTechData = softwarePayload.aggregatedByDomain.some(d => d.technologiesDetected > 0);
+    const softwareDestPath = path.join(this.distRunsDir, 'software-by-domain.json');
+    if (hasTechData) {
+      // Full-scope run: write fresh technology fingerprint data.
+      fs.writeFileSync(softwareDestPath, JSON.stringify(softwarePayload, null, 2), 'utf8');
+    } else if (!fs.existsSync(softwareDestPath)) {
+      // Accessibility-only run with no history-cached version: write an empty payload so the
+      // required artifact always exists.
+      fs.writeFileSync(softwareDestPath, JSON.stringify(softwarePayload, null, 2), 'utf8');
+      console.log(
+        'ℹ️  No technology fingerprints detected in this run (accessibility-only scope). ' +
+        'No cached software data found; writing empty software-by-domain.json.'
+      );
+    } else {
+      // Accessibility-only run: restoreCachedHistory() has already restored a previous
+      // software-by-domain.json from the history cache, so skip writing to preserve it.
+      console.log(
+        'ℹ️  No technology fingerprints detected in this run (accessibility-only scope). ' +
+        'Preserving previous software detection data from history cache.'
+      );
+    }
 
     const existingIndex = this.loadExistingIndex();
     const mergedRuns = [runEntry, ...existingIndex.runs.filter(run => run.runId !== runId)].slice(0, 200);
