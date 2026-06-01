@@ -91,7 +91,7 @@ export class DashboardCompiler {
         &nbsp;|&nbsp;
         <a href="#run-history">Run History</a>
         &nbsp;|&nbsp;
-        <a href="#blocked-system-issues">Blocked System Issues</a>
+        <a href="#blocked_system_issues">Blocked System Issues</a>
         &nbsp;|&nbsp;
         <a href="#domain-accessibility-grades">Domain Accessibility Grades</a>
         &nbsp;|&nbsp;
@@ -100,12 +100,12 @@ export class DashboardCompiler {
         <a href="unique-errors/index.html">Cross-Domain Unique Errors</a>
       </p>
     </nav>
-    <div class="card" id="blocked-issues">
-      <h2 id="blocked-system-issues" tabindex="-1">Blocked System Issues (Latest Run)</h2>
-      <p class="muted-small">Pages that were blocked, timed out, or failed to scan. See the failures view for the full audit trail.</p>
+    <div class="card" id="blocked_issues">
+      <h2 id="blocked_system_issues" tabindex="-1">Blocked System Issues (Latest Run)</h2>
+      <p class="muted-small">Pages that were blocked, timed out, failed to scan, or returned HTTP errors. Non-HTML resources (PDFs, ZIPs, etc.) are excluded. See the failures view for the full audit trail.</p>
       <p><a href="failures/index.html">Open failures and skips view</a></p>
-      <table id="blocked-issues-table">
-        <caption>Blocked, timeout, and failed pages with reasons from the latest run.</caption>
+      <table id="blocked_issues_table">
+        <caption>Blocked, timeout, failed, and HTTP-error pages with reasons from the latest run.</caption>
         <thead>
           <tr>
             <th scope="col">Domain</th>
@@ -115,7 +115,7 @@ export class DashboardCompiler {
             <th scope="col">Timestamp</th>
           </tr>
         </thead>
-        <tbody id="blocked-issues-body"></tbody>
+        <tbody id="blocked_issues_body"></tbody>
       </table>
     </div>
     <div class="card">
@@ -152,6 +152,8 @@ export class DashboardCompiler {
         <summary>Status guide and latest run breakdown</summary>
         <p><strong>COMPLETED</strong> means the page was fetched and audited in this run.</p>
         <p><strong>SKIPPED_UNCHANGED</strong> means the page was recently scanned and unchanged, so the scanner reused prior evidence to save time and budget.</p>
+        <p><strong>SKIPPED_NON_HTML</strong> means the URL points to a non-HTML resource (e.g. PDF, ZIP) that cannot be scanned for accessibility.</p>
+        <p><strong>NOT_FOUND</strong> means the server returned an HTTP error response (e.g. 404) and the page could not be loaded.</p>
         <ul id="pages-status-breakdown" class="status-breakdown"></ul>
       </details>
       <details id="pages-results-table" open>
@@ -2081,7 +2083,7 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
   const pagesStatusSummaryEl = document.getElementById('pages-status-summary');
   const pagesStatusAlertEl = document.getElementById('pages-status-alert');
   const pagesStatusBreakdownEl = document.getElementById('pages-status-breakdown');
-  const blockedBodyEl = document.getElementById('blocked-issues-body');
+  const blockedBodyEl = document.getElementById('blocked_issues_body');
   const softwareBodyEl = document.getElementById('software-body');
   const domainPageSelectEl = document.getElementById('domain-page-select');
   const sizeEstimateByTarget = new Map();
@@ -2704,17 +2706,22 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
 
     const completed = Number(counts.get('COMPLETED') || 0);
     const skippedUnchanged = Number(counts.get('SKIPPED_UNCHANGED') || 0);
+    const skippedNonHtml = Number(counts.get('SKIPPED_NON_HTML') || 0);
     const timedOut = Number(counts.get('TIMEOUT') || 0);
     const failed = Number(counts.get('FAILED') || 0) + Number(counts.get('WAF_BLOCKED') || 0);
+    const notFound = Number(counts.get('NOT_FOUND') || 0);
 
     if (pagesStatusSummaryEl) {
-      pagesStatusSummaryEl.textContent =
-        'Latest run summary: ' +
-        String(latestPages.length) + ' pages total • ' +
-        String(completed) + ' COMPLETED • ' +
-        String(skippedUnchanged) + ' SKIPPED_UNCHANGED • ' +
-        String(timedOut) + ' TIMEOUT • ' +
-        String(failed) + ' FAILED/WAF_BLOCKED.';
+      const parts = [
+        'Latest run summary: ' + String(latestPages.length) + ' pages total',
+        String(completed) + ' COMPLETED',
+        String(skippedUnchanged) + ' SKIPPED_UNCHANGED',
+        String(timedOut) + ' TIMEOUT',
+        String(failed) + ' FAILED/WAF_BLOCKED'
+      ];
+      if (notFound > 0) parts.push(String(notFound) + ' NOT_FOUND');
+      if (skippedNonHtml > 0) parts.push(String(skippedNonHtml) + ' SKIPPED_NON_HTML');
+      pagesStatusSummaryEl.textContent = parts.join(' • ') + '.';
     }
 
     if (pagesStatusAlertEl) {
@@ -3135,12 +3142,14 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
             currentRunUniquePages.add(p.url);
           }
           const pageStatus = String(p && p.status ? p.status : 'UNKNOWN');
-          if (pageStatus === 'FAILED' || pageStatus === 'WAF_BLOCKED' || pageStatus === 'TIMEOUT') {
+          if (pageStatus === 'FAILED' || pageStatus === 'WAF_BLOCKED' || pageStatus === 'TIMEOUT' || pageStatus === 'NOT_FOUND') {
             const fallbackReason = pageStatus === 'WAF_BLOCKED'
               ? 'Blocked by anti-bot or web application firewall controls.'
               : pageStatus === 'TIMEOUT'
                 ? 'Scan timed out before audit completion.'
-                : 'Page scan failed before audit completion.';
+                : pageStatus === 'NOT_FOUND'
+                  ? 'Page returned an HTTP error (e.g. 404 Not Found).'
+                  : 'Page scan failed before audit completion.';
             blockedEntries.push({
               targetId: String(target && target.targetId ? target.targetId : ''),
               url: String(p && p.url ? p.url : ''),
