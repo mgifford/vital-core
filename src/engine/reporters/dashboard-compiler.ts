@@ -137,6 +137,7 @@ export class DashboardCompiler {
     <div class="card">
       <h2 id="pages-scanned-latest-run" tabindex="-1">Pages Scanned (Latest Run)</h2>
       <p id="pages-status-summary" class="muted-small">Loading latest page status summary...</p>
+      <div id="pages-status-alert" class="status-alert" role="alert" hidden></div>
       <details id="pages-status-guide" class="status-guide">
         <summary>Status guide and latest run breakdown</summary>
         <p><strong>COMPLETED</strong> means the page was fetched and audited in this run.</p>
@@ -1130,6 +1131,31 @@ main {
   font-weight: 600;
   cursor: pointer;
 }
+.status-alert {
+  margin: 0.6rem 0 0.75rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #e5a000;
+  background: #fef9e7;
+  color: #212121;
+  border-radius: 3px;
+  font-size: 0.95rem;
+}
+.status-alert p { margin: 0 0 0.4rem; }
+.status-alert p:last-child { margin-bottom: 0; }
+.status-alert ul { margin: 0.25rem 0 0 1.2rem; padding: 0; }
+.status-alert ul li { margin: 0.2rem 0; }
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme='light']) .status-alert {
+    background: #2b2600;
+    color: var(--text-color);
+    border-left-color: #e5a000;
+  }
+}
+html[data-theme='dark'] .status-alert {
+  background: #2b2600;
+  color: var(--text-color);
+  border-left-color: #e5a000;
+}
 .status-breakdown {
   margin: 0.6rem 0 0 1.1rem;
   padding: 0;
@@ -1429,6 +1455,7 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
   const ongoingBodyEl = document.getElementById('ongoing-body');
   const pagesBodyEl = document.getElementById('pages-body');
   const pagesStatusSummaryEl = document.getElementById('pages-status-summary');
+  const pagesStatusAlertEl = document.getElementById('pages-status-alert');
   const pagesStatusBreakdownEl = document.getElementById('pages-status-breakdown');
   const blockedBodyEl = document.getElementById('blocked-issues-body');
   const softwareBodyEl = document.getElementById('software-body');
@@ -2046,6 +2073,41 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
         String(skippedUnchanged) + ' SKIPPED_UNCHANGED • ' +
         String(timedOut) + ' TIMEOUT • ' +
         String(failed) + ' FAILED/WAF_BLOCKED.';
+    }
+
+    if (pagesStatusAlertEl) {
+      const alerts = [];
+      if (timedOut > 2) {
+        alerts.push(
+          '<p><strong>⚠️ ' + String(timedOut) + ' TIMEOUT pages detected in this run.</strong></p>' +
+          '<p>A high number of timeouts may indicate one or more of the following:</p>' +
+          '<ul>' +
+          '<li>The target site or its CDN is rate-limiting or throttling scanner requests.</li>' +
+          '<li>Pages are slow to load — consider increasing <code>maxTimeoutMs</code> in the scan profile.</li>' +
+          '<li>Network instability during the scan window.</li>' +
+          '<li>The scanner is hitting too many pages too quickly — consider reducing the batch size or adding delay between requests via <code>VITAL_SAME_SITE_DELAY_MS</code>.</li>' +
+          '</ul>' +
+          '<p>Check the <a href="failures/index.html">Failures &amp; Skips view</a> for per-page details. If timeouts persist, a force-rescan (<code>--force-rescan</code>) after a quiet period may help confirm whether the issue is load-related.</p>'
+        );
+      }
+      if (skippedUnchanged > 2) {
+        alerts.push(
+          '<p><strong>ℹ️ ' + String(skippedUnchanged) + ' SKIPPED_UNCHANGED pages in this run.</strong></p>' +
+          '<p>Pages are skipped when their content hash matches a recent scan, saving time and budget. A high skip count is normal if content has not changed. However, if you expected fresh results for these pages, consider:</p>' +
+          '<ul>' +
+          '<li>Running with <code>--force-rescan</code> to bypass the unchanged-content cache.</li>' +
+          '<li>Checking whether the page state file is stale or from a previous run with different scope.</li>' +
+          '<li>Verifying that the scan profile <code>freshnessThresholdHours</code> is set appropriately for your cadence.</li>' +
+          '</ul>'
+        );
+      }
+      if (alerts.length > 0) {
+        pagesStatusAlertEl.innerHTML = alerts.join('');
+        pagesStatusAlertEl.removeAttribute('hidden');
+      } else {
+        pagesStatusAlertEl.innerHTML = '';
+        pagesStatusAlertEl.setAttribute('hidden', '');
+      }
     }
 
     if (!pagesStatusBreakdownEl) {
