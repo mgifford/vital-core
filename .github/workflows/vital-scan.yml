@@ -183,6 +183,7 @@ jobs:
           path: .history-cache/
           retention-days: 1
           if-no-files-found: ignore
+          include-hidden-files: true
 
   # ─── Job 2: scan one target cluster per matrix runner in parallel ───
   scan:
