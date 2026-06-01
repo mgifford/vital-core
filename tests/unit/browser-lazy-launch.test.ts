@@ -214,3 +214,43 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
     expect(launchSpy).not.toHaveBeenCalled();
   });
 });
+
+describe('ResilientBrowserEngine.runWithTimeout', () => {
+  const callRunWithTimeout = (operation: () => Promise<unknown>, timeoutMs: number) =>
+    (ResilientBrowserEngine as any).runWithTimeout(operation, timeoutMs);
+
+  it('resolves with the operation result when it completes before the timeout', async () => {
+    const result = await callRunWithTimeout(() => Promise.resolve(42), 5000);
+    expect(result).toBe(42);
+  });
+
+  it('rejects with a timeout error when the operation exceeds the limit', async () => {
+    const neverResolves = new Promise(() => {/* intentionally pending */});
+    await expect(callRunWithTimeout(() => neverResolves, 50)).rejects.toThrow('timeout after 50ms');
+  });
+
+  it('does not produce an unhandled rejection when an abandoned operation rejects late', async () => {
+    // Track any unhandledRejection events emitted during this test.
+    const unhandled: unknown[] = [];
+    const handler = (reason: unknown) => unhandled.push(reason);
+    process.on('unhandledRejection', handler);
+
+    let rejectLate!: (err: Error) => void;
+    const slowOp = new Promise<never>((_, reject) => {
+      rejectLate = reject;
+    });
+
+    // runWithTimeout fires first (tiny limit); the slow operation is abandoned.
+    await expect(callRunWithTimeout(() => slowOp, 20)).rejects.toThrow('timeout after 20ms');
+
+    // Now reject the abandoned promise (simulates Lighthouse's checkForQuiet
+    // failing after Chrome is killed).
+    rejectLate(new Error('Protocol error: Session closed'));
+
+    // Wait a tick so any unhandled-rejection bookkeeping can run.
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    process.removeListener('unhandledRejection', handler);
+    expect(unhandled).toHaveLength(0);
+  });
+});
