@@ -324,7 +324,7 @@ async function main() {
 // re-emitted so that real bugs remain visible.
 process.on('unhandledRejection', (reason: unknown) => {
   const message = reason instanceof Error ? reason.message : String(reason);
-  if (/protocol error/i.test(message) && /session closed/i.test(message)) {
+  if (/protocol error/i.test(message) && /session closed|target closed/i.test(message)) {
     console.warn(`⚠️ Suppressed stale Lighthouse Protocol rejection after Chrome shutdown: ${message}`);
     return;
   }
