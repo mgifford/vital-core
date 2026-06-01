@@ -63,6 +63,7 @@ export class ResilientBrowserEngine {
   ] as const;
 
   private static readonly DEFAULT_SAME_SITE_DELAY_MS = 1500;
+  private static readonly DEFAULT_DELAY_JITTER_MS = 750;
   private static readonly DEFAULT_TIMEOUT_BACKOFF_THRESHOLD = 2;
   private static readonly DEFAULT_TIMEOUT_BACKOFF_STEP_MS = 10000;
   private static readonly DEFAULT_TIMEOUT_BACKOFF_MAX_MS = 60000;
@@ -97,6 +98,7 @@ export class ResilientBrowserEngine {
     const accessibilityOnly = auditScope === 'accessibility' || auditScope === 'a11y';
     const navigationWaitUntil: 'networkidle' | 'domcontentloaded' = accessibilityOnly ? 'domcontentloaded' : 'networkidle';
     const sameSiteDelayMs = this.readDelaySetting('VITAL_SAME_SITE_DELAY_MS', this.DEFAULT_SAME_SITE_DELAY_MS);
+    const delayJitterMs = this.readDelaySetting('VITAL_DELAY_JITTER_MS', this.DEFAULT_DELAY_JITTER_MS);
     const timeoutBackoffThreshold = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_THRESHOLD', this.DEFAULT_TIMEOUT_BACKOFF_THRESHOLD);
     const timeoutBackoffStepMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_STEP_MS', this.DEFAULT_TIMEOUT_BACKOFF_STEP_MS);
     const timeoutBackoffMaxMs = this.readDelaySetting('VITAL_TIMEOUT_BACKOFF_MAX_MS', this.DEFAULT_TIMEOUT_BACKOFF_MAX_MS);
@@ -122,18 +124,21 @@ export class ResilientBrowserEngine {
         );
         const totalDelayMs = sameSiteDelayMs + timeoutBackoffMs;
 
-        if (totalDelayMs > 0) {
+        if (totalDelayMs > 0 || delayJitterMs > 0) {
+          const jitterMs = delayJitterMs > 0 ? Math.floor(Math.random() * delayJitterMs) : 0;
+          const effectiveDelayMs = totalDelayMs + jitterMs;
           const timeoutSuffix = timeoutBackoffMs > 0
             ? ` (includes ${timeoutBackoffMs}ms timeout backoff after ${consecutiveTimeouts} consecutive timeout(s))`
             : '';
-          console.log(`⏸️ Politeness pause for ${target.id}: waiting ${totalDelayMs}ms before next same-site request${timeoutSuffix}.`);
-          await this.sleep(totalDelayMs);
+          const jitterSuffix = jitterMs > 0 ? ` + ${jitterMs}ms jitter` : '';
+          console.log(`⏸️ Politeness pause for ${target.id}: waiting ${effectiveDelayMs}ms before next same-site request${timeoutSuffix}${jitterSuffix}.`);
+          await this.sleep(effectiveDelayMs);
         }
       }
 
       previousHost = currentHost;
       const emulation = this.selectEmulationProfile(target.id, url);
-      const probe = await this.probePageChange(url, pageState?.[url], effectiveMaxTimeoutMs);
+      const probe = await this.probePageChange(url, pageState?.[url], effectiveMaxTimeoutMs, emulation.userAgent);
       
       const baseReport: Partial<PageScanReport> = {
         url,
@@ -405,12 +410,13 @@ export class ResilientBrowserEngine {
   private static async probePageChange(
     url: string,
     previousState: PageStateEntry | undefined,
-    maxTimeoutMs: number
+    maxTimeoutMs: number,
+    userAgent?: string
   ): Promise<PageProbeResult> {
     const timeoutMs = Math.min(maxTimeoutMs, 15000);
 
     try {
-      const headResponse = await this.fetchWithTimeout(url, { method: 'HEAD' }, timeoutMs);
+      const headResponse = await this.fetchWithTimeout(url, { method: 'HEAD' }, timeoutMs, userAgent);
       const etag = headResponse.headers.get('etag');
       const lastModified = headResponse.headers.get('last-modified');
 
@@ -442,7 +448,7 @@ export class ResilientBrowserEngine {
 
       if (!etag && !lastModified && previousState?.contentHash) {
         try {
-          const getResponse = await this.fetchWithTimeout(url, { method: 'GET' }, timeoutMs);
+          const getResponse = await this.fetchWithTimeout(url, { method: 'GET' }, timeoutMs, userAgent);
           const html = await getResponse.text();
           const contentHash = this.hashContent(html);
           const assetFingerprintHash = this.computeAssetFingerprint(html, url);
@@ -500,7 +506,7 @@ export class ResilientBrowserEngine {
     }
   }
 
-  private static async fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number): Promise<Response> {
+  private static async fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number, userAgent?: string): Promise<Response> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -510,7 +516,7 @@ export class ResilientBrowserEngine {
         redirect: 'follow',
         signal: controller.signal,
         headers: {
-          'User-Agent': 'VitalCore/1.0 (+https://github.com/mgifford/vital-core)'
+          'User-Agent': userAgent ?? 'VitalCore/1.0 (+https://github.com/mgifford/vital-core)'
         }
       });
 

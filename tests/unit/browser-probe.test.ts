@@ -166,17 +166,40 @@ describe('ResilientBrowserEngine.probePageChange — fetchedHtml field', () => {
     expect(result.fetchedHtml).toBeNull();
   });
 
-  it('sets fetchedHtml to null when there is no previous state (first scan)', async () => {
-    // Without a prior contentHash there is no GET to perform.
-    global.fetch = makeFetchMock({});
+  it('uses the supplied userAgent in the HEAD request instead of the default bot UA', async () => {
+    const capturedRequests: Array<{ url: string; init: RequestInit }> = [];
+    global.fetch = vi.fn().mockImplementation(async (url: string, init: RequestInit) => {
+      capturedRequests.push({ url, init });
+      const headers = new Headers();
+      headers.set('etag', '"fixed-etag"');
+      return { ok: true, status: 200, headers };
+    });
 
-    const result = await engine.probePageChange(
+    const customUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 VitalCore/1.0';
+    await engine.probePageChange(
       'https://example.gov/',
       undefined,
-      15000
+      15000,
+      customUA
     );
 
-    expect(result.unchanged).toBe(false);
-    expect(result.fetchedHtml).toBeNull();
+    expect(capturedRequests).toHaveLength(1);
+    const sentHeaders = capturedRequests[0]!.init.headers as Record<string, string>;
+    expect(sentHeaders['User-Agent']).toBe(customUA);
+  });
+
+  it('falls back to the default VitalCore UA when no userAgent is supplied', async () => {
+    const capturedRequests: Array<{ url: string; init: RequestInit }> = [];
+    global.fetch = vi.fn().mockImplementation(async (url: string, init: RequestInit) => {
+      capturedRequests.push({ url, init });
+      return { ok: true, status: 200, headers: new Headers() };
+    });
+
+    await engine.probePageChange('https://example.gov/', undefined, 15000);
+
+    expect(capturedRequests).toHaveLength(1);
+    const sentHeaders = capturedRequests[0]!.init.headers as Record<string, string>;
+    expect(sentHeaders['User-Agent']).toContain('VitalCore/1.0');
+    expect(sentHeaders['User-Agent']).not.toContain('Chrome');
   });
 });

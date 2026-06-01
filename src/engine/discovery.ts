@@ -336,12 +336,21 @@ export class TargetDiscoveryEngine {
       return true;
     }
 
+    // Use the most recent of lastCheckedAt and lastScannedAt so that a page
+    // recently fully scanned is not re-queued just because lastCheckedAt is
+    // stale (e.g. after history cache restoration from an older backup).
     const lastChecked = Date.parse(entry.lastCheckedAt || '');
-    if (!Number.isFinite(lastChecked)) {
+    const lastScanned = Date.parse(entry.lastScannedAt || '');
+    const mostRecentActivity = Math.max(
+      Number.isFinite(lastChecked) ? lastChecked : 0,
+      Number.isFinite(lastScanned) ? lastScanned : 0
+    );
+
+    if (mostRecentActivity === 0) {
       return true;
     }
 
-    const ageMs = Date.now() - lastChecked;
+    const ageMs = Date.now() - mostRecentActivity;
     return ageMs >= revalidateAfterDays * 24 * 60 * 60 * 1000;
   }
 
