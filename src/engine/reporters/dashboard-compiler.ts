@@ -963,9 +963,23 @@ ${siteFooterHtml}
   }
 
   /**
-   * Loads pages from the previous run's latest.json in the history cache that belong to
-   * the given target. Only pages that have liveAudits data are returned, since pages
-   * without audit data don't help supplement SKIPPED_UNCHANGED entries.
+   * Loads the best-known page data for a target from the history cache.
+   *
+   * The history cache (populated by fetch-history.mjs) contains runs/index.json and
+   * individual run artifacts (runs/{runId}.json) but NOT runs/latest.json.  This
+   * function therefore reads the index and walks up to MAX_HISTORY_LOOKBACK recent
+   * run artifacts (newest first) to build a URL → best-page map.
+   *
+   * For each URL the newest entry with liveAudits is used as the base.  If that
+   * entry is missing sub-fields (e.g. lighthouse after an accessibility-only run, or
+   * thirdPartyImpact/offlineAudits after a partial run) those are back-filled from
+   * the most recent older run that has them.
+   *
+   * This ensures that pages skipped as SKIPPED_UNCHANGED, and sub-pages that would
+   * otherwise appear empty after a run with many timeouts, still show the most
+   * recent known data from any of the last MAX_HISTORY_LOOKBACK runs.
+   *
+   * Falls back to runs/latest.json if no index is found (legacy / local dev).
    */
   private static loadHistoricalPagesForTarget(targetId: string): PageScanReport[] {
     const historyCacheDir = process.env.VITAL_HISTORY_CACHE_DIR;
@@ -973,48 +987,129 @@ ${siteFooterHtml}
       return [];
     }
 
-    const latestPath = path.resolve(process.cwd(), historyCacheDir, 'runs', 'latest.json');
-    if (!fs.existsSync(latestPath)) {
+    const cachedRunsDir = path.resolve(process.cwd(), historyCacheDir, 'runs');
+    if (!fs.existsSync(cachedRunsDir)) {
       return [];
     }
 
-    try {
-      const raw = fs.readFileSync(latestPath, 'utf8');
-      const parsed = JSON.parse(raw) as unknown;
-      if (!parsed || typeof parsed !== 'object') {
-        return [];
-      }
+    // How many recent run artifacts to inspect.  Large enough to bridge several
+    // accessibility-only or timeout-heavy runs, small enough to stay fast.
+    const MAX_HISTORY_LOOKBACK = 10;
 
-      const results = (parsed as Record<string, unknown>).results;
-      if (!Array.isArray(results)) {
-        return [];
-      }
+    // Collect artifact file paths to inspect, newest run first.
+    const artifactPaths: string[] = [];
 
-      for (const result of results) {
-        if (!result || typeof result !== 'object') {
-          continue;
-        }
-        const r = result as Record<string, unknown>;
-        if (String(r.targetId || '') !== String(targetId || '')) {
-          continue;
-        }
-        const pagesScanned = r.pagesScanned;
-        if (!Array.isArray(pagesScanned)) {
-          return [];
-        }
-        return pagesScanned.filter((p: unknown): p is PageScanReport => {
-          if (!p || typeof p !== 'object') {
-            return false;
+    const indexPath = path.join(cachedRunsDir, 'index.json');
+    if (fs.existsSync(indexPath)) {
+      try {
+        const index = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as {
+          runs?: Array<{ artifactPath?: unknown }>;
+        };
+        if (Array.isArray(index?.runs)) {
+          for (const run of index.runs.slice(0, MAX_HISTORY_LOOKBACK)) {
+            // artifactPath is relative to the dist root: "runs/{runId}.json"
+            const ap = typeof run?.artifactPath === 'string' ? run.artifactPath : '';
+            if (ap.startsWith('runs/') && ap.endsWith('.json')) {
+              artifactPaths.push(path.join(cachedRunsDir, path.basename(ap)));
+            }
           }
-          const page = p as Record<string, unknown>;
-          return typeof page.url === 'string' && page.liveAudits != null;
-        }) as PageScanReport[];
+        }
+      } catch {
+        // Ignore a corrupt or missing index; fall through to latest.json fallback.
       }
-    } catch {
-      // Gracefully ignore corrupt or unreadable history cache
     }
 
-    return [];
+    // Legacy fallback: used in local dev and tests that write latest.json directly.
+    if (artifactPaths.length === 0) {
+      const latestPath = path.join(cachedRunsDir, 'latest.json');
+      if (fs.existsSync(latestPath)) {
+        artifactPaths.push(latestPath);
+      }
+    }
+
+    if (artifactPaths.length === 0) {
+      return [];
+    }
+
+    // Walk artifacts newest-first.  For each URL, keep the first (newest) entry
+    // that has liveAudits.  Where a newer entry is missing sub-fields (lighthouse,
+    // offlineAudits, thirdPartyImpact) back-fill them from an older run that has
+    // those fields.
+    const bestByUrl = new Map<string, PageScanReport>();
+
+    for (const artifactPath of artifactPaths) {
+      if (!fs.existsSync(artifactPath)) {
+        continue;
+      }
+
+      try {
+        const raw = fs.readFileSync(artifactPath, 'utf8');
+        const parsed = JSON.parse(raw) as unknown;
+        if (!parsed || typeof parsed !== 'object') {
+          continue;
+        }
+
+        const results = (parsed as Record<string, unknown>).results;
+        if (!Array.isArray(results)) {
+          continue;
+        }
+
+        for (const result of results) {
+          if (!result || typeof result !== 'object') {
+            continue;
+          }
+          const r = result as Record<string, unknown>;
+          if (String(r.targetId ?? '') !== String(targetId ?? '')) {
+            continue;
+          }
+
+          const pagesScanned = r.pagesScanned;
+          if (!Array.isArray(pagesScanned)) {
+            break;
+          }
+
+          for (const p of pagesScanned) {
+            if (!p || typeof p !== 'object') {
+              continue;
+            }
+            const page = p as PageScanReport;
+            if (typeof page.url !== 'string' || !page.url || page.liveAudits == null) {
+              continue;
+            }
+
+            const url = page.url;
+            const existing = bestByUrl.get(url);
+            if (!existing) {
+              // First time we see this URL with liveAudits – record it.
+              bestByUrl.set(url, page);
+            } else {
+              // We already have a newer entry for this URL.  Back-fill any
+              // sub-fields missing from the newer entry using this older run.
+              const existingAudits = existing.liveAudits as NonNullable<PageScanReport['liveAudits']>;
+              const needsLighthouse = !existingAudits.lighthouse && !!page.liveAudits?.lighthouse;
+              const needsOffline = existing.offlineAudits == null && page.offlineAudits != null;
+              const needsThirdParty = existing.thirdPartyImpact == null && page.thirdPartyImpact != null;
+              if (needsLighthouse || needsOffline || needsThirdParty) {
+                bestByUrl.set(url, {
+                  ...existing,
+                  liveAudits: {
+                    ...existingAudits,
+                    lighthouse: existingAudits.lighthouse ?? page.liveAudits?.lighthouse ?? null
+                  },
+                  offlineAudits: existing.offlineAudits ?? page.offlineAudits ?? null,
+                  thirdPartyImpact: existing.thirdPartyImpact ?? page.thirdPartyImpact ?? null
+                });
+              }
+            }
+          }
+          break; // Found this target; move to the next artifact.
+        }
+      } catch {
+        // Gracefully ignore corrupt or unreadable run artifacts.
+      }
+    }
+
+    return Array.from(bestByUrl.values());
   }
 
   private static sanitizePathSegment(value: string): string {

@@ -293,9 +293,13 @@ describe('DashboardCompiler', () => {
         }
       ]
     };
+    // Write via index + artifact (the format produced by fetch-history.mjs).
+    const runId = '2024-01-01T00-00-00-000Z';
+    const artifactPath = `runs/${runId}.json`;
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId}.json`), JSON.stringify(historicalRun), 'utf8');
     fs.writeFileSync(
-      path.join(historyCacheDir, 'runs', 'latest.json'),
-      JSON.stringify(historicalRun),
+      path.join(historyCacheDir, 'runs', 'index.json'),
+      JSON.stringify({ updatedAt: '2024-01-01T00:00:00.000Z', latestRunId: runId, runs: [{ runId, artifactPath }] }),
       'utf8'
     );
 
@@ -409,9 +413,13 @@ describe('DashboardCompiler', () => {
         }
       ]
     };
+    // Write via index + artifact (the format produced by fetch-history.mjs).
+    const runId = '2024-01-01T00-00-00-000Z';
+    const artifactPath = `runs/${runId}.json`;
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId}.json`), JSON.stringify(historicalRun), 'utf8');
     fs.writeFileSync(
-      path.join(historyCacheDir, 'runs', 'latest.json'),
-      JSON.stringify(historicalRun),
+      path.join(historyCacheDir, 'runs', 'index.json'),
+      JSON.stringify({ updatedAt: '2024-01-01T00:00:00.000Z', latestRunId: runId, runs: [{ runId, artifactPath }] }),
       'utf8'
     );
 
@@ -456,6 +464,327 @@ describe('DashboardCompiler', () => {
       expect(perfHtml).not.toContain('No performance data available');
       expect(contentHtml).toContain('12.3');
       expect(contentHtml).not.toContain('No content metrics available');
+    } finally {
+      process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
+      fs.rmSync(historyCacheDir, { recursive: true, force: true });
+    }
+  });
+
+  it('falls back to latest.json when no index.json is present in the history cache', () => {
+    const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-legacy-'));
+    fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
+
+    const historicalRun = {
+      results: [
+        {
+          targetId: 'legacy-domain',
+          domain: 'https://legacy.gov',
+          scanDurationMs: 1000,
+          pagesScanned: [
+            {
+              url: 'https://legacy.gov/page',
+              timestamp: '2024-01-01T00:00:00.000Z',
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: {
+                lighthouse: { performanceScore: 60, energyEstimateKwh: null, firstContentfulPaintMs: 1800, largestContentfulPaintMs: 2900, speedIndexMs: 3500 },
+                accessibilityViolations: []
+              },
+              offlineAudits: null
+            }
+          ]
+        }
+      ]
+    };
+    // Write ONLY latest.json (legacy format – no index.json).
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', 'latest.json'), JSON.stringify(historicalRun), 'utf8');
+
+    const originalEnv = process.env.VITAL_HISTORY_CACHE_DIR;
+    try {
+      process.env.VITAL_HISTORY_CACHE_DIR = historyCacheDir;
+
+      const payload: TargetScanResult[] = [
+        {
+          targetId: 'legacy-domain',
+          domain: 'https://legacy.gov',
+          scanDurationMs: 500,
+          pagesScanned: [
+            {
+              url: 'https://legacy.gov/page',
+              timestamp: new Date().toISOString(),
+              status: 'SKIPPED_UNCHANGED',
+              errorMessage: 'Content unchanged since last scan.',
+              technologyStack: [],
+              liveAudits: null,
+              offlineAudits: null
+            }
+          ]
+        }
+      ];
+
+      DashboardCompiler.compileStaticDashboard(payload);
+
+      const perfHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/legacy-domain/performance.html'),
+        'utf8'
+      );
+      expect(perfHtml).toContain('60');
+      expect(perfHtml).not.toContain('No performance data available');
+    } finally {
+      process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
+      fs.rmSync(historyCacheDir, { recursive: true, force: true });
+    }
+  });
+
+  it('shows data from older runs when recent runs had all timeouts (multi-run lookback)', () => {
+    const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-multirun-'));
+    fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
+
+    // Older run (runId1) has good full data.
+    const runId1 = '2024-01-01T00-00-00-000Z';
+    const olderRun = {
+      results: [
+        {
+          targetId: 'timeout-domain',
+          domain: 'https://timeout.gov',
+          scanDurationMs: 1000,
+          pagesScanned: [
+            {
+              url: 'https://timeout.gov/page',
+              timestamp: '2024-01-01T00:00:00.000Z',
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: {
+                lighthouse: { performanceScore: 77, energyEstimateKwh: null, firstContentfulPaintMs: 1200, largestContentfulPaintMs: 2100, speedIndexMs: 2800 },
+                accessibilityViolations: [
+                  {
+                    id: 'color-contrast',
+                    severity: 'serious',
+                    description: 'Ensures the contrast between foreground and background colors meets WCAG AA ratio thresholds',
+                    helpUrl: 'https://dequeuniversity.com/rules/axe/4.9/color-contrast',
+                    impactedCriteria: ['wcag2aa'],
+                    wcagVersion: '2.0',
+                    instances: [{ html: '<p class="low-contrast">text</p>', target: ['.low-contrast'], failureSummary: 'Fix contrast' }]
+                  }
+                ]
+              },
+              offlineAudits: null,
+              thirdPartyImpact: {
+                evaluated: true,
+                triggeredBy: [],
+                regressionDetected: true,
+                baselineViolationCount: 0,
+                jsDisabledViolationCount: 0,
+                addedByJavaScriptCount: 1,
+                removedByJavaScriptCount: 0,
+                highRiskRules: [],
+                providerAttribution: [],
+                likelyIntroducedByProviders: ['Adobe Analytics'],
+                ruleToLikelyProviders: [],
+                ruleToProviderAttribution: []
+              }
+            }
+          ]
+        }
+      ]
+    };
+
+    // Recent run (runId2) has all timeouts – liveAudits is null for every page.
+    const runId2 = '2024-01-02T00-00-00-000Z';
+    const recentTimeoutRun = {
+      results: [
+        {
+          targetId: 'timeout-domain',
+          domain: 'https://timeout.gov',
+          scanDurationMs: 500,
+          pagesScanned: [
+            {
+              url: 'https://timeout.gov/page',
+              timestamp: '2024-01-02T00:00:00.000Z',
+              status: 'TIMEOUT',
+              errorMessage: 'Navigation timeout exceeded.',
+              technologyStack: [],
+              liveAudits: null,
+              offlineAudits: null
+            }
+          ]
+        }
+      ]
+    };
+
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId1}.json`), JSON.stringify(olderRun), 'utf8');
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId2}.json`), JSON.stringify(recentTimeoutRun), 'utf8');
+    // Index lists runs newest-first.
+    fs.writeFileSync(
+      path.join(historyCacheDir, 'runs', 'index.json'),
+      JSON.stringify({
+        updatedAt: '2024-01-02T00:00:00.000Z',
+        latestRunId: runId2,
+        runs: [
+          { runId: runId2, artifactPath: `runs/${runId2}.json` },
+          { runId: runId1, artifactPath: `runs/${runId1}.json` }
+        ]
+      }),
+      'utf8'
+    );
+
+    const originalEnv = process.env.VITAL_HISTORY_CACHE_DIR;
+    try {
+      process.env.VITAL_HISTORY_CACHE_DIR = historyCacheDir;
+
+      // Current run also has all timeouts.
+      const payload: TargetScanResult[] = [
+        {
+          targetId: 'timeout-domain',
+          domain: 'https://timeout.gov',
+          scanDurationMs: 400,
+          pagesScanned: [
+            {
+              url: 'https://timeout.gov/page',
+              timestamp: new Date().toISOString(),
+              status: 'TIMEOUT',
+              errorMessage: 'Navigation timeout exceeded.',
+              technologyStack: [],
+              liveAudits: null,
+              offlineAudits: null
+            }
+          ]
+        }
+      ];
+
+      DashboardCompiler.compileStaticDashboard(payload);
+
+      const perfHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/timeout-domain/performance.html'),
+        'utf8'
+      );
+      const a11yHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/timeout-domain/accessibility.html'),
+        'utf8'
+      );
+      const thirdPartyHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/timeout-domain/third-party.html'),
+        'utf8'
+      );
+
+      // Data from the older full run should appear even though recent runs had timeouts.
+      expect(perfHtml).toContain('77');
+      expect(perfHtml).toContain('1200');
+      expect(perfHtml).not.toContain('No performance data available');
+      expect(a11yHtml).toContain('color-contrast');
+      expect(a11yHtml).not.toContain('No accessibility violations found');
+      expect(thirdPartyHtml).toContain('Adobe Analytics');
+      expect(thirdPartyHtml).not.toContain('No third-party impact data available');
+    } finally {
+      process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
+      fs.rmSync(historyCacheDir, { recursive: true, force: true });
+    }
+  });
+
+  it('back-fills lighthouse from an older run when recent run is accessibility-only (multi-run sub-field fill)', () => {
+    const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-subfield-'));
+    fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
+
+    // Older run has lighthouse data.
+    const runId1 = '2024-01-01T00-00-00-000Z';
+    const olderFullRun = {
+      results: [
+        {
+          targetId: 'subfield-domain',
+          domain: 'https://subfield.gov',
+          scanDurationMs: 1000,
+          pagesScanned: [
+            {
+              url: 'https://subfield.gov/page',
+              timestamp: '2024-01-01T00:00:00.000Z',
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: {
+                lighthouse: { performanceScore: 91, energyEstimateKwh: null, firstContentfulPaintMs: 900, largestContentfulPaintMs: 1800, speedIndexMs: 2000 },
+                accessibilityViolations: []
+              },
+              offlineAudits: null
+            }
+          ]
+        }
+      ]
+    };
+
+    // Newer run is accessibility-only (lighthouse: null).
+    const runId2 = '2024-01-02T00-00-00-000Z';
+    const newerA11yOnlyRun = {
+      results: [
+        {
+          targetId: 'subfield-domain',
+          domain: 'https://subfield.gov',
+          scanDurationMs: 500,
+          pagesScanned: [
+            {
+              url: 'https://subfield.gov/page',
+              timestamp: '2024-01-02T00:00:00.000Z',
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: { lighthouse: null, accessibilityViolations: [] },
+              offlineAudits: null
+            }
+          ]
+        }
+      ]
+    };
+
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId1}.json`), JSON.stringify(olderFullRun), 'utf8');
+    fs.writeFileSync(path.join(historyCacheDir, 'runs', `${runId2}.json`), JSON.stringify(newerA11yOnlyRun), 'utf8');
+    fs.writeFileSync(
+      path.join(historyCacheDir, 'runs', 'index.json'),
+      JSON.stringify({
+        updatedAt: '2024-01-02T00:00:00.000Z',
+        latestRunId: runId2,
+        runs: [
+          { runId: runId2, artifactPath: `runs/${runId2}.json` },
+          { runId: runId1, artifactPath: `runs/${runId1}.json` }
+        ]
+      }),
+      'utf8'
+    );
+
+    const originalEnv = process.env.VITAL_HISTORY_CACHE_DIR;
+    try {
+      process.env.VITAL_HISTORY_CACHE_DIR = historyCacheDir;
+
+      // Current run is also accessibility-only for this page.
+      const payload: TargetScanResult[] = [
+        {
+          targetId: 'subfield-domain',
+          domain: 'https://subfield.gov',
+          scanDurationMs: 400,
+          pagesScanned: [
+            {
+              url: 'https://subfield.gov/page',
+              timestamp: new Date().toISOString(),
+              status: 'COMPLETED',
+              errorMessage: null,
+              technologyStack: [],
+              liveAudits: { lighthouse: null, accessibilityViolations: [] },
+              offlineAudits: null
+            }
+          ]
+        }
+      ];
+
+      DashboardCompiler.compileStaticDashboard(payload);
+
+      const perfHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/subfield-domain/performance.html'),
+        'utf8'
+      );
+      // Lighthouse data from the older full run should be back-filled.
+      expect(perfHtml).toContain('91');
+      expect(perfHtml).toContain('900');
+      expect(perfHtml).not.toContain('No performance data available');
     } finally {
       process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
       fs.rmSync(historyCacheDir, { recursive: true, force: true });
