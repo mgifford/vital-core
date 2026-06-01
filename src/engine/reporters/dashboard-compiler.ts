@@ -2741,13 +2741,9 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
       }
       if (skippedUnchanged > 2) {
         alerts.push(
-          '<p><strong>ℹ️ ' + String(skippedUnchanged) + ' SKIPPED_UNCHANGED pages in this run.</strong></p>' +
-          '<p>Pages are skipped when their content hash matches a recent scan, saving time and budget. A high skip count is normal if content has not changed. However, if you expected fresh results for these pages, consider:</p>' +
-          '<ul>' +
-          '<li>Running with <code>--force-rescan</code> to bypass the unchanged-content cache.</li>' +
-          '<li>Checking whether the page state file is stale or from a previous run with different scope.</li>' +
-          '<li>Verifying that the scan profile <code>freshnessThresholdHours</code> is set appropriately for your cadence.</li>' +
-          '</ul>'
+          '<p><strong>✅ ' + String(skippedUnchanged) + ' SKIPPED_UNCHANGED pages in this run.</strong></p>' +
+          '<p>Pages are skipped when their content hash matches a recent scan. This is expected and correct behavior — with large sitemaps (thousands of URLs across CMS, Medicare, Medicaid, HHS, and other targets), the scanner deliberately avoids re-auditing content that has not changed, saving time and scan budget. A high skip count means the caching strategy is working as intended.</p>' +
+          '<p>The rescan cadence is controlled by <code>VITAL_RESCAN_WINDOW_DAYS</code> and <code>VITAL_REVALIDATE_AFTER_DAYS</code>. Pages are automatically re-queued once the configured window expires. To force a full rescan of all pages regardless of change state, set <code>FORCE_RESCAN=true</code>.</p>'
         );
       }
       if (alerts.length > 0) {

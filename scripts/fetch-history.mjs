@@ -1,5 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
+import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
+import { parse as parseYaml } from 'yaml';
 
 const REQUEST_TIMEOUT_MS = Number.parseInt(process.env.VITAL_HISTORY_FETCH_TIMEOUT_MS || '20000', 10);
 
@@ -107,6 +109,30 @@ async function main() {
   await fetchOptionalRunArtifact('page-state.json');
   await fetchOptionalRunArtifact('top-task-seeds.json');
   await fetchOptionalRunArtifact('software-by-domain.json');
+
+  // Fetch per-target url-manifest.json for each target defined in the profile,
+  // so UrlManifestStore.restoreCachedManifest() can seed dist/runs/{targetId}/
+  // before discoverUrls runs on the next scan.
+  const profilePath = process.argv[2] || 'profiles/us-health.yml';
+  let targetIds = [];
+  try {
+    const { parse: parseYaml } = await import('yaml');
+    const { readFileSync, existsSync } = await import('node:fs');
+    const profileAbsPath = path.resolve(process.cwd(), profilePath);
+    if (existsSync(profileAbsPath)) {
+      const profileData = parseYaml(readFileSync(profileAbsPath, 'utf8'));
+      targetIds = Array.isArray(profileData?.targets)
+        ? profileData.targets.map(t => t?.id).filter(id => typeof id === 'string')
+        : [];
+    }
+  } catch {
+    // Profile parsing is best-effort; skip manifest fetches if it fails.
+  }
+
+  for (const targetId of targetIds) {
+    await fetchOptionalRunArtifact(`${targetId}/url-manifest.json`);
+  }
+
   console.log(`Restored historical run index and ${runs.length} referenced run entries.`);
 }
 

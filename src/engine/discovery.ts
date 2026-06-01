@@ -211,7 +211,8 @@ export class TargetDiscoveryEngine {
       remainingSlots,
       effectiveTemplateSampleCap,
       useStochasticSampling,
-      previouslyScannedUrls
+      previouslyScannedUrls,
+      urlManifest
     );
     sampledSitemapUrls.forEach(url => uniqueUrlSet.add(url));
 
@@ -272,7 +273,8 @@ export class TargetDiscoveryEngine {
     remainingSlots: number,
     templateSampleCap: number,
     useStochasticSampling: boolean,
-    previouslyScannedUrls: Set<string>
+    previouslyScannedUrls: Set<string>,
+    urlManifest: UrlManifest
   ): string[] {
     if (remainingSlots <= 0 || sitemapUrls.length === 0) {
       return [];
@@ -288,12 +290,22 @@ export class TargetDiscoveryEngine {
 
     const groupEntries = Array.from(groups.entries()).map(([key, urls]) => {
       const orderedUrls = useStochasticSampling ? this.stableShuffle(urls) : [...urls];
-      const unseen = orderedUrls.filter(url => !previouslyScannedUrls.has(url));
-      const seen = orderedUrls.filter(url => previouslyScannedUrls.has(url));
+
+      // Four-tier ordering: (a) no manifest entry → (b) null lastSuccessAt →
+      // (c/d) has lastSuccessAt, oldest first (never-scanned URLs surface first).
+      const noEntry = orderedUrls.filter(url => !urlManifest[url]);
+      const nullSuccess = orderedUrls.filter(url => urlManifest[url] && !urlManifest[url].lastSuccessAt);
+      const hasSuccess = orderedUrls
+        .filter(url => urlManifest[url]?.lastSuccessAt)
+        .sort((a, b) => {
+          const ta = Date.parse(urlManifest[a].lastSuccessAt!);
+          const tb = Date.parse(urlManifest[b].lastSuccessAt!);
+          return ta - tb; // oldest first
+        });
 
       return {
         key,
-        urls: [...unseen, ...seen]
+        urls: [...noEntry, ...nullSuccess, ...hasSuccess]
       };
     });
 

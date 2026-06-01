@@ -3,6 +3,7 @@ import { TargetDiscoveryEngine } from '../../src/engine/discovery';
 import { PrioritySeedStore } from '../../src/engine/priority-seeds';
 import { TargetConfig } from '../../src/types/profile';
 import { PageStateMap } from '../../src/engine/reporters/page-state-cache';
+import { UrlManifest } from '../../src/engine/url-manifest';
 
 const { fetchMock } = vi.hoisted(() => ({
   fetchMock: vi.fn()
@@ -375,11 +376,36 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
+    const recentSuccess = new Date(Date.now() - 60 * 1000).toISOString();
+    const urlManifest: UrlManifest = {
+      'https://www.cms.gov/a/page-1': {
+        url: 'https://www.cms.gov/a/page-1',
+        discoveredAt: recentSuccess,
+        lastAttemptedAt: recentSuccess,
+        lastSuccessAt: recentSuccess,
+        lastStatus: 'COMPLETED',
+        consecutiveFailures: 0,
+        cooldownUntil: null,
+        contentHash: null
+      },
+      'https://www.cms.gov/b/page-1': {
+        url: 'https://www.cms.gov/b/page-1',
+        discoveredAt: recentSuccess,
+        lastAttemptedAt: recentSuccess,
+        lastSuccessAt: recentSuccess,
+        lastStatus: 'COMPLETED',
+        consecutiveFailures: 0,
+        cooldownUntil: null,
+        contentHash: null
+      }
+    };
+
     const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
       previouslyScannedUrls: new Set([
         'https://www.cms.gov/a/page-1',
         'https://www.cms.gov/b/page-1'
-      ])
+      ]),
+      urlManifest
     });
 
     expect(queue).toEqual([
@@ -828,5 +854,141 @@ describe('TargetDiscoveryEngine', () => {
 
     expect(queue).toContain('https://www.cms.gov/new-never-scanned');
     expect(queue).not.toContain('https://www.cms.gov/updated-recently');
+  });
+
+  it('orders never-scanned URLs (no manifest entry) before null-lastSuccessAt before oldest-success URLs', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/a/1',
+        'https://www.cms.gov/a/2',
+        'https://www.cms.gov/a/3'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    const recentTs = new Date(Date.now() - 60 * 1000).toISOString();
+    // /a/1 has a recent success (tier d), /a/2 has null lastSuccessAt (tier b),
+    // /a/3 has no manifest entry (tier a) → expected order: /a/3, /a/2, /a/1
+    const urlManifest: UrlManifest = {
+      'https://www.cms.gov/a/1': {
+        url: 'https://www.cms.gov/a/1',
+        discoveredAt: recentTs,
+        lastAttemptedAt: recentTs,
+        lastSuccessAt: recentTs,
+        lastStatus: 'COMPLETED',
+        consecutiveFailures: 0,
+        cooldownUntil: null,
+        contentHash: null
+      },
+      'https://www.cms.gov/a/2': {
+        url: 'https://www.cms.gov/a/2',
+        discoveredAt: recentTs,
+        lastAttemptedAt: recentTs,
+        lastSuccessAt: null,
+        lastStatus: 'FAILED',
+        consecutiveFailures: 1,
+        cooldownUntil: null,
+        contentHash: null
+      }
+      // /a/3 intentionally absent from manifest (tier a)
+    };
+
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
+      urlManifest,
+      skipPreviouslyScanned: false
+    });
+
+    const noEntryIdx = queue.indexOf('https://www.cms.gov/a/3');
+    const nullSuccessIdx = queue.indexOf('https://www.cms.gov/a/2');
+    const hasSuccessIdx = queue.indexOf('https://www.cms.gov/a/1');
+
+    expect(noEntryIdx).toBeGreaterThanOrEqual(0);
+    expect(nullSuccessIdx).toBeGreaterThanOrEqual(0);
+    expect(hasSuccessIdx).toBeGreaterThanOrEqual(0);
+    expect(noEntryIdx).toBeLessThan(nullSuccessIdx);
+    expect(nullSuccessIdx).toBeLessThan(hasSuccessIdx);
+  });
+
+  it('orders oldest-succeeded URLs before most-recently-succeeded within the same template group', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/a/1',
+        'https://www.cms.gov/a/2'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    const oldSuccess = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString();
+    const recentSuccess = new Date(Date.now() - 60 * 1000).toISOString();
+    // /a/1 succeeded recently, /a/2 succeeded long ago → expected order: /a/2, /a/1
+    const urlManifest: UrlManifest = {
+      'https://www.cms.gov/a/1': {
+        url: 'https://www.cms.gov/a/1',
+        discoveredAt: recentSuccess,
+        lastAttemptedAt: recentSuccess,
+        lastSuccessAt: recentSuccess,
+        lastStatus: 'COMPLETED',
+        consecutiveFailures: 0,
+        cooldownUntil: null,
+        contentHash: null
+      },
+      'https://www.cms.gov/a/2': {
+        url: 'https://www.cms.gov/a/2',
+        discoveredAt: oldSuccess,
+        lastAttemptedAt: oldSuccess,
+        lastSuccessAt: oldSuccess,
+        lastStatus: 'COMPLETED',
+        consecutiveFailures: 0,
+        cooldownUntil: null,
+        contentHash: null
+      }
+    };
+
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
+      urlManifest,
+      skipPreviouslyScanned: false
+    });
+
+    expect(queue.indexOf('https://www.cms.gov/a/2')).toBeLessThan(
+      queue.indexOf('https://www.cms.gov/a/1')
+    );
   });
 });
