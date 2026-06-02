@@ -217,8 +217,12 @@ async function main() {
         includeQuarantined: forceRescan || includeQuarantined
       });
 
-      const urlQueue = discoveryResult.urls;
-
+      let urlQueue = discoveryResult.urls;
+      // Apply optional per-target page limit if VITAL_TARGET_LIMIT is set.
+      const targetLimitEnv = process.env.VITAL_TARGET_LIMIT ? parseInt(process.env.VITAL_TARGET_LIMIT, 10) : null;
+      if (targetLimitEnv && targetLimitEnv > 0) {
+        urlQueue = urlQueue.slice(0, targetLimitEnv);
+      }
       // Register all discovered URLs in the manifest so their lifecycle is tracked.
       UrlManifestStore.ensureEntries(urlManifest, urlQueue, new Date().toISOString());
 

@@ -4,6 +4,7 @@
   "description": "A quality scanner for websites built for the US government.",
   "main": "index.js",
   "scripts": {
+    "scan": "npx tsx src/index.ts",
     "validate": "npm run validate:profile",
     "validate:discovery:smoke": "npx tsx tests/smoke/validate-discovery-smoke.ts",
     "validate:browser:smoke": "npx tsx tests/smoke/validate-browser-smoke.ts",
@@ -27,7 +28,7 @@
     "seeds:refresh": "npx tsx scripts/refresh-priority-seeds.ts",
     "inventory:export": "node scripts/export-target-inventory.mjs",
     "act-mapping:update": "node scripts/update-act-mapping.mjs",
-    "scan": "npx tsx src/index.ts profiles/us-health.yml",
+    "duckduckgo-fetch": "npx tsx src/cli/duckduckgo-fetch.ts",
     "compile": "npx tsx src/compile.ts profiles/us-health.yml"
   },
   "repository": {

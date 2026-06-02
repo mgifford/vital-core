@@ -53,29 +53,7 @@ export class TargetDiscoveryEngine {
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
       console.log(`📡 Fetching sitemap data for ${target.name} from: ${target.sitemap_url}`);
-      const mapper = new Sitemapper({
-        url: target.sitemap_url,
-        timeout: 15000 // 15 seconds max allotment for sitemap retrieval
-      });
-
-      try {
-        const response = await mapper.fetch();
-        sitemapUrls = response.sites || [];
-        console.log(`📦 Discovered ${sitemapUrls.length} raw URLs within remote sitemap.`);
-        if (sitemapUrls.length === 0) {
-          console.warn(
-            `⚠️ Sitemap returned 0 URLs for ${target.id} (${target.sitemap_url}). ` +
-            `The sitemap may be blocked (403/Cloudflare), return a non-XML response, ` +
-            `or be a sitemap index that exceeded the fetch timeout. ` +
-            `Falling back to DuckDuckGo site: query.`
-          );
-          sitemapUrls = await PrioritySeedStore.fetchLiveUrls(target, 30);
-        }
-      } catch (error: any) {
-        // Resiliency Guard: A corrupted or blocked sitemap should never crash the runner
-        console.warn(`⚠️ Warning: Unable to parse sitemap for ${target.id}: ${error.message}. Falling back to DuckDuckGo site: query.`);
-        sitemapUrls = await PrioritySeedStore.fetchLiveUrls(target, 30);
-      }
+      sitemapUrls = await this.fetchSitemapResiliently(target);
     }
 
     // 2. Glob Filter Matrix Evaluation
@@ -167,16 +145,17 @@ export class TargetDiscoveryEngine {
         .forEach(url => uniqueUrlSet.add(url));
     }
     
-    // Force target specific high-priority nodes to the front of the line.
-    // Priority URLs bypass the page-state freshness check (their purpose is to always be
-    // included), but they still respect the quarantine cooldown from the URL manifest to
-    // avoid hammering repeatedly-failing URLs.
+    // Force target specific high‑priority nodes to the front of the queue.
+    // Priority URLs now respect normal freshness checks (skipPreviouslyScanned, revalidation, etc.)
+    // but still honor the quarantine cooldown to avoid hammering failing URLs.
     if (target.priority_urls && target.priority_urls.length > 0) {
       target.priority_urls
         .map(url => this.normalizeUrl(url))
         .filter((url): url is string => Boolean(url))
         .filter(url => this.isLikelyHtmlUrl(url))
         .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
+        // Apply the same inclusion predicate used for other URLs (skipPreviouslyScanned, revalidation, etc.)
+        .filter(url => shouldIncludeUrl(url))
         .filter(url => {
           if (includeQuarantined) return true;
           const entry = urlManifest[url];
@@ -266,6 +245,29 @@ export class TargetDiscoveryEngine {
 
   public static resetNonHtmlExclusionsForTesting(): void {
     this.nonHtmlExclusions = [];
+  }
+
+  private static async fetchSitemapResiliently(target: TargetConfig): Promise<string[]> {
+    const mapper = new Sitemapper({
+      url: target.sitemap_url!,
+      timeout: 15000
+    });
+
+    try {
+      const response = await mapper.fetch();
+      if (response.sites && response.sites.length > 0) {
+        console.log(`📦 Discovered ${response.sites.length} raw URLs within remote sitemap.`);
+        return response.sites;
+      }
+      console.warn(
+        `⚠️ Sitemap returned 0 URLs for ${target.id} (${target.sitemap_url}). ` +
+        `Falling back to DuckDuckGo site: query.`
+      );
+    } catch (error: any) {
+      console.warn(`⚠️ Warning: Unable to parse sitemap for ${target.id}: ${error.message}. Falling back to DuckDuckGo site: query.`);
+    }
+
+    return await PrioritySeedStore.fetchLiveUrls(target, 30);
   }
 
   private static sampleSitemapUrls(
