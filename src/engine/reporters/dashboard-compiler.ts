@@ -463,6 +463,9 @@ ${siteFooterHtml}
       const domainRunHistory = cachedRunsDir
         ? this.buildDomainRunHistory(String(target.targetId), cachedRunsDir, indexRuns, artifactCache)
         : [];
+      const statusSummary = cachedRunsDir
+        ? this.buildDomainStatusSummary(String(target.targetId), cachedRunsDir, indexRuns, artifactCache)
+        : null;
       const currentPageUrls = new Set(pages.map(p => String(p?.url || '')));
       const historicalByUrl = new Map(historicalPages.map(p => [String(p.url || ''), p]));
 
@@ -586,15 +589,14 @@ ${siteFooterHtml}
             </tr>`;
         })
         .join('');
-      const statusCounts = pages.reduce((acc, page) => {
+      const latestRunStatusCounts = pages.reduce((acc, page) => {
         const status = String(page?.status || 'UNKNOWN');
         acc.set(status, (acc.get(status) || 0) + 1);
         return acc;
       }, new Map<string, number>());
-      const statusSummaryText = Array.from(statusCounts.entries())
-        .sort((a, b) => b[1] - a[1])
-        .map(([status, count]) => `${status}: ${count}`)
-        .join(' | ') || 'No page statuses recorded in latest run.';
+      const statusSummaryText = statusSummary?.summaryText
+        || this.formatStatusSummaryText(latestRunStatusCounts, 'No page statuses recorded in current run.');
+      const statusSummaryHeading = statusSummary?.heading || 'Status breakdown (current run)';
 
       // Group violations by rule for the enhanced accessibility report
       const ruleGroupMap = new Map<string, {
@@ -817,13 +819,11 @@ ${siteFooterHtml}
 
       const sharedNav = `
         <p>
-          <a href="../../index.html">Main dashboard</a> |
           <a href="index.html">Domain overview</a> |
           <a href="accessibility.html">Accessibility</a> |
           <a href="performance.html">Performance</a> |
           <a href="content.html">Content</a> |
-          <a href="third-party.html">Third-party impact</a> |
-          <a href="accessibility.html#run-history">Run history</a>
+          <a href="third-party.html">Third-party impact</a>
         </p>`;
 
       const overviewHtml = `<!DOCTYPE html>
@@ -845,7 +845,8 @@ ${siteFooterHtml}
       <p><strong>Scan duration (latest run):</strong> ${this.escapeHtml(this.formatHumanDuration(target.scanDurationMs))}</p>
       <p><strong>Quality gate:</strong> ${this.escapeHtml(String((quality && quality.gateStatus) || 'n/a'))}</p>
       <p><strong>Quality score:</strong> ${this.escapeHtml(String((quality && quality.score) || 'n/a'))}</p>
-      <p><strong>Status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+      <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+      <p><a href="run-history.html">Run history and run-specific details</a></p>
       <p><strong>Completed:</strong> ${this.escapeHtml(completedPages)} | <strong>Skipped unchanged:</strong> ${this.escapeHtml(skippedPages)} | <strong>Blocked:</strong> ${this.escapeHtml(blockedPages)}</p>
       <p><strong>Total accessibility violations:</strong> ${this.escapeHtml(totalViolations)} (critical: ${this.escapeHtml(severityCounts.get('critical') || 0)}, serious: ${this.escapeHtml(severityCounts.get('serious') || 0)}, moderate: ${this.escapeHtml(severityCounts.get('moderate') || 0)}, minor: ${this.escapeHtml(severityCounts.get('minor') || 0)})</p>
       <p><strong>By WCAG version:</strong> WCAG 2.0 AA (legal baseline): ${this.escapeHtml(wcag20Count)} &nbsp;|&nbsp; WCAG 2.1 AA (recommended): ${this.escapeHtml(wcag21Count)} &nbsp;|&nbsp; WCAG 2.2 AA (target): ${this.escapeHtml(wcag22Count)}</p>
@@ -893,7 +894,8 @@ ${siteFooterHtml}
     <div class="card">
       <h2>Accessibility Findings</h2>
       ${sharedNav}
-      <p><strong>Status breakdown (latest run):</strong> ${this.escapeHtml(statusSummaryText)}</p>
+      <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+      <p><a href="run-history.html">Open run-specific history details</a></p>
       ${hasHistoricalData ? '<p class="muted-small"><em>Some findings are from a previous scan run. Pages unchanged since the last scan are shown with their most recent known data (up to ~33 hours of history).</em></p>' : ''}
     </div>
 
@@ -926,34 +928,6 @@ ${siteFooterHtml}
         <thead><tr><th>URL</th><th>Violations</th></tr></thead>
         <tbody>${topPagesRows}</tbody>
       </table>
-    </div>` : ''}
-
-    ${domainRunHistory.length > 0 ? `
-    <div class="card" id="run-history">
-      <h2>Run History</h2>
-      <p class="muted-small"><em>Per-run violation counts (pages actively scanned in each run; SKIPPED_UNCHANGED pages contribute to the cumulative findings above but are not recounted here). Covers up to ~33 hours of history.</em></p>
-      <details>
-        <summary>Show / hide run history table (${this.escapeHtml(domainRunHistory.length)} runs)</summary>
-        <table>
-          <thead>
-            <tr>
-              <th>Run</th>
-              <th>Date/Time (UTC)</th>
-              <th>Pages Scanned</th>
-              <th>Violations</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${domainRunHistory.map((r, i) => `
-            <tr>
-              <td>${this.escapeHtml(i + 1)}</td>
-              <td>${this.escapeHtml(r.generatedAt ? new Date(r.generatedAt).toISOString().replace('T', ' ').slice(0, 19) : r.runId)}</td>
-              <td>${this.escapeHtml(r.pagesScanned)}</td>
-              <td>${this.escapeHtml(r.totalViolations)}</td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
-      </details>
     </div>` : ''}
 
     <div class="card">
@@ -1043,7 +1017,7 @@ ${siteFooterHtml}
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</h1></header><main><div class="card"><h2>Lighthouse Metrics</h2>${sharedNav}
-    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+    <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
     <table><thead><tr><th>URL</th><th>Perf</th><th>FCP (ms)</th><th>LCP (ms)</th><th>Speed Index (ms)</th></tr></thead><tbody>${performanceRows || '<tr><td colspan="5">No performance data available in the latest run. This usually means pages were skipped unchanged or no full Lighthouse samples were collected.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
@@ -1051,7 +1025,7 @@ ${siteFooterHtml}
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Content</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Content Quality</h1></header><main><div class="card"><h2>Content Metrics</h2>${sharedNav}
-    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+    <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
     <table><thead><tr><th>URL</th><th>Grade</th><th>Avg Sentence Length</th><th>Ambiguous Links</th><th>Suspicious Alt Text</th><th>Word Count</th><th>Content / Total Images</th><th>Misspellings</th></tr></thead><tbody>${contentRows || '<tr><td colspan="8">No content metrics available in the latest run. Grade appears only when pages are completed with offline content analysis.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
@@ -1059,8 +1033,37 @@ ${siteFooterHtml}
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Third-Party Impact</h1></header><main><div class="card"><h2>JavaScript Regression Signals</h2>${sharedNav}
-    <p><strong>Latest run status breakdown:</strong> ${this.escapeHtml(statusSummaryText)}</p>
+    <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
     <table><thead><tr><th>URL</th><th>Regression Detected</th><th>Added Violations</th><th>Likely Providers</th></tr></thead><tbody>${thirdPartyRows || '<tr><td colspan="4">No third-party impact data available in the latest run.</td></tr>'}</tbody></table>
+</div></main>${siteFooterHtml}</body></html>`;
+
+      const runHistoryHtml = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Run History</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
+<body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Run History</h1></header><main><div class="card"><h2>Run History</h2>${sharedNav}
+    <p class="muted-small"><em>Per-run violation counts (pages actively scanned in each run; SKIPPED_UNCHANGED pages contribute to the cumulative findings in the other reports but are not recounted here).</em></p>
+    ${domainRunHistory.length > 0 ? `<details open>
+      <summary>Show / hide run history table (${this.escapeHtml(domainRunHistory.length)} runs)</summary>
+      <table>
+        <thead>
+          <tr>
+            <th>Run</th>
+            <th>Date/Time (UTC)</th>
+            <th>Pages Scanned</th>
+            <th>Violations</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${domainRunHistory.map((r, i) => `
+          <tr>
+            <td>${this.escapeHtml(i + 1)}</td>
+            <td>${this.escapeHtml(r.generatedAt ? new Date(r.generatedAt).toISOString().replace('T', ' ').slice(0, 19) : r.runId)}</td>
+            <td>${this.escapeHtml(r.pagesScanned)}</td>
+            <td>${this.escapeHtml(r.totalViolations)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </details>` : '<p>No retained run history was found for this domain.</p>'}
 </div></main>${siteFooterHtml}</body></html>`;
 
       fs.writeFileSync(path.join(domainDir, 'index.html'), overviewHtml, 'utf8');
@@ -1068,6 +1071,7 @@ ${siteFooterHtml}
       fs.writeFileSync(path.join(domainDir, 'performance.html'), performanceHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'content.html'), contentHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'third-party.html'), thirdPartyHtml, 'utf8');
+      fs.writeFileSync(path.join(domainDir, 'run-history.html'), runHistoryHtml, 'utf8');
     }
   }
 
@@ -1344,6 +1348,105 @@ ${siteFooterHtml}
 
     // Return oldest-first for chronological display.
     return history.reverse();
+  }
+
+  private static buildDomainStatusSummary(
+    targetId: string,
+    cachedRunsDir: string,
+    indexRuns: Array<{ runId?: unknown; generatedAt?: unknown; artifactPath?: unknown }>,
+    artifactCache: Map<string, { results: TargetScanResult[] } | null>
+  ): { heading: string; summaryText: string } | null {
+    const MAX_HISTORY_LOOKBACK = 200;
+    const LAST_WEEK_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const weeklyCounts = new Map<string, number>();
+    const retainedCounts = new Map<string, number>();
+    let weeklyRuns = 0;
+    let retainedRuns = 0;
+
+    for (const run of indexRuns.slice(0, MAX_HISTORY_LOOKBACK)) {
+      const ap = typeof run?.artifactPath === 'string' ? run.artifactPath : '';
+      if (!ap.startsWith('runs/') || !ap.endsWith('.json')) {
+        continue;
+      }
+
+      const fullPath = path.join(cachedRunsDir, path.basename(ap));
+      const artifact = this.readCachedArtifact(fullPath, artifactCache);
+      if (!artifact) {
+        continue;
+      }
+
+      let found = false;
+      for (const result of artifact.results) {
+        if (!result || typeof result !== 'object') {
+          continue;
+        }
+        const r = result as Record<string, unknown>;
+        if (String(r.targetId ?? '') !== String(targetId ?? '')) {
+          continue;
+        }
+
+        const pagesScanned = r.pagesScanned;
+        if (!Array.isArray(pagesScanned)) {
+          break;
+        }
+
+        retainedRuns++;
+        for (const p of pagesScanned) {
+          if (!p || typeof p !== 'object') {
+            continue;
+          }
+          const page = p as PageScanReport;
+          const status = String(page?.status || 'UNKNOWN');
+          retainedCounts.set(status, (retainedCounts.get(status) || 0) + 1);
+        }
+
+        const generatedAtMs = Date.parse(String(run?.generatedAt || ''));
+        if (Number.isFinite(generatedAtMs) && (now - generatedAtMs) <= LAST_WEEK_WINDOW_MS) {
+          weeklyRuns++;
+          for (const p of pagesScanned) {
+            if (!p || typeof p !== 'object') {
+              continue;
+            }
+            const page = p as PageScanReport;
+            const status = String(page?.status || 'UNKNOWN');
+            weeklyCounts.set(status, (weeklyCounts.get(status) || 0) + 1);
+          }
+        }
+        found = true;
+        break;
+      }
+
+      if (!found) {
+        continue;
+      }
+    }
+
+    if (weeklyRuns > 0 && weeklyCounts.size > 0) {
+      return {
+        heading: 'Status breakdown (last 7 days)',
+        summaryText: this.formatStatusSummaryText(weeklyCounts, 'No page statuses recorded in the last 7 days.')
+      };
+    }
+
+    if (retainedRuns > 0 && retainedCounts.size > 0) {
+      return {
+        heading: 'Status breakdown (retained history)',
+        summaryText: this.formatStatusSummaryText(retainedCounts, 'No page statuses recorded in retained history.')
+      };
+    }
+
+    return null;
+  }
+
+  private static formatStatusSummaryText(
+    statusCounts: Map<string, number>,
+    fallback: string
+  ): string {
+    return Array.from(statusCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([status, count]) => `${status}: ${count}`)
+      .join(' | ') || fallback;
   }
 
   private static sanitizePathSegment(value: string): string {
