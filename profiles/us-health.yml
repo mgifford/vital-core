@@ -1,19 +1,14 @@
+---
 version: "1.0"
-profile: "US Health"
-description: "Quality scanner profile targeting US federal health agency websites."
-# Operator note: to control navigation-heavy template diversity, use
-#   unique_page_focus: true      — one page per URL template (strictest diversity)
-#   sitemap_template_sample_cap  — e.g. 2–5 samples per template (balanced)
-# These are the correct levers for diversity-first scanning; do NOT rely on
-# crawl-based deduplication for this purpose.
-
+profile: US Health
+description: Quality scanner profile targeting US federal health agency websites.
 targets:
   - id: cms-gov
     name: Centers for Medicare & Medicaid Services
     base_url: https://www.cms.gov
     sitemap_url: https://www.cms.gov/sitemap.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.cms.gov/
       - https://www.cms.gov/about-cms
@@ -64,14 +59,11 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
-
   - id: hhs-gov
     name: U.S. Department of Health & Human Services
     base_url: https://www.hhs.gov
-    # sitemap_url omitted: Akamai CDN returns 403 for all automated requests to /sitemap.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.hhs.gov/
       - https://www.hhs.gov/about
@@ -140,13 +132,12 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: medicare-gov
     name: Medicare.gov
     base_url: https://www.medicare.gov
     sitemap_url: https://www.medicare.gov/sitemap.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.medicare.gov/
       - https://www.medicare.gov/about-us
@@ -233,13 +224,12 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: medicaid-gov
     name: Medicaid.gov
     base_url: https://www.medicaid.gov
     sitemap_url: https://www.medicaid.gov/sitemap.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.medicaid.gov/
       - https://www.medicaid.gov/about-us
@@ -311,12 +301,11 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: openpaymentsdata-cms-gov
     name: Open Payments Data (CMS)
     base_url: https://openpaymentsdata.cms.gov
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://openpaymentsdata.cms.gov/
     settings:
@@ -325,12 +314,11 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: data-medicaid-gov
     name: Medicaid Data Portal
     base_url: https://data.medicaid.gov
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://data.medicaid.gov/
     settings:
@@ -339,12 +327,11 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: data-healthcare-gov
     name: Healthcare Data Portal
     base_url: https://data.healthcare.gov
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://data.healthcare.gov/datasets
     settings:
@@ -353,12 +340,11 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: data-cms-gov
     name: CMS Data Portal
     base_url: https://data.cms.gov
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://data.cms.gov/
     settings:
@@ -367,13 +353,12 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: healthcare-gov
     name: HealthCare.gov
     base_url: https://www.healthcare.gov
     sitemap_url: https://www.healthcare.gov/sitemap-index.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.healthcare.gov/
       - https://www.healthcare.gov/accessibility/
@@ -457,13 +442,12 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: cdc-gov
     name: CDC.gov
     base_url: https://www.cdc.gov
     sitemap_url: https://www.cdc.gov/wcms-auto-sitemap-index.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.cdc.gov/
       - https://www.cdc.gov/about/
@@ -547,13 +531,11 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: nih-gov
     name: National Institutes of Health
     base_url: https://www.nih.gov
-    # sitemap_url omitted: Cloudflare bot protection blocks all automated requests to /sitemap.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.nih.gov/
       - https://www.nih.gov/health-information
@@ -563,13 +545,12 @@ targets:
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
-
   - id: health-gov
     name: Health.gov
     base_url: https://www.health.gov
     sitemap_url: https://www.health.gov/sitemap.xml
     include_paths:
-      - "/**"
+      - /**
     priority_urls:
       - https://www.health.gov/
       - https://www.health.gov/about-oash
