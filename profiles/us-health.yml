@@ -62,6 +62,9 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
+
 
   - id: hhs-gov
     name: U.S. Department of Health & Human Services
@@ -132,8 +135,11 @@ targets:
       - https://www.hhs.gov/press-room/ocr-ed-hhs-find-mn-violates-title-nine.html
       - https://www.hhs.gov/healthcare/index.html
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: medicare-gov
     name: Medicare.gov
@@ -222,8 +228,11 @@ targets:
       - https://www.medicare.gov/basics
       - https://www.medicare.gov/coverage
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: medicaid-gov
     name: Medicaid.gov
@@ -297,8 +306,11 @@ targets:
       - https://www.medicaid.gov/medicaid/index.html
       - https://www.medicaid.gov/state-overviews/index.html
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: openpaymentsdata-cms-gov
     name: Open Payments Data (CMS)
@@ -308,8 +320,11 @@ targets:
     priority_urls:
       - https://openpaymentsdata.cms.gov/
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: data-medicaid-gov
     name: Medicaid Data Portal
@@ -319,8 +334,11 @@ targets:
     priority_urls:
       - https://data.medicaid.gov/
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: data-healthcare-gov
     name: Healthcare Data Portal
@@ -330,8 +348,11 @@ targets:
     priority_urls:
       - https://data.healthcare.gov/datasets
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: data-cms-gov
     name: CMS Data Portal
@@ -341,8 +362,11 @@ targets:
     priority_urls:
       - https://data.cms.gov/
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: healthcare-gov
     name: HealthCare.gov
@@ -428,8 +452,11 @@ targets:
       - https://www.healthcare.gov/plain-language/
       - https://www.healthcare.gov/quick-guide/
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: cdc-gov
     name: CDC.gov
@@ -515,8 +542,11 @@ targets:
       - https://www.cdc.gov/wcms/4.0/cdc-wp/image-types/instructions/responsive-image-instructions.html
       - https://www.cdc.gov/wcms/4.0/cove-demos/cove-world-map-demo.html
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: nih-gov
     name: National Institutes of Health
@@ -528,8 +558,11 @@ targets:
       - https://www.nih.gov/
       - https://www.nih.gov/health-information
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
 
   - id: health-gov
     name: Health.gov
@@ -566,5 +599,8 @@ targets:
       - https://www.health.gov/our-work/nutrition-physical-activity/dietary-guidelines
       - https://www.health.gov/our-work/
     settings:
-      postLoadDelay: 2000
+      postLoadDelay: 2500
       maxTimeoutMs: 120000
+      throttle_profile: conservative
+      unique_page_focus: true
+      sitemap_template_sample_cap: 3
