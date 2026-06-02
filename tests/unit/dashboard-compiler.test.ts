@@ -55,12 +55,14 @@ describe('DashboardCompiler', () => {
     const domainPerformancePath = path.resolve(process.cwd(), 'dist/domains/cms-gov/performance.html');
     const domainContentPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/content.html');
     const domainThirdPartyPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/third-party.html');
+    const domainRunHistoryPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/run-history.html');
     const failuresPath = path.resolve(process.cwd(), 'dist/failures/index.html');
     const html = fs.readFileSync(outputPath, 'utf8');
     const js = fs.readFileSync(jsPath, 'utf8');
     const css = fs.readFileSync(cssPath, 'utf8');
     const domainOverviewHtml = fs.readFileSync(domainOverviewPath, 'utf8');
     const domainA11yHtml = fs.readFileSync(domainA11yPath, 'utf8');
+    const domainRunHistoryHtml = fs.readFileSync(domainRunHistoryPath, 'utf8');
     const failuresHtml = fs.readFileSync(failuresPath, 'utf8');
 
     expect(html).not.toContain('\"><script>alert(1)</script>');
@@ -70,6 +72,16 @@ describe('DashboardCompiler', () => {
     expect(html).not.toContain('vital-dashboard-target-quality');
     expect(domainOverviewHtml).not.toContain('\"><script>alert(1)</script>');
     expect(domainOverviewHtml).toContain('&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;');
+    expect(domainOverviewHtml).toContain('<a href="index.html">Domain overview</a> |');
+    expect(domainOverviewHtml).toContain('<a href="accessibility.html">Accessibility</a> |');
+    expect(domainOverviewHtml).toContain('<a href="performance.html">Performance</a> |');
+    expect(domainOverviewHtml).toContain('<a href="content.html">Content</a> |');
+    expect(domainOverviewHtml).toContain('<a href="third-party.html">Third-party impact</a>');
+    expect(domainOverviewHtml).not.toContain('Main dashboard');
+    expect(domainOverviewHtml).not.toContain('accessibility.html#run-history');
+    expect(domainOverviewHtml).toContain('run-history.html');
+    expect(domainA11yHtml).not.toContain('id="run-history"');
+    expect(domainRunHistoryHtml).toContain('<h2>Run History</h2>');
     expect(html).toContain('href="#run-history"');
     expect(html).toContain('In-page section navigation');
     expect(html).toContain('href="#pages-scanned-latest-run"');
@@ -190,6 +202,7 @@ describe('DashboardCompiler', () => {
     expect(fs.existsSync(domainPerformancePath)).toBe(true);
     expect(fs.existsSync(domainContentPath)).toBe(true);
     expect(fs.existsSync(domainThirdPartyPath)).toBe(true);
+    expect(fs.existsSync(domainRunHistoryPath)).toBe(true);
     expect(fs.existsSync(failuresPath)).toBe(true);
   });
 
@@ -879,7 +892,7 @@ describe('DashboardCompiler', () => {
     }
   });
 
-  it('renders a Run History section in accessibility.html when multiple run artifacts are present', () => {
+  it('renders a dedicated run-history.html page when multiple run artifacts are present', () => {
     const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-runhist-'));
     fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
 
@@ -957,22 +970,21 @@ describe('DashboardCompiler', () => {
 
       DashboardCompiler.compileStaticDashboard(payload);
 
-      const a11yHtml = fs.readFileSync(
-        path.resolve(process.cwd(), 'dist/domains/runhist-domain/accessibility.html'),
+      const runHistoryHtml = fs.readFileSync(
+        path.resolve(process.cwd(), 'dist/domains/runhist-domain/run-history.html'),
         'utf8'
       );
 
       // Run History section heading must be present.
-      expect(a11yHtml).toContain('id="run-history"');
-      expect(a11yHtml).toContain('Run History');
+      expect(runHistoryHtml).toContain('Run History');
 
       // Summary line should mention 3 runs.
-      expect(a11yHtml).toContain('3 runs');
+      expect(runHistoryHtml).toContain('3 runs');
 
       // Violation counts from the historical runs should appear.
-      expect(a11yHtml).toContain('>3<');  // run 1 violations
-      expect(a11yHtml).toContain('>5<');  // run 2 violations
-      expect(a11yHtml).toContain('>2<');  // run 3 violations
+      expect(runHistoryHtml).toContain('>3<');  // run 1 violations
+      expect(runHistoryHtml).toContain('>5<');  // run 2 violations
+      expect(runHistoryHtml).toContain('>2<');  // run 3 violations
     } finally {
       process.env.VITAL_HISTORY_CACHE_DIR = originalEnv;
       fs.rmSync(historyCacheDir, { recursive: true, force: true });
