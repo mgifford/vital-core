@@ -62,6 +62,7 @@ targets:
   - id: hhs-gov
     name: U.S. Department of Health & Human Services
     base_url: https://www.hhs.gov
+    sitemap_url: https://www.hhs.gov/sitemap.xml
     include_paths:
       - /**
     priority_urls:
@@ -103,7 +104,6 @@ targets:
       - https://www.hhs.gov/answers/medicare-and-medicaid/where-can-i-find-a-doctor-that-accepts-medicare-medicaid/index.html
       - https://www.hhs.gov/answers/medicare-and-medicaid/where-can-i-find-healthcare-insurance/index.html
       - https://www.hhs.gov/programs/overdose-prevention.html
-      - https://www.hhs.gov/overdose-prevention/
       - https://www.hhs.gov/programs/social-services/supporting-military-families/index.html
       - https://www.hhs.gov/programs/social-services/unaccompanied-children/notice-of-proposed-class-action-settlement-msl-v-ice.html
       - https://www.hhs.gov/civil-rights/for-individuals/fact-sheets.html
@@ -317,6 +317,7 @@ targets:
   - id: data-medicaid-gov
     name: Medicaid Data Portal
     base_url: https://data.medicaid.gov
+    sitemap_url: https://data.medicaid.gov/sitemap.xml
     include_paths:
       - /**
     priority_urls:
@@ -330,6 +331,7 @@ targets:
   - id: data-healthcare-gov
     name: Healthcare Data Portal
     base_url: https://data.healthcare.gov
+    sitemap_url: https://data.healthcare.gov/sitemap.xml
     include_paths:
       - /**
     priority_urls:
@@ -532,6 +534,7 @@ targets:
   - id: nih-gov
     name: National Institutes of Health
     base_url: https://www.nih.gov
+    sitemap_url: https://www.nih.gov/sitemap.xml
     include_paths:
       - /**
     priority_urls:
