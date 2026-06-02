@@ -2,8 +2,8 @@ name: Execute Continuous Web Quality Compliance Scan
 
 on:
   schedule:
-    # 10-minute trigger; special modes are derived from UTC day/hour below.
-    - cron: '*/10 * * * *'
+    # Half-hour cadence using offset triggers to support ±2 minute fuzz via startup jitter below.
+    - cron: '28,58 * * * *'
   workflow_dispatch:
     # Allows repository maintainers to manually execute an on-demand scan
     inputs:
@@ -125,6 +125,14 @@ jobs:
 
             echo "Off-hours window detected. Running standard incremental scan mode."
           fi
+
+      - name: Add fuzzy start delay for scheduled runs
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          set -euo pipefail
+          jitter_seconds=$(( RANDOM % 241 ))
+          echo "Applying crawl start jitter of ${jitter_seconds}s."
+          sleep "$jitter_seconds"
 
       - name: Configure browser engine mode for this run
         id: engine_mode
