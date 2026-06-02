@@ -129,9 +129,15 @@ describe('DashboardCompiler', () => {
     expect(html).toContain('Latest run page-level scan results by domain, URL, and status.');
     expect(html).toContain('Blocked System Issues (Latest Run)');
     expect(html).toContain('id="blocked_issues_table"');
+    expect(html).toContain('id="blocked-issues-summary"');
+    expect(html).toContain('id="blocked-issues-breakdown"');
+    expect(html).toContain('How to triage blocked issue statuses');
     expect(html).toContain('Open failures and skips view');
     expect(js).toContain('function renderBlockedIssues()');
     expect(js).toContain('function renderPagesStatusSummary(latestPages)');
+    expect(js).toContain('blocked system issue(s) were recorded in the latest run');
+    expect(js).toContain('Review blocked issue details and reasons');
+    expect(js).toContain('Open page-level scan details');
     expect(js).toContain('Latest run summary: ');
     expect(js).toContain('renderPagesStatusSummary(latestPages);');
     expect(js).toContain('No blocked, timeout, or failed pages in the latest run.');

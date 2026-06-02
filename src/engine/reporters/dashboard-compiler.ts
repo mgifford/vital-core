@@ -103,6 +103,15 @@ export class DashboardCompiler {
     <div class="card" id="blocked_issues">
       <h2 id="blocked_system_issues" tabindex="-1">Blocked System Issues (Latest Run)</h2>
       <p class="muted-small">Pages that were blocked, timed out, failed to scan, or returned HTTP errors. Non-HTML resources (PDFs, ZIPs, etc.) are excluded. See the failures view for the full audit trail.</p>
+      <p id="blocked-issues-summary" class="muted-small">Loading blocked issue summary...</p>
+      <ul id="blocked-issues-breakdown" class="status-breakdown"></ul>
+      <details class="status-guide">
+        <summary>How to triage blocked issue statuses</summary>
+        <p><strong>WAF_BLOCKED</strong> usually indicates anti-bot or firewall protection blocked the scanner. Work with the site/security team to allowlist scanner traffic.</p>
+        <p><strong>TIMEOUT</strong> means the page did not finish loading in time. Check backend latency/CDN health and consider higher scan timeouts for slow templates.</p>
+        <p><strong>FAILED</strong> means scan execution failed before audits completed. Check the linked failure record for runtime errors.</p>
+        <p><strong>NOT_FOUND</strong> means the page returned an HTTP error status (for example 404/500). Fix stale links, redirects, or publishing issues.</p>
+      </details>
       <p><a href="failures/index.html">Open failures and skips view</a></p>
       <table id="blocked_issues_table">
         <caption>Blocked, timeout, failed, and HTTP-error pages with reasons from the latest run.</caption>
@@ -1935,6 +1944,13 @@ html[data-theme='dark'] .status-alert {
 .status-breakdown li {
   margin: 0.25rem 0;
 }
+.metric-help {
+  margin-top: 0.5rem;
+}
+.metric-action {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+}
 #pages-results-table {
   margin-top: 0.75rem;
 }
@@ -2421,6 +2437,8 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
   const pagesStatusSummaryEl = document.getElementById('pages-status-summary');
   const pagesStatusAlertEl = document.getElementById('pages-status-alert');
   const pagesStatusBreakdownEl = document.getElementById('pages-status-breakdown');
+  const blockedSummaryEl = document.getElementById('blocked-issues-summary');
+  const blockedBreakdownEl = document.getElementById('blocked-issues-breakdown');
   const blockedBodyEl = document.getElementById('blocked_issues_body');
   const softwareBodyEl = document.getElementById('software-body');
   const domainPageSelectEl = document.getElementById('domain-page-select');
@@ -2436,6 +2454,83 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
   const leaderboardRows = [];
   const summaryValueById = new Map();
   const summarySubtitleById = new Map();
+  const summaryGuidanceById = new Map([
+    ['targets-total', {
+      description: 'Count of domains evaluated in the latest run.',
+      actionLabel: 'Review domain leaderboard',
+      actionHref: '#domains-leaderboard'
+    }],
+    ['software-total', {
+      description: 'Unique technologies detected across scanned pages in the latest run.',
+      actionLabel: 'Review detected software by domain',
+      actionHref: '#detected-software-latest-run'
+    }],
+    ['blocked-total', {
+      description: 'Pages that were blocked, timed out, failed, or returned HTTP errors in the latest run.',
+      actionLabel: 'Review blocked issue details and reasons',
+      actionHref: '#blocked_system_issues'
+    }],
+    ['violations-total', {
+      description: 'Cross-tool accessibility findings in the latest run (consensus + axe-only + alfa-only).',
+      actionLabel: 'Inspect page-level violations and statuses',
+      actionHref: '#pages-scanned-latest-run'
+    }],
+    ['unique-pages-total', {
+      description: 'Distinct URLs scanned in retained run history.',
+      actionLabel: 'Review run history',
+      actionHref: '#run-history'
+    }],
+    ['unique-pages-week', {
+      description: 'Distinct URLs scanned in the latest weekly window.',
+      actionLabel: 'Review run history',
+      actionHref: '#run-history'
+    }]
+  ]);
+  const trendGuidanceByTitle = new Map([
+    ['Current Violations', {
+      description: 'Accessibility violations found in the latest run.',
+      actionLabel: 'Open page-level scan details',
+      actionHref: '#pages-scanned-latest-run'
+    }],
+    ['Violations Per Page', {
+      description: 'Average violations per scanned page for this run.',
+      actionLabel: 'Compare against run history',
+      actionHref: '#run-history'
+    }],
+    ['Average Scan Duration', {
+      description: 'How long full scans are taking, compared against recent runs.',
+      actionLabel: 'Open run history details',
+      actionHref: '#run-history'
+    }],
+    ['Federal Quality Index', {
+      description: 'Composite quality score (0-100) for accessibility, content, and scan reliability.',
+      actionLabel: 'Review domain quality recommendations',
+      actionHref: '#domains-leaderboard'
+    }],
+    ['Consensus Failures', {
+      description: 'Violations detected by both Axe and Alfa engines.',
+      actionLabel: 'Open accessibility failure details',
+      actionHref: '#pages-scanned-latest-run'
+    }],
+    ['Axe-only Failures', {
+      description: 'Violations detected only by Axe in the latest run.',
+      actionLabel: 'Open accessibility failure details',
+      actionHref: '#pages-scanned-latest-run'
+    }],
+    ['Alfa-only Failures', {
+      description: 'Violations detected only by Alfa in the latest run.',
+      actionLabel: 'Open accessibility failure details',
+      actionHref: '#pages-scanned-latest-run'
+    }],
+    ['Top Third-Party Providers', {
+      description: 'Providers most associated with accessibility findings in this run.',
+      actionLabel: 'Review software and provider context',
+      actionHref: '#detected-software-latest-run'
+    }],
+    ['URL Freshness', {
+      description: 'Share of newly discovered URLs versus carried-over URLs from previous runs.'
+    }]
+  ]);
   let pendingConsensusTotalFindings = null;
   let pendingSoftwareFallback = null;
 
@@ -2716,13 +2811,32 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     valueEl.textContent = value;
 
     const subtitleEl = document.createElement('p');
-    subtitleEl.style.marginTop = '0.4rem';
-    subtitleEl.style.fontSize = '0.85rem';
+    subtitleEl.className = 'muted-small';
     subtitleEl.hidden = true;
+
+    const guidance = summaryGuidanceById.get(id);
+    const helpEl = document.createElement('p');
+    helpEl.className = 'muted-small metric-help';
+    helpEl.textContent = guidance && guidance.description
+      ? String(guidance.description)
+      : 'Metric summary from the latest available run data.';
+
+    const actionEl = document.createElement('p');
+    actionEl.className = 'metric-action';
+    if (guidance && guidance.actionHref && guidance.actionLabel) {
+      const actionLink = document.createElement('a');
+      actionLink.href = String(guidance.actionHref);
+      actionLink.textContent = String(guidance.actionLabel);
+      actionEl.appendChild(actionLink);
+    } else {
+      actionEl.hidden = true;
+    }
 
     wrapper.appendChild(heading);
     wrapper.appendChild(valueEl);
     wrapper.appendChild(subtitleEl);
+    wrapper.appendChild(helpEl);
+    wrapper.appendChild(actionEl);
     summaryEl.appendChild(wrapper);
     summaryValueById.set(id, valueEl);
     summarySubtitleById.set(id, subtitleEl);
@@ -2780,13 +2894,32 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     valueEl.textContent = value;
 
     const subtitleEl = document.createElement('p');
-    subtitleEl.style.marginTop = '0.5rem';
-    subtitleEl.style.fontSize = '0.9rem';
+    subtitleEl.className = 'muted-small';
     subtitleEl.textContent = subtitle;
+
+    const guidance = trendGuidanceByTitle.get(title);
+    const helpEl = document.createElement('p');
+    helpEl.className = 'muted-small metric-help';
+    helpEl.textContent = guidance && guidance.description
+      ? String(guidance.description)
+      : 'Trend metric from latest run history.';
+
+    const actionEl = document.createElement('p');
+    actionEl.className = 'metric-action';
+    if (guidance && guidance.actionHref && guidance.actionLabel) {
+      const actionLink = document.createElement('a');
+      actionLink.href = String(guidance.actionHref);
+      actionLink.textContent = String(guidance.actionLabel);
+      actionEl.appendChild(actionLink);
+    } else {
+      actionEl.hidden = true;
+    }
 
     wrapper.appendChild(heading);
     wrapper.appendChild(valueEl);
+    wrapper.appendChild(helpEl);
     wrapper.appendChild(subtitleEl);
+    wrapper.appendChild(actionEl);
     trendSummaryEl.appendChild(wrapper);
   }
 
@@ -3124,6 +3257,9 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     }
 
     blockedBodyEl.innerHTML = '';
+    if (blockedBreakdownEl) {
+      blockedBreakdownEl.innerHTML = '';
+    }
 
     if (blockedEntries.length === 0) {
       const emptyRow = document.createElement('tr');
@@ -3132,7 +3268,29 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
       emptyCell.textContent = 'No blocked, timeout, or failed pages in the latest run.';
       emptyRow.appendChild(emptyCell);
       blockedBodyEl.appendChild(emptyRow);
+      if (blockedSummaryEl) {
+        blockedSummaryEl.textContent = 'No blocked system issues were recorded in the latest run.';
+      }
       return;
+    }
+
+    const statusCounts = new Map();
+    blockedEntries.forEach(entry => {
+      const status = String(entry.status || 'UNKNOWN');
+      statusCounts.set(status, (statusCounts.get(status) || 0) + 1);
+    });
+    if (blockedSummaryEl) {
+      blockedSummaryEl.textContent =
+        String(blockedEntries.length) + ' blocked system issue(s) were recorded in the latest run. Use the breakdown and table below to identify root causes.';
+    }
+    if (blockedBreakdownEl) {
+      Array.from(statusCounts.entries())
+        .sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))
+        .forEach(([status, count]) => {
+          const item = document.createElement('li');
+          item.textContent = String(status) + ': ' + String(count);
+          blockedBreakdownEl.appendChild(item);
+        });
     }
 
     blockedEntries
