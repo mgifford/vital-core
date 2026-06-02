@@ -80,6 +80,26 @@ function loadScanArtifacts(): {
         console.warn(`⚠️ Failed to read exclusions artifact for "${entry.name}": ${err.message}`);
       }
     }
+
+    // Restore url-manifest.json so it is published to GitHub Pages and available
+    // to fetch-history.mjs → UrlManifestStore.restoreCachedManifest() on the next run.
+    // Without this copy, the url-manifest never reaches Pages and partitionByRecency
+    // has no data, causing already-scanned URLs to resurface in every run.
+    const manifestSrcPath = path.join(targetDir, 'url-manifest.json');
+    if (fs.existsSync(manifestSrcPath)) {
+      const targetId = entry.name;
+      const manifestDestDir = path.resolve(process.cwd(), 'dist', 'runs', targetId);
+      const manifestDestPath = path.join(manifestDestDir, 'url-manifest.json');
+      try {
+        if (!fs.existsSync(manifestDestDir)) {
+          fs.mkdirSync(manifestDestDir, { recursive: true });
+        }
+        fs.copyFileSync(manifestSrcPath, manifestDestPath);
+        console.log(`📋 Restored url-manifest for "${targetId}" → dist/runs/${targetId}/url-manifest.json`);
+      } catch (err: any) {
+        console.warn(`⚠️ Failed to restore url-manifest for "${targetId}": ${err.message}`);
+      }
+    }
   }
 
   return { results, pageStateDeltas, allExclusions };
