@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "scan": "npx tsx src/index.ts",
+    "scan:local": "VITAL_ALFA_CMD=$(node scripts/get-chromium-path.mjs) VITAL_TARGET_LIMIT=5 npm run scan",
     "validate": "npm run validate:profile",
     "validate:discovery:smoke": "npx tsx tests/smoke/validate-discovery-smoke.ts",
     "validate:browser:smoke": "npx tsx tests/smoke/validate-browser-smoke.ts",
@@ -53,7 +54,6 @@
     "lighthouse": "^13.3.0",
     "nspell": "^2.1.5",
     "picomatch": "^4.0.4",
-    "playwright": "^1.60.0",
     "sitemapper": "^4.1.6",
     "yaml": "^2.9.0",
     "zod": "^4.4.3"
@@ -63,6 +63,7 @@
     "@types/node": "^25.9.1",
     "@types/picomatch": "^4.0.3",
     "@vitest/coverage-v8": "^4.1.7",
+    "playwright": "^1.60.0",
     "tsx": "^4.22.3",
     "typescript": "^6.0.3",
     "vitest": "^4.1.7"

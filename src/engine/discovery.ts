@@ -4,6 +4,7 @@ import { TargetConfig } from '../types/profile';
 import { PrioritySeedStore } from './priority-seeds';
 import type { PageStateMap } from './reporters/page-state-cache';
 import { UrlManifest, UrlManifestStore } from './url-manifest';
+import fs from 'fs';
 
 const NON_HTML_EXTENSION_PATTERN = /\.(?:png|jpe?g|gif|webp|svg|ico|pdf|doc|docx|xml|xlsx|xls|pptx?|zip|gz|mp4|mp3|woff2?|ttf|eot|json|csv)$/i;
 const RSS_FEED_PATTERN = /\/(feed|rss|atom)(?:\/|$|\?)/i;
