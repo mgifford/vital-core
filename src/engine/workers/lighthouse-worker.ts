@@ -15,6 +15,8 @@ type ChromeHandle = { port: number; kill: () => Promise<void> | void };
 
 export class LighthouseWorker {
   private static persistentChrome: ChromeHandle | null = null;
+  private static readonly primaryCategories = ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'];
+  private static readonly stableCategories = ['performance', 'accessibility', 'best-practices', 'seo'];
 
   /**
    * Launches a single shared Chrome instance to be reused across multiple
@@ -103,7 +105,7 @@ export class LighthouseWorker {
         port: chrome!.port,
         output: 'json',
         logLevel: 'error',
-        onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'],
+        onlyCategories: this.primaryCategories,
         maxWaitForLoad: Math.max(5000, Math.min(maxTimeoutMs, 60000))
       });
 
@@ -135,6 +137,55 @@ export class LighthouseWorker {
       };
     } catch (error: any) {
       const message = error?.message ? String(error.message) : 'Unknown Lighthouse execution error.';
+
+      if (this.shouldRetryLighthouseAudit(message)) {
+        console.warn(`⚠️ Lighthouse audit hit a trace-engine timing bug for ${url}. Retrying once with a fresh Chrome...`);
+
+        try {
+          if (chrome && !usingPersistent) {
+            await chrome.kill();
+          }
+
+          const chromeLauncherModule = await import('chrome-launcher');
+          const retryChrome = await chromeLauncherModule.launch({
+            chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']
+          });
+
+          try {
+            const lighthouseModule = await import('lighthouse');
+            const lighthouse = lighthouseModule.default;
+            const retryResult = await lighthouse(url, {
+              port: retryChrome.port,
+              output: 'json',
+              logLevel: 'error',
+              onlyCategories: this.stableCategories,
+              maxWaitForLoad: Math.max(5000, Math.min(maxTimeoutMs, 60000))
+            });
+
+            const cats = retryResult?.lhr?.categories;
+            const normalizeScore = (raw: unknown): number | null =>
+              typeof raw === 'number' ? Math.round(raw * 100) : null;
+
+            return {
+              performanceScore: normalizeScore(cats?.['performance']?.score),
+              energyEstimateKwh: null,
+              firstContentfulPaintMs: this.readAuditMetric(retryResult?.lhr?.audits?.['first-contentful-paint']?.numericValue),
+              largestContentfulPaintMs: this.readAuditMetric(retryResult?.lhr?.audits?.['largest-contentful-paint']?.numericValue),
+              speedIndexMs: this.readAuditMetric(retryResult?.lhr?.audits?.['speed-index']?.numericValue),
+              accessibilityScore: normalizeScore(cats?.['accessibility']?.score),
+              seoScore: normalizeScore(cats?.['seo']?.score),
+              bestPracticesScore: normalizeScore(cats?.['best-practices']?.score),
+              agenticScore: null
+            };
+          } finally {
+            await retryChrome.kill();
+          }
+        } catch (retryError: any) {
+          const retryMessage = retryError?.message ? String(retryError.message) : 'Unknown Lighthouse execution error.';
+          console.warn(`⚠️ Lighthouse retry also failed for ${url}: ${retryMessage}`);
+        }
+      }
+
       console.warn(`⚠️ Lighthouse audit failed for ${url}: ${message}`);
       return {
         performanceScore: null,
@@ -161,5 +212,9 @@ export class LighthouseWorker {
     }
 
     return Math.round(value);
+  }
+
+  private static shouldRetryLighthouseAudit(message: string): boolean {
+    return /TraceEngineResult|performance mark|mark has not been set/i.test(message);
   }
 }

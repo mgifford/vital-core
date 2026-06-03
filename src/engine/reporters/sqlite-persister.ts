@@ -342,7 +342,7 @@ export class SqlitePersister {
       WHERE julianday(p.scanned_at) >= julianday('now', ?)
       ORDER BY p.scanned_at DESC, p.target_id ASC, p.url ASC, v.rule_id ASC, v.id ASC
       LIMIT ? OFFSET ?
-    `).all(`-${windowDays} days`, limit, offset) as WeeklyIssueRow[];
+    `).all(`-${windowDays} days`, limit, offset) as unknown as WeeklyIssueRow[];
   }
 
   private static sanitizeTargetId(value: string): string {
