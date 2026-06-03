@@ -265,6 +265,71 @@ describe('DashboardCompiler', () => {
     expect(legendMatches.length).toBe(2);
   });
 
+  it('renders all Lighthouse metrics (Perf, Accessibility, SEO, Best Practices, Agentic) on performance page', () => {
+    const payload: TargetScanResult[] = [
+      {
+        targetId: 'metrics-test',
+        domain: 'https://metrics-example.gov',
+        scanDurationMs: 1500,
+        pagesScanned: [
+          {
+            url: 'https://metrics-example.gov/page1',
+            timestamp: new Date().toISOString(),
+            status: 'COMPLETED',
+            errorMessage: null,
+            technologyStack: [],
+            liveAudits: {
+              lighthouse: {
+                performanceScore: 85,
+                energyEstimateKwh: null,
+                firstContentfulPaintMs: 1500,
+                largestContentfulPaintMs: 2800,
+                speedIndexMs: 3100,
+                accessibilityScore: 92,
+                seoScore: 88,
+                bestPracticesScore: 79,
+                agenticScore: 75
+              },
+              accessibilityViolations: []
+            },
+            offlineAudits: {
+              overlayDetected: { found: false, provider: null, evidence: null },
+              designSystem: { usesUSWDS: true, versionDetected: '3.x' },
+              contentMetrics: {
+                readabilityScore: 70,
+                suspiciousAltTextCount: 0,
+                suspiciousAltInstances: []
+              },
+              linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+            }
+          }
+        ]
+      }
+    ];
+
+    DashboardCompiler.compileStaticDashboard(payload);
+
+    const performancePath = path.resolve(process.cwd(), 'dist/domains/metrics-test/performance.html');
+    const performanceHtml = fs.readFileSync(performancePath, 'utf8');
+
+    // Verify all metric column headers are present
+    expect(performanceHtml).toContain('Perf (0-100)');
+    expect(performanceHtml).toContain('Accessibility (0-100)');
+    expect(performanceHtml).toContain('SEO (0-100)');
+    expect(performanceHtml).toContain('Best Practices (0-100)');
+    expect(performanceHtml).toContain('Agentic (0-100)');
+    expect(performanceHtml).toContain('FCP (ms)');
+    expect(performanceHtml).toContain('LCP (ms)');
+    expect(performanceHtml).toContain('Speed Index (ms)');
+
+    // Verify the actual metric values are rendered
+    expect(performanceHtml).toContain('85');  // Performance score
+    expect(performanceHtml).toContain('92');  // Accessibility score
+    expect(performanceHtml).toContain('88');  // SEO score
+    expect(performanceHtml).toContain('79');  // Best Practices score
+    expect(performanceHtml).toContain('75');  // Agentic score
+  });
+
   it('renders source engine badges and multi-filter bars on the accessibility page', () => {
     const payload: TargetScanResult[] = [
       {

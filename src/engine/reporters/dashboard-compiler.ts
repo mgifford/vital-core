@@ -810,10 +810,18 @@ ${siteFooterHtml}
           if (!lighthouse) {
             return '';
           }
+          const a11yScore = lighthouse?.accessibilityScore ?? 'n/a';
+          const seoScore = lighthouse?.seoScore ?? 'n/a';
+          const bestPracticesScore = lighthouse?.bestPracticesScore ?? 'n/a';
+          const agenticScore = lighthouse?.agenticScore ?? 'n/a';
           return `
             <tr>
               <td>${this.escapeHtml(page.url)}</td>
               <td>${this.escapeHtml(lighthouse?.performanceScore ?? 'n/a')}</td>
+              <td>${this.escapeHtml(a11yScore)}</td>
+              <td>${this.escapeHtml(seoScore)}</td>
+              <td>${this.escapeHtml(bestPracticesScore)}</td>
+              <td>${this.escapeHtml(agenticScore)}</td>
               <td>${this.escapeHtml(lighthouse?.firstContentfulPaintMs ?? 'n/a')}</td>
               <td>${this.escapeHtml(lighthouse?.largestContentfulPaintMs ?? 'n/a')}</td>
               <td>${this.escapeHtml(lighthouse?.speedIndexMs ?? 'n/a')}</td>
@@ -1067,7 +1075,7 @@ ${siteFooterHtml}
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</title><link rel="stylesheet" href="../../assets/dashboard.css"></head>
 <body><header><h1>${this.escapeHtml(String(target.targetId).toUpperCase())} Performance</h1></header><main><div class="card"><h2>Lighthouse Metrics</h2>${sharedNav}
     <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
-    <table><thead><tr><th>URL</th><th>Perf</th><th>FCP (ms)</th><th>LCP (ms)</th><th>Speed Index (ms)</th></tr></thead><tbody>${performanceRows || '<tr><td colspan="5">No performance data available in the latest run. This usually means pages were skipped unchanged or no full Lighthouse samples were collected.</td></tr>'}</tbody></table>
+    <table><thead><tr><th>URL</th><th>Perf (0-100)</th><th>Accessibility (0-100)</th><th>SEO (0-100)</th><th>Best Practices (0-100)</th><th>Agentic (0-100)</th><th>FCP (ms)</th><th>LCP (ms)</th><th>Speed Index (ms)</th></tr></thead><tbody>${performanceRows || '<tr><td colspan="9">No performance data available in the latest run. This usually means pages were skipped unchanged or no full Lighthouse samples were collected.</td></tr>'}</tbody></table>
 </div></main>${siteFooterHtml}</body></html>`;
 
       const contentHtml = `<!DOCTYPE html>
