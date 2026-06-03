@@ -5,6 +5,7 @@ import { PrioritySeedStore } from './priority-seeds';
 import type { PageStateMap } from './reporters/page-state-cache';
 import { UrlManifest, UrlManifestStore } from './url-manifest';
 import fs from 'fs';
+import path from 'path';
 
 const NON_HTML_EXTENSION_PATTERN = /\.(?:png|jpe?g|gif|webp|svg|ico|pdf|doc|docx|xml|xlsx|xls|pptx?|zip|gz|mp4|mp3|woff2?|ttf|eot|json|csv)$/i;
 const RSS_FEED_PATTERN = /\/(feed|rss|atom)(?:\/|$|\?)/i;
@@ -15,6 +16,26 @@ export interface DiscoveryNonHtmlExclusion {
   reason: string;
   source: 'sitemap';
   excludedAt: string;
+}
+
+export type DiscoveryQueueSource = 'recently_updated' | 'duckduckgo_seed' | 'priority_url' | 'stale_weekly_rescan' | 'sitemap_sample';
+
+export interface DiscoveryQueueEntry {
+  url: string;
+  source: DiscoveryQueueSource;
+  reason: string;
+  templateKey: string;
+  lastSuccessAt: string | null;
+  lastModified: string | null;
+  selectedAt: string;
+}
+
+export interface DiscoveryQueueComposition {
+  recently_updated: number;
+  duckduckgo_seed: number;
+  priority_url: number;
+  stale_weekly_rescan: number;
+  sitemap_sample: number;
 }
 
 export class TargetDiscoveryEngine {
@@ -40,7 +61,7 @@ export class TargetDiscoveryEngine {
       rescanWindowDays?: number;
       includeQuarantined?: boolean;
     } = {}
-  ): Promise<{ urls: string[]; skippedRecentlyScanned: number; skippedQuarantined: number }> {
+  ): Promise<{ urls: string[]; skippedRecentlyScanned: number; skippedQuarantined: number; queueEntries: DiscoveryQueueEntry[]; queueComposition: DiscoveryQueueComposition }> {
     let sitemapUrls: string[] = [];
     const includeSubdomains = target.settings?.include_subdomains ?? false;
     const canonicalBaseHost = this.canonicalizeHost(new URL(target.base_url).hostname);
@@ -53,6 +74,7 @@ export class TargetDiscoveryEngine {
     const urlManifest = options.urlManifest ?? {};
     const rescanWindowDays = options.rescanWindowDays ?? revalidateAfterDays;
     const includeQuarantined = options.includeQuarantined ?? false;
+    const selectedAt = new Date().toISOString();
     
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
@@ -131,6 +153,27 @@ export class TargetDiscoveryEngine {
     // 3. Strategic Merge & Deduplication Array Sequence
     // We instantiate a Set with priority items first to preserve execution ordering
     const uniqueUrlSet = new Set<string>();
+    const queueEntriesByUrl = new Map<string, DiscoveryQueueEntry>();
+
+    const recordQueueEntry = (
+      url: string,
+      source: DiscoveryQueueSource,
+      reason: string
+    ): void => {
+      if (queueEntriesByUrl.has(url)) {
+        return;
+      }
+
+      queueEntriesByUrl.set(url, {
+        url,
+        source,
+        reason,
+        templateKey: this.inferTemplateKey(url),
+        lastSuccessAt: urlManifest[url]?.lastSuccessAt ?? null,
+        lastModified: pageState[url]?.lastModified ?? null,
+        selectedAt
+      });
+    };
 
     const shouldIncludeUrl = (url: string): boolean => {
       if (!skipPreviouslyScanned) {
@@ -166,7 +209,14 @@ export class TargetDiscoveryEngine {
     filteredUrls
       .filter(url => shouldIncludeUrl(url))
       .filter(url => isRecentlyUpdatedUrl(url))
-      .forEach(url => uniqueUrlSet.add(url));
+      .forEach(url => {
+        recordQueueEntry(
+          url,
+          'recently_updated',
+          `lastModified ${pageState[url]?.lastModified} is newer than previous successful run ${rescanWindowDays} day window`
+        );
+        uniqueUrlSet.add(url);
+      });
 
     // Insert monthly-seeded top-task URLs from DuckDuckGo before broad sitemap crawl output.
     const seededUrls = PrioritySeedStore.getSeedUrls(target);
@@ -177,7 +227,14 @@ export class TargetDiscoveryEngine {
         .filter(url => this.isLikelyHtmlUrl(url))
         .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
         .filter(url => shouldIncludeUrl(url))
-        .forEach(url => uniqueUrlSet.add(url));
+        .forEach(url => {
+          recordQueueEntry(
+            url,
+            'duckduckgo_seed',
+            `DuckDuckGo monthly top-task seed for ${target.id}`
+          );
+          uniqueUrlSet.add(url);
+        });
     }
     
     // Force target specific high‑priority nodes to the front of the queue.
@@ -196,7 +253,14 @@ export class TargetDiscoveryEngine {
           const entry = urlManifest[url];
           return !entry || !UrlManifestStore.isQuarantined(entry);
         })
-        .forEach(url => uniqueUrlSet.add(url));
+        .forEach(url => {
+          recordQueueEntry(
+            url,
+            'priority_url',
+            `Configured priority URL for weekly scan on ${target.id}`
+          );
+          uniqueUrlSet.add(url);
+        });
     }
 
     // 4. Optional execution ceiling + template-aware sitemap sampling
@@ -204,8 +268,13 @@ export class TargetDiscoveryEngine {
     const hasCeilingLimit = typeof ceilingLimit === 'number';
     if (hasCeilingLimit && uniqueUrlSet.size >= ceilingLimit) {
       const priorityOnlyQueue = Array.from(uniqueUrlSet).slice(0, ceilingLimit);
+      const queueEntries = priorityOnlyQueue
+        .map(url => queueEntriesByUrl.get(url))
+        .filter((entry): entry is DiscoveryQueueEntry => Boolean(entry));
+      const queueComposition = this.countQueueComposition(queueEntries);
+      this.saveScanQueue(target.id, queueEntries);
       console.log(`✂️ Truncating active queue from ${uniqueUrlSet.size} to ${ceilingLimit} pages (per max_pages limit).`);
-      return { urls: priorityOnlyQueue, skippedRecentlyScanned: 0, skippedQuarantined: 0 };
+      return { urls: priorityOnlyQueue, skippedRecentlyScanned: 0, skippedQuarantined: 0, queueEntries, queueComposition };
     }
 
     const remainingSlots = hasCeilingLimit
@@ -265,7 +334,14 @@ export class TargetDiscoveryEngine {
       previouslyScannedUrls,
       urlManifest
     );
-    sampledSitemapUrls.forEach(url => uniqueUrlSet.add(url));
+    sampledSitemapUrls.forEach(url => {
+      recordQueueEntry(
+        url,
+        'sitemap_sample',
+        'Template-diverse sitemap sample candidate'
+      );
+      uniqueUrlSet.add(url);
+    });
 
     let finalQueue = Array.from(uniqueUrlSet);
 
@@ -306,7 +382,13 @@ export class TargetDiscoveryEngine {
       }
     }
 
-    return { urls: finalQueue, skippedRecentlyScanned, skippedQuarantined };
+    const queueEntries = finalQueue
+      .map(url => queueEntriesByUrl.get(url))
+      .filter((entry): entry is DiscoveryQueueEntry => Boolean(entry));
+    const queueComposition = this.countQueueComposition(queueEntries);
+    this.saveScanQueue(target.id, queueEntries);
+
+    return { urls: finalQueue, skippedRecentlyScanned, skippedQuarantined, queueEntries, queueComposition };
   }
 
   public static consumeNonHtmlExclusions(): DiscoveryNonHtmlExclusion[] {
@@ -317,6 +399,31 @@ export class TargetDiscoveryEngine {
 
   public static resetNonHtmlExclusionsForTesting(): void {
     this.nonHtmlExclusions = [];
+  }
+
+  private static countQueueComposition(entries: DiscoveryQueueEntry[]): DiscoveryQueueComposition {
+    return entries.reduce<DiscoveryQueueComposition>(
+      (counts, entry) => {
+        counts[entry.source] += 1;
+        return counts;
+      },
+      {
+        recently_updated: 0,
+        duckduckgo_seed: 0,
+        priority_url: 0,
+        stale_weekly_rescan: 0,
+        sitemap_sample: 0
+      }
+    );
+  }
+
+  private static saveScanQueue(targetId: string, entries: DiscoveryQueueEntry[]): void {
+    const runsDir = path.resolve(process.cwd(), 'dist', 'runs', targetId);
+    if (!fs.existsSync(runsDir)) {
+      fs.mkdirSync(runsDir, { recursive: true });
+    }
+
+    fs.writeFileSync(path.join(runsDir, 'scan-queue.json'), JSON.stringify(entries, null, 2), 'utf8');
   }
 
   private static async fetchSitemapResiliently(target: TargetConfig): Promise<string[]> {

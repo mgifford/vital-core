@@ -11,7 +11,7 @@ import { RunHistoryReporter } from './engine/reporters/run-history';
 import { ScanStatusReporter } from './engine/reporters/scan-status-reporter';
 import { PrioritySeedStore } from './engine/priority-seeds';
 import { TargetScanResult, PageScanReport } from './types/site-quality-spec';
-import { DiscoveryNonHtmlExclusion } from './engine/discovery';
+import { DiscoveryNonHtmlExclusion, DiscoveryQueueComposition } from './engine/discovery';
 import { UrlManifestStore, UrlManifest } from './engine/url-manifest';
 
 interface TargetScanPlan {
@@ -22,6 +22,7 @@ interface TargetScanPlan {
   completedPages: PageScanReport[];
   skippedRecentlyScanned: number;
   skippedQuarantined: number;
+  queueComposition: DiscoveryQueueComposition;
   urlManifest: UrlManifest;
   cdnProvider: string | null;
   dailyPageBudget: number | null;
@@ -256,6 +257,7 @@ async function main() {
         completedPages: [],
         skippedRecentlyScanned: discoveryResult.skippedRecentlyScanned,
         skippedQuarantined: discoveryResult.skippedQuarantined,
+        queueComposition: discoveryResult.queueComposition,
         urlManifest,
         cdnProvider: null,
         dailyPageBudget,
@@ -418,6 +420,7 @@ async function main() {
     const dailyBudgetsMap = new Map<string, number | null>();
     const skippedByRecencyMap = new Map<string, number>();
     const queueSizesMap = new Map<string, number>();
+    const queueCompositionsMap = new Map<string, DiscoveryQueueComposition>();
 
     for (const plan of scanPlans) {
       manifestsMap.set(plan.target.id, plan.urlManifest);
@@ -425,6 +428,7 @@ async function main() {
       dailyBudgetsMap.set(plan.target.id, plan.dailyPageBudget);
       skippedByRecencyMap.set(plan.target.id, plan.skippedRecentlyScanned);
       queueSizesMap.set(plan.target.id, plan.discoveredUrls.length);
+      queueCompositionsMap.set(plan.target.id, plan.queueComposition);
 
       // Resolve throttle profile label for reporting.
       const explicitProfile = plan.target.settings?.throttle_profile ?? null;
@@ -442,7 +446,8 @@ async function main() {
       throttleProfiles: throttleProfilesMap,
       dailyBudgets: dailyBudgetsMap,
       skippedByRecency: skippedByRecencyMap,
-      queueSizes: queueSizesMap
+      queueSizes: queueSizesMap,
+      queueCompositions: queueCompositionsMap
     });
     ScanStatusReporter.save(scanStatuses);
     console.log(`📊 Scan status report written to dist/runs/scan-status.json and dist/runs/scan-status.md`);

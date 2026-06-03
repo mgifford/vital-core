@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import type { DiscoveryQueueComposition } from '../discovery';
 import { TargetScanResult } from '../../types/site-quality-spec';
 import { UrlManifest, UrlManifestStore } from '../url-manifest';
 
@@ -27,6 +28,8 @@ export interface TargetScanStatus {
   skippedRecentlyScanned: number;
   /** Pages currently in a quarantine cooldown (excluded from queue until cooldown expires). */
   quarantinedUrls: number;
+  /** Explicit queue composition by discovery source. */
+  queueComposition: DiscoveryQueueComposition;
   /** CDN provider detected from response headers, or null if none. */
   cdnProvider: string | null;
   /** Throttle profile applied for this target during the run. */
@@ -59,6 +62,7 @@ export class ScanStatusReporter {
       dailyBudgets?: Map<string, number | null>;
       skippedByRecency?: Map<string, number>;
       queueSizes?: Map<string, number>;
+      queueCompositions?: Map<string, DiscoveryQueueComposition>;
     } = {}
   ): TargetScanStatus[] {
     const {
@@ -66,8 +70,17 @@ export class ScanStatusReporter {
       throttleProfiles = new Map(),
       dailyBudgets = new Map(),
       skippedByRecency = new Map(),
-      queueSizes = new Map()
+      queueSizes = new Map(),
+      queueCompositions = new Map()
     } = options;
+
+    const emptyQueueComposition: DiscoveryQueueComposition = {
+      recently_updated: 0,
+      duckduckgo_seed: 0,
+      priority_url: 0,
+      stale_weekly_rescan: 0,
+      sitemap_sample: 0
+    };
 
     return results.map(result => {
       const manifest = manifests.get(result.targetId) ?? {};
@@ -76,6 +89,7 @@ export class ScanStatusReporter {
       const budget = dailyBudgets.get(result.targetId) ?? null;
       const skippedRecent = skippedByRecency.get(result.targetId) ?? 0;
       const queuedThisRun = queueSizes.get(result.targetId) ?? result.pagesScanned.length;
+      const queueComposition = queueCompositions.get(result.targetId) ?? emptyQueueComposition;
 
       const completed = result.pagesScanned.filter(p => p.status === 'COMPLETED').length;
       const skippedUnchanged = result.pagesScanned.filter(p => p.status === 'SKIPPED_UNCHANGED').length;
@@ -114,6 +128,7 @@ export class ScanStatusReporter {
         failedThisRun: failed,
         skippedRecentlyScanned: skippedRecent,
         quarantinedUrls,
+        queueComposition,
         cdnProvider,
         throttleProfile,
         remainingDailyBudget,
@@ -154,16 +169,17 @@ export class ScanStatusReporter {
       '',
       '## Per-Domain Summary',
       '',
-      '| Domain | Known URLs | Queued | Completed | Unchanged | Budget-Skipped | Timed Out | Failed | Quarantined | CDN | Throttle |',
-      '|--------|-----------|--------|-----------|-----------|---------------|-----------|--------|-------------|-----|----------|'
+      '| Domain | Known URLs | Queued | Completed | Unchanged | Budget-Skipped | Timed Out | Failed | Quarantined | Queue Composition | CDN | Throttle |',
+      '|--------|-----------|--------|-----------|-----------|---------------|-----------|--------|-------------|-------------------|-----|----------|'
     ];
 
     for (const s of statuses) {
       const cdn = s.cdnProvider ?? '—';
+      const queueComposition = this.formatQueueComposition(s.queueComposition);
       lines.push(
         `| ${s.domain} | ${s.totalKnownUrls} | ${s.queuedThisRun} | ` +
           `${s.completedThisRun} | ${s.skippedUnchangedThisRun} | ${s.skippedRecentlyScanned} | ` +
-          `${s.timedOutThisRun} | ${s.failedThisRun} | ${s.quarantinedUrls} | ` +
+          `${s.timedOutThisRun} | ${s.failedThisRun} | ${s.quarantinedUrls} | ${queueComposition} | ` +
           `${cdn} | ${s.throttleProfile} |`
       );
     }
@@ -218,5 +234,15 @@ export class ScanStatusReporter {
       fs.mkdirSync(this.runsDir, { recursive: true });
     }
     fs.writeFileSync(path.join(this.runsDir, 'scan-status.md'), markdown, 'utf8');
+  }
+
+  private static formatQueueComposition(queueComposition: DiscoveryQueueComposition): string {
+    return [
+      `updated:${queueComposition.recently_updated}`,
+      `seed:${queueComposition.duckduckgo_seed}`,
+      `priority:${queueComposition.priority_url}`,
+      `weekly:${queueComposition.stale_weekly_rescan}`,
+      `sample:${queueComposition.sitemap_sample}`
+    ].join(', ');
   }
 }
