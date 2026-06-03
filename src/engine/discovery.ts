@@ -249,6 +249,26 @@ export class TargetDiscoveryEngine {
   }
 
   private static async fetchSitemapResiliently(target: TargetConfig): Promise<string[]> {
+    // Support local file:// sitemaps for offline testing
+    if (target.sitemap_url && target.sitemap_url.startsWith('file://')) {
+      try {
+        const filePath = target.sitemap_url.replace('file://', '');
+        const raw = fs.readFileSync(filePath, 'utf-8');
+        // Simple <loc> extraction – sufficient for typical sitemaps
+        const locRegex = /<loc>([^<]+)<\/loc>/gi;
+        const urls: string[] = [];
+        let match: RegExpExecArray | null;
+        while ((match = locRegex.exec(raw)) !== null) {
+          urls.push(match[1].trim());
+        }
+        console.log(`📦 Loaded ${urls.length} URLs from local sitemap ${filePath}.`);
+        return urls;
+      } catch (e) {
+        console.warn(`⚠️ Failed to read local sitemap at ${target.sitemap_url}: ${e instanceof Error ? e.message : e}`);
+        // Fall back to remote handling below
+      }
+    }
+
     const mapper = new Sitemapper({
       url: target.sitemap_url!,
       timeout: 15000
