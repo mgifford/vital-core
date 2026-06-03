@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 import { TargetDiscoveryEngine } from '../../src/engine/discovery';
 import { PrioritySeedStore } from '../../src/engine/priority-seeds';
 import { TargetConfig } from '../../src/types/profile';
@@ -64,6 +66,99 @@ describe('TargetDiscoveryEngine', () => {
     expect(queue).toEqual([
       'https://www.cms.gov/about-cms',
       'https://www.cms.gov/medicare/advantage-quality-improvement-program'
+    ]);
+  });
+
+  it('persists a structured scan queue with source composition', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/news/new-page',
+        'https://www.cms.gov/contact-us',
+        'https://www.cms.gov/medicare',
+        'https://www.cms.gov/story/page-1'
+      ]
+    });
+
+    PrioritySeedStore.setActiveSnapshotForTesting({
+      generatedAt: new Date().toISOString(),
+      strategy: 'duckduckgo-site-query',
+      targets: [
+        {
+          targetId: 'cms-gov-queue-artifact',
+          host: 'cms.gov',
+          domain: 'https://www.cms.gov',
+          fetchedAt: new Date().toISOString(),
+          source: 'duckduckgo',
+          estimatedIndexedPages: 1200,
+          topUrls: ['https://www.cms.gov/medicare']
+        }
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov-queue-artifact',
+      name: 'CMS Queue Artifact',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: ['https://www.cms.gov/contact-us'],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 10,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_new_url_sample_target: 100,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    const recentTimestamp = new Date().toISOString();
+    const cooledDownTimestamp = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+    const { urls: queue, queueEntries, queueComposition } = await TargetDiscoveryEngine.discoverUrls(target, {
+      pageState: {
+        'https://www.cms.gov/news/new-page': {
+          etag: null,
+          lastModified: recentTimestamp,
+          contentHash: null,
+          assetFingerprintHash: null,
+          lastCheckedAt: cooledDownTimestamp,
+          lastScannedAt: cooledDownTimestamp
+        }
+      }
+    });
+
+    expect(queue).toEqual([
+      'https://www.cms.gov/news/new-page',
+      'https://www.cms.gov/medicare',
+      'https://www.cms.gov/contact-us',
+      'https://www.cms.gov/story/page-1'
+    ]);
+    expect(queueEntries.map(entry => entry.source)).toEqual([
+      'recently_updated',
+      'duckduckgo_seed',
+      'priority_url',
+      'sitemap_sample'
+    ]);
+    expect(queueComposition).toEqual({
+      recently_updated: 1,
+      duckduckgo_seed: 1,
+      priority_url: 1,
+      stale_weekly_rescan: 0,
+      sitemap_sample: 1
+    });
+
+    const queuePath = path.resolve(process.cwd(), 'dist', 'runs', target.id, 'scan-queue.json');
+    const persistedQueue = JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<{ url: string; source: string }>;
+    expect(persistedQueue).toHaveLength(4);
+    expect(persistedQueue.map(entry => entry.source)).toEqual([
+      'recently_updated',
+      'duckduckgo_seed',
+      'priority_url',
+      'sitemap_sample'
     ]);
   });
 

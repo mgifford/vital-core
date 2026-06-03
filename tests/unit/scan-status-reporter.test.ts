@@ -111,6 +111,36 @@ describe('ScanStatusReporter.buildScanStatus', () => {
     expect(status.cdnProvider).toBe('cloudflare');
   });
 
+  it('passes through queue composition counts from discovery', () => {
+    const result = makeResult('cms-gov', 'cms.gov', ['COMPLETED']);
+    const manifests = new Map([['cms-gov', {}]]);
+    const queueCompositions = new Map<string, {
+      recently_updated: number;
+      duckduckgo_seed: number;
+      priority_url: number;
+      stale_weekly_rescan: number;
+      sitemap_sample: number;
+    }>([[
+      'cms-gov',
+      {
+        recently_updated: 1,
+        duckduckgo_seed: 2,
+        priority_url: 3,
+        stale_weekly_rescan: 4,
+        sitemap_sample: 5
+      }
+    ]]);
+
+    const [status] = ScanStatusReporter.buildScanStatus([result], manifests, { queueCompositions });
+    expect(status.queueComposition).toEqual({
+      recently_updated: 1,
+      duckduckgo_seed: 2,
+      priority_url: 3,
+      stale_weekly_rescan: 4,
+      sitemap_sample: 5
+    });
+  });
+
   it('defaults cdnProvider to null when not provided', () => {
     const result = makeResult('cms-gov', 'cms.gov', ['COMPLETED']);
     const [status] = ScanStatusReporter.buildScanStatus([result], new Map());
@@ -194,6 +224,7 @@ describe('ScanStatusReporter.buildMarkdownReport', () => {
     expect(md).toContain('# Scan Status Report');
     expect(md).toContain('| Domain |');
     expect(md).toContain('cms.gov');
+    expect(md).toContain('Queue Composition');
   });
 
   it('includes failed URL table only when there are failures', () => {

@@ -5,6 +5,7 @@ export const TargetSettingsSchema = z.object({
   max_pages: z.number().int().min(1).nullable().optional().default(null), // Optional crawl threshold; null means no cap
   maxTimeoutMs: z.number().default(120000), // 2-minute hard limit per page
   include_subdomains: z.boolean().default(false), // Keep scans constrained to base host by default
+  sitemap_new_url_sample_target: z.number().int().min(1).nullable().optional().default(100), // Preferred number of never-seen sitemap URLs to sample
   sitemap_template_sample_cap: z.number().int().min(1).nullable().optional().default(null), // Optional per-template sample cap; null means unlimited
   sitemap_sample_stochastic: z.boolean().default(true), // Use deterministic pseudo-random ordering for sitemap sampling
   /**
@@ -46,6 +47,7 @@ export const TargetConfigSchema = z.object({
     max_pages: null,
     maxTimeoutMs: 120000,
     include_subdomains: false,
+    sitemap_new_url_sample_target: 100,
     sitemap_template_sample_cap: null,
     sitemap_sample_stochastic: true,
     unique_page_focus: false,
@@ -61,6 +63,14 @@ export const ProfileSchema = z.object({
   targets: z.array(TargetConfigSchema)
 });
 
-export type TargetSettings = z.infer<typeof TargetSettingsSchema>;
-export type TargetConfig = z.infer<typeof TargetConfigSchema>;
-export type Profile = z.infer<typeof ProfileSchema>;
+export type TargetSettings = Omit<z.infer<typeof TargetSettingsSchema>, 'sitemap_new_url_sample_target'> & {
+  sitemap_new_url_sample_target?: number | null;
+};
+
+export type TargetConfig = Omit<z.infer<typeof TargetConfigSchema>, 'settings'> & {
+  settings: TargetSettings;
+};
+
+export type Profile = Omit<z.infer<typeof ProfileSchema>, 'targets'> & {
+  targets: TargetConfig[];
+};
