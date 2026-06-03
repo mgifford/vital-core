@@ -55,7 +55,7 @@ targets:
       - https://www.cms.gov/about-cms/who-we-are/leadership/digital-service-cms
     settings:
       postLoadDelay: 2500
-      maxTimeoutMs: 120000
+      maxTimeoutMs: 150000
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
@@ -438,7 +438,7 @@ targets:
       - https://www.healthcare.gov/quick-guide/
     settings:
       postLoadDelay: 2500
-      maxTimeoutMs: 120000
+      maxTimeoutMs: 150000
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
@@ -527,7 +527,7 @@ targets:
       - https://www.cdc.gov/wcms/4.0/cove-demos/cove-world-map-demo.html
     settings:
       postLoadDelay: 2500
-      maxTimeoutMs: 120000
+      maxTimeoutMs: 150000
       throttle_profile: conservative
       unique_page_focus: true
       sitemap_template_sample_cap: 3
