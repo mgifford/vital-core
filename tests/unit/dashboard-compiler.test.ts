@@ -189,6 +189,8 @@ describe('DashboardCompiler', () => {
     expect(domainOverviewHtml).toContain('Scan duration (latest run):</strong> 52m 14s');
     expect(js).toContain('durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : \'n/a\';');
     expect(domainA11yHtml).toContain('Accessibility Findings');
+    expect(domainA11yHtml).toContain('api/issues-last-week/targets/cms-gov.json');
+    expect(domainA11yHtml).toContain('api/issues-last-week/index.json');
     expect(domainA11yHtml).toContain('data-filter-sev="all"');
     expect(domainA11yHtml).toContain('data-filter-tool="all"');
     expect(domainA11yHtml).toContain('data-filter-tool="axe"');

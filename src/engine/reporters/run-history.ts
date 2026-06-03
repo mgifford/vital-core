@@ -270,6 +270,7 @@ export class RunHistoryReporter {
     );
 
     SqlitePersister.appendRun(allResults, runEntry);
+    SqlitePersister.exportWeeklyIssuesSnapshot(7, 5000);
 
     return runEntry;
   }
@@ -375,6 +376,7 @@ export class RunHistoryReporter {
         latest: 'api/latest.json',
         runs: 'api/runs.json',
         targets: 'api/targets.json',
+        weeklyIssuesIndex: 'api/issues-last-week/index.json',
         trendSummary: 'runs/trends.json',
         runIndex: 'runs/index.json',
         latestRawRun: 'runs/latest.json',

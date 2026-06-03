@@ -167,6 +167,9 @@ Scheduled scans publish:
 - `api/latest.json` (latest run summary for API consumers)
 - `api/targets.json` (latest per-target aggregated metrics)
 - `api/runs.json` (recent run index for API consumers)
+- `api/issues-last-week/index.json` (manifest for full last-7-day accessibility issue snapshot)
+- `api/issues-last-week/all-issues-*.json` (chunked raw issue instances across all domains)
+- `api/issues-last-week/targets/<target-id>.json` (full last-7-day raw issue instances for one domain)
 
 ## SQLite Raw Data API (Local)
 

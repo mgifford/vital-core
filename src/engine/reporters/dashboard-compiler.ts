@@ -943,6 +943,8 @@ ${siteFooterHtml}
       ${sharedNav}
       <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
       <p><a href="run-history.html">Open run-specific history details</a></p>
+      <p><a href="../../api/issues-last-week/targets/${this.escapeHtml(safeTargetId)}.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues dataset for this domain (JSON)</a></p>
+      <p><a href="../../api/issues-last-week/index.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues manifest for all domains (JSON)</a></p>
       ${hasHistoricalData ? '<p class="muted-small"><em>Some findings are from a previous scan run. Pages unchanged since the last scan are shown with their most recent known data (up to ~33 hours of history).</em></p>' : ''}
     </div>
 

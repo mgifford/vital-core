@@ -3,6 +3,22 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { TargetScanResult } from '../../types/site-quality-spec';
 
+interface WeeklyIssueRow {
+  violationId: number;
+  runId: string;
+  targetId: string;
+  domain: string;
+  pageId: number;
+  url: string;
+  status: string;
+  scannedAt: string;
+  ruleId: string;
+  impact: string;
+  message: string;
+  selector: string | null;
+  provider: string | null;
+}
+
 export interface SqliteRunEntry {
   runId: string;
   generatedAt: string;
@@ -161,6 +177,176 @@ export class SqlitePersister {
 
     fs.copyFileSync(cachedDbPath, this.dbPath);
     console.log('📦 Restored historical vital.db from cache.');
+  }
+
+  /**
+   * Exports a static, query-friendly snapshot of all violation instances observed
+   * in the last `windowDays` days.
+   *
+   * Output files are written under:
+   *   dist/api/issues-last-week/
+   *
+   * - index.json: metadata, counts, and chunk manifest
+   * - all-issues-XXXX.json: global issue chunks
+   * - targets/<targetId>.json: full per-target issue list
+   */
+  public static exportWeeklyIssuesSnapshot(windowDays = 7, chunkSize = 5000): void {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return;
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        const outputRoot = path.resolve(process.cwd(), 'dist', 'api', 'issues-last-week');
+        const targetsDir = path.join(outputRoot, 'targets');
+        fs.mkdirSync(targetsDir, { recursive: true });
+
+        const totalIssues = Number(
+          db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM violations v
+            JOIN pages p ON p.id = v.page_id
+            WHERE julianday(p.scanned_at) >= julianday('now', ?)
+          `).get(`-${windowDays} days`)?.count ?? 0
+        );
+
+        const chunks: string[] = [];
+        for (let offset = 0, idx = 1; offset < totalIssues; offset += chunkSize, idx += 1) {
+          const rows = this.queryWeeklyIssueRows(db, windowDays, chunkSize, offset);
+          const fileName = `all-issues-${String(idx).padStart(4, '0')}.json`;
+          fs.writeFileSync(
+            path.join(outputRoot, fileName),
+            JSON.stringify({
+              windowDays,
+              chunkIndex: idx,
+              chunkSize,
+              offset,
+              rowCount: rows.length,
+              rows
+            }, null, 2),
+            'utf8'
+          );
+          chunks.push(`api/issues-last-week/${fileName}`);
+        }
+
+        const targetSummaries = db.prepare(`
+          SELECT
+            p.target_id AS targetId,
+            MIN(p.domain) AS domain,
+            COUNT(*) AS issueCount,
+            COUNT(DISTINCT p.url) AS affectedPages,
+            COUNT(DISTINCT v.rule_id) AS distinctRules
+          FROM violations v
+          JOIN pages p ON p.id = v.page_id
+          WHERE julianday(p.scanned_at) >= julianday('now', ?)
+          GROUP BY p.target_id
+          ORDER BY issueCount DESC
+        `).all(`-${windowDays} days`) as Array<{
+          targetId: string;
+          domain: string;
+          issueCount: number;
+          affectedPages: number;
+          distinctRules: number;
+        }>;
+
+        for (const target of targetSummaries) {
+          const targetRows = db.prepare(`
+            SELECT
+              v.id AS violationId,
+              p.run_id AS runId,
+              p.target_id AS targetId,
+              p.domain AS domain,
+              p.id AS pageId,
+              p.url AS url,
+              p.status AS status,
+              p.scanned_at AS scannedAt,
+              v.rule_id AS ruleId,
+              v.impact AS impact,
+              v.message AS message,
+              v.selector AS selector,
+              v.provider AS provider
+            FROM violations v
+            JOIN pages p ON p.id = v.page_id
+            WHERE p.target_id = ?
+              AND julianday(p.scanned_at) >= julianday('now', ?)
+            ORDER BY p.scanned_at DESC, p.url ASC, v.rule_id ASC, v.id ASC
+          `).all(target.targetId, `-${windowDays} days`) as WeeklyIssueRow[];
+
+          const targetFile = `${this.sanitizeTargetId(target.targetId)}.json`;
+          fs.writeFileSync(
+            path.join(targetsDir, targetFile),
+            JSON.stringify({
+              targetId: target.targetId,
+              domain: target.domain,
+              windowDays,
+              issueCount: targetRows.length,
+              rows: targetRows
+            }, null, 2),
+            'utf8'
+          );
+        }
+
+        fs.writeFileSync(
+          path.join(outputRoot, 'index.json'),
+          JSON.stringify({
+            generatedAt: new Date().toISOString(),
+            windowDays,
+            totalIssues,
+            chunkSize,
+            chunkCount: chunks.length,
+            chunks,
+            targets: targetSummaries.map(target => ({
+              targetId: target.targetId,
+              domain: target.domain,
+              issueCount: Number(target.issueCount || 0),
+              affectedPages: Number(target.affectedPages || 0),
+              distinctRules: Number(target.distinctRules || 0),
+              file: `api/issues-last-week/targets/${this.sanitizeTargetId(target.targetId)}.json`
+            }))
+          }, null, 2),
+          'utf8'
+        );
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  Weekly issues snapshot export skipped: ${msg}`);
+    }
+  }
+
+  private static queryWeeklyIssueRows(
+    db: DatabaseSync,
+    windowDays: number,
+    limit: number,
+    offset: number
+  ): WeeklyIssueRow[] {
+    return db.prepare(`
+      SELECT
+        v.id AS violationId,
+        p.run_id AS runId,
+        p.target_id AS targetId,
+        p.domain AS domain,
+        p.id AS pageId,
+        p.url AS url,
+        p.status AS status,
+        p.scanned_at AS scannedAt,
+        v.rule_id AS ruleId,
+        v.impact AS impact,
+        v.message AS message,
+        v.selector AS selector,
+        v.provider AS provider
+      FROM violations v
+      JOIN pages p ON p.id = v.page_id
+      WHERE julianday(p.scanned_at) >= julianday('now', ?)
+      ORDER BY p.scanned_at DESC, p.target_id ASC, p.url ASC, v.rule_id ASC, v.id ASC
+      LIMIT ? OFFSET ?
+    `).all(`-${windowDays} days`, limit, offset) as WeeklyIssueRow[];
+  }
+
+  private static sanitizeTargetId(value: string): string {
+    return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_') || 'unknown';
   }
 
   private static insertRunData(
