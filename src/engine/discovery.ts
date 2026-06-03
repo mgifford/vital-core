@@ -97,6 +97,37 @@ export class TargetDiscoveryEngine {
       console.log(`🎯 Post-filter calculation: ${filteredUrls.length} URLs matched constraints.`);
     }
 
+    if (sitemapUrls.length > 0 && filteredUrls.length === 0) {
+      console.log(
+        `⚠️ Sitemap for ${target.id} yielded ${sitemapUrls.length} URL(s) but none survived filters or freshness checks. ` +
+          `Falling back to DuckDuckGo site query to seed a crawl.`
+      );
+
+      const liveFallbackUrls = await PrioritySeedStore.fetchLiveUrls(target, 30);
+      if (liveFallbackUrls.length > 0) {
+        const fallbackNormalizedUrls: string[] = [];
+        liveFallbackUrls
+          .map(url => this.normalizeUrl(url))
+          .filter((url): url is string => Boolean(url))
+          .forEach(url => {
+            const htmlClassification = this.classifyHtmlUrl(url);
+            if (!htmlClassification.isHtml) {
+              this.recordNonHtmlExclusion(target.id, url, htmlClassification.reason || 'Non-HTML resource');
+              return;
+            }
+
+            if (!this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains)) {
+              return;
+            }
+
+            fallbackNormalizedUrls.push(url);
+          });
+
+        filteredUrls = fallbackNormalizedUrls;
+        console.log(`🦆 DuckDuckGo fallback added ${filteredUrls.length} candidate URL(s) for ${target.id}.`);
+      }
+    }
+
     // 3. Strategic Merge & Deduplication Array Sequence
     // We instantiate a Set with priority items first to preserve execution ordering
     const uniqueUrlSet = new Set<string>();
@@ -189,8 +220,43 @@ export class TargetDiscoveryEngine {
       ? (templateSampleCap ?? 1)
       : (templateSampleCap ?? Number.POSITIVE_INFINITY);
 
-    const candidateSitemapUrls = filteredUrls.filter(url => shouldIncludeUrl(url));
+    let candidateSitemapUrls = filteredUrls.filter(url => shouldIncludeUrl(url));
+    if (candidateSitemapUrls.length === 0 && sitemapUrls.length > 0) {
+      console.log(
+        `⚠️ Sitemap for ${target.id} produced no queueable URLs after freshness checks. ` +
+          `Falling back to DuckDuckGo site query to seed a crawl.`
+      );
 
+      const liveFallbackUrls = await PrioritySeedStore.fetchLiveUrls(target, 30);
+      if (liveFallbackUrls.length > 0) {
+        const fallbackCandidateUrls: string[] = [];
+        liveFallbackUrls
+          .map(url => this.normalizeUrl(url))
+          .filter((url): url is string => Boolean(url))
+          .forEach(url => {
+            const htmlClassification = this.classifyHtmlUrl(url);
+            if (!htmlClassification.isHtml) {
+              this.recordNonHtmlExclusion(target.id, url, htmlClassification.reason || 'Non-HTML resource');
+              return;
+            }
+
+            if (!this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains)) {
+              return;
+            }
+
+            if (!shouldIncludeUrl(url)) {
+              return;
+            }
+
+            fallbackCandidateUrls.push(url);
+          });
+
+        if (fallbackCandidateUrls.length > 0) {
+          candidateSitemapUrls = fallbackCandidateUrls;
+          console.log(`🦆 DuckDuckGo fallback added ${candidateSitemapUrls.length} candidate URL(s) for ${target.id}.`);
+        }
+      }
+    }
     const sampledSitemapUrls = this.sampleSitemapUrls(
       candidateSitemapUrls,
       remainingSlots,

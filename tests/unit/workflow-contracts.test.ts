@@ -31,7 +31,7 @@ describe('Workflow contracts', () => {
     const workflowPath = path.resolve(process.cwd(), '.github/workflows/vital-scan.yml');
     const content = fs.readFileSync(workflowPath, 'utf8');
 
-    expect(content).toContain("- cron: '28,58 * * * *'");
+    expect(content).toContain("- cron: '0 4-10 * * *'");
     expect(content).toContain('Add fuzzy start delay for scheduled runs');
     expect(content).toContain('jitter_seconds=$(( RANDOM % 241 ))');
     expect(content).toContain('VITAL_MAX_RUN_MINUTES: ${{');

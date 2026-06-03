@@ -8,6 +8,13 @@ import {
 } from './quality-index';
 import { ConsensusPrioritizer, ConsensusSummary } from './consensus-prioritizer';
 import { SqlitePersister } from './sqlite-persister';
+import type {
+  WeeklyDomainRating,
+  PerRunDomainSnapshot,
+  WeeklyTrendPoint,
+  WeeklyRuleFrequency,
+  RunDirectoryEntry
+} from '../../types/domain-rating';
 
 interface RunEntry {
   runId: string;
@@ -1275,5 +1282,159 @@ export class RunHistoryReporter {
     }
 
     return { generatedAt, runId, totalInstances: violations.length, violations };
+  }
+
+  /**
+   * Export weekly aggregated violation ratings by domain.
+   * Called after compile phase to generate leaderboard data.
+   */
+  public static exportWeeklyDomainRatings(allTargets: TargetScanResult[], windowDays = 7): WeeklyDomainRating[] {
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay());
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+
+    const ratings: WeeklyDomainRating[] = [];
+
+    for (const target of allTargets) {
+      const severityCounts = SqlitePersister.queryWeeklyViolationsByDomain(target.targetId, windowDays);
+      const totalViolations = severityCounts.critical + severityCounts.serious + severityCounts.moderate + severityCounts.minor;
+
+      // Calculate score: 100 - (weighted violations)
+      // Critical: 10 points, Serious: 5 points, Moderate: 2 points, Minor: 1 point
+      const weightedViolations = severityCounts.critical * 10 + severityCounts.serious * 5 + severityCounts.moderate * 2 + severityCounts.minor;
+      const scoreNumerical = Math.max(0, 100 - Math.min(100, weightedViolations));
+
+      // Map score to letter grade
+      const letterGrade = this.scoreToLetterGrade(scoreNumerical);
+
+      // Count distinct pages scanned
+      const pageQuality = SqlitePersister.queryWeeklyPageQuality(target.targetId, windowDays, 10000);
+      const pagesCovered = pageQuality.length;
+
+      ratings.push({
+        targetId: target.targetId,
+        domain: target.domain,
+        weekStart: weekStart.toISOString().split('T')[0],
+        weekEnd: weekEnd.toISOString().split('T')[0],
+        pagesCovered,
+        estimatedSize: null, // TODO: Wire from PrioritySeedStore in Phase 2
+        violationCounts: severityCounts,
+        scoreNumerical,
+        letterGrade
+      });
+    }
+
+    // Write to dist/api/weekly-ratings.json
+    const apiDir = path.resolve(process.cwd(), 'dist/api');
+    if (!fs.existsSync(apiDir)) {
+      fs.mkdirSync(apiDir, { recursive: true });
+    }
+
+    fs.writeFileSync(
+      path.join(apiDir, 'weekly-ratings.json'),
+      JSON.stringify({
+        generatedAt: new Date().toISOString(),
+        windowDays,
+        weekStart: weekStart.toISOString().split('T')[0],
+        weekEnd: weekEnd.toISOString().split('T')[0],
+        ratings: ratings.sort((a, b) => b.scoreNumerical - a.scoreNumerical)
+      }, null, 2),
+      'utf8'
+    );
+
+    return ratings;
+  }
+
+  /**
+   * Export weekly compliance trends (week-over-week data).
+   */
+  public static exportWeeklyTrends(backWeeks = 12): WeeklyTrendPoint[] {
+    const trends = SqlitePersister.queryWeeklyTrends(backWeeks);
+
+    const apiDir = path.resolve(process.cwd(), 'dist/api');
+    if (!fs.existsSync(apiDir)) {
+      fs.mkdirSync(apiDir, { recursive: true });
+    }
+
+    fs.writeFileSync(
+      path.join(apiDir, 'weekly-trends.json'),
+      JSON.stringify({
+        generatedAt: new Date().toISOString(),
+        backWeeks,
+        trends: trends.reverse() // Oldest first for charting
+      }, null, 2),
+      'utf8'
+    );
+
+    return trends;
+  }
+
+  /**
+   * Export top rules by frequency across all domains.
+   */
+  public static exportWeeklyRuleFrequency(windowDays = 7, limit = 50): WeeklyRuleFrequency[] {
+    const rules = SqlitePersister.queryWeeklyRuleFrequency(windowDays);
+
+    const apiDir = path.resolve(process.cwd(), 'dist/api');
+    if (!fs.existsSync(apiDir)) {
+      fs.mkdirSync(apiDir, { recursive: true });
+    }
+
+    fs.writeFileSync(
+      path.join(apiDir, 'weekly-top-rules.json'),
+      JSON.stringify({
+        generatedAt: new Date().toISOString(),
+        windowDays,
+        topRules: rules.slice(0, limit)
+      }, null, 2),
+      'utf8'
+    );
+
+    return rules;
+  }
+
+  /**
+   * Export directory of all historical runs.
+   */
+  public static exportRunDirectory(limit = 100): RunDirectoryEntry[] {
+    const runs = SqlitePersister.queryRunDirectory(limit);
+
+    const apiDir = path.resolve(process.cwd(), 'dist/api');
+    if (!fs.existsSync(apiDir)) {
+      fs.mkdirSync(apiDir, { recursive: true });
+    }
+
+    fs.writeFileSync(
+      path.join(apiDir, 'run-directory.json'),
+      JSON.stringify({
+        generatedAt: new Date().toISOString(),
+        limit,
+        runCount: runs.length,
+        runs
+      }, null, 2),
+      'utf8'
+    );
+
+    return runs;
+  }
+
+  /**
+   * Helper: convert numeric score to letter grade.
+   */
+  private static scoreToLetterGrade(score: number): 'A+' | 'A' | 'A-' | 'B+' | 'B' | 'B-' | 'C+' | 'C' | 'C-' | 'D+' | 'D' | 'D-' {
+    if (score >= 97) return 'A+';
+    if (score >= 93) return 'A';
+    if (score >= 90) return 'A-';
+    if (score >= 87) return 'B+';
+    if (score >= 83) return 'B';
+    if (score >= 80) return 'B-';
+    if (score >= 77) return 'C+';
+    if (score >= 73) return 'C';
+    if (score >= 70) return 'C-';
+    if (score >= 67) return 'D+';
+    if (score >= 63) return 'D';
+    return 'D-';
   }
 }

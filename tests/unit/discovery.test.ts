@@ -577,6 +577,63 @@ describe('TargetDiscoveryEngine', () => {
     expect(queue).toEqual(['https://www.cms.gov/news/new-page']);
   });
 
+  it('falls back to DuckDuckGo when the sitemap only yields already-scanned URLs', async () => {
+    fetchMock.mockResolvedValue({
+      sites: ['https://www.health.gov/']
+    });
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => `<!doctype html><html><body>
+        <a class="result__a" href="https://www.health.gov/about-oash">About OASH</a>
+        <a class="result__a" href="https://www.health.gov/grants">Grants</a>
+      </body></html>`
+    }));
+
+    const target: TargetConfig = {
+      id: 'health-gov',
+      name: 'Health.gov',
+      base_url: 'https://www.health.gov',
+      sitemap_url: 'https://www.health.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 10,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 3,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    try {
+      const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
+        previouslyScannedUrls: new Set(['https://www.health.gov/']) ,
+        pageState: {
+          'https://www.health.gov/': {
+            etag: null,
+            lastModified: null,
+            contentHash: null,
+            assetFingerprintHash: null,
+            lastCheckedAt: new Date(Date.now() - 60 * 1000).toISOString(),
+            lastScannedAt: new Date(Date.now() - 60 * 1000).toISOString()
+          }
+        }
+      });
+
+      expect(queue).toEqual([
+        'https://www.health.gov/about-oash',
+        'https://www.health.gov/grants'
+      ]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('does not cap pages when max_pages and sitemap_template_sample_cap are null', async () => {
     fetchMock.mockResolvedValue({
       sites: [

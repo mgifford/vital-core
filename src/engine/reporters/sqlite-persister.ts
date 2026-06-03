@@ -2,6 +2,15 @@ import { DatabaseSync } from 'node:sqlite';
 import * as fs from 'fs';
 import * as path from 'path';
 import type { TargetScanResult } from '../../types/site-quality-spec';
+import type {
+  WeeklyDomainRating,
+  PerRunDomainSnapshot,
+  WeeklyTrendPoint,
+  WeeklyRuleFrequency,
+  RunDirectoryEntry,
+  SeverityCount,
+  LetterGrade
+} from '../../types/domain-rating';
 
 interface WeeklyIssueRow {
   violationId: number;
@@ -457,5 +466,368 @@ export class SqlitePersister {
       db.exec('ROLLBACK');
       throw err;
     }
+  }
+
+  /**
+   * Query violation counts by severity for a domain over a time window.
+   * Used to populate WeeklyDomainRating scores.
+   */
+  public static queryWeeklyViolationsByDomain(
+    targetId: string,
+    windowDays = 7
+  ): SeverityCount {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return { critical: 0, serious: 0, moderate: 0, minor: 0 };
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        const result = db.prepare(`
+          SELECT
+            SUM(CASE WHEN v.impact = 'critical' THEN 1 ELSE 0 END) AS critical,
+            SUM(CASE WHEN v.impact = 'serious' THEN 1 ELSE 0 END) AS serious,
+            SUM(CASE WHEN v.impact = 'moderate' THEN 1 ELSE 0 END) AS moderate,
+            SUM(CASE WHEN v.impact = 'minor' THEN 1 ELSE 0 END) AS minor
+          FROM violations v
+          JOIN pages p ON p.id = v.page_id
+          WHERE p.target_id = ?
+            AND julianday(p.scanned_at) >= julianday('now', ?)
+        `).get(targetId, `-${windowDays} days`) as unknown as SeverityCount;
+
+        return result || { critical: 0, serious: 0, moderate: 0, minor: 0 };
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryWeeklyViolationsByDomain skipped: ${msg}`);
+      return { critical: 0, serious: 0, moderate: 0, minor: 0 };
+    }
+  }
+
+  /**
+   * Query rule frequency across all domains for a time window.
+   */
+  public static queryWeeklyRuleFrequency(windowDays = 7): WeeklyRuleFrequency[] {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        const raw = db.prepare(`
+          SELECT
+            v.rule_id AS ruleId,
+            COUNT(*) AS occurrences,
+            COUNT(DISTINCT p.url) AS affectedPages,
+            SUM(CASE WHEN v.impact = 'critical' THEN 1 ELSE 0 END) AS critical,
+            SUM(CASE WHEN v.impact = 'serious' THEN 1 ELSE 0 END) AS serious,
+            SUM(CASE WHEN v.impact = 'moderate' THEN 1 ELSE 0 END) AS moderate,
+            SUM(CASE WHEN v.impact = 'minor' THEN 1 ELSE 0 END) AS minor
+          FROM violations v
+          JOIN pages p ON p.id = v.page_id
+          WHERE julianday(p.scanned_at) >= julianday('now', ?)
+          GROUP BY v.rule_id
+          ORDER BY occurrences DESC
+        `).all(`-${windowDays} days`) as unknown as Array<{
+          ruleId: string;
+          occurrences: number;
+          affectedPages: number;
+          critical: number;
+          serious: number;
+          moderate: number;
+          minor: number;
+        }>;
+
+        return raw.map(row => {
+          const severities = {
+            critical: row.critical || 0,
+            serious: row.serious || 0,
+            moderate: row.moderate || 0,
+            minor: row.minor || 0
+          };
+          const mostCommonSeverity = this.getMostCommonSeverity(severities);
+          return {
+            ruleId: row.ruleId,
+            occurrences: row.occurrences,
+            affectedPages: row.affectedPages,
+            severities,
+            mostCommonSeverity
+          };
+        });
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryWeeklyRuleFrequency skipped: ${msg}`);
+      return [];
+    }
+  }
+
+  /**
+   * Query pages with most violations for a domain in a time window.
+   */
+  public static queryWeeklyPageQuality(
+    targetId: string,
+    windowDays = 7,
+    limit = 50
+  ): Array<{ url: string; violationCount: number; severity: SeverityCount }> {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        const raw = db.prepare(`
+          SELECT
+            p.url AS url,
+            COUNT(v.id) AS violationCount,
+            SUM(CASE WHEN v.impact = 'critical' THEN 1 ELSE 0 END) AS critical,
+            SUM(CASE WHEN v.impact = 'serious' THEN 1 ELSE 0 END) AS serious,
+            SUM(CASE WHEN v.impact = 'moderate' THEN 1 ELSE 0 END) AS moderate,
+            SUM(CASE WHEN v.impact = 'minor' THEN 1 ELSE 0 END) AS minor
+          FROM pages p
+          LEFT JOIN violations v ON v.page_id = p.id
+          WHERE p.target_id = ?
+            AND julianday(p.scanned_at) >= julianday('now', ?)
+          GROUP BY p.id, p.url
+          ORDER BY violationCount DESC
+          LIMIT ?
+        `).all(targetId, `-${windowDays} days`, limit) as unknown as Array<{
+          url: string;
+          violationCount: number;
+          critical: number;
+          serious: number;
+          moderate: number;
+          minor: number;
+        }>;
+
+        return raw.map(row => ({
+          url: row.url,
+          violationCount: row.violationCount,
+          severity: {
+            critical: row.critical || 0,
+            serious: row.serious || 0,
+            moderate: row.moderate || 0,
+            minor: row.minor || 0
+          }
+        }));
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryWeeklyPageQuality skipped: ${msg}`);
+      return [];
+    }
+  }
+
+  /**
+   * Query week-over-week compliance trends.
+   */
+  public static queryWeeklyTrends(backWeeks = 12): WeeklyTrendPoint[] {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        const raw = db.prepare(`
+          SELECT
+            DATE(datetime(p.scanned_at, 'weekday 0', '-6 days')) AS weekStart,
+            DATE(datetime(p.scanned_at, 'weekday 0')) AS weekEnd,
+            COUNT(DISTINCT p.id) AS totalPages,
+            COUNT(v.id) AS violationsCount,
+            SUM(CASE WHEN (
+              SELECT COUNT(*) FROM violations v2 WHERE v2.page_id = p.id
+            ) = 0 THEN 1 ELSE 0 END) AS compliantPages
+          FROM pages p
+          LEFT JOIN violations v ON v.page_id = p.id
+          WHERE julianday(p.scanned_at) >= julianday('now', ?)
+          GROUP BY weekStart, weekEnd
+          ORDER BY weekStart DESC
+        `).all(`-${backWeeks} weeks`) as unknown as Array<{
+          weekStart: string;
+          weekEnd: string;
+          totalPages: number;
+          violationsCount: number;
+          compliantPages: number;
+        }>;
+
+        return raw.map(row => ({
+          weekStart: row.weekStart,
+          weekEnd: row.weekEnd,
+          totalPages: row.totalPages,
+          violationsCount: row.violationsCount,
+          compliantPages: row.compliantPages,
+          compliancePercent: row.totalPages > 0
+            ? Math.round((row.compliantPages / row.totalPages) * 100)
+            : 0
+        }));
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryWeeklyTrends skipped: ${msg}`);
+      return [];
+    }
+  }
+
+  /**
+   * Query per-run statistics for a specific domain in a run.
+   */
+  public static queryPerRunStats(runId: string, targetId: string): PerRunDomainSnapshot | null {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return null;
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        const runData = db.prepare(`
+          SELECT
+            r.run_id AS runId,
+            r.generated_at AS generatedAt,
+            COUNT(CASE WHEN p.status = 'COMPLETED' THEN 1 END) AS pagesCompleted,
+            COUNT(CASE WHEN p.status = 'SKIPPED_UNCHANGED' THEN 1 END) AS pagesSkipped,
+            COUNT(p.id) AS pagesTotalScanned,
+            SUM(CASE WHEN v.impact = 'critical' THEN 1 ELSE 0 END) AS critical,
+            SUM(CASE WHEN v.impact = 'serious' THEN 1 ELSE 0 END) AS serious,
+            SUM(CASE WHEN v.impact = 'moderate' THEN 1 ELSE 0 END) AS moderate,
+            SUM(CASE WHEN v.impact = 'minor' THEN 1 ELSE 0 END) AS minor,
+            MIN(p.domain) AS domain
+          FROM runs r
+          JOIN pages p ON p.run_id = r.run_id
+          LEFT JOIN violations v ON v.page_id = p.id AND (
+            p.status = 'COMPLETED' OR p.status = 'SKIPPED_UNCHANGED'
+          )
+          WHERE r.run_id = ? AND p.target_id = ?
+          GROUP BY r.run_id, r.generated_at
+        `).get(runId, targetId) as unknown as {
+          runId: string;
+          generatedAt: string;
+          pagesCompleted: number;
+          pagesSkipped: number;
+          pagesTotalScanned: number;
+          critical: number;
+          serious: number;
+          moderate: number;
+          minor: number;
+          domain: string;
+        } | undefined;
+
+        if (!runData) {
+          return null;
+        }
+
+        // Calculate score based on violations (simple: 100 - (violations / pages * 100))
+        const totalViolations = runData.critical + runData.serious + runData.moderate + runData.minor;
+        const scoreNumerical = runData.pagesTotalScanned > 0
+          ? Math.max(0, 100 - Math.round((totalViolations / runData.pagesTotalScanned) * 20))
+          : 100;
+
+        const letterGrade = this.scoreToLetterGrade(scoreNumerical);
+
+        return {
+          runId: runData.runId,
+          generatedAt: runData.generatedAt,
+          targetId,
+          domain: runData.domain,
+          pagesCompleted: runData.pagesCompleted,
+          pagesSkipped: runData.pagesSkipped,
+          pagesTotalScanned: runData.pagesTotalScanned,
+          violationCounts: {
+            critical: runData.critical || 0,
+            serious: runData.serious || 0,
+            moderate: runData.moderate || 0,
+            minor: runData.minor || 0
+          },
+          scoreNumerical,
+          letterGrade
+        };
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryPerRunStats skipped: ${msg}`);
+      return null;
+    }
+  }
+
+  /**
+   * Query directory of all runs (for run history index).
+   */
+  public static queryRunDirectory(limit = 100): RunDirectoryEntry[] {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        return db.prepare(`
+          SELECT
+            r.run_id AS runId,
+            r.generated_at AS generatedAt,
+            COUNT(DISTINCT p.id) AS pagesScanned,
+            COUNT(DISTINCT CASE WHEN p.status = 'COMPLETED' THEN p.id END) AS pagesCompleted,
+            COUNT(DISTINCT CASE WHEN p.status = 'SKIPPED_UNCHANGED' THEN p.id END) AS pagesSkipped,
+            COUNT(v.id) AS totalViolations,
+            r.quality_index_score AS qualityIndexScore
+          FROM runs r
+          LEFT JOIN pages p ON p.run_id = r.run_id
+          LEFT JOIN violations v ON v.page_id = p.id
+          GROUP BY r.run_id, r.generated_at
+          ORDER BY r.generated_at DESC
+          LIMIT ?
+        `).all(limit) as unknown as RunDirectoryEntry[];
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryRunDirectory skipped: ${msg}`);
+      return [];
+    }
+  }
+
+  /**
+   * Helper: convert numeric score to letter grade.
+   */
+  private static scoreToLetterGrade(score: number): LetterGrade {
+    if (score >= 97) return 'A+';
+    if (score >= 93) return 'A';
+    if (score >= 90) return 'A-';
+    if (score >= 87) return 'B+';
+    if (score >= 83) return 'B';
+    if (score >= 80) return 'B-';
+    if (score >= 77) return 'C+';
+    if (score >= 73) return 'C';
+    if (score >= 70) return 'C-';
+    if (score >= 67) return 'D+';
+    if (score >= 63) return 'D';
+    return 'D-';
+  }
+
+  /**
+   * Helper: determine most common severity from counts.
+   */
+  private static getMostCommonSeverity(
+    counts: SeverityCount
+  ): 'critical' | 'serious' | 'moderate' | 'minor' {
+    const severities = [
+      { severity: 'critical' as const, count: counts.critical },
+      { severity: 'serious' as const, count: counts.serious },
+      { severity: 'moderate' as const, count: counts.moderate },
+      { severity: 'minor' as const, count: counts.minor }
+    ];
+    return severities.reduce((max, curr) => (curr.count > max.count ? curr : max)).severity;
   }
 }

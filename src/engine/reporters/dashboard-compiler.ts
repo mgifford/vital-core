@@ -7,6 +7,9 @@ import { DomainRatingScorer } from './domain-rating';
 import { DomainAccessibilityRating, LetterGrade } from '../../types/domain-rating';
 import { PrioritySeedSnapshot } from '../priority-seeds';
 import { UniqueErrorsReporter, UniqueErrorEntry } from './unique-errors';
+import { RunHistoryReporter } from './run-history';
+import { SqlitePersister } from './sqlite-persister';
+import { WeeklyDomainRating } from '../../types/domain-rating';
 
 export class DashboardCompiler {
   private static DIST_DIR = path.resolve(process.cwd(), 'dist');
@@ -39,12 +42,36 @@ export class DashboardCompiler {
     const uniqueErrors = UniqueErrorsReporter.buildUniqueErrors(allResults);
     fs.writeFileSync(path.join(runsDir, 'unique-errors.json'), JSON.stringify(uniqueErrors), 'utf8');
 
-    const domainRatings = DomainRatingScorer.buildAllDomainRatings(
-      allResults,
-      options.prioritySeedSnapshot ?? null
-    );
-    const accessibilityGradesHtml = this.buildAccessibilityGradesHtml(domainRatings);
+      // Phase 2: Export weekly aggregates and create JSON APIs for trend reporting
+      RunHistoryReporter.exportWeeklyDomainRatings(allResults, 7);
+      RunHistoryReporter.exportWeeklyTrends(12);
+      RunHistoryReporter.exportWeeklyRuleFrequency(7);
+      RunHistoryReporter.exportRunDirectory(100);
 
+      // Build weekly leaderboard from SQLite (7-day aggregates) or fall back to per-run ratings
+      const weeklyRatings = SqlitePersister.queryWeeklyTrends(1)?.length > 0
+        ? this.buildWeeklyLeaderboardFromDb(allResults, options.prioritySeedSnapshot ?? null)
+        : DomainRatingScorer.buildAllDomainRatings(allResults, options.prioritySeedSnapshot ?? null)
+            .map(r => ({
+              targetId: r.targetId,
+              domain: r.domain,
+              weekStart: new Date().toISOString().split('T')[0],
+              weekEnd: new Date().toISOString().split('T')[0],
+              pagesCovered: 0,
+              estimatedSize: null,
+              violationCounts: {
+                critical: r.breakdown.critical.rawCount,
+                serious: r.breakdown.serious.rawCount,
+                moderate: r.breakdown.moderate.rawCount,
+                minor: r.breakdown.minor.rawCount
+              },
+                scoreNumerical: r.numericScore,
+              letterGrade: r.letterGrade
+            } as WeeklyDomainRating));
+
+
+      // Use weekly ratings for leaderboard instead of per-run ratings
+      const accessibilityGradesHtml = this.buildAccessibilityGradesHtmlFromWeekly(weeklyRatings);
     const siteFooterHtml = this.buildSiteFooterHtml();
 
     fs.writeFileSync(path.join(this.ASSETS_DIR, 'dashboard.css'), this.buildDashboardCss(), 'utf8');
@@ -4182,4 +4209,129 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     });
 })();`;
   }
+
+    /**
+     * Build weekly domain ratings from SQLite queries (7-day windows).
+     * Falls back to per-run ratings if SQLite data is not available.
+     * Phase 2: Leaderboard now shows aggregates instead of per-run snapshots.
+     */
+    private static buildWeeklyLeaderboardFromDb(
+      allResults: TargetScanResult[],
+      prioritySeedSnapshot: PrioritySeedSnapshot | null
+    ): WeeklyDomainRating[] {
+      return allResults.map(target => {
+        const severityCounts = SqlitePersister.queryWeeklyViolationsByDomain(target.targetId, 7);
+        const pageQuality = SqlitePersister.queryWeeklyPageQuality(target.targetId, 7, 10000);
+
+        // Calculate score: 100 - (weighted violations)
+        const weightedViolations = severityCounts.critical * 10 + severityCounts.serious * 5 + severityCounts.moderate * 2 + severityCounts.minor;
+        const scoreNumerical = Math.max(0, 100 - Math.min(100, weightedViolations));
+
+        // Map to letter grade
+        let letterGrade: LetterGrade = 'D-';
+        if (scoreNumerical >= 97) letterGrade = 'A+';
+        else if (scoreNumerical >= 93) letterGrade = 'A';
+        else if (scoreNumerical >= 90) letterGrade = 'A-';
+        else if (scoreNumerical >= 87) letterGrade = 'B+';
+        else if (scoreNumerical >= 83) letterGrade = 'B';
+        else if (scoreNumerical >= 80) letterGrade = 'B-';
+        else if (scoreNumerical >= 77) letterGrade = 'C+';
+        else if (scoreNumerical >= 73) letterGrade = 'C';
+        else if (scoreNumerical >= 70) letterGrade = 'C-';
+        else if (scoreNumerical >= 67) letterGrade = 'D+';
+        else if (scoreNumerical >= 63) letterGrade = 'D';
+
+        const estimatedSize = prioritySeedSnapshot?.targets
+          .find(t => t.targetId === target.targetId)?.estimatedIndexedPages ?? null;
+
+        return {
+          targetId: target.targetId,
+          domain: target.domain,
+          weekStart: new Date(new Date().setDate(new Date().getDate() - new Date().getDay()))
+            .toISOString()
+            .split('T')[0],
+          weekEnd: new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 6))
+            .toISOString()
+            .split('T')[0],
+          pagesCovered: pageQuality.length,
+          estimatedSize,
+          violationCounts: severityCounts,
+          scoreNumerical,
+          letterGrade
+        };
+      });
+    }
+
+    /**
+     * Build accessibility grades table HTML from weekly ratings.
+     * Phase 2: Shows 7-day aggregates, not per-run snapshots.
+     */
+    private static buildAccessibilityGradesHtmlFromWeekly(ratings: WeeklyDomainRating[]): string {
+      const sorted = [...ratings].sort((a, b) => b.scoreNumerical - a.scoreNumerical);
+
+      const rows = sorted.map(rating => {
+        let colorClass = 'grade-a';
+        if (rating.letterGrade === 'D+' || rating.letterGrade === 'D' || rating.letterGrade === 'D-') {
+          colorClass = 'grade-d';
+        } else if (rating.letterGrade.startsWith('C')) {
+          colorClass = 'grade-c';
+        } else if (rating.letterGrade.startsWith('B')) {
+          colorClass = 'grade-b';
+        }
+
+        const critical = rating.violationCounts.critical;
+        const serious = rating.violationCounts.serious;
+        const moderate = rating.violationCounts.moderate;
+        const minor = rating.violationCounts.minor;
+
+        const estimatedSizeText =
+          typeof rating.estimatedSize === 'number'
+            ? `${rating.pagesCovered} / ~${rating.estimatedSize}`
+            : `${rating.pagesCovered} scanned`;
+
+        const severityTotal = critical + serious + moderate + minor;
+        const mainDriver =
+          severityTotal === 0
+            ? 'No violations'
+            : critical > 0
+              ? 'Critical violations'
+              : serious > 0
+                ? 'Serious violations'
+                : moderate > 0
+                  ? 'Moderate violations'
+                  : 'Minor violations';
+
+        return `
+          <tr>
+            <td><a href="domains/${this.sanitizePathSegment(rating.targetId)}/index.html" target="_blank" rel="noopener noreferrer">${this.escapeHtml(rating.domain)}</a></td>
+            <td class="grade-cell ${colorClass}">${this.escapeHtml(rating.letterGrade)}</td>
+            <td>${this.escapeHtml(rating.scoreNumerical)}</td>
+            <td>${this.escapeHtml(critical)}</td>
+            <td>${this.escapeHtml(serious)}</td>
+            <td>${this.escapeHtml(moderate)}</td>
+            <td>${this.escapeHtml(minor)}</td>
+            <td class="muted-small">See domain accessibility page</td>
+            <td class="muted-small">${this.escapeHtml(mainDriver)}</td>
+          </tr>`;
+      }).join('');
+
+      return `
+        <table id="accessibility-grades-table">
+          <caption>Domain accessibility grades (7-day aggregate). Grade scale: A+ (97–100) · A (93–96) · A− (90–92) · B+ (87–89) · B (83–86) · B− (80–82) · C+ (77–79) · C (73–76) · C− (70–72) · D+ (67–69) · D (63–66) · D− (&lt;63).</caption>
+          <thead>
+            <tr>
+              <th scope="col">Domain</th>
+              <th scope="col">Grade</th>
+              <th scope="col">Score</th>
+              <th scope="col">Critical</th>
+              <th scope="col">Serious</th>
+              <th scope="col">Moderate</th>
+              <th scope="col">Minor</th>
+              <th scope="col">Priority-page violations</th>
+              <th scope="col">Main penalty driver</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
 }
