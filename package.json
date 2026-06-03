@@ -30,6 +30,7 @@
     "seeds:refresh": "npx tsx scripts/refresh-priority-seeds.ts",
     "inventory:export": "node scripts/export-target-inventory.mjs",
     "act-mapping:update": "node scripts/update-act-mapping.mjs",
+    "api:sqlite": "node scripts/sqlite-api-server.mjs",
     "duckduckgo-fetch": "npx tsx src/cli/duckduckgo-fetch.ts",
     "compile": "npx tsx src/compile.ts profiles/us-health.yml"
   },

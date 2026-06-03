@@ -69,6 +69,7 @@ describe('TargetDiscoveryEngine', () => {
 
   it('falls back to priority URLs if sitemap retrieval fails', async () => {
     fetchMock.mockRejectedValue(new Error('network error'));
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network error')));
 
     const target: TargetConfig = {
       id: 'cms-gov',
@@ -90,9 +91,71 @@ describe('TargetDiscoveryEngine', () => {
       }
     };
 
-    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
+    try {
+      const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
+      expect(queue).toEqual(['https://www.cms.gov/about-cms']);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 
-    expect(queue).toEqual(['https://www.cms.gov/about-cms']);
+  it('uses XML traversal fallback for sitemapindex pagination when Sitemapper fails', async () => {
+    fetchMock.mockRejectedValue(new Error('network error'));
+
+    const fetchSpy = vi.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () => `<?xml version="1.0"?><sitemapindex>
+          <sitemap><loc>https://www.cms.gov/sitemap.xml?page=1</loc></sitemap>
+          <sitemap><loc>https://www.cms.gov/sitemap.xml?page=2</loc></sitemap>
+        </sitemapindex>`
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () => `<?xml version="1.0"?><urlset>
+          <url><loc>https://www.cms.gov/page-a</loc></url>
+          <url><loc>https://www.cms.gov/page-b</loc></url>
+        </urlset>`
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () => `<?xml version="1.0"?><urlset>
+          <url><loc>https://www.cms.gov/page-c</loc></url>
+        </urlset>`
+      });
+
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 10,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 10,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    try {
+      const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
+      expect(queue).toEqual([
+        'https://www.cms.gov/page-a',
+        'https://www.cms.gov/page-b',
+        'https://www.cms.gov/page-c'
+      ]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('prepends monthly priority seed URLs from DuckDuckGo cache', async () => {

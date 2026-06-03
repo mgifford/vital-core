@@ -38,6 +38,7 @@ Path in GitHub UI:
 - Run CI-safe full validation with coverage: `npm run test:ci`
 - Run optional live/network-heavy phase checks: `npm run test:phase:live`
 - Run a scan locally: `npm run scan`
+- Start local SQLite API for raw scan data: `npm run api:sqlite`
 
 ## Testing Infrastructure
 
@@ -166,6 +167,31 @@ Scheduled scans publish:
 - `api/latest.json` (latest run summary for API consumers)
 - `api/targets.json` (latest per-target aggregated metrics)
 - `api/runs.json` (recent run index for API consumers)
+
+## SQLite Raw Data API (Local)
+
+VITAL-Core stores additive scan history in `dist/vital.db`. You can query it directly with:
+
+- `node scripts/query-db.mjs summary`
+- `node scripts/query-db.mjs recent-runs --limit 25 --json`
+
+For HTTP API access over local development, run:
+
+```sh
+npm run api:sqlite
+```
+
+Default server URL: `http://127.0.0.1:8787`
+
+Useful endpoints:
+
+- `GET /api/sql/overview` — run/page/violation totals
+- `GET /api/sql/tables` — table and column metadata
+- `GET /api/sql/urls?limit=1000&offset=0` — all tracked/scanned URLs from `url_history`
+- `GET /api/sql/pages?target_id=cms-gov&limit=1000&offset=0` — raw page scan rows
+- `GET /api/sql/violations?target_id=cms-gov&limit=1000&offset=0` — raw violation instance rows
+- `GET /api/sql/table/<table>?limit=1000&offset=0` — generic table access
+- `GET /api/sql/query?q=SELECT%20COUNT(*)%20AS%20count%20FROM%20url_history` — read-only SELECT/WITH queries
 
 The scan workflow restores previously published run history before generating a new run, then merges and republishes the updated index.
 

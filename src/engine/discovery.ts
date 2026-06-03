@@ -19,6 +19,9 @@ export interface DiscoveryNonHtmlExclusion {
 
 export class TargetDiscoveryEngine {
   private static nonHtmlExclusions: DiscoveryNonHtmlExclusion[] = [];
+  private static readonly SITEMAP_FETCH_TIMEOUT_MS = 15000;
+  private static readonly SITEMAP_FALLBACK_MAX_SITEMAPS = 500;
+  private static readonly SITEMAP_FALLBACK_MAX_URLS = 200000;
 
   /**
    * Discovers and prioritizes URLs to scan for a given target configuration.
@@ -284,13 +287,122 @@ export class TargetDiscoveryEngine {
       }
       console.warn(
         `⚠️ Sitemap returned 0 URLs for ${target.id} (${target.sitemap_url}). ` +
-        `Falling back to DuckDuckGo site: query.`
+        `Trying XML traversal fallback before DuckDuckGo site: query.`
       );
     } catch (error: any) {
-      console.warn(`⚠️ Warning: Unable to parse sitemap for ${target.id}: ${error.message}. Falling back to DuckDuckGo site: query.`);
+      console.warn(
+        `⚠️ Warning: Unable to parse sitemap for ${target.id}: ${error.message}. ` +
+        `Trying XML traversal fallback before DuckDuckGo site: query.`
+      );
+    }
+
+    const xmlFallbackUrls = await this.fetchSitemapViaXmlTraversal(target.sitemap_url!);
+    if (xmlFallbackUrls.length > 0) {
+      console.log(`📦 XML fallback discovered ${xmlFallbackUrls.length} raw URLs from sitemap traversal.`);
+      return xmlFallbackUrls;
     }
 
     return await PrioritySeedStore.fetchLiveUrls(target, 30);
+  }
+
+  private static async fetchSitemapViaXmlTraversal(sitemapUrl: string): Promise<string[]> {
+    const queue: string[] = [sitemapUrl];
+    const visited = new Set<string>();
+    const discoveredPageUrls = new Set<string>();
+
+    while (queue.length > 0) {
+      if (visited.size >= this.SITEMAP_FALLBACK_MAX_SITEMAPS) {
+        break;
+      }
+      if (discoveredPageUrls.size >= this.SITEMAP_FALLBACK_MAX_URLS) {
+        break;
+      }
+
+      const currentSitemap = queue.shift();
+      if (!currentSitemap || visited.has(currentSitemap)) {
+        continue;
+      }
+      visited.add(currentSitemap);
+
+      let xmlText = '';
+      try {
+        const response = await fetch(currentSitemap, {
+          signal: AbortSignal.timeout(this.SITEMAP_FETCH_TIMEOUT_MS),
+          headers: {
+            'User-Agent': 'vital-core-sitemap-fallback/1.0'
+          }
+        });
+        if (!response.ok) {
+          continue;
+        }
+        xmlText = await response.text();
+      } catch {
+        continue;
+      }
+
+      const locEntries = this.extractLocEntries(xmlText);
+      if (locEntries.length === 0) {
+        continue;
+      }
+
+      const isIndex = /<sitemapindex\b/i.test(xmlText);
+      if (isIndex) {
+        for (const loc of locEntries) {
+          const normalized = this.normalizeUrl(loc);
+          if (normalized && !visited.has(normalized)) {
+            queue.push(normalized);
+          }
+        }
+        continue;
+      }
+
+      for (const loc of locEntries) {
+        const normalized = this.normalizeUrl(loc);
+        if (!normalized) {
+          continue;
+        }
+
+        if (this.looksLikeSitemapDocument(normalized)) {
+          if (!visited.has(normalized)) {
+            queue.push(normalized);
+          }
+          continue;
+        }
+
+        discoveredPageUrls.add(normalized);
+        if (discoveredPageUrls.size >= this.SITEMAP_FALLBACK_MAX_URLS) {
+          break;
+        }
+      }
+    }
+
+    return Array.from(discoveredPageUrls);
+  }
+
+  private static extractLocEntries(xmlText: string): string[] {
+    const locRegex = /<loc>([^<]+)<\/loc>/gi;
+    const locs: string[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = locRegex.exec(xmlText)) !== null) {
+      const value = String(match[1] || '').trim();
+      if (value) {
+        locs.push(value);
+      }
+    }
+    return locs;
+  }
+
+  private static looksLikeSitemapDocument(url: string): boolean {
+    try {
+      const parsed = new URL(url);
+      const pathname = parsed.pathname.toLowerCase();
+      if (pathname.endsWith('.xml') || pathname.endsWith('.xml.gz')) {
+        return true;
+      }
+      return pathname.includes('sitemap');
+    } catch {
+      return false;
+    }
   }
 
   private static sampleSitemapUrls(
