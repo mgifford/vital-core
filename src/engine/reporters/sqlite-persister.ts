@@ -271,7 +271,7 @@ export class SqlitePersister {
             WHERE p.target_id = ?
               AND julianday(p.scanned_at) >= julianday('now', ?)
             ORDER BY p.scanned_at DESC, p.url ASC, v.rule_id ASC, v.id ASC
-          `).all(target.targetId, `-${windowDays} days`) as WeeklyIssueRow[];
+          `).all(target.targetId, `-${windowDays} days`) as unknown as WeeklyIssueRow[];
 
           const targetFile = `${this.sanitizeTargetId(target.targetId)}.json`;
           fs.writeFileSync(
