@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { TargetDiscoveryEngine } from '../../src/engine/discovery';
@@ -27,6 +27,10 @@ describe('TargetDiscoveryEngine', () => {
     delete process.env.VITAL_SAMPLING_SEED;
     vi.spyOn(console, 'log').mockImplementation(() => undefined);
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('matches include path globs against URL pathnames and keeps priority URLs first', async () => {
@@ -160,6 +164,52 @@ describe('TargetDiscoveryEngine', () => {
       'priority_url',
       'sitemap_sample'
     ]);
+  });
+
+  it('keeps queue output deterministic across different run dates', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/story/page-1',
+        'https://www.cms.gov/story/page-2',
+        'https://www.cms.gov/story/page-3',
+        'https://www.cms.gov/story/page-4'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov-deterministic',
+      name: 'CMS Deterministic Queue',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 10,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 2,
+        sitemap_sample_stochastic: true,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
+    const firstRun = await TargetDiscoveryEngine.discoverUrls(target);
+    const queuePath = path.resolve(process.cwd(), 'dist', 'runs', target.id, 'scan-queue.json');
+    const firstQueueSnapshot = JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<Record<string, unknown>>;
+
+    vi.setSystemTime(new Date('2026-01-08T00:00:00.000Z'));
+    const secondRun = await TargetDiscoveryEngine.discoverUrls(target);
+    const secondQueueSnapshot = JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<Record<string, unknown>>;
+
+    expect(secondRun.urls).toEqual(firstRun.urls);
+    expect(secondRun.queueEntries).toEqual(firstRun.queueEntries);
+    expect(secondQueueSnapshot).toEqual(firstQueueSnapshot);
+    expect(firstQueueSnapshot.every(entry => !Object.prototype.hasOwnProperty.call(entry, 'selectedAt'))).toBe(true);
   });
 
   it('falls back to priority URLs if sitemap retrieval fails', async () => {

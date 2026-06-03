@@ -13,6 +13,7 @@ import { PrioritySeedStore } from './engine/priority-seeds';
 import { TargetScanResult, PageScanReport } from './types/site-quality-spec';
 import { DiscoveryNonHtmlExclusion, DiscoveryQueueComposition } from './engine/discovery';
 import { UrlManifestStore, UrlManifest } from './engine/url-manifest';
+import { deriveQueueComposition } from './engine/queue-composition';
 
 interface TargetScanPlan {
   target: TargetConfig;
@@ -224,6 +225,7 @@ async function main() {
       if (targetLimitEnv && targetLimitEnv > 0) {
         urlQueue = urlQueue.slice(0, targetLimitEnv);
       }
+      const effectiveQueueComposition = deriveQueueComposition(discoveryResult.queueEntries, urlQueue);
       // Register all discovered URLs in the manifest so their lifecycle is tracked.
       UrlManifestStore.ensureEntries(urlManifest, urlQueue, new Date().toISOString());
 
@@ -257,7 +259,7 @@ async function main() {
         completedPages: [],
         skippedRecentlyScanned: discoveryResult.skippedRecentlyScanned,
         skippedQuarantined: discoveryResult.skippedQuarantined,
-        queueComposition: discoveryResult.queueComposition,
+        queueComposition: effectiveQueueComposition,
         urlManifest,
         cdnProvider: null,
         dailyPageBudget,

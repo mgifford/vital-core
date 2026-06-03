@@ -41,7 +41,6 @@ export interface TargetScanStatus {
 }
 
 export interface ScanStatusPayload {
-  generatedAt: string;
   targets: TargetScanStatus[];
 }
 
@@ -146,7 +145,6 @@ export class ScanStatusReporter {
     }
 
     const payload: ScanStatusPayload = {
-      generatedAt: new Date().toISOString(),
       targets: statuses
     };
 
@@ -161,11 +159,8 @@ export class ScanStatusReporter {
    * Builds a Markdown scan status report suitable for PR comments or CI logs.
    */
   public static buildMarkdownReport(statuses: TargetScanStatus[]): string {
-    const now = new Date().toISOString();
     const lines: string[] = [
       '# Scan Status Report',
-      '',
-      `Generated: ${now}`,
       '',
       '## Per-Domain Summary',
       '',

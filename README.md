@@ -161,6 +161,9 @@ Scheduled scans publish:
 - `runs/latest.json` (latest full run payload)
 - `runs/index.json` (historical run index)
 - `runs/<run-id>.json` (timestamped run artifacts)
+- `runs/<target-id>/scan-queue.json` (per-target discovery queue snapshot with source metadata)
+- `runs/scan-status.json` (per-run scan summary, including queue composition counts)
+- `runs/scan-status.md` (Markdown summary for CI logs or PR comments)
 - `runs/page-state.json` (per-URL change metadata for incremental rescans)
 - `runs/top-task-seeds.json` (monthly DuckDuckGo-derived priority URL seeds)
 - `api/index.json` (stable API endpoint manifest)
@@ -241,9 +244,10 @@ VITAL-Core now seeds each target queue with high-priority URLs derived from Duck
 
 Discovery order is:
 
-1. DuckDuckGo priority seeds
-2. Profile `priority_urls`
-3. Filtered sitemap URLs
+1. Recently updated URLs from prior run state
+2. DuckDuckGo priority seeds
+3. Profile `priority_urls`
+4. Filtered sitemap URLs
 
 Discovery filters now default to:
 
@@ -252,8 +256,7 @@ Discovery filters now default to:
 
 You can opt into subdomain crawling per target by setting `settings.include_subdomains: true`.
 
-To keep large URL sets fresh across runs, the scheduled workflow now sets `VITAL_SAMPLING_SEED` per run.
-This rotates sitemap sampling order while keeping each run deterministic and reproducible.
+The sitemap sampler is deterministic for a given `VITAL_SAMPLING_SEED`. Scheduled runs set that seed from run metadata so each run is reproducible on replay, while local comparisons can use a fixed seed for byte-stable output.
 
 ## Scan Politeness and Adaptive Timeout Backoff
 

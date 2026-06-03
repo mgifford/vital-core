@@ -27,7 +27,6 @@ export interface DiscoveryQueueEntry {
   templateKey: string;
   lastSuccessAt: string | null;
   lastModified: string | null;
-  selectedAt: string;
 }
 
 export interface DiscoveryQueueComposition {
@@ -36,6 +35,22 @@ export interface DiscoveryQueueComposition {
   priority_url: number;
   stale_weekly_rescan: number;
   sitemap_sample: number;
+}
+
+export function countDiscoveryQueueComposition(entries: DiscoveryQueueEntry[]): DiscoveryQueueComposition {
+  return entries.reduce<DiscoveryQueueComposition>(
+    (counts, entry) => {
+      counts[entry.source] += 1;
+      return counts;
+    },
+    {
+      recently_updated: 0,
+      duckduckgo_seed: 0,
+      priority_url: 0,
+      stale_weekly_rescan: 0,
+      sitemap_sample: 0
+    }
+  );
 }
 
 export class TargetDiscoveryEngine {
@@ -74,7 +89,6 @@ export class TargetDiscoveryEngine {
     const urlManifest = options.urlManifest ?? {};
     const rescanWindowDays = options.rescanWindowDays ?? revalidateAfterDays;
     const includeQuarantined = options.includeQuarantined ?? false;
-    const selectedAt = new Date().toISOString();
     
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
@@ -171,7 +185,6 @@ export class TargetDiscoveryEngine {
         templateKey: this.inferTemplateKey(url),
         lastSuccessAt: urlManifest[url]?.lastSuccessAt ?? null,
         lastModified: pageState[url]?.lastModified ?? null,
-        selectedAt
       });
     };
 
@@ -271,7 +284,7 @@ export class TargetDiscoveryEngine {
       const queueEntries = priorityOnlyQueue
         .map(url => queueEntriesByUrl.get(url))
         .filter((entry): entry is DiscoveryQueueEntry => Boolean(entry));
-      const queueComposition = this.countQueueComposition(queueEntries);
+      const queueComposition = countDiscoveryQueueComposition(queueEntries);
       this.saveScanQueue(target.id, queueEntries);
       console.log(`✂️ Truncating active queue from ${uniqueUrlSet.size} to ${ceilingLimit} pages (per max_pages limit).`);
       return { urls: priorityOnlyQueue, skippedRecentlyScanned: 0, skippedQuarantined: 0, queueEntries, queueComposition };
@@ -385,7 +398,7 @@ export class TargetDiscoveryEngine {
     const queueEntries = finalQueue
       .map(url => queueEntriesByUrl.get(url))
       .filter((entry): entry is DiscoveryQueueEntry => Boolean(entry));
-    const queueComposition = this.countQueueComposition(queueEntries);
+    const queueComposition = countDiscoveryQueueComposition(queueEntries);
     this.saveScanQueue(target.id, queueEntries);
 
     return { urls: finalQueue, skippedRecentlyScanned, skippedQuarantined, queueEntries, queueComposition };
@@ -399,22 +412,6 @@ export class TargetDiscoveryEngine {
 
   public static resetNonHtmlExclusionsForTesting(): void {
     this.nonHtmlExclusions = [];
-  }
-
-  private static countQueueComposition(entries: DiscoveryQueueEntry[]): DiscoveryQueueComposition {
-    return entries.reduce<DiscoveryQueueComposition>(
-      (counts, entry) => {
-        counts[entry.source] += 1;
-        return counts;
-      },
-      {
-        recently_updated: 0,
-        duckduckgo_seed: 0,
-        priority_url: 0,
-        stale_weekly_rescan: 0,
-        sitemap_sample: 0
-      }
-    );
   }
 
   private static saveScanQueue(targetId: string, entries: DiscoveryQueueEntry[]): void {
@@ -701,7 +698,7 @@ export class TargetDiscoveryEngine {
   }
 
   private static stableShuffle(urls: string[]): string[] {
-    const salt = process.env.VITAL_SAMPLING_SEED || `${new Date().toISOString().slice(0, 10)}:daily`;
+    const salt = process.env.VITAL_SAMPLING_SEED || 'vital-core:sampling:v1';
     return [...urls].sort((a, b) => this.hashString(`${salt}:${a}`) - this.hashString(`${salt}:${b}`));
   }
 

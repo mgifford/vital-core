@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ScanStatusReporter } from '../../src/engine/reporters/scan-status-reporter';
 import { TargetScanResult } from '../../src/types/site-quality-spec';
 import { UrlManifest } from '../../src/engine/url-manifest';
@@ -10,6 +10,7 @@ const originalCwd = process.cwd();
 
 afterEach(() => {
   process.chdir(originalCwd);
+  vi.useRealTimers();
 });
 
 function makeResult(
@@ -261,9 +262,8 @@ describe('ScanStatusReporter.saveJson and save', () => {
     const jsonPath = path.join(tmpDir, 'dist/runs/scan-status.json');
     expect(fs.existsSync(jsonPath)).toBe(true);
 
-    const payload = JSON.parse(fs.readFileSync(jsonPath, 'utf8')) as { generatedAt: string; targets: unknown[] };
+    const payload = JSON.parse(fs.readFileSync(jsonPath, 'utf8')) as { targets: unknown[] };
     expect(payload.targets).toHaveLength(1);
-    expect(payload.generatedAt).toBeDefined();
   });
 
   it('writes both scan-status.json and scan-status.md via save()', () => {
@@ -276,5 +276,32 @@ describe('ScanStatusReporter.saveJson and save', () => {
 
     expect(fs.existsSync(path.join(tmpDir, 'dist/runs/scan-status.json'))).toBe(true);
     expect(fs.existsSync(path.join(tmpDir, 'dist/runs/scan-status.md'))).toBe(true);
+  });
+
+  it('keeps scan-status outputs deterministic across different run dates', () => {
+    const result = makeResult('cms-gov', 'cms.gov', ['COMPLETED', 'TIMEOUT']);
+    const manifests = new Map([['cms-gov', makeManifest('cms.gov', 2)]]);
+    const [status] = ScanStatusReporter.buildScanStatus([result], manifests);
+
+    vi.useFakeTimers();
+
+    vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
+    const firstMarkdown = ScanStatusReporter.buildMarkdownReport([status]);
+    const firstTmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-scan-status-deterministic-'));
+    process.chdir(firstTmpDir);
+    ScanStatusReporter.saveJson([status]);
+    const firstJson = fs.readFileSync(path.join(firstTmpDir, 'dist/runs/scan-status.json'), 'utf8');
+
+    vi.setSystemTime(new Date('2026-01-08T00:00:00.000Z'));
+    const secondMarkdown = ScanStatusReporter.buildMarkdownReport([status]);
+    const secondTmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-scan-status-deterministic-'));
+    process.chdir(secondTmpDir);
+    ScanStatusReporter.saveJson([status]);
+    const secondJson = fs.readFileSync(path.join(secondTmpDir, 'dist/runs/scan-status.json'), 'utf8');
+
+    expect(secondMarkdown).toBe(firstMarkdown);
+    expect(secondJson).toBe(firstJson);
+    expect(firstMarkdown).not.toContain('Generated:');
+    expect(firstJson).not.toContain('generatedAt');
   });
 });
