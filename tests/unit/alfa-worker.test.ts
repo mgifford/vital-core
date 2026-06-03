@@ -172,5 +172,38 @@ describe('AlfaWorker', () => {
       expect(violations).toHaveLength(1);
       expect(violations[0].id).toBe('sia-r1');
     });
+
+    it('extracts rule id and help URL when Alfa returns nested rule objects', () => {
+      const audit = {
+        executed: true,
+        findingsCount: 1,
+        errorMessage: null,
+        rawResults: {
+          outcomes: [
+            {
+              rule: {
+                id: 'sia-r73',
+                uri: 'https://alfa.siteimprove.com/rules/sia-r73'
+              },
+              severity: 'moderate',
+              description: { value: 'ARIA role must be valid.' },
+              target: { value: '#main' },
+              failureSummary: { value: 'Use a valid ARIA role.' },
+              html: '<main id="main"></main>',
+              wcag: ['best-practice']
+            }
+          ]
+        }
+      };
+
+      const violations = AlfaWorker.toA11yViolations(audit);
+
+      expect(violations).toHaveLength(1);
+      expect(violations[0].id).toBe('sia-r73');
+      expect(violations[0].helpUrl).toBe('https://alfa.siteimprove.com/rules/sia-r73');
+      expect(violations[0].description).toBe('ARIA role must be valid.');
+      expect(violations[0].instances[0].target).toEqual(['#main']);
+      expect(violations[0].instances[0].failureSummary).toBe('Use a valid ARIA role.');
+    });
   });
 });

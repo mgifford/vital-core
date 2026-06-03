@@ -346,6 +346,46 @@ describe('TargetDiscoveryEngine', () => {
     expect(queue).toContain('https://www.cms.gov/contact-us');
   });
 
+  it('respects explicit template sample cap when unique-page focus is enabled', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/newsroom/press-releases/2026-01-01/update-a',
+        'https://www.cms.gov/newsroom/press-releases/2026-01-02/update-b',
+        'https://www.cms.gov/newsroom/press-releases/2026-01-03/update-c',
+        'https://www.cms.gov/medicare/coverage/page-1',
+        'https://www.cms.gov/medicare/coverage/page-2',
+        'https://www.cms.gov/medicare/coverage/page-3'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 10,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: 2,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: true,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target);
+    const pressReleaseUrls = queue.filter(url => url.includes('/newsroom/press-releases/'));
+    const coverageUrls = queue.filter(url => url.includes('/medicare/coverage/'));
+
+    expect(pressReleaseUrls).toHaveLength(2);
+    expect(coverageUrls).toHaveLength(2);
+  });
+
   it('prioritizes URLs not previously scanned when filling sitemap sample slots', async () => {
     fetchMock.mockResolvedValue({
       sites: [
@@ -414,7 +454,7 @@ describe('TargetDiscoveryEngine', () => {
     ]);
   });
 
-  it('always includes priority URLs even when previously scanned', async () => {
+  it('applies freshness checks to priority URLs and keeps newly discovered URLs', async () => {
     fetchMock.mockResolvedValue({
       sites: [
         'https://www.cms.gov/news/new-page',
@@ -471,10 +511,7 @@ describe('TargetDiscoveryEngine', () => {
       }
     });
 
-    expect(queue).toEqual([
-      'https://www.cms.gov/news/old-page',
-      'https://www.cms.gov/news/new-page'
-    ]);
+    expect(queue).toEqual(['https://www.cms.gov/news/new-page']);
   });
 
   it('does not cap pages when max_pages and sitemap_template_sample_cap are null', async () => {

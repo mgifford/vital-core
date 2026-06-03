@@ -180,8 +180,10 @@ export class TargetDiscoveryEngine {
     const templateSampleCap = target.settings?.sitemap_template_sample_cap ?? null;
     const useStochasticSampling = target.settings?.sitemap_sample_stochastic ?? true;
     const uniquePageFocus = target.settings?.unique_page_focus ?? false;
+    // unique_page_focus prefers structural diversity first. If a template cap is
+    // explicitly configured, respect it; otherwise default to one URL/template.
     const effectiveTemplateSampleCap = uniquePageFocus
-      ? 1
+      ? (templateSampleCap ?? 1)
       : (templateSampleCap ?? Number.POSITIVE_INFINITY);
 
     const candidateSitemapUrls = filteredUrls.filter(url => shouldIncludeUrl(url));

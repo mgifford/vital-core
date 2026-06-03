@@ -667,14 +667,47 @@ ${siteFooterHtml}
       const wcag21RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.1').length;
       const wcag22RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.2').length;
       const topPagesByViolations = allKnownPages
-        .map(page => ({
-          url: String(page?.url || ''),
-          count: Array.isArray(page?.liveAudits?.accessibilityViolations)
-            ? page.liveAudits.accessibilityViolations.length
-            : 0
-        }))
-        .filter(p => p.count > 0)
-        .sort((a, b) => b.count - a.count)
+        .map(page => {
+          const violations = Array.isArray(page?.liveAudits?.accessibilityViolations)
+            ? page.liveAudits.accessibilityViolations
+            : [];
+
+          const ruleInstanceCounts = violations.reduce((acc, violation) => {
+            const ruleId = String(violation?.id || '').trim();
+            if (!ruleId) {
+              return acc;
+            }
+            const instanceCount = Array.isArray(violation?.instances) && violation.instances.length > 0
+              ? violation.instances.length
+              : 1;
+            acc.set(ruleId, (acc.get(ruleId) || 0) + instanceCount);
+            return acc;
+          }, new Map<string, number>());
+
+          const topRules = Array.from(ruleInstanceCounts.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3);
+
+          const instanceCount = Array.from(ruleInstanceCounts.values())
+            .reduce((sum, count) => sum + count, 0);
+
+          return {
+            url: String(page?.url || ''),
+            instanceCount,
+            ruleCount: ruleInstanceCounts.size,
+            topRules
+          };
+        })
+        .filter(p => p.instanceCount > 0)
+        .sort((a, b) => {
+          if (b.instanceCount !== a.instanceCount) {
+            return b.instanceCount - a.instanceCount;
+          }
+          if (b.ruleCount !== a.ruleCount) {
+            return b.ruleCount - a.ruleCount;
+          }
+          return a.url.localeCompare(b.url);
+        })
         .slice(0, 10);
       const wcagBestPracticeCount = allViolations.filter(v => {
         const ver = v.wcagVersion || this.deriveWcagVersion(v.impactedCriteria || []);
@@ -762,7 +795,12 @@ ${siteFooterHtml}
       const topPagesRows = topPagesByViolations.map(p =>
         `<tr>
           <td><a href="${this.escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(p.url)}</a></td>
-          <td>${this.escapeHtml(p.count)}</td>
+          <td>${this.escapeHtml(p.instanceCount)}</td>
+          <td>${p.topRules.length > 0
+            ? p.topRules
+                .map(([ruleId, count]) => `<code>${this.escapeHtml(ruleId)}</code> (${this.escapeHtml(count)})`)
+                .join(', ')
+            : 'n/a'}</td>
         </tr>`
       ).join('');
 
@@ -934,7 +972,7 @@ ${siteFooterHtml}
     ${topPagesByViolations.length > 0 ? `<div class="card">
       <h2>Pages with Most Violations</h2>
       <table>
-        <thead><tr><th>URL</th><th>Violations</th></tr></thead>
+        <thead><tr><th>URL</th><th>Instances</th><th>Top rules</th></tr></thead>
         <tbody>${topPagesRows}</tbody>
       </table>
     </div>` : ''}

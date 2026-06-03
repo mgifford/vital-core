@@ -131,16 +131,15 @@ export class AlfaWorker {
     }>();
 
     for (const outcome of outcomes) {
-      const ruleId = String((outcome as Record<string, unknown>).rule || (outcome as Record<string, unknown>).id || '').trim();
-      if (!ruleId) continue;
-
       const raw = outcome as Record<string, unknown>;
+      const ruleId = this.extractRuleId(raw);
+      if (!ruleId) continue;
       const wcagArr = Array.isArray(raw.wcag) ? (raw.wcag as unknown[]).map(String) : [];
       const section508Arr = Array.isArray(raw.section508) ? (raw.section508 as unknown[]).map(String) : [];
       const impactedCriteria = [...wcagArr, ...section508Arr];
       const wcagVersion = LiveWorker.classifyWcagVersion(wcagArr);
 
-      const rawHelpUrl = typeof raw.helpUrl === 'string' ? raw.helpUrl.trim() : '';
+      const rawHelpUrl = this.extractHelpUrl(raw);
       let helpUrl: string;
       try {
         new URL(rawHelpUrl);
@@ -153,7 +152,7 @@ export class AlfaWorker {
         ruleMap.set(ruleId, {
           id: ruleId,
           severity: this.normalizeAlfaSeverity(raw.severity),
-          description: String(raw.description || raw.message || raw.title || ruleId),
+          description: this.extractPreferredText(raw.description, raw.message, raw.title, ruleId),
           helpUrl,
           impactedCriteria,
           wcagVersion,
@@ -163,9 +162,9 @@ export class AlfaWorker {
 
       const group = ruleMap.get(ruleId)!;
       group.instances.push({
-        html: String(raw.html || ''),
-        target: Array.isArray(raw.target) ? (raw.target as unknown[]).map(String) : [],
-        failureSummary: String(raw.failureSummary || raw.message || '')
+        html: this.extractPreferredText(raw.html),
+        target: this.extractTargetSelectors(raw.target),
+        failureSummary: this.extractPreferredText(raw.failureSummary, raw.message)
       });
     }
 
@@ -194,6 +193,118 @@ export class AlfaWorker {
     const s = String(value || '').toLowerCase();
     if (s === 'critical' || s === 'serious' || s === 'moderate' || s === 'minor') return s;
     return 'moderate';
+  }
+
+  private static extractRuleId(raw: Record<string, unknown>): string {
+    const direct = this.extractPreferredText(raw.rule, raw.id);
+    if (direct && direct !== '[object Object]') {
+      return this.normalizeRuleIdentifier(direct);
+    }
+
+    const ruleObj = raw.rule;
+    if (ruleObj && typeof ruleObj === 'object') {
+      const candidate = this.extractPreferredText(
+        (ruleObj as Record<string, unknown>).id,
+        (ruleObj as Record<string, unknown>).name,
+        (ruleObj as Record<string, unknown>).uri,
+        (ruleObj as Record<string, unknown>).rule
+      );
+      return this.normalizeRuleIdentifier(candidate);
+    }
+
+    return '';
+  }
+
+  private static extractHelpUrl(raw: Record<string, unknown>): string {
+    const direct = this.extractPreferredText(raw.helpUrl);
+    if (direct && this.isHttpUrl(direct)) {
+      return direct;
+    }
+
+    const ruleObj = raw.rule;
+    if (ruleObj && typeof ruleObj === 'object') {
+      const fromRule = this.extractPreferredText((ruleObj as Record<string, unknown>).uri);
+      if (fromRule && this.isHttpUrl(fromRule)) {
+        return fromRule;
+      }
+    }
+
+    return '';
+  }
+
+  private static extractTargetSelectors(value: unknown): string[] {
+    if (Array.isArray(value)) {
+      return value.map(item => this.extractPreferredText(item)).filter(Boolean);
+    }
+
+    const single = this.extractPreferredText(value);
+    return single ? [single] : [];
+  }
+
+  private static extractPreferredText(...candidates: unknown[]): string {
+    for (const candidate of candidates) {
+      const text = this.toText(candidate);
+      if (text) {
+        return text;
+      }
+    }
+    return '';
+  }
+
+  private static toText(value: unknown): string {
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      return trimmed && trimmed !== '[object Object]' ? trimmed : '';
+    }
+
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return String(value);
+    }
+
+    if (!value || typeof value !== 'object') {
+      return '';
+    }
+
+    const obj = value as Record<string, unknown>;
+    const nested = this.extractPreferredText(obj.value, obj.name, obj.id, obj.uri, obj.message, obj.title, obj.description);
+    if (nested) {
+      return nested;
+    }
+
+    try {
+      const json = JSON.stringify(value);
+      return json === '{}' ? '' : json;
+    } catch {
+      return '';
+    }
+  }
+
+  private static normalizeRuleIdentifier(rawRuleId: string): string {
+    const normalized = rawRuleId.trim();
+    if (!normalized) {
+      return '';
+    }
+
+    if (this.isHttpUrl(normalized)) {
+      try {
+        const parsed = new URL(normalized);
+        const tail = parsed.pathname.split('/').filter(Boolean).pop();
+        return tail || normalized;
+      } catch {
+        return normalized;
+      }
+    }
+
+    return normalized;
+  }
+
+  private static isHttpUrl(value: string): boolean {
+    try {
+      const parsed = new URL(value);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+      return false;
+    }
   }
 
   private static estimateFindingsCount(rawResults: unknown): number | null {

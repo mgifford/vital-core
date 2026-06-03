@@ -341,6 +341,95 @@ describe('DashboardCompiler', () => {
     expect(a11yHtml).toContain('data-filter-sev');
   });
 
+  it('reports top pages by total instances and shows top rules', () => {
+    const payload: TargetScanResult[] = [
+      {
+        targetId: 'top-pages-test',
+        domain: 'https://example.gov',
+        scanDurationMs: 1000,
+        pagesScanned: [
+          {
+            url: 'https://example.gov/page-a',
+            timestamp: new Date().toISOString(),
+            status: 'COMPLETED',
+            errorMessage: null,
+            technologyStack: [],
+            liveAudits: {
+              lighthouse: null,
+              accessibilityViolations: [
+                {
+                  id: 'rule-a',
+                  severity: 'serious',
+                  description: 'Rule A',
+                  helpUrl: 'https://example.gov/rule-a',
+                  impactedCriteria: ['wcag2aa'],
+                  wcagVersion: '2.0',
+                  sourceEngine: 'axe',
+                  instances: [
+                    { html: '<a></a>', target: ['a:nth-child(1)'], failureSummary: 'Fix A1' },
+                    { html: '<a></a>', target: ['a:nth-child(2)'], failureSummary: 'Fix A2' },
+                    { html: '<a></a>', target: ['a:nth-child(3)'], failureSummary: 'Fix A3' }
+                  ]
+                },
+                {
+                  id: 'rule-b',
+                  severity: 'moderate',
+                  description: 'Rule B',
+                  helpUrl: 'https://example.gov/rule-b',
+                  impactedCriteria: ['best-practice'],
+                  wcagVersion: 'best-practice',
+                  sourceEngine: 'alfa',
+                  instances: [
+                    { html: '<button></button>', target: ['button'], failureSummary: 'Fix B1' },
+                    { html: '<button></button>', target: ['button.icon'], failureSummary: 'Fix B2' }
+                  ]
+                }
+              ]
+            },
+            offlineAudits: null
+          },
+          {
+            url: 'https://example.gov/page-b',
+            timestamp: new Date().toISOString(),
+            status: 'COMPLETED',
+            errorMessage: null,
+            technologyStack: [],
+            liveAudits: {
+              lighthouse: null,
+              accessibilityViolations: [
+                {
+                  id: 'rule-c',
+                  severity: 'serious',
+                  description: 'Rule C',
+                  helpUrl: 'https://example.gov/rule-c',
+                  impactedCriteria: ['wcag2aa'],
+                  wcagVersion: '2.0',
+                  sourceEngine: 'axe',
+                  instances: [
+                    { html: '<img>', target: ['img'], failureSummary: 'Fix C1' }
+                  ]
+                }
+              ]
+            },
+            offlineAudits: null
+          }
+        ]
+      }
+    ];
+
+    DashboardCompiler.compileStaticDashboard(payload);
+
+    const a11yPath = path.resolve(process.cwd(), 'dist/domains/top-pages-test/accessibility.html');
+    const a11yHtml = fs.readFileSync(a11yPath, 'utf8');
+
+    expect(a11yHtml).toContain('<th>Instances</th>');
+    expect(a11yHtml).toContain('<th>Top rules</th>');
+    expect(a11yHtml).toContain('https://example.gov/page-a');
+    expect(a11yHtml).toContain('<td>5</td>');
+    expect(a11yHtml).toContain('<code>rule-a</code> (3)');
+    expect(a11yHtml).toContain('<code>rule-b</code> (2)');
+  });
+
   it('back-fills lighthouse/content/third-party data from history for SKIPPED_UNCHANGED pages', () => {
     const historyCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-history-'));
     fs.mkdirSync(path.join(historyCacheDir, 'runs'), { recursive: true });
