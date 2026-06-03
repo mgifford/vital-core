@@ -6,6 +6,7 @@
   "scripts": {
     "scan": "npx tsx src/index.ts",
     "scan:local": "VITAL_ALFA_CMD=$(node scripts/get-chromium-path.mjs) VITAL_TARGET_LIMIT=5 npm run scan",
+    "scan:deep": "VITAL_ALFA_CMD=$(node scripts/get-chromium-path.mjs) VITAL_SCAN_INTENSITY=deep VITAL_TARGET_LIMIT=5 npm run scan",
     "validate": "npm run validate:profile",
     "validate:discovery:smoke": "npx tsx tests/smoke/validate-discovery-smoke.ts",
     "validate:browser:smoke": "npx tsx tests/smoke/validate-browser-smoke.ts",

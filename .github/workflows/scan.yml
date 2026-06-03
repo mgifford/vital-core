@@ -3,7 +3,17 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 3 * * 0' # weekly at 03:00 UTC on Sunday
+    - cron: '0 4 * * *' # daily at 04:00 UTC (midnight ET)
+  workflow_dispatch:
+    inputs:
+      intensity:
+        description: "Scan intensity (standard or deep)"
+        required: false
+        default: "standard"
+        type: choice
+        options:
+          - standard
+          - deep
 jobs:
   scan:
     runs-on: macos-latest
