@@ -53,12 +53,32 @@ targets:
       - https://www.cms.gov/nosurprises/policies-and-resources/reports
       - https://www.cms.gov/about-cms/information-systems/privacy/privacy-act-1974-and-privacy-act-requests
       - https://www.cms.gov/about-cms/who-we-are/leadership/digital-service-cms
+    # Adjust these settings to balance scan thoroughness against server load and total scan time.
     settings:
       postLoadDelay: 2500
+      # Why adjust: Time (in ms) to wait for heavy JavaScript/React components to finish rendering.
+      # - Increase (e.g., 3000+) if pages are failing to scan because content loads slowly.
+      # - Decrease (e.g., 1000) if the site is purely static HTML and you want faster scans.
+      
       maxTimeoutMs: 150000
+      # Why adjust: Max time (in ms) allowed per page before giving up. 
+      # - Leave high (120000 = 2 mins) for large gov databases that occasionally lag.
+      
       throttle_profile: conservative
+      # Why adjust: Controls request speed. "conservative" adds delays between pages.
+      # - Use "conservative" to avoid getting blocked by federal firewalls (like Akamai/Cloudflare).
+      # - Switch to "aggressive" only if running a small scan on a local/dev environment.
+      
       unique_page_focus: true
+      # Why adjust: Strictly limits the crawler to testing only ONE page per unique URL pattern.
+      # - Keep TRUE for rapid, diversity-first structural audits.
+      # - Set to FALSE if you need to run an exhaustive content audit of every single page.
+      
       sitemap_template_sample_cap: 3
+      # Why adjust: The max number of pages to sample from any single sitemap folder pattern.
+      # - Increase (e.g., 5-10) if you suspect a folder has highly unpredictable content layouts.
+      # - Decrease (e.g., 1-2) if you want a lightning-fast "smoke test" of the site's overall quality.
+      
   - id: hhs-gov
     name: U.S. Department of Health & Human Services
     base_url: https://www.hhs.gov
