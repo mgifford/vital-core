@@ -31,6 +31,7 @@ jobs:
         env:
           VITAL_ALFA_CMD: $(node scripts/get-chromium-path.mjs)
           VITAL_TARGET_LIMIT: 5
+          VITAL_SCAN_INTENSITY: ${{ github.event.inputs.intensity || 'standard' }}
         run: npm run scan:local
       - name: Upload results
         if: success()
