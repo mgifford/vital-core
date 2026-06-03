@@ -43,6 +43,21 @@ This file tracks what is currently working in VITAL-Core and what is still being
 	- PDF/DOCX guardrail visibility
 	- Discovery-time non-HTML exclusions
 
+### Weekly Trend Reporting
+
+- Weekly domain accessibility ratings (`dist/api/weekly-ratings.json`) — 7-day violation aggregates per target, scored and graded.
+- Week-over-week compliance trends (`dist/api/weekly-trends.json`) — up to 12 weeks of history, oldest-first for charting.
+- Top rule frequency report (`dist/api/weekly-top-rules.json`) — most frequent WCAG violations over the last 7 days.
+- Run directory export (`dist/api/run-directory.json`) — latest 100 runs with page and violation counts.
+- Domain accessibility grades leaderboard on the main dashboard, sourced from 7-day SQLite aggregates with per-run fallback when no history is available.
+
+### Per-Run Detail Pages
+
+- Per-run detail pages at `dist/runs/{runId}/index.html` generated for each run recorded in SQLite.
+- Each page shows: run ID, timestamp, pages completed/skipped, total violations, quality index score, and a per-domain breakdown table (grade, score, critical/serious/moderate/minor counts, completion status).
+- Run history table on the main dashboard includes a "Details" link to the per-run page alongside the existing raw JSON link.
+- Backed by `SqlitePersister.queryAllTargetsForRun()` — a single-query rollup of all targets for a given run.
+
 ### API and Artifacts
 
 - Published run artifacts under `runs/` (latest, index, trends, domain ongoing, seeds, run snapshots).
@@ -73,6 +88,9 @@ This file tracks what is currently working in VITAL-Core and what is still being
 
 - Continue refining bug report navigation and section-level jump links.
 - Add clearer throughput and ETA indicators tied to real run cadence.
+- Domain page refactoring: split domain subpages into weekly-aggregate and per-run sections (Phase 4).
+- 12-week compliance trend chart using `queryWeeklyTrends()` (Phase 5).
+- UX polish: breadcrumbs and cross-links across all generated pages (Phase 6).
 
 ### Governance and Documentation
 

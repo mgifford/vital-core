@@ -799,6 +799,86 @@ export class SqlitePersister {
   }
 
   /**
+   * Query all domain snapshots for a single run (one row per target).
+   * Used to populate per-run detail pages.
+   */
+  public static queryAllTargetsForRun(runId: string): PerRunDomainSnapshot[] {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        const rows = db.prepare(`
+          SELECT
+            r.run_id       AS runId,
+            r.generated_at AS generatedAt,
+            p.target_id    AS targetId,
+            MIN(p.domain)  AS domain,
+            COUNT(CASE WHEN p.status = 'COMPLETED'          THEN 1 END) AS pagesCompleted,
+            COUNT(CASE WHEN p.status = 'SKIPPED_UNCHANGED'  THEN 1 END) AS pagesSkipped,
+            COUNT(p.id)                                                  AS pagesTotalScanned,
+            SUM(CASE WHEN v.impact = 'critical' THEN 1 ELSE 0 END)      AS critical,
+            SUM(CASE WHEN v.impact = 'serious'  THEN 1 ELSE 0 END)      AS serious,
+            SUM(CASE WHEN v.impact = 'moderate' THEN 1 ELSE 0 END)      AS moderate,
+            SUM(CASE WHEN v.impact = 'minor'    THEN 1 ELSE 0 END)      AS minor
+          FROM runs r
+          JOIN pages p ON p.run_id = r.run_id
+          LEFT JOIN violations v ON v.page_id = p.id AND (
+            p.status = 'COMPLETED' OR p.status = 'SKIPPED_UNCHANGED'
+          )
+          WHERE r.run_id = ?
+          GROUP BY r.run_id, r.generated_at, p.target_id
+          ORDER BY p.target_id ASC
+        `).all(runId) as unknown as Array<{
+          runId: string;
+          generatedAt: string;
+          targetId: string;
+          domain: string;
+          pagesCompleted: number;
+          pagesSkipped: number;
+          pagesTotalScanned: number;
+          critical: number;
+          serious: number;
+          moderate: number;
+          minor: number;
+        }>;
+
+        return rows.map(row => {
+          const totalViolations = (row.critical || 0) + (row.serious || 0) + (row.moderate || 0) + (row.minor || 0);
+          const scoreNumerical = row.pagesTotalScanned > 0
+            ? Math.max(0, 100 - Math.round((totalViolations / row.pagesTotalScanned) * 20))
+            : 100;
+          return {
+            runId: row.runId,
+            generatedAt: row.generatedAt,
+            targetId: row.targetId,
+            domain: row.domain,
+            pagesCompleted: row.pagesCompleted || 0,
+            pagesSkipped: row.pagesSkipped || 0,
+            pagesTotalScanned: row.pagesTotalScanned || 0,
+            violationCounts: {
+              critical: row.critical || 0,
+              serious: row.serious || 0,
+              moderate: row.moderate || 0,
+              minor: row.minor || 0
+            },
+            scoreNumerical,
+            letterGrade: this.scoreToLetterGrade(scoreNumerical)
+          };
+        });
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryAllTargetsForRun skipped: ${msg}`);
+      return [];
+    }
+  }
+
+  /**
    * Helper: convert numeric score to letter grade.
    */
   private static scoreToLetterGrade(score: number): LetterGrade {

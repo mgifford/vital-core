@@ -301,7 +301,124 @@ ${siteFooterHtml}
     this.writeFailuresPage(allResults, options.nonHtmlDiscoveryExclusions ?? []);
     this.writeDomainSubpages(allResults, targetQualityIndex);
     this.writeUniqueErrorsPage(uniqueErrors);
+    this.writePerRunDetailPages();
     console.log(`📊 Static dashboard assets successfully compiled to dist/index.html`);
+  }
+
+  /**
+   * Generates `dist/runs/{runId}/index.html` for every run recorded in SQLite.
+   * Each page shows run-level metadata and a per-domain violation breakdown.
+   * Silently skips if no SQLite data is available.
+   */
+  private static writePerRunDetailPages(): void {
+    const runs = SqlitePersister.queryRunDirectory(100);
+    if (runs.length === 0) return;
+
+    const siteFooterHtml = this.buildSiteFooterHtml();
+    const runsOutputRoot = path.join(this.DIST_DIR, 'runs');
+
+    for (const run of runs) {
+      const safeRunId = this.sanitizePathSegment(run.runId);
+      const runDir = path.join(runsOutputRoot, safeRunId);
+      fs.mkdirSync(runDir, { recursive: true });
+
+      const domainSnapshots = SqlitePersister.queryAllTargetsForRun(run.runId);
+
+      const generatedAtDisplay = (() => {
+        const d = new Date(run.generatedAt);
+        return Number.isNaN(d.getTime()) ? String(run.generatedAt) : d.toUTCString();
+      })();
+
+      const gradeClass = (grade: string): string => {
+        if (grade.startsWith('A')) return 'grade-a';
+        if (grade.startsWith('B')) return 'grade-b';
+        if (grade.startsWith('C')) return 'grade-c';
+        return 'grade-d';
+      };
+
+      const domainRows = domainSnapshots.length > 0
+        ? domainSnapshots.map(snap => `
+          <tr>
+            <td><a href="../../domains/${this.sanitizePathSegment(snap.targetId)}/index.html">${this.escapeHtml(snap.targetId)}</a></td>
+            <td>${this.escapeHtml(snap.domain)}</td>
+            <td class="${this.escapeHtml(gradeClass(snap.letterGrade))}">${this.escapeHtml(snap.letterGrade)}</td>
+            <td>${snap.scoreNumerical}</td>
+            <td>${snap.violationCounts.critical}</td>
+            <td>${snap.violationCounts.serious}</td>
+            <td>${snap.violationCounts.moderate}</td>
+            <td>${snap.violationCounts.minor}</td>
+            <td>${snap.pagesCompleted}</td>
+            <td>${snap.pagesSkipped}</td>
+          </tr>`).join('')
+        : `<tr><td colspan="10" class="muted-small">No domain data available for this run.</td></tr>`;
+
+      const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Details: ${this.escapeHtml(run.runId)}</title>
+  <link rel="stylesheet" href="../../assets/dashboard.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>Scan Run Details</h1>
+      <nav aria-label="Breadcrumb">
+        <a href="../../index.html">Main dashboard</a> &rsaquo;
+        <a href="../index.json">Run index</a> &rsaquo;
+        <span aria-current="page">${this.escapeHtml(run.runId)}</span>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="card">
+      <h2>Run Summary</h2>
+      <dl class="run-meta-list">
+        <dt>Run ID</dt>
+        <dd><code>${this.escapeHtml(run.runId)}</code></dd>
+        <dt>Generated</dt>
+        <dd>${this.escapeHtml(generatedAtDisplay)}</dd>
+        <dt>Pages Scanned</dt>
+        <dd>${run.pagesScanned}</dd>
+        <dt>Pages Completed</dt>
+        <dd>${run.pagesCompleted}</dd>
+        <dt>Pages Skipped (Unchanged)</dt>
+        <dd>${run.pagesSkipped}</dd>
+        <dt>Total Violations</dt>
+        <dd>${run.totalViolations}</dd>
+        <dt>Quality Index Score</dt>
+        <dd>${run.qualityIndexScore} / 100</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Domain Breakdown</h2>
+      <p class="muted-small">Violation counts from pages with COMPLETED or SKIPPED_UNCHANGED status in this run.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain ID</th>
+            <th scope="col">Domain</th>
+            <th scope="col">Grade</th>
+            <th scope="col">Score</th>
+            <th scope="col">Critical</th>
+            <th scope="col">Serious</th>
+            <th scope="col">Moderate</th>
+            <th scope="col">Minor</th>
+            <th scope="col">Completed</th>
+            <th scope="col">Skipped</th>
+          </tr>
+        </thead>
+        <tbody>${domainRows}</tbody>
+      </table>
+    </div>
+  </main>
+${siteFooterHtml}
+</body>
+</html>`;
+
+      fs.writeFileSync(path.join(runDir, 'index.html'), htmlContent, 'utf8');
+    }
   }
 
   private static writeFailuresPage(allResults: TargetScanResult[], discoveryExclusions: DiscoveryNonHtmlExclusion[]): void {
@@ -3190,6 +3307,14 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     link.href = String(run.artifactPath || '#');
     link.textContent = 'View JSON';
     dataCell.appendChild(link);
+    if (run.runId) {
+      const sep = document.createTextNode(' | ');
+      const detailLink = document.createElement('a');
+      detailLink.href = 'runs/' + String(run.runId) + '/index.html';
+      detailLink.textContent = 'Details';
+      dataCell.appendChild(sep);
+      dataCell.appendChild(detailLink);
+    }
 
     tr.appendChild(tsCell);
     tr.appendChild(pagesCell);

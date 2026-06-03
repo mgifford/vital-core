@@ -1152,4 +1152,60 @@ describe('DashboardCompiler', () => {
       fs.rmSync(historyCacheDir, { recursive: true, force: true });
     }
   });
+
+  it('does not crash when no SQLite data exists for writePerRunDetailPages', () => {
+    // With no SQLite DB present, writePerRunDetailPages should silently skip.
+    const payload: TargetScanResult[] = [
+      {
+        targetId: 'per-run-test',
+        domain: 'https://perrun.example.gov',
+        scanDurationMs: 100,
+        pagesScanned: [
+          {
+            url: 'https://perrun.example.gov/',
+            timestamp: new Date().toISOString(),
+            status: 'COMPLETED',
+            errorMessage: null,
+            technologyStack: [],
+            liveAudits: { lighthouse: null, accessibilityViolations: [] },
+            offlineAudits: null
+          }
+        ]
+      }
+    ];
+
+    // Should not throw.
+    expect(() => DashboardCompiler.compileStaticDashboard(payload)).not.toThrow();
+
+    // Main dashboard must still be written.
+    expect(fs.existsSync(path.resolve(process.cwd(), 'dist/index.html'))).toBe(true);
+  });
+
+  it('dashboard.js contains per-run detail link code in appendHistoryRow', () => {
+    const payload: TargetScanResult[] = [
+      {
+        targetId: 'detail-link-check',
+        domain: 'https://detail.example.gov',
+        scanDurationMs: 100,
+        pagesScanned: [
+          {
+            url: 'https://detail.example.gov/',
+            timestamp: new Date().toISOString(),
+            status: 'COMPLETED',
+            errorMessage: null,
+            technologyStack: [],
+            liveAudits: { lighthouse: null, accessibilityViolations: [] },
+            offlineAudits: null
+          }
+        ]
+      }
+    ];
+
+    DashboardCompiler.compileStaticDashboard(payload);
+    const js = fs.readFileSync(path.resolve(process.cwd(), 'dist/assets/dashboard.js'), 'utf8');
+
+    // appendHistoryRow should include a Details link pointing to runs/{runId}/index.html
+    expect(js).toContain("detailLink.href = 'runs/' + String(run.runId) + '/index.html'");
+    expect(js).toContain("detailLink.textContent = 'Details'");
+  });
 });
