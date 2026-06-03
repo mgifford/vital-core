@@ -29,7 +29,7 @@ jobs:
         run: npx playwright install chromium
       - name: Run Scan Locally
         env:
-          VITAL_ALFA_CMD: $(node scripts/get-chromium-path.mjs)
+          VITAL_ALFA_CMD: node_modules/.bin/alfa
           VITAL_TARGET_LIMIT: 5
           VITAL_SCAN_INTENSITY: ${{ github.event.inputs.intensity || 'standard' }}
         run: npm run scan:local

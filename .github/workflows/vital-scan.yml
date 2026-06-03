@@ -243,11 +243,11 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
           
-      - name: Set Alfa Chrome binary path
-        id: set_alfa_path
+      - name: Set Chrome path for Lighthouse
+        id: set_chrome_path
         run: |
-          CHROME_PATH=$(npx playwright show-browser-path chromium)
-          echo "VITAL_ALFA_CMD=$CHROME_PATH" >> $GITHUB_ENV
+          CHROME_PATH=$(node scripts/get-chromium-path.mjs)
+          echo "CHROME_PATH=$CHROME_PATH" >> $GITHUB_ENV
         shell: bash
 
       - name: Cache Wappalyzer venv
