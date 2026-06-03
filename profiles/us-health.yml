@@ -69,7 +69,7 @@ targets:
       # - Use "conservative" to avoid getting blocked by federal firewalls (like Akamai/Cloudflare).
       # - Switch to "aggressive" only if running a small scan on a local/dev environment.
       
-      unique_page_focus: true
+      unique_page_focus: false
       # Why adjust: Strictly limits the crawler to testing only ONE page per unique URL pattern.
       # - Keep TRUE for rapid, diversity-first structural audits.
       # - Set to FALSE if you need to run an exhaustive content audit of every single page.
@@ -150,7 +150,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: medicare-gov
     name: Medicare.gov
@@ -242,7 +242,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: medicaid-gov
     name: Medicaid.gov
@@ -319,7 +319,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: openpaymentsdata-cms-gov
     name: Open Payments Data (CMS)
@@ -332,7 +332,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: data-medicaid-gov
     name: Medicaid Data Portal
@@ -346,7 +346,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: data-healthcare-gov
     name: Healthcare Data Portal
@@ -360,7 +360,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: data-cms-gov
     name: CMS Data Portal
@@ -373,7 +373,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: healthcare-gov
     name: HealthCare.gov
@@ -460,7 +460,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 150000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: cdc-gov
     name: CDC.gov
@@ -549,7 +549,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 150000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: nih-gov
     name: National Institutes of Health
@@ -564,7 +564,7 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
   - id: health-gov
     name: Health.gov
@@ -604,5 +604,5 @@ targets:
       postLoadDelay: 2500
       maxTimeoutMs: 120000
       throttle_profile: conservative
-      unique_page_focus: true
+      unique_page_focus: false
       sitemap_template_sample_cap: 3
