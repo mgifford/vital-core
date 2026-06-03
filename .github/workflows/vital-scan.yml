@@ -2,8 +2,8 @@ name: Execute Continuous Web Quality Compliance Scan
 
 on:
   schedule:
-    # Half-hour cadence using offset triggers to support ±2 minute fuzz via startup jitter below.
-    - cron: '28,58 * * * *'
+      # Hourly cadence during off-hours (midnight‑6 am ET = 04‑10 UTC)
+    - cron: '0 4-10 * * *'
   workflow_dispatch:
     # Allows repository maintainers to manually execute an on-demand scan
     inputs:
@@ -242,6 +242,13 @@ jobs:
       - name: Install Playwright Chromium system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
+          
+      - name: Set Alfa Chrome binary path
+        id: set_alfa_path
+        run: |
+          CHROME_PATH=$(npx playwright show-browser-path chromium)
+          echo "VITAL_ALFA_CMD=$CHROME_PATH" >> $GITHUB_ENV
+        shell: bash
 
       - name: Cache Wappalyzer venv
         uses: actions/cache@v5
@@ -268,7 +275,7 @@ jobs:
           VITAL_HISTORY_CACHE_DIR: .history-cache
           VITAL_SAMPLING_SEED: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.target_id }}
           VITAL_WAPPALYZER_CMD: .tools/wappalyzer-next/bin/wappalyzer
-          VITAL_ALFA_CMD: node_modules/.bin/alfa
+          VITAL_ALFA_CMD: ${{ env.VITAL_ALFA_CMD }}
           VITAL_AUDIT_SCOPE: ${{ needs.setup.outputs.audit_scope || 'full' }}
           FORCE_RESCAN: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_rescan) || (github.event_name == 'schedule' && needs.setup.outputs.deep_refresh == 'true') || 'false' }}
           VITAL_REVALIDATE_AFTER_DAYS: ${{ needs.setup.outputs.scan_intensity == 'deep' && '0' || needs.setup.outputs.scan_intensity == 'ultra_light' && '7' || needs.setup.outputs.scan_intensity == 'light' && '4' || '2' }}
