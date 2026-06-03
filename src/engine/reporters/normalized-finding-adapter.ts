@@ -65,11 +65,21 @@ export class NormalizedFindingAdapter {
 
     const outcomes = this.extractOutcomes(alfaAudit.rawResults);
     return outcomes.map((outcome, index) => {
-      const ruleId = String(outcome.rule || outcome.id || `alfa-rule-${index + 1}`);
-      const description = String(outcome.description || outcome.message || outcome.title || ruleId);
+      // outcome.rule may be a plain string or a nested object like {id, name, uri}
+      const ruleId =
+        this.extractTextDeep(outcome.rule) ||
+        this.extractTextDeep(outcome.id) ||
+        `alfa-rule-${index + 1}`;
+      // outcome.description / message / title may also be nested objects
+      const description =
+        this.extractTextDeep(outcome.description) ||
+        this.extractTextDeep(outcome.message) ||
+        this.extractTextDeep(outcome.title) ||
+        ruleId;
       const severity = this.normalizeSeverity(outcome.severity);
       const actIds = this.alfaRuleToActIds(ruleId);
       const target = Array.isArray(outcome.target) ? outcome.target : [];
+      const ruleName = this.extractTextDeep(outcome.title) || null;
 
       return {
         canonicalRuleKey: `alfa:${ruleId}`,
@@ -87,7 +97,7 @@ export class NormalizedFindingAdapter {
           {
             engine: 'alfa',
             ruleId,
-            ruleName: outcome.title || null,
+            ruleName,
             helpUrl: this.normalizeOptionalUrl(outcome.helpUrl),
             impact: severity,
             rawEvidenceRef: `alfa://${pageUrl}#${ruleId}-${index}`
@@ -96,14 +106,42 @@ export class NormalizedFindingAdapter {
         evidence: [
           {
             sourceEngine: 'alfa',
-            html: String(outcome.html || ''),
+            html: this.extractTextDeep(outcome.html),
             target,
-            failureSummary: String(outcome.failureSummary || outcome.message || ''),
+            failureSummary: this.extractTextDeep(outcome.failureSummary) || this.extractTextDeep(outcome.message),
             rawEvidenceRef: `alfa://${pageUrl}#${ruleId}-${index}`
           }
         ]
       };
     });
+  }
+
+  /**
+   * Safely extracts a string from a value that may be a plain string or a
+   * nested Alfa object such as { id, name, uri, message, value, description }.
+   * Returns '' instead of '[object Object]'.
+   */
+  private static extractTextDeep(value: unknown): string {
+    if (typeof value === 'string') {
+      return value.trim();
+    }
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return String(value);
+    }
+    if (!value || typeof value !== 'object') {
+      return '';
+    }
+    const obj = value as Record<string, unknown>;
+    // Walk common Alfa field names for nested text; check 'id' first so rule
+    // objects like { id: 'sia-r2', name: 'Image alternative', uri: '...' }
+    // resolve to their canonical rule ID rather than their human-readable name.
+    for (const key of ['id', 'name', 'value', 'uri', 'message', 'title', 'description']) {
+      const candidate = obj[key];
+      if (typeof candidate === 'string' && candidate.trim()) {
+        return candidate.trim();
+      }
+    }
+    return '';
   }
 
   private static extractOutcomes(rawResults: unknown): AlfaOutcomeLike[] {

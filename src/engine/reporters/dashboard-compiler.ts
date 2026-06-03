@@ -52,22 +52,26 @@ export class DashboardCompiler {
       const weeklyRatings = SqlitePersister.queryWeeklyTrends(1)?.length > 0
         ? this.buildWeeklyLeaderboardFromDb(allResults, options.prioritySeedSnapshot ?? null)
         : DomainRatingScorer.buildAllDomainRatings(allResults, options.prioritySeedSnapshot ?? null)
-            .map(r => ({
-              targetId: r.targetId,
-              domain: r.domain,
-              weekStart: new Date().toISOString().split('T')[0],
-              weekEnd: new Date().toISOString().split('T')[0],
-              pagesCovered: 0,
-              estimatedSize: null,
-              violationCounts: {
-                critical: r.breakdown.critical.rawCount,
-                serious: r.breakdown.serious.rawCount,
-                moderate: r.breakdown.moderate.rawCount,
-                minor: r.breakdown.minor.rawCount
-              },
+            .map(r => {
+              const matchingTarget = allResults.find(t => t.targetId === r.targetId);
+              const pagesCovered = matchingTarget ? matchingTarget.pagesScanned.length : 0;
+              return {
+                targetId: r.targetId,
+                domain: r.domain,
+                weekStart: new Date().toISOString().split('T')[0],
+                weekEnd: new Date().toISOString().split('T')[0],
+                pagesCovered,
+                estimatedSize: null,
+                violationCounts: {
+                  critical: r.breakdown.critical.rawCount,
+                  serious: r.breakdown.serious.rawCount,
+                  moderate: r.breakdown.moderate.rawCount,
+                  minor: r.breakdown.minor.rawCount
+                },
                 scoreNumerical: r.numericScore,
-              letterGrade: r.letterGrade
-            } as WeeklyDomainRating));
+                letterGrade: r.letterGrade
+              } as WeeklyDomainRating;
+            });
 
 
       // Use weekly ratings for leaderboard instead of per-run ratings
@@ -4392,7 +4396,11 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
      * Phase 2: Shows 7-day aggregates, not per-run snapshots.
      */
     private static buildAccessibilityGradesHtmlFromWeekly(ratings: WeeklyDomainRating[]): string {
-      const sorted = [...ratings].sort((a, b) => b.scoreNumerical - a.scoreNumerical);
+      // Exclude domains with no scanned pages — they have no real data and would
+      // falsely receive an A+ grade (0 violations = 100 score) if included.
+      const sorted = [...ratings]
+        .filter(r => r.pagesCovered > 0)
+        .sort((a, b) => b.scoreNumerical - a.scoreNumerical);
 
       const rows = sorted.map(rating => {
         let colorClass = 'grade-a';
