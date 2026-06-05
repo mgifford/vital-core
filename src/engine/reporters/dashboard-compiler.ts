@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult, PageScanReport } from '../../types/site-quality-spec';
 import { QualityIndexReporter, TargetQualityIndexEntry } from './quality-index';
-import { ConsensusPrioritizer } from './consensus-prioritizer';
+import { ConsensusPrioritizer, ConsensusSummary } from './consensus-prioritizer';
 import { DiscoveryNonHtmlExclusion } from '../discovery';
 import { DomainRatingScorer } from './domain-rating';
 import { DomainAccessibilityRating, LetterGrade } from '../../types/domain-rating';
