@@ -112,6 +112,36 @@ describe('LighthouseWorker – persistent Chrome lifecycle', () => {
     expect(launchSpy).toHaveBeenCalledTimes(1);
     // … and then killed at the end of the call
     expect(fakeChrome.kill).toHaveBeenCalledTimes(1);
+    expect(mockLighthouse).toHaveBeenCalledWith(
+      'https://example.com',
+      expect.objectContaining({
+        onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo']
+      })
+    );
+  });
+
+  it('auditLiveUrl can opt into agentic browsing when explicitly enabled', async () => {
+    const chromeLauncherModule = await import('chrome-launcher');
+    vi.spyOn(chromeLauncherModule, 'launch').mockResolvedValue(fakeChrome as any);
+
+    const lighthouseModule = await import('lighthouse');
+    vi.spyOn(lighthouseModule, 'default').mockResolvedValue({ lhr: { categories: {}, audits: {} } } as any);
+
+    const originalFlag = process.env.VITAL_ENABLE_AGENTIC_BROWSING;
+    process.env.VITAL_ENABLE_AGENTIC_BROWSING = 'true';
+
+    try {
+      await LighthouseWorker.auditLiveUrl('https://example.com', 30000);
+
+      expect(mockLighthouse).toHaveBeenCalledWith(
+        'https://example.com',
+        expect.objectContaining({
+          onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing']
+        })
+      );
+    } finally {
+      process.env.VITAL_ENABLE_AGENTIC_BROWSING = originalFlag;
+    }
   });
 
   it('auditLiveUrl returns null scores on failure without crashing', async () => {

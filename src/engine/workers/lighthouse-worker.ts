@@ -15,8 +15,15 @@ type ChromeHandle = { port: number; kill: () => Promise<void> | void };
 
 export class LighthouseWorker {
   private static persistentChrome: ChromeHandle | null = null;
-  private static readonly primaryCategories = ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'];
   private static readonly stableCategories = ['performance', 'accessibility', 'best-practices', 'seo'];
+
+  private static getPrimaryCategories(): string[] {
+    if (/^(1|true|yes)$/i.test(process.env.VITAL_ENABLE_AGENTIC_BROWSING || '')) {
+      return [...this.stableCategories, 'agentic-browsing'];
+    }
+
+    return this.stableCategories;
+  }
 
   /**
    * Launches a single shared Chrome instance to be reused across multiple
@@ -105,7 +112,7 @@ export class LighthouseWorker {
         port: chrome!.port,
         output: 'json',
         logLevel: 'error',
-        onlyCategories: this.primaryCategories,
+        onlyCategories: this.getPrimaryCategories(),
         maxWaitForLoad: Math.max(5000, Math.min(maxTimeoutMs, 60000))
       });
 
