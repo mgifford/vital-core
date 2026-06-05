@@ -188,7 +188,8 @@ describe('DashboardCompiler', () => {
     expect(domainOverviewHtml).toContain('independent open source project');
     expect(domainOverviewHtml).toContain('Scan duration (latest run):</strong> 52m 14s');
     expect(js).toContain('durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : \'n/a\';');
-    expect(domainA11yHtml).toContain('Accessibility Findings');
+    expect(domainA11yHtml).toContain('Accessibility Scan Report');
+    expect(domainA11yHtml).toContain('Summary');
     expect(domainA11yHtml).toContain('api/issues-last-week/targets/cms-gov.json');
     expect(domainA11yHtml).toContain('api/issues-last-week/index.json');
     expect(domainA11yHtml).toContain('data-filter-sev="all"');
@@ -212,6 +213,95 @@ describe('DashboardCompiler', () => {
     expect(fs.existsSync(domainThirdPartyPath)).toBe(true);
     expect(fs.existsSync(domainRunHistoryPath)).toBe(true);
     expect(fs.existsSync(failuresPath)).toBe(true);
+  });
+
+  it('stores page-level axe and alfa overlap counts in the latest summary artifact', () => {
+    const payload: TargetScanResult[] = [
+      {
+        targetId: 'cms-gov',
+        domain: 'https://example.gov',
+        scanDurationMs: 1234,
+        pagesScanned: [
+          {
+            url: 'https://example.gov/page',
+            timestamp: new Date().toISOString(),
+            status: 'COMPLETED',
+            errorMessage: null,
+            technologyStack: [],
+            liveAudits: {
+              lighthouse: null,
+              accessibilityViolations: [
+                {
+                  id: 'document-title',
+                  severity: 'serious',
+                  description: 'Documents must have titles',
+                  helpUrl: 'https://example.org/help/document-title',
+                  impactedCriteria: ['wcag2a'],
+                  sourceEngine: 'axe',
+                  instances: [{ html: '<html>', target: ['html'], failureSummary: 'Missing title' }]
+                },
+                {
+                  id: 'color-contrast',
+                  severity: 'serious',
+                  description: 'Text needs contrast',
+                  helpUrl: 'https://example.org/help/color-contrast',
+                  impactedCriteria: ['wcag2aa'],
+                  sourceEngine: 'axe',
+                  instances: [{ html: '<p>', target: ['p'], failureSummary: 'Low contrast' }]
+                },
+                {
+                  id: 'sia-r1',
+                  severity: 'serious',
+                  description: 'Documents should have a title',
+                  helpUrl: 'https://alfa.siteimprove.com/rules/sia-r1',
+                  impactedCriteria: ['wcag2a'],
+                  sourceEngine: 'alfa',
+                  instances: [{ html: '<html>', target: ['html'], failureSummary: 'Missing title' }]
+                },
+                {
+                  id: 'sia-r6',
+                  severity: 'moderate',
+                  description: 'Decorative image should be ignored',
+                  helpUrl: 'https://alfa.siteimprove.com/rules/sia-r6',
+                  impactedCriteria: ['wcag2a'],
+                  sourceEngine: 'alfa',
+                  instances: [{ html: '<img>', target: ['img'], failureSummary: 'Decorative image issue' }]
+                }
+              ]
+            },
+            offlineAudits: {
+              overlayDetected: { found: false, provider: null, evidence: null },
+              designSystem: { usesUSWDS: false, versionDetected: null },
+              contentMetrics: {
+                readabilityScore: 60,
+                suspiciousAltTextCount: 0,
+                suspiciousAltInstances: []
+              },
+              linkHealth: { totalChecked: 0, brokenCount: 0, brokenLinks: [] }
+            }
+          }
+        ]
+      }
+    ];
+
+    DashboardCompiler.compileStaticDashboard(payload);
+
+    const latestSummaryPath = path.resolve(process.cwd(), 'dist/runs/latest-summary.json');
+    const latestSummary = JSON.parse(fs.readFileSync(latestSummaryPath, 'utf8'));
+    const latestPage = latestSummary.targets[0].pagesScanned[0];
+
+    expect(latestPage.consensusSummary).toEqual({
+      consensusFailure: 1,
+      alfaOnlyFailure: 1,
+      axeOnlyFailure: 1,
+      totalCorrelatedFindings: 3
+    });
+
+    const jsPath = path.resolve(process.cwd(), 'dist/assets/dashboard.js');
+    const js = fs.readFileSync(jsPath, 'utf8');
+    expect(js).toContain('unique patterns •');
+    expect(js).toContain('axe-only');
+    expect(js).toContain('alfa-only');
   });
 
   it('renders Lighthouse threshold legend in both leaderboard and ongoing sections', () => {

@@ -1,4 +1,4 @@
-import { TargetScanResult } from '../../types/site-quality-spec';
+import { A11yViolation, TargetScanResult } from '../../types/site-quality-spec';
 import { NormalizedFindingAdapter } from './normalized-finding-adapter';
 
 export interface ConsensusSummary {
@@ -18,9 +18,35 @@ interface CorrelatedFinding {
 }
 
 export class ConsensusPrioritizer {
+  public static buildPageSummary(pageUrl: string, violations: A11yViolation[]): ConsensusSummary {
+    const grouped = new Map<string, CorrelatedFinding>();
+
+    for (const violation of Array.isArray(violations) ? violations : []) {
+      const ruleId = String(violation?.id || '').trim();
+      if (!ruleId) {
+        continue;
+      }
+
+      const sourceEngine = violation.sourceEngine === 'alfa' ? 'alfa' : 'axe';
+      this.mergeFinding(
+        grouped,
+        pageUrl,
+        `${sourceEngine}:${ruleId}`,
+        violation.severity,
+        sourceEngine === 'alfa',
+        sourceEngine === 'axe'
+      );
+    }
+
+    return this.summarizeCorrelatedFindings(Array.from(grouped.values()));
+  }
+
   public static buildSummary(allResults: TargetScanResult[]): ConsensusSummary {
     const correlated = this.correlateFindings(allResults);
+    return this.summarizeCorrelatedFindings(correlated);
+  }
 
+  private static summarizeCorrelatedFindings(correlated: CorrelatedFinding[]): ConsensusSummary {
     let consensusFailure = 0;
     let alfaOnlyFailure = 0;
     let axeOnlyFailure = 0;

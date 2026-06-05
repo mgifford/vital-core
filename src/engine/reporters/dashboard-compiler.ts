@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TargetScanResult, PageScanReport } from '../../types/site-quality-spec';
 import { QualityIndexReporter, TargetQualityIndexEntry } from './quality-index';
+import { ConsensusPrioritizer } from './consensus-prioritizer';
 import { DiscoveryNonHtmlExclusion } from '../discovery';
 import { DomainRatingScorer } from './domain-rating';
 import { DomainAccessibilityRating, LetterGrade } from '../../types/domain-rating';
@@ -814,6 +815,113 @@ ${siteFooterHtml}
       const wcag20RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.0').length;
       const wcag21RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.1').length;
       const wcag22RuleCount = ruleGroupsSorted.filter(r => r.wcagVersion === '2.2').length;
+      const buildEngineIssueTable = (engineLabel: string, engineKey: string): string => {
+        const engineRules = ruleGroupsSorted.filter(rule => rule.sourceEngines.has(engineKey)).slice(0, 8);
+        if (engineRules.length === 0) {
+          return `<p class="muted-small">No ${this.escapeHtml(engineLabel)} issues were detected in the current report.</p>`;
+        }
+
+        const rows = engineRules.map(rule => {
+          const ruleAnchor = `rule-${this.sanitizePathSegment(rule.id)}`;
+          const severityLabel = String(rule.severity || 'minor');
+          const severityClass = severityLabel.toLowerCase();
+          return `
+            <tr>
+              <td><a href="#${this.escapeHtml(ruleAnchor)}"><code>${this.escapeHtml(rule.id)}</code></a></td>
+              <td class="severity-${this.escapeHtml(severityClass)}">${this.escapeHtml(severityLabel.charAt(0).toUpperCase() + severityLabel.slice(1))}</td>
+              <td>${this.escapeHtml(rule.pageCount)}</td>
+              <td>${this.escapeHtml(rule.instanceCount)}</td>
+            </tr>`;
+        }).join('');
+
+        return `
+          <table>
+            <caption>${this.escapeHtml(engineLabel)} findings most frequently observed in this report.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Rule ID</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Pages</th>
+                <th scope="col">Instances</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      };
+      const latestRunSummary = domainRunHistory.length > 0 ? domainRunHistory[domainRunHistory.length - 1] : null;
+      const previousRunSummary = domainRunHistory.length > 1 ? domainRunHistory[domainRunHistory.length - 2] : null;
+      const latestRunGeneratedAtText = latestRunSummary?.generatedAt
+        ? (() => {
+            const date = new Date(latestRunSummary.generatedAt);
+            return Number.isNaN(date.getTime()) ? latestRunSummary.generatedAt : date.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+          })()
+        : 'n/a';
+      const previousDeltaText = latestRunSummary && previousRunSummary
+        ? (() => {
+            const delta = latestRunSummary.totalViolations - previousRunSummary.totalViolations;
+            return `${delta >= 0 ? '+' : ''}${delta}`;
+          })()
+        : 'n/a';
+      const previousPagesDeltaText = latestRunSummary && previousRunSummary
+        ? (() => {
+            const delta = latestRunSummary.pagesScanned - previousRunSummary.pagesScanned;
+            return `${delta >= 0 ? '+' : ''}${delta}`;
+          })()
+        : 'n/a';
+      const reportMetaHtml = `
+        <dl class="report-meta-grid">
+          <div>
+            <dt>Domain</dt>
+            <dd>${this.escapeHtml(String(target.targetId || '').toUpperCase())}</dd>
+          </div>
+          <div>
+            <dt>Latest retained run</dt>
+            <dd>${this.escapeHtml(latestRunGeneratedAtText)}</dd>
+          </div>
+          <div>
+            <dt>Pages scanned</dt>
+            <dd>${this.escapeHtml(pages.length)}</dd>
+          </div>
+          <div>
+            <dt>Total violations</dt>
+            <dd>${this.escapeHtml(totalViolations)}</dd>
+          </div>
+          <div>
+            <dt>Engine coverage</dt>
+            <dd>axe, alfa</dd>
+          </div>
+          <div>
+            <dt>Rule cards</dt>
+            <dd>${this.escapeHtml(totalRuleCards)}</dd>
+          </div>
+        </dl>`;
+      const reportLinksHtml = `
+        <p class="report-links">
+          <a href="run-history.html">Open run-specific history details</a>
+          <a href="../../api/issues-last-week/targets/${this.escapeHtml(safeTargetId)}.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues dataset for this domain (JSON)</a>
+          <a href="../../api/issues-last-week/index.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues manifest for all domains (JSON)</a>
+        </p>`;
+      const changesSinceLastScanHtml = latestRunSummary && previousRunSummary
+        ? `
+          <div class="card">
+            <h2>Changes Since Last Scan</h2>
+            <p>Compared with the previous retained run, total violations changed by ${this.escapeHtml(previousDeltaText)} and pages scanned changed by ${this.escapeHtml(previousPagesDeltaText)}.</p>
+            <p class="muted-small">The comparison uses retained run history so the report stays stable even when recent pages were skipped unchanged.</p>
+          </div>`
+        : '';
+      const engineCardsHtml = `
+        <div class="report-engine-grid">
+          <div class="card report-engine-card">
+            <h2>Most Common Issues (ALFA)</h2>
+            <p class="muted-small">Siteimprove Alfa ACT-rule results most frequently observed across the retained report window.</p>
+            ${buildEngineIssueTable('ALFA', 'alfa')}
+          </div>
+          <div class="card report-engine-card">
+            <h2>Most Common Issues (axe)</h2>
+            <p class="muted-small">Deque axe-core findings most frequently observed across the retained report window.</p>
+            ${buildEngineIssueTable('axe', 'axe')}
+          </div>
+        </div>`;
       const topPagesByViolations = allKnownPages
         .map(page => {
           const violations = Array.isArray(page?.liveAudits?.accessibilityViolations)
@@ -1091,16 +1199,18 @@ ${siteFooterHtml}
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <header>
+    <p class="report-kicker">Accessibility Scan Report</p>
     <h1>${this.escapeHtml(String(target.targetId).toUpperCase())} — Accessibility Report</h1>
+    <p class="report-subtitle">Report-style summary for the latest retained run, matching the structure of the Open Scans output while preserving the existing dashboard data.</p>
   </header>
   <main id="main-content">
-    <div class="card">
-      <h2>Accessibility Findings</h2>
+    <div class="card report-banner">
+      <h2>Summary</h2>
       ${sharedNav}
+      ${reportMetaHtml}
+      ${reportLinksHtml}
       <p><strong>${this.escapeHtml(statusSummaryHeading)}:</strong> ${this.escapeHtml(statusSummaryText)}</p>
-      <p><a href="run-history.html">Open run-specific history details</a></p>
-      <p><a href="../../api/issues-last-week/targets/${this.escapeHtml(safeTargetId)}.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues dataset for this domain (JSON)</a></p>
-      <p><a href="../../api/issues-last-week/index.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues manifest for all domains (JSON)</a></p>
+      <p class="muted-small">This page keeps the current dashboard data model but presents the report in a denser, issue-first format so engine output is easier to compare with Open Scans.</p>
       ${hasHistoricalData ? '<p class="muted-small"><em>Some findings are from a previous scan run. Pages unchanged since the last scan are shown with their most recent known data (up to ~33 hours of history).</em></p>' : ''}
     </div>
 
@@ -1127,16 +1237,22 @@ ${siteFooterHtml}
       </div>
     </div>
 
+    ${changesSinceLastScanHtml}
+
     ${topPagesByViolations.length > 0 ? `<div class="card">
-      <h2>Pages with Most Violations</h2>
+      <h2>Pages with Most Errors</h2>
+      <p class="muted-small">Focus on the pages that accumulate the most findings to move the largest backlog first.</p>
       <table>
         <thead><tr><th>URL</th><th>Instances</th><th>Top rules</th></tr></thead>
         <tbody>${topPagesRows}</tbody>
       </table>
     </div>` : ''}
 
+    ${engineCardsHtml}
+
     <div class="card">
-      <h2 id="issues-heading" tabindex="-1">Issues by Rule</h2>
+      <h2 id="issues-heading" tabindex="-1">Issues</h2>
+      <p class="muted-small">Filter the rule cards by severity, tool, and WCAG version. The cards stay anchored to stable rule IDs so weekly comparisons remain easy to review.</p>
       <div class="a11y-filter-bar" role="group" aria-label="Filter by severity">
         <span class="a11y-filter-label">Severity:</span>
         <button class="a11y-filter-btn active" type="button" data-filter-sev="all">All (${this.escapeHtml(totalRuleCards)})</button>
@@ -1907,6 +2023,7 @@ ${siteFooterHtml}
         errorMessage: string | null;
         timestamp: string;
         technologyStack: Array<{ name: string; category: string; version: string | null }>;
+        consensusSummary: ConsensusSummary | null;
         liveAudits: {
           lighthouse: {
             performanceScore: number | null;
@@ -1935,6 +2052,12 @@ ${siteFooterHtml}
           category: tech.category,
           version: tech.version
         })),
+        consensusSummary: page.liveAudits
+          ? ConsensusPrioritizer.buildPageSummary(
+              String(page.url || ''),
+              page.liveAudits.accessibilityViolations || []
+            )
+          : null,
         liveAudits: page.liveAudits
           ? {
               lighthouse: page.liveAudits.lighthouse
@@ -2355,6 +2478,65 @@ html[data-theme='dark'] .theme-icon-sun { display: inline; }
   z-index: 9999;
 }
 .skip-link:focus { top: 1rem; }
+.report-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--link-color);
+}
+.report-subtitle {
+  margin: 0.35rem 0 0;
+  max-width: 70ch;
+  color: var(--muted-color);
+}
+.report-banner {
+  margin-bottom: 1.75rem;
+}
+.report-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+}
+.report-meta-grid > div {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 6px;
+  background: var(--light-bg);
+}
+.report-meta-grid dt {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-color);
+}
+.report-meta-grid dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.report-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0.9rem 0 0;
+}
+.report-links a {
+  font-weight: 700;
+}
+.report-engine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.report-engine-card table {
+  margin-top: 0.75rem;
+}
 .a11y-stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -3355,7 +3537,21 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
     const violations = page && page.liveAudits && Array.isArray(page.liveAudits.accessibilityViolations)
       ? page.liveAudits.accessibilityViolations.length
       : 0;
-    violationsCell.textContent = String(violations);
+    const violationsValue = document.createElement('div');
+    violationsValue.textContent = String(violations) + ' findings';
+    violationsCell.appendChild(violationsValue);
+
+    const consensusSummary = page && page.consensusSummary ? page.consensusSummary : null;
+    if (consensusSummary) {
+      const consensusValue = document.createElement('div');
+      consensusValue.className = 'muted-small';
+      consensusValue.textContent =
+        String(consensusSummary.totalCorrelatedFindings || 0) + ' unique patterns • ' +
+        String(consensusSummary.consensusFailure || 0) + ' shared • ' +
+        String(consensusSummary.axeOnlyFailure || 0) + ' axe-only • ' +
+        String(consensusSummary.alfaOnlyFailure || 0) + ' alfa-only';
+      violationsCell.appendChild(consensusValue);
+    }
 
     const scannedAtCell = document.createElement('td');
     const timestamp = page && page.timestamp ? new Date(page.timestamp) : null;

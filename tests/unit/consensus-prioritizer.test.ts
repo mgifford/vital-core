@@ -12,6 +12,52 @@ function makeOfflineAudits() {
 }
 
 describe('ConsensusPrioritizer', () => {
+  it('summarizes cross-engine overlap for a single page', () => {
+    const summary = ConsensusPrioritizer.buildPageSummary('https://example.gov/page', [
+      {
+        id: 'document-title',
+        severity: 'serious',
+        description: 'Documents must have a title',
+        helpUrl: 'https://example.org/help/document-title',
+        impactedCriteria: ['wcag2a'],
+        instances: [{ html: '<html>', target: ['html'], failureSummary: 'Missing title' }],
+        sourceEngine: 'axe'
+      },
+      {
+        id: 'color-contrast',
+        severity: 'serious',
+        description: 'Text needs sufficient contrast',
+        helpUrl: 'https://example.org/help/color-contrast',
+        impactedCriteria: ['wcag2aa'],
+        instances: [{ html: '<p>', target: ['p'], failureSummary: 'Low contrast' }],
+        sourceEngine: 'axe'
+      },
+      {
+        id: 'sia-r1',
+        severity: 'serious',
+        description: 'Documents should have a title',
+        helpUrl: 'https://alfa.siteimprove.com/rules/sia-r1',
+        impactedCriteria: ['wcag2a'],
+        instances: [{ html: '<html>', target: ['html'], failureSummary: 'Missing title' }],
+        sourceEngine: 'alfa'
+      },
+      {
+        id: 'sia-r6',
+        severity: 'moderate',
+        description: 'Decorative image should be ignored',
+        helpUrl: 'https://alfa.siteimprove.com/rules/sia-r6',
+        impactedCriteria: ['wcag2a'],
+        instances: [{ html: '<img>', target: ['img'], failureSummary: 'Decorative image issue' }],
+        sourceEngine: 'alfa'
+      }
+    ]);
+
+    expect(summary.consensusFailure).toBe(1);
+    expect(summary.axeOnlyFailure).toBe(1);
+    expect(summary.alfaOnlyFailure).toBe(1);
+    expect(summary.totalCorrelatedFindings).toBe(3);
+  });
+
   it('classifies findings into consensus/alfa-only/axe-only buckets', () => {
     const results: TargetScanResult[] = [
       {
