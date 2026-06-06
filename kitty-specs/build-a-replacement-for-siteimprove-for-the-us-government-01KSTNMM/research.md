@@ -704,3 +704,46 @@ Results:
 
 Conclusion:
 The current codebase is healthy enough to proceed. Discovery should now focus on reconciling `tasks.md` with the existing implementation, because several listed tasks appear already implemented.
+
+## Task reconciliation finding
+
+`tasks.md` is stale relative to the codebase.
+
+WP03 "Implement consensus prioritization" appears substantially implemented:
+
+Evidence:
+- `src/engine/reporters/consensus-prioritizer.ts` exists.
+- `run-history.ts` imports `ConsensusPrioritizer` and persists consensus totals.
+- `sqlite-persister.ts` stores `consensus_failure`, `alfa_only_failure`, and `axe_only_failure`.
+- `dashboard-compiler.ts` exposes consensus, axe-only, and alfa-only counts in dashboard summaries.
+- `tests/unit/consensus-prioritizer.test.ts` covers consensus/alfa-only/axe-only classification.
+- `tests/unit/dashboard-compiler.test.ts` verifies overlap counts in latest summary artifacts.
+- `tests/unit/run-history-reporter.test.ts` verifies consensus data in trends.
+
+Conclusion:
+WP03 should be marked complete or reviewed for small gaps, not started from scratch.
+
+
+## WP01-WP03 reconciliation
+
+WP01 appears implemented:
+- `src/engine/workers/alfa-worker.ts` exists.
+- Alfa raw results are present during run processing.
+- `run-history-reporter.test.ts` confirms heavy Alfa raw results are stripped from persisted run payloads, while the in-memory result keeps them.
+- This means raw Alfa capture exists, but long-term persistence intentionally avoids storing the heavy payload in `latest.json`.
+
+WP02 appears implemented:
+- `src/types/normalized-finding.ts` defines `NormalizedFindingSchema`.
+- `src/engine/reporters/normalized-finding-adapter.ts` adapts Axe and Alfa findings.
+- `tests/unit/normalized-finding-schema.test.ts` validates the schema.
+- `tests/unit/normalized-finding-adapter.test.ts` validates Axe and Alfa normalization.
+
+WP03 appears implemented:
+- `src/engine/reporters/consensus-prioritizer.ts` exists.
+- `run-history.ts`, `sqlite-persister.ts`, and `dashboard-compiler.ts` consume consensus fields.
+- `tests/unit/consensus-prioritizer.test.ts` validates consensus, alfa-only, and axe-only buckets.
+- `tests/unit/dashboard-compiler.test.ts` validates overlap counts in summary artifacts.
+- `tests/unit/run-history-reporter.test.ts` validates consensus trend output.
+
+Conclusion:
+The active mission state is stale. The codebase is ahead of `tasks.md`. The real next work is WP04 validation/completion and WP05 hardening, not WP01-WP03 implementation.
