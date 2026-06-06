@@ -22,7 +22,7 @@ history:
 authoritative_surface: src/
 execution_mode: code_change
 owned_files:
-- src/**
+- src/types/normalized-finding.ts
 tags: []
 ---
 

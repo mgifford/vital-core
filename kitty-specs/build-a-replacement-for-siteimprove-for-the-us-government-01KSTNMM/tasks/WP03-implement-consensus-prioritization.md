@@ -21,7 +21,7 @@ history:
 authoritative_surface: src/
 execution_mode: code_change
 owned_files:
-- src/**
+- src/engine/reporters/consensus-prioritizer.ts
 tags: []
 ---
 
