@@ -15,21 +15,14 @@ The planner will not begin until all planning questions have been answered—cap
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
+Language/Version: TypeScript / Node.js
+Primary Dependencies: axe-core, Lighthouse, Playwright or Chromium tooling, SQLite, Wappalyzer-related detection
+Storage: SQLite database plus JSON/CSV/Markdown/static HTML outputs under dist/
+Testing: npm test, unit tests under tests/unit, smoke tests under tests/smoke
+Target Platform: Node.js CLI and GitHub Actions recurring scan pipeline
+Project Type: single TypeScript project
+Primary User Value: weekly report showing accessibility and quality regressions, improvements, priority issues, affected pages, and exportable evidence
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [Project-specific test approach or NEEDS CLARIFICATION]
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Charter Check
 
