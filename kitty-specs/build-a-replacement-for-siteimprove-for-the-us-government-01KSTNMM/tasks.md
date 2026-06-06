@@ -46,3 +46,11 @@ Refs: FR-6, FR-9
 
 Depends on: WP04
 Refs: FR-7, FR-8
+
+## Ownership
+
+- WP01: `src/engine/workers/alfa-worker.ts`, `tests/unit/alfa-worker.test.ts`
+- WP02: `src/types/normalized-finding.ts`, `src/engine/reporters/normalized-finding-adapter.ts`, `tests/unit/normalized-finding-schema.test.ts`, `tests/unit/normalized-finding-adapter.test.ts`
+- WP03: `src/engine/reporters/consensus-prioritizer.ts`, `tests/unit/consensus-prioritizer.test.ts`
+- WP04: `src/engine/reporters/run-history.ts`, `src/engine/reporters/dashboard-compiler.ts`, `tests/unit/run-history-reporter.test.ts`, `tests/unit/dashboard-compiler.test.ts`, `dist/api/*`
+- WP05: `.github/workflows/vital-scan.yml`, `.github/workflows/deploy-pages.yml`, `.github/workflows/pages-quality-gate.yml`, `.github/workflows/monitor-actions-failures.yml`, `README.md`, `FEATURES.md`, `TEST-STRATEGY.md`

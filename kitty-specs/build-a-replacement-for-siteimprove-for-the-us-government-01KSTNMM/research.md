@@ -747,3 +747,51 @@ WP03 appears implemented:
 
 Conclusion:
 The active mission state is stale. The codebase is ahead of `tasks.md`. The real next work is WP04 validation/completion and WP05 hardening, not WP01-WP03 implementation.
+
+
+## WP04 reconciliation
+
+WP04 "Extend JSON exports and dashboard summaries" appears substantially implemented.
+
+Evidence:
+- `dist/api/weekly-ratings.json` exists.
+- `dist/api/weekly-trends.json` exists.
+- `dist/api/weekly-top-rules.json` exists.
+- `dist/api/run-directory.json` exists.
+- `src/engine/reporters/run-history.ts` writes weekly ratings, weekly trends, and weekly top rules.
+- `dashboard-compiler.ts` renders consensus, axe-only, and alfa-only dashboard summaries.
+- `tests/unit/dashboard-compiler.test.ts` validates page-level overlap counts.
+- `tests/unit/run-history-reporter.test.ts` validates consensus trend output.
+
+Conclusion:
+WP04 is likely implemented. Remaining work is validation, polish, and workflow hardening, not core implementation.
+
+
+## WP05 reconciliation
+
+WP05 is partially implemented.
+
+Evidence:
+- `.github/workflows/vital-scan.yml` has scheduled recurring scans.
+- The scan workflow restores historical run data from GitHub Pages before scanning.
+- It supports `force_rescan`, `force_priority_seed_refresh`, and `clear_history`.
+- It runs target clusters in a matrix.
+- It caches Playwright and Wappalyzer dependencies.
+- It installs Chromium, and optionally Firefox/WebKit for deeper scans.
+- `.github/workflows/pages-quality-gate.yml` validates docs, links, guardrail tests, and axe smoke checks.
+- `.github/workflows/monitor-actions-failures.yml` opens and closes failure-tracking issues for failed/successful workflows.
+
+Important mismatch:
+- The mission goal is a recurring weekly report, but `vital-scan.yml` currently runs hourly during off-hours:
+  `0 4-10 * * *`
+- This may be intentional for incremental scanning, but the user-facing product should still be framed as weekly reporting.
+- Discovery must decide whether to keep hourly incremental scans and publish weekly rollups, or change the schedule to a true weekly cadence.
+
+Conclusion:
+Core workflow hardening exists. Remaining WP05 work is mainly:
+1. Confirm schedule intent.
+2. Confirm history persistence works in deployed GitHub Pages.
+3. Document operational workflow.
+4. Ensure weekly reporting language matches actual scan cadence.
+
+
