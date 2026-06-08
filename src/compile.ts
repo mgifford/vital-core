@@ -23,6 +23,33 @@ import { DiscoveryNonHtmlExclusion } from './engine/discovery';
 
 const SCAN_ARTIFACTS_DIR = path.resolve(process.cwd(), 'dist', 'scan-artifacts');
 
+function isCancellationError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') {
+    return /operation was canceled/i.test(String(error));
+  }
+
+  const candidate = error as {
+    name?: unknown;
+    message?: unknown;
+    code?: unknown;
+    cause?: unknown;
+  };
+
+  const name = typeof candidate.name === 'string' ? candidate.name : '';
+  const message = typeof candidate.message === 'string' ? candidate.message : String(error);
+  const code = typeof candidate.code === 'string' ? candidate.code : '';
+
+  if (name === 'AbortError' || code === 'ABORT_ERR') {
+    return true;
+  }
+
+  if (/operation was canceled/i.test(message) || /aborted/i.test(message)) {
+    return true;
+  }
+
+  return isCancellationError(candidate.cause);
+}
+
 function loadScanArtifacts(): {
   results: TargetScanResult[];
   pageStateDeltas: PageStateMap[];
@@ -163,7 +190,16 @@ async function main() {
     });
 
     // Persist the merged page-state.
-    PageStateCache.save(mergedPageState);
+    try {
+      PageStateCache.save(mergedPageState);
+    } catch (error) {
+      if (isCancellationError(error)) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.warn(`⚠️  Page-state persistence canceled; continuing with the collected artifacts. ${message}`);
+      } else {
+        throw error;
+      }
+    }
 
     // Persist run history.
     const totalDurationMs = Date.now() - startTime;
@@ -173,6 +209,11 @@ async function main() {
     const totalDurationSec = (totalDurationMs / 1000).toFixed(2);
     console.log(`\n🏁 VITAL-Core Compile Phase Completed Successfully in ${totalDurationSec}s.`);
   } catch (error: any) {
+    if (isCancellationError(error)) {
+      console.warn(`⚠️  Compile phase canceled; exiting without failing the workflow. ${error.message}`);
+      process.exit(0);
+    }
+
     console.error(`❌ Compile phase failed:`, error.message);
     process.exit(1);
   }

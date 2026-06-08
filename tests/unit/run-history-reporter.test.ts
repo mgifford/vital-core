@@ -1,8 +1,9 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RunHistoryReporter } from '../../src/engine/reporters/run-history';
+import { SqlitePersister } from '../../src/engine/reporters/sqlite-persister';
 import { TargetScanResult } from '../../src/types/site-quality-spec';
 
 const originalCwd = process.cwd();
@@ -54,6 +55,7 @@ function makeResult(targetId: string, violations: number): TargetScanResult {
 afterEach(() => {
   process.chdir(originalCwd);
   delete process.env.VITAL_HISTORY_CACHE_DIR;
+  vi.restoreAllMocks();
 });
 
 describe('RunHistoryReporter', () => {
@@ -414,5 +416,24 @@ describe('RunHistoryReporter', () => {
 
     expect(latest.results[0].pagesScanned[0].alfaAudits?.rawResults).toBeNull();
     expect(result.pagesScanned[0].alfaAudits?.rawResults).not.toBeNull();
+  });
+
+  it('treats cancellation during finalization as a soft stop', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-history-cancel-'));
+    process.chdir(tmpDir);
+
+    const appendRunSpy = vi.spyOn(SqlitePersister, 'appendRun').mockImplementation(() => undefined);
+
+    const exportWeeklyIssuesSpy = vi.spyOn(SqlitePersister, 'exportWeeklyIssuesSnapshot').mockImplementation(() => {
+      throw new Error('The operation was canceled.');
+    });
+
+    const entry = RunHistoryReporter.persistRunHistory([makeResult('alpha', 1)], 'profiles/us-health.yml', 1000);
+
+    expect(entry.runId).toBeTruthy();
+    expect(fs.existsSync(path.resolve(tmpDir, 'dist/runs/latest.json'))).toBe(true);
+    expect(fs.existsSync(path.resolve(tmpDir, 'dist/runs/software-by-domain.json'))).toBe(true);
+    expect(appendRunSpy).toHaveBeenCalledTimes(1);
+    expect(exportWeeklyIssuesSpy).toHaveBeenCalledTimes(1);
   });
 });

@@ -169,6 +169,33 @@ export class RunHistoryReporter {
     return path.resolve(process.cwd(), 'dist/api');
   }
 
+  private static isCancellationError(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+      return /operation was canceled/i.test(String(error));
+    }
+
+    const candidate = error as {
+      name?: unknown;
+      message?: unknown;
+      code?: unknown;
+      cause?: unknown;
+    };
+
+    const name = typeof candidate.name === 'string' ? candidate.name : '';
+    const message = typeof candidate.message === 'string' ? candidate.message : String(error);
+    const code = typeof candidate.code === 'string' ? candidate.code : '';
+
+    if (name === 'AbortError' || code === 'ABORT_ERR') {
+      return true;
+    }
+
+    if (/operation was canceled/i.test(message) || /aborted/i.test(message)) {
+      return true;
+    }
+
+    return this.isCancellationError(candidate.cause);
+  }
+
   public static persistRunHistory(
     allResults: TargetScanResult[],
     profilePath: string,
@@ -230,54 +257,63 @@ export class RunHistoryReporter {
     fs.writeFileSync(path.join(this.distRunsDir, `${runId}.json`), JSON.stringify(latestPayload, null, 2), 'utf8');
     fs.writeFileSync(path.join(this.distRunsDir, 'latest.json'), JSON.stringify(latestPayload, null, 2), 'utf8');
 
-    const softwarePayload = this.buildSoftwareByDomainPayload(allResults, runId, generatedAt);
-    const hasTechData = softwarePayload.aggregatedByDomain.some(d => d.technologiesDetected > 0);
-    const softwareDestPath = path.join(this.distRunsDir, 'software-by-domain.json');
-    if (hasTechData) {
-      // Full-scope run: write fresh technology fingerprint data.
-      fs.writeFileSync(softwareDestPath, JSON.stringify(softwarePayload, null, 2), 'utf8');
-    } else if (!fs.existsSync(softwareDestPath)) {
-      // Accessibility-only run with no history-cached version: write an empty payload so the
-      // required artifact always exists.
-      fs.writeFileSync(softwareDestPath, JSON.stringify(softwarePayload, null, 2), 'utf8');
-      console.log(
-        'ℹ️  No technology fingerprints detected in this run (accessibility-only scope). ' +
-        'No cached software data found; writing empty software-by-domain.json.'
+    try {
+      const softwarePayload = this.buildSoftwareByDomainPayload(allResults, runId, generatedAt);
+      const hasTechData = softwarePayload.aggregatedByDomain.some(d => d.technologiesDetected > 0);
+      const softwareDestPath = path.join(this.distRunsDir, 'software-by-domain.json');
+      if (hasTechData) {
+        // Full-scope run: write fresh technology fingerprint data.
+        fs.writeFileSync(softwareDestPath, JSON.stringify(softwarePayload, null, 2), 'utf8');
+      } else if (!fs.existsSync(softwareDestPath)) {
+        // Accessibility-only run with no history-cached version: write an empty payload so the
+        // required artifact always exists.
+        fs.writeFileSync(softwareDestPath, JSON.stringify(softwarePayload, null, 2), 'utf8');
+        console.log(
+          'ℹ️  No technology fingerprints detected in this run (accessibility-only scope). ' +
+          'No cached software data found; writing empty software-by-domain.json.'
+        );
+      } else {
+        // Accessibility-only run: restoreCachedHistory() has already restored a previous
+        // software-by-domain.json from the history cache, so skip writing to preserve it.
+        console.log(
+          'ℹ️  No technology fingerprints detected in this run (accessibility-only scope). ' +
+          'Preserving previous software detection data from history cache.'
+        );
+      }
+
+      const existingIndex = this.loadExistingIndex();
+      const mergedRuns = [runEntry, ...existingIndex.runs.filter(run => run.runId !== runId)].slice(0, 200);
+
+      const nextIndex: RunIndex = {
+        updatedAt: generatedAt,
+        latestRunId: runId,
+        runs: mergedRuns
+      };
+
+      fs.writeFileSync(path.join(this.distRunsDir, 'index.json'), JSON.stringify(nextIndex, null, 2), 'utf8');
+      const trendSummary = this.buildTrendSummary(nextIndex);
+      fs.writeFileSync(
+        path.join(this.distRunsDir, 'trends.json'),
+        JSON.stringify(trendSummary, null, 2),
+        'utf8'
       );
-    } else {
-      // Accessibility-only run: restoreCachedHistory() has already restored a previous
-      // software-by-domain.json from the history cache, so skip writing to preserve it.
-      console.log(
-        'ℹ️  No technology fingerprints detected in this run (accessibility-only scope). ' +
-        'Preserving previous software detection data from history cache.'
+      this.writeApiInterface(nextIndex, latestPayload, targetQuality, trendSummary);
+      fs.writeFileSync(
+        path.join(this.distRunsDir, 'domain-ongoing.json'),
+        JSON.stringify(this.buildDomainOngoingReports(nextIndex), null, 2),
+        'utf8'
       );
+
+      SqlitePersister.appendRun(allResults, runEntry);
+      SqlitePersister.exportWeeklyIssuesSnapshot(7, 5000);
+    } catch (error) {
+      if (this.isCancellationError(error)) {
+        console.warn('⚠️  Run history finalization canceled; keeping the primary run artifacts that were already written.');
+        return runEntry;
+      }
+
+      throw error;
     }
-
-    const existingIndex = this.loadExistingIndex();
-    const mergedRuns = [runEntry, ...existingIndex.runs.filter(run => run.runId !== runId)].slice(0, 200);
-
-    const nextIndex: RunIndex = {
-      updatedAt: generatedAt,
-      latestRunId: runId,
-      runs: mergedRuns
-    };
-
-    fs.writeFileSync(path.join(this.distRunsDir, 'index.json'), JSON.stringify(nextIndex, null, 2), 'utf8');
-    const trendSummary = this.buildTrendSummary(nextIndex);
-    fs.writeFileSync(
-      path.join(this.distRunsDir, 'trends.json'),
-      JSON.stringify(trendSummary, null, 2),
-      'utf8'
-    );
-    this.writeApiInterface(nextIndex, latestPayload, targetQuality, trendSummary);
-    fs.writeFileSync(
-      path.join(this.distRunsDir, 'domain-ongoing.json'),
-      JSON.stringify(this.buildDomainOngoingReports(nextIndex), null, 2),
-      'utf8'
-    );
-
-    SqlitePersister.appendRun(allResults, runEntry);
-    SqlitePersister.exportWeeklyIssuesSnapshot(7, 5000);
 
     return runEntry;
   }
