@@ -333,4 +333,55 @@ describe('SqlitePersister', () => {
     expect(beta.issueCount).toBe(1);
     expect(beta.rows.length).toBe(1);
   });
+
+  it('merges cached weekly issue rows with only the latest run data', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sqlite-persister-weekly-cache-'));
+    process.chdir(tmpDir);
+
+    const runsDir = path.join(tmpDir, 'dist/runs');
+    fs.mkdirSync(runsDir, { recursive: true });
+
+    const cachedRow = {
+      violationId: 999,
+      runId: 'cached-run',
+      targetId: 'cached-target',
+      domain: 'https://cached.example.org',
+      pageId: 1,
+      url: 'https://cached.example.org/page',
+      status: 'COMPLETED',
+      scannedAt: new Date().toISOString(),
+      ruleId: 'cached-rule',
+      impact: 'serious',
+      message: 'cached issue',
+      selector: '#cached',
+      provider: 'axe'
+    };
+
+    fs.writeFileSync(
+      path.join(runsDir, 'weekly-issues-cache.json'),
+      JSON.stringify({
+        generatedAt: new Date().toISOString(),
+        windowDays: 7,
+        latestRunId: 'cached-run',
+        rows: [cachedRow]
+      }),
+      'utf8'
+    );
+
+    SqlitePersister.appendRun([makeResult('alpha', 1)], makeRunEntry('latest-run'));
+    SqlitePersister.exportWeeklyIssuesSnapshot(7, 10);
+
+    const indexPath = path.join(tmpDir, 'dist/api/issues-last-week/index.json');
+    const index = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as {
+      totalIssues: number;
+      targets: Array<{ targetId: string; issueCount: number }>;
+    };
+    const cachedTargetPath = path.join(tmpDir, 'dist/api/issues-last-week/targets/cached-target.json');
+    const alphaTargetPath = path.join(tmpDir, 'dist/api/issues-last-week/targets/alpha.json');
+
+    expect(index.totalIssues).toBe(2);
+    expect(index.targets.map(target => target.targetId).sort()).toEqual(['alpha', 'cached-target']);
+    expect(JSON.parse(fs.readFileSync(cachedTargetPath, 'utf8')).issueCount).toBe(1);
+    expect(JSON.parse(fs.readFileSync(alphaTargetPath, 'utf8')).issueCount).toBe(1);
+  });
 });

@@ -28,6 +28,13 @@ interface WeeklyIssueRow {
   provider: string | null;
 }
 
+interface WeeklyIssueSnapshotCache {
+  generatedAt: string;
+  windowDays: number;
+  latestRunId: string;
+  rows: WeeklyIssueRow[];
+}
+
 export interface SqliteRunEntry {
   runId: string;
   generatedAt: string;
@@ -71,6 +78,10 @@ export interface SqliteRunEntry {
 export class SqlitePersister {
   private static get dbPath(): string {
     return path.resolve(process.cwd(), 'dist', 'vital.db');
+  }
+
+  private static get weeklyIssuesCachePath(): string {
+    return path.resolve(process.cwd(), 'dist', 'runs', 'weekly-issues-cache.json');
   }
 
   private static initSchema(db: DatabaseSync): void {
@@ -211,12 +222,45 @@ export class SqlitePersister {
         const targetsDir = path.join(outputRoot, 'targets');
         fs.mkdirSync(targetsDir, { recursive: true });
 
-        const rows = this.queryWeeklyIssueRows(db, windowDays);
-        const totalIssues = rows.length;
+        const latestRunId = this.readLatestRunId(db);
+        const cachedSnapshot = this.loadWeeklyIssueSnapshotCache();
 
-        console.log(
-          `📦 Exporting weekly issues snapshot from vital.db (${totalIssues} issue instance(s) across ${windowDays} day(s)).`
-        );
+        if (
+          cachedSnapshot &&
+          cachedSnapshot.windowDays === windowDays &&
+          cachedSnapshot.latestRunId === latestRunId
+        ) {
+          console.log(
+            `📦 Weekly issues snapshot already current for run ${latestRunId}; reusing cached export.`
+          );
+          return;
+        }
+
+        let rows: WeeklyIssueRow[];
+        if (cachedSnapshot && cachedSnapshot.windowDays === windowDays && Array.isArray(cachedSnapshot.rows)) {
+          const latestRows = latestRunId
+            ? this.queryWeeklyIssueRowsForRun(db, latestRunId)
+            : [];
+          rows = this.mergeWeeklyIssueRows(cachedSnapshot.rows, latestRows, windowDays);
+          console.log(
+            `📦 Incrementally refreshed weekly issues snapshot from cache (${cachedSnapshot.rows.length} cached row(s) + ${latestRows.length} new row(s)).`
+          );
+        } else if (latestRunId) {
+          rows = this.queryWeeklyIssueRowsForRun(db, latestRunId);
+          console.log(
+            `📦 Building weekly issues snapshot from latest run ${latestRunId} (${rows.length} row(s)).`
+          );
+        } else {
+          rows = this.queryWeeklyIssueRowsForWindow(db, windowDays);
+          console.log(
+            `📦 Building weekly issues snapshot from vital.db (${rows.length} issue instance(s) across ${windowDays} day(s)).`
+          );
+        }
+
+        rows = this.pruneWeeklyIssueRows(rows, windowDays);
+        rows = this.deduplicateWeeklyIssueRows(rows);
+
+        const totalIssues = rows.length;
 
         const chunks: string[] = [];
         for (let offset = 0, idx = 1; offset < totalIssues; offset += chunkSize, idx += 1) {
@@ -317,6 +361,15 @@ export class SqlitePersister {
         console.log(
           `📦 Weekly issues snapshot written (${totalIssues} issue instance(s), ${chunks.length} chunk file(s), ${targetSummaries.length} target file(s)).`
         );
+
+        const cache: WeeklyIssueSnapshotCache = {
+          generatedAt: new Date().toISOString(),
+          windowDays,
+          latestRunId,
+          rows
+        };
+        fs.mkdirSync(path.dirname(this.weeklyIssuesCachePath), { recursive: true });
+        fs.writeFileSync(this.weeklyIssuesCachePath, JSON.stringify(cache, null, 2), 'utf8');
       } finally {
         db.close();
       }
@@ -326,7 +379,112 @@ export class SqlitePersister {
     }
   }
 
-  private static queryWeeklyIssueRows(db: DatabaseSync, windowDays: number): WeeklyIssueRow[] {
+  private static readLatestRunId(db: DatabaseSync): string {
+    try {
+      const row = db.prepare(`
+        SELECT run_id AS runId
+        FROM runs
+        ORDER BY generated_at DESC, run_id DESC
+        LIMIT 1
+      `).get() as { runId?: string } | undefined;
+      return typeof row?.runId === 'string' ? row.runId : '';
+    } catch {
+      return '';
+    }
+  }
+
+  private static loadWeeklyIssueSnapshotCache(): WeeklyIssueSnapshotCache | null {
+    try {
+      if (!fs.existsSync(this.weeklyIssuesCachePath)) {
+        return null;
+      }
+
+      const parsed = JSON.parse(fs.readFileSync(this.weeklyIssuesCachePath, 'utf8')) as Partial<WeeklyIssueSnapshotCache>;
+      if (
+        typeof parsed.generatedAt !== 'string' ||
+        typeof parsed.latestRunId !== 'string' ||
+        typeof parsed.windowDays !== 'number' ||
+        !Array.isArray(parsed.rows)
+      ) {
+        return null;
+      }
+
+      return {
+        generatedAt: parsed.generatedAt,
+        latestRunId: parsed.latestRunId,
+        windowDays: parsed.windowDays,
+        rows: parsed.rows.filter(this.isWeeklyIssueRow)
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  private static isWeeklyIssueRow(value: unknown): value is WeeklyIssueRow {
+    if (!value || typeof value !== 'object') {
+      return false;
+    }
+
+    const row = value as Record<string, unknown>;
+    return (
+      typeof row.violationId === 'number' &&
+      typeof row.runId === 'string' &&
+      typeof row.targetId === 'string' &&
+      typeof row.domain === 'string' &&
+      typeof row.pageId === 'number' &&
+      typeof row.url === 'string' &&
+      typeof row.status === 'string' &&
+      typeof row.scannedAt === 'string' &&
+      typeof row.ruleId === 'string' &&
+      typeof row.impact === 'string' &&
+      typeof row.message === 'string'
+    );
+  }
+
+  private static mergeWeeklyIssueRows(
+    cachedRows: WeeklyIssueRow[],
+    latestRows: WeeklyIssueRow[],
+    windowDays: number
+  ): WeeklyIssueRow[] {
+    const rowsById = new Map<number, WeeklyIssueRow>();
+    for (const row of cachedRows) {
+      rowsById.set(row.violationId, row);
+    }
+    for (const row of latestRows) {
+      rowsById.set(row.violationId, row);
+    }
+
+    return this.deduplicateWeeklyIssueRows(
+      Array.from(rowsById.values()).filter(row => this.isWithinWindow(row.scannedAt, windowDays))
+    );
+  }
+
+  private static pruneWeeklyIssueRows(rows: WeeklyIssueRow[], windowDays: number): WeeklyIssueRow[] {
+    return rows.filter(row => this.isWithinWindow(row.scannedAt, windowDays));
+  }
+
+  private static deduplicateWeeklyIssueRows(rows: WeeklyIssueRow[]): WeeklyIssueRow[] {
+    return Array.from(new Map(rows.map(row => [row.violationId, row])).values())
+      .sort((a, b) =>
+        Date.parse(b.scannedAt) - Date.parse(a.scannedAt) ||
+        a.targetId.localeCompare(b.targetId) ||
+        a.url.localeCompare(b.url) ||
+        a.ruleId.localeCompare(b.ruleId) ||
+        a.violationId - b.violationId
+      );
+  }
+
+  private static isWithinWindow(scannedAt: string, windowDays: number): boolean {
+    const parsed = Date.parse(scannedAt);
+    if (Number.isNaN(parsed)) {
+      return false;
+    }
+
+    const cutoffMs = Date.now() - (windowDays * 24 * 60 * 60 * 1000);
+    return parsed >= cutoffMs;
+  }
+
+  private static queryWeeklyIssueRowsForWindow(db: DatabaseSync, windowDays: number): WeeklyIssueRow[] {
     return db.prepare(`
       SELECT
         v.id AS violationId,
@@ -347,6 +505,29 @@ export class SqlitePersister {
       WHERE julianday(p.scanned_at) >= julianday('now', ?)
       ORDER BY p.scanned_at DESC, p.target_id ASC, p.url ASC, v.rule_id ASC, v.id ASC
     `).all(`-${windowDays} days`) as unknown as WeeklyIssueRow[];
+  }
+
+  private static queryWeeklyIssueRowsForRun(db: DatabaseSync, runId: string): WeeklyIssueRow[] {
+    return db.prepare(`
+      SELECT
+        v.id AS violationId,
+        p.run_id AS runId,
+        p.target_id AS targetId,
+        p.domain AS domain,
+        p.id AS pageId,
+        p.url AS url,
+        p.status AS status,
+        p.scanned_at AS scannedAt,
+        v.rule_id AS ruleId,
+        v.impact AS impact,
+        v.message AS message,
+        v.selector AS selector,
+        v.provider AS provider
+      FROM violations v
+      JOIN pages p ON p.id = v.page_id
+      WHERE p.run_id = ?
+      ORDER BY p.scanned_at DESC, p.target_id ASC, p.url ASC, v.rule_id ASC, v.id ASC
+    `).all(runId) as unknown as WeeklyIssueRow[];
   }
 
   private static sanitizeTargetId(value: string): string {
