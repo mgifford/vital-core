@@ -27,6 +27,7 @@
     "submodules:init": "git submodule update --init --recursive",
     "submodules:update": "git submodule update --remote --merge --recursive",
     "history:fetch": "node scripts/fetch-history.mjs",
+    "plan": "npx tsx src/plan.ts",
     "seeds:refresh": "npx tsx scripts/refresh-priority-seeds.ts",
     "inventory:export": "node scripts/export-target-inventory.mjs",
     "act-mapping:update": "node scripts/update-act-mapping.mjs",

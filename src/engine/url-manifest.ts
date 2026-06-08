@@ -302,6 +302,30 @@ export class UrlManifestStore {
   }
 
   /**
+   * Returns the latest successful scan timestamp recorded for a target.
+   */
+  public static latestSuccessfulScanAt(manifest: UrlManifest): string | null {
+    let latestSuccessAt: string | null = null;
+
+    for (const entry of Object.values(manifest)) {
+      if (!entry?.lastSuccessAt) {
+        continue;
+      }
+
+      const successMs = Date.parse(entry.lastSuccessAt);
+      if (!Number.isFinite(successMs)) {
+        continue;
+      }
+
+      if (!latestSuccessAt || successMs > Date.parse(latestSuccessAt)) {
+        latestSuccessAt = entry.lastSuccessAt;
+      }
+    }
+
+    return latestSuccessAt;
+  }
+
+  /**
    * Counts the number of URLs in the manifest that are currently quarantined.
    */
   public static countQuarantined(manifest: UrlManifest): number {

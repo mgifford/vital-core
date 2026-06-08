@@ -7,7 +7,7 @@ import { PageStateCache, PageStateMap } from './engine/reporters/page-state-cach
 import { RunHistoryReporter } from './engine/reporters/run-history';
 import { PrioritySeedStore } from './engine/priority-seeds';
 import { TargetScanResult, TargetScanResultSchema } from './types/site-quality-spec';
-import { DiscoveryNonHtmlExclusion } from './engine/discovery';
+import { DiscoveryNonHtmlExclusion, DiscoveryQueueSummary } from './engine/discovery';
 
 /**
  * Compile-and-deploy phase for parallel matrix scan runs.
@@ -54,14 +54,16 @@ function loadScanArtifacts(): {
   results: TargetScanResult[];
   pageStateDeltas: PageStateMap[];
   allExclusions: DiscoveryNonHtmlExclusion[];
+  queueSummaries: Map<string, DiscoveryQueueSummary>;
 } {
   if (!fs.existsSync(SCAN_ARTIFACTS_DIR)) {
-    return { results: [], pageStateDeltas: [], allExclusions: [] };
+    return { results: [], pageStateDeltas: [], allExclusions: [], queueSummaries: new Map() };
   }
 
   const results: TargetScanResult[] = [];
   const pageStateDeltas: PageStateMap[] = [];
   const allExclusions: DiscoveryNonHtmlExclusion[] = [];
+  const queueSummaries = new Map<string, DiscoveryQueueSummary>();
 
   const entries = fs.readdirSync(SCAN_ARTIFACTS_DIR, { withFileTypes: true });
   for (const entry of entries) {
@@ -108,6 +110,38 @@ function loadScanArtifacts(): {
       }
     }
 
+    const queueSummaryPath = path.join(targetDir, 'scan-queue-summary.json');
+    if (fs.existsSync(queueSummaryPath)) {
+      try {
+        const summary = JSON.parse(fs.readFileSync(queueSummaryPath, 'utf8')) as DiscoveryQueueSummary;
+        if (summary && typeof summary === 'object') {
+          queueSummaries.set(entry.name, summary);
+        }
+      } catch (err: any) {
+        console.warn(`⚠️ Failed to read queue summary for "${entry.name}": ${err.message}`);
+      }
+    }
+
+    const queuePath = path.join(targetDir, 'scan-queue.json');
+    if (fs.existsSync(queuePath)) {
+      const targetId = entry.name;
+      const queueDestDir = path.resolve(process.cwd(), 'dist', 'runs', targetId);
+      const queueDestPath = path.join(queueDestDir, 'scan-queue.json');
+      const queueSummaryDestPath = path.join(queueDestDir, 'scan-queue-summary.json');
+      try {
+        if (!fs.existsSync(queueDestDir)) {
+          fs.mkdirSync(queueDestDir, { recursive: true });
+        }
+        fs.copyFileSync(queuePath, queueDestPath);
+        if (fs.existsSync(queueSummaryPath)) {
+          fs.copyFileSync(queueSummaryPath, queueSummaryDestPath);
+        }
+        console.log(`📋 Restored scan queue for "${targetId}" → dist/runs/${targetId}/scan-queue.json`);
+      } catch (err: any) {
+        console.warn(`⚠️ Failed to restore scan queue for "${targetId}": ${err.message}`);
+      }
+    }
+
     // Restore url-manifest.json so it is published to GitHub Pages and available
     // to fetch-history.mjs → UrlManifestStore.restoreCachedManifest() on the next run.
     // Without this copy, the url-manifest never reaches Pages and partitionByRecency
@@ -129,7 +163,7 @@ function loadScanArtifacts(): {
     }
   }
 
-  return { results, pageStateDeltas, allExclusions };
+  return { results, pageStateDeltas, allExclusions, queueSummaries };
 }
 
 async function main() {
@@ -157,7 +191,7 @@ async function main() {
     const basePageState = PageStateCache.load();
 
     // Read all per-target scan artifacts.
-    const { results, pageStateDeltas, allExclusions } = loadScanArtifacts();
+    const { results, pageStateDeltas, allExclusions, queueSummaries } = loadScanArtifacts();
 
     if (results.length === 0) {
       throw new Error(
@@ -186,6 +220,7 @@ async function main() {
     console.log(`\n📊 Compiling executive compliance dashboard UI...`);
     DashboardCompiler.compileStaticDashboard(results, {
       nonHtmlDiscoveryExclusions: allExclusions,
+      queueSummaries,
       prioritySeedSnapshot: PrioritySeedStore.getActiveSnapshot()
     });
 

@@ -20,6 +20,14 @@ export interface DiscoveryNonHtmlExclusion {
 
 export type DiscoveryQueueSource = 'recently_updated' | 'duckduckgo_seed' | 'priority_url' | 'stale_weekly_rescan' | 'sitemap_sample';
 
+const DISCOVERY_QUEUE_SOURCE_PRIORITY: DiscoveryQueueSource[] = [
+  'recently_updated',
+  'duckduckgo_seed',
+  'priority_url',
+  'stale_weekly_rescan',
+  'sitemap_sample'
+];
+
 export interface DiscoveryQueueEntry {
   url: string;
   source: DiscoveryQueueSource;
@@ -27,6 +35,17 @@ export interface DiscoveryQueueEntry {
   templateKey: string;
   lastSuccessAt: string | null;
   lastModified: string | null;
+  selectedAt?: string;
+  sourcesSeen?: DiscoveryQueueSource[];
+}
+
+export interface DiscoveryQueueSummary {
+  targetId: string;
+  selectedAt: string;
+  queuedUrls: number;
+  skippedRecentlyScanned: number;
+  skippedQuarantined: number;
+  queueComposition: DiscoveryQueueComposition;
 }
 
 export interface DiscoveryQueueComposition {
@@ -51,6 +70,11 @@ export function countDiscoveryQueueComposition(entries: DiscoveryQueueEntry[]): 
       sitemap_sample: 0
     }
   );
+}
+
+function getDiscoveryQueueSourceRank(source: DiscoveryQueueSource): number {
+  const rank = DISCOVERY_QUEUE_SOURCE_PRIORITY.indexOf(source);
+  return rank === -1 ? Number.POSITIVE_INFINITY : rank;
 }
 
 export class TargetDiscoveryEngine {
@@ -89,6 +113,8 @@ export class TargetDiscoveryEngine {
     const urlManifest = options.urlManifest ?? {};
     const rescanWindowDays = options.rescanWindowDays ?? revalidateAfterDays;
     const includeQuarantined = options.includeQuarantined ?? false;
+    const selectedAt = new Date().toISOString();
+    const previousSuccessfulRunAt = UrlManifestStore.latestSuccessfulScanAt(urlManifest);
     
     // 1. Safe Sitemap Crawling
     if (target.sitemap_url) {
@@ -164,28 +190,71 @@ export class TargetDiscoveryEngine {
       }
     }
 
-    // 3. Strategic Merge & Deduplication Array Sequence
-    // We instantiate a Set with priority items first to preserve execution ordering
-    const uniqueUrlSet = new Set<string>();
+    // 3. Strategic merge & deduplication.
+    // Keep the highest-priority source when a URL is discovered from multiple paths.
     const queueEntriesByUrl = new Map<string, DiscoveryQueueEntry>();
 
-    const recordQueueEntry = (
+    const upsertQueueEntry = (
       url: string,
       source: DiscoveryQueueSource,
       reason: string
     ): void => {
-      if (queueEntriesByUrl.has(url)) {
+      const existing = queueEntriesByUrl.get(url);
+      if (!existing) {
+        queueEntriesByUrl.set(url, {
+          url,
+          source,
+          reason,
+          templateKey: this.inferTemplateKey(url),
+          lastSuccessAt: urlManifest[url]?.lastSuccessAt ?? null,
+          lastModified: pageState[url]?.lastModified ?? null,
+          selectedAt,
+          sourcesSeen: [source]
+        });
+        return;
+      }
+
+      const sourcesSeen = new Set<DiscoveryQueueSource>(existing.sourcesSeen ?? [existing.source]);
+      sourcesSeen.add(source);
+
+      if (getDiscoveryQueueSourceRank(source) < getDiscoveryQueueSourceRank(existing.source)) {
+        queueEntriesByUrl.set(url, {
+          ...existing,
+          source,
+          reason,
+          selectedAt,
+          sourcesSeen: Array.from(sourcesSeen)
+        });
         return;
       }
 
       queueEntriesByUrl.set(url, {
-        url,
-        source,
-        reason,
-        templateKey: this.inferTemplateKey(url),
-        lastSuccessAt: urlManifest[url]?.lastSuccessAt ?? null,
-        lastModified: pageState[url]?.lastModified ?? null,
+        ...existing,
+        selectedAt,
+        sourcesSeen: Array.from(sourcesSeen)
       });
+    };
+
+    const hasPreviousSuccessfulRun = Boolean(previousSuccessfulRunAt && Number.isFinite(Date.parse(previousSuccessfulRunAt)));
+    const previousSuccessfulRunMs = hasPreviousSuccessfulRun ? Date.parse(previousSuccessfulRunAt as string) : null;
+    const isRecentlyUpdatedUrl = (url: string): boolean => {
+      const entry = pageState[url];
+      if (!entry?.lastModified) {
+        return false;
+      }
+
+      const lastModified = Date.parse(entry.lastModified);
+      if (!Number.isFinite(lastModified)) {
+        return false;
+      }
+
+      if (urlManifest[url] || entry) {
+        if (previousSuccessfulRunMs !== null) {
+          return lastModified > previousSuccessfulRunMs;
+        }
+      }
+
+      return this.wasUpdatedWithinWindow(entry, updatedWithinDays);
     };
 
     const shouldIncludeUrl = (url: string): boolean => {
@@ -214,21 +283,18 @@ export class TargetDiscoveryEngine {
       );
     };
 
-    const isRecentlyUpdatedUrl = (url: string): boolean => {
-      return this.wasUpdatedWithinWindow(pageState[url], updatedWithinDays);
-    };
-
     // Always scan recently updated URLs first when we have metadata from prior checks.
     filteredUrls
       .filter(url => shouldIncludeUrl(url))
       .filter(url => isRecentlyUpdatedUrl(url))
       .forEach(url => {
-        recordQueueEntry(
+        upsertQueueEntry(
           url,
           'recently_updated',
-          `lastModified ${pageState[url]?.lastModified} is newer than previous successful run ${rescanWindowDays} day window`
+          previousSuccessfulRunAt
+            ? `lastModified ${pageState[url]?.lastModified} is newer than the previous successful run at ${previousSuccessfulRunAt}`
+            : `lastModified ${pageState[url]?.lastModified} is newer than the ${updatedWithinDays}-day freshness window`
         );
-        uniqueUrlSet.add(url);
       });
 
     // Insert monthly-seeded top-task URLs from DuckDuckGo before broad sitemap crawl output.
@@ -241,12 +307,11 @@ export class TargetDiscoveryEngine {
         .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
         .filter(url => shouldIncludeUrl(url))
         .forEach(url => {
-          recordQueueEntry(
+          upsertQueueEntry(
             url,
             'duckduckgo_seed',
             `DuckDuckGo monthly top-task seed for ${target.id}`
           );
-          uniqueUrlSet.add(url);
         });
     }
     
@@ -267,35 +332,53 @@ export class TargetDiscoveryEngine {
           return !entry || !UrlManifestStore.isQuarantined(entry);
         })
         .forEach(url => {
-          recordQueueEntry(
+          upsertQueueEntry(
             url,
             'priority_url',
             `Configured priority URL for weekly scan on ${target.id}`
           );
-          uniqueUrlSet.add(url);
         });
     }
 
     // 4. Optional execution ceiling + template-aware sitemap sampling
     const ceilingLimit = target.settings?.max_pages ?? null;
     const hasCeilingLimit = typeof ceilingLimit === 'number';
-    if (hasCeilingLimit && uniqueUrlSet.size >= ceilingLimit) {
-      const priorityOnlyQueue = Array.from(uniqueUrlSet).slice(0, ceilingLimit);
+    const staleWeeklyRescanUrls = this.selectStaleWeeklyRescanUrls(
+      target.id,
+      urlManifest,
+      pageState,
+      canonicalBaseHost,
+      includeSubdomains,
+      rescanWindowDays
+    );
+    staleWeeklyRescanUrls.forEach(url => {
+      upsertQueueEntry(
+        url,
+        'stale_weekly_rescan',
+        `Manifest success is older than the ${rescanWindowDays}-day weekly rescan window`
+      );
+    });
+
+    const currentQueueUrls = Array.from(queueEntriesByUrl.keys());
+    if (hasCeilingLimit && currentQueueUrls.length >= ceilingLimit) {
+      const priorityOnlyQueue = currentQueueUrls.slice(0, ceilingLimit);
       const queueEntries = priorityOnlyQueue
         .map(url => queueEntriesByUrl.get(url))
         .filter((entry): entry is DiscoveryQueueEntry => Boolean(entry));
       const queueComposition = countDiscoveryQueueComposition(queueEntries);
-      this.saveScanQueue(target.id, queueEntries);
-      console.log(`✂️ Truncating active queue from ${uniqueUrlSet.size} to ${ceilingLimit} pages (per max_pages limit).`);
+      const queueSummary = this.buildQueueSummary(target.id, selectedAt, queueEntries, 0, 0);
+      this.saveScanQueue(target.id, queueEntries, queueSummary);
+      console.log(`✂️ Truncating active queue from ${currentQueueUrls.length} to ${ceilingLimit} pages (per max_pages limit).`);
       return { urls: priorityOnlyQueue, skippedRecentlyScanned: 0, skippedQuarantined: 0, queueEntries, queueComposition };
     }
 
     const remainingSlots = hasCeilingLimit
-      ? Math.max(ceilingLimit - uniqueUrlSet.size, 0)
+      ? Math.max(ceilingLimit - currentQueueUrls.length, 0)
       : Number.POSITIVE_INFINITY;
     const templateSampleCap = target.settings?.sitemap_template_sample_cap ?? null;
     const useStochasticSampling = target.settings?.sitemap_sample_stochastic ?? true;
     const uniquePageFocus = target.settings?.unique_page_focus ?? false;
+    const newUrlSampleTarget = target.settings?.sitemap_new_url_sample_target ?? null;
     // unique_page_focus prefers structural diversity first. If a template cap is
     // explicitly configured, respect it; otherwise default to one URL/template.
     const effectiveTemplateSampleCap = uniquePageFocus
@@ -345,18 +428,18 @@ export class TargetDiscoveryEngine {
       effectiveTemplateSampleCap,
       useStochasticSampling,
       previouslyScannedUrls,
-      urlManifest
+      urlManifest,
+      newUrlSampleTarget
     );
     sampledSitemapUrls.forEach(url => {
-      recordQueueEntry(
+      upsertQueueEntry(
         url,
         'sitemap_sample',
         'Template-diverse sitemap sample candidate'
       );
-      uniqueUrlSet.add(url);
     });
 
-    let finalQueue = Array.from(uniqueUrlSet);
+    let finalQueue = Array.from(queueEntriesByUrl.keys());
 
     // 5. Manifest-based filtering: remove URLs that are quarantined or recently succeeded.
     // This is a discovery-phase optimization — it eliminates even the lightweight probe
@@ -378,9 +461,11 @@ export class TargetDiscoveryEngine {
       }
 
       if (skipPreviouslyScanned && rescanWindowDays > 0) {
+        const recencyFilteredUrls = finalQueue.filter(url => queueEntriesByUrl.get(url)?.source === 'sitemap_sample');
+        const preservedUrls = finalQueue.filter(url => queueEntriesByUrl.get(url)?.source !== 'sitemap_sample');
         const { needsScan, recentlySucceeded } = UrlManifestStore.partitionByRecency(
           urlManifest,
-          finalQueue,
+          recencyFilteredUrls,
           rescanWindowDays
         );
         if (recentlySucceeded.length > 0) {
@@ -391,7 +476,7 @@ export class TargetDiscoveryEngine {
               `(set VITAL_RESCAN_WINDOW_DAYS=0 or FORCE_RESCAN=true to override).`
           );
         }
-        finalQueue = needsScan;
+        finalQueue = [...preservedUrls, ...needsScan];
       }
     }
 
@@ -399,7 +484,8 @@ export class TargetDiscoveryEngine {
       .map(url => queueEntriesByUrl.get(url))
       .filter((entry): entry is DiscoveryQueueEntry => Boolean(entry));
     const queueComposition = countDiscoveryQueueComposition(queueEntries);
-    this.saveScanQueue(target.id, queueEntries);
+    const queueSummary = this.buildQueueSummary(target.id, selectedAt, queueEntries, skippedRecentlyScanned, skippedQuarantined);
+    this.saveScanQueue(target.id, queueEntries, queueSummary);
 
     return { urls: finalQueue, skippedRecentlyScanned, skippedQuarantined, queueEntries, queueComposition };
   }
@@ -414,13 +500,14 @@ export class TargetDiscoveryEngine {
     this.nonHtmlExclusions = [];
   }
 
-  private static saveScanQueue(targetId: string, entries: DiscoveryQueueEntry[]): void {
+  private static saveScanQueue(targetId: string, entries: DiscoveryQueueEntry[], summary: DiscoveryQueueSummary): void {
     const runsDir = path.resolve(process.cwd(), 'dist', 'runs', targetId);
     if (!fs.existsSync(runsDir)) {
       fs.mkdirSync(runsDir, { recursive: true });
     }
 
     fs.writeFileSync(path.join(runsDir, 'scan-queue.json'), JSON.stringify(entries, null, 2), 'utf8');
+    fs.writeFileSync(path.join(runsDir, 'scan-queue-summary.json'), JSON.stringify(summary, null, 2), 'utf8');
   }
 
   private static async fetchSitemapResiliently(target: TargetConfig): Promise<string[]> {
@@ -581,7 +668,8 @@ export class TargetDiscoveryEngine {
     templateSampleCap: number,
     useStochasticSampling: boolean,
     previouslyScannedUrls: Set<string>,
-    urlManifest: UrlManifest
+    urlManifest: UrlManifest,
+    newUrlSampleTarget: number | null
   ): string[] {
     if (remainingSlots <= 0 || sitemapUrls.length === 0) {
       return [];
@@ -629,30 +717,49 @@ export class TargetDiscoveryEngine {
 
     const picked: string[] = [];
     const perGroupCounts = new Array<number>(perGroupOrdered.length).fill(0);
-    let progressed = true;
+    const pickPass = (predicate: (url: string) => boolean, maxSelections: number = Number.POSITIVE_INFINITY): void => {
+      let selections = 0;
+      let progressed = true;
+      while (picked.length < remainingSlots && progressed && selections < maxSelections) {
+        progressed = false;
+        for (let i = 0; i < perGroupOrdered.length; i += 1) {
+          if (picked.length >= remainingSlots || selections >= maxSelections) {
+            break;
+          }
+          if (perGroupCounts[i] >= templateSampleCap) {
+            continue;
+          }
+          const bucket = perGroupOrdered[i];
+          let idx = perGroupCounts[i];
+          while (idx < bucket.length && !predicate(bucket[idx])) {
+            idx += 1;
+          }
+          if (idx >= bucket.length) {
+            continue;
+          }
 
-    while (picked.length < remainingSlots && progressed) {
-      progressed = false;
-      for (let i = 0; i < perGroupOrdered.length; i += 1) {
-        if (picked.length >= remainingSlots) {
-          break;
+          picked.push(bucket[idx]);
+          perGroupCounts[i] = idx + 1;
+          selections += 1;
+          progressed = true;
         }
-        if (perGroupCounts[i] >= templateSampleCap) {
-          continue;
-        }
-        const bucket = perGroupOrdered[i];
-        const idx = perGroupCounts[i];
-        if (idx >= bucket.length) {
-          continue;
-        }
-
-        picked.push(bucket[idx]);
-        perGroupCounts[i] += 1;
-        progressed = true;
       }
+    };
+
+    const shouldCountAsNew = (url: string): boolean => !urlManifest[url] || !urlManifest[url].lastSuccessAt;
+    const newTarget = Number.isFinite(Number(newUrlSampleTarget)) && newUrlSampleTarget !== null
+      ? Math.max(0, Math.floor(Number(newUrlSampleTarget)))
+      : null;
+
+    if (newTarget !== null) {
+      pickPass(url => shouldCountAsNew(url), newTarget);
+      pickPass(url => !shouldCountAsNew(url));
+      pickPass(url => shouldCountAsNew(url));
+    } else {
+      pickPass(() => true);
     }
 
-    return picked;
+    return picked.slice(0, remainingSlots);
   }
 
   private static inferTemplateKey(url: string): string {
@@ -758,6 +865,74 @@ export class TargetDiscoveryEngine {
 
     const ageMs = Date.now() - lastChecked;
     return ageMs >= updatedRecheckHours * 60 * 60 * 1000;
+  }
+
+  private static buildQueueSummary(
+    targetId: string,
+    selectedAt: string,
+    queueEntries: DiscoveryQueueEntry[],
+    skippedRecentlyScanned: number,
+    skippedQuarantined: number
+  ): DiscoveryQueueSummary {
+    return {
+      targetId,
+      selectedAt,
+      queuedUrls: queueEntries.length,
+      skippedRecentlyScanned,
+      skippedQuarantined,
+      queueComposition: countDiscoveryQueueComposition(queueEntries)
+    };
+  }
+
+  private static selectStaleWeeklyRescanUrls(
+    targetId: string,
+    urlManifest: UrlManifest,
+    pageState: PageStateMap,
+    canonicalBaseHost: string,
+    includeSubdomains: boolean,
+    rescanWindowDays: number
+  ): string[] {
+    const windowMs = rescanWindowDays * 24 * 60 * 60 * 1000;
+    const candidateUrls = Object.values(urlManifest)
+      .filter(entry => Boolean(entry?.lastSuccessAt))
+      .filter(entry => {
+        const lastSuccessMs = Date.parse(entry.lastSuccessAt as string);
+        if (!Number.isFinite(lastSuccessMs)) {
+          return false;
+        }
+
+        const ageMs = Date.now() - lastSuccessMs;
+        return ageMs >= windowMs;
+      })
+      .map(entry => entry.url)
+      .filter(url => this.normalizeUrl(url) !== null)
+      .filter(url => this.isWithinHostScope(url, canonicalBaseHost, includeSubdomains))
+      .filter(url => this.isLikelyHtmlUrl(url))
+      .filter(url => !UrlManifestStore.isQuarantined(urlManifest[url]));
+
+    const deduped: string[] = [];
+    const seen = new Set<string>();
+    for (const url of candidateUrls) {
+      if (seen.has(url)) {
+        continue;
+      }
+
+      if (pageState[url]?.lastModified) {
+        const lastModified = Date.parse(pageState[url].lastModified as string);
+        if (!Number.isFinite(lastModified)) {
+          continue;
+        }
+      }
+
+      seen.add(url);
+      deduped.push(url);
+    }
+
+    if (deduped.length > 0) {
+      console.log(`🗓️  Selected ${deduped.length} stale weekly rescan URL(s) for ${targetId}.`);
+    }
+
+    return deduped;
   }
 
   private static hashString(value: string): number {

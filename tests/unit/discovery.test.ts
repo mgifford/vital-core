@@ -73,7 +73,7 @@ describe('TargetDiscoveryEngine', () => {
     ]);
   });
 
-  it('persists a structured scan queue with source composition', async () => {
+  it('persists a structured scan queue with source composition and run metadata', async () => {
     fetchMock.mockResolvedValue({
       sites: [
         'https://www.cms.gov/news/new-page',
@@ -147,6 +147,7 @@ describe('TargetDiscoveryEngine', () => {
       'priority_url',
       'sitemap_sample'
     ]);
+    expect(queueEntries.every(entry => typeof entry.selectedAt === 'string')).toBe(true);
     expect(queueComposition).toEqual({
       recently_updated: 1,
       duckduckgo_seed: 1,
@@ -156,7 +157,17 @@ describe('TargetDiscoveryEngine', () => {
     });
 
     const queuePath = path.resolve(process.cwd(), 'dist', 'runs', target.id, 'scan-queue.json');
-    const persistedQueue = JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<{ url: string; source: string }>;
+    const persistedQueue = JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<{ url: string; source: string; selectedAt?: string }>;
+    const queueSummaryPath = path.resolve(process.cwd(), 'dist', 'runs', target.id, 'scan-queue-summary.json');
+    const persistedSummary = JSON.parse(fs.readFileSync(queueSummaryPath, 'utf8')) as {
+      targetId: string;
+      selectedAt: string;
+      queuedUrls: number;
+      skippedRecentlyScanned: number;
+      skippedQuarantined: number;
+      queueComposition: Record<string, number>;
+    };
+
     expect(persistedQueue).toHaveLength(4);
     expect(persistedQueue.map(entry => entry.source)).toEqual([
       'recently_updated',
@@ -164,6 +175,20 @@ describe('TargetDiscoveryEngine', () => {
       'priority_url',
       'sitemap_sample'
     ]);
+    expect(typeof persistedQueue[0].selectedAt).toBe('string');
+    expect(persistedSummary).toMatchObject({
+      targetId: target.id,
+      queuedUrls: 4,
+      skippedRecentlyScanned: 0,
+      skippedQuarantined: 0,
+      queueComposition: {
+        recently_updated: 1,
+        duckduckgo_seed: 1,
+        priority_url: 1,
+        stale_weekly_rescan: 0,
+        sitemap_sample: 1
+      }
+    });
   });
 
   it('keeps queue output deterministic across different run dates', async () => {
@@ -200,16 +225,20 @@ describe('TargetDiscoveryEngine', () => {
     vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
     const firstRun = await TargetDiscoveryEngine.discoverUrls(target);
     const queuePath = path.resolve(process.cwd(), 'dist', 'runs', target.id, 'scan-queue.json');
-    const firstQueueSnapshot = JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<Record<string, unknown>>;
+    const firstQueueSnapshot = (JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<Record<string, unknown>>)
+      .map(({ selectedAt, ...entry }) => entry);
 
     vi.setSystemTime(new Date('2026-01-08T00:00:00.000Z'));
     const secondRun = await TargetDiscoveryEngine.discoverUrls(target);
-    const secondQueueSnapshot = JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<Record<string, unknown>>;
+    const secondQueueSnapshot = (JSON.parse(fs.readFileSync(queuePath, 'utf8')) as Array<Record<string, unknown>>)
+      .map(({ selectedAt, ...entry }) => entry);
 
     expect(secondRun.urls).toEqual(firstRun.urls);
-    expect(secondRun.queueEntries).toEqual(firstRun.queueEntries);
+    expect(secondRun.queueEntries.map(({ selectedAt, ...entry }) => entry)).toEqual(
+      firstRun.queueEntries.map(({ selectedAt, ...entry }) => entry)
+    );
     expect(secondQueueSnapshot).toEqual(firstQueueSnapshot);
-    expect(firstQueueSnapshot.every(entry => !Object.prototype.hasOwnProperty.call(entry, 'selectedAt'))).toBe(true);
+    expect(firstRun.queueEntries.every(entry => typeof entry.selectedAt === 'string')).toBe(true);
   });
 
   it('falls back to priority URLs if sitemap retrieval fails', async () => {
@@ -594,6 +623,71 @@ describe('TargetDiscoveryEngine', () => {
     expect(coverageUrls).toHaveLength(2);
   });
 
+  it('honors the sitemap new-url sample target before backfilling with historical pages', async () => {
+    fetchMock.mockResolvedValue({
+      sites: [
+        'https://www.cms.gov/a/new-1',
+        'https://www.cms.gov/a/new-2',
+        'https://www.cms.gov/b/new-3',
+        'https://www.cms.gov/b/old-1',
+        'https://www.cms.gov/c/old-2'
+      ]
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: 3,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_new_url_sample_target: 1,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    const oldSuccess = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString();
+    const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
+      urlManifest: {
+        'https://www.cms.gov/b/old-1': {
+          url: 'https://www.cms.gov/b/old-1',
+          discoveredAt: oldSuccess,
+          lastAttemptedAt: oldSuccess,
+          lastSuccessAt: oldSuccess,
+          lastStatus: 'COMPLETED',
+          consecutiveFailures: 0,
+          cooldownUntil: null,
+          contentHash: null
+        },
+        'https://www.cms.gov/c/old-2': {
+          url: 'https://www.cms.gov/c/old-2',
+          discoveredAt: oldSuccess,
+          lastAttemptedAt: oldSuccess,
+          lastSuccessAt: oldSuccess,
+          lastStatus: 'COMPLETED',
+          consecutiveFailures: 0,
+          cooldownUntil: null,
+          contentHash: null
+        }
+      }
+    });
+
+    expect(queue).toHaveLength(3);
+    expect(queue.filter(url => url.includes('/new-'))).toHaveLength(1);
+    expect(queue).toContain('https://www.cms.gov/a/new-1');
+    expect(queue).toContain('https://www.cms.gov/b/old-1');
+    expect(queue).toContain('https://www.cms.gov/c/old-2');
+  });
+
   it('prioritizes URLs not previously scanned when filling sitemap sample slots', async () => {
     fetchMock.mockResolvedValue({
       sites: [
@@ -662,7 +756,7 @@ describe('TargetDiscoveryEngine', () => {
     ]);
   });
 
-  it('applies freshness checks to priority URLs and keeps newly discovered URLs', async () => {
+  it('keeps priority URLs even when they were recently successful and still adds new sitemap URLs', async () => {
     fetchMock.mockResolvedValue({
       sites: [
         'https://www.cms.gov/news/new-page',
@@ -707,6 +801,7 @@ describe('TargetDiscoveryEngine', () => {
     };
 
     const { urls: queue } = await TargetDiscoveryEngine.discoverUrls(target, {
+      skipPreviouslyScanned: false,
       pageState: {
         'https://www.cms.gov/news/old-page': {
           etag: null,
@@ -719,7 +814,58 @@ describe('TargetDiscoveryEngine', () => {
       }
     });
 
-    expect(queue).toEqual(['https://www.cms.gov/news/new-page']);
+    expect(queue).toEqual([
+      'https://www.cms.gov/news/old-page',
+      'https://www.cms.gov/news/new-page'
+    ]);
+  });
+
+  it('adds stale manifest URLs as weekly rescan candidates', async () => {
+    fetchMock.mockResolvedValue({
+      sites: ['https://www.cms.gov/news/new-page']
+    });
+
+    const target: TargetConfig = {
+      id: 'cms-gov',
+      name: 'CMS',
+      base_url: 'https://www.cms.gov',
+      sitemap_url: 'https://www.cms.gov/sitemap.xml',
+      include_paths: ['/**'],
+      priority_urls: [],
+      settings: {
+        postLoadDelay: 2000,
+        max_pages: null,
+        maxTimeoutMs: 120000,
+        include_subdomains: false,
+        sitemap_template_sample_cap: null,
+        sitemap_sample_stochastic: false,
+        unique_page_focus: false,
+        throttle_profile: null,
+        daily_page_budget: null
+      }
+    };
+
+    const staleSuccess = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString();
+    const { urls: queue, queueEntries } = await TargetDiscoveryEngine.discoverUrls(target, {
+      urlManifest: {
+        'https://www.cms.gov/news/old-page': {
+          url: 'https://www.cms.gov/news/old-page',
+          discoveredAt: staleSuccess,
+          lastAttemptedAt: staleSuccess,
+          lastSuccessAt: staleSuccess,
+          lastStatus: 'COMPLETED',
+          consecutiveFailures: 0,
+          cooldownUntil: null,
+          contentHash: null
+        }
+      }
+    });
+
+    expect(queue).toEqual([
+      'https://www.cms.gov/news/old-page',
+      'https://www.cms.gov/news/new-page'
+    ]);
+    expect(queueEntries[0].source).toBe('stale_weekly_rescan');
   });
 
   it('falls back to DuckDuckGo when the sitemap only yields already-scanned URLs', async () => {

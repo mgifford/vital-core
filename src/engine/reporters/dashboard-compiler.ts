@@ -3,7 +3,7 @@ import * as path from 'path';
 import { TargetScanResult, PageScanReport } from '../../types/site-quality-spec';
 import { QualityIndexReporter, TargetQualityIndexEntry } from './quality-index';
 import { ConsensusPrioritizer, ConsensusSummary } from './consensus-prioritizer';
-import { DiscoveryNonHtmlExclusion } from '../discovery';
+import { DiscoveryNonHtmlExclusion, DiscoveryQueueSummary } from '../discovery';
 import { DomainRatingScorer } from './domain-rating';
 import { DomainAccessibilityRating, LetterGrade } from '../../types/domain-rating';
 import { PrioritySeedSnapshot } from '../priority-seeds';
@@ -21,7 +21,11 @@ export class DashboardCompiler {
    */
   public static compileStaticDashboard(
     allResults: TargetScanResult[],
-    options: { nonHtmlDiscoveryExclusions?: DiscoveryNonHtmlExclusion[]; prioritySeedSnapshot?: PrioritySeedSnapshot | null } = {}
+    options: {
+      nonHtmlDiscoveryExclusions?: DiscoveryNonHtmlExclusion[];
+      queueSummaries?: Map<string, DiscoveryQueueSummary>;
+      prioritySeedSnapshot?: PrioritySeedSnapshot | null;
+    } = {}
   ): void {
     if (!fs.existsSync(this.DIST_DIR)) {
       fs.mkdirSync(this.DIST_DIR, { recursive: true });
@@ -37,7 +41,7 @@ export class DashboardCompiler {
     if (!fs.existsSync(runsDir)) {
       fs.mkdirSync(runsDir, { recursive: true });
     }
-    const summaryPayload = this.buildLatestSummary(allResults, targetQualityIndex);
+    const summaryPayload = this.buildLatestSummary(allResults, targetQualityIndex, options.queueSummaries ?? new Map());
     fs.writeFileSync(path.join(runsDir, 'latest-summary.json'), JSON.stringify(summaryPayload), 'utf8');
 
     const uniqueErrors = UniqueErrorsReporter.buildUniqueErrors(allResults);
@@ -2010,13 +2014,15 @@ ${siteFooterHtml}
    */
   private static buildLatestSummary(
     allResults: TargetScanResult[],
-    targetQuality: TargetQualityIndexEntry[]
+    targetQuality: TargetQualityIndexEntry[],
+    queueSummaries: Map<string, DiscoveryQueueSummary>
   ): {
     generatedAt: string;
     targets: Array<{
       targetId: string;
       domain: string;
       scanDurationMs: number;
+      queueSummary: DiscoveryQueueSummary | null;
       pagesScanned: Array<{
         url: string;
         status: string;
@@ -2042,6 +2048,7 @@ ${siteFooterHtml}
       targetId: target.targetId,
       domain: target.domain,
       scanDurationMs: target.scanDurationMs,
+      queueSummary: queueSummaries.get(target.targetId) ?? null,
       pagesScanned: target.pagesScanned.map(page => ({
         url: page.url,
         status: page.status,

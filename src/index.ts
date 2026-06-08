@@ -58,18 +58,24 @@ function saveSingleTargetArtifacts(
 
   fs.writeFileSync(path.join(artifactDir, 'exclusions.json'), JSON.stringify(exclusions), 'utf8');
 
-  // Copy the url-manifest so the compile job can restore it during the next run.
-  const sourceManifestPath = path.resolve(
-    process.cwd(), 'dist', 'runs', result.targetId, 'url-manifest.json'
-  );
-  if (fs.existsSync(sourceManifestPath)) {
-    fs.copyFileSync(sourceManifestPath, path.join(artifactDir, 'url-manifest.json'));
-  }
+  const sourceRunDir = path.resolve(process.cwd(), 'dist', 'runs', result.targetId);
+  const copyIfExists = (fileName: string): void => {
+    const sourcePath = path.join(sourceRunDir, fileName);
+    if (fs.existsSync(sourcePath)) {
+      fs.copyFileSync(sourcePath, path.join(artifactDir, fileName));
+    }
+  };
+
+  // Copy queue and manifest artifacts so the compile job can publish them.
+  copyIfExists('scan-queue.json');
+  copyIfExists('scan-queue-summary.json');
+  copyIfExists('url-manifest.json');
 
   console.log(
     `💾 Saved scan artifacts for "${result.targetId}": ` +
       `${result.pagesScanned.length} pages, ${Object.keys(pageStateDelta).length} page-state entries, ` +
-      `${exclusions.length} non-HTML exclusions.`
+      `${exclusions.length} non-HTML exclusions, ` +
+      `queue metadata copied from ${sourceRunDir}.`
   );
 }
 
