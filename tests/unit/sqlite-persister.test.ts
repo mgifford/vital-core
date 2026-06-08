@@ -296,4 +296,41 @@ describe('SqlitePersister', () => {
     expect(tables).toContain('runs');
     expect(tables).not.toContain('cache_only');
   });
+
+  it('exports weekly issues snapshot from the cached database', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sqlite-persister-weekly-'));
+    process.chdir(tmpDir);
+
+    SqlitePersister.appendRun([makeResult('alpha', 2), makeResult('beta', 1)], makeRunEntry('run-weekly'));
+    SqlitePersister.exportWeeklyIssuesSnapshot(7, 2);
+
+    const outputRoot = path.join(tmpDir, 'dist/api/issues-last-week');
+    const indexPath = path.join(outputRoot, 'index.json');
+    const chunkOnePath = path.join(outputRoot, 'all-issues-0001.json');
+    const chunkTwoPath = path.join(outputRoot, 'all-issues-0002.json');
+    const alphaPath = path.join(outputRoot, 'targets/alpha.json');
+    const betaPath = path.join(outputRoot, 'targets/beta.json');
+
+    expect(fs.existsSync(indexPath)).toBe(true);
+    expect(fs.existsSync(chunkOnePath)).toBe(true);
+    expect(fs.existsSync(chunkTwoPath)).toBe(true);
+    expect(fs.existsSync(alphaPath)).toBe(true);
+    expect(fs.existsSync(betaPath)).toBe(true);
+
+    const index = JSON.parse(fs.readFileSync(indexPath, 'utf8')) as {
+      totalIssues: number;
+      chunkCount: number;
+      targets: Array<{ targetId: string; issueCount: number; file: string }>;
+    };
+    const alpha = JSON.parse(fs.readFileSync(alphaPath, 'utf8')) as { issueCount: number; rows: unknown[] };
+    const beta = JSON.parse(fs.readFileSync(betaPath, 'utf8')) as { issueCount: number; rows: unknown[] };
+
+    expect(index.totalIssues).toBe(3);
+    expect(index.chunkCount).toBe(2);
+    expect(index.targets.map(target => target.targetId)).toEqual(['alpha', 'beta']);
+    expect(alpha.issueCount).toBe(2);
+    expect(alpha.rows.length).toBe(2);
+    expect(beta.issueCount).toBe(1);
+    expect(beta.rows.length).toBe(1);
+  });
 });

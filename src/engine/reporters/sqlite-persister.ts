@@ -211,18 +211,16 @@ export class SqlitePersister {
         const targetsDir = path.join(outputRoot, 'targets');
         fs.mkdirSync(targetsDir, { recursive: true });
 
-        const totalIssues = Number(
-          db.prepare(`
-            SELECT COUNT(*) AS count
-            FROM violations v
-            JOIN pages p ON p.id = v.page_id
-            WHERE julianday(p.scanned_at) >= julianday('now', ?)
-          `).get(`-${windowDays} days`)?.count ?? 0
+        const rows = this.queryWeeklyIssueRows(db, windowDays);
+        const totalIssues = rows.length;
+
+        console.log(
+          `📦 Exporting weekly issues snapshot from vital.db (${totalIssues} issue instance(s) across ${windowDays} day(s)).`
         );
 
         const chunks: string[] = [];
         for (let offset = 0, idx = 1; offset < totalIssues; offset += chunkSize, idx += 1) {
-          const rows = this.queryWeeklyIssueRows(db, windowDays, chunkSize, offset);
+          const chunkRows = rows.slice(offset, offset + chunkSize);
           const fileName = `all-issues-${String(idx).padStart(4, '0')}.json`;
           fs.writeFileSync(
             path.join(outputRoot, fileName),
@@ -231,57 +229,56 @@ export class SqlitePersister {
               chunkIndex: idx,
               chunkSize,
               offset,
-              rowCount: rows.length,
-              rows
+              rowCount: chunkRows.length,
+              rows: chunkRows
             }, null, 2),
             'utf8'
           );
           chunks.push(`api/issues-last-week/${fileName}`);
         }
 
-        const targetSummaries = db.prepare(`
-          SELECT
-            p.target_id AS targetId,
-            MIN(p.domain) AS domain,
-            COUNT(*) AS issueCount,
-            COUNT(DISTINCT p.url) AS affectedPages,
-            COUNT(DISTINCT v.rule_id) AS distinctRules
-          FROM violations v
-          JOIN pages p ON p.id = v.page_id
-          WHERE julianday(p.scanned_at) >= julianday('now', ?)
-          GROUP BY p.target_id
-          ORDER BY issueCount DESC
-        `).all(`-${windowDays} days`) as Array<{
+        const targetRollups = new Map<string, {
           targetId: string;
           domain: string;
           issueCount: number;
-          affectedPages: number;
-          distinctRules: number;
-        }>;
+          affectedPages: Set<string>;
+          distinctRules: Set<string>;
+          rows: WeeklyIssueRow[];
+        }>();
+
+        for (const row of rows) {
+          const current = targetRollups.get(row.targetId) || {
+            targetId: row.targetId,
+            domain: row.domain,
+            issueCount: 0,
+            affectedPages: new Set<string>(),
+            distinctRules: new Set<string>(),
+            rows: [] as WeeklyIssueRow[]
+          };
+
+          current.issueCount += 1;
+          if (row.url) {
+            current.affectedPages.add(row.url);
+          }
+          if (row.ruleId) {
+            current.distinctRules.add(row.ruleId);
+          }
+          current.rows.push(row);
+          targetRollups.set(row.targetId, current);
+        }
+
+        const targetSummaries = Array.from(targetRollups.values())
+          .map(target => ({
+            targetId: target.targetId,
+            domain: target.domain,
+            issueCount: target.issueCount,
+            affectedPages: target.affectedPages.size,
+            distinctRules: target.distinctRules.size,
+            rows: target.rows
+          }))
+          .sort((a, b) => b.issueCount - a.issueCount || a.targetId.localeCompare(b.targetId));
 
         for (const target of targetSummaries) {
-          const targetRows = db.prepare(`
-            SELECT
-              v.id AS violationId,
-              p.run_id AS runId,
-              p.target_id AS targetId,
-              p.domain AS domain,
-              p.id AS pageId,
-              p.url AS url,
-              p.status AS status,
-              p.scanned_at AS scannedAt,
-              v.rule_id AS ruleId,
-              v.impact AS impact,
-              v.message AS message,
-              v.selector AS selector,
-              v.provider AS provider
-            FROM violations v
-            JOIN pages p ON p.id = v.page_id
-            WHERE p.target_id = ?
-              AND julianday(p.scanned_at) >= julianday('now', ?)
-            ORDER BY p.scanned_at DESC, p.url ASC, v.rule_id ASC, v.id ASC
-          `).all(target.targetId, `-${windowDays} days`) as unknown as WeeklyIssueRow[];
-
           const targetFile = `${this.sanitizeTargetId(target.targetId)}.json`;
           fs.writeFileSync(
             path.join(targetsDir, targetFile),
@@ -289,8 +286,8 @@ export class SqlitePersister {
               targetId: target.targetId,
               domain: target.domain,
               windowDays,
-              issueCount: targetRows.length,
-              rows: targetRows
+              issueCount: target.issueCount,
+              rows: target.rows
             }, null, 2),
             'utf8'
           );
@@ -316,6 +313,10 @@ export class SqlitePersister {
           }, null, 2),
           'utf8'
         );
+
+        console.log(
+          `📦 Weekly issues snapshot written (${totalIssues} issue instance(s), ${chunks.length} chunk file(s), ${targetSummaries.length} target file(s)).`
+        );
       } finally {
         db.close();
       }
@@ -325,12 +326,7 @@ export class SqlitePersister {
     }
   }
 
-  private static queryWeeklyIssueRows(
-    db: DatabaseSync,
-    windowDays: number,
-    limit: number,
-    offset: number
-  ): WeeklyIssueRow[] {
+  private static queryWeeklyIssueRows(db: DatabaseSync, windowDays: number): WeeklyIssueRow[] {
     return db.prepare(`
       SELECT
         v.id AS violationId,
@@ -350,8 +346,7 @@ export class SqlitePersister {
       JOIN pages p ON p.id = v.page_id
       WHERE julianday(p.scanned_at) >= julianday('now', ?)
       ORDER BY p.scanned_at DESC, p.target_id ASC, p.url ASC, v.rule_id ASC, v.id ASC
-      LIMIT ? OFFSET ?
-    `).all(`-${windowDays} days`, limit, offset) as unknown as WeeklyIssueRow[];
+    `).all(`-${windowDays} days`) as unknown as WeeklyIssueRow[];
   }
 
   private static sanitizeTargetId(value: string): string {

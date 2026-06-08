@@ -35,6 +35,7 @@ interface RunEntry {
 interface RunIndex {
   updatedAt: string;
   latestRunId: string;
+  pagesScannedTotal: number;
   runs: RunEntry[];
 }
 
@@ -287,6 +288,7 @@ export class RunHistoryReporter {
       const nextIndex: RunIndex = {
         updatedAt: generatedAt,
         latestRunId: runId,
+        pagesScannedTotal: mergedRuns.reduce((sum, run) => sum + (Number(run.pagesScanned) || 0), 0),
         runs: mergedRuns
       };
 
@@ -304,8 +306,11 @@ export class RunHistoryReporter {
         'utf8'
       );
 
+      console.log('🗃️  Appending run data to vital.db...');
       SqlitePersister.appendRun(allResults, runEntry);
+      console.log('🗃️  vital.db append complete. Exporting weekly issues snapshot...');
       SqlitePersister.exportWeeklyIssuesSnapshot(7, 5000);
+      console.log('🗃️  SQLite finalization complete.');
     } catch (error) {
       if (this.isCancellationError(error)) {
         console.warn('⚠️  Run history finalization canceled; keeping the primary run artifacts that were already written.');
@@ -439,6 +444,7 @@ export class RunHistoryReporter {
       return {
         updatedAt: new Date(0).toISOString(),
         latestRunId: '',
+        pagesScannedTotal: 0,
         runs: []
       };
     }
@@ -452,12 +458,18 @@ export class RunHistoryReporter {
       return {
         updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : new Date(0).toISOString(),
         latestRunId: typeof parsed.latestRunId === 'string' ? parsed.latestRunId : '',
+        pagesScannedTotal: typeof parsed.pagesScannedTotal === 'number'
+          ? parsed.pagesScannedTotal
+          : Array.isArray(parsed.runs)
+            ? parsed.runs.reduce((sum, run) => sum + (typeof run?.pagesScanned === 'number' ? run.pagesScanned : 0), 0)
+            : 0,
         runs: parsed.runs.filter(this.isRunEntry).map(this.withQualityDefaults)
       };
     } catch {
       return {
         updatedAt: new Date(0).toISOString(),
         latestRunId: '',
+        pagesScannedTotal: 0,
         runs: []
       };
     }

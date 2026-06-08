@@ -91,6 +91,7 @@ describe('RunHistoryReporter', () => {
 
     expect(index.runs.length).toBe(2);
     expect(index.runs[0].runId).toBeTruthy();
+    expect((index as unknown as { pagesScannedTotal: number }).pagesScannedTotal).toBe(3);
 
     const latest = JSON.parse(fs.readFileSync(latestPath, 'utf8')) as {
       qualityIndex: { score: number; gateStatus: string };

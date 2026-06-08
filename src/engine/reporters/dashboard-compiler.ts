@@ -4421,7 +4421,9 @@ html:not([data-theme='light']) .severity-moderate { color: #f0c04a; }
           }
 
           const runCount = index.runs.length;
-          const pagesAcrossRetainedRuns = index.runs.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
+          const pagesAcrossRetainedRuns = Number.isFinite(Number(index.pagesScannedTotal))
+            ? Number(index.pagesScannedTotal)
+            : index.runs.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
           const todayPrefix = new Date().toISOString().slice(0, 10);
           const runsToday = index.runs.filter(run => String(run && run.generatedAt ? run.generatedAt : '').startsWith(todayPrefix));
           const pagesToday = runsToday.reduce((sum, run) => sum + (Number(run && run.pagesScanned ? run.pagesScanned : 0) || 0), 0);
