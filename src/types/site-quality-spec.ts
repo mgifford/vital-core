@@ -32,6 +32,17 @@ export const PageScanReportSchema = z.object({
   timestamp: z.string().datetime(),
   status: z.enum(['COMPLETED', 'TIMEOUT', 'WAF_BLOCKED', 'FAILED', 'SKIPPED_UNCHANGED', 'SKIPPED_NON_HTML', 'NOT_FOUND']),
   errorMessage: z.string().nullable(),
+  pageTitle: z.string().nullable().optional(),
+
+  scanContext: z.object({
+    browserFamily: z.enum(['chrome', 'firefox', 'safari']),
+    viewportLabel: z.string(),
+    viewport: z.object({
+      width: z.number(),
+      height: z.number()
+    }),
+    colorScheme: z.enum(['light', 'dark'])
+  }).nullable().optional(),
 
   // 0. Raw Alfa scan capture for future normalized consensus mapping
   alfaAudits: PageAlfaAuditSchema.nullable().optional(),

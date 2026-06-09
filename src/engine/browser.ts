@@ -199,6 +199,16 @@ export class ResilientBrowserEngine {
         timestamp: new Date().toISOString(),
         status: 'COMPLETED',
         errorMessage: null,
+        pageTitle: null,
+        scanContext: {
+          browserFamily: emulation.family,
+          viewportLabel: emulation.viewportLabel,
+          viewport: {
+            width: emulation.viewport.width,
+            height: emulation.viewport.height
+          },
+          colorScheme: emulation.colorScheme
+        },
         alfaAudits: null,
         technologyStack: [],
         thirdPartyImpact: null,
@@ -326,6 +336,7 @@ export class ResilientBrowserEngine {
 
           // 7. Run Live browser evaluations in memory (Axe Core Automation)
           console.log(`🧪 Launching live accessibility evaluations for: ${url}`);
+          baseReport.pageTitle = await activePage.title();
           baseReport.liveAudits = await LiveWorker.runLiveAudits(activePage);
 
           // 7b. Alfa — always runs alongside axe for independent ACT-rules cross-check.
