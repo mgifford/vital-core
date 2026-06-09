@@ -22,6 +22,11 @@ type IssueEvidence = {
   scannedAt: string;
 };
 
+type ParsedIssueEvidence = Partial<IssueEvidence> & {
+  impactedCriteria?: string[];
+  target?: string[];
+};
+
 type IssueGroup = {
   key: string;
   ruleId: string;
@@ -1110,7 +1115,7 @@ ${body}
   }
 
   private static parseIssueEvidence(row: WeeklyIssueRow): IssueEvidence {
-    const parsed = this.safeJson<Partial<IssueEvidence> & { impactedCriteria?: string[] }>(row.violationJson);
+    const parsed = this.safeJson<ParsedIssueEvidence>(row.violationJson);
     const target = Array.isArray(parsed?.target) && parsed.target.length > 0
       ? parsed.target
       : (row.selector ? row.selector.split(' > ').map(part => part.trim()).filter(Boolean) : []);
