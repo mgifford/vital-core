@@ -35,11 +35,11 @@ try {
   const readmeSource = fs.readFileSync(path.join(standardsRoot, 'README.md'), 'utf8');
 
   assert(
-    auditsSource.includes('https://github.com/ScanGov/data/raw/refs/heads/main/standards/audits.json'),
+    auditsSource.includes('https://data.scangov.org/standards/audits.json'),
     'audits.js no longer points to canonical ScanGov audits.json source.'
   );
   assert(
-    guidanceSource.includes('https://github.com/ScanGov/data/raw/refs/heads/main/standards/guidance.json'),
+    guidanceSource.includes('https://data.scangov.org/standards/guidance.json'),
     'guidance.js no longer points to canonical ScanGov guidance.json source.'
   );
   assert(
