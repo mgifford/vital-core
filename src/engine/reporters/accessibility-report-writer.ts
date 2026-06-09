@@ -84,7 +84,10 @@ type ReportData = {
 
 export class WeeklyAccessibilityReportWriter {
   private static readonly WINDOW_DAYS = 49;
-  private static readonly DOMAINS_DIR = path.resolve(process.cwd(), 'dist/domains');
+
+  private static get domainsDir(): string {
+    return path.resolve(process.cwd(), 'dist/domains');
+  }
 
   public static writeWeeklyAccessibilityReports(allResults: TargetScanResult[] = []): void {
     const targets = SqlitePersister.queryWeeklyTargets(this.WINDOW_DAYS);
@@ -93,8 +96,8 @@ export class WeeklyAccessibilityReportWriter {
       return;
     }
 
-    fs.rmSync(this.DOMAINS_DIR, { recursive: true, force: true });
-    fs.mkdirSync(this.DOMAINS_DIR, { recursive: true });
+    fs.rmSync(this.domainsDir, { recursive: true, force: true });
+    fs.mkdirSync(this.domainsDir, { recursive: true });
 
     for (const target of domainTargets) {
       this.writeDomainReport(target, allResults);
@@ -118,7 +121,7 @@ export class WeeklyAccessibilityReportWriter {
 
   private static writeDomainReport(target: WeeklyTargetRow, allResults: TargetScanResult[]): void {
     const safeTargetId = this.sanitizePathSegment(target.targetId);
-    const domainDir = path.join(this.DOMAINS_DIR, safeTargetId);
+    const domainDir = path.join(this.domainsDir, safeTargetId);
     fs.mkdirSync(domainDir, { recursive: true });
 
     const pages = SqlitePersister.queryWeeklyPagesByDomain(target.targetId, this.WINDOW_DAYS);
