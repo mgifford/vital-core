@@ -101,6 +101,7 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
       goto: vi.fn().mockResolvedValue(undefined),
       waitForTimeout: vi.fn().mockResolvedValue(undefined),
       content: vi.fn().mockResolvedValue('<html><body>Hello</body></html>'),
+      title: vi.fn().mockResolvedValue('Example Page'),
       close: vi.fn().mockResolvedValue(undefined)
     };
     const mockContext = {
