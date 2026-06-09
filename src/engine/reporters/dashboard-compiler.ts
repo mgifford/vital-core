@@ -1064,6 +1064,416 @@ ${siteFooterHtml}
         </tr>`
       ).join('');
 
+      const weeklyRating = this.buildWeeklyLeaderboardFromDb([target], null)[0] || null;
+      const weeklyIssueRowsRaw = SqlitePersister.queryWeeklyIssueRowsByDomain(String(target.targetId), 7);
+      const weeklyIssueRows = weeklyIssueRowsRaw.length > 0
+        ? weeklyIssueRowsRaw
+        : ruleGroupsSorted.flatMap(rule => {
+            const primaryProvider = Array.from(rule.sourceEngines || []).sort()[0] || 'axe';
+            return rule.pages.flatMap(page => {
+              const instanceCount = Array.isArray(page.instances) && page.instances.length > 0 ? page.instances.length : 1;
+              return Array.from({ length: instanceCount }).map(() => ({
+                violationId: 0,
+                runId: 'latest',
+                targetId: String(target.targetId),
+                domain: String(target.domain || ''),
+                pageId: page.url,
+                url: page.url,
+                status: 'COMPLETED',
+                scannedAt: latestRunSummary?.generatedAt || '',
+                ruleId: rule.id,
+                impact: rule.severity,
+                message: rule.description,
+                selector: '',
+                provider: primaryProvider
+              }));
+            });
+          });
+      const weeklySeverityCounts = weeklyIssueRows.reduce((acc, row) => {
+        const impact = String(row.impact || 'minor').toLowerCase();
+        acc.set(impact, (acc.get(impact) || 0) + 1);
+        return acc;
+      }, new Map<string, number>());
+      const weeklyMaxSeverityCount = Math.max(
+        weeklySeverityCounts.get('critical') || 0,
+        weeklySeverityCounts.get('serious') || 0,
+        weeklySeverityCounts.get('moderate') || 0,
+        weeklySeverityCounts.get('minor') || 0,
+        1
+      );
+      const weeklyBuildSevBarRow = (label: string, sev: string, count: number): string => {
+        const pct = Math.round((count / weeklyMaxSeverityCount) * 100);
+        return `<div class="a11y-bar-row">
+          <span class="a11y-bar-label severity-${sev}">${this.escapeHtml(label)}</span>
+          <div class="a11y-bar-track" role="img" aria-label="${this.escapeHtml(label)}: ${this.escapeHtml(count)} issue${count !== 1 ? 's' : ''}">
+            <div class="a11y-bar-fill a11y-fill-${sev}" style="width:${pct}%"></div>
+          </div>
+          <span class="a11y-bar-count">${this.escapeHtml(count)}</span>
+        </div>`;
+      };
+      const weeklyPageSummaryMap = new Map<string, {
+        url: string;
+        instanceCount: number;
+        ruleCounts: Map<string, number>;
+      }>();
+
+      weeklyIssueRows.forEach(row => {
+        const url = String(row.url || '');
+        const ruleId = String(row.ruleId || '');
+        if (!url || !ruleId) {
+          return;
+        }
+
+        const current = weeklyPageSummaryMap.get(url) || {
+          url,
+          instanceCount: 0,
+          ruleCounts: new Map<string, number>()
+        };
+        current.instanceCount += 1;
+        current.ruleCounts.set(ruleId, (current.ruleCounts.get(ruleId) || 0) + 1);
+        weeklyPageSummaryMap.set(url, current);
+      });
+
+      const weeklyTopPagesRows = Array.from(weeklyPageSummaryMap.values())
+        .sort((a, b) => {
+          if (b.instanceCount !== a.instanceCount) {
+            return b.instanceCount - a.instanceCount;
+          }
+          return a.url.localeCompare(b.url);
+        })
+        .slice(0, 10)
+        .map(page => {
+          const topRules = Array.from(page.ruleCounts.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([ruleId, count]) => `<code>${this.escapeHtml(ruleId)}</code> (${this.escapeHtml(count)})`)
+            .join(', ');
+
+          return `<tr>
+            <td><a href="${this.escapeHtml(page.url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(page.url)}</a></td>
+            <td>${this.escapeHtml(page.instanceCount)}</td>
+            <td>${topRules || 'n/a'}</td>
+          </tr>`;
+        }).join('');
+      const weeklyIssueGroupsMap = new Map<string, {
+        key: string;
+        ruleId: string;
+        severity: string;
+        provider: string;
+        wcagVersion: string;
+        description: string;
+        helpUrl: string;
+        pageUrls: Set<string>;
+        instanceCount: number;
+      }>();
+
+      weeklyIssueRows.forEach(row => {
+        const provider = String(row.provider || 'unknown').trim() || 'unknown';
+        const ruleId = String(row.ruleId || '').trim();
+        if (!ruleId) {
+          return;
+        }
+
+        const key = `${provider}:${ruleId}`;
+        const current = weeklyIssueGroupsMap.get(key) || {
+          key,
+          ruleId,
+          severity: String(row.impact || 'minor').toLowerCase(),
+          provider,
+          wcagVersion: 'best-practice',
+          description: String(row.message || ruleId),
+          helpUrl: '',
+          pageUrls: new Set<string>(),
+          instanceCount: 0
+        };
+        const metadata = ruleGroupMap.get(key);
+        if (metadata) {
+          current.severity = String(metadata.severity || current.severity).toLowerCase();
+          current.wcagVersion = metadata.wcagVersion || current.wcagVersion;
+          current.description = metadata.description || current.description;
+          current.helpUrl = metadata.helpUrl || current.helpUrl;
+        }
+
+        current.pageUrls.add(String(row.url || ''));
+        current.instanceCount += 1;
+        weeklyIssueGroupsMap.set(key, current);
+      });
+
+      const weeklySeverityOrder = ['critical', 'serious', 'moderate', 'minor'];
+      const weeklyIssueRowsHtml = Array.from(weeklyIssueGroupsMap.values())
+        .sort((a, b) => {
+          const severityDelta = weeklySeverityOrder.indexOf(a.severity) - weeklySeverityOrder.indexOf(b.severity);
+          if (severityDelta !== 0) {
+            return severityDelta;
+          }
+          if (b.instanceCount !== a.instanceCount) {
+            return b.instanceCount - a.instanceCount;
+          }
+          if (b.pageUrls.size !== a.pageUrls.size) {
+            return b.pageUrls.size - a.pageUrls.size;
+          }
+          return a.ruleId.localeCompare(b.ruleId);
+        })
+        .map(group => {
+          const pageUrls = Array.from(group.pageUrls).filter(Boolean);
+          const shownPages = pageUrls.slice(0, 3);
+          const remainingPages = Math.max(0, pageUrls.length - shownPages.length);
+          const pagesHtml = shownPages.map(url => `<a href="${this.escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(url)}</a>`).join('<br>');
+          const helpLink = group.helpUrl
+            ? `<a href="${this.escapeHtml(group.helpUrl)}" target="_blank" rel="noopener noreferrer">Learn more ↗</a>`
+            : '';
+
+          return `<tr>
+            <td class="severity-${this.escapeHtml(group.severity)}">${this.escapeHtml(group.severity.charAt(0).toUpperCase() + group.severity.slice(1))}</td>
+            <td><code>${this.escapeHtml(group.ruleId)}</code></td>
+            <td><span class="badge">WCAG ${this.escapeHtml(group.wcagVersion)}</span></td>
+            <td>${this.escapeHtml(group.provider)}</td>
+            <td>${this.escapeHtml(group.pageUrls.size)}</td>
+            <td>${this.escapeHtml(group.instanceCount)}</td>
+            <td class="muted-small">${this.escapeHtml(group.description)}${helpLink ? ` ${helpLink}` : ''}</td>
+            <td class="muted-small">${pagesHtml}${remainingPages > 0 ? `<br>… and ${this.escapeHtml(remainingPages)} more` : ''}</td>
+          </tr>`;
+        }).join('');
+
+      const weeklyIssueGroupsSorted = Array.from(weeklyIssueGroupsMap.values()).sort((a, b) => {
+        const severityDelta = weeklySeverityOrder.indexOf(a.severity) - weeklySeverityOrder.indexOf(b.severity);
+        if (severityDelta !== 0) {
+          return severityDelta;
+        }
+
+        if (b.instanceCount !== a.instanceCount) {
+          return b.instanceCount - a.instanceCount;
+        }
+
+        if (b.pageUrls.size !== a.pageUrls.size) {
+          return b.pageUrls.size - a.pageUrls.size;
+        }
+
+        return a.ruleId.localeCompare(b.ruleId);
+      });
+
+      const weeklyRuleCardsHtml = weeklyIssueGroupsSorted.map(rule => {
+        const sev = String(rule.severity || 'minor').toLowerCase();
+        const ruleAnchor = `weekly-rule-${this.sanitizePathSegment(rule.ruleId)}`;
+        const sevLabel = sev.charAt(0).toUpperCase() + sev.slice(1);
+        const sourceEnginesArr = [rule.provider].filter(Boolean).sort();
+        const sourcesAttr = sourceEnginesArr.join(',');
+        const sourcesBadgesHtml = sourceEnginesArr.map(eng => {
+          const engClass = eng === 'axe' ? 'source-axe' : eng === 'alfa' ? 'source-alfa' : '';
+          return `<span class="badge source-engine-badge ${engClass}">${this.escapeHtml(eng)}</span>`;
+        }).join('');
+        const pagesDetailHtml = Array.from(rule.pageUrls).slice(0, 3).map(url => `<div class="a11y-page-entry"><p><a href="${this.escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(url)}</a></p></div>`).join('');
+        const safeHelpUrl = (() => {
+          try {
+            const parsed = new URL(rule.helpUrl);
+            return (parsed.protocol === 'https:' || parsed.protocol === 'http:') ? rule.helpUrl : '';
+          } catch {
+            return '';
+          }
+        })();
+
+        return `<div class="a11y-rule-card" id="${this.escapeHtml(ruleAnchor)}" data-severity="${this.escapeHtml(sev)}" data-sources="${this.escapeHtml(sourcesAttr)}" data-wcag="${this.escapeHtml(rule.wcagVersion)}">
+          <div class="a11y-rule-header">
+            <h3>
+              <span class="severity-${sev}">${this.escapeHtml(sevLabel)}</span>
+              <code>${this.escapeHtml(rule.ruleId)}</code>
+              <span class="badge">WCAG ${this.escapeHtml(rule.wcagVersion)}</span>
+              ${sourcesBadgesHtml}
+              <span class="muted-small">${this.escapeHtml(rule.pageUrls.size)} page${rule.pageUrls.size !== 1 ? 's' : ''}, ${this.escapeHtml(rule.instanceCount)} instance${rule.instanceCount !== 1 ? 's' : ''}</span>
+            </h3>
+          </div>
+          <div class="a11y-rule-body">
+            <p class="a11y-rule-description">${this.escapeHtml(rule.description)}${safeHelpUrl ? ` <a href="${this.escapeHtml(safeHelpUrl)}" target="_blank" rel="noopener noreferrer">Learn more ↗</a>` : ''}</p>
+            <details>
+              <summary>${this.escapeHtml(rule.pageUrls.size)} affected page${rule.pageUrls.size !== 1 ? 's' : ''} — expand to see details</summary>
+              <div class="a11y-pages-list">${pagesDetailHtml}</div>
+            </details>
+          </div>
+        </div>`;
+      }).join('');
+
+      const weeklyFilterControlsHtml = `
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by severity">
+        <span class="a11y-filter-label">Severity:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-sev="all">All (${this.escapeHtml(weeklyIssueGroupsSorted.length)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="critical">Critical (${this.escapeHtml(weeklySeverityCounts.get('critical') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="serious">Serious (${this.escapeHtml(weeklySeverityCounts.get('serious') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="moderate">Moderate (${this.escapeHtml(weeklySeverityCounts.get('moderate') || 0)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="minor">Minor (${this.escapeHtml(weeklySeverityCounts.get('minor') || 0)})</button>
+      </div>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by scan tool">
+        <span class="a11y-filter-label">Tool:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-tool="all">All tools (${this.escapeHtml(weeklyIssueGroupsSorted.length)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-tool="axe">axe (${this.escapeHtml(weeklyIssueGroupsSorted.filter(rule => rule.provider === 'axe').length)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-tool="alfa">alfa (${this.escapeHtml(weeklyIssueGroupsSorted.filter(rule => rule.provider === 'alfa').length)})</button>
+      </div>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by WCAG version">
+        <span class="a11y-filter-label">WCAG:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-wcag="all">All versions (${this.escapeHtml(weeklyIssueGroupsSorted.length)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.0">2.0 (${this.escapeHtml(weeklyIssueGroupsSorted.filter(rule => String(rule.wcagVersion) === '2.0').length)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.1">2.1 (${this.escapeHtml(weeklyIssueGroupsSorted.filter(rule => String(rule.wcagVersion) === '2.1').length)})</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.2">2.2 (${this.escapeHtml(weeklyIssueGroupsSorted.filter(rule => String(rule.wcagVersion) === '2.2').length)})</button>
+      </div>`;
+
+      const sharedNav = `
+        <p>
+          <a href="index.html">Domain overview</a> |
+          <a href="accessibility.html">Accessibility</a> |
+          <a href="last-run.html">Last run</a> |
+          <a href="performance.html">Performance</a> |
+          <a href="content.html">Content</a> |
+          <a href="third-party.html">Third-party impact</a>
+        </p>`;
+      const weeklyReportLinksHtml = `
+        <p class="report-links">
+          <a href="last-run.html">Open run details</a>
+          <a href="run-history.html">Open run history and per-run details</a>
+          <a href="../../api/issues-last-week/targets/${this.escapeHtml(safeTargetId)}.json" target="_blank" rel="noopener noreferrer">Open full 7-day issues dataset for this domain (JSON)</a>
+          <a href="../../api/issues-last-week/index.json" target="_blank" rel="noopener noreferrer">Open full 7-day issues manifest for all domains (JSON)</a>
+        </p>`;
+      const weeklyAccessibilityHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(String(target.targetId).toUpperCase())} — Weekly Accessibility Summary</title>
+  <link rel="stylesheet" href="../../assets/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header>
+    <p class="report-kicker">Weekly Accessibility Summary</p>
+    <h1>${this.escapeHtml(String(target.targetId).toUpperCase())} — Accessibility Summary</h1>
+    <p class="report-subtitle">Seven-day aggregate of issue instances for this domain. The separate <a href="last-run.html">Last run</a> page holds the run-specific details.</p>
+  </header>
+  <main id="main-content">
+    <div class="card report-banner">
+      <h2>Summary</h2>
+      ${sharedNav}
+      <dl class="report-meta-grid">
+        <div>
+          <dt>Domain</dt>
+          <dd>${this.escapeHtml(String(target.targetId || '').toUpperCase())}</dd>
+        </div>
+        <div>
+          <dt>Weekly window</dt>
+          <dd>Last 7 days</dd>
+        </div>
+        <div>
+          <dt>Weekly grade</dt>
+          <dd>${this.escapeHtml(weeklyRating?.letterGrade || 'n/a')} (${this.escapeHtml(weeklyRating?.scoreNumerical ?? 'n/a')})</dd>
+        </div>
+        <div>
+          <dt>Pages with issues</dt>
+          <dd>${this.escapeHtml(new Set(weeklyIssueRows.map(row => row.pageId)).size)}</dd>
+        </div>
+        <div>
+          <dt>Issue instances</dt>
+          <dd>${this.escapeHtml(weeklyIssueRows.length)}</dd>
+        </div>
+        <div>
+          <dt>Rule cards</dt>
+          <dd>${this.escapeHtml(weeklyIssueGroupsMap.size)}</dd>
+        </div>
+      </dl>
+      ${weeklyReportLinksHtml}
+      <p class="muted-small">This page is intentionally weekly-only. Detailed findings from the separate <a href="last-run.html">Last run</a> page are not shown here.</p>
+    </div>
+    <div class="a11y-stat-grid">
+      <div class="card">
+        <h2>By Severity</h2>
+        <div class="a11y-bar-chart">
+          ${weeklyBuildSevBarRow('Critical', 'critical', weeklySeverityCounts.get('critical') || 0)}
+          ${weeklyBuildSevBarRow('Serious', 'serious', weeklySeverityCounts.get('serious') || 0)}
+          ${weeklyBuildSevBarRow('Moderate', 'moderate', weeklySeverityCounts.get('moderate') || 0)}
+          ${weeklyBuildSevBarRow('Minor', 'minor', weeklySeverityCounts.get('minor') || 0)}
+        </div>
+      </div>
+      <div class="card">
+        <h2>Pages with Most Errors</h2>
+        <p class="muted-small">Pages with the highest weekly issue counts and the rules contributing most to each page.</p>
+        <table>
+          <thead><tr><th>URL</th><th>Instances</th><th>Top rules</th></tr></thead>
+          <tbody>${weeklyTopPagesRows || '<tr><td colspan="3">No weekly page data was recorded for this domain.</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Weekly Issue Summary</h2>
+      <p class="muted-small">Grouped by rule ID and source engine so repeated failures stay easy to compare week over week.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Severity</th>
+            <th scope="col">Rule ID</th>
+            <th scope="col">WCAG</th>
+            <th scope="col">Source</th>
+            <th scope="col">Pages</th>
+            <th scope="col">Instances</th>
+            <th scope="col">Description</th>
+            <th scope="col">Sample pages</th>
+          </tr>
+        </thead>
+        <tbody>${weeklyIssueRowsHtml || '<tr><td colspan="8">No weekly issues were recorded for this domain.</td></tr>'}</tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Weekly Rule Cards</h2>
+      <p class="muted-small">The same rule cards remain available for filtering, but they are sourced from the 7-day snapshot instead of the latest run.</p>
+      ${weeklyFilterControlsHtml}
+      ${weeklyRuleCardsHtml || '<p>No weekly rule cards were recorded for this domain.</p>'}
+    </div>
+  </main>
+  <script>
+(function () {
+  var activeSev = 'all';
+  var activeTool = 'all';
+  var activeWcag = 'all';
+
+  function applyFilters() {
+    document.querySelectorAll('.a11y-rule-card').forEach(function (card) {
+      var sev = card.getAttribute('data-severity') || '';
+      var sources = card.getAttribute('data-sources') || '';
+      var wcag = card.getAttribute('data-wcag') || '';
+      var sevMatch = activeSev === 'all' || sev === activeSev;
+      var toolMatch = activeTool === 'all' || sources.split(',').indexOf(activeTool) !== -1;
+      var wcagMatch = activeWcag === 'all' || wcag === activeWcag;
+      card.setAttribute('data-hidden', (sevMatch && toolMatch && wcagMatch) ? 'false' : 'true');
+    });
+  }
+
+  document.querySelectorAll('[data-filter-sev]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeSev = btn.getAttribute('data-filter-sev') || 'all';
+      document.querySelectorAll('[data-filter-sev]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('[data-filter-tool]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeTool = btn.getAttribute('data-filter-tool') || 'all';
+      document.querySelectorAll('[data-filter-tool]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('[data-filter-wcag]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeWcag = btn.getAttribute('data-filter-wcag') || 'all';
+      document.querySelectorAll('[data-filter-wcag]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+})();
+  </script>
+  ${siteFooterHtml}
+</body>
+</html>`;
+
       const performanceRows = allKnownPages
         .map(page => {
           const lighthouse = page?.liveAudits?.lighthouse;
@@ -1132,15 +1542,6 @@ ${siteFooterHtml}
         })
         .join('');
 
-      const sharedNav = `
-        <p>
-          <a href="index.html">Domain overview</a> |
-          <a href="accessibility.html">Accessibility</a> |
-          <a href="performance.html">Performance</a> |
-          <a href="content.html">Content</a> |
-          <a href="third-party.html">Third-party impact</a>
-        </p>`;
-
       const overviewHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1192,20 +1593,20 @@ ${siteFooterHtml}
 </body>
 </html>`;
 
-      const accessibilityHtml = `<!DOCTYPE html>
+      const lastRunHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${this.escapeHtml(String(target.targetId).toUpperCase())} — Accessibility Report</title>
+  <title>${this.escapeHtml(String(target.targetId).toUpperCase())} — Last Run</title>
   <link rel="stylesheet" href="../../assets/dashboard.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <header>
-    <p class="report-kicker">Accessibility Scan Report</p>
-    <h1>${this.escapeHtml(String(target.targetId).toUpperCase())} — Accessibility Report</h1>
-    <p class="report-subtitle">Report-style summary for the latest retained run, matching the structure of the Open Scans output while preserving the existing dashboard data.</p>
+    <p class="report-kicker">Latest Run Report</p>
+    <h1>${this.escapeHtml(String(target.targetId).toUpperCase())} — Last Run</h1>
+    <p class="report-subtitle">Detailed report-style summary for the latest retained run. Weekly rollups live on the separate <a href="accessibility.html">Accessibility Summary</a> page.</p>
   </header>
   <main id="main-content">
     <div class="card report-banner">
@@ -1392,7 +1793,8 @@ ${siteFooterHtml}
 </div></main>${siteFooterHtml}</body></html>`;
 
       fs.writeFileSync(path.join(domainDir, 'index.html'), overviewHtml, 'utf8');
-      fs.writeFileSync(path.join(domainDir, 'accessibility.html'), accessibilityHtml, 'utf8');
+      fs.writeFileSync(path.join(domainDir, 'accessibility.html'), weeklyAccessibilityHtml, 'utf8');
+      fs.writeFileSync(path.join(domainDir, 'last-run.html'), lastRunHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'performance.html'), performanceHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'content.html'), contentHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'third-party.html'), thirdPartyHtml, 'utf8');

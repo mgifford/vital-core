@@ -52,6 +52,7 @@ describe('DashboardCompiler', () => {
     const cssPath = path.resolve(process.cwd(), 'dist/assets/dashboard.css');
     const domainOverviewPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/index.html');
     const domainA11yPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/accessibility.html');
+    const domainLastRunPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/last-run.html');
     const domainPerformancePath = path.resolve(process.cwd(), 'dist/domains/cms-gov/performance.html');
     const domainContentPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/content.html');
     const domainThirdPartyPath = path.resolve(process.cwd(), 'dist/domains/cms-gov/third-party.html');
@@ -62,6 +63,7 @@ describe('DashboardCompiler', () => {
     const css = fs.readFileSync(cssPath, 'utf8');
     const domainOverviewHtml = fs.readFileSync(domainOverviewPath, 'utf8');
     const domainA11yHtml = fs.readFileSync(domainA11yPath, 'utf8');
+    const domainLastRunHtml = fs.readFileSync(domainLastRunPath, 'utf8');
     const domainRunHistoryHtml = fs.readFileSync(domainRunHistoryPath, 'utf8');
     const failuresHtml = fs.readFileSync(failuresPath, 'utf8');
 
@@ -188,20 +190,18 @@ describe('DashboardCompiler', () => {
     expect(domainOverviewHtml).toContain('independent open source project');
     expect(domainOverviewHtml).toContain('Scan duration (latest run):</strong> 52m 14s');
     expect(js).toContain('durationCell.textContent = Number.isFinite(durationMs) ? formatDuration(durationMs) : \'n/a\';');
-    expect(domainA11yHtml).toContain('Accessibility Scan Report');
-    expect(domainA11yHtml).toContain('Summary');
+    expect(domainA11yHtml).toContain('Weekly Accessibility Summary');
+    expect(domainA11yHtml).toContain('Weekly Issue Summary');
     expect(domainA11yHtml).toContain('api/issues-last-week/targets/cms-gov.json');
     expect(domainA11yHtml).toContain('api/issues-last-week/index.json');
-    expect(domainA11yHtml).toContain('data-filter-sev="all"');
-    expect(domainA11yHtml).toContain('data-filter-tool="all"');
-    expect(domainA11yHtml).toContain('data-filter-tool="axe"');
-    expect(domainA11yHtml).toContain('data-filter-tool="alfa"');
-    expect(domainA11yHtml).toContain('data-filter-wcag="all"');
-    expect(domainA11yHtml).toContain('data-filter-wcag="2.0"');
-    expect(domainA11yHtml).toContain('data-filter-wcag="2.1"');
-    expect(domainA11yHtml).toContain('data-filter-wcag="2.2"');
-    expect(domainA11yHtml).toContain('data-filter-sev');
-    expect(domainA11yHtml).toContain('applyFilters');
+    expect(domainA11yHtml).toContain('last-run.html');
+    expect(domainA11yHtml).not.toContain('Accessibility Scan Report');
+    expect(domainA11yHtml).not.toContain('Recent Page Results (Latest Run)');
+    expect(domainA11yHtml).not.toContain('Latest Run');
+    expect(domainLastRunHtml).toContain('Latest Run Report');
+    expect(domainLastRunHtml).toContain('Summary');
+    expect(domainLastRunHtml).toContain('Total violations');
+    expect(domainLastRunHtml).toContain('Accessibility Summary');
     expect(failuresHtml).toContain('Failures, Timeouts, and Skipped Pages');
     expect(failuresHtml).toContain('Failed/WAF/Timeout');
     expect(failuresHtml).toContain('PDF/DOCX URLs Seen');
@@ -212,6 +212,7 @@ describe('DashboardCompiler', () => {
     expect(fs.existsSync(domainContentPath)).toBe(true);
     expect(fs.existsSync(domainThirdPartyPath)).toBe(true);
     expect(fs.existsSync(domainRunHistoryPath)).toBe(true);
+    expect(fs.existsSync(domainLastRunPath)).toBe(true);
     expect(fs.existsSync(failuresPath)).toBe(true);
   });
 

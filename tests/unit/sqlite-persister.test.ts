@@ -384,4 +384,42 @@ describe('SqlitePersister', () => {
     expect(JSON.parse(fs.readFileSync(cachedTargetPath, 'utf8')).issueCount).toBe(1);
     expect(JSON.parse(fs.readFileSync(alphaTargetPath, 'utf8')).issueCount).toBe(1);
   });
+
+  it('queries weekly issue rows by target and time window across runs', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sqlite-persister-weekly-query-'));
+    process.chdir(tmpDir);
+
+    const oldTimestamp = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString();
+    const recentTimestamp = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+
+    const oldResult = makeResult('alpha', 2);
+    oldResult.pagesScanned[0].timestamp = oldTimestamp;
+
+    const recentResult = makeResult('alpha', 1);
+    recentResult.pagesScanned[0].timestamp = recentTimestamp;
+
+    const betaResult = makeResult('beta', 1);
+    betaResult.pagesScanned[0].timestamp = recentTimestamp;
+
+    SqlitePersister.appendRun([oldResult], makeRunEntry('run-old'));
+    SqlitePersister.appendRun([recentResult, betaResult], makeRunEntry('run-recent'));
+
+    const weeklyAlphaRows = SqlitePersister.queryWeeklyIssueRowsByDomain('alpha', 7);
+    const monthlyAlphaRows = SqlitePersister.queryWeeklyIssueRowsByDomain('alpha', 30);
+    const weeklyBetaRows = SqlitePersister.queryWeeklyIssueRowsByDomain('beta', 7);
+
+    expect(weeklyAlphaRows.length).toBe(1);
+    expect(weeklyAlphaRows[0]!.runId).toBe('run-recent');
+    expect(weeklyAlphaRows[0]!.targetId).toBe('alpha');
+    expect(weeklyAlphaRows[0]!.provider).toBe('axe');
+    expect(weeklyAlphaRows[0]!.impact).toBe('serious');
+
+    expect(monthlyAlphaRows.length).toBe(3);
+    expect(new Set(monthlyAlphaRows.map(row => row.runId))).toEqual(new Set(['run-old', 'run-recent']));
+    expect(monthlyAlphaRows.every(row => row.targetId === 'alpha')).toBe(true);
+
+    expect(weeklyBetaRows.length).toBe(1);
+    expect(weeklyBetaRows[0]!.targetId).toBe('beta');
+    expect(weeklyBetaRows[0]!.runId).toBe('run-recent');
+  });
 });

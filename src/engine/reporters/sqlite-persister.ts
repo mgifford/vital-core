@@ -12,7 +12,7 @@ import type {
   LetterGrade
 } from '../../types/domain-rating';
 
-interface WeeklyIssueRow {
+export interface WeeklyIssueRow {
   violationId: number;
   runId: string;
   targetId: string;
@@ -376,6 +376,48 @@ export class SqlitePersister {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`⚠️  Weekly issues snapshot export skipped: ${msg}`);
+    }
+  }
+
+  /**
+   * Returns all weekly issue rows for a specific target over the configured window.
+   */
+  public static queryWeeklyIssueRowsByDomain(targetId: string, windowDays = 7): WeeklyIssueRow[] {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        return db.prepare(`
+          SELECT
+            v.id AS violationId,
+            p.run_id AS runId,
+            p.target_id AS targetId,
+            p.domain AS domain,
+            p.id AS pageId,
+            p.url AS url,
+            p.status AS status,
+            p.scanned_at AS scannedAt,
+            v.rule_id AS ruleId,
+            v.impact AS impact,
+            v.message AS message,
+            v.selector AS selector,
+            v.provider AS provider
+          FROM violations v
+          JOIN pages p ON p.id = v.page_id
+          WHERE p.target_id = ?
+            AND julianday(p.scanned_at) >= julianday('now', ?)
+          ORDER BY p.scanned_at DESC, p.target_id ASC, p.url ASC, v.rule_id ASC, v.id ASC
+        `).all(targetId, `-${windowDays} days`) as unknown as WeeklyIssueRow[];
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryWeeklyIssueRowsByDomain skipped: ${msg}`);
+      return [];
     }
   }
 
