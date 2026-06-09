@@ -12,9 +12,11 @@ try {
 
   const repoRoot = process.cwd();
   const standardsRoot = path.resolve(repoRoot, 'tools/submodules/standards');
+  const loaderPath = path.resolve(repoRoot, 'src/standards/getdata.ts');
 
   assert(fs.existsSync(standardsRoot), 'ScanGov standards submodule directory is missing: tools/submodules/standards');
   assert(fs.existsSync(path.join(standardsRoot, '.git')), 'ScanGov standards submodule is not initialized (.git missing). Run npm run submodules:init.');
+  assert(fs.existsSync(loaderPath), 'Root standards loader is missing: src/standards/getdata.ts');
 
   const requiredFiles = [
     'README.md',
@@ -30,17 +32,12 @@ try {
     assert(fs.existsSync(fullPath), `Required standards artifact missing: tools/submodules/standards/${relFile}`);
   }
 
-  const auditsSource = fs.readFileSync(path.join(standardsRoot, '_data/audits.js'), 'utf8');
-  const guidanceSource = fs.readFileSync(path.join(standardsRoot, '_data/guidance.js'), 'utf8');
+  const loaderSource = fs.readFileSync(loaderPath, 'utf8');
   const readmeSource = fs.readFileSync(path.join(standardsRoot, 'README.md'), 'utf8');
 
   assert(
-    auditsSource.includes('https://data.scangov.org/standards/audits.json'),
-    'audits.js no longer points to canonical ScanGov audits.json source.'
-  );
-  assert(
-    guidanceSource.includes('https://data.scangov.org/standards/guidance.json'),
-    'guidance.js no longer points to canonical ScanGov guidance.json source.'
+    loaderSource.includes('https://data.scangov.org') && loaderSource.includes('https://github.com/ScanGov/data/raw/refs/heads/main'),
+    'Root standards loader no longer points to canonical ScanGov source bases.'
   );
   assert(
     readmeSource.toLowerCase().includes('scangov standards'),

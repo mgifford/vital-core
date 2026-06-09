@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-// @ts-expect-error - This test intentionally imports the submodule's JS helper directly.
-import { getData } from '../../tools/submodules/standards/scripts/getdata.js';
+import { getData } from '../../src/standards/getdata';
 
 const CACHE_ROOT = path.resolve(process.cwd(), 'tools/submodules/standards/.cache/scangov');
 const STANDARDS_URL = 'https://data.scangov.org/standards/audits.json';
