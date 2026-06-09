@@ -19,13 +19,37 @@ export interface WeeklyIssueRow {
   domain: string;
   pageId: number;
   url: string;
+  pageTitle: string | null;
   status: string;
   scannedAt: string;
+  scanContextJson: string | null;
   ruleId: string;
   impact: string;
   message: string;
   selector: string | null;
   provider: string | null;
+  violationJson: string | null;
+}
+
+export interface WeeklyPageRow {
+  pageId: number;
+  runId: string;
+  targetId: string;
+  domain: string;
+  url: string;
+  pageTitle: string | null;
+  status: string;
+  scannedAt: string;
+  scanContextJson: string | null;
+  violationCount: number;
+}
+
+export interface WeeklyTargetRow {
+  targetId: string;
+  domain: string;
+  latestScannedAt: string;
+  pageCount: number;
+  issueCount: number;
 }
 
 interface WeeklyIssueSnapshotCache {
@@ -107,12 +131,14 @@ export class SqlitePersister {
         target_id           TEXT    NOT NULL,
         domain              TEXT    NOT NULL,
         url                 TEXT    NOT NULL,
+        page_title          TEXT,
         status              TEXT    NOT NULL,
         scanned_at          TEXT    NOT NULL,
         violation_count     INTEGER NOT NULL DEFAULT 0,
         lighthouse_score    REAL,
         plain_language_grade REAL,
-        technologies        TEXT
+        technologies        TEXT,
+        scan_context_json   TEXT
       );
 
       CREATE TABLE IF NOT EXISTS violations (
@@ -122,7 +148,8 @@ export class SqlitePersister {
         impact    TEXT    NOT NULL,
         message   TEXT    NOT NULL,
         selector  TEXT,
-        provider  TEXT
+        provider  TEXT,
+        violation_json TEXT
       );
 
       CREATE TABLE IF NOT EXISTS url_history (
@@ -142,6 +169,19 @@ export class SqlitePersister {
       CREATE INDEX IF NOT EXISTS idx_violations_rule_id ON violations(rule_id);
       CREATE INDEX IF NOT EXISTS idx_url_history_target ON url_history(target_id);
     `);
+
+    this.ensureColumn(db, 'pages', 'page_title', 'TEXT');
+    this.ensureColumn(db, 'pages', 'scan_context_json', 'TEXT');
+    this.ensureColumn(db, 'violations', 'violation_json', 'TEXT');
+  }
+
+  private static ensureColumn(db: DatabaseSync, tableName: string, columnName: string, columnType: string): void {
+    const columns = db.prepare(`PRAGMA table_info(${tableName})`).all() as Array<{ name?: string }>;
+    if (columns.some(column => column.name === columnName)) {
+      return;
+    }
+
+    db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnType}`);
   }
 
   /**
@@ -398,13 +438,16 @@ export class SqlitePersister {
             p.domain AS domain,
             p.id AS pageId,
             p.url AS url,
+            p.page_title AS pageTitle,
             p.status AS status,
             p.scanned_at AS scannedAt,
+            p.scan_context_json AS scanContextJson,
             v.rule_id AS ruleId,
             v.impact AS impact,
             v.message AS message,
             v.selector AS selector,
-            v.provider AS provider
+            v.provider AS provider,
+            v.violation_json AS violationJson
           FROM violations v
           JOIN pages p ON p.id = v.page_id
           WHERE p.target_id = ?
@@ -417,6 +460,80 @@ export class SqlitePersister {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`⚠️  queryWeeklyIssueRowsByDomain skipped: ${msg}`);
+      return [];
+    }
+  }
+
+  /**
+   * Returns the weekly page rows for a specific target over the configured window.
+   */
+  public static queryWeeklyPagesByDomain(targetId: string, windowDays = 7): WeeklyPageRow[] {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        return db.prepare(`
+          SELECT
+            p.id AS pageId,
+            p.run_id AS runId,
+            p.target_id AS targetId,
+            p.domain AS domain,
+            p.url AS url,
+            p.page_title AS pageTitle,
+            p.status AS status,
+            p.scanned_at AS scannedAt,
+            p.scan_context_json AS scanContextJson,
+            COUNT(v.id) AS violationCount
+          FROM pages p
+          LEFT JOIN violations v ON v.page_id = p.id
+          WHERE p.target_id = ?
+            AND julianday(p.scanned_at) >= julianday('now', ?)
+          GROUP BY p.id, p.run_id, p.target_id, p.domain, p.url, p.page_title, p.status, p.scanned_at, p.scan_context_json
+          ORDER BY p.scanned_at DESC, p.url ASC
+        `).all(targetId, `-${windowDays} days`) as unknown as WeeklyPageRow[];
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryWeeklyPagesByDomain skipped: ${msg}`);
+      return [];
+    }
+  }
+
+  /**
+   * Returns the domains discovered in the weekly window.
+   */
+  public static queryWeeklyTargets(windowDays = 7): WeeklyTargetRow[] {
+    try {
+      if (!fs.existsSync(this.dbPath)) {
+        return [];
+      }
+
+      const db = new DatabaseSync(this.dbPath, { readOnly: true });
+      try {
+        return db.prepare(`
+          SELECT
+            p.target_id AS targetId,
+            MIN(p.domain) AS domain,
+            MAX(p.scanned_at) AS latestScannedAt,
+            COUNT(DISTINCT p.id) AS pageCount,
+            COUNT(v.id) AS issueCount
+          FROM pages p
+          LEFT JOIN violations v ON v.page_id = p.id
+          WHERE julianday(p.scanned_at) >= julianday('now', ?)
+          GROUP BY p.target_id
+          ORDER BY latestScannedAt DESC, targetId ASC
+        `).all(`-${windowDays} days`) as unknown as WeeklyTargetRow[];
+      } finally {
+        db.close();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  queryWeeklyTargets skipped: ${msg}`);
       return [];
     }
   }
@@ -535,13 +652,16 @@ export class SqlitePersister {
         p.domain AS domain,
         p.id AS pageId,
         p.url AS url,
+        p.page_title AS pageTitle,
         p.status AS status,
         p.scanned_at AS scannedAt,
+        p.scan_context_json AS scanContextJson,
         v.rule_id AS ruleId,
         v.impact AS impact,
         v.message AS message,
         v.selector AS selector,
-        v.provider AS provider
+        v.provider AS provider,
+        v.violation_json AS violationJson
       FROM violations v
       JOIN pages p ON p.id = v.page_id
       WHERE julianday(p.scanned_at) >= julianday('now', ?)
@@ -558,13 +678,16 @@ export class SqlitePersister {
         p.domain AS domain,
         p.id AS pageId,
         p.url AS url,
+        p.page_title AS pageTitle,
         p.status AS status,
         p.scanned_at AS scannedAt,
+        p.scan_context_json AS scanContextJson,
         v.rule_id AS ruleId,
         v.impact AS impact,
         v.message AS message,
         v.selector AS selector,
-        v.provider AS provider
+        v.provider AS provider,
+        v.violation_json AS violationJson
       FROM violations v
       JOIN pages p ON p.id = v.page_id
       WHERE p.run_id = ?
@@ -592,14 +715,14 @@ export class SqlitePersister {
 
     const insertPage = db.prepare(`
       INSERT INTO pages (
-        run_id, target_id, domain, url, status, scanned_at,
-        violation_count, lighthouse_score, plain_language_grade, technologies
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        run_id, target_id, domain, url, page_title, status, scanned_at,
+        violation_count, lighthouse_score, plain_language_grade, technologies, scan_context_json
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const insertViolation = db.prepare(`
-      INSERT INTO violations (page_id, rule_id, impact, message, selector, provider)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO violations (page_id, rule_id, impact, message, selector, provider, violation_json)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
     const upsertUrlHistory = db.prepare(`
@@ -639,31 +762,50 @@ export class SqlitePersister {
             page.technologyStack.length > 0
               ? JSON.stringify(page.technologyStack.map(t => t.name))
               : null;
+          const scanContext = page.scanContext ? JSON.stringify(page.scanContext) : null;
 
           const pageResult = insertPage.run(
             runEntry.runId,
             result.targetId,
             result.domain,
             page.url,
+            page.pageTitle ?? null,
             page.status,
             page.timestamp,
             violationCount,
             lighthouseScore,
             plainLanguageGrade,
-            technologies
+            technologies,
+            scanContext
           );
 
           const pageId = pageResult.lastInsertRowid as number;
 
           for (const violation of page.liveAudits?.accessibilityViolations ?? []) {
             for (const instance of violation.instances) {
+              const violationJson = JSON.stringify({
+                ruleId: violation.id,
+                severity: violation.severity,
+                description: violation.description,
+                helpUrl: violation.helpUrl,
+                impactedCriteria: violation.impactedCriteria,
+                wcagVersion: violation.wcagVersion ?? null,
+                sourceEngine: violation.sourceEngine ?? 'axe',
+                html: instance.html,
+                target: instance.target,
+                failureSummary: instance.failureSummary,
+                pageTitle: page.pageTitle ?? null,
+                pageUrl: page.url,
+                scannedAt: page.timestamp
+              });
               insertViolation.run(
                 pageId,
                 violation.id,
                 violation.severity,
                 violation.description,
                 instance.target.join(', '),
-                'axe'
+                violation.sourceEngine ?? 'axe',
+                violationJson
               );
             }
           }

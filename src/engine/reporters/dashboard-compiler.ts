@@ -10,6 +10,7 @@ import { PrioritySeedSnapshot } from '../priority-seeds';
 import { UniqueErrorsReporter, UniqueErrorEntry } from './unique-errors';
 import { RunHistoryReporter } from './run-history';
 import { SqlitePersister } from './sqlite-persister';
+import { WeeklyAccessibilityReportWriter } from './accessibility-report-writer';
 import { WeeklyDomainRating } from '../../types/domain-rating';
 
 export class DashboardCompiler {
@@ -308,6 +309,7 @@ ${siteFooterHtml}
 
     fs.writeFileSync(path.join(this.DIST_DIR, 'index.html'), htmlContent, 'utf8');
     this.writeFailuresPage(allResults, options.nonHtmlDiscoveryExclusions ?? []);
+    WeeklyAccessibilityReportWriter.writeWeeklyAccessibilityReports(allResults);
     this.writeDomainSubpages(allResults, targetQualityIndex);
     this.writeUniqueErrorsPage(uniqueErrors);
     this.writePerRunDetailPages();
@@ -598,6 +600,8 @@ ${siteFooterHtml}
     const domainsRoot = path.join(this.DIST_DIR, 'domains');
     fs.mkdirSync(domainsRoot, { recursive: true });
     const siteFooterHtml = this.buildSiteFooterHtml();
+
+    WeeklyAccessibilityReportWriter.writeWeeklyAccessibilityReports(allResults);
 
     // Shared artifact cache: each run artifact JSON is read from disk at most once,
     // regardless of how many domain sub-pages reference it.
@@ -1792,9 +1796,6 @@ ${siteFooterHtml}
     </details>` : '<p>No retained run history was found for this domain.</p>'}
 </div></main>${siteFooterHtml}</body></html>`;
 
-      fs.writeFileSync(path.join(domainDir, 'index.html'), overviewHtml, 'utf8');
-      fs.writeFileSync(path.join(domainDir, 'accessibility.html'), weeklyAccessibilityHtml, 'utf8');
-      fs.writeFileSync(path.join(domainDir, 'last-run.html'), lastRunHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'performance.html'), performanceHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'content.html'), contentHtml, 'utf8');
       fs.writeFileSync(path.join(domainDir, 'third-party.html'), thirdPartyHtml, 'utf8');
