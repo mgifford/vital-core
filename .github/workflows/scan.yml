@@ -16,13 +16,18 @@ on:
           - deep
 jobs:
   scan:
-    runs-on: macos-latest
+    # Use ubuntu-latest on GitHub Actions — macOS runners use /opt/homebrew/bin/git
+    # which causes git failures in deployment steps. For local testing, run
+    # `npm run scan:local` directly on your Mac instead of via act.
+    runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
       - name: Install dependencies
@@ -37,7 +42,7 @@ jobs:
         run: npm run scan:local
       - name: Upload results
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: scan-results
           path: ./tmp
