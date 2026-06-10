@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "scan": "npx tsx src/index.ts",
-    "scan:local": "VITAL_ALFA_CMD=node_modules/.bin/alfa VITAL_TARGET_LIMIT=5 npm run scan",
-    "scan:deep": "VITAL_ALFA_CMD=node_modules/.bin/alfa VITAL_SCAN_INTENSITY=deep VITAL_TARGET_LIMIT=5 npm run scan",
+    "scan:local": "VITAL_TARGET_LIMIT=5 npm run scan",
+    "scan:deep": "VITAL_SCAN_INTENSITY=deep VITAL_TARGET_LIMIT=5 npm run scan",
     "validate": "npm run validate:profile",
     "validate:discovery:smoke": "npx tsx tests/smoke/validate-discovery-smoke.ts",
     "validate:browser:smoke": "npx tsx tests/smoke/validate-browser-smoke.ts",

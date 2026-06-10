@@ -79,4 +79,14 @@ describe('Workflow contracts', () => {
     expect(content).toContain('Close matching failure tracking issue');
     expect(content).toContain("state_reason: 'completed'");
   });
+
+  it('deploys scan workflow via Pages artifacts instead of git pushes', () => {
+    const workflowPath = path.resolve(process.cwd(), '.github/workflows/scan.yml');
+    const content = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(content).not.toContain('peaceiris/actions-gh-pages@');
+    expect(content).toContain('actions/upload-pages-artifact@');
+    expect(content).toContain('actions/deploy-pages@');
+    expect(content).toContain('path: dist/');
+  });
 });

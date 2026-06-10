@@ -21,7 +21,12 @@ jobs:
     # `npm run scan:local` directly on your Mac instead of via act.
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     steps:
@@ -46,10 +51,24 @@ jobs:
         with:
           name: scan-results
           path: ./tmp
-      - name: Deploy to GitHub Pages
+
+      - name: Verify generated dashboard output exists
         if: success()
-        uses: peaceiris/actions-gh-pages@v4
+        run: |
+          set -euo pipefail
+          test -f dist/index.html
+
+      - name: Setup GitHub Pages Deployment Context
+        if: success()
+        uses: actions/configure-pages@v6
+
+      - name: Package Generated Static Dashboard Build
+        if: success()
+        uses: actions/upload-pages-artifact@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./tmp
-          force_orphan: true
+          path: dist/
+
+      - name: Deploy Compiled Dashboard directly to GitHub Pages Engine
+        if: success()
+        id: deployment
+        uses: actions/deploy-pages@v5
