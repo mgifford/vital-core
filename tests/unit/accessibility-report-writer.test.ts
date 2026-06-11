@@ -69,6 +69,57 @@ function makeResult(): TargetScanResult {
   };
 }
 
+function makeMultiPageResult(pageCount: number): TargetScanResult {
+  const pages = Array.from({ length: pageCount }, (_, index) => {
+    const pageNumber = index + 1;
+    const ts = `2026-06-09T17:${String(pageNumber).padStart(2, '0')}:00.000Z`;
+    const url = `https://weekly.example.org/page-${pageNumber}`;
+
+    return {
+      url,
+      timestamp: ts,
+      status: 'COMPLETED' as const,
+      errorMessage: null,
+      pageTitle: `Weekly Page ${pageNumber}`,
+      scanContext: {
+        browserFamily: 'chrome' as const,
+        viewportLabel: 'desktop-standard',
+        viewport: { width: 1366, height: 768 },
+        colorScheme: 'light' as const
+      },
+      technologyStack: [],
+      liveAudits: {
+        lighthouse: null,
+        accessibilityViolations: [
+          {
+            id: 'color-contrast',
+            severity: 'serious' as const,
+            description: `Text needs contrast on page ${pageNumber}`,
+            helpUrl: 'https://example.org/help/color-contrast',
+            impactedCriteria: ['wcag2aa'],
+            sourceEngine: 'axe',
+            instances: [
+              {
+                html: `<p class="low-contrast-${pageNumber}">Weekly text ${pageNumber}</p>`,
+                target: [`p.low-contrast-${pageNumber}`],
+                failureSummary: 'Increase contrast'
+              }
+            ]
+          }
+        ]
+      },
+      offlineAudits: null
+    };
+  });
+
+  return {
+    targetId: 'weekly-a11y-fallback',
+    domain: 'https://weekly.example.org',
+    scanDurationMs: 7500,
+    pagesScanned: pages
+  };
+}
+
 afterEach(() => {
   process.chdir(originalCwd);
 });
@@ -126,5 +177,27 @@ describe('WeeklyAccessibilityReportWriter', () => {
     db.close();
 
     expect(rows.count).toBe(2);
+  });
+
+  it('renders all latest scanned pages in accessibility summary fallback mode', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'weekly-accessibility-report-fallback-'));
+    process.chdir(tmpDir);
+
+    const result = makeMultiPageResult(5);
+
+    // Intentionally skip SqlitePersister.appendRun to exercise fallback mode.
+    WeeklyAccessibilityReportWriter.writeWeeklyAccessibilityReports([result]);
+
+    const domainDir = path.resolve(tmpDir, 'dist/domains/weekly-a11y-fallback');
+    const accessibilityHtml = fs.readFileSync(path.join(domainDir, 'accessibility.html'), 'utf8');
+    const lastRunHtml = fs.readFileSync(path.join(domainDir, 'last-run.html'), 'utf8');
+
+    expect(accessibilityHtml).toContain('Weekly Accessibility Summary');
+    expect(accessibilityHtml).toMatch(/<dt>Pages<\/dt><dd>5<\/dd>/);
+    expect(lastRunHtml).toContain('<div><dt>Pages scanned</dt><dd>5</dd></div>');
+
+    for (let pageNumber = 1; pageNumber <= 5; pageNumber += 1) {
+      expect(accessibilityHtml).toContain(`https://weekly.example.org/page-${pageNumber}`);
+    }
   });
 });

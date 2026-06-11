@@ -216,7 +216,16 @@ async function main() {
       BugExporter.exportMarkdownReport(result, seedUrls);
     }
 
+    // Persist run history BEFORE compiling the dashboard so that SQLite contains the
+    // current run's pages and violations when accessibility and leaderboard pages query it.
+    // Previously this happened after compileStaticDashboard, causing every domain's
+    // accessibility page to show only stale history-cache data (e.g. 1 page instead of 73).
+    const totalDurationMs = Date.now() - startTime;
+    const runEntry = RunHistoryReporter.persistRunHistory(results, profilePath, totalDurationMs);
+    console.log(`🗃️  Updated persistent run history index with run ${runEntry.runId}.`);
+
     // Compile the global dashboard from all collected scan results.
+    // SQLite now contains the current run so domain accessibility pages reflect today's scan.
     console.log(`\n📊 Compiling executive compliance dashboard UI...`);
     DashboardCompiler.compileStaticDashboard(results, {
       nonHtmlDiscoveryExclusions: allExclusions,
@@ -235,11 +244,6 @@ async function main() {
         throw error;
       }
     }
-
-    // Persist run history.
-    const totalDurationMs = Date.now() - startTime;
-    const runEntry = RunHistoryReporter.persistRunHistory(results, profilePath, totalDurationMs);
-    console.log(`🗃️  Updated persistent run history index with run ${runEntry.runId}.`);
 
     const totalDurationSec = (totalDurationMs / 1000).toFixed(2);
     console.log(`\n🏁 VITAL-Core Compile Phase Completed Successfully in ${totalDurationSec}s.`);

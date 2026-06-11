@@ -241,8 +241,18 @@ export class WeeklyAccessibilityReportWriter {
     const pages: WeeklyPageRow[] = [];
     const issues: WeeklyIssueRow[] = [];
 
-    for (const page of target.pagesScanned ?? []) {
-      const runId = `${target.targetId}:${page.timestamp}`;
+    // All pages from the same target share one synthetic runId so that
+    // selectSummaryRunId can group them together and show the full page list.
+    // Previously each page used its own timestamp, so only 1 page ever matched.
+    const allPages = target.pagesScanned ?? [];
+    const latestTs = allPages.reduce(
+      (latest, p) => (p.timestamp > latest ? p.timestamp : latest),
+      allPages[0]?.timestamp ?? new Date().toISOString()
+    );
+    const syntheticRunId = `fallback:${target.targetId}:${latestTs}`;
+
+    for (const page of allPages) {
+      const runId = syntheticRunId;
       const scanContextJson = page.scanContext ? JSON.stringify(page.scanContext) : null;
       const violationCount = page.liveAudits?.accessibilityViolations?.reduce((total, violation) => total + (violation.instances?.length ?? 0), 0) ?? 0;
 
