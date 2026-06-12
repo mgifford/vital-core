@@ -221,6 +221,95 @@ describe('ResilientBrowserEngine lazy browser launch', () => {
     expect(launchSpy).not.toHaveBeenCalled();
   });
 
+  it('applies accessibility settle delay before running live audits in accessibility-only mode', async () => {
+    const previousAuditScope = process.env.VITAL_AUDIT_SCOPE;
+    const previousA11yDelay = process.env.VITAL_A11Y_SETTLE_DELAY_MS;
+    process.env.VITAL_AUDIT_SCOPE = 'accessibility';
+    process.env.VITAL_A11Y_SETTLE_DELAY_MS = '1500';
+
+    try {
+      vi.spyOn(ResilientBrowserEngine as any, 'probePageChange').mockResolvedValue({
+        unchanged: false,
+        reason: 'Page appears changed or no prior state available.',
+        etag: '"newetag"',
+        lastModified: null,
+        contentHash: null,
+        assetFingerprintHash: null,
+        fetchedHtml: null,
+        httpErrorStatus: null,
+        nonHtmlContentType: null
+      });
+
+      const mockPage = {
+        setDefaultNavigationTimeout: vi.fn(),
+        setDefaultTimeout: vi.fn(),
+        setViewportSize: vi.fn().mockResolvedValue(undefined),
+        emulateMedia: vi.fn().mockResolvedValue(undefined),
+        goto: vi.fn().mockResolvedValue(undefined),
+        waitForTimeout: vi.fn().mockResolvedValue(undefined),
+        content: vi.fn().mockResolvedValue('<html><body>Hello</body></html>'),
+        title: vi.fn().mockResolvedValue('Example Page'),
+        close: vi.fn().mockResolvedValue(undefined)
+      };
+      const mockContext = {
+        newPage: vi.fn().mockResolvedValue(mockPage),
+        close: vi.fn().mockResolvedValue(undefined)
+      };
+      const mockBrowser = {
+        newContext: vi.fn().mockResolvedValue(mockContext),
+        close: vi.fn().mockResolvedValue(undefined)
+      };
+
+      vi.spyOn(ResilientBrowserEngine as any, 'launchBrowser').mockResolvedValue(mockBrowser);
+      vi.spyOn(ResilientBrowserEngine as any, 'runWithTimeout').mockImplementation(
+        (async (fn: () => Promise<unknown>) => fn()) as any
+      );
+
+      const { LiveWorker } = await import('../../src/engine/workers/live-worker');
+      vi.spyOn(LiveWorker, 'runLiveAudits').mockResolvedValue({
+        lighthouse: null,
+        accessibilityViolations: []
+      });
+
+      const { AlfaWorker } = await import('../../src/engine/workers/alfa-worker');
+      vi.spyOn(AlfaWorker, 'runAlfaAudits').mockResolvedValue({
+        executed: false,
+        findingsCount: null,
+        rawResults: null,
+        errorMessage: 'skipped in test'
+      });
+
+      const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
+      vi.spyOn(LighthouseWorker, 'launchChrome').mockResolvedValue(undefined);
+      vi.spyOn(LighthouseWorker, 'killChrome').mockResolvedValue(undefined);
+
+      const { reports: results } = await ResilientBrowserEngine.executeSnapshotSession(
+        STUB_TARGET,
+        ['https://example.gov/page-1']
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].status).toBe('COMPLETED');
+      expect(mockPage.goto).toHaveBeenCalledWith(
+        'https://example.gov/page-1',
+        expect.objectContaining({ waitUntil: 'domcontentloaded' })
+      );
+      expect(mockPage.waitForTimeout).toHaveBeenCalledWith(1500);
+    } finally {
+      if (previousAuditScope === undefined) {
+        delete process.env.VITAL_AUDIT_SCOPE;
+      } else {
+        process.env.VITAL_AUDIT_SCOPE = previousAuditScope;
+      }
+
+      if (previousA11yDelay === undefined) {
+        delete process.env.VITAL_A11Y_SETTLE_DELAY_MS;
+      } else {
+        process.env.VITAL_A11Y_SETTLE_DELAY_MS = previousA11yDelay;
+      }
+    }
+  });
+
   it('applies timeout backoff before the first request when a timeout streak is carried into the batch', async () => {
     const { LighthouseWorker } = await import('../../src/engine/workers/lighthouse-worker');
     vi.spyOn(LighthouseWorker, 'launchChrome').mockResolvedValue(undefined);

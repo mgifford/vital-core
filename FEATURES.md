@@ -18,6 +18,7 @@ This file tracks what is currently working in VITAL-Core and what is still being
 - Revalidation windows and recency prioritization controls.
 - Runtime budget enforcement for scheduled runs.
 - Round-robin target scanning to distribute load across domains.
+- Accessibility-only hydration settle delay control (`VITAL_A11Y_SETTLE_DELAY_MS`) to reduce transient client-side timing false positives before live axe audits.
 
 ### Auditing and Data Collection
 
@@ -34,6 +35,8 @@ This file tracks what is currently working in VITAL-Core and what is still being
 
 - Static dashboard generation to `dist/` with latest-run, trends, and history sections.
 - Domain-specific subpages (overview, accessibility, performance, content, third-party).
+- Domain accessibility pages now read SQLite after the current run is appended, keeping latest-run page and issue summaries in sync with current scan output.
+- Fallback domain accessibility rendering now groups pages under one synthetic run ID so multi-page runs are not collapsed to a single-row summary.
 - Dominant domain jump selector in the dashboard header.
 - Footer attribution and non-affiliation statement across generated pages.
 - Software detections table with per-URL visibility.

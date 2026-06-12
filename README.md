@@ -53,7 +53,7 @@ Standards-source integrity is validated by `tests/smoke/validate-standards-sourc
 
 ## Scan Tool Stack
 
-VITAL-Core runs up to six workers per page. Workers 2–6 are skipped when `VITAL_AUDIT_SCOPE=accessibility` or `a11y`.
+VITAL-Core runs up to six workers per page. Workers 3-6 are skipped when `VITAL_AUDIT_SCOPE=accessibility` or `a11y`.
 
 | # | Tool | What it produces |
 |---|------|-----------------|
@@ -72,6 +72,7 @@ VITAL-Core runs up to six workers per page. Workers 2–6 are skipped when `VITA
 | `VITAL_WAPPALYZER_CMD` | _(empty — tool skipped if unset)_ | Path to wappalyzer-next binary. |
 | `VITAL_AUDIT_SCOPE` | `full` | Set to `accessibility` or `a11y` to run workers 3–6 only (axe + alfa still run). |
 | `VITAL_SCAN_INTENSITY` | `standard` | `deep` enables Firefox + WebKit in addition to Chromium. |
+| `VITAL_A11Y_SETTLE_DELAY_MS` | `1500` (a11y-only) | Extra hydration settle delay before live accessibility audits in `accessibility` scope. Useful for reducing transient JS timing false positives. |
 
 ### Alfa accessibility auditing
 
@@ -279,7 +280,13 @@ Example behavior with defaults:
 
 To prioritize faster hourly accessibility coverage, VITAL-Core supports scoped audit execution:
 
-- `VITAL_AUDIT_SCOPE=accessibility`: runs accessibility checks only (skips technology fingerprinting, Alfa, third-party differential checks, and Lighthouse).
+- `VITAL_AUDIT_SCOPE=accessibility`: runs accessibility checks only (axe + Alfa still run; technology fingerprinting, third-party differential checks, and Lighthouse are skipped).
 - `VITAL_AUDIT_SCOPE=full`: runs all supplemental checks.
 
 Scheduled workflow behavior now defaults to accessibility-first scans during business-hour windows and most off-hours cycles, with full audit rotation every 6 UTC hours (plus deep refresh windows and manual runs).
+
+## Reporting Consistency Notes
+
+- Domain accessibility pages (`domains/<target-id>/accessibility.html`) now read SQLite after the current run is appended, so latest-run page counts and issue rows align with current scan output.
+- Fallback rendering (used when SQLite history is unavailable) now groups all pages for a target under one synthetic run ID, preventing accidental single-page summaries.
+- If transient findings (for example `aria-hidden-focus`) appear in automated scans but cannot be reproduced manually, increase `VITAL_A11Y_SETTLE_DELAY_MS` (for example `2500`) to allow client-side menu/footer hydration before axe executes.

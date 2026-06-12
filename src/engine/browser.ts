@@ -117,6 +117,9 @@ export class ResilientBrowserEngine {
     const auditScope = String(process.env.VITAL_AUDIT_SCOPE || 'full').toLowerCase();
     const accessibilityOnly = auditScope === 'accessibility' || auditScope === 'a11y';
     const navigationWaitUntil: 'networkidle' | 'domcontentloaded' = accessibilityOnly ? 'domcontentloaded' : 'networkidle';
+    const accessibilitySettleDelayMs = accessibilityOnly
+      ? this.readDelaySetting('VITAL_A11Y_SETTLE_DELAY_MS', Math.max(settings.postLoadDelay, 1500))
+      : 0;
 
     // Resolve throttle profile: explicit profile setting → CDN auto-detection → env vars → defaults.
     // CDN detection is deferred to the first probe and applied from the second request onward.
@@ -301,10 +304,13 @@ export class ResilientBrowserEngine {
             timeout: effectiveMaxTimeoutMs
           });
 
-          // 2. Hydration Settle Buffer (Let slow API grids map to the DOM)
-          // Skipped in accessibility-only mode: dynamic content settle is not needed
-          // when performance, tech-stack, and third-party impact checks are all bypassed.
-          if (!accessibilityOnly && settings.postLoadDelay > 0) {
+          // 2. Hydration settle buffer (let client-side state finish mutating the DOM).
+          // Accessibility-only runs can produce transient false positives when axe executes
+          // immediately at domcontentloaded, so apply a short settle delay there too.
+          if (accessibilityOnly && accessibilitySettleDelayMs > 0) {
+            console.log(`⏱️ Applying accessibility settle buffer of ${accessibilitySettleDelayMs}ms before live audits...`);
+            await activePage.waitForTimeout(accessibilitySettleDelayMs);
+          } else if (!accessibilityOnly && settings.postLoadDelay > 0) {
             console.log(`⏱️ Applying load buffer of ${settings.postLoadDelay}ms for dynamic scripts...`);
             await activePage.waitForTimeout(settings.postLoadDelay);
           }
