@@ -1,0 +1,226 @@
+{
+  "generatedAt": "2026-06-03T02:52:02.509Z",
+  "latestRunId": "2026-06-03T02-52-02-503Z",
+  "windowSize": 6,
+  "latest": {
+    "targetsScanned": 10,
+    "pagesScanned": 48,
+    "totalViolations": 11,
+    "scanDurationMs": 4353023,
+    "violationsPerPage": 0.2292,
+    "qualityIndexScore": 82.67,
+    "qualityGateStatus": "WARNING",
+    "targetQuality": [
+      {
+        "targetId": "cdc-gov",
+        "score": 85,
+        "gateStatus": "PASS",
+        "pagesScanned": 5,
+        "totalViolations": 0
+      },
+      {
+        "targetId": "cms-gov",
+        "score": 88,
+        "gateStatus": "PASS",
+        "pagesScanned": 5,
+        "totalViolations": 0
+      },
+      {
+        "targetId": "data-healthcare-gov",
+        "score": 73.36,
+        "gateStatus": "WARNING",
+        "pagesScanned": 5,
+        "totalViolations": 2
+      },
+      {
+        "targetId": "data-medicaid-gov",
+        "score": 83.8,
+        "gateStatus": "WARNING",
+        "pagesScanned": 3,
+        "totalViolations": 1
+      },
+      {
+        "targetId": "health-gov",
+        "score": 88,
+        "gateStatus": "PASS",
+        "pagesScanned": 5,
+        "totalViolations": 0
+      },
+      {
+        "targetId": "healthcare-gov",
+        "score": 85,
+        "gateStatus": "PASS",
+        "pagesScanned": 5,
+        "totalViolations": 0
+      },
+      {
+        "targetId": "hhs-gov",
+        "score": 78.4,
+        "gateStatus": "WARNING",
+        "pagesScanned": 5,
+        "totalViolations": 5
+      },
+      {
+        "targetId": "medicaid-gov",
+        "score": 86.68,
+        "gateStatus": "WARNING",
+        "pagesScanned": 5,
+        "totalViolations": 1
+      },
+      {
+        "targetId": "medicare-gov",
+        "score": 85,
+        "gateStatus": "PASS",
+        "pagesScanned": 5,
+        "totalViolations": 0
+      },
+      {
+        "targetId": "nih-gov",
+        "score": 73.96,
+        "gateStatus": "WARNING",
+        "pagesScanned": 5,
+        "totalViolations": 2
+      }
+    ],
+    "providerAttributionTop": [
+      {
+        "provider": "Google Tag Manager",
+        "high": 2,
+        "medium": 8,
+        "low": 0,
+        "score": 54
+      },
+      {
+        "provider": "Cloudflare",
+        "high": 2,
+        "medium": 0,
+        "low": 0,
+        "score": 12
+      }
+    ],
+    "urlFreshness": {
+      "newUrls": 31,
+      "carriedOverUrls": 17,
+      "newUrlPercent": 64.58
+    },
+    "consensus": {
+      "consensusFailure": 0,
+      "alfaOnlyFailure": 0,
+      "axeOnlyFailure": 11,
+      "totalCorrelatedFindings": 11
+    }
+  },
+  "deltaFromPrevious": {
+    "targetsScanned": 1,
+    "pagesScanned": 3,
+    "totalViolations": 0,
+    "scanDurationMs": 578788,
+    "violationsPerPage": -0.0153,
+    "qualityIndexScore": -3.78,
+    "consensusFailure": 0,
+    "alfaOnlyFailure": 0,
+    "axeOnlyFailure": 0
+  },
+  "rollingAverage": {
+    "pagesScanned": 46.83,
+    "totalViolations": 8.17,
+    "scanDurationMs": 2854626.33,
+    "violationsPerPage": 0.1744,
+    "qualityIndexScore": 85.49,
+    "consensusFailure": 0,
+    "alfaOnlyFailure": 0,
+    "axeOnlyFailure": 8.17
+  },
+  "requirementComplianceOverTime": [
+    {
+      "runId": "2026-06-02T23-00-34-533Z",
+      "generatedAt": "2026-06-02T23:00:34.533Z",
+      "pagesScanned": 49,
+      "compliancePercentages": {
+        "wcag20AALegalBaseline": 100,
+        "wcag21AA": 100,
+        "wcag22AATarget": 100,
+        "accessibilityNoViolations": 100,
+        "performanceThreshold": 0,
+        "plainLanguageGrade": 0,
+        "plainLanguageLinks": 100,
+        "completedStatus": 0
+      }
+    },
+    {
+      "runId": "2026-06-02T23-39-34-998Z",
+      "generatedAt": "2026-06-02T23:39:34.998Z",
+      "pagesScanned": 49,
+      "compliancePercentages": {
+        "wcag20AALegalBaseline": 89.8,
+        "wcag21AA": 100,
+        "wcag22AATarget": 100,
+        "accessibilityNoViolations": 89.8,
+        "performanceThreshold": 0,
+        "plainLanguageGrade": 0,
+        "plainLanguageLinks": 97.96,
+        "completedStatus": 22.45
+      }
+    },
+    {
+      "runId": "2026-06-03T01-35-30-509Z",
+      "generatedAt": "2026-06-03T01:35:30.509Z",
+      "pagesScanned": 45,
+      "compliancePercentages": {
+        "wcag20AALegalBaseline": 82.22,
+        "wcag21AA": 100,
+        "wcag22AATarget": 93.33,
+        "accessibilityNoViolations": 75.56,
+        "performanceThreshold": 6.67,
+        "plainLanguageGrade": 0,
+        "plainLanguageLinks": 95.56,
+        "completedStatus": 64.44
+      }
+    },
+    {
+      "runId": "2026-06-03T01-36-22-013Z",
+      "generatedAt": "2026-06-03T01:36:22.013Z",
+      "pagesScanned": 45,
+      "compliancePercentages": {
+        "wcag20AALegalBaseline": 82.22,
+        "wcag21AA": 100,
+        "wcag22AATarget": 93.33,
+        "accessibilityNoViolations": 75.56,
+        "performanceThreshold": 0,
+        "plainLanguageGrade": 0,
+        "plainLanguageLinks": 95.56,
+        "completedStatus": 64.44
+      }
+    },
+    {
+      "runId": "2026-06-03T01-38-53-784Z",
+      "generatedAt": "2026-06-03T01:38:53.784Z",
+      "pagesScanned": 45,
+      "compliancePercentages": {
+        "wcag20AALegalBaseline": 82.22,
+        "wcag21AA": 100,
+        "wcag22AATarget": 93.33,
+        "accessibilityNoViolations": 75.56,
+        "performanceThreshold": 0,
+        "plainLanguageGrade": 0,
+        "plainLanguageLinks": 95.56,
+        "completedStatus": 62.22
+      }
+    },
+    {
+      "runId": "2026-06-03T02-52-02-503Z",
+      "generatedAt": "2026-06-03T02:52:02.503Z",
+      "pagesScanned": 48,
+      "compliancePercentages": {
+        "wcag20AALegalBaseline": 83.33,
+        "wcag21AA": 100,
+        "wcag22AATarget": 93.75,
+        "accessibilityNoViolations": 77.08,
+        "performanceThreshold": 4.17,
+        "plainLanguageGrade": 0,
+        "plainLanguageLinks": 97.92,
+        "completedStatus": 33.33
+      }
+    }
+  ]
+}

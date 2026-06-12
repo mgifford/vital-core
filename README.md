@@ -1,47 +1,81 @@
-# vital-core
-A quality scanner for websites built for the US government. 
+# vital-scans
 
-## Governance and Guidance
+An open source website quality engine. It crawls 5–10 domains slowly and
+politely across each week, scans thousands of pages per domain with
+[axe-core](https://github.com/dequelabs/axe-core) and
+[Siteimprove Alfa](https://github.com/Siteimprove/alfa) (the open source
+engine behind Siteimprove's commercial checker), measures page weight and
+estimated emissions with [co2.js](https://github.com/thegreenwebfoundation/co2.js),
+and publishes week-over-week reports to GitHub Pages. Everything runs on
+GitHub Actions. There is no server, no database, and no budget line.
 
-- Project constitution: CONSTITUTION.md
-- Agent operating guide: AGENTS.md
-- Accessibility reporting standard: ACCESSIBILITY.md
+Continuous measurement beats one-off audits. The question this answers is
+not "is this site accessible?" but "is this site **getting more
+accessible**, and is it getting lighter?"
 
-## Branch Protection Setup
+## Design principles
 
-To prevent regressions, protect `main` in GitHub settings and require these status checks before merge:
+These come from hard lessons. Earlier attempts failed because they had
+too many sources of truth. This system has one rule above all others:
 
-1. `CI Test and Validation / test`
-2. `Governance Guardrails / required-files`
-3. `Governance Guardrails / governance-rationale`
-4. `Pages Quality Gate / quality-gate`
+**Files are the only state. Data is append-only. Reports are pure
+functions of the data directory.**
 
-Recommended branch protection options:
+- `state/<domain>/crawl.json`: the crawl frontier. The only mutable
+  file. If it is deleted, the crawler reseeds from the sitemap and no
+  history is lost.
+- `data/<domain>/<ISO-week>/pages/*.json`: one compact record per page
+  per week. Append-only.
+- `data/<domain>/<ISO-week>/runs/*.json`: append-only run logs.
+- `data/<domain>/<ISO-week>/summary.json`: the weekly rollup, computed
+  from the page records and committed. Old page-level detail is pruned
+  after `retention_weeks`; summaries are kept forever, so trend history
+  never breaks.
+- `docs/`: generated HTML, built at deploy time and shipped as a Pages
+  artifact. **Never committed.** It cannot drift from the data because
+  it does not persist.
 
-- Require a pull request before merging.
-- Require status checks to pass before merging.
-- Require branches to be up to date before merging.
-- Require conversation resolution before merging.
-- Restrict force pushes and branch deletion.
+Other deliberate choices:
 
-Path in GitHub UI:
+- **Stable page identity.** One URL normalization function
+  (`src/lib/urls.js`) defines page identity everywhere. Week-over-week
+  comparison depends on it; treat it as a frozen contract.
+- **ISO weeks as the unit of comparison.** A page scanned Tuesday and a
+  page scanned Saturday of the same week belong to the same dataset.
+  There are no synthesized run IDs to group incorrectly.
+- **Pages-affected over instance counts.** A rule failing 600 times on
+  a nav menu is one fix, not 600. Reports rank rules by pages affected.
+- **A settle delay before auditing** (`settle_delay_ms`, overridable
+  with `VITAL_A11Y_SETTLE_DELAY_MS`) lets client-side hydration finish,
+  which removes the largest source of transient false positives.
+- **Plain Node, no build step, no TypeScript, six dependencies.** Less
+  machinery to break in CI.
 
-1. `Settings`
-2. `Branches`
-3. `Add branch protection rule`
-4. Branch name pattern: `main`
+## How a week works
 
-## Common Commands
+1. The `scan` workflow runs nightly at off-hours (UTC crons in
+   `.github/workflows/scan.yml`; adjust for your targets' audiences).
+2. Each run scans up to `pages_per_run` pages per domain that have not
+   yet been scanned this ISO week, discovering new same-host links as it
+   goes. Coverage accumulates: 300 pages/run × 7 runs ≈ 2,000+
+   pages/domain/week, within the `max_pages_per_week` cap.
+3. Sunday evening, the `report` workflow aggregates the week, deploys
+   the reports to GitHub Pages, posts a Markdown summary as a comment on
+   the "Weekly scan reports" issue, and prunes page-level detail older
+   than `retention_weeks`.
 
-- Install dependencies: `npm ci`
-- Run automated tests and validators: `npm test`
-- Run CI-safe full validation with coverage: `npm run test:ci`
-- Run optional live/network-heavy phase checks: `npm run test:phase:live`
-- Run a scan locally: `npm run scan`
-- Start local SQLite API for raw scan data: `npm run api:sqlite`
+## Setup
 
-## Testing Infrastructure
+1. Create a repository from these files and push to GitHub.
+2. Edit `config/targets.yml`: list your 5–10 domains and adjust budgets.
+3. In repository **Settings → Pages**, set the source to **GitHub
+   Actions**.
+4. In **Settings → Actions → General**, allow workflows **read and
+   write permissions**.
+5. Run the `scan` workflow once manually (Actions → scan → Run
+   workflow) to verify, then run `report` to publish the first reports.
 
+<<<<<<< HEAD
 The project splits testing into two tiers:
 
 - CI-safe checks (`npm test` / `npm run test:ci`): type validation, profile contract checks, standards-source integrity checks, and deterministic unit tests.
@@ -79,139 +113,55 @@ VITAL-Core runs up to six workers per page. Workers 3-6 are skipped when `VITAL_
 Alfa and axe both run on every page. Alfa provides independent ACT-rules coverage from Siteimprove; axe provides Deque coverage. Running both improves overall issue detection.
 
 Alfa requires `@siteimprove/alfa-formatter-json` to be installed (it is in `dependencies`) and the `VITAL_ALFA_CMD` environment variable to point to the binary:
+=======
+## Local use
+>>>>>>> 34f1991 (trying to see if claude can fix this)
 
 ```sh
-VITAL_ALFA_CMD=node_modules/.bin/alfa npx tsx src/index.ts profiles/local-test.yml
+npm ci
+npx playwright install chromium
+node src/scan.js --domain example.gov --budget 25
+node src/aggregate.js
+npx http-server docs   # or open docs/index.html
 ```
 
-Alfa serializes the full DOM tree into its JSON output. Complex pages can produce 4–10 MB of output per page; the worker uses a 10 MB buffer limit.
-
-### Page Technology Profiling
-
-Each scanned page includes a CMS/framework technology fingerprint in `technologyStack`, powered by **wappalyzer-next** (the open-source fork — the original Wappalyzer requires a paid commercial license and will not run without one) using `--scan-type full`.
-
-- Default command: `.tools/wappalyzer-next/bin/wappalyzer` when `VITAL_WAPPALYZER_CMD` is set
-- If the command is unavailable or fails, scans continue and `technologyStack` is reported as an empty list.
-
-Install options for `wappalyzer-next` are documented upstream: https://github.com/s0md3v/wappalyzer-next
-
-### Third-Party JavaScript Accessibility Impact
-
-For pages with suspicious third-party signals (for example: tag managers, chat widgets, overlays, third-party iframes), VITAL-Core runs a second accessibility audit with JavaScript disabled and compares the results.
-
-Per-page output includes `thirdPartyImpact` with:
-
-- trigger evidence (`triggeredBy`)
-- JS-enabled vs JS-disabled violation counts
-- regression flag (`regressionDetected`)
-- potentially JS-introduced high-risk rules (`highRiskRules`)
-- likely provider attribution (`likelyIntroducedByProviders` and `ruleToLikelyProviders`)
-- provider confidence labels (`providerAttribution` and `ruleToProviderAttribution`) using weighted evidence signals
-
-When regressions are detected, bug reports include a dedicated third-party JavaScript regression section.
-
-### Optional Supplemental Remediation Catalog
-
-Each axe finding already includes primary Deque rule guidance via the rule `helpUrl` and failure summary output. VITAL-Core can now optionally add supplemental pattern-based remediation advice using Purple-AI catalog data.
-
-- Default source path: `tools/submodules/purple-ai`
-- Optional override: set `VITAL_PURPLE_AI_DIR`
-- If catalog data is missing or no match exists, reports continue with Deque guidance only.
-- Supplemental guidance is labeled as `curated-purple-ai` with confidence (`HIGH` exact match, `MEDIUM` fuzzy match).
-
-## Federal Quality Index
-
-Each run now computes a deterministic Federal Quality Index (`0-100`) with a gate status (`PASS`, `WARNING`, `BLOCKED`) and persists it in:
-
-- `dist/runs/latest.json`
-- `dist/runs/index.json`
-- `dist/runs/trends.json`
-
-The score blends accessibility severity density, content quality signals, scan reliability, and link integrity. `BLOCKED` is enforced whenever critical accessibility violations are present.
-
-Per-target quality scoring is also persisted in run artifacts (`targetQuality`) so HHS/CMS and other target domains can be compared side-by-side in reporting.
-Provider confidence rollups are persisted in run artifacts and trends (`providerAttributionTop`) so recurring third-party risk can be monitored over time.
-
-## WCAG Baseline and Targets
-
-- Legal federal baseline remains **WCAG 2.0 AA**.
-- VITAL-Core also tracks progress toward **WCAG 2.1 AA** and **WCAG 2.2 AA** as recommended targets.
-- Reports keep these conformance levels distinct in trend outputs so legal requirements and stretch goals are not conflated.
-- **AAA** is encouraged where practical, but automated AAA checks are treated as advisory only.
-- Manual testing (keyboard-only and assistive technology) is prioritized over automated AAA score chasing.
-
-## Third-Party Tool Submodules
-
-This repository tracks upstream scanner source repositories as submodules to make updates easy and reviewable.
-
-Current tracked submodules include:
-
-- `tools/submodules/axe-core` (Deque axe-core engine)
-- `tools/submodules/standards` (ScanGov standards catalog)
-- `tools/submodules/purple-ai` (GovTechSG Purple-AI remediation response catalog)
-
-- Initialize submodules: `npm run submodules:init`
-- Update submodules to latest upstream tracked commits: `npm run submodules:update`
-
-See `SUBMODULES.md` for details.
-
-## Persistent Run History on GitHub Pages
-
-Scheduled scans publish:
-
-- `runs/latest.json` (latest full run payload)
-- `runs/index.json` (historical run index)
-- `runs/<run-id>.json` (timestamped run artifacts)
-- `runs/<target-id>/scan-queue.json` (per-target discovery queue snapshot with source metadata)
-- `runs/scan-status.json` (per-run scan summary, including queue composition counts)
-- `runs/scan-status.md` (Markdown summary for CI logs or PR comments)
-- `runs/page-state.json` (per-URL change metadata for incremental rescans)
-- `runs/top-task-seeds.json` (monthly DuckDuckGo-derived priority URL seeds)
-- `api/index.json` (stable API endpoint manifest)
-- `api/latest.json` (latest run summary for API consumers)
-- `api/targets.json` (latest per-target aggregated metrics)
-- `api/runs.json` (recent run index for API consumers)
-- `api/issues-last-week/index.json` (manifest for full last-7-day accessibility issue snapshot)
-- `api/issues-last-week/all-issues-*.json` (chunked raw issue instances across all domains)
-- `api/issues-last-week/targets/<target-id>.json` (full last-7-day raw issue instances for one domain)
-
-## SQLite Raw Data API (Local)
-
-VITAL-Core stores additive scan history in `dist/vital.db`. You can query it directly with:
-
-- `node scripts/query-db.mjs summary`
-- `node scripts/query-db.mjs recent-runs --limit 25 --json`
-
-For HTTP API access over local development, run:
+Tests:
 
 ```sh
-npm run api:sqlite
+npm run test:unit   # URL identity, ISO weeks, robots.txt, batch picking
+npm run test:e2e    # full pipeline over a local fixture site simulating two weeks
 ```
 
-Default server URL: `http://127.0.0.1:8787`
+## Politeness
 
-Useful endpoints:
+The crawler honors `robots.txt` (Disallow/Allow/Crawl-delay),
+identifies itself with a user agent containing a contact URL, scans one
+page at a time per domain with a configurable delay, and runs at night.
+If you operate a site being scanned and want changes, open an issue.
 
-- `GET /api/sql/overview` — run/page/violation totals
-- `GET /api/sql/tables` — table and column metadata
-- `GET /api/sql/urls?limit=1000&offset=0` — all tracked/scanned URLs from `url_history`
-- `GET /api/sql/pages?target_id=cms-gov&limit=1000&offset=0` — raw page scan rows
-- `GET /api/sql/violations?target_id=cms-gov&limit=1000&offset=0` — raw violation instance rows
-- `GET /api/sql/table/<table>?limit=1000&offset=0` — generic table access
-- `GET /api/sql/query?q=SELECT%20COUNT(*)%20AS%20count%20FROM%20url_history` — read-only SELECT/WITH queries
+## Honest limits
 
-The scan workflow restores previously published run history before generating a new run, then merges and republishes the updated index.
+- Automated checkers find roughly 30–40% of WCAG barriers. A clean
+  report is a floor, not a finish line. Manual testing with assistive
+  technology remains essential.
+- CO₂ figures use the Sustainable Web Design model (v4); they are
+  estimates suitable for trends, not absolute claims.
+- Byte counts are decoded body sizes seen by the browser, not on-wire
+  transfer sizes. They are consistent week over week, which is what the
+  trend needs.
 
-## Dashboard Navigation and Attribution
+## Commitments
 
-The dashboard includes a dominant header domain selector so users can jump directly to any domain report page:
+This project follows public commitments to
+[accessibility](ACCESSIBILITY.md) and
+[sustainability](SUSTAINABILITY.md), and aims to advance the
+[W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/).
+The reports themselves are part of the argument: semantic HTML, no
+JavaScript, no web fonts, ~2 KB of CSS, dark mode respected.
 
-- Domain overview
-- Accessibility
-- Performance
-- Content
-- Third-party impact
+## License
 
+<<<<<<< HEAD
 Each generated page also includes a footer linking to the main repository and clarifying non-affiliation:
 
 - Project repo: `https://github.com/mgifford/vital-core`
@@ -290,3 +240,6 @@ Scheduled workflow behavior now defaults to accessibility-first scans during bus
 - Domain accessibility pages (`domains/<target-id>/accessibility.html`) now read SQLite after the current run is appended, so latest-run page counts and issue rows align with current scan output.
 - Fallback rendering (used when SQLite history is unavailable) now groups all pages for a target under one synthetic run ID, preventing accidental single-page summaries.
 - If transient findings (for example `aria-hidden-focus`) appear in automated scans but cannot be reproduced manually, increase `VITAL_A11Y_SETTLE_DELAY_MS` (for example `2500`) to allow client-side menu/footer hydration before axe executes.
+=======
+MIT.
+>>>>>>> 34f1991 (trying to see if claude can fix this)

@@ -1,0 +1,115 @@
+# Weekly aggregation and publishing.
+#
+# Runs Sunday evening UTC after the week's scans have accumulated.
+# Steps, in order (ordering matters and is intentional):
+#   1. aggregate : computes summaries from data/, writes docs/
+#   2. commit    : summary.json files go back into data/ so history
+#                   survives page-detail pruning
+#   3. deploy    : docs/ is shipped to GitHub Pages as an artifact;
+#                   generated HTML is never committed to the repo
+#   4. comment   : weekly Markdown summary posted to a pinned issue
+#   5. prune     : page-level detail older than retention_weeks removed
+
+name: report
+
+on:
+  schedule:
+    - cron: '37 22 * * 0'  # Sunday ~18:37 ET
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  issues: write
+
+concurrency:
+  group: report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --omit=optional --ignore-scripts
+
+      - name: Aggregate
+        run: node src/aggregate.js
+
+      - name: Prune old page-level detail
+        run: node src/prune.js
+
+      - name: Commit summaries and pruning
+        run: |
+          git config user.name "vital-scans[bot]"
+          git config user.email "vital-scans@users.noreply.github.com"
+          git add data/
+          if ! git diff --cached --quiet; then
+            git commit -m "report: weekly summaries $(date -u +%Y-%m-%d)"
+            for i in 1 2 3; do
+              git push && break
+              git pull --rebase origin "${GITHUB_REF_NAME}"
+            done
+          fi
+
+      - name: Generate issue comment
+        env:
+          PAGES_BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: node src/issue-comment.js
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Post weekly summary to tracking issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('docs/comment.md', 'utf8');
+            const title = 'Weekly scan reports';
+            // Find or create the single tracking issue, then add this
+            // week's comment: mirrors the open-scans pattern.
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', creator: 'app/github-actions', per_page: 100,
+            });
+            let issue = issues.data.find(i => i.title === title);
+            if (!issue) {
+              const all = await github.rest.issues.listForRepo({
+                owner: context.repo.owner, repo: context.repo.repo,
+                state: 'open', per_page: 100,
+              });
+              issue = all.data.find(i => i.title === title);
+            }
+            if (!issue) {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title,
+                body: 'Automated weekly accessibility and sustainability summaries are posted as comments here.',
+              });
+              issue = created.data;
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: issue.number, body,
+            });

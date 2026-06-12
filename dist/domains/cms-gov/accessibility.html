@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS-GOV — Accessibility Report</title>
+  <link rel="stylesheet" href="../../assets/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header>
+    <p class="report-kicker">Accessibility Scan Report</p>
+    <h1>CMS-GOV — Accessibility Report</h1>
+    <p class="report-subtitle">Report-style summary for the latest retained run, matching the structure of the Open Scans output while preserving the existing dashboard data.</p>
+  </header>
+  <main id="main-content">
+    <div class="card report-banner">
+      <h2>Summary</h2>
+      
+        <p>
+          <a href="index.html">Domain overview</a> |
+          <a href="accessibility.html">Accessibility</a> |
+          <a href="performance.html">Performance</a> |
+          <a href="content.html">Content</a> |
+          <a href="third-party.html">Third-party impact</a>
+        </p>
+      
+        <dl class="report-meta-grid">
+          <div>
+            <dt>Domain</dt>
+            <dd>CMS-GOV</dd>
+          </div>
+          <div>
+            <dt>Latest retained run</dt>
+            <dd>n/a</dd>
+          </div>
+          <div>
+            <dt>Pages scanned</dt>
+            <dd>1</dd>
+          </div>
+          <div>
+            <dt>Total violations</dt>
+            <dd>4</dd>
+          </div>
+          <div>
+            <dt>Engine coverage</dt>
+            <dd>axe, alfa</dd>
+          </div>
+          <div>
+            <dt>Rule cards</dt>
+            <dd>4</dd>
+          </div>
+        </dl>
+      
+        <p class="report-links">
+          <a href="run-history.html">Open run-specific history details</a>
+          <a href="../../api/issues-last-week/targets/cms-gov.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues dataset for this domain (JSON)</a>
+          <a href="../../api/issues-last-week/index.json" target="_blank" rel="noopener noreferrer">Open full last 7-day issues manifest for all domains (JSON)</a>
+        </p>
+      <p><strong>Status breakdown (current run):</strong> COMPLETED: 1</p>
+      <p class="muted-small">This page keeps the current dashboard data model but presents the report in a denser, issue-first format so engine output is easier to compare with Open Scans.</p>
+      
+    </div>
+
+    <div class="a11y-stat-grid">
+      <div class="card">
+        <h2>By Severity</h2>
+        <div class="a11y-bar-chart">
+          <div class="a11y-bar-row">
+          <span class="a11y-bar-label severity-critical">Critical</span>
+          <div class="a11y-bar-track" role="img" aria-label="Critical: 0 issues">
+            <div class="a11y-bar-fill a11y-fill-critical" style="width:0%"></div>
+          </div>
+          <span class="a11y-bar-count">0</span>
+        </div>
+          <div class="a11y-bar-row">
+          <span class="a11y-bar-label severity-serious">Serious</span>
+          <div class="a11y-bar-track" role="img" aria-label="Serious: 3 issues">
+            <div class="a11y-bar-fill a11y-fill-serious" style="width:100%"></div>
+          </div>
+          <span class="a11y-bar-count">3</span>
+        </div>
+          <div class="a11y-bar-row">
+          <span class="a11y-bar-label severity-moderate">Moderate</span>
+          <div class="a11y-bar-track" role="img" aria-label="Moderate: 1 issue">
+            <div class="a11y-bar-fill a11y-fill-moderate" style="width:33%"></div>
+          </div>
+          <span class="a11y-bar-count">1</span>
+        </div>
+          <div class="a11y-bar-row">
+          <span class="a11y-bar-label severity-minor">Minor</span>
+          <div class="a11y-bar-track" role="img" aria-label="Minor: 0 issues">
+            <div class="a11y-bar-fill a11y-fill-minor" style="width:0%"></div>
+          </div>
+          <span class="a11y-bar-count">0</span>
+        </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>By WCAG Version</h2>
+        <ul class="a11y-wcag-list">
+          <li><strong>WCAG 2.0 AA</strong> (legal baseline): <span class="badge">4</span></li>
+          <li><strong>WCAG 2.1 AA</strong> (recommended): <span class="badge">0</span></li>
+          <li><strong>WCAG 2.2 AA</strong> (target): <span class="badge">0</span></li>
+          <li><strong>Section 508</strong>: <span class="badge">0</span></li>
+          <li><strong>Best practice</strong>: <span class="badge">0</span></li>
+          <li class="a11y-wcag-total"><strong>Total violations:</strong> <span class="badge alert">4</span></li>
+        </ul>
+      </div>
+    </div>
+
+    
+
+    <div class="card">
+      <h2>Pages with Most Errors</h2>
+      <p class="muted-small">Focus on the pages that accumulate the most findings to move the largest backlog first.</p>
+      <table>
+        <thead><tr><th>URL</th><th>Instances</th><th>Top rules</th></tr></thead>
+        <tbody><tr>
+          <td><a href="https://example.gov/page" target="_blank" rel="noopener noreferrer">https://example.gov/page</a></td>
+          <td>4</td>
+          <td><code>document-title</code> (1), <code>color-contrast</code> (1), <code>sia-r1</code> (1)</td>
+        </tr></tbody>
+      </table>
+    </div>
+
+    
+        <div class="report-engine-grid">
+          <div class="card report-engine-card">
+            <h2>Most Common Issues (ALFA)</h2>
+            <p class="muted-small">Siteimprove Alfa ACT-rule results most frequently observed across the retained report window.</p>
+            
+          <table>
+            <caption>ALFA findings most frequently observed in this report.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Rule ID</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Pages</th>
+                <th scope="col">Instances</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><a href="#rule-sia-r1"><code>sia-r1</code></a></td>
+              <td class="severity-serious">Serious</td>
+              <td>1</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td><a href="#rule-sia-r6"><code>sia-r6</code></a></td>
+              <td class="severity-moderate">Moderate</td>
+              <td>1</td>
+              <td>1</td>
+            </tr></tbody>
+          </table>
+          </div>
+          <div class="card report-engine-card">
+            <h2>Most Common Issues (axe)</h2>
+            <p class="muted-small">Deque axe-core findings most frequently observed across the retained report window.</p>
+            
+          <table>
+            <caption>axe findings most frequently observed in this report.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Rule ID</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Pages</th>
+                <th scope="col">Instances</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><a href="#rule-document-title"><code>document-title</code></a></td>
+              <td class="severity-serious">Serious</td>
+              <td>1</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td><a href="#rule-color-contrast"><code>color-contrast</code></a></td>
+              <td class="severity-serious">Serious</td>
+              <td>1</td>
+              <td>1</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+
+    <div class="card">
+      <h2 id="issues-heading" tabindex="-1">Issues</h2>
+      <p class="muted-small">Filter the rule cards by severity, tool, and WCAG version. The cards stay anchored to stable rule IDs so weekly comparisons remain easy to review.</p>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by severity">
+        <span class="a11y-filter-label">Severity:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-sev="all">All (4)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="critical">Critical (0)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="serious">Serious (3)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="moderate">Moderate (1)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-sev="minor">Minor (0)</button>
+      </div>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by scan tool">
+        <span class="a11y-filter-label">Tool:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-tool="all">All tools (4)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-tool="axe">axe (2)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-tool="alfa">alfa (2)</button>
+      </div>
+      <div class="a11y-filter-bar" role="group" aria-label="Filter by WCAG version">
+        <span class="a11y-filter-label">WCAG:</span>
+        <button class="a11y-filter-btn active" type="button" data-filter-wcag="all">All versions (4)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.0">2.0 (4)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.1">2.1 (0)</button>
+        <button class="a11y-filter-btn" type="button" data-filter-wcag="2.2">2.2 (0)</button>
+      </div>
+      <div class="a11y-rule-card" id="rule-document-title" data-severity="serious" data-sources="axe" data-wcag="2.0">
+          <div class="a11y-rule-header">
+            <h3>
+              <span class="severity-serious">Serious</span>
+              <code>document-title</code>
+              <span class="badge">WCAG 2.0</span>
+              <span class="badge source-engine-badge source-axe" title="Found by Deque axe-core">axe</span>
+              <span class="muted-small">1 page, 1 instance</span>
+            </h3>
+          </div>
+          <div class="a11y-rule-body">
+            <p class="a11y-rule-description">Documents must have titles <a href="https://example.org/help/document-title" target="_blank" rel="noopener noreferrer">Learn more ↗</a></p>
+            <details>
+              <summary>1 affected page — expand to see details</summary>
+              <div class="a11y-pages-list"><div class="a11y-page-entry">
+            <p><a href="https://example.gov/page" target="_blank" rel="noopener noreferrer">https://example.gov/page</a>
+            <span class="muted-small">(1 instance)</span></p>
+            <details class="a11y-instance-details">
+              <summary>html</summary>
+              <div class="a11y-instance-body">
+                <code>&lt;html&gt;</code>
+                <p><strong>Fix:</strong> Missing title</p>
+              </div>
+            </details>
+            
+          </div></div>
+            </details>
+          </div>
+        </div><div class="a11y-rule-card" id="rule-color-contrast" data-severity="serious" data-sources="axe" data-wcag="2.0">
+          <div class="a11y-rule-header">
+            <h3>
+              <span class="severity-serious">Serious</span>
+              <code>color-contrast</code>
+              <span class="badge">WCAG 2.0</span>
+              <span class="badge source-engine-badge source-axe" title="Found by Deque axe-core">axe</span>
+              <span class="muted-small">1 page, 1 instance</span>
+            </h3>
+          </div>
+          <div class="a11y-rule-body">
+            <p class="a11y-rule-description">Text needs contrast <a href="https://example.org/help/color-contrast" target="_blank" rel="noopener noreferrer">Learn more ↗</a></p>
+            <details>
+              <summary>1 affected page — expand to see details</summary>
+              <div class="a11y-pages-list"><div class="a11y-page-entry">
+            <p><a href="https://example.gov/page" target="_blank" rel="noopener noreferrer">https://example.gov/page</a>
+            <span class="muted-small">(1 instance)</span></p>
+            <details class="a11y-instance-details">
+              <summary>p</summary>
+              <div class="a11y-instance-body">
+                <code>&lt;p&gt;</code>
+                <p><strong>Fix:</strong> Low contrast</p>
+              </div>
+            </details>
+            
+          </div></div>
+            </details>
+          </div>
+        </div><div class="a11y-rule-card" id="rule-sia-r1" data-severity="serious" data-sources="alfa" data-wcag="2.0">
+          <div class="a11y-rule-header">
+            <h3>
+              <span class="severity-serious">Serious</span>
+              <code>sia-r1</code>
+              <span class="badge">WCAG 2.0</span>
+              <span class="badge source-engine-badge source-alfa" title="Found by Siteimprove Alfa">alfa</span>
+              <span class="muted-small">1 page, 1 instance</span>
+            </h3>
+          </div>
+          <div class="a11y-rule-body">
+            <p class="a11y-rule-description">Documents should have a title <a href="https://alfa.siteimprove.com/rules/sia-r1" target="_blank" rel="noopener noreferrer">Learn more ↗</a></p>
+            <details>
+              <summary>1 affected page — expand to see details</summary>
+              <div class="a11y-pages-list"><div class="a11y-page-entry">
+            <p><a href="https://example.gov/page" target="_blank" rel="noopener noreferrer">https://example.gov/page</a>
+            <span class="muted-small">(1 instance)</span></p>
+            <details class="a11y-instance-details">
+              <summary>html</summary>
+              <div class="a11y-instance-body">
+                <code>&lt;html&gt;</code>
+                <p><strong>Fix:</strong> Missing title</p>
+              </div>
+            </details>
+            
+          </div></div>
+            </details>
+          </div>
+        </div><div class="a11y-rule-card" id="rule-sia-r6" data-severity="moderate" data-sources="alfa" data-wcag="2.0">
+          <div class="a11y-rule-header">
+            <h3>
+              <span class="severity-moderate">Moderate</span>
+              <code>sia-r6</code>
+              <span class="badge">WCAG 2.0</span>
+              <span class="badge source-engine-badge source-alfa" title="Found by Siteimprove Alfa">alfa</span>
+              <span class="muted-small">1 page, 1 instance</span>
+            </h3>
+          </div>
+          <div class="a11y-rule-body">
+            <p class="a11y-rule-description">Decorative image should be ignored <a href="https://alfa.siteimprove.com/rules/sia-r6" target="_blank" rel="noopener noreferrer">Learn more ↗</a></p>
+            <details>
+              <summary>1 affected page — expand to see details</summary>
+              <div class="a11y-pages-list"><div class="a11y-page-entry">
+            <p><a href="https://example.gov/page" target="_blank" rel="noopener noreferrer">https://example.gov/page</a>
+            <span class="muted-small">(1 instance)</span></p>
+            <details class="a11y-instance-details">
+              <summary>img</summary>
+              <div class="a11y-instance-body">
+                <code>&lt;img&gt;</code>
+                <p><strong>Fix:</strong> Decorative image issue</p>
+              </div>
+            </details>
+            
+          </div></div>
+            </details>
+          </div>
+        </div>
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+    <p>
+      <strong>Project:</strong>
+      <a href="https://github.com/mgifford/vital-core" target="_blank" rel="noopener noreferrer">github.com/mgifford/vital-core</a>
+    </p>
+    <p>
+      VITAL-Core is an independent open source project. It is not affiliated with, endorsed by, or operated by the websites and agencies scanned by this dashboard.
+    </p>
+  </footer>
+  <script>
+(function () {
+  function getInitialTheme() {
+    try { var s = localStorage.getItem('vital.theme'); if (s === 'light' || s === 'dark') return s; } catch (e) {}
+    try { return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch (e) {}
+    return 'light';
+  }
+  document.documentElement.setAttribute('data-theme', getInitialTheme());
+
+  var activeSev = 'all';
+  var activeTool = 'all';
+  var activeWcag = 'all';
+
+  function applyFilters() {
+    document.querySelectorAll('.a11y-rule-card').forEach(function (card) {
+      var sev = card.getAttribute('data-severity') || '';
+      var sources = card.getAttribute('data-sources') || '';
+      var wcag = card.getAttribute('data-wcag') || '';
+      var sevMatch = activeSev === 'all' || sev === activeSev;
+      var toolMatch = activeTool === 'all' || sources.split(',').indexOf(activeTool) !== -1;
+      var wcagMatch = activeWcag === 'all' || wcag === activeWcag;
+      card.setAttribute('data-hidden', (sevMatch && toolMatch && wcagMatch) ? 'false' : 'true');
+    });
+  }
+
+  document.querySelectorAll('[data-filter-sev]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeSev = btn.getAttribute('data-filter-sev') || 'all';
+      document.querySelectorAll('[data-filter-sev]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('[data-filter-tool]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeTool = btn.getAttribute('data-filter-tool') || 'all';
+      document.querySelectorAll('[data-filter-tool]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('[data-filter-wcag]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeWcag = btn.getAttribute('data-filter-wcag') || 'all';
+      document.querySelectorAll('[data-filter-wcag]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VITAL-Core Failures and Skips</title>
+  <link rel="stylesheet" href="../assets/dashboard.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>VITAL-Core Failures, Timeouts, and Skipped Pages</h1>
+      <p><a href="../index.html">Back to main dashboard</a></p>
+    </div>
+  </header>
+  <main>
+    <div class="metric-grid">
+      <div class="card"><h2>Failed/WAF/Timeout</h2><p style="font-size:2rem;font-weight:bold">0</p></div>
+      <div class="card"><h2>Skipped Unchanged</h2><p style="font-size:2rem;font-weight:bold">0</p></div>
+      <div class="card"><h2>Timeout Only</h2><p style="font-size:2rem;font-weight:bold">0</p></div>
+      <div class="card"><h2>PDF/DOCX URLs Seen</h2><p style="font-size:2rem;font-weight:bold">0</p></div>
+      <div class="card"><h2>Excluded at Discovery</h2><p style="font-size:2rem;font-weight:bold">0</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Failures and Timeouts</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="5">No failed, blocked, or timeout pages in latest run.</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Skipped Unchanged Pages</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="5">No pages were skipped as unchanged in latest run.</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>PDF/DOCX URLs Seen in Page Reports</h2>
+      <p class="muted-small">These URLs are expected to be excluded at discovery time. If any appear here, they bypassed the HTML-only filter and should be investigated.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="5">No PDF/DOCX URLs were included in latest page reports.</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Excluded at Discovery (Non-HTML)</h2>
+      <p class="muted-small">URLs filtered out during discovery before scan queue creation (for example PDFs, DOCX, feeds, and other non-HTML resources).</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Domain</th>
+            <th scope="col">URL</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Reason</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="5">No non-HTML URLs were excluded during discovery in latest run.</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      <strong>Project:</strong>
+      <a href="https://github.com/mgifford/vital-core" target="_blank" rel="noopener noreferrer">github.com/mgifford/vital-core</a>
+    </p>
+    <p>
+      VITAL-Core is an independent open source project. It is not affiliated with, endorsed by, or operated by the websites and agencies scanned by this dashboard.
+    </p>
+  </footer>
+</body>
+</html>

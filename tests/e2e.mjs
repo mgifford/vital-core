@@ -1,0 +1,173 @@
+#!/usr/bin/env node
+/**
+ * End-to-end test of the whole pipeline against a local fixture site:
+ *
+ *   1. Generate a 24-page site with known violations + sitemap + robots.
+ *   2. "Week 1": scan with a small budget across two runs (verifies
+ *      incremental coverage), then aggregate.
+ *   3. Fix some violations in the fixtures.
+ *   4. "Week 2": scan again, aggregate, and assert the week-over-week
+ *      diff reports improvements.
+ *
+ * Run with: npm run test:e2e
+ * Uses VITAL_WEEK to pin ISO weeks deterministically and a throwaway
+ * config/state/data sandbox so it never touches real data.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import http from 'node:http';
+import { execFileSync } from 'node:child_process';
+
+const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
+const SANDBOX = path.join(ROOT, '.e2e-sandbox');
+const SITE = path.join(SANDBOX, 'site');
+const PORT = 8123;
+
+// --- 0. Sandbox: run scan/aggregate from a copy so real config/state/data stay untouched.
+fs.rmSync(SANDBOX, { recursive: true, force: true });
+fs.mkdirSync(SITE, { recursive: true });
+for (const d of ['src', 'node_modules', 'package.json']) {
+  fs.cpSync(path.join(ROOT, d), path.join(SANDBOX, d), { recursive: true });
+}
+fs.mkdirSync(path.join(SANDBOX, 'config'));
+fs.writeFileSync(
+  path.join(SANDBOX, 'config', 'targets.yml'),
+  `defaults:
+  pages_per_run: 100
+  max_pages_per_week: 1000
+  delay_ms: 50
+  nav_timeout_ms: 15000
+  settle_delay_ms: 100
+  max_crawl_depth: 4
+  retention_weeks: 8
+  engines: [axe, alfa, sustainability]
+  user_agent: "vital-scans-e2e/0.1 (+local test)"
+targets:
+  - domain: localhost
+`
+);
+
+// --- 1. Fixture site -------------------------------------------------
+const PAGES = 24;
+function writeSite({ fixed }) {
+  const nav = Array.from({ length: PAGES }, (_, i) => `<li><a href="/page-${i + 1}.html">Page ${i + 1}</a></li>`).join('');
+  for (let i = 1; i <= PAGES; i++) {
+    const broken = !fixed && i % 3 === 0; // pages 3,6,9,... have violations in week 1
+    fs.writeFileSync(
+      path.join(SITE, `page-${i}.html`),
+      `<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title></head>
+<body><main><h1>Page ${i}</h1>
+${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
+<nav aria-label="All pages"><ul>${nav}</ul></nav></main></body></html>`
+    );
+  }
+  fs.writeFileSync(
+    path.join(SITE, 'index.html'),
+    `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Fixture home</title></head>
+<body><main><h1>Fixture</h1><ul>${nav}</ul></main></body></html>`
+  );
+  // 1x1 png
+  fs.writeFileSync(path.join(SITE, 'pixel.png'), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64'));
+  fs.writeFileSync(path.join(SITE, 'robots.txt'), `User-agent: *\nDisallow: /private/\n`);
+  fs.writeFileSync(
+    path.join(SITE, 'sitemap.xml'),
+    `<?xml version="1.0"?><urlset>` +
+      Array.from({ length: 10 }, (_, i) => `<url><loc>http://localhost:${PORT}/page-${i + 1}.html</loc></url>`).join('') +
+      `</urlset>`
+  );
+  fs.mkdirSync(path.join(SITE, 'private'), { recursive: true });
+  fs.writeFileSync(path.join(SITE, 'private', 'secret.html'), '<!DOCTYPE html><html><body>robots should block this</body></html>');
+}
+
+const serverScript = path.join(SANDBOX, 'server.mjs');
+fs.writeFileSync(
+  serverScript,
+  `import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
+const SITE = ${JSON.stringify(SITE)};
+http.createServer((req, res) => {
+  const reqPath = req.url.split('?')[0];
+  const f = path.join(SITE, reqPath === '/' ? 'index.html' : reqPath);
+  if (fs.existsSync(f) && fs.statSync(f).isFile()) {
+    res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
+    res.end(fs.readFileSync(f));
+  } else {
+    res.statusCode = 404; res.setHeader('content-type', 'text/html');
+    res.end('<!DOCTYPE html><html lang="en"><head><title>404</title></head><body><h1>404</h1></body></html>');
+  }
+}).listen(${PORT}, () => console.log('ready'));
+`
+);
+// The server must be a separate process: execFileSync blocks this
+// process's event loop, so an in-process server would never respond.
+const { spawn } = await import('node:child_process');
+const server = spawn('node', [serverScript], { stdio: ['ignore', 'pipe', 'inherit'] });
+await new Promise((resolve, reject) => {
+  server.stdout.on('data', (d) => d.toString().includes('ready') && resolve());
+  server.on('exit', () => reject(new Error('fixture server died')));
+  setTimeout(() => reject(new Error('fixture server start timeout')), 5000);
+});
+
+const run = (script, args, week) =>
+  execFileSync('node', [script, ...args], {
+    cwd: SANDBOX,
+    stdio: ['ignore', 'pipe', 'inherit'],
+    env: { ...process.env, VITAL_WEEK: week },
+  }).toString();
+
+const assert = (cond, msg) => {
+  if (!cond) {
+    console.error(`\u2717 FAIL: ${msg}`);
+    server.kill();
+    process.exit(1);
+  }
+  console.log(`\u2713 ${msg}`);
+};
+
+try {
+  // --- 2. Week 1: two runs with budget 10 ----------------------------
+  writeSite({ fixed: false });
+  run('src/scan.js', ['--domain', 'localhost', '--budget', '10', '--base-url', `http://localhost:${PORT}`], '2026-W23');
+  run('src/scan.js', ['--domain', 'localhost', '--budget', '40', '--base-url', `http://localhost:${PORT}`], '2026-W23');
+  run('src/aggregate.js', [], '2026-W23');
+
+  const w1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'summary.json')));
+  assert(w1.pagesScanned >= PAGES, `week 1 covered all ${PAGES}+ pages across two runs (got ${w1.pagesScanned})`);
+  assert(w1.axe.violationTotal > 0, `week 1 found axe violations (${w1.axe.violationTotal})`);
+  assert(w1.alfa.failedTotal > 0, `week 1 found Alfa failures (${w1.alfa.failedTotal})`);
+  assert('image-alt' in w1.axe.rules, 'image-alt rule recorded');
+  assert(w1.sustainability && w1.sustainability.medianBytes > 0, 'sustainability metrics recorded');
+  const state = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
+  assert(!Object.values(state.pages).some((p) => p.url.includes('/private/')), 'robots.txt disallow respected');
+
+  const runsDir = path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'runs');
+  assert(fs.readdirSync(runsDir).length === 2, 'two run logs recorded for week 1');
+
+  // --- 3. Week 2: violations fixed ------------------------------------
+  writeSite({ fixed: true });
+  run('src/scan.js', ['--domain', 'localhost', '--budget', '100', '--base-url', `http://localhost:${PORT}`], '2026-W24');
+  run('src/aggregate.js', [], '2026-W24');
+
+  const weekly = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'docs', 'data', 'localhost', 'weekly.json')));
+  assert(weekly.series.length === 2, 'trend series has two weeks');
+  const w2 = weekly.series[1];
+  const diff = weekly.diffs['2026-W24'];
+  assert(w2.axe.violationTotal < w1.axe.violationTotal, `week 2 axe violations dropped (${w1.axe.violationTotal} -> ${w2.axe.violationTotal})`);
+  assert(diff.axe.violationDelta < 0, 'diff reports axe improvement');
+  assert(diff.axe.resolved.includes('image-alt'), 'image-alt reported as resolved');
+
+  // --- 4. Reports ------------------------------------------------------
+  const reportPath = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'index.html');
+  const report = fs.readFileSync(reportPath, 'utf8');
+  assert(report.includes('Changes since 2026-W23'), 'report includes week-over-week section');
+  assert(report.includes('lang="en"') && report.includes('Skip to content'), 'report has basic accessibility scaffolding');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'index.html')), 'dashboard generated');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'style.css')), 'stylesheet generated');
+
+  const comment = run('src/issue-comment.js', [], '2026-W24');
+  assert(comment.includes('localhost: 2026-W24') && comment.includes('axe-core violations'), 'issue comment generated with deltas');
+
+  console.log('\nAll end-to-end checks passed.');
+} finally {
+  server.kill();
+}

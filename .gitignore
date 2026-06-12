@@ -1,36 +1,13 @@
 node_modules/
-dist/
-*.js.map
-*.d.ts.map
+.e2e-sandbox/
+.history-cache/
+ci_job_*.zip
+job-*-logs.zip
 tmp/html-snapshots/
-coverage/
 
-# Added by Spec Kitty CLI (auto-managed)
-.claude/
-.codex/
-.vibe/
-.opencode/
-.windsurf/
-.gemini/
-.cursor/
-.qwen/
-.kilocode/
-.augment/
-.roo/
-.amazonq/
-.kiro/
-.agent/
-.github/copilot/
-.kittify/.dashboard
-.kittify/charter/context-state.json
-.kittify/charter/directives.yaml
-.kittify/charter/governance.yaml
-.kittify/charter/metadata.yaml
-.kittify/charter/references.yaml
-.kittify/dossiers/
-.kittify/events/
-.kittify/merge-state.json
-.kittify/missions/__pycache__/
-.kittify/runtime/
-.kittify/workspaces/
-.vscode/
+# Generated site. Built by aggregate in CI and deployed as a Pages
+# artifact; never committed. Summaries that must survive live in data/.
+docs/
+
+*.log
+.DS_Store

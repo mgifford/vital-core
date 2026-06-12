@@ -1,0 +1,137 @@
+{
+  "apiVersion": "v1",
+  "generatedAt": "2026-06-03T02:52:02.503Z",
+  "runId": "2026-06-03T02-52-02-503Z",
+  "targets": [
+    {
+      "targetId": "cdc-gov",
+      "domain": "https://www.cdc.gov",
+      "pagesScanned": 5,
+      "completedPages": 0,
+      "timeoutPages": 4,
+      "skippedUnchangedPages": 1,
+      "totalViolations": 0,
+      "quality": {
+        "score": 85,
+        "gateStatus": "PASS"
+      }
+    },
+    {
+      "targetId": "cms-gov",
+      "domain": "https://www.cms.gov",
+      "pagesScanned": 5,
+      "completedPages": 2,
+      "timeoutPages": 2,
+      "skippedUnchangedPages": 1,
+      "totalViolations": 0,
+      "quality": {
+        "score": 88,
+        "gateStatus": "PASS"
+      }
+    },
+    {
+      "targetId": "data-healthcare-gov",
+      "domain": "https://data.healthcare.gov",
+      "pagesScanned": 5,
+      "completedPages": 2,
+      "timeoutPages": 3,
+      "skippedUnchangedPages": 0,
+      "totalViolations": 2,
+      "quality": {
+        "score": 73.36,
+        "gateStatus": "WARNING"
+      }
+    },
+    {
+      "targetId": "data-medicaid-gov",
+      "domain": "https://data.medicaid.gov",
+      "pagesScanned": 3,
+      "completedPages": 3,
+      "timeoutPages": 0,
+      "skippedUnchangedPages": 0,
+      "totalViolations": 1,
+      "quality": {
+        "score": 83.8,
+        "gateStatus": "WARNING"
+      }
+    },
+    {
+      "targetId": "health-gov",
+      "domain": "https://www.health.gov",
+      "pagesScanned": 5,
+      "completedPages": 2,
+      "timeoutPages": 3,
+      "skippedUnchangedPages": 0,
+      "totalViolations": 0,
+      "quality": {
+        "score": 88,
+        "gateStatus": "PASS"
+      }
+    },
+    {
+      "targetId": "healthcare-gov",
+      "domain": "https://www.healthcare.gov",
+      "pagesScanned": 5,
+      "completedPages": 0,
+      "timeoutPages": 0,
+      "skippedUnchangedPages": 5,
+      "totalViolations": 0,
+      "quality": {
+        "score": 85,
+        "gateStatus": "PASS"
+      }
+    },
+    {
+      "targetId": "hhs-gov",
+      "domain": "https://www.hhs.gov",
+      "pagesScanned": 5,
+      "completedPages": 5,
+      "timeoutPages": 0,
+      "skippedUnchangedPages": 0,
+      "totalViolations": 5,
+      "quality": {
+        "score": 78.4,
+        "gateStatus": "WARNING"
+      }
+    },
+    {
+      "targetId": "medicaid-gov",
+      "domain": "https://www.medicaid.gov",
+      "pagesScanned": 5,
+      "completedPages": 2,
+      "timeoutPages": 2,
+      "skippedUnchangedPages": 0,
+      "totalViolations": 1,
+      "quality": {
+        "score": 86.68,
+        "gateStatus": "WARNING"
+      }
+    },
+    {
+      "targetId": "medicare-gov",
+      "domain": "https://www.medicare.gov",
+      "pagesScanned": 5,
+      "completedPages": 0,
+      "timeoutPages": 1,
+      "skippedUnchangedPages": 4,
+      "totalViolations": 0,
+      "quality": {
+        "score": 85,
+        "gateStatus": "PASS"
+      }
+    },
+    {
+      "targetId": "nih-gov",
+      "domain": "https://www.nih.gov",
+      "pagesScanned": 5,
+      "completedPages": 0,
+      "timeoutPages": 5,
+      "skippedUnchangedPages": 0,
+      "totalViolations": 2,
+      "quality": {
+        "score": 73.96,
+        "gateStatus": "WARNING"
+      }
+    }
+  ]
+}

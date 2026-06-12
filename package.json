@@ -1,9 +1,11 @@
 {
-  "name": "vital-core",
-  "version": "1.0.0",
-  "description": "A quality scanner for websites built for the US government.",
-  "main": "index.js",
+  "name": "vital-scans",
+  "version": "0.1.0",
+  "description": "Open source website quality engine: accessibility (axe-core + Siteimprove Alfa) and sustainability scanning on GitHub Actions, reported via GitHub Pages.",
+  "type": "module",
+  "license": "MIT",
   "scripts": {
+<<<<<<< HEAD
     "scan": "npx tsx src/index.ts",
     "scan:local": "VITAL_TARGET_LIMIT=5 npm run scan",
     "scan:deep": "VITAL_SCAN_INTENSITY=deep VITAL_TARGET_LIMIT=5 npm run scan",
@@ -34,41 +36,22 @@
     "api:sqlite": "node scripts/sqlite-api-server.mjs",
     "duckduckgo-fetch": "npx tsx src/cli/duckduckgo-fetch.ts",
     "compile": "npx tsx src/compile.ts profiles/us-health.yml"
+=======
+    "scan": "node src/scan.js",
+    "aggregate": "node src/aggregate.js",
+    "comment": "node src/issue-comment.js",
+    "prune": "node src/prune.js",
+    "test:unit": "node --test tests/unit/*.test.js",
+    "test:e2e": "node tests/e2e.mjs"
+>>>>>>> 34f1991 (trying to see if claude can fix this)
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mgifford/vital-core.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "AGPL-3.0",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/mgifford/vital-core/issues"
-  },
-  "homepage": "https://github.com/mgifford/vital-core#readme",
+  "engines": { "node": ">=20" },
   "dependencies": {
-    "@axe-core/playwright": "^4.11.3",
-    "@siteimprove/alfa-cli": "^0.83.0",
-    "@siteimprove/alfa-formatter-json": "^0.83.0",
-    "cheerio": "^1.2.0",
-    "chrome-launcher": "^1.2.1",
-    "dictionary-en": "^4.0.0",
-    "lighthouse": "^13.3.0",
-    "nspell": "^2.1.5",
-    "picomatch": "^4.0.4",
-    "sitemapper": "^4.1.6",
-    "yaml": "^2.9.0",
-    "zod": "^4.4.3"
-  },
-  "devDependencies": {
-    "@types/cheerio": "^0.22.35",
-    "@types/node": "^25.9.1",
-    "@types/picomatch": "^4.0.3",
-    "@vitest/coverage-v8": "^4.1.7",
-    "playwright": "^1.60.0",
-    "tsx": "^4.22.3",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.7"
+    "@siteimprove/alfa-playwright": "^0.84.0",
+    "@siteimprove/alfa-test-utils": "^0.84.0",
+    "@tgwf/co2": "^0.18.0",
+    "axe-core": "^4.12.1",
+    "playwright": "^1.56.0",
+    "yaml": "^2.9.0"
   }
 }

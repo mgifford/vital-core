@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VITAL-Core Cross-Domain Unique Errors</title>
+  <link rel="stylesheet" href="../assets/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header>
+    <div class="header-main">
+      <h1>VITAL-Core Cross-Domain Unique Accessibility Errors</h1>
+      <p><a href="../index.html">Back to main dashboard</a></p>
+    </div>
+  </header>
+  <main id="main-content">
+    <div class="metric-grid">
+      <div class="card"><h2>Unique Rules</h2><p style="font-size:2rem;font-weight:bold">0</p><p class="muted-small">Distinct axe rule IDs across all domains</p></div>
+      <div class="card"><h2>Cross-Domain (Systemic)</h2><p style="font-size:2rem;font-weight:bold">0</p><p class="muted-small">Rules firing on ≥2 domains — system-level issues</p></div>
+      <div class="card"><h2>Single-Domain</h2><p style="font-size:2rem;font-weight:bold">0</p><p class="muted-small">Rules isolated to one domain</p></div>
+    </div>
+
+    <div class="card">
+      <h2 id="systemic-errors" tabindex="-1">Cross-Domain (Systemic) Errors</h2>
+      <p class="muted-small">These axe-core rules fire on two or more scanned domains. They likely reflect a shared CMS component, shared template, or third-party script — making them high-value targets for system-level remediation.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Rule ID</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Description</th>
+            <th scope="col">WCAG</th>
+            <th scope="col">Domains</th>
+            <th scope="col">Pages</th>
+            <th scope="col">Domain Breakdown</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="7">None detected.</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2 id="single-domain-errors" tabindex="-1">Single-Domain Errors</h2>
+      <p class="muted-small">These rules were observed on only one scanned domain in the latest run. They may still be high impact — check the domain accessibility page for details.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Rule ID</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Description</th>
+            <th scope="col">WCAG</th>
+            <th scope="col">Domains</th>
+            <th scope="col">Pages</th>
+            <th scope="col">Domain Breakdown</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="7">None detected.</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Data Export</h2>
+      <p><a href="../runs/unique-errors.json">Download unique-errors.json</a> — machine-readable full report including CSS selector patterns per page.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      <strong>Project:</strong>
+      <a href="https://github.com/mgifford/vital-core" target="_blank" rel="noopener noreferrer">github.com/mgifford/vital-core</a>
+    </p>
+    <p>
+      VITAL-Core is an independent open source project. It is not affiliated with, endorsed by, or operated by the websites and agencies scanned by this dashboard.
+    </p>
+  </footer>
+</body>
+</html>

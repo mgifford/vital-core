@@ -1,0 +1,68 @@
+{
+  "targetId": "nih-gov",
+  "domain": "https://www.nih.gov",
+  "windowDays": 7,
+  "issueCount": 4,
+  "rows": [
+    {
+      "violationId": 577,
+      "runId": "2026-06-03T02-52-02-503Z",
+      "targetId": "nih-gov",
+      "domain": "https://www.nih.gov",
+      "pageId": 274,
+      "url": "https://www.nih.gov/research-training/safety-regulation-guidance",
+      "status": "TIMEOUT",
+      "scannedAt": "2026-06-03T02:26:04.534Z",
+      "ruleId": "link-in-text-block",
+      "impact": "serious",
+      "message": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+      "selector": "li:nth-child(12) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "provider": "axe"
+    },
+    {
+      "violationId": 578,
+      "runId": "2026-06-03T02-52-02-503Z",
+      "targetId": "nih-gov",
+      "domain": "https://www.nih.gov",
+      "pageId": 274,
+      "url": "https://www.nih.gov/research-training/safety-regulation-guidance",
+      "status": "TIMEOUT",
+      "scannedAt": "2026-06-03T02:26:04.534Z",
+      "ruleId": "link-in-text-block",
+      "impact": "serious",
+      "message": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+      "selector": "li:nth-child(14) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "provider": "axe"
+    },
+    {
+      "violationId": 579,
+      "runId": "2026-06-03T02-52-02-503Z",
+      "targetId": "nih-gov",
+      "domain": "https://www.nih.gov",
+      "pageId": 274,
+      "url": "https://www.nih.gov/research-training/safety-regulation-guidance",
+      "status": "TIMEOUT",
+      "scannedAt": "2026-06-03T02:26:04.534Z",
+      "ruleId": "link-in-text-block",
+      "impact": "serious",
+      "message": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+      "selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "provider": "axe"
+    },
+    {
+      "violationId": 576,
+      "runId": "2026-06-03T02-52-02-503Z",
+      "targetId": "nih-gov",
+      "domain": "https://www.nih.gov",
+      "pageId": 272,
+      "url": "https://www.nih.gov/about-nih/impact-nih-research/improving-health",
+      "status": "TIMEOUT",
+      "scannedAt": "2026-06-03T01:54:43.147Z",
+      "ruleId": "link-in-text-block",
+      "impact": "serious",
+      "message": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+      "selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "provider": "axe"
+    }
+  ]
+}
