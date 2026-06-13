@@ -1,0 +1,388 @@
+{
+ "domain": "www.cdc.gov",
+ "week": "2026-W24",
+ "generatedAt": "2026-06-13T19:13:41.034Z",
+ "pagesScanned": 1,
+ "blocked": null,
+ "axe": {
+  "violationTotal": 16,
+  "pagesWithViolations": 1,
+  "rules": {
+   "landmark-contentinfo-is-top-level": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Contentinfo landmark should not be contained in another landmark",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-contentinfo-is-top-level?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": ".cdc-footer > footer",
+      "html": "<footer>"
+     }
+    ]
+   },
+   "landmark-no-duplicate-banner": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Document should not have more than one banner landmark",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-no-duplicate-banner?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": ".cdc-header",
+      "html": "<header class=\"container cdc-header\">"
+     }
+    ]
+   },
+   "landmark-no-duplicate-contentinfo": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Document should not have more than one contentinfo landmark",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-no-duplicate-contentinfo?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": ".cdc-footer",
+      "html": "<footer class=\"container cdc-footer noindex\" role=\"contentinfo\">"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 3,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": ".cdc-header",
+      "html": "<header class=\"container cdc-header\">"
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": ".menu-container > .navbar.navbar-expand-lg",
+      "html": "<nav class=\"navbar navbar-expand-lg \">"
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": ".cdc-footer",
+      "html": "<footer class=\"container cdc-footer noindex\" role=\"contentinfo\">"
+     }
+    ]
+   },
+   "page-has-heading-one": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Page should contain a level-one heading",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/page-has-heading-one?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "html",
+      "html": "<html lang=\"en-us\" class=\"cdc-theme-cdc cdc-root-home cdc-page-type--2024home\">"
+     }
+    ]
+   },
+   "region": {
+    "count": 5,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "a[href$=\"#headerSearch\"]",
+      "html": "<a class=\"skippy visually-hidden-focusable\" href=\"#headerSearch\" tabindex=\"2\">Skip to search</a>"
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": ".carousel-inner",
+      "html": "<div class=\"carousel-inner\">"
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "span[data-bs-slide-to=\"0\"]",
+      "html": "<span data-bs-target=\"#hero-carousel\" data-bs-slide-to=\"0\" class=\"active\" aria-label=\"Ebola Outbreak\" tabindex=\"0\" aria-current=\"true\">"
+     }
+    ]
+   },
+   "skip-link": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "The skip-link target should exist and be focusable",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/skip-link?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "a[href$=\"#headerSearch\"]",
+      "html": "<a class=\"skippy visually-hidden-focusable\" href=\"#headerSearch\" tabindex=\"2\">Skip to search</a>"
+     }
+    ]
+   },
+   "tabindex": {
+    "count": 3,
+    "pages": 1,
+    "impact": "serious",
+    "help": "Elements should not have tabindex greater than zero",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/tabindex?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "a[href$=\"#content\"]",
+      "html": "<a class=\"skippy visually-hidden-focusable\" href=\"#content\" tabindex=\"1\">Skip to site content</a>"
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "a[href$=\"#headerSearch\"]",
+      "html": "<a class=\"skippy visually-hidden-focusable\" href=\"#headerSearch\" tabindex=\"2\">Skip to search</a>"
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "#animation-toggle",
+      "html": "<button id=\"animation-toggle\" aria-pressed=\"true\" tabindex=\"3\"><span class=\"visually-hidden\">Pause carousel</span></button>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 65,
+  "pagesWithFailures": 1,
+  "rules": {
+   "sia-r66": {
+    "count": 22,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"\n\t\t\t\t\tHere's how you know\n\t\t\t\t\t\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"Español\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"\n\t\t\t\t\t\tHealth Topics\t\t\t\t\t\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r80": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r80",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "<p>",
+      "html": null
+     }
+    ]
+   },
+   "sia-r74": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r74",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "<p>",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 3,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "@aria-label=\"Ebola Outbreak\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "@aria-label=\"Hantavirus Outbreak\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "@aria-label=\"Summer Travel\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 11,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"Skip to search\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"Ebola Outbreak\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"Learn More \"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r69": {
+    "count": 4,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r69",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"\n\t\t\t\t\t\tHealth Topics\t\t\t\t\t\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"outbreaks\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "text: \"\n\t\t\t\t\t\tAbout CDC\t\t\t\t\t\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 22,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://www.cdc.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "<a href=\"https://www.cdc.gov/spanish/\" class=\"\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "<a class=\"indicator-text\" href=\"/ebola/situation-summary/index.html\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cdc.gov/",
+      "target": "<a class=\"indicator-text\" href=\"/hantavirus/situation-summary/index.html\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 1,
+  "medianBytes": 5042205,
+  "meanBytes": 5042205,
+  "medianRequests": 50,
+  "totalCo2g": 0.75,
+  "meanCo2g": 0.7473
+ },
+ "errorPages": []
+}

@@ -1,0 +1,858 @@
+{
+ "domain": "data.cms.gov",
+ "week": "2026-W24",
+ "generatedAt": "2026-06-13T19:13:41.056Z",
+ "pagesScanned": 300,
+ "blocked": null,
+ "axe": {
+  "violationTotal": 537,
+  "pagesWithViolations": 300,
+  "rules": {
+   "landmark-banner-is-top-level": {
+    "count": 300,
+    "pages": 300,
+    "impact": "moderate",
+    "help": "Banner landmark should not be contained in another landmark",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-banner-is-top-level?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+     "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": ".Header",
+      "html": "<header class=\"Header\" style=\"position: sticky;\">"
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": ".Header",
+      "html": "<header class=\"Header\" style=\"position: sticky;\">"
+     },
+     {
+      "url": "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023",
+      "target": ".Header",
+      "html": "<header class=\"Header\" style=\"position: sticky;\">"
+     },
+     {
+      "url": "https://data.cms.gov/resources/value-modifier-data-dictionary",
+      "target": ".Header",
+      "html": "<header class=\"Header\" style=\"position: sticky;\">"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+      "target": ".Header",
+      "html": "<header class=\"Header\" style=\"position: sticky;\">"
+     }
+    ]
+   },
+   "label-title-only": {
+    "count": 5,
+    "pages": 5,
+    "impact": "serious",
+    "help": "Form elements should have a visible label",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/label-title-only?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/medicare-revalidation-list"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-revalidation-list",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     }
+    ]
+   },
+   "label": {
+    "count": 6,
+    "pages": 5,
+    "impact": "critical",
+    "help": "Form elements must have labels",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/label?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag412"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/medicare-revalidation-list"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-revalidation-list",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-revalidation-list",
+      "target": "#react-select-3-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-3-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
+      "target": "#react-select-2-input",
+      "html": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex"
+     }
+    ]
+   },
+   "heading-order": {
+    "count": 115,
+    "pages": 99,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
+      "target": ".ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+      "html": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Inpatient Hospital</h5>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": ".ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+      "html": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Who will be subject to the Value Modifier in 2018?</h5>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": "#bc767577-36ee-4b23-b820-fac02cc1ba33 > .ArticleSection > .ArticleSection__component-container:nth-child(10) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+      "html": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Category 2 TINs</h5>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": "#\\36 aa18a5c-f8ec-4772-b335-9849352fb762 > .ArticleSection > .ArticleSection__component-container:nth-child(3) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+      "html": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">How is measure performance calculated?</h5>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology",
+      "target": "h5",
+      "html": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Contact information</h5>"
+     }
+    ]
+   },
+   "empty-table-header": {
+    "count": 7,
+    "pages": 2,
+    "impact": "minor",
+    "help": "Table header text should not be empty",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-table-header?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": ".ArticleSection__component-container:nth-child(5) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__table-wrapper > table > thead > tr > th:nth-child(1)",
+      "html": "<th class=\"CellRenderer__cell default-header\" style=\"width: 114px;\"><div id=\"RichTextField-90f53021-a09a-44a2-ad3b-519ee83d9afc\" class=\"RichTextField\"> </div></th>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": ".ArticleSection__component-container:nth-child(7) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__table-wrapper > table > thead > tr > th:nth-child(1)",
+      "html": "<th class=\"CellRenderer__cell default-header\" style=\"width: 114px;\"><div id=\"RichTextField-f548a387-2a6f-42f6-bee9-1d5c324e7c44\" class=\"RichTextField\"> </div></th>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": ".ArticleSection__component-container:nth-child(8) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__table-wrapper > table > thead > tr > th:nth-child(1)",
+      "html": "<th class=\"CellRenderer__cell default-header\" style=\"width: 114px;\"><div id=\"RichTextField-6425f6fa-cd25-475f-9f03-c8247be0395d\" class=\"RichTextField\"> </div></th>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/geographic-variation-methodology-2018",
+      "target": ".ArticleSection__component-container:nth-child(2) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__with-shadow.DynamicTable__table-wrapper > table > thead > tr > th:nth-child(1)",
+      "html": "<th class=\"CellRenderer__cell default-header\" style=\"width: 222px;\"><div id=\"RichTextField-14cb00d3-03f7-4692-87dc-67faf77f618a\" class=\"RichTextField\"> </div></th>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/geographic-variation-methodology-2018",
+      "target": ".ArticleSection__component-container:nth-child(3) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__with-shadow.DynamicTable__table-wrapper > table > thead > tr > th:nth-child(1)",
+      "html": "<th class=\"CellRenderer__cell default-header\" style=\"width: 222px;\"><div id=\"RichTextField-8afe8726-ed25-4027-9812-159df74d0f31\" class=\"RichTextField\"> </div></th>"
+     }
+    ]
+   },
+   "link-in-text-block": {
+    "count": 90,
+    "pages": 8,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+     "https://data.cms.gov/resources/independent-dispute-resolution-methodology",
+     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": "#RichTextField-601365ae-9ac4-4a9f-b3ef-918c820532d2 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+      "html": "<a href=\"https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeedbackProgram/Downloads/Detailed-Methodology-for-the-2018-Value-Modifier-and-2016-Quality-and-Resource-Use-Report-.pdf"
+     },
+     {
+      "url": "https://data.cms.gov/resources/independent-dispute-resolution-methodology",
+      "target": "p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]:nth-child(2)",
+      "html": "<a href=\"https://www.cms.gov/files/document/faqs-%20part-62.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">FAQs about Consolidated Appropriations Act, 2021 Implementation Part 62</a>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/independent-dispute-resolution-methodology",
+      "target": "p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]:nth-child(3)",
+      "html": "<a href=\"https://www.cms.gov/files/document/faqs-part-%2067.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">FAQs about Consolidated Appropriations Act, 2021 Implementation Part 67</a>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/independent-dispute-resolution-methodology",
+      "target": "p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]:nth-child(4)",
+      "html": "<a href=\"https://www.cms.gov/files/document/faqs-part-69.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">FAQs about Consolidated Appropriations Act, 2021 Implementation Part 69</a>"
+     },
+     {
+      "url": "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology",
+      "target": "#RichTextField-cffb3d6e-8d30-46b1-8a3c-8ee4530654e6 > p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+      "html": "<a href=\"https://www.hcup-us.ahrq.gov/toolssoftware/ccsr/ccs_refined.jsp\" target=\"_blank\" rel=\"noopener noreferrer\">"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 6,
+    "pages": 6,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+     "https://data.cms.gov/tools/medicare-revalidation-list"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+      "target": ".desktop",
+      "html": "<nav aria-label=\"breadcrumb\" class=\"DatasetHero__breadcrumb desktop\">"
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+      "target": ".desktop",
+      "html": "<nav aria-label=\"breadcrumb\" class=\"DatasetHero__breadcrumb desktop\">"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-revalidation-list",
+      "target": ".desktop",
+      "html": "<nav aria-label=\"breadcrumb\" class=\"DatasetHero__breadcrumb desktop\">"
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
+      "target": ".desktop",
+      "html": "<nav aria-label=\"breadcrumb\" class=\"DatasetHero__breadcrumb desktop\">"
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
+      "target": ".desktop",
+      "html": "<nav aria-label=\"breadcrumb\" class=\"DatasetHero__breadcrumb desktop\">"
+     }
+    ]
+   },
+   "role-img-alt": {
+    "count": 8,
+    "pages": 2,
+    "impact": "serious",
+    "help": "[role=\"img\"] elements must have alternative text",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/role-img-alt?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag111"
+    ],
+    "examplePages": [
+     "https://data.cms.gov/",
+     "https://data.cms.gov/browse-data-categories"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/",
+      "target": ".Charts__Chart:nth-child(1) > .Chart__wrapper > canvas[height=\"239\"][width=\"239\"]",
+      "html": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\"></canvas>"
+     },
+     {
+      "url": "https://data.cms.gov/",
+      "target": ".Charts__Chart:nth-child(2) > .Chart__wrapper > canvas[height=\"239\"][width=\"239\"]",
+      "html": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\"></canvas>"
+     },
+     {
+      "url": "https://data.cms.gov/",
+      "target": "canvas[height=\"761\"]",
+      "html": "<canvas role=\"img\" height=\"761\" width=\"640\" style=\"display: block; box-sizing: border-box; height: 761px; width: 640px;\"></canvas>"
+     },
+     {
+      "url": "https://data.cms.gov/browse-data-categories",
+      "target": ".Charts__Chart:nth-child(1) > .Chart__wrapper > canvas[height=\"239\"][width=\"239\"]",
+      "html": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\"></canvas>"
+     },
+     {
+      "url": "https://data.cms.gov/browse-data-categories",
+      "target": ".Charts__Chart:nth-child(2) > .Chart__wrapper > canvas[height=\"239\"][width=\"239\"]",
+      "html": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\"></canvas>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 48640,
+  "pagesWithFailures": 300,
+  "rules": {
+   "sia-r66": {
+    "count": 2393,
+    "pages": 295,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+     "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "text: \"Glossary\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "text: \"MCBS Summary Tables Glossary\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "text: \"Download\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "text: \"Data Dictionary\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "text: \"Public Reporting of Missing Digital Contact Information Data Dictionary\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 30361,
+    "pages": 300,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+     "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "<p class=\"typeface-Small-Text-LightGray\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "<p class=\"typeface-Body-16pt-White-L-List\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "<p class=\"typeface-Small-Text-LightGray\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 511,
+    "pages": 190,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+     "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "@aria-label=\"Open Income and Asset Ownership\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "@aria-label=\"Open Income and Asset Ownership\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "@aria-label=\"Open Public Reporting of Missing Digital Contact Information\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "@aria-label=\"Open Public Reporting of Missing Digital Contact Information\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023",
+      "target": "@aria-label=\"Open Number of Accountable Care Organization Assigned Beneficiaries by County\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r69": {
+    "count": 1450,
+    "pages": 292,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r69",
+    "examplePages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+     "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "text: \"Glossary\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "text: \"MCBS Summary Tables Glossary\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "text: \"Download\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "text: \"Data Dictionary\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "text: \"Public Reporting of Missing Digital Contact Information Data Dictionary\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r87": {
+    "count": 300,
+    "pages": 300,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r87",
+    "examplePages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+     "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/value-modifier-data-dictionary",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 4960,
+    "pages": 300,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+     "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2023"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "<a href=\"/search\" title=\"\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "<a href=\"/tools\" title=\"\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/mcbs-summary-tables-glossary",
+      "target": "<a href=\"/browse-data-categories\" title=\"\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "<a href=\"/search\" title=\"\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/public-reporting-of-missing-digital-contact-information-data-dictionary",
+      "target": "<a href=\"/tools\" title=\"\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r8": {
+    "count": 6,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r8",
+    "examplePages": [
+     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/medicare-revalidation-list"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+      "target": "<input class=\"InteractiveToolsSearch__select__input\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+      "target": "<input class=\"InteractiveToolsSearch__select__input\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-revalidation-list",
+      "target": "<input class=\"InteractiveToolsSearch__select__input\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-revalidation-list",
+      "target": "<input class=\"InteractiveToolsSearch__select__input\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
+      "target": "<input class=\"InteractiveToolsSearch__select__input\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r74": {
+    "count": 7,
+    "pages": 7,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r74",
+    "examplePages": [
+     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-population"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+      "target": "<p class=\"latestDateAvailable\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+      "target": "<p class=\"latestDateAvailable\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+      "target": "<p class=\"latestDateAvailable\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/medicare-revalidation-list",
+      "target": "<p class=\"latestDateAvailable\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
+      "target": "<p class=\"latestDateAvailable\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r113": {
+    "count": 101,
+    "pages": 33,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r113",
+    "examplePages": [
+     "https://data.cms.gov/resources/medicare-part-d-prescribers-by-provider-and-drug-data-dictionary",
+     "https://data.cms.gov/resources/medicaid-spending-by-drug-methodology",
+     "https://data.cms.gov/resources/medicare-part-b-spending-by-drug-data-dictionary"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/medicare-part-d-prescribers-by-provider-and-drug-data-dictionary",
+      "target": "<button class=\"selected\" aria-label=\"card 1\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/medicare-part-d-prescribers-by-provider-and-drug-data-dictionary",
+      "target": "<button class=\"large\" aria-label=\"card 2\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/medicaid-spending-by-drug-methodology",
+      "target": "<button class=\"selected\" aria-label=\"card 1\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/medicaid-spending-by-drug-methodology",
+      "target": "<button class=\"large\" aria-label=\"card 2\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/medicare-part-b-spending-by-drug-data-dictionary",
+      "target": "<button class=\"selected\" aria-label=\"card 1\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r53": {
+    "count": 115,
+    "pages": 99,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
+      "target": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+      "target": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology",
+      "target": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r2": {
+    "count": 8,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r2",
+    "examplePages": [
+     "https://data.cms.gov/",
+     "https://data.cms.gov/browse-data-categories"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/",
+      "target": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/",
+      "target": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/",
+      "target": "<canvas role=\"img\" height=\"761\" width=\"640\" style=\"display: block; box-sizing: border-box; height: 761px; width: 640px;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/browse-data-categories",
+      "target": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/browse-data-categories",
+      "target": "<canvas role=\"img\" height=\"239\" width=\"239\" style=\"display: block; box-sizing: border-box; height: 239px; width: 239px;\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r78": {
+    "count": 7,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r78",
+    "examplePages": [
+     "https://data.cms.gov/",
+     "https://data.cms.gov/browse-data-categories"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/",
+      "target": "<h4 class=\"typeface-06-H6-Blue-Link\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/",
+      "target": "<h4 class=\"typeface-06-H6-Blue-Link\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/",
+      "target": "<h4 class=\"typeface-06-H6-Blue-Link\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/browse-data-categories",
+      "target": "<h4 class=\"typeface-06-H6-Blue-Link\">",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/browse-data-categories",
+      "target": "<h4 class=\"typeface-06-H6-Blue-Link\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 8420,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+      "target": "text: \"Population View\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+      "target": "text: \"Hospital View\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+      "target": "text: \"Social Determinants of Health View\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
+      "target": "text: \"Population View\"",
+      "html": null
+     },
+     {
+      "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
+      "target": "text: \"Hospital View\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://data.cms.gov/browse-data-categories"
+    ],
+    "instances": [
+     {
+      "url": "https://data.cms.gov/browse-data-categories",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 300,
+  "medianBytes": 1668335,
+  "meanBytes": 1676331,
+  "medianRequests": 62,
+  "totalCo2g": 74.53,
+  "meanCo2g": 0.2484
+ },
+ "errorPages": []
+}

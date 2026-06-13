@@ -1,99 +1,395 @@
 {
  "domain": "www.cms.gov",
  "week": "2026-W24",
- "generatedAt": "2026-06-13T14:11:13.647Z",
- "pagesScanned": 299,
+ "generatedAt": "2026-06-13T19:13:40.979Z",
+ "pagesScanned": 598,
  "blocked": null,
  "axe": {
-  "violationTotal": 17,
-  "pagesWithViolations": 16,
+  "violationTotal": 53,
+  "pagesWithViolations": 37,
   "rules": {
    "heading-order": {
-    "count": 15,
-    "pages": 15,
+    "count": 46,
+    "pages": 34,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
     "examplePages": [
-     "https://www.cms.gov/medicare/coverage/summary-notice",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/medicare-glp-1-bridge/information-providers",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/medicare-glp-1-bridge/information-part-d-plans"
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+     "https://www.cms.gov/medicare/payment/fee-schedules/durable-medical-equipment-prosthetic-devices-prosthetics-orthotics-supplies/dmepos-payment-determinations-new-items-services",
+     "https://www.cms.gov/medicare/coverage/summary-notice"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": ".rxbodyfield > h3",
+      "html": "<h3><strong>FY 2027 Geographic Reclassification Deadlines</strong></h3>"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/fee-schedules/durable-medical-equipment-prosthetic-devices-prosthetics-orthotics-supplies/dmepos-payment-determinations-new-items-services",
+      "target": "#accordion-370848040__button > .field--name-field-title-title-description.field--type-string-long.field--label-hidden",
+      "html": "<h3 class=\"field field--name-field-title-title-description field--type-string-long field--label-hidden field__item\">\n    Continuity of Pricing\n  </h3>"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/coverage/summary-notice",
+      "target": ".rxbodyfield > h3",
+      "html": "<h3>MSN Messages</h3>"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/fee-for-service-providers/shared-savings-program-ssp-acos/guidance-regulations",
+      "target": "h3:nth-child(3)",
+      "html": "<h3><a href=\"#Program_Participation\" data-once=\"linkMatch\">Program Participation</a></h3>"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/fee-for-service-providers/shared-savings-program-ssp-acos/guidance-regulations",
+      "target": "h3:nth-child(29)",
+      "html": "<h3>Program Participation Information&nbsp;</h3>"
+     }
+    ]
+   },
+   "page-has-heading-one": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Page should contain a level-one heading",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/page-has-heading-one?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+      "target": "html",
+      "html": "<html lang=\"en\" dir=\"ltr\" class=\" js\" style=\"--vw: 12.8px; --vh: 8px;\">"
+     }
     ]
    },
    "link-name": {
-    "count": 2,
-    "pages": 1,
+    "count": 4,
+    "pages": 2,
     "impact": "serious",
     "help": "Links must have discernible text",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-name?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag244",
+     "wcag412"
+    ],
     "examplePages": [
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/long-term-care-hospital",
      "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/hospitals-center"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/long-term-care-hospital",
+      "target": "p:nth-child(2) > a[data-entity-substitution=\"canonical\"][data-entity-type=\"node\"][data-once=\"linkMatch\"]:nth-child(1)",
+      "html": "<a href=\"/medicare/payment/prospective-payment-systems/acute-inpatient-pps/fy-2026-ipps-proposed-rule-home-page\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"e2075c13"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/long-term-care-hospital",
+      "target": "a[data-entity-substitution=\"canonical\"][data-entity-type=\"node\"][data-once=\"linkMatch\"]:nth-child(3)",
+      "html": "<a href=\"/medicare/payment/prospective-payment-systems/long-term-care-hospital/regulations-notices/cms-1833-p\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"7088550f-9"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/hospitals-center",
+      "target": "p:nth-child(2) > a[data-entity-type=\"node\"][data-entity-substitution=\"canonical\"][data-once=\"linkMatch\"]:nth-child(1)",
+      "html": "<a href=\"/medicare/payment/prospective-payment-systems/acute-inpatient-pps/fy-2026-ipps-proposed-rule-home-page\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"e2075c13"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/hospitals-center",
+      "target": "p:nth-child(2) > a[data-entity-type=\"node\"][data-entity-substitution=\"canonical\"][data-once=\"linkMatch\"]:nth-child(3)",
+      "html": "<a href=\"/medicare/payment/prospective-payment-systems/long-term-care-hospital/regulations-notices/cms-1833-p\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"7088550f-9"
+     }
+    ]
+   },
+   "empty-table-header": {
+    "count": 2,
+    "pages": 1,
+    "impact": "minor",
+    "help": "Table header text should not be empty",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-table-header?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.cms.gov/medicare/medicare-fee-for-service-payment/sharedsavingsprogram/application-information"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/medicare-fee-for-service-payment/sharedsavingsprogram/application-information",
+      "target": "th:nth-child(1)",
+      "html": "<th><img src=\"/medicare/medicare-fee-for-service-payment/sharedsavingsprogram/other-content-types/for-acos-types-and-timeline.png\" alt=\"\" data-entity-type=\"media\" data-entity-uuid=\"9dd5a361-1bdf-40f4-"
+     },
+     {
+      "url": "https://www.cms.gov/medicare/medicare-fee-for-service-payment/sharedsavingsprogram/application-information",
+      "target": "th:nth-child(2)",
+      "html": "<th><img src=\"/medicare/medicare-fee-for-service-payment/sharedsavingsprogram/other-content-types/for-acos-toolkit.png\" alt=\"\" data-entity-type=\"media\" data-entity-uuid=\"1cd6374f-e738-4daf-b48e-e9fec4"
+     }
     ]
    }
   }
  },
  "alfa": {
-  "failedTotal": 20294,
-  "pagesWithFailures": 299,
+  "failedTotal": 43133,
+  "pagesWithFailures": 598,
   "rules": {
+   "sia-r53": {
+    "count": 38,
+    "pages": 26,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+     "https://www.cms.gov/medicare/coverage/summary-notice",
+     "https://www.cms.gov/medicare/payment/fee-for-service-providers/shared-savings-program-ssp-acos/guidance-regulations"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/coverage/summary-notice",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/fee-for-service-providers/shared-savings-program-ssp-acos/guidance-regulations",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/fee-for-service-providers/shared-savings-program-ssp-acos/guidance-regulations",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/fee-for-service-providers/shared-savings-program-ssp-acos/guidance-regulations",
+      "target": "<h3>",
+      "html": null
+     }
+    ]
+   },
    "sia-r73": {
-    "count": 4326,
-    "pages": 299,
+    "count": 8946,
+    "pages": 598,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
-     "https://www.cms.gov/medicare/coding-billing/integrated-outpatient-code-editor/integrated-outpatient-code-editor-i-oce-software",
-     "https://www.cms.gov/medicare/enrollment-renewal/part-d-plans/low-income-subsidy",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage-contracting/hpms-guidance-history"
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/swing-bed-providers"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "<p>",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     }
     ]
    },
    "sia-r61": {
-    "count": 299,
-    "pages": 299,
+    "count": 598,
+    "pages": 598,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
-     "https://www.cms.gov/medicare/coding-billing/integrated-outpatient-code-editor/integrated-outpatient-code-editor-i-oce-software",
-     "https://www.cms.gov/medicare/enrollment-renewal/part-d-plans/low-income-subsidy",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage-contracting/hpms-guidance-history"
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/swing-bed-providers"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/swing-bed-providers",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/medicare-part-b-drug-average-sales-price/asp-events",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-regulations-and-notices",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
     ]
    },
    "sia-r57": {
-    "count": 225,
-    "pages": 225,
+    "count": 373,
+    "pages": 373,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
-     "https://www.cms.gov/medicare/coding-billing/integrated-outpatient-code-editor/integrated-outpatient-code-editor-i-oce-software",
-     "https://www.cms.gov/medicare/enrollment-renewal/part-d-plans/low-income-subsidy",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage-contracting/hpms-guidance-history"
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/swing-bed-providers",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-regulations-and-notices"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "text: \"Feedback\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/swing-bed-providers",
+      "target": "text: \"Feedback\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-regulations-and-notices",
+      "target": "text: \"Feedback\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/coding-billing/integrated-outpatient-code-editor/integrated-outpatient-code-editor-i-oce-software",
+      "target": "text: \"Feedback\"",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/part-d-plans/low-income-subsidy",
+      "target": "text: \"Feedback\"",
+      "html": null
+     }
     ]
    },
    "sia-r111": {
-    "count": 15401,
-    "pages": 299,
+    "count": 33142,
+    "pages": 598,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
-     "https://www.cms.gov/medicare/coding-billing/integrated-outpatient-code-editor/integrated-outpatient-code-editor-i-oce-software",
-     "https://www.cms.gov/medicare/enrollment-renewal/part-d-plans/low-income-subsidy",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage-contracting/hpms-guidance-history"
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/swing-bed-providers"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "<a href=\"/about-cms\" class=\"menu-item-link\" data-drupal-link-system-path=\"node/132926\" data-once=\"navigationLinkMatch\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "<a href=\"/about-cms/contact/newsroom\" class=\"menu-item-link\" data-drupal-link-system-path=\"node/43871\" data-once=\"navigationLinkMatch\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/wage-index",
+      "target": "<a href=\"/data-research\" class=\"menu-item-link\" data-drupal-link-system-path=\"node/132891\" data-once=\"navigationLinkMatch\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+      "target": "<a href=\"/about-cms\" class=\"menu-item-link\" data-drupal-link-system-path=\"node/132926\" data-once=\"navigationLinkMatch\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/ambulatory-surgical-center-asc/asc-payment-rates-addenda",
+      "target": "<a href=\"/about-cms/contact/newsroom\" class=\"menu-item-link\" data-drupal-link-system-path=\"node/43871\" data-once=\"navigationLinkMatch\">",
+      "html": null
+     }
     ]
    },
-   "sia-r53": {
-    "count": 13,
-    "pages": 13,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+   "sia-r11": {
+    "count": 4,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r11",
     "examplePages": [
-     "https://www.cms.gov/medicare/coverage/summary-notice",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/medicare-glp-1-bridge/information-providers",
-     "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/medicare-glp-1-bridge/information-part-d-plans"
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/long-term-care-hospital",
+     "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/hospitals-center"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/long-term-care-hospital",
+      "target": "<a href=\"/medicare/payment/prospective-payment-systems/acute-inpatient-pps/fy-2026-ipps-proposed-rule-home-page\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"e2075c13",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/long-term-care-hospital",
+      "target": "<a href=\"/medicare/payment/prospective-payment-systems/long-term-care-hospital/regulations-notices/cms-1833-p\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"7088550f-9",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/hospitals-center",
+      "target": "<a href=\"/medicare/payment/prospective-payment-systems/acute-inpatient-pps/fy-2026-ipps-proposed-rule-home-page\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"e2075c13",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/hospitals-center",
+      "target": "<a href=\"/medicare/payment/prospective-payment-systems/long-term-care-hospital/regulations-notices/cms-1833-p\" data-entity-substitution=\"canonical\" data-entity-type=\"node\" data-entity-uuid=\"7088550f-9",
+      "html": null
+     }
     ]
    },
    "sia-r78": {
-    "count": 9,
-    "pages": 7,
+    "count": 13,
+    "pages": 10,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r78",
     "examplePages": [
      "https://www.cms.gov/",
      "https://www.cms.gov/roster-billing",
-     "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/clinical-labs-center"
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/provider-specific-data-public-use-sas-format"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/",
+      "target": "<h2 class=\"responsive-tabs__accordion-heading ds-u-font-size--xl ds-u-margin--0\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/",
+      "target": "<h2 class=\"responsive-tabs__accordion-heading ds-u-font-size--xl ds-u-margin--0\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/",
+      "target": "<h2 class=\"responsive-tabs__accordion-heading ds-u-font-size--xl ds-u-margin--0\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/roster-billing",
+      "target": "<h1 class=\"page-title\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/payment/prospective-payment-systems/provider-specific-data-public-use-sas-format",
+      "target": "<h3 class=\"field field--name-field-cms-banner-headline field--type-string field--label-hidden ds-u-margin-bottom--3\" data-once=\"trademark-symbol\">",
+      "html": null
+     }
     ]
    },
    "sia-r42": {
@@ -102,6 +398,23 @@
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r42",
     "examplePages": [
      "https://www.cms.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/",
+      "target": "<button type=\"button\" id=\"trigger-tabs-1714902645\" aria-expanded=\"false\" class=\"responsive-tabs__tab-button--mobile ds-u-display--flex\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/",
+      "target": "<button type=\"button\" id=\"trigger-tabs-678103395\" aria-expanded=\"false\" class=\"responsive-tabs__tab-button--mobile ds-u-display--flex\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/",
+      "target": "<button type=\"button\" id=\"trigger-tabs-324211709\" aria-expanded=\"false\" class=\"responsive-tabs__tab-button--mobile ds-u-display--flex\">",
+      "html": null
+     }
     ]
    },
    "sia-r113": {
@@ -110,6 +423,23 @@
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r113",
     "examplePages": [
      "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/chain-ownership-system-pecos"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/chain-ownership-system-pecos",
+      "target": "<a class=\"ds-u-text-decoration--none cms--linked-image\" href=\"/medicare/enrollment-renewal/providers-suppliers\" data-entity-type=\"node\" data-entity-uuid=\"4cc5139f-01ae-48d7-8bf2-6f2ffec8e3f5\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/chain-ownership-system-pecos",
+      "target": "<a class=\"ds-u-text-decoration--none cms--linked-image\" href=\"/medicare/enrollment-renewal/providers-suppliers\" data-entity-type=\"node\" data-entity-uuid=\"4cc5139f-01ae-48d7-8bf2-6f2ffec8e3f5\">",
+      "html": null
+     },
+     {
+      "url": "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/chain-ownership-system-pecos",
+      "target": "<a class=\"ds-u-text-decoration--none cms--linked-image\" href=\"https://pecos.cms.hhs.gov/pecos/feePaymentWelcome.do#headingLv1\" title=\"Pay the Medicare Application Fee\" data-once=\"linkMatch\">",
+      "html": null
+     }
     ]
    },
    "sia-r77": {
@@ -118,6 +448,13 @@
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r77",
     "examplePages": [
      "https://www.cms.gov/medicare/coverage/determination-process/basics/icd-10"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/coverage/determination-process/basics/icd-10",
+      "target": "<td>",
+      "html": null
+     }
     ]
    },
    "sia-r14": {
@@ -126,25 +463,24 @@
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r14",
     "examplePages": [
      "https://www.cms.gov/medicare/regulations-guidance/physician-self-referral/significant-regulatory-history"
-    ]
-   },
-   "sia-r11": {
-    "count": 2,
-    "pages": 1,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r11",
-    "examplePages": [
-     "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/hospitals-center"
+    ],
+    "instances": [
+     {
+      "url": "https://www.cms.gov/medicare/regulations-guidance/physician-self-referral/significant-regulatory-history",
+      "target": "<th class=\"sorting\" tabindex=\"0\" aria-controls=\"dynamic_list_items_table\" rowspan=\"1\">",
+      "html": null
+     }
     ]
    }
   }
  },
  "sustainability": {
-  "pages": 299,
-  "medianBytes": 1887687,
-  "meanBytes": 1844268,
+  "pages": 598,
+  "medianBytes": 1887652,
+  "meanBytes": 1792737,
   "medianRequests": 50,
-  "totalCo2g": 81.72,
-  "meanCo2g": 0.2733
+  "totalCo2g": 158.88,
+  "meanCo2g": 0.2657
  },
  "errorPages": []
 }

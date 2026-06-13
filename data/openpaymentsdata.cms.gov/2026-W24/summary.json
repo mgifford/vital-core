@@ -1,78 +1,242 @@
 {
  "domain": "openpaymentsdata.cms.gov",
  "week": "2026-W24",
- "generatedAt": "2026-06-13T14:11:13.659Z",
- "pagesScanned": 1,
+ "generatedAt": "2026-06-13T19:13:41.032Z",
+ "pagesScanned": 13,
  "blocked": null,
  "axe": {
-  "violationTotal": 3,
-  "pagesWithViolations": 1,
+  "violationTotal": 33,
+  "pagesWithViolations": 11,
   "rules": {
    "region": {
-    "count": 3,
-    "pages": 1,
+    "count": 33,
+    "pages": 11,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
     "examplePages": [
-     "https://openpaymentsdata.cms.gov/"
+     "https://openpaymentsdata.cms.gov/about",
+     "https://openpaymentsdata.cms.gov/datasets",
+     "https://openpaymentsdata.cms.gov/about/glossary"
+    ],
+    "instances": [
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": ".ds-u-sm-margin-top--5",
+      "html": "<h3 class=\"ds-text-heading--lg ds-u-sm-margin-top--5 ds-u-margin-top--3 ds-l-col--12\">Get updates from Open Payments</h3>"
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": ".ds-u-md-margin-bottom--6",
+      "html": "<div class=\"ds-l-md-col--6 ds-u-md-margin-bottom--6 ds-u-margin-bottom--3\"><p>To sign up for Open Payments updates or to access your subscriber preferences, please enter your email address.</p></div>"
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": ".ds-u-fill--primary > .ds-l-container",
+      "html": "<div class=\"ds-l-container\" style=\"z-index: 2; position: relative;\">"
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": ".ds-text-heading--lg",
+      "html": "<h3 class=\"ds-text-heading--lg ds-u-sm-margin-top--5 ds-u-margin-top--3 ds-l-col--12\">Get updates from Open Payments</h3>"
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": ".ds-u-md-margin-bottom--6",
+      "html": "<div class=\"ds-l-md-col--6 ds-u-md-margin-bottom--6 ds-u-margin-bottom--3\"><p>To sign up for Open Payments updates or to access your subscriber preferences, please enter your email address.</p></div>"
+     }
     ]
    }
   }
  },
  "alfa": {
-  "failedTotal": 48,
-  "pagesWithFailures": 1,
+  "failedTotal": 600,
+  "pagesWithFailures": 11,
   "rules": {
+   "sia-r73": {
+    "count": 131,
+    "pages": 11,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://openpaymentsdata.cms.gov/about",
+     "https://openpaymentsdata.cms.gov/datasets",
+     "https://openpaymentsdata.cms.gov/about/glossary"
+    ],
+    "instances": [
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "<p class=\"ds-text-heading--xl ds-u-font-weight--semibold\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 11,
+    "pages": 11,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://openpaymentsdata.cms.gov/about",
+     "https://openpaymentsdata.cms.gov/datasets",
+     "https://openpaymentsdata.cms.gov/about/glossary"
+    ],
+    "instances": [
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about/glossary",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about/software-specs-and-limits",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/summary-by-state",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 55,
+    "pages": 11,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://openpaymentsdata.cms.gov/about",
+     "https://openpaymentsdata.cms.gov/datasets",
+     "https://openpaymentsdata.cms.gov/about/glossary"
+    ],
+    "instances": [
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "text: \"Get updates from Open Payments\"",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "text: \"To sign up for Open Payments updates or to access your subscriber preferences, please enter your email address.\"",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "text: \"Help us improve Open Payments\"",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": "text: \"Get updates from Open Payments\"",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": "text: \"To sign up for Open Payments updates or to access your subscriber preferences, please enter your email address.\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 402,
+    "pages": 11,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://openpaymentsdata.cms.gov/about",
+     "https://openpaymentsdata.cms.gov/datasets",
+     "https://openpaymentsdata.cms.gov/about/glossary"
+    ],
+    "instances": [
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "<a class=\"\" href=\"/\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "<a aria-current=\"page\" class=\" dc-c-about-nav-link ds-u-margin-left--2 active\" href=\"/about\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/about",
+      "target": "<a class=\" dc-c-about-nav-link ds-u-margin-left--2\" href=\"/about/glossary\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": "<a class=\"\" href=\"/\">",
+      "html": null
+     },
+     {
+      "url": "https://openpaymentsdata.cms.gov/datasets",
+      "target": "<a aria-describedby=\"dataset-e6b17c6a-2534-4207-a4a1-6746a14911ff-updated-date\" href=\"/dataset/e6b17c6a-2534-4207-a4a1-6746a14911ff\">",
+      "html": null
+     }
+    ]
+   },
    "sia-r78": {
     "count": 1,
     "pages": 1,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r78",
     "examplePages": [
      "https://openpaymentsdata.cms.gov/"
-    ]
-   },
-   "sia-r73": {
-    "count": 14,
-    "pages": 1,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
-    "examplePages": [
-     "https://openpaymentsdata.cms.gov/"
-    ]
-   },
-   "sia-r61": {
-    "count": 1,
-    "pages": 1,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
-    "examplePages": [
-     "https://openpaymentsdata.cms.gov/"
-    ]
-   },
-   "sia-r57": {
-    "count": 5,
-    "pages": 1,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
-    "examplePages": [
-     "https://openpaymentsdata.cms.gov/"
-    ]
-   },
-   "sia-r111": {
-    "count": 27,
-    "pages": 1,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
-    "examplePages": [
-     "https://openpaymentsdata.cms.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://openpaymentsdata.cms.gov/",
+      "target": "<h3 class=\"ds-text-heading--2xl ds-u-margin-bottom--0\">",
+      "html": null
+     }
     ]
    }
   }
  },
  "sustainability": {
-  "pages": 1,
-  "medianBytes": 4442251,
-  "meanBytes": 4442251,
-  "medianRequests": 68,
-  "totalCo2g": 0.66,
-  "meanCo2g": 0.6583
+  "pages": 11,
+  "medianBytes": 2667989,
+  "meanBytes": 2972985,
+  "medianRequests": 40,
+  "totalCo2g": 4.85,
+  "meanCo2g": 0.4406
  },
- "errorPages": []
+ "errorPages": [
+  {
+   "url": "https://openpaymentsdata.cms.gov/datasets/archived",
+   "status": 404
+  },
+  {
+   "url": "https://openpaymentsdata.cms.gov/datasets/download",
+   "status": 404
+  }
+ ]
 }

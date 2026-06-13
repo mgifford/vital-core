@@ -1,0 +1,317 @@
+{
+ "domain": "data.medicaid.gov",
+ "week": "2026-W24",
+ "generatedAt": "2026-06-13T19:13:41.069Z",
+ "pagesScanned": 300,
+ "blocked": null,
+ "axe": {
+  "violationTotal": 320,
+  "pagesWithViolations": 300,
+  "rules": {
+   "landmark-unique": {
+    "count": 300,
+    "pages": 300,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+     "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+     "https://data.medicaid.gov/dataset/8f77310d-ef45-5bb6-bcb0-6da9a1bdb3cd"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": ".dkan-c-cms-topnav--menu",
+      "html": "<nav class=\"dkan-c-cms-topnav--menu\">"
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+      "target": ".dkan-c-cms-topnav--menu",
+      "html": "<nav class=\"dkan-c-cms-topnav--menu\">"
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/8f77310d-ef45-5bb6-bcb0-6da9a1bdb3cd",
+      "target": ".dkan-c-cms-topnav--menu",
+      "html": "<nav class=\"dkan-c-cms-topnav--menu\">"
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/cfbf62b6-ab10-46d1-9284-b08475964470",
+      "target": ".dkan-c-cms-topnav--menu",
+      "html": "<nav class=\"dkan-c-cms-topnav--menu\">"
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/cc318bfb-a9b2-55f3-a924-d47376b32ea3",
+      "target": ".dkan-c-cms-topnav--menu",
+      "html": "<nav class=\"dkan-c-cms-topnav--menu\">"
+     }
+    ]
+   },
+   "svg-img-alt": {
+    "count": 20,
+    "pages": 2,
+    "impact": "serious",
+    "help": "<svg> elements with an img role must have alternative text",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/svg-img-alt?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag111"
+    ],
+    "examplePages": [
+     "https://data.medicaid.gov/home",
+     "https://data.medicaid.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/home",
+      "target": "path[fill=\"#862074\"]",
+      "html": "<path role=\"graphics-symbol\" d=\"M2.5,-158.314A158.333,158.333,0,0,1,154.203,35.928L14.217,0.973A14.25,14.25,0,0,0,2.5,-14.029Z\" fill=\"#862074\" style=\"cursor: pointer;\"></path>"
+     },
+     {
+      "url": "https://data.medicaid.gov/home",
+      "target": "path[fill=\"#509F95\"]",
+      "html": "<path role=\"graphics-symbol\" d=\"M152.992,40.779A158.333,158.333,0,0,1,51.536,149.711L6.733,12.559A14.25,14.25,0,0,0,13.005,5.824Z\" fill=\"#509F95\" style=\"cursor: pointer;\"></path>"
+     },
+     {
+      "url": "https://data.medicaid.gov/home",
+      "target": "path[fill=\"#DA67C5\"]",
+      "html": "<path role=\"graphics-symbol\" d=\"M46.783,151.264A158.333,158.333,0,0,1,-37.144,153.915L-1.085,14.209A14.25,14.25,0,0,0,1.98,14.112Z\" fill=\"#DA67C5\" style=\"cursor: pointer;\"></path>"
+     },
+     {
+      "url": "https://data.medicaid.gov/",
+      "target": "path[fill=\"#862074\"]",
+      "html": "<path role=\"graphics-symbol\" d=\"M2.5,-158.314A158.333,158.333,0,0,1,154.203,35.928L14.217,0.973A14.25,14.25,0,0,0,2.5,-14.029Z\" fill=\"#862074\" style=\"cursor: pointer;\"></path>"
+     },
+     {
+      "url": "https://data.medicaid.gov/",
+      "target": "path[fill=\"#509F95\"]",
+      "html": "<path role=\"graphics-symbol\" d=\"M152.992,40.779A158.333,158.333,0,0,1,51.536,149.711L6.733,12.559A14.25,14.25,0,0,0,13.005,5.824Z\" fill=\"#509F95\" style=\"cursor: pointer;\"></path>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 12049,
+  "pagesWithFailures": 300,
+  "rules": {
+   "sia-r73": {
+    "count": 2371,
+    "pages": 300,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+     "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+     "https://data.medicaid.gov/dataset/8f77310d-ef45-5bb6-bcb0-6da9a1bdb3cd"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<p class=\"ds-u-margin--0 ds-u-font-weight--bold\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r17": {
+    "count": 1235,
+    "pages": 290,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r17",
+    "examplePages": [
+     "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+     "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+     "https://data.medicaid.gov/dataset/8f77310d-ef45-5bb6-bcb0-6da9a1bdb3cd"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<div id=\"tooltip-trigger--86\" tabindex=\"-1\" class=\"ds-c-tooltip\" data-placement=\"bottom-start\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<div id=\"tooltip-trigger--103\" tabindex=\"-1\" class=\"ds-c-tooltip\" data-placement=\"bottom-start\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<div aria-labelledby=\"overview__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"overview\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+      "target": "<div id=\"tooltip-trigger--100\" tabindex=\"-1\" class=\"ds-c-tooltip\" data-placement=\"bottom-start\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+      "target": "<div id=\"tooltip-trigger--122\" tabindex=\"-1\" class=\"ds-c-tooltip\" data-placement=\"bottom-start\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 8416,
+    "pages": 300,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+     "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+     "https://data.medicaid.gov/dataset/8f77310d-ef45-5bb6-bcb0-6da9a1bdb3cd"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<a href=\"https://data.medicaid.gov\" title=\"data.medicaid.gov Logo\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<a class=\"\" href=\"https://www.cms.gov/about-cms\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/a66fa666-3854-5bc3-b8f8-9367a10cb40f",
+      "target": "<a class=\"\" href=\"https://www.cms.gov/newsroom\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+      "target": "<a href=\"https://data.medicaid.gov\" title=\"data.medicaid.gov Logo\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/dataset/f403f019-48f5-48f0-b0ce-c051cfe04a5e",
+      "target": "<a class=\"\" href=\"https://www.cms.gov/about-cms\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 5,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://data.medicaid.gov/about/software-specs-and-limits",
+     "https://data.medicaid.gov/about/api",
+     "https://data.medicaid.gov/about/program-overview"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/about/software-specs-and-limits",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/about/api",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/about/program-overview",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/about/faq",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/about/contact-us",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r43": {
+    "count": 20,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r43",
+    "examplePages": [
+     "https://data.medicaid.gov/home",
+     "https://data.medicaid.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/home",
+      "target": "<path role=\"graphics-symbol\" d=\"M2.5,-158.314A158.333,158.333,0,0,1,154.203,35.928L14.217,0.973A14.25,14.25,0,0,0,2.5,-14.029Z\" fill=\"#862074\" style=\"cursor: pointer;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/home",
+      "target": "<path role=\"graphics-symbol\" d=\"M152.992,40.779A158.333,158.333,0,0,1,51.536,149.711L6.733,12.559A14.25,14.25,0,0,0,13.005,5.824Z\" fill=\"#509F95\" style=\"cursor: pointer;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/home",
+      "target": "<path role=\"graphics-symbol\" d=\"M46.783,151.264A158.333,158.333,0,0,1,-37.144,153.915L-1.085,14.209A14.25,14.25,0,0,0,1.98,14.112Z\" fill=\"#DA67C5\" style=\"cursor: pointer;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/",
+      "target": "<path role=\"graphics-symbol\" d=\"M2.5,-158.314A158.333,158.333,0,0,1,154.203,35.928L14.217,0.973A14.25,14.25,0,0,0,2.5,-14.029Z\" fill=\"#862074\" style=\"cursor: pointer;\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/",
+      "target": "<path role=\"graphics-symbol\" d=\"M152.992,40.779A158.333,158.333,0,0,1,51.536,149.711L6.733,12.559A14.25,14.25,0,0,0,13.005,5.824Z\" fill=\"#509F95\" style=\"cursor: pointer;\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r14": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r14",
+    "examplePages": [
+     "https://data.medicaid.gov/medicaid-chip-eligibility-enrollment-snapshot-data",
+     "https://data.medicaid.gov/eligibility-enrollment-snapshot-data"
+    ],
+    "instances": [
+     {
+      "url": "https://data.medicaid.gov/medicaid-chip-eligibility-enrollment-snapshot-data",
+      "target": "<a class=\"dc-c-newtab\" aria-label=\"link opens in a new tab\" href=\"https://www.medicaid.gov/medicaid-and-chip-eligibility-operations-and-enrollment-snapshot\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://data.medicaid.gov/eligibility-enrollment-snapshot-data",
+      "target": "<a class=\"dc-c-newtab\" aria-label=\"link opens in a new tab\" href=\"https://www.medicaid.gov/medicaid-and-chip-eligibility-operations-and-enrollment-snapshot\" target=\"_blank\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 300,
+  "medianBytes": 2160472,
+  "meanBytes": 2162090,
+  "medianRequests": 27,
+  "totalCo2g": 96.12,
+  "meanCo2g": 0.3204
+ },
+ "errorPages": []
+}

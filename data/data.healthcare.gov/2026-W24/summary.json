@@ -1,0 +1,650 @@
+{
+ "domain": "data.healthcare.gov",
+ "week": "2026-W24",
+ "generatedAt": "2026-06-13T19:13:41.027Z",
+ "pagesScanned": 540,
+ "blocked": null,
+ "axe": {
+  "violationTotal": 19,
+  "pagesWithViolations": 16,
+  "rules": {
+   "landmark-unique": {
+    "count": 7,
+    "pages": 7,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.healthcare.gov/about",
+     "https://data.healthcare.gov/about/faq",
+     "https://data.healthcare.gov/api"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/about",
+      "target": ".dkan-c-main-nav",
+      "html": "<nav class=\"dkan-c-main-nav\">"
+     },
+     {
+      "url": "https://data.healthcare.gov/about/faq",
+      "target": ".dkan-c-main-nav",
+      "html": "<nav class=\"dkan-c-main-nav\">"
+     },
+     {
+      "url": "https://data.healthcare.gov/api",
+      "target": ".dkan-c-main-nav",
+      "html": "<nav class=\"dkan-c-main-nav\">"
+     },
+     {
+      "url": "https://data.healthcare.gov/about/software-specs-and-limits",
+      "target": ".dkan-c-main-nav",
+      "html": "<nav class=\"dkan-c-main-nav\">"
+     },
+     {
+      "url": "https://data.healthcare.gov/about/api",
+      "target": ".dkan-c-main-nav",
+      "html": "<nav class=\"dkan-c-main-nav\">"
+     }
+    ]
+   },
+   "heading-order": {
+    "count": 6,
+    "pages": 6,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.healthcare.gov/?page=3",
+     "https://data.healthcare.gov/?page=4",
+     "https://data.healthcare.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/?page=3",
+      "target": ".ds-u-lg-padding-top--0 > h4",
+      "html": "<h4 class=\"ds-text-heading--2xl\">Find and download Healthcare.gov datasets</h4>"
+     },
+     {
+      "url": "https://data.healthcare.gov/?page=4",
+      "target": ".ds-u-lg-padding-top--0 > h4",
+      "html": "<h4 class=\"ds-text-heading--2xl\">Find and download Healthcare.gov datasets</h4>"
+     },
+     {
+      "url": "https://data.healthcare.gov/",
+      "target": ".ds-u-lg-padding-top--0 > h4",
+      "html": "<h4 class=\"ds-text-heading--2xl\">Find and download Healthcare.gov datasets</h4>"
+     },
+     {
+      "url": "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
+      "target": "#operations-tag-Metastore\\\\\\:_dataset",
+      "html": "<h3 class=\"opblock-tag no-desc\" id=\"operations-tag-Metastore\\:_dataset\" data-tag=\"Metastore: dataset\" data-is-open=\"true\">"
+     },
+     {
+      "url": "https://data.healthcare.gov/home",
+      "target": ".ds-u-lg-padding-top--0 > h4",
+      "html": "<h4 class=\"ds-text-heading--2xl\">Find and download Healthcare.gov datasets</h4>"
+     }
+    ]
+   },
+   "color-contrast": {
+    "count": 2,
+    "pages": 1,
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=axeAPI",
+    "tags": [
+     "wcag2aa",
+     "wcag143"
+    ],
+    "examplePages": [
+     "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
+      "target": "small:nth-child(1) > pre",
+      "html": "<pre class=\"version\"> v1 </pre>"
+     },
+     {
+      "url": "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
+      "target": ".version-stamp > pre",
+      "html": "<pre class=\"version\">OAS 3.0</pre>"
+     }
+    ]
+   },
+   "aria-allowed-role": {
+    "count": 1,
+    "pages": 1,
+    "impact": "minor",
+    "help": "ARIA role should be appropriate for the element",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/aria-allowed-role?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.healthcare.gov/de-intake-form"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/de-intake-form",
+      "target": ".select2-search__field",
+      "html": "<textarea class=\"select2-search__field\" type=\"search\" tabindex=\"0\" autocorrect=\"off\" autocapitalize=\"none\" spellcheck=\"false\" role=\"searchbox\" aria-autocomplete=\"list\" autocomplete=\"off\" aria-label=\"S"
+     }
+    ]
+   },
+   "aria-input-field-name": {
+    "count": 1,
+    "pages": 1,
+    "impact": "serious",
+    "help": "ARIA input fields must have an accessible name",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/aria-input-field-name?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag412"
+    ],
+    "examplePages": [
+     "https://data.healthcare.gov/de-intake-form"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/de-intake-form",
+      "target": ".select2-selection",
+      "html": "<span class=\"select2-selection select2-selection--multiple\" role=\"combobox\" aria-haspopup=\"true\" aria-expanded=\"false\" tabindex=\"-1\" aria-disabled=\"false\">"
+     }
+    ]
+   },
+   "page-has-heading-one": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Page should contain a level-one heading",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/page-has-heading-one?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://data.healthcare.gov/ab-registration-tracker/status"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/ab-registration-tracker/status",
+      "target": "html",
+      "html": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\" data-react-helmet=\"lang\" data-once=\"apfsCard ecpFAQDrawer ecpBehavior\">"
+     }
+    ]
+   },
+   "list": {
+    "count": 1,
+    "pages": 1,
+    "impact": "serious",
+    "help": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/list?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag131"
+    ],
+    "examplePages": [
+     "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP",
+      "target": "ol[data-testid=\"results-list\"]",
+      "html": "<ol class=\"dc-dataset-search-list ds-u-padding--0 ds-u-margin-top--0 ds-u-margin-bottom--4 ds-u-display--block\" data-testid=\"results-list\">"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 19775,
+  "pagesWithFailures": 503,
+  "rules": {
+   "sia-r66": {
+    "count": 1016,
+    "pages": 503,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+     "https://data.healthcare.gov/dataset/8dcm-4bzw",
+     "https://data.healthcare.gov/dataset/mibd-6jin"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "text: \"opens in new window\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "text: \"opens in new window\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/8dcm-4bzw",
+      "target": "text: \"opens in new window\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/8dcm-4bzw",
+      "target": "text: \"opens in new window\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/mibd-6jin",
+      "target": "text: \"opens in new window\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 3466,
+    "pages": 503,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+     "https://data.healthcare.gov/dataset/8dcm-4bzw",
+     "https://data.healthcare.gov/dataset/mibd-6jin"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "<p class=\"ab-list ds-l-col--12 ds-l-lg-col--4 ds-u-color--gray ds-u-lg-text-align--right ds-u-text-align--left\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/8dcm-4bzw",
+      "target": "<p class=\"ds-c-usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/8dcm-4bzw",
+      "target": "<p class=\"ds-c-usa-banner__action ds-u-align-items--center ds-u-md-display--none ds-u-display--flex\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r17": {
+    "count": 1649,
+    "pages": 471,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r17",
+    "examplePages": [
+     "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+     "https://data.healthcare.gov/dataset/8dcm-4bzw",
+     "https://data.healthcare.gov/dataset/mibd-6jin"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "<div id=\"tooltip-trigger--165\" tabindex=\"-1\" class=\"ds-c-tooltip\" data-placement=\"bottom-start\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/8dcm-4bzw",
+      "target": "<div aria-labelledby=\"api__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"api\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/mibd-6jin",
+      "target": "<div aria-labelledby=\"api__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"api\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/731b5a4b-02ce-4e87-91fc-18854d3f3301",
+      "target": "<div aria-labelledby=\"api__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"api\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/n2pf-y4nw",
+      "target": "<div aria-labelledby=\"api__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"api\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 13585,
+    "pages": 503,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+     "https://data.healthcare.gov/dataset/8dcm-4bzw",
+     "https://data.healthcare.gov/dataset/mibd-6jin"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "<a href=\"/\" title=\"Data.Healthcare home\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "<a class=\"dkan-c-header--link ds-c-button ds-c-button--ghost\" href=\"/datasets\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/ab-registration-completion-list?page=5",
+      "target": "<button type=\"button\" class=\"ds-c-button ds-c-button--on-dark ds-c-button--ghost ds-u-border--0 dkan-c-header-search--modal-button\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/8dcm-4bzw",
+      "target": "<a href=\"/\" title=\"Data.Healthcare home\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/dataset/8dcm-4bzw",
+      "target": "<a class=\"dkan-c-header--link ds-c-button ds-c-button--ghost\" href=\"/datasets\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 9,
+    "pages": 9,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://data.healthcare.gov/about",
+     "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
+     "https://data.healthcare.gov/about/faq"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/about",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/about/faq",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/api",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/about/software-specs-and-limits",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 6,
+    "pages": 4,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
+     "https://data.healthcare.gov/de-intake-form",
+     "https://data.healthcare.gov/issuer-partner-lookup/results"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
+      "target": "@aria-labelledby=\"faqs_heading\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
+      "target": "@aria-labelledby=\"ecp_faqs_71_faq_help_drawer_button\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/de-intake-form",
+      "target": "@aria-expanded=\"false\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/de-intake-form",
+      "target": "@aria-expanded=\"false\"",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/issuer-partner-lookup/results",
+      "target": "@aria-invalid=\"false\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r53": {
+    "count": 6,
+    "pages": 6,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://data.healthcare.gov/?page=3",
+     "https://data.healthcare.gov/?page=4",
+     "https://data.healthcare.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/?page=3",
+      "target": "<h4 class=\"ds-text-heading--2xl\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/?page=4",
+      "target": "<h4 class=\"ds-text-heading--2xl\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/",
+      "target": "<h4 class=\"ds-text-heading--2xl\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
+      "target": "<h3 class=\"opblock-tag no-desc\" id=\"operations-tag-Metastore\\:_dataset\" data-tag=\"Metastore: dataset\" data-is-open=\"true\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/home",
+      "target": "<h4 class=\"ds-text-heading--2xl\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r14": {
+    "count": 30,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r14",
+    "examplePages": [
+     "https://data.healthcare.gov/?page=3",
+     "https://data.healthcare.gov/?page=4",
+     "https://data.healthcare.gov/"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/?page=3",
+      "target": "<a data-testid=\"card-a\" data-title=\"Public Use Files\" aria-labelledby=\"idRef-link-0\" aria-describedby=\"idRef-desc-0\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/?page=3",
+      "target": "<a data-testid=\"card-a\" data-title=\"Agent Broker Registration List\" aria-labelledby=\"idRef-link-1\" aria-describedby=\"idRef-desc-1\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/?page=3",
+      "target": "<a data-testid=\"card-a\" data-title=\"Agent Broker Registration Tracker\" aria-labelledby=\"idRef-link-2\" aria-describedby=\"idRef-desc-2\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/?page=4",
+      "target": "<a data-testid=\"card-a\" data-title=\"Public Use Files\" aria-labelledby=\"idRef-link-0\" aria-describedby=\"idRef-desc-0\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/?page=4",
+      "target": "<a data-testid=\"card-a\" data-title=\"Agent Broker Registration List\" aria-labelledby=\"idRef-link-1\" aria-describedby=\"idRef-desc-1\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r79": {
+    "count": 2,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r79",
+    "examplePages": [
+     "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
+      "target": "<pre class=\"version\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
+      "target": "<pre class=\"version\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r8": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r8",
+    "examplePages": [
+     "https://data.healthcare.gov/de-intake-form"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/de-intake-form",
+      "target": "<span class=\"select2-selection select2-selection--multiple\" role=\"combobox\" aria-haspopup=\"true\" aria-expanded=\"false\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r68": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r68",
+    "examplePages": [
+     "https://data.healthcare.gov/de-intake-form",
+     "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/de-intake-form",
+      "target": "<ul class=\"select2-selection__rendered\" id=\"select2-edit-states-container\">",
+      "html": null
+     },
+     {
+      "url": "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP",
+      "target": "<ol class=\"dc-dataset-search-list ds-u-padding--0 ds-u-margin-top--0 ds-u-margin-bottom--4 ds-u-display--block\" data-testid=\"results-list\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r113": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r113",
+    "examplePages": [
+     "https://data.healthcare.gov/de-intake-form"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/de-intake-form",
+      "target": "<textarea class=\"select2-search__field\" type=\"search\" tabindex=\"0\" autocorrect=\"off\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r60": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r60",
+    "examplePages": [
+     "https://data.healthcare.gov/ab-registration-tracker"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/ab-registration-tracker",
+      "target": "<fieldset class=\"ds-u-border--1 ds-u-border--dark ds-u-padding--2\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r78": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r78",
+    "examplePages": [
+     "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP"
+    ],
+    "instances": [
+     {
+      "url": "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP",
+      "target": "<h2 class=\"ds-c-alert__heading\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 503,
+  "medianBytes": 2824052,
+  "meanBytes": 2830333,
+  "medianRequests": 94,
+  "totalCo2g": 210.99,
+  "meanCo2g": 0.4195
+ },
+ "errorPages": [
+  {
+   "url": "https://data.healthcare.gov/dataset/AB-Registration-Completion-List/wb6u-x2ny/data",
+   "status": 404
+  },
+  {
+   "url": "https://data.healthcare.gov/page=8",
+   "status": 404
+  },
+  {
+   "url": "https://data.healthcare.gov/page=3",
+   "status": 404
+  },
+  {
+   "url": "https://data.healthcare.gov/page=2",
+   "status": 404
+  },
+  {
+   "url": "https://data.healthcare.gov/page=4",
+   "status": 404
+  },
+  {
+   "url": "https://data.healthcare.gov/page=5",
+   "status": 404
+  },
+  {
+   "url": "https://data.healthcare.gov/whats-new",
+   "status": 404
+  },
+  {
+   "url": "https://data.healthcare.gov/dataset/AB-Suspension-and-Termination-List/e8uy-7rnp/data",
+   "status": 404
+  }
+ ]
+}

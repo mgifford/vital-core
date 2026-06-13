@@ -1,126 +1,485 @@
 {
  "domain": "www.medicare.gov",
  "week": "2026-W24",
- "generatedAt": "2026-06-13T14:11:13.658Z",
- "pagesScanned": 263,
+ "generatedAt": "2026-06-13T19:13:40.998Z",
+ "pagesScanned": 430,
  "blocked": null,
  "axe": {
-  "violationTotal": 2,
-  "pagesWithViolations": 2,
+  "violationTotal": 5,
+  "pagesWithViolations": 5,
   "rules": {
    "frame-title": {
-    "count": 1,
-    "pages": 1,
+    "count": 2,
+    "pages": 2,
     "impact": "serious",
     "help": "Frames must have an accessible name",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/frame-title?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag412"
+    ],
     "examplePages": [
-     "https://www.medicare.gov/"
+     "https://www.medicare.gov/",
+     "https://www.medicare.gov/basics/children-and-end-stage-renal-disease"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/",
+      "target": "iframe[height=\"100%\"]",
+      "html": "<iframe data-src=\"https://surveys.cms.gov/jfe/form/SV_9LbdFueyKSYZ2nk?Q_CHL=si&amp;Q_CanScreenCapture=1\" width=\"100%\" height=\"100%\" frameborder=\"0\" name=\"survey-iframe-SI_6tbIx8xW9ShoDfU\" data-name=\"e"
+     },
+     {
+      "url": "https://www.medicare.gov/basics/children-and-end-stage-renal-disease",
+      "target": "iframe[height=\"100%\"]",
+      "html": "<iframe data-src=\"https://surveys.cms.gov/jfe/form/SV_9LbdFueyKSYZ2nk?Q_CHL=si&amp;Q_CanScreenCapture=1\" width=\"100%\" height=\"100%\" frameborder=\"0\" name=\"survey-iframe-SI_6tbIx8xW9ShoDfU\" data-name=\"e"
+     }
     ]
    },
    "heading-order": {
-    "count": 1,
-    "pages": 1,
+    "count": 2,
+    "pages": 2,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
     "examplePages": [
+     "https://www.medicare.gov/care-compare/resources/about-this-tool",
      "https://www.medicare.gov/basics/end-stage-renal-disease"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/care-compare/resources/about-this-tool",
+      "target": "h4",
+      "html": "<h4>What can this tool do for me?</h4>"
+     },
+     {
+      "url": "https://www.medicare.gov/basics/end-stage-renal-disease",
+      "target": ".ds-l-md-col--6.layout__column.ds-l-col--12:nth-child(1) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
+      "html": "<h3>Related resources</h3>"
+     }
+    ]
+   },
+   "empty-table-header": {
+    "count": 1,
+    "pages": 1,
+    "impact": "minor",
+    "help": "Table header text should not be empty",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-table-header?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.medicare.gov/account/login/help"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/account/login/help",
+      "target": "thead > tr > th:nth-child(1)",
+      "html": "<th class=\"\">&nbsp;</th>"
+     }
     ]
    }
   }
  },
  "alfa": {
-  "failedTotal": 14717,
-  "pagesWithFailures": 263,
+  "failedTotal": 22988,
+  "pagesWithFailures": 429,
   "rules": {
    "sia-r78": {
-    "count": 156,
-    "pages": 153,
+    "count": 184,
+    "pages": 177,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r78",
     "examplePages": [
      "https://www.medicare.gov/coverage/emergency-department-services",
      "https://www.medicare.gov/coverage/hospital-beds",
-     "https://www.medicare.gov/coverage/radiation-therapy"
+     "https://www.medicare.gov/prescription-payment-plan"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<h2 class=\"text-align-center ds-u-padding-x--4 ds-u-md-padding-x--0 ds-u-margin-bottom--0\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/hospital-beds",
+      "target": "<h2 class=\"text-align-center ds-u-padding-x--4 ds-u-md-padding-x--0 ds-u-margin-bottom--0\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/prescription-payment-plan",
+      "target": "<h2>",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/radiation-therapy",
+      "target": "<h2 class=\"text-align-center ds-u-padding-x--4 ds-u-md-padding-x--0 ds-u-margin-bottom--0\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/occupational-therapy-services",
+      "target": "<h2 class=\"text-align-center ds-u-padding-x--4 ds-u-md-padding-x--0 ds-u-margin-bottom--0\">",
+      "html": null
+     }
     ]
    },
    "sia-r73": {
-    "count": 3428,
-    "pages": 263,
+    "count": 4883,
+    "pages": 408,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
      "https://www.medicare.gov/coverage/emergency-department-services",
      "https://www.medicare.gov/coverage/hospital-beds",
-     "https://www.medicare.gov/coverage/radiation-therapy"
+     "https://www.medicare.gov/prescription-payment-plan"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<p>",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<p>",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<p>",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/hospital-beds",
+      "target": "<p>",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/hospital-beds",
+      "target": "<p>",
+      "html": null
+     }
     ]
    },
    "sia-r17": {
-    "count": 263,
-    "pages": 263,
+    "count": 407,
+    "pages": 402,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r17",
     "examplePages": [
      "https://www.medicare.gov/coverage/emergency-department-services",
      "https://www.medicare.gov/coverage/hospital-beds",
-     "https://www.medicare.gov/coverage/radiation-therapy"
+     "https://www.medicare.gov/prescription-payment-plan"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<div class=\"search-block__content\" aria-hidden=\"true\" id=\"search_form_block-content\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/hospital-beds",
+      "target": "<div class=\"search-block__content\" aria-hidden=\"true\" id=\"search_form_block-content\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/prescription-payment-plan",
+      "target": "<div class=\"search-block__content\" aria-hidden=\"true\" id=\"search_form_block-content\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/health-drug-plans/part-d/basics/costs",
+      "target": "<div class=\"search-block__content\" aria-hidden=\"true\" id=\"search_form_block-content\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/radiation-therapy",
+      "target": "<div class=\"search-block__content\" aria-hidden=\"true\" id=\"search_form_block-content\">",
+      "html": null
+     }
     ]
    },
    "sia-r111": {
-    "count": 10809,
-    "pages": 263,
+    "count": 17018,
+    "pages": 429,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
      "https://www.medicare.gov/coverage/emergency-department-services",
      "https://www.medicare.gov/coverage/hospital-beds",
-     "https://www.medicare.gov/coverage/radiation-therapy"
+     "https://www.medicare.gov/prescription-payment-plan"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<a href=\"/\" data-listener-attached=\"true\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<a href=\"/coverage\" data-listener-attached=\"true\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/emergency-department-services",
+      "target": "<a href=\"/coverage/ambulance-services\" data-listener-attached=\"true\" data-once=\"other-related-info-block\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/hospital-beds",
+      "target": "<a href=\"/\" data-listener-attached=\"true\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/hospital-beds",
+      "target": "<a href=\"/coverage\" data-listener-attached=\"true\">",
+      "html": null
+     }
     ]
    },
    "sia-r14": {
-    "count": 8,
-    "pages": 8,
+    "count": 9,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r14",
     "examplePages": [
+     "https://www.medicare.gov/prescription-payment-plan",
      "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/your-coverage-options",
-     "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start",
-     "https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties"
+     "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/prescription-payment-plan",
+      "target": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/your-coverage-options",
+      "target": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start",
+      "target": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties",
+      "target": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/",
+      "target": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
+      "html": null
+     }
     ]
    },
    "sia-r66": {
-    "count": 26,
-    "pages": 3,
+    "count": 357,
+    "pages": 31,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
-     "https://www.medicare.gov/basics/your-medicare-rights/your-rights",
-     "https://www.medicare.gov/basics/end-stage-renal-disease",
-     "https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/working-past-65"
+     "https://www.medicare.gov/care-compare?providerType=Hospice",
+     "https://www.medicare.gov/coverage/search/pii",
+     "https://www.medicare.gov/account/create-account"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/care-compare?providerType=Hospice",
+      "target": "text: \"Hospice care\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/care-compare?providerType=Hospice",
+      "target": "text: \"Enter street, ZIP code, city, or state.\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/search/pii",
+      "target": "text: \"Home\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/search/pii",
+      "target": "text: \"What's covered?\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/search/pii",
+      "target": "text: \"Search results\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r87": {
+    "count": 16,
+    "pages": 16,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r87",
+    "examplePages": [
+     "https://www.medicare.gov/care-compare?providerType=Hospice",
+     "https://www.medicare.gov/care-compare?providerType=DialysisFacility",
+     "https://www.medicare.gov/care-compare?providerType=HomeHealth"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/care-compare?providerType=Hospice",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/care-compare?providerType=DialysisFacility",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/care-compare?providerType=HomeHealth",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/care-compare?providerType=MedicalEquipmentSuppliers",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/care-compare?providerType=LongTermCare",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://www.medicare.gov/medigap-supplemental-insurance-plans",
+     "https://www.medicare.gov/plan-compare"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/medigap-supplemental-insurance-plans",
+      "target": "text: \"Find a Medigap policy that works for you\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/plan-compare",
+      "target": "text: \"Explore your Medicare coverage options\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r80": {
+    "count": 2,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r80",
+    "examplePages": [
+     "https://www.medicare.gov/account/create-account"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/account/create-account",
+      "target": "<p class=\"ds-text-heading--sm\">",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/account/create-account",
+      "target": "<p class=\"ds-u-color--base ds-u-margin-bottom--1 ds-text-heading--sm\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://www.medicare.gov/account/create-account",
+     "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/account/create-account",
+      "target": "@aria-invalid=\"false\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
+      "target": "@aria-labelledby=\"block-contentb0ba37f0-ea8d-46ab-a2fa-4e3517887f3b-accordion-button\"",
+      "html": null
+     }
     ]
    },
    "sia-r69": {
-    "count": 26,
-    "pages": 3,
+    "count": 106,
+    "pages": 13,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r69",
     "examplePages": [
-     "https://www.medicare.gov/basics/your-medicare-rights/your-rights",
-     "https://www.medicare.gov/basics/end-stage-renal-disease",
-     "https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/working-past-65"
+     "https://www.medicare.gov/coverage/mental-health-substance-use-disorder",
+     "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/original-medicare",
+     "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/medicare-health-plans"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/coverage/mental-health-substance-use-disorder",
+      "target": "text: \"For finding the care you need\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/mental-health-substance-use-disorder",
+      "target": "text: \"To learn more about mental health care\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/coverage/mental-health-substance-use-disorder",
+      "target": "text: \"To learn about substance use disorders and treatment\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/original-medicare",
+      "target": "text: \"Level 1 appeals : Redetermination\"",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/original-medicare",
+      "target": "text: \"Level 2 appeals: Qualified Independent Contractor (QIC) Reconsideration\"",
+      "html": null
+     }
     ]
    },
    "sia-r53": {
-    "count": 1,
-    "pages": 1,
+    "count": 2,
+    "pages": 2,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
     "examplePages": [
+     "https://www.medicare.gov/care-compare/resources/about-this-tool",
      "https://www.medicare.gov/basics/end-stage-renal-disease"
+    ],
+    "instances": [
+     {
+      "url": "https://www.medicare.gov/care-compare/resources/about-this-tool",
+      "target": "<h4>",
+      "html": null
+     },
+     {
+      "url": "https://www.medicare.gov/basics/end-stage-renal-disease",
+      "target": "<h3>",
+      "html": null
+     }
     ]
    }
   }
  },
  "sustainability": {
-  "pages": 263,
-  "medianBytes": 6980536,
-  "meanBytes": 7021899,
-  "medianRequests": 104,
-  "totalCo2g": 273.69,
-  "meanCo2g": 1.0406
+  "pages": 429,
+  "medianBytes": 6979680,
+  "meanBytes": 7072121,
+  "medianRequests": 105,
+  "totalCo2g": 449.63,
+  "meanCo2g": 1.0481
  },
- "errorPages": []
+ "errorPages": [
+  {
+   "url": "https://www.medicare.gov/mental-health-substance-use-disorder",
+   "status": 404
+  }
+ ]
 }
