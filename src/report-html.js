@@ -16,6 +16,7 @@ import path from 'node:path';
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const kb = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB');
 const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
+const fmtMedian = (n) => (n == null ? 'n/a' : String(n));
 
 /** Delta rendered as text first; symbol is reinforcement, not the meaning. */
 function delta(n, { goodWhenDown = true, unit = '' } = {}) {
@@ -151,7 +152,7 @@ ${blocks}
 }
 
 export function renderDomainReport(target, summary, prev, diff, series, bugs = []) {
-  const trendViol = series.map((s) => s.axe.violationTotal);
+  const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const body = `
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
 <p class="meta">${summary.pagesScanned} pages scanned. Generated ${esc(summary.generatedAt.slice(0, 10))}.
@@ -160,12 +161,11 @@ ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'F
 <section aria-labelledby="h-summary">
 <h2 id="h-summary">This week at a glance</h2>
 <dl class="ledger">
-  <div><dt>axe-core violations</dt><dd>${summary.axe.violationTotal}
-    ${diff ? delta(diff.axe.violationDelta) : ''} ${sparkline(trendViol)}</dd></div>
-  <div><dt>Pages with axe violations</dt><dd>${summary.axe.pagesWithViolations} of ${summary.pagesScanned}</dd></div>
-  <div><dt>Alfa failed outcomes</dt><dd>${summary.alfa.failedTotal}
-    ${diff ? delta(diff.alfa.failedDelta) : ''}</dd></div>
-  <div><dt>Pages with Alfa failures</dt><dd>${summary.alfa.pagesWithFailures} of ${summary.pagesScanned}</dd></div>
+  <div><dt>Median axe violations / page</dt><dd>${fmtMedian(summary.axe.medianViolations)} ${sparkline(trendViol)}</dd></div>
+  <div><dt>Pages with axe violations</dt><dd>${summary.axe.pagesWithViolations} of ${summary.axe.pagesScanned ?? summary.pagesScanned}</dd></div>
+  <div><dt>Median Alfa failures / page</dt><dd>${fmtMedian(summary.alfa.medianFailures)}</dd></div>
+  <div><dt>Pages with Alfa failures</dt><dd>${summary.alfa.pagesWithFailures} of ${summary.alfa.pagesScanned ?? summary.pagesScanned}</dd></div>
+  <div><dt>Unique pages audited</dt><dd>${summary.pagesAudited ?? summary.pagesScanned}</dd></div>
   ${summary.lighthouse ? `
   <div><dt>Lighthouse performance (median)</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${summary.lighthouse.pagesSampled} sampled</span></dd></div>
   <div><dt>Lighthouse SEO (median)</dt><dd>${fmtScore(summary.lighthouse.medianSeo)}</dd></div>
@@ -271,19 +271,24 @@ for how the scanner can be allowlisted.</p>
     .join('\n')}</ul>
 </section>`;
 
+  // Median per-page counts are comparable regardless of how many pages a
+  // week happened to cover; raw totals are not, so the table leads with
+  // medians. The trend tracks the median axe violations per page.
+  const medAxe = (s) => s.axe.medianViolations ?? 0;
+  const medAlfa = (s) => s.alfa.medianFailures ?? 0;
   const rows = active
     .map(({ target, series }) => {
       const latest = series[series.length - 1];
       const prev = series.length > 1 ? series[series.length - 2] : null;
-      const trend = series.map((s) => s.axe.violationTotal);
+      const trend = series.map(medAxe);
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a></th>
   <td>${esc(latest.week)}</td>
-  <td class="num">${latest.pagesScanned}</td>
-  <td class="num">${latest.axe.violationTotal} ${prev ? delta(latest.axe.violationTotal - prev.axe.violationTotal) : ''}</td>
-  <td class="num">${latest.alfa.failedTotal} ${prev ? delta(latest.alfa.failedTotal - prev.alfa.failedTotal) : ''}</td>
+  <td class="num">${latest.pagesAudited ?? latest.pagesScanned}</td>
+  <td class="num">${fmtMedian(latest.axe.medianViolations)} ${prev ? delta(medAxe(latest) - medAxe(prev)) : ''}</td>
+  <td class="num">${fmtMedian(latest.alfa.medianFailures)} ${prev ? delta(medAlfa(latest) - medAlfa(prev)) : ''}</td>
   <td class="num">${latest.sustainability ? kb(latest.sustainability.medianBytes) : 'n/a'}</td>
-  <td>${sparkline(trend)}<span class="visually-hidden">Trend over ${series.length} weeks: ${trend.join(', ')} axe violations.</span></td>
+  <td>${sparkline(trend)}<span class="visually-hidden">Trend over ${series.length} weeks: ${trend.join(', ')} median axe violations per page.</span></td>
   <td>${series.slice(-8).map((s) => `<a href="reports/${esc(target.key)}/${esc(s.week)}/index.html">${esc(s.week.slice(5))}</a>`).join(' ')}</td>
 </tr>`;
     })
@@ -300,8 +305,8 @@ ${active.length === 0
         : '<p>No accessibility or sustainability data could be collected yet — every target is currently blocked (see above).</p>')
     : `
 <table>
-<caption>Latest week per domain. Deltas compare against the previous recorded week.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Week</th><th scope="col">Pages</th><th scope="col">axe violations</th><th scope="col">Alfa failures</th><th scope="col">Median weight</th><th scope="col">Trend</th><th scope="col">Past weeks</th></tr></thead>
+<caption>Latest week per domain. Counts are medians per page (comparable across weeks regardless of how many pages were covered); pages are unique pages scanned by axe and/or Alfa. Deltas compare against the previous recorded week.</caption>
+<thead><tr><th scope="col">Domain</th><th scope="col">Week</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Median weight</th><th scope="col">Trend</th><th scope="col">Past weeks</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`}
 <section aria-labelledby="h-why">

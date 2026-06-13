@@ -138,6 +138,9 @@ try {
   assert(w1.alfa.failedTotal > 0, `week 1 found Alfa failures (${w1.alfa.failedTotal})`);
   assert('image-alt' in w1.axe.rules, 'image-alt rule recorded');
   assert(w1.sustainability && w1.sustainability.medianBytes > 0, 'sustainability metrics recorded');
+  assert(typeof w1.pagesAudited === 'number' && w1.pagesAudited > 0 && w1.pagesAudited <= w1.pagesScanned, 'unique pages audited recorded and bounded by pages scanned');
+  assert(typeof w1.axe.medianViolations === 'number', 'median axe violations per page recorded');
+  assert(typeof w1.alfa.medianFailures === 'number', 'median Alfa failures per page recorded');
   assert(w1.linkCheck && w1.linkCheck.brokenCount >= 1, `link check found the broken link (${w1.linkCheck?.brokenCount ?? 0})`);
   assert(
     w1.linkCheck.broken.some((b) => b.url.includes('does-not-exist-404')),
@@ -179,7 +182,7 @@ try {
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'style.css')), 'stylesheet generated');
 
   const comment = run('src/issue-comment.js', [], '2026-W24');
-  assert(comment.includes('localhost: 2026-W24') && comment.includes('axe-core violations'), 'issue comment generated with deltas');
+  assert(comment.includes('localhost: 2026-W24') && comment.includes('Median axe violations'), 'issue comment generated with deltas');
 
   console.log('\nAll end-to-end checks passed.');
 } finally {

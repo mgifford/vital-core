@@ -49,9 +49,9 @@ for (const target of config.targets) {
 
   out += `### ${target.domain}: ${week}\n\n`;
   out += `| Metric | This week | Notes |\n|---|---:|---|\n`;
-  out += `| Pages scanned | ${curr.pagesScanned}${prev ? d(curr.pagesScanned, prev.pagesScanned) : ''} | |\n`;
-  out += `| axe-core violations | ${curr.axe.violationTotal}${prev ? d(curr.axe.violationTotal, prev.axe.violationTotal) : ''} | ${curr.axe.pagesWithViolations} pages affected |\n`;
-  out += `| Alfa failed outcomes | ${curr.alfa.failedTotal}${prev ? d(curr.alfa.failedTotal, prev.alfa.failedTotal) : ''} | ${curr.alfa.pagesWithFailures} pages affected |\n`;
+  out += `| Pages audited (unique) | ${curr.pagesAudited ?? curr.pagesScanned}${prev ? d(curr.pagesAudited ?? curr.pagesScanned, prev.pagesAudited ?? prev.pagesScanned) : ''} | scanned by axe and/or Alfa |\n`;
+  out += `| Median axe violations / page | ${curr.axe.medianViolations ?? 'n/a'}${prev && curr.axe.medianViolations != null && prev.axe.medianViolations != null ? d(curr.axe.medianViolations, prev.axe.medianViolations) : ''} | ${curr.axe.pagesWithViolations} pages affected |\n`;
+  out += `| Median Alfa failures / page | ${curr.alfa.medianFailures ?? 'n/a'}${prev && curr.alfa.medianFailures != null && prev.alfa.medianFailures != null ? d(curr.alfa.medianFailures, prev.alfa.medianFailures) : ''} | ${curr.alfa.pagesWithFailures} pages affected |\n`;
   if (curr.sustainability) {
     out += `| Median page weight | ${Math.round(curr.sustainability.medianBytes / 1024)} KB${prev?.sustainability ? d(Math.round(curr.sustainability.medianBytes / 1024), Math.round(prev.sustainability.medianBytes / 1024)) : ''} | est. ${curr.sustainability.meanCo2g} g CO₂/page (SWD v4) |\n`;
   }

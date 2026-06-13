@@ -98,6 +98,13 @@ function summarizeWeek(target, week) {
   let pagesWithAlfaFailures = 0;
   let axeViolationTotal = 0;
   let alfaFailedTotal = 0;
+  // Per-page failure counts (one entry per page the engine ran on, zeros
+  // included) for medians, and unique-page counts per engine. Each page
+  // record is one unique URL (file keyed by pageId), so counting records
+  // is inherently deduplicated.
+  const axeCountsPerPage = [];
+  const alfaCountsPerPage = [];
+  const auditedPageIds = new Set(); // pages scanned by axe and/or alfa
   const bytesList = [];
   const requestsList = [];
   let co2Total = 0;
@@ -124,6 +131,8 @@ function summarizeWeek(target, week) {
     }
 
     if (rec.axe) {
+      auditedPageIds.add(rec.pageId ?? rec.url);
+      axeCountsPerPage.push(rec.axe.violationCount);
       if (rec.axe.violationCount > 0) pagesWithAxeViolations++;
       axeViolationTotal += rec.axe.violationCount;
       for (const [id, v] of Object.entries(rec.axe.violations)) {
@@ -135,6 +144,8 @@ function summarizeWeek(target, week) {
       }
     }
     if (rec.alfa) {
+      auditedPageIds.add(rec.pageId ?? rec.url);
+      alfaCountsPerPage.push(rec.alfa.failedCount);
       if (rec.alfa.failedCount > 0) pagesWithAlfaFailures++;
       alfaFailedTotal += rec.alfa.failedCount;
       for (const [id, v] of Object.entries(rec.alfa.failed)) {
@@ -193,15 +204,21 @@ function summarizeWeek(target, week) {
     week,
     generatedAt: new Date().toISOString(),
     pagesScanned,
+    // Unique pages scanned by axe and/or alfa this week (deduped by page).
+    pagesAudited: auditedPageIds.size,
     blocked,
     axe: {
       violationTotal: axeViolationTotal,
       pagesWithViolations: pagesWithAxeViolations,
+      pagesScanned: axeCountsPerPage.length,
+      medianViolations: axeCountsPerPage.length ? median(axeCountsPerPage) : null,
       rules: axeRules,
     },
     alfa: {
       failedTotal: alfaFailedTotal,
       pagesWithFailures: pagesWithAlfaFailures,
+      pagesScanned: alfaCountsPerPage.length,
+      medianFailures: alfaCountsPerPage.length ? median(alfaCountsPerPage) : null,
       rules: alfaRules,
     },
     sustainability: bytesList.length
