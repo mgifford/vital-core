@@ -12,7 +12,7 @@ defaults:
   max_pages_per_week: 2500  # hard weekly cap per domain
   delay_ms: 1500            # pause between page loads (politeness)
   nav_timeout_ms: 30000     # page navigation timeout
-  settle_delay_ms: 1000     # wait after load before auditing (avoids pre-hydration false positives)
+  settle_delay_ms: 1000     # wait after load + network-idle before auditing (avoids pre-hydration false positives)
   max_crawl_depth: 6        # BFS depth from seeds
   retention_weeks: 8        # page-level detail kept this long; weekly summaries kept forever
   engines:

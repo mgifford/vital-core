@@ -91,12 +91,18 @@ function summarizeWeek(target, week) {
   const bytesList = [];
   const requestsList = [];
   let co2Total = 0;
+  let pagesWithAudit = 0;
   const errorPages = [];
+  const blockedStatuses = {}; // status code -> count, for the blocked callout
 
   for (const f of files) {
     const rec = JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'));
     pagesScanned++;
-    if (typeof rec.status === 'number' && rec.status >= 400) errorPages.push({ url: rec.url, status: rec.status });
+    if (rec.axe || rec.alfa || rec.sustainability) pagesWithAudit++;
+    if (typeof rec.status === 'number' && rec.status >= 400) {
+      errorPages.push({ url: rec.url, status: rec.status });
+      blockedStatuses[rec.status] = (blockedStatuses[rec.status] ?? 0) + 1;
+    }
 
     if (rec.axe) {
       if (rec.axe.violationCount > 0) pagesWithAxeViolations++;
@@ -125,11 +131,21 @@ function summarizeWeek(target, week) {
     }
   }
 
+  // A target is "blocked" when it returned only error responses (e.g. a
+  // WAF answering 403 to the scanner) and produced no audit data at all.
+  // The dominant error status is surfaced in the dashboard callout.
+  const dominantStatus = Object.entries(blockedStatuses).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const blocked =
+    pagesScanned > 0 && pagesWithAudit === 0 && dominantStatus
+      ? { status: Number(dominantStatus) }
+      : null;
+
   return {
     domain: target.domain,
     week,
     generatedAt: new Date().toISOString(),
     pagesScanned,
+    blocked,
     axe: {
       violationTotal: axeViolationTotal,
       pagesWithViolations: pagesWithAxeViolations,

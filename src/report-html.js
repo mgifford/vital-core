@@ -164,7 +164,28 @@ function changeList(engineName, d) {
 }
 
 export function renderIndex(dashboard) {
-  const rows = dashboard
+  // Separate targets whose latest week is blocked (e.g. a WAF returning
+  // 403 to the scanner) so they don't read as zero-violation successes.
+  const blocked = dashboard.filter(({ series }) => series[series.length - 1].blocked);
+  const active = dashboard.filter(({ series }) => !series[series.length - 1].blocked);
+
+  const blockedCallout = blocked.length === 0 ? '' : `
+<section aria-labelledby="h-blocked" class="callout callout-blocked">
+<h2 id="h-blocked">Blocked targets</h2>
+<p>These sites returned only access-denied responses to the scanner, so no
+accessibility or sustainability data could be collected. This is typically a
+WAF or bot manager blocking automated traffic, not a scan failure. See
+<a href="https://github.com/mgifford/vital-core/blob/main/WAF-ALLOWLIST.md">WAF-ALLOWLIST.md</a>
+for how the scanner can be allowlisted.</p>
+<ul>${blocked
+    .map(({ target, series }) => {
+      const latest = series[series.length - 1];
+      return `<li><strong>${esc(target.domain)}</strong> — HTTP ${latest.blocked.status} (${esc(latest.week)})</li>`;
+    })
+    .join('\n')}</ul>
+</section>`;
+
+  const rows = active
     .map(({ target, series }) => {
       const latest = series[series.length - 1];
       const prev = series.length > 1 ? series[series.length - 2] : null;
@@ -186,7 +207,12 @@ export function renderIndex(dashboard) {
 <h1>Weekly quality ledger</h1>
 <p class="meta">Accessibility and sustainability, measured continuously with open source engines.
 Thousands of pages per domain, scanned slowly and politely across each week.</p>
-${dashboard.length === 0 ? '<p>No scan data yet. The first weekly report appears after the first scheduled scans complete.</p>' : `
+${blockedCallout}
+${active.length === 0
+    ? (dashboard.length === 0
+        ? '<p>No scan data yet. The first weekly report appears after the first scheduled scans complete.</p>'
+        : '<p>No accessibility or sustainability data could be collected yet — every target is currently blocked (see above).</p>')
+    : `
 <table>
 <caption>Latest week per domain. Deltas compare against the previous recorded week.</caption>
 <thead><tr><th scope="col">Domain</th><th scope="col">Week</th><th scope="col">Pages</th><th scope="col">axe violations</th><th scope="col">Alfa failures</th><th scope="col">Median weight</th><th scope="col">Trend</th><th scope="col">Past weeks</th></tr></thead>
@@ -236,6 +262,10 @@ h1 { font-size: 1.6rem; line-height: 1.2; }
 h2 { font-size: 1.2rem; border-bottom: 1px solid var(--rule); padding-bottom: .2rem; margin-top: 2.5rem; }
 .meta, .note { color: var(--muted); }
 .note { border-left: 4px solid var(--rule); padding-left: .75rem; }
+.callout-blocked { border-left: 4px solid var(--worse); padding: .25rem 1rem;
+  background: color-mix(in srgb, var(--worse) 8%, transparent); border-radius: 2px; }
+.callout-blocked h2 { color: var(--worse); border-bottom: none; margin-top: .75rem; }
+.callout-blocked ul { margin: .5rem 0; }
 .ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
   gap: .75rem 2rem; margin: 1rem 0; }
 .ledger div { border-top: 1px solid var(--rule); padding-top: .4rem; }
