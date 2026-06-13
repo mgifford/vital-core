@@ -94,12 +94,25 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 const runLog = { runId, week, domain: target.domain, startedAt: new Date().toISOString(), scanned: [], errors: [] };
 const engines = target.engines ?? ['axe', 'alfa', 'sustainability'];
 
+// Checkpoint state every STATE_SAVE_EVERY pages rather than after every
+// page. saveState re-serializes the whole crawl frontier, which grows as
+// discovery adds URLs, so per-page saving is O(N^2) over a run on large
+// sites. Checkpointing bounds the worst-case loss on an interrupted run
+// to this many pages — cheap, since unsaved "scanned" marks just cause a
+// little idempotent rescanning next run.
+const STATE_SAVE_EVERY = 25;
+let sincePersist = 0;
+
 for (const item of batch) {
   const urlPath = new URL(item.url).pathname;
   if (!robots.isAllowed(urlPath)) {
     log(`robots disallow: ${item.url}`);
     state.pages[item.id].lastScannedWeek = week; // do not retry this week
     state.pages[item.id].lastStatus = 'robots-disallowed';
+    if (++sincePersist >= STATE_SAVE_EVERY) {
+      saveState(target.key, state);
+      sincePersist = 0;
+    }
     continue;
   }
 
@@ -177,8 +190,12 @@ for (const item of batch) {
     await page.close().catch(() => {});
   }
 
-  // Persist state incrementally so an interrupted run loses little.
-  saveState(target.key, state);
+  // Checkpoint state periodically so an interrupted run loses little,
+  // without re-serializing the whole frontier on every page.
+  if (++sincePersist >= STATE_SAVE_EVERY) {
+    saveState(target.key, state);
+    sincePersist = 0;
+  }
   await new Promise((r) => setTimeout(r, delayMs));
 }
 
