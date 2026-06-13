@@ -100,6 +100,9 @@ export function buildBugReports(target, summary) {
   for (const [id, rule] of Object.entries(summary.alfa?.rules ?? {})) {
     reports.push(fromRule('alfa', 'Siteimprove Alfa', id, rule));
   }
+  for (const [id, rule] of Object.entries(summary.deprecatedHtml?.rules ?? {})) {
+    reports.push(fromRule('deprecated-html', 'deprecated-html', id, rule));
+  }
 
   // Most severe and most widespread first.
   const sevRank = { Critical: 0, High: 1, Medium: 2, Low: 3 };
@@ -128,6 +131,11 @@ export function bugReportToMarkdown(r) {
   lines.push(
     `**Frequency:** ${r.frequency.instances} instances; ${r.frequency.pages_affected} of ${r.frequency.total_pages_scanned} pages affected`
   );
+  if (r.first_seen) {
+    lines.push(
+      `  \n**History:** first seen ${r.first_seen}, last seen ${r.last_seen} (${r.weeks_seen} week${r.weeks_seen === 1 ? '' : 's'})`
+    );
+  }
   lines.push('');
   if (r.html_snippet) {
     lines.push('### HTML snippet');

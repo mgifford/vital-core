@@ -16,12 +16,16 @@ export function loadConfig() {
   const raw = fs.readFileSync(path.join(DIRS.config, 'targets.yml'), 'utf8');
   const cfg = YAML.parse(raw);
   const defaults = cfg.defaults ?? {};
+  // Per-engine weekly sampling rates live at the top level so a target
+  // can override individual rates without restating the whole block
+  // (ratesFor merges these defaults with target.sampling).
+  const sampling = cfg.sampling ?? {};
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
     t.key = domainKey(t.domain);
   }
-  return { defaults, targets };
+  return { defaults, sampling, targets };
 }
 
 /** Filesystem-safe identifier for a domain. Stable across runs. */

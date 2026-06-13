@@ -10,9 +10,11 @@ import { isoWeek } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
 import { checkLinks } from './lib/links.js';
+import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { runAxe } from './engines/axe.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
+import { runDeprecatedHtml } from './engines/deprecated-html.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
 
@@ -94,25 +96,24 @@ const context = await browser.newContext({
 });
 context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 
-const runLog = { runId, week, domain: target.domain, startedAt: new Date().toISOString(), scanned: [], errors: [] };
-const engines = target.engines ?? ['axe', 'alfa', 'plain-language', 'sustainability'];
+// Per-engine weekly sampling rates (config single source of truth). An
+// engine runs on a page iff shouldRun(engine, pageId, week, rate). Each
+// page's per-engine membership is recorded so reports can show coverage.
+const rates = ratesFor(config, target);
+const enginesRun = {}; // engine -> count of pages it ran on this run
+const runLog = { runId, week, domain: target.domain, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates };
 
-// Link checking: collect every resolvable http(s) link seen on scanned
-// pages, then probe a capped sample once after the scan. Off unless
-// link-check is in the engines list.
-const checkLinksEnabled = engines.includes('link-check');
+// Link checking: collect links seen on pages that are in link-check's
+// sample, then probe them once after the scan. Rate > 0 enables it.
+const checkLinksEnabled = normalizeRate(rates['link-check']) > 0;
 const linksSeen = new Set();
 const linkSources = new Map(); // url -> a page it was found on (for reports)
 
-// Lighthouse: slow (own Chrome), so sampled — audit at most this many
-// pages per run, homepage first. Off unless lighthouse is enabled.
-const lighthouseEnabled = engines.includes('lighthouse');
-const lighthouseSampleCap = parseInt(process.env.VITAL_LIGHTHOUSE_SAMPLE ?? '5', 10);
+// Lighthouse: slow (own Chrome). Launched once if its rate is > 0 and
+// not in test mode (it audits the live URL, not a local fixture).
+const lighthouseEnabled = normalizeRate(rates['lighthouse']) > 0;
 let lighthouse = null;
-let lighthouseAudited = 0;
 if (lighthouseEnabled && !args['base-url']) {
-  // Lighthouse audits the live URL directly, so it's skipped in test
-  // mode (--base-url points at a local fixture server).
   lighthouse = await createLighthouseRunner({ timeoutMs: target.nav_timeout_ms, log });
 }
 
@@ -143,8 +144,13 @@ for (const item of batch) {
     ? item.url.replace(/^https?:\/\/[^/]+/, args['base-url'])
     : item.url;
 
+  // Decide this page's engine sample up front. sustainability must be
+  // decided before navigation because its collector listens to responses.
+  const runs = (engine) => shouldRun(engine, item.id, week, rates[engine]);
+  const mark = (engine) => { enginesRun[engine] = (enginesRun[engine] ?? 0) + 1; };
+
   const page = await context.newPage();
-  const sustain = engines.includes('sustainability') ? createSustainabilityCollector(page) : null;
+  const sustain = runs('sustainability') ? createSustainabilityCollector(page) : null;
 
   try {
     const response = await page.goto(fetchUrl, { waitUntil: 'load' });
@@ -176,19 +182,20 @@ for (const item of batch) {
     };
 
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
-      if (engines.includes('axe')) record.axe = await runAxe(page);
-      if (engines.includes('alfa')) record.alfa = await runAlfa(page);
-      if (engines.includes('plain-language')) record.plainLanguage = await runPlainLanguage(page);
-      if (sustain) record.sustainability = sustain.collect();
+      if (runs('axe')) { record.axe = await runAxe(page); mark('axe'); }
+      if (runs('alfa')) { record.alfa = await runAlfa(page); mark('alfa'); }
+      if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page); mark('plain-language'); }
+      if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
+      if (sustain) { record.sustainability = sustain.collect(); mark('sustainability'); }
 
-      // Lighthouse: sampled. Audit the live URL (its own Chrome) up to
-      // the per-run cap. Batch ordering puts low-depth pages (incl. the
-      // homepage) first, so the sample favors the most important pages.
-      if (lighthouse?.available && lighthouseAudited < lighthouseSampleCap) {
+      // Lighthouse: only when this page is in lighthouse's sample AND its
+      // own Chrome launched. The sample rate keeps the (slow) audit count
+      // proportional to the week's pages.
+      if (lighthouse?.available && runs('lighthouse')) {
         const lh = await lighthouse.audit(item.url);
         if (lh) {
           record.lighthouse = lh;
-          lighthouseAudited++;
+          mark('lighthouse');
           log(`lighthouse ${urlPath} perf:${lh.scores.performance ?? '-'} a11y:${lh.scores.accessibility ?? '-'} seo:${lh.scores.seo ?? '-'}`);
         }
       }
@@ -210,9 +217,10 @@ for (const item of batch) {
         if (added) log(`+${added} URLs discovered on ${urlPath}`);
       }
 
-      // Link checking: collect absolute http(s) links (same-host and
-      // external) resolved against the real page URL.
-      if (checkLinksEnabled) {
+      // Link checking: collect absolute http(s) links from pages in
+      // link-check's sample (resolved against the real page URL).
+      if (checkLinksEnabled && runs('link-check')) {
+        mark('link-check');
         for (const href of hrefs) {
           let abs;
           try {
@@ -275,16 +283,16 @@ if (checkLinksEnabled && linksSeen.size > 0) {
   log(`link-check: ${broken.length} broken of ${checked} checked`);
 }
 
-if (lighthouse) {
-  runLog.lighthouseAudited = lighthouseAudited;
-  await lighthouse.close();
-}
+if (lighthouse) await lighthouse.close();
 
+// Per-engine page counts for this run (coverage = enginesRun / scanned).
+runLog.enginesRun = enginesRun;
 runLog.finishedAt = new Date().toISOString();
 fs.writeFileSync(path.join(runsDir, `${runId}.json`), JSON.stringify(runLog, null, 1));
 saveState(target.key, state);
 await browser.close();
-log(`done: ${runLog.scanned.length} scanned, ${runLog.errors.length} errors`);
+const coverage = Object.entries(enginesRun).map(([e, n]) => `${e}:${n}`).join(' ');
+log(`done: ${runLog.scanned.length} scanned, ${runLog.errors.length} errors${coverage ? ` | ${coverage}` : ''}`);
 
 function parseArgs(argv) {
   const out = {};

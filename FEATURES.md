@@ -22,14 +22,19 @@ still being implemented.
 
 ### Auditing and Data Collection
 
-Engines are selected per target via the `engines:` key. Each writes a compact record onto the per-page JSON.
+Each engine has a **weekly coverage rate** set in one place — `config/targets.yml` under `sampling:` (e.g. `axe: 100`, `alfa: 30`, `lighthouse: 10`, `plain-language: 45`, `link-check: 90`). The rate is the share of the week's unique pages the engine runs on; selection is deterministic per page (a stable hash of page + engine + week), so coverage is reproducible and independent per engine. `0` or omitted disables an engine. Each engine writes a compact record onto the per-page JSON.
 
 - **axe-core** (`src/engines/axe.js`): WCAG 2.x / Section 508 accessibility audit, injected into the page via Playwright. Stores rule ids, counts, and pages affected — not full node lists — so records stay small and comparable week over week.
 - **Alfa** (`src/engines/alfa.js`): Independent ACT-rules accessibility audit via Siteimprove Alfa (`@siteimprove/alfa-*`), the open source core of Siteimprove's commercial checker. Runs alongside axe for cross-engine coverage.
 - **Plain language** (`src/engines/plain-language.js`): Readability of the main content — Flesch Reading Ease, Flesch-Kincaid grade, average sentence length, long-sentence and passive-voice heuristics, word count, and acronyms used without an on-page expansion. Pages with too little prose to score honestly report `scored: false` rather than a misleading grade.
 - **Sustainability** (`src/engines/sustainability.js`): Page weight (decoded body bytes seen by the browser) and estimated CO₂ via co2.js using the Sustainable Web Design model (v4).
-- **Lighthouse** (`src/engines/lighthouse.js`, opt-in): Google Lighthouse performance, accessibility, best-practices, and SEO scores (plus the experimental agentic-browsing category when enabled). Runs its own headless Chrome, so it is **sampled** — a capped number of pages per run (`VITAL_LIGHTHOUSE_SAMPLE`, default 5) — while the other engines run on every page. Enable by adding `lighthouse` to a target's `engines`.
-- **Link checking** (`src/lib/links.js`, via the `link-check` engine): collects every link seen on scanned pages and probes a capped, deduplicated sample (`VITAL_LINK_CHECK_CAP`, default 500) with polite per-host pacing, recording broken links (4xx/5xx, DNS failures, timeouts). 401/403/429 are treated as soft-OK to avoid bot-challenge false positives.
+- **Deprecated HTML** (`src/engines/deprecated-html.js`): flags obsolete/legacy markup — `<font>`, `<center>`, `<marquee>`, `<frame>`, presentational attributes (`bgcolor`, `align`, …). A worked example of adding a rate-controlled scanner; the seed for a fuller open-site-review-style check.
+- **Lighthouse** (`src/engines/lighthouse.js`): Google Lighthouse performance, accessibility, best-practices, and SEO scores (plus the experimental agentic-browsing category via `VITAL_LIGHTHOUSE_AGENTIC`). Runs its own headless Chrome; keep its sampling rate low (e.g. 10%). 
+- **Link checking** (`src/lib/links.js`, via the `link-check` engine): collects links seen on sampled pages and probes a capped, deduplicated sample (`VITAL_LINK_CHECK_CAP`, default 500) with polite per-host pacing, recording broken links (4xx/5xx, DNS failures, timeouts). 401/403/429 are treated as soft-OK to avoid bot-challenge false positives.
+
+### Findings history
+
+A committed per-domain ledger (`data/<domain>/findings.json`) tracks every unique finding by `pattern_id` with first-seen / last-seen / weeks-seen, accumulated across the domain's whole history (it survives page-detail pruning). Bug reports show when each issue was first discovered and last observed.
 
 ### Reporting and Dashboard
 

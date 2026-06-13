@@ -5,6 +5,7 @@ import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
 import { renderDomainReport, renderIndex, writeAsset } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
+import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -52,11 +53,28 @@ for (const target of config.targets) {
   fs.mkdirSync(dataOut, { recursive: true });
   fs.writeFileSync(path.join(dataOut, 'weekly.json'), JSON.stringify({ domain: target.domain, series, diffs }, null, 1));
 
+  // Findings ledger: first/last-seen per unique finding (pattern_id),
+  // accumulated across the domain's whole history. Rebuilt from scratch
+  // each aggregate run (idempotent) by replaying weeks oldest-first.
+  const ledger = loadFindings(target.key, target.domain);
+  ledger.findings = {}; // recompute deterministically from retained weeks
+
   // Human reports + structured bug reports (Markdown, JSON, and inline HTML).
   for (let i = 0; i < series.length; i++) {
     const summary = series[i];
     const prev = i > 0 ? series[i - 1] : null;
     const bugs = buildBugReports(target, summary);
+    // Update the ledger for this week and annotate each bug with its
+    // first/last-seen history.
+    const history = updateFindings(ledger, summary.week, bugs);
+    for (const b of bugs) {
+      const h = history[b.pattern_id];
+      if (h) {
+        b.first_seen = h.firstSeen;
+        b.last_seen = h.lastSeen;
+        b.weeks_seen = h.weeksSeen;
+      }
+    }
     const repDir = path.join(DIRS.docs, 'reports', target.key, summary.week);
     fs.mkdirSync(repDir, { recursive: true });
 
@@ -69,8 +87,10 @@ for (const target of config.targets) {
     );
   }
 
+  saveFindings(target.key, ledger);
+
   dashboard.push({ target, series, diffs });
-  console.log(`${target.key}: ${series.length} week(s) aggregated`);
+  console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 
 fs.writeFileSync(path.join(DIRS.docs, 'index.html'), renderIndex(dashboard));
@@ -93,6 +113,8 @@ function summarizeWeek(target, week) {
 
   const axeRules = {}; // ruleId -> { count, pages, impact, help, helpUrl, examples }
   const alfaRules = {};
+  const deprecatedRules = {}; // ruleId -> { count, pages, help, examplePages, instances }
+  const enginePageCounts = {}; // engine -> unique pages it ran on (coverage)
   let pagesScanned = 0;
   let pagesWithAxeViolations = 0;
   let pagesWithAlfaFailures = 0;
@@ -156,10 +178,25 @@ function summarizeWeek(target, week) {
         addInstances(r, rec.url, v.examples);
       }
     }
+    if (rec.deprecatedHtml) {
+      for (const [id, v] of Object.entries(rec.deprecatedHtml.findings)) {
+        const r = (deprecatedRules[id] ??= { count: 0, pages: 0, help: v.help, examplePages: [], instances: [] });
+        r.count += v.count;
+        r.pages++;
+        if (r.examplePages.length < 3) r.examplePages.push(rec.url);
+        addInstances(r, rec.url, v.examples);
+      }
+    }
     if (rec.sustainability) {
       bytesList.push(rec.sustainability.bytes);
       requestsList.push(rec.sustainability.requests);
       co2Total += rec.sustainability.co2g;
+    }
+
+    // Per-engine coverage: which engines actually ran on this page.
+    for (const e of ['axe', 'alfa', 'plain-language', 'deprecated-html', 'lighthouse', 'sustainability']) {
+      const key = { 'plain-language': 'plainLanguage', 'deprecated-html': 'deprecatedHtml' }[e] ?? e;
+      if (rec[key]) enginePageCounts[e] = (enginePageCounts[e] ?? 0) + 1;
     }
     if (rec.plainLanguage) {
       if (rec.plainLanguage.scored) {
@@ -206,6 +243,9 @@ function summarizeWeek(target, week) {
     pagesScanned,
     // Unique pages scanned by axe and/or alfa this week (deduped by page).
     pagesAudited: auditedPageIds.size,
+    // Per-engine coverage: unique pages each engine ran on, vs pages
+    // scanned. Reflects the configured weekly sampling rates.
+    coverage: enginePageCounts,
     blocked,
     axe: {
       violationTotal: axeViolationTotal,
@@ -229,6 +269,12 @@ function summarizeWeek(target, week) {
           medianRequests: median(requestsList),
           totalCo2g: Math.round(co2Total * 100) / 100,
           meanCo2g: Math.round((co2Total / bytesList.length) * 10000) / 10000,
+        }
+      : null,
+    deprecatedHtml: Object.keys(deprecatedRules).length
+      ? {
+          findingTotal: Object.values(deprecatedRules).reduce((s, r) => s + r.count, 0),
+          rules: deprecatedRules,
         }
       : null,
     plainLanguage: plPagesScored

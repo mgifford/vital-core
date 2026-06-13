@@ -8,6 +8,8 @@ import { resolveWcag, severityFor } from '../../src/lib/wcag.js';
 import { buildBugReports, bugReportToMarkdown } from '../../src/lib/bug-report.js';
 import { splitSentences, estimateSyllables } from '../../src/engines/plain-language.js';
 import { checkLink } from '../../src/lib/links.js';
+import { normalizeRate, shouldRun } from '../../src/lib/sampling.js';
+import { updateFindings } from '../../src/lib/findings.js';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -225,3 +227,58 @@ async function pick(p) {
   const r = await p;
   return { ok: r.ok, broken: r.broken, status: r.status };
 }
+
+test('sampling: normalizeRate accepts fractions, percents, and junk', () => {
+  assert.equal(normalizeRate(0.3), 0.3);
+  assert.equal(normalizeRate(30), 0.3);
+  assert.equal(normalizeRate('30%'), 0.3);
+  assert.equal(normalizeRate(100), 1);
+  assert.equal(normalizeRate(150), 1, 'clamped to 1');
+  assert.equal(normalizeRate(null), 0, 'missing -> off');
+  assert.equal(normalizeRate('nonsense'), 0);
+  assert.equal(normalizeRate(-5), 0);
+});
+
+test('sampling: shouldRun is deterministic, ~rate, and per-engine independent', () => {
+  const week = '2026-W24';
+  // Deterministic: same inputs, same answer.
+  assert.equal(shouldRun('alfa', 'p1', week, 30), shouldRun('alfa', 'p1', week, 30));
+  // 0 and 100 are absolute.
+  assert.equal(shouldRun('x', 'p1', week, 0), false);
+  assert.equal(shouldRun('x', 'p1', week, 100), true);
+  // Distribution lands near the target over many pages.
+  const N = 3000;
+  let alfa = 0, lh = 0, both = 0;
+  for (let i = 0; i < N; i++) {
+    const a = shouldRun('alfa', 'pid-' + i, week, 30);
+    const l = shouldRun('lighthouse', 'pid-' + i, week, 10);
+    if (a) alfa++;
+    if (l) lh++;
+    if (a && l) both++;
+  }
+  assert.ok(Math.abs(alfa / N - 0.3) < 0.04, `alfa ~30% (got ${(100 * alfa / N).toFixed(1)}%)`);
+  assert.ok(Math.abs(lh / N - 0.1) < 0.04, `lighthouse ~10% (got ${(100 * lh / N).toFixed(1)}%)`);
+  // Independence: P(both) ~ P(alfa)*P(lighthouse) ~ 0.03, not correlated.
+  assert.ok(Math.abs(both / N - 0.03) < 0.03, 'engines sampled independently');
+});
+
+test('findings: ledger tracks first/last-seen and is idempotent per week', () => {
+  const ledger = { domain: 'x', findings: {} };
+  const reportA = { pattern_id: 'VS-aaa', tool: 'axe-core', rule_id: 'image-alt', summary: 'Images need alt (WCAG 1.1.1)', wcag_sc: '1.1.1', severity: 'Critical', frequency: { pages_affected: 5 } };
+  const reportB = { pattern_id: 'VS-bbb', tool: 'alfa', rule_id: 'sia-r12', summary: 'Button name (WCAG 4.1.2)', wcag_sc: '4.1.2', severity: 'Medium', frequency: { pages_affected: 2 } };
+
+  updateFindings(ledger, '2026-W23', [reportA, reportB]);
+  assert.equal(ledger.findings['VS-aaa'].firstSeen, '2026-W23');
+  assert.equal(ledger.findings['VS-aaa'].weeksSeen, 1);
+
+  // Week 2: A persists (lastSeen advances), B gone (lastSeen stays W23).
+  updateFindings(ledger, '2026-W24', [reportA]);
+  assert.equal(ledger.findings['VS-aaa'].firstSeen, '2026-W23');
+  assert.equal(ledger.findings['VS-aaa'].lastSeen, '2026-W24');
+  assert.equal(ledger.findings['VS-aaa'].weeksSeen, 2);
+  assert.equal(ledger.findings['VS-bbb'].lastSeen, '2026-W23', 'resolved finding keeps last-seen');
+
+  // Idempotent: re-running W24 does not inflate weeksSeen.
+  updateFindings(ledger, '2026-W24', [reportA]);
+  assert.equal(ledger.findings['VS-aaa'].weeksSeen, 2, 're-run same week is idempotent');
+});

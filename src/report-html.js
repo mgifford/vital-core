@@ -130,6 +130,7 @@ function bugReportsSection(bugs) {
   <div><dt>Rule</dt><dd>${ruleLink}</dd></div>
   <div><dt>Example URL</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
   ${b.xpath ? `<div><dt>Selector</dt><dd><code>${esc(b.xpath)}</code></dd></div>` : ''}
+  ${b.first_seen ? `<div><dt>History</dt><dd>first seen ${esc(b.first_seen)}, last seen ${esc(b.last_seen)} (${b.weeks_seen} wk)</dd></div>` : ''}
 </dl>
 ${b.html_snippet ? `<p class="bug-label">HTML snippet</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
 <p class="bug-label">Description</p><p>${esc(b.description)}</p>
@@ -149,6 +150,28 @@ Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON</a>.</p>
 <p class="note">Fields marked “requires manual testing” cannot be observed by an automated scan.</p>
 ${blocks}
 </section>`;
+}
+
+/**
+ * Per-engine coverage: how many of the week's pages each engine ran on,
+ * reflecting the configured weekly sampling rates.
+ */
+function coverageTable(summary) {
+  const cov = summary.coverage;
+  if (!cov || Object.keys(cov).length === 0) return '';
+  const total = summary.pagesScanned || 1;
+  const rows = Object.entries(cov)
+    .sort((a, b) => b[1] - a[1])
+    .map(([engine, n]) => `<tr><th scope="row">${esc(engine)}</th><td class="num">${n}</td><td class="num">${Math.round((100 * n) / total)}%</td></tr>`)
+    .join('\n');
+  return `<details class="coverage">
+<summary>Scan coverage this week (${summary.pagesScanned} pages)</summary>
+<table>
+<caption>Pages each engine ran on, per the configured weekly sampling rates.</caption>
+<thead><tr><th scope="col">Engine</th><th scope="col">Pages</th><th scope="col">Coverage</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</details>`;
 }
 
 export function renderDomainReport(target, summary, prev, diff, series, bugs = []) {
@@ -183,6 +206,7 @@ ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'F
   <div><dt>Estimated CO₂ per page (mean)</dt><dd>${summary.sustainability.meanCo2g} g</dd></div>` : ''}
 </dl>
 ${prev && summary.pagesScanned !== prev.pagesScanned ? `<p class="note">Note: page counts differ between weeks (${prev.pagesScanned} → ${summary.pagesScanned}). Prefer the “pages affected” columns over raw instance counts when comparing.</p>` : ''}
+${coverageTable(summary)}
 </section>
 
 ${diff ? `

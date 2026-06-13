@@ -50,15 +50,36 @@ compact, comparison-friendly record onto the per-page JSON.
 | `src/engines/axe.js` | **axe-core** (injected into the page) | WCAG 2.x / Section 508 violations, reduced to rule ids, counts, and pages affected (full node lists are not stored). |
 | `src/engines/alfa.js` | **Siteimprove Alfa** (`@siteimprove/alfa-*`) | Independent ACT-rules audit. Alfa is the open source core of Siteimprove's commercial checker. |
 | `src/engines/plain-language.js` | text analysis (in-page) | Readability (Flesch / Flesch-Kincaid), sentence/passive-voice heuristics, unexplained acronyms. `scored: false` when there's too little prose. |
+| `src/engines/deprecated-html.js` | DOM query (in-page) | Obsolete/legacy HTML (`<font>`, `<center>`, `<marquee>`, presentational attrs). Example of a rate-controlled scanner. |
 | `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD model v4) | Page weight (decoded body bytes) and estimated emissions. |
-| `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO scores (+ experimental agentic). **Sampled**, not per-page. Opt-in. |
-| `src/lib/links.js` (`link-check`) | `fetch` HEAD/GET probes | Broken links (4xx/5xx, DNS, timeout) found on scanned pages, checked once per run, capped and polite. |
+| `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO scores (+ experimental agentic). Drives its own browser. |
+| `src/lib/links.js` (`link-check`) | `fetch` HEAD/GET probes | Broken links (4xx/5xx, DNS, timeout) found on sampled pages, checked once per run, capped and polite. |
 
-axe, Alfa, plain-language, and link-check run on every page (link-check
-defers its probes to one capped pass after the scan). Lighthouse is
-sampled because it drives its own browser. Engines are selected per
-target via the `engines:` key in `config/targets.yml`. Relevant env
-overrides: `VITAL_LIGHTHOUSE_SAMPLE`, `VITAL_LIGHTHOUSE_AGENTIC`,
+#### Weekly sampling rates
+
+Each engine has a weekly coverage rate set in one place,
+`config/targets.yml` under `sampling:` (e.g. `axe: 100`, `alfa: 30`,
+`lighthouse: 10`). The rate is the share of the week's unique pages an
+engine runs on; `0` or omitted disables it. Selection is **deterministic
+per page** (`src/lib/sampling.js`: a stable hash of `pageId + engine +
+week`), so coverage is reproducible, stable within a week, and
+independent per engine. A target may override individual rates with its
+own `sampling:` block.
+
+**Adding a scanner** (the single, well-defined extension point): write an
+engine module in `src/engines/` returning a compact `{ engine, ...,
+rules: { ruleId: { count, help, examples } } }` record, dispatch it in
+`src/scan.js` behind `runs('<name>')`, aggregate its rules in
+`src/aggregate.js`, and add a rate line under `sampling:`. The
+deprecated-html engine is a complete worked example.
+
+#### Findings ledger
+
+`data/<domain>/findings.json` (committed) tracks every unique finding by
+`pattern_id` with `firstSeen` / `lastSeen` / `weeksSeen`, accumulated
+across the domain's whole history (survives page-detail pruning). Updated
+by `src/lib/findings.js` during aggregation; surfaced as first/last-seen
+in bug reports. Env overrides: `VITAL_LIGHTHOUSE_AGENTIC`,
 `VITAL_LINK_CHECK_CAP`.
 
 ### Environment variables

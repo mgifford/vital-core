@@ -40,8 +40,14 @@ fs.writeFileSync(
   settle_delay_ms: 100
   max_crawl_depth: 4
   retention_weeks: 8
-  engines: [axe, alfa, plain-language, link-check, sustainability]
   user_agent: "vital-scans-e2e/0.1 (+local test)"
+sampling:
+  axe: 100
+  alfa: 100
+  plain-language: 100
+  deprecated-html: 100
+  link-check: 100
+  sustainability: 100
 targets:
   - domain: localhost
 `
@@ -141,6 +147,13 @@ try {
   assert(typeof w1.pagesAudited === 'number' && w1.pagesAudited > 0 && w1.pagesAudited <= w1.pagesScanned, 'unique pages audited recorded and bounded by pages scanned');
   assert(typeof w1.axe.medianViolations === 'number', 'median axe violations per page recorded');
   assert(typeof w1.alfa.medianFailures === 'number', 'median Alfa failures per page recorded');
+  // axe rate is 100%, so it ran on every auditable (200-HTML) page; that
+  // equals pagesAudited, which excludes error pages like the 404.
+  assert(w1.coverage && w1.coverage.axe === w1.pagesAudited, 'per-engine coverage recorded (axe 100% of auditable pages)');
+  // Findings ledger written with first/last-seen for this week.
+  const ledger1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'findings.json')));
+  const anyFinding = Object.values(ledger1.findings)[0];
+  assert(anyFinding && anyFinding.firstSeen === '2026-W23' && anyFinding.lastSeen === '2026-W23', 'findings ledger tracks first/last-seen');
   assert(w1.linkCheck && w1.linkCheck.brokenCount >= 1, `link check found the broken link (${w1.linkCheck?.brokenCount ?? 0})`);
   assert(
     w1.linkCheck.broken.some((b) => b.url.includes('does-not-exist-404')),
@@ -172,6 +185,12 @@ try {
   assert(w2.axe.violationTotal < w1.axe.violationTotal, `week 2 axe violations dropped (${w1.axe.violationTotal} -> ${w2.axe.violationTotal})`);
   assert(diff.axe.violationDelta < 0, 'diff reports axe improvement');
   assert(diff.axe.resolved.includes('image-alt'), 'image-alt reported as resolved');
+
+  // Findings ledger: image-alt was seen in W23 but not W24 (fixed), so its
+  // lastSeen stays W23; a finding present both weeks spans W23->W24.
+  const ledger2 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'findings.json')));
+  const imageAlt = Object.values(ledger2.findings).find((f) => f.ruleId === 'image-alt');
+  assert(imageAlt && imageAlt.firstSeen === '2026-W23' && imageAlt.lastSeen === '2026-W23', 'resolved finding keeps its last-seen week');
 
   // --- 4. Reports ------------------------------------------------------
   const reportPath = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'index.html');

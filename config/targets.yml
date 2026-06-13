@@ -15,11 +15,25 @@ defaults:
   settle_delay_ms: 1000     # wait after load + network-idle before auditing (avoids pre-hydration false positives)
   max_crawl_depth: 6        # BFS depth from seeds
   retention_weeks: 8        # page-level detail kept this long; weekly summaries kept forever
-  engines:
-    - axe
-    - alfa
-    - sustainability
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
+
+# Per-engine weekly coverage rates. Each value is the share of the week's
+# unique pages an engine runs on, as a fraction (0.3) or percent (30).
+# 0 (or omitted) disables an engine. Selection is deterministic per page
+# (a stable hash of page + engine + week), so coverage is reproducible
+# and a given page tends to stay in or out of an engine's sample for the
+# week. A target may override individual rates with its own `sampling:`.
+#
+# To add a future scanner, drop an engine module in src/engines/, wire it
+# in scan.js, and add a rate line here — that's the single control point.
+sampling:
+  axe: 100             # WCAG / Section 508 (axe-core)
+  alfa: 30             # independent ACT-rules audit (Siteimprove Alfa)
+  plain-language: 45   # readability of main content
+  link-check: 90       # broken-link probing of links seen on sampled pages
+  lighthouse: 10       # performance / a11y / best-practices / SEO (own Chrome; slow)
+  deprecated-html: 100 # obsolete/legacy HTML (<font>, <center>, etc.)
+  sustainability: 100  # page weight + estimated CO2
 
 targets:
   # Discovery is host-scoped. The apex domain and its `www.` variant are
