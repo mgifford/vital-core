@@ -95,7 +95,61 @@ function ruleTable(caption, rules, kind) {
 </table>`;
 }
 
-export function renderDomainReport(target, summary, prev, diff, series) {
+/**
+ * Structured per-rule bug reports following the best-practices format.
+ * Each report is a collapsible block — semantic, keyboard-operable, and
+ * JavaScript-free (native <details>). Downloadable as Markdown and JSON.
+ */
+function bugReportsSection(bugs) {
+  if (!bugs || bugs.length === 0) {
+    return `<section aria-labelledby="h-bugs">
+<h2 id="h-bugs">Bug reports</h2>
+<p>No accessibility findings to report this week.</p>
+</section>`;
+  }
+  const sevCount = bugs.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
+  const sevSummary = ['Critical', 'High', 'Medium', 'Low']
+    .filter((s) => sevCount[s])
+    .map((s) => `${sevCount[s]} ${s.toLowerCase()}`)
+    .join(', ');
+
+  const blocks = bugs
+    .map((b) => {
+      const wcag = b.wcag_sc ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (Level ${esc(b.wcag_level)})` : 'undetermined';
+      const ruleLink = b.rule_url
+        ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${esc(b.rule_id)}</a>`
+        : `${esc(b.tool)} — ${esc(b.rule_id)}`;
+      return `<details class="bug sev-${esc(b.severity.toLowerCase())}">
+<summary><span class="sev-badge">${esc(b.severity)}</span> ${esc(b.summary)}
+<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances</span></summary>
+<dl class="bug-fields">
+  <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code> (pattern <code>${esc(b.pattern_id)}</code>)</dd></div>
+  <div><dt>WCAG SC</dt><dd>${wcag}</dd></div>
+  <div><dt>Rule</dt><dd>${ruleLink}</dd></div>
+  <div><dt>Example URL</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
+  ${b.xpath ? `<div><dt>Selector</dt><dd><code>${esc(b.xpath)}</code></dd></div>` : ''}
+</dl>
+${b.html_snippet ? `<p class="bug-label">HTML snippet</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
+<p class="bug-label">Description</p><p>${esc(b.description)}</p>
+<p class="bug-label">Steps to reproduce</p><ol>${b.steps_to_reproduce.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
+<p class="bug-label">Impact</p><p class="bug-placeholder">${esc(b.impact)}</p>
+<p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
+<p class="bug-label">Suggested fix</p><p>${esc(b.suggested_fix)}</p>
+</details>`;
+    })
+    .join('\n');
+
+  return `<section aria-labelledby="h-bugs">
+<h2 id="h-bugs">Bug reports</h2>
+<p class="meta">${bugs.length} issue type(s): ${esc(sevSummary)}. One report per rule, following
+<a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.
+Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON</a>.</p>
+<p class="note">Fields marked “requires manual testing” cannot be observed by an automated scan.</p>
+${blocks}
+</section>`;
+}
+
+export function renderDomainReport(target, summary, prev, diff, series, bugs = []) {
   const trendViol = series.map((s) => s.axe.violationTotal);
   const body = `
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
@@ -136,6 +190,8 @@ ${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summ
 <h2 id="h-alfa">Siteimprove Alfa findings</h2>
 ${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.alfa.rules, 'Alfa')}
 </section>
+
+${bugReportsSection(bugs)}
 
 ${summary.errorPages.length ? `
 <section aria-labelledby="h-errors">
@@ -290,4 +346,28 @@ tbody th[scope="row"] { font-weight: 600; }
 footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem;
   font-size: .85rem; color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }
+.bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
+  margin: .6rem 0; padding: 0 .9rem; }
+.bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }
+.bug[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
+.bug.sev-critical { border-left-color: var(--worse); }
+.bug.sev-high { border-left-color: var(--worse); }
+.bug.sev-medium { border-left-color: var(--accent); }
+.bug.sev-low { border-left-color: var(--muted); }
+.sev-badge { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .05em; padding: 0 .4rem; border: 1px solid currentColor; border-radius: 2px;
+  vertical-align: middle; margin-right: .4rem; }
+.sev-critical .sev-badge, .sev-high .sev-badge { color: var(--worse); }
+.sev-medium .sev-badge { color: var(--accent); }
+.sev-low .sev-badge { color: var(--muted); }
+.bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
+.bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
+.bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }
+.bug-fields dt { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.bug-fields dd { margin: 0; }
+.bug-label { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em;
+  margin: .8rem 0 .2rem; }
+.bug-placeholder { color: var(--muted); font-style: italic; }
+.bug pre { background: color-mix(in srgb, var(--ink) 6%, transparent); padding: .6rem .8rem;
+  border-radius: 2px; overflow-x: auto; font-size: .85rem; }
 `;

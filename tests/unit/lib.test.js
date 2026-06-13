@@ -4,6 +4,8 @@ import { normalizeUrl, pageId } from '../../src/lib/urls.js';
 import { isoWeekOf, previousWeekOf } from '../../src/lib/week.js';
 import { parseRobots } from '../../src/lib/robots.js';
 import { addPage, pickBatch } from '../../src/lib/state.js';
+import { resolveWcag, severityFor } from '../../src/lib/wcag.js';
+import { buildBugReports, bugReportToMarkdown } from '../../src/lib/bug-report.js';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -94,4 +96,79 @@ test('pickBatch: never-scanned first, weekly cap respected, no rescan same week'
   state.pages.c.failCount = 3;
   const { batch: noFail } = pickBatch(state, '2026-W24', 10, 100);
   assert.deepEqual(noFail.map((b) => b.id), ['b']);
+});
+
+test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {
+  assert.deepEqual(resolveWcag('axe-core', { tags: ['cat.color', 'wcag2aa', 'wcag143'] }), {
+    sc: '1.4.3', name: 'Contrast (Minimum)', level: 'AA',
+  });
+  assert.deepEqual(resolveWcag('axe-core', { tags: ['wcag412'] }), {
+    sc: '4.1.2', name: 'Name, Role, Value', level: 'A',
+  });
+  assert.equal(resolveWcag('axe-core', { tags: ['best-practice', 'wcag2a'] }), null, 'level-only tags have no SC');
+  assert.deepEqual(resolveWcag('alfa', { ruleId: 'sia-r12' }), {
+    sc: '4.1.2', name: 'Name, Role, Value', level: 'A',
+  });
+  assert.equal(resolveWcag('alfa', { ruleId: 'sia-r9999' }), null, 'unknown alfa rule undetermined');
+});
+
+test('severityFor: axe impact maps, frequency amplifies', () => {
+  assert.equal(severityFor('critical', 1, 50), 'Critical');
+  assert.equal(severityFor('minor', 1, 50), 'Low', 'rare minor stays Low');
+  assert.equal(severityFor('minor', 30, 50), 'Medium', 'site-wide minor escalates one level');
+  assert.equal(severityFor('serious', 40, 50), 'Critical', 'site-wide serious escalates to Critical');
+  assert.equal(severityFor(null, 1, 50), 'Medium', 'no impact (alfa) defaults Medium');
+});
+
+test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
+  const target = { domain: 'example.gov', key: 'example.gov' };
+  const summary = {
+    domain: 'example.gov',
+    week: '2026-W24',
+    generatedAt: '2026-06-13T00:00:00.000Z',
+    pagesScanned: 10,
+    axe: { rules: {
+      'color-contrast': { count: 8, pages: 6, impact: 'serious', help: 'Elements must have sufficient color contrast',
+        helpUrl: 'https://dequeuniversity.com/rules/axe/4.9/color-contrast', tags: ['wcag143', 'wcag2aa'],
+        examplePages: ['https://example.gov/a'],
+        instances: [{ url: 'https://example.gov/a', target: '.btn', html: '<a class="btn">Go</a>' }] },
+    } },
+    alfa: { rules: {
+      'sia-r12': { count: 2, pages: 1, ruleUrl: 'https://act-rules.github.io/rules/97a4e1',
+        examplePages: ['https://example.gov/b'],
+        instances: [{ url: 'https://example.gov/b', target: '<button>', html: null }] },
+    } },
+  };
+
+  const reports = buildBugReports(target, summary);
+  assert.equal(reports.length, 2);
+
+  // Sorted: serious+site-wide axe (escalated to Critical) before medium alfa.
+  assert.equal(reports[0].rule_id, 'color-contrast');
+  assert.equal(reports[0].severity, 'Critical', '6/10 pages escalates serious to critical');
+  assert.equal(reports[0].wcag_sc, '1.4.3');
+  assert.equal(reports[0].wcag_level, 'AA');
+  assert.match(reports[0].summary, /\(WCAG 1\.4\.3\)$/);
+  assert.equal(reports[0].frequency.pages_affected, 6);
+  assert.equal(reports[0].xpath, '.btn');
+  assert.ok(reports[0].html_snippet.includes('btn'));
+
+  // Honest placeholder for unobservable field.
+  assert.match(reports[0].impact, /requires manual testing/i);
+
+  // Stable ids: same input -> same ids.
+  const again = buildBugReports(target, summary);
+  assert.equal(again[0].instance_id, reports[0].instance_id);
+  assert.equal(again[0].pattern_id, reports[0].pattern_id);
+
+  // Alfa report: no impact -> Medium, mapped SC.
+  const alfa = reports.find((r) => r.rule_id === 'sia-r12');
+  assert.equal(alfa.severity, 'Medium');
+  assert.equal(alfa.wcag_sc, '4.1.2');
+
+  // Markdown renders the required headings.
+  const md = bugReportToMarkdown(reports[0]);
+  assert.match(md, /\*\*Severity:\*\* Critical/);
+  assert.match(md, /### Steps to reproduce/);
+  assert.match(md, /\*\*WCAG SC:\*\* 1\.4\.3/);
 });

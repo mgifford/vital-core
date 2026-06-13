@@ -4,6 +4,7 @@ import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
 import { renderDomainReport, renderIndex, writeAsset } from './report-html.js';
+import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -16,6 +17,8 @@ import { renderDomainReport, renderIndex, writeAsset } from './report-html.js';
  *   docs/reports/<domain>/<week>/index.html
  *   docs/data/<domain>/weekly.json      (trend series for anyone to reuse)
  */
+
+const MAX_RULE_INSTANCES = 5; // representative failing instances kept per rule
 
 const config = loadConfig();
 fs.mkdirSync(DIRS.docs, { recursive: true });
@@ -49,14 +52,21 @@ for (const target of config.targets) {
   fs.mkdirSync(dataOut, { recursive: true });
   fs.writeFileSync(path.join(dataOut, 'weekly.json'), JSON.stringify({ domain: target.domain, series, diffs }, null, 1));
 
-  // Human reports.
+  // Human reports + structured bug reports (Markdown, JSON, and inline HTML).
   for (let i = 0; i < series.length; i++) {
     const summary = series[i];
     const prev = i > 0 ? series[i - 1] : null;
-    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series);
+    const bugs = buildBugReports(target, summary);
     const repDir = path.join(DIRS.docs, 'reports', target.key, summary.week);
     fs.mkdirSync(repDir, { recursive: true });
+
+    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs);
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
+    fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
+    fs.writeFileSync(
+      path.join(repDir, 'bugs.json'),
+      JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, reports: bugs }, null, 1)
+    );
   }
 
   dashboard.push({ target, series, diffs });
@@ -108,20 +118,22 @@ function summarizeWeek(target, week) {
       if (rec.axe.violationCount > 0) pagesWithAxeViolations++;
       axeViolationTotal += rec.axe.violationCount;
       for (const [id, v] of Object.entries(rec.axe.violations)) {
-        const r = (axeRules[id] ??= { count: 0, pages: 0, impact: v.impact, help: v.help, helpUrl: v.helpUrl, examplePages: [] });
+        const r = (axeRules[id] ??= { count: 0, pages: 0, impact: v.impact, help: v.help, helpUrl: v.helpUrl, tags: v.tags ?? [], examplePages: [], instances: [] });
         r.count += v.count;
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
+        addInstances(r, rec.url, v.examples);
       }
     }
     if (rec.alfa) {
       if (rec.alfa.failedCount > 0) pagesWithAlfaFailures++;
       alfaFailedTotal += rec.alfa.failedCount;
       for (const [id, v] of Object.entries(rec.alfa.failed)) {
-        const r = (alfaRules[id] ??= { count: 0, pages: 0, ruleUrl: v.ruleUrl, examplePages: [] });
+        const r = (alfaRules[id] ??= { count: 0, pages: 0, ruleUrl: v.ruleUrl, examplePages: [], instances: [] });
         r.count += v.count;
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
+        addInstances(r, rec.url, v.examples);
       }
     }
     if (rec.sustainability) {
@@ -198,6 +210,21 @@ function diffWeeks(prev, curr) {
           }
         : null,
   };
+}
+
+// Keep a small, capped set of representative failing instances per rule
+// (page URL + element selector/snippet) so bug reports carry real DOM
+// context. Caps total per rule to keep summary.json small.
+function addInstances(rule, url, examples) {
+  if (!Array.isArray(examples)) return;
+  for (const ex of examples) {
+    if (rule.instances.length >= MAX_RULE_INSTANCES) break;
+    rule.instances.push({
+      url,
+      target: ex.target ?? null, // CSS selector (axe) / element description (alfa)
+      html: ex.html ?? null, // minimal failing markup (axe only)
+    });
+  }
 }
 
 function median(list) {
