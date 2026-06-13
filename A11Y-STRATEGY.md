@@ -77,7 +77,7 @@ Because `vital-core` has an active headless browser session open during its live
 
 ## 📝 4. Human-Actionable Markdown Exporter Layout
 
-When the pipeline identifies errors, it processes the aggregated data into highly readable Markdown documents inside the `/dist/reports` folder, configured to match your target `ACCESSIBILITY.md` layout. Developers can copy-paste these straight into issue tracking platforms.
+When the pipeline identifies errors, it processes the aggregated data into highly readable reports under the generated `docs/reports/` folder, configured to match your target `ACCESSIBILITY.md` layout. Developers can copy-paste these straight into issue tracking platforms.
 
 ```markdown
 # 🛑 Systemic Bug Report: `a11y_8f3b2a9c7e4d`

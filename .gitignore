@@ -3,11 +3,14 @@ node_modules/
 .history-cache/
 ci_job_*.zip
 job-*-logs.zip
-tmp/html-snapshots/
+tmp/
 
 # Generated site. Built by aggregate in CI and deployed as a Pages
 # artifact; never committed. Summaries that must survive live in data/.
 docs/
+
+# Old build output (no longer produced; kept ignored to prevent reintroduction).
+dist/
 
 *.log
 .DS_Store

@@ -1,101 +1,69 @@
 # Features Status
 
-This file tracks what is currently working in VITAL-Core and what is still being implemented.
+This file tracks what is currently working in VITAL-Core and what is
+still being implemented.
 
 ## Known To Work
 
 ### Scanning and Discovery
 
-- Profile-driven target scanning across multiple domains.
-- Sitemap discovery with include-path filtering.
-- HTML-first discovery: non-HTML resources are filtered out (including `.pdf` and `.docx`).
-- Priority URL injection to ensure high-value pages are always considered.
-- Optional unique-page focus mode to reduce template-heavy duplicates.
+- Config-driven target scanning across multiple domains (`config/targets.yml`).
+- Sitemap discovery, seeded from the sitemap and homepage when crawl state is empty.
+- HTML-first discovery: off-host links and non-HTML resources (PDF, DOCX, media, etc.) are filtered out by the URL normalizer.
+- BFS crawl from seeds up to `max_crawl_depth`, discovering same-host links as pages are scanned.
+- Stable page identity via a single URL normalization function (`src/lib/urls.js`), so a page is recognized as the same page week over week.
 
 ### Incremental and Runtime Controls
 
-- Incremental page-state caching with unchanged-page skip behavior.
-- Revalidation windows and recency prioritization controls.
-- Runtime budget enforcement for scheduled runs.
-- Round-robin target scanning to distribute load across domains.
-- Accessibility-only hydration settle delay control (`VITAL_A11Y_SETTLE_DELAY_MS`) to reduce transient client-side timing false positives before live axe audits.
+- ISO-week datasets: pages scanned any day of the same week belong to one dataset; pages already scanned this week are not rescanned.
+- Per-run budget (`pages_per_run`, overridable with `--budget`) and a hard weekly cap (`max_pages_per_week`). Coverage accumulates across runs into one weekly dataset per domain.
+- Politeness: configurable `delay_ms` between page loads, honored alongside `robots.txt` `Crawl-delay`.
+- Accessibility hydration settle delay (`settle_delay_ms`, overridable with `VITAL_A11Y_SETTLE_DELAY_MS`) before auditing, to reduce transient client-side timing false positives.
 
 ### Auditing and Data Collection
 
-- **axe-core** (always): Live WCAG 2.x / Section 508 accessibility audit via Playwright in-browser, run on every page regardless of scope setting.
-- **Alfa** (always): Independent ACT-rules accessibility audit via Siteimprove Alfa CLI (`node_modules/.bin/alfa`) against the local HTML snapshot (written before workers run) to avoid a redundant HTTP fetch. Runs alongside axe on every page for cross-engine issue coverage. Requires `@siteimprove/alfa-formatter-json` installed and `VITAL_ALFA_CMD` set. Output buffer is 10 MB to handle large DOM serialization.
-- **Lighthouse** (full scope): Five category scores — performance (FCP, LCP, Speed Index), accessibility, SEO, best-practices, and the experimental agentic-browsing pass ratio — via Google Lighthouse against the live URL. Requires Chrome installed.
-- **Wappalyzer-next** (full scope): CMS/framework/analytics tech fingerprinting via wappalyzer-next CLI using `--scan-type full`. Passes the local HTML snapshot to the tool first (avoiding a redundant HTTP fetch) and falls back to the live URL if the tool does not support file-based input. Requires `VITAL_WAPPALYZER_CMD` set. Note: the original Wappalyzer is proprietary and requires a paid license; wappalyzer-next is the open-source fork.
-- **Offline / Cheerio** (full scope): Alt-text quality, ambiguous link text, readability (Flesch-Kincaid grade), USWDS presence, and accessibility overlay detection from the HTML snapshot.
-- **Third-party impact** (full scope): Second axe pass with JS disabled to isolate how much tag managers, overlays, and chat widgets worsen the accessibility score.
-- Technology fingerprinting with resilient command handling and fallback parsing.
-- Third-party impact analysis and consensus summaries in run outputs.
+Engines are selected per target via the `engines:` key (default: all three). Each writes a compact record onto the per-page JSON.
+
+- **axe-core** (`src/engines/axe.js`): WCAG 2.x / Section 508 accessibility audit, injected into the page via Playwright. Stores rule ids, counts, and pages affected — not full node lists — so records stay small and comparable week over week.
+- **Alfa** (`src/engines/alfa.js`): Independent ACT-rules accessibility audit via Siteimprove Alfa (`@siteimprove/alfa-*`), the open source core of Siteimprove's commercial checker. Runs alongside axe for cross-engine coverage.
+- **Sustainability** (`src/engines/sustainability.js`): Page weight (decoded body bytes seen by the browser) and estimated CO₂ via co2.js using the Sustainable Web Design model (v4).
 
 ### Reporting and Dashboard
 
-- Static dashboard generation to `dist/` with latest-run, trends, and history sections.
-- Domain-specific subpages (overview, accessibility, performance, content, third-party).
-- Domain accessibility pages now read SQLite after the current run is appended, keeping latest-run page and issue summaries in sync with current scan output.
-- Fallback domain accessibility rendering now groups pages under one synthetic run ID so multi-page runs are not collapsed to a single-row summary.
-- Dominant domain jump selector in the dashboard header.
-- Footer attribution and non-affiliation statement across generated pages.
-- Software detections table with per-URL visibility.
-- Dedicated failures view with:
-	- Failed/timeout/blocked pages
-	- Skipped unchanged pages
-	- PDF/DOCX guardrail visibility
-	- Discovery-time non-HTML exclusions
+- Static site generated to `docs/` by `src/aggregate.js` — a pure function of `data/`. Never committed; shipped as a GitHub Pages artifact, so it cannot drift from the data.
+- `docs/index.html` — dashboard with latest-week and trend views.
+- `docs/reports/<domain>/<week>/index.html` — per-domain weekly report pages.
+- `docs/data/<domain>/weekly.json` — reusable trend series (summaries + week-over-week diffs) per domain.
+- `data/<domain>/<week>/summary.json` — the weekly rollup, committed so trend history survives page-level pruning.
+- Weekly Markdown summary posted to the "Weekly scan reports" tracking issue (`src/issue-comment.js`).
 
-### Weekly Trend Reporting
+### Data Retention
 
-- Weekly domain accessibility ratings (`dist/api/weekly-ratings.json`) — 7-day violation aggregates per target, scored and graded.
-- Week-over-week compliance trends (`dist/api/weekly-trends.json`) — up to 12 weeks of history, oldest-first for charting.
-- Top rule frequency report (`dist/api/weekly-top-rules.json`) — most frequent WCAG violations over the last 7 days.
-- Run directory export (`dist/api/run-directory.json`) — latest 100 runs with page and violation counts.
-- Domain accessibility grades leaderboard on the main dashboard, sourced from 7-day SQLite aggregates with per-run fallback when no history is available.
+- Page-level detail (`data/<domain>/<week>/pages/*.json`) is pruned after `retention_weeks` by `src/prune.js`.
+- Weekly `summary.json` files are kept forever, so trend graphs never break.
 
-### Per-Run Detail Pages
+### Test Coverage
 
-- Per-run detail pages at `dist/runs/{runId}/index.html` generated for each run recorded in SQLite.
-- Each page shows: run ID, timestamp, pages completed/skipped, total violations, quality index score, and a per-domain breakdown table (grade, score, critical/serious/moderate/minor counts, completion status).
-- Run history table on the main dashboard includes a "Details" link to the per-run page alongside the existing raw JSON link.
-- Backed by `SqlitePersister.queryAllTargetsForRun()` — a single-query rollup of all targets for a given run.
-
-### API and Artifacts
-
-- Published run artifacts under `runs/` (latest, index, trends, domain ongoing, seeds, run snapshots).
-- API manifest and stable JSON endpoints under `api/` (`index`, `latest`, `runs`, `targets`).
-
-### Test Coverage and Contracts
-
-- Unit coverage for discovery filtering, seed behavior, dashboard generation, bug export output, and technology worker behavior.
-- Workflow contract coverage for key runtime policy behavior.
+- `npm run test:unit` (`node --test`): URL identity/normalization, ISO week math, robots.txt parsing, and batch picking.
+- `npm run test:e2e`: full pipeline over a local fixture site across two simulated weeks, asserting week-over-week improvement is reported.
 
 ## In Progress
 
 ### Throughput and Pipeline Performance
 
 - Increase effective scan throughput while preserving politeness and reliability.
-- Pipeline parallelization plan:
-	- Overlap page loading with post-cache processing
-	- Run more offline work concurrently after snapshot capture
-	- Reduce idle time between batches
-- Tune concurrency and delay settings by scan intensity window.
+- Tune per-target concurrency and delay settings.
 
 ### Failures and Operational Visibility
 
-- Expand failure analytics to provide clearer bottleneck attribution (timeouts, WAF behavior, skipped reasons, and queue pressure).
-- Improve production diagnostics for link-gate and external endpoint instability.
+- Expand failure reporting to clarify bottleneck attribution (timeouts, WAF behavior, skipped reasons).
 
 ### Reporting Improvements
 
-- Continue refining bug report navigation and section-level jump links.
-- Add clearer throughput and ETA indicators tied to real run cadence.
-- Domain page refactoring: split domain subpages into weekly-aggregate and per-run sections (Phase 4).
-- 12-week compliance trend chart using `queryWeeklyTrends()` (Phase 5).
-- UX polish: breadcrumbs and cross-links across all generated pages (Phase 6).
+- Continue refining report navigation and cross-links across generated pages.
+- Clearer throughput and ETA indicators tied to real run cadence.
 
 ### Governance and Documentation
 
-- Finalize retention/versioning policy for API and run artifacts.
-- Keep user-facing docs aligned with current workflow behavior and runtime limits.
+- Finalize retention/versioning policy for committed artifacts.
+- Keep user-facing docs aligned with current workflow behavior.

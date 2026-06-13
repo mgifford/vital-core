@@ -4,84 +4,83 @@ This file defines how AI coding agents should work in this repository.
 
 ## Mission
 
-Build and maintain a government web quality scanner that produces high-confidence, accessible, and actionable findings, **tuned specifically for tracking continuous improvement, weekly trends, and historical remediation** across US government sites. 
+Build and maintain a government web quality scanner that produces
+high-confidence, accessible, and actionable findings, **tuned
+specifically for tracking continuous improvement, weekly trends, and
+historical remediation** across US government sites.
 
 ## Operating Priorities
 
 1. **Continuous Accessibility Tracking**: Prioritize week-over-week trends, progress, and regression tracking over isolated, single-run reports (WCAG 2.0 AA for federal, WCAG 2.1 AA for state/local).
-2. **Reliable, Deterministic Data**: Outputs must generate stable identifiers (e.g., persistent instance/pattern IDs) so findings can be deduplicated and compared cleanly across weekly scan boundaries.
-3. **Historical Evidence**: Focus on preserving historical data integrity to prove when issues were introduced and resolved.
+2. **Reliable, Deterministic Data**: Outputs must generate stable identifiers (page identity, rule ids) so findings can be deduplicated and compared cleanly across weekly scan boundaries.
+3. **Historical Evidence**: Preserve historical data integrity to prove when issues were introduced and resolved. Weekly summaries are kept forever; page-level detail is pruned after `retention_weeks`.
 4. **Actionable Remediation**: Provide practical developer guidance that helps teams clear their weekly backlog.
 5. **Efficient Scanning**: Optimize scanning of high-value pages to support recurring, automated weekly schedules without bloated resource consumption.
 
-## Scan Tool Inventory
+## Architecture
 
-Every URL in the scan queue is processed by these workers in order. Workers 3–6 are skipped when `VITAL_AUDIT_SCOPE=accessibility` or `VITAL_AUDIT_SCOPE=a11y`. 
+The system runs on GitHub Actions with no server and no database. The
+core rule: **files are the only state, data is append-only, and reports
+are pure functions of the data directory.**
 
-*Note for Agents: When modifying these tools, always consider how their JSON outputs will be aggregated and compared in weekly trend reports.*
+- `src/scan.js` — one scan run for one domain. Loads state, picks a
+  batch of pages not yet scanned this ISO week, runs the engines, writes
+  one JSON record per page under `data/<domain>/<week>/pages/`, and
+  discovers same-host links into `state/<domain>/crawl.json`.
+- `src/aggregate.js` — pure function of `data/`. Computes weekly
+  summaries, writes `data/<domain>/<week>/summary.json` (committed) and
+  the generated site under `docs/` (never committed; shipped as a Pages
+  artifact).
+- `src/prune.js` — removes page-level detail older than
+  `retention_weeks`; summaries survive.
+- `src/issue-comment.js` — posts the weekly Markdown summary to a
+  tracking issue.
+- `src/lib/` — shared, frozen contracts: URL identity (`urls.js`), ISO
+  weeks (`week.js`), crawl state (`state.js`), robots (`robots.js`),
+  sitemap discovery (`sitemap.js`), config (`config.js`).
 
-| # | Worker file | Tool | What it produces | Gated by scope |
-|---|-------------|------|-----------------|---------------|
-| 1 | `live-worker.ts` | **axe-core** via `@axe-core/playwright` | WCAG 2.x / Section 508 violations (in-browser). *Requires stable DOM selectors for weekly tracking.* | No — always runs |
-| 2 | `alfa-worker.ts` | **Siteimprove Alfa CLI** (`@siteimprove/alfa-cli`) | Independent ACT-rules audit against live URL. | No — always runs |
-| 3 | `lighthouse-worker.ts` | **Google Lighthouse** (`lighthouse` + `chrome-launcher`) | Performance, accessibility, SEO, best-practices scores. *Monitored for week-to-week score deltas.* | Yes |
-| 4 | `technology-worker.ts` | **wappalyzer-next** CLI (`--scan-type full`) | CMS / framework / analytics tech fingerprint. | Yes |
-| 5 | `offline-worker.ts` | **Cheerio** (HTML parser) | Alt-text quality, readability (Flesch-Kincaid), overlay detection, USWDS presence, ambiguous links. | Yes |
-| 6 | `third-party-impact-worker.ts` | **axe-core** (second pass, JS disabled) | Regression delta caused by third-party scripts. | Yes, and only when offline audits ran |
+## Scan Engine Inventory
 
-### Required environment variables for tools
+Every URL in the batch is processed by the engines listed in the
+target's `engines` config (default: all three). Each engine writes a
+compact, comparison-friendly record onto the per-page JSON.
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `VITAL_ALFA_CMD` | `alfa` (must be in PATH) | Path to alfa CLI binary. Set to `node_modules/.bin/alfa` in CI. |
-| `VITAL_WAPPALYZER_CMD` | _(empty — tool skipped if unset)_ | Path to wappalyzer-next binary. Set to `.tools/wappalyzer-next/bin/wappalyzer` in CI. |
-| `VITAL_AUDIT_SCOPE` | `full` | Set to `accessibility` or `a11y` to run workers 3–6 only. |
-| `VITAL_SCAN_INTENSITY` | `standard` | Controls multi-engine browser mode (`deep` enables Firefox + WebKit). |
+| Engine file | Tool | What it produces |
+|-------------|------|------------------|
+| `src/engines/axe.js` | **axe-core** (injected into the page) | WCAG 2.x / Section 508 violations, reduced to rule ids, counts, and pages affected (full node lists are not stored). |
+| `src/engines/alfa.js` | **Siteimprove Alfa** (`@siteimprove/alfa-*`) | Independent ACT-rules audit. Alfa is the open source core of Siteimprove's commercial checker. |
+| `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD model v4) | Page weight (decoded body bytes) and estimated emissions. |
 
-### Known size limits & Data Retention
+Both axe and Alfa run on every page by default for cross-engine
+coverage. Engines are selected per target via the `engines:` key in
+`config/targets.yml`.
 
-Alfa serializes the full DOM tree and HTTP response into its JSON output. A complex page can produce 4–10 MB of raw output. Because we track data week-over-week, **data volume compounds quickly**. 
-* The alfa worker uses a 10 MB `maxBuffer` to accommodate this. Log situations where the output exceeds `maxBuffer`.
-* Agents should optimize data payloads, ensuring only essential tracking data is preserved long-term.
+### Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `VITAL_WEEK` | Pin the ISO week (e.g. `2026-W23`). Used by the e2e test for determinism; normally derived from the run date. |
+| `VITAL_A11Y_SETTLE_DELAY_MS` | Override `settle_delay_ms` — the wait after page load before auditing, which lets client-side hydration finish and removes transient false positives. |
+
+Most behavior is configured per target in `config/targets.yml`
+(`pages_per_run`, `max_pages_per_week`, `delay_ms`, `nav_timeout_ms`,
+`settle_delay_ms`, `retention_weeks`, `engines`, `user_agent`), not via
+environment variables.
 
 ## Repository Rules for Agents
 
-1. **Preserve Schema Compatibility:** Never introduce breaking changes to JSON schemas or report formats without an explicit migration plan. Breaking changes destroy historical weekly trend graphs.
-2. **Ensure Stable Identifiers:** When surfacing bugs, rely on reproducible patterns (like XPath, CSS selectors, or hashed element structures) so a bug found in Week 1 is recognized as the *same* bug in Week 2.
-3. Keep changes small, reviewable, and test-backed.
-4. Prefer host-scoped, HTML-focused discovery by default.
-5. Include tests for all behavior changes in discovery, reporting, and weekly aggregation.
-6. Avoid broad refactors unless requested.
-7. Do not remove existing report formats when adding new ones.
+1. **Plain Node, no build step, no TypeScript.** Source is `.js` under `src/` and runs directly with `node`. Do not reintroduce a build step, TypeScript, or a database.
+2. **Preserve schema compatibility.** Never introduce breaking changes to the per-page JSON record or `summary.json` without a migration plan — breaking changes destroy historical weekly trend graphs.
+3. **Stable identity.** `src/lib/urls.js` defines page identity everywhere; treat it as a frozen contract. Week-over-week comparison depends on it.
+4. Keep changes small, reviewable, and test-backed.
+5. Prefer host-scoped, HTML-focused discovery by default.
+6. Include tests for behavior changes in discovery, scanning, or aggregation.
+7. Avoid broad refactors unless requested.
 
-## Suggested Claude/AI Skill Sets
+## Testing
 
-Use these skill themes when planning, reviewing, or implementing changes.
-
-1. **Data Aggregation & Time-Series** *(Crucial for weekly tracking)*
-- historical-trending
-- data-deduplication
-- schema-migrations
-- stable-id-generation
-
-2. **Accessibility Governance**
-- accessibility-general
-- bug-reporting
-- manual-testing
-
-3. **Core UI and Interaction Accessibility**
-- keyboard / navigation / forms
-- aria-live-regions / touch-pointer
-
-4. **Content & Visual Quality**
-- content-design / plain-language
-- image-alt-text / color-contrast
-- tables / svg / tooltips
-
-5. **Delivery and Reliability**
-- ci-cd (GitHub Actions / Scheduled Scans)
-- progressive-enhancement
-- opquast-digital-quality
+- `npm run test:unit` — `node --test` over `tests/unit/` (URL identity, ISO weeks, robots.txt parsing, batch picking).
+- `npm run test:e2e` — full pipeline over a local fixture site simulating two weeks, asserting week-over-week diffs. Requires Playwright's bundled Chromium (`npx playwright install chromium`).
 
 ## Prompting Pattern for Agents
 
@@ -89,8 +88,8 @@ When making changes, always include:
 
 1. Objective (How does this improve the weekly scan experience?)
 2. In-scope files
-3. Acceptance criteria (Including backward compatibility)
-4. Validation steps (How to test against historical data)
+3. Acceptance criteria (including backward compatibility of data records)
+4. Validation steps (run `test:unit`; run `test:e2e` for pipeline changes)
 5. Rollback plan
 
 ## Review Checklist
@@ -99,4 +98,5 @@ When making changes, always include:
 2. **Does this keep outputs reproducible and stable for week-over-week comparisons?**
 3. Are findings actionable for engineers?
 4. Are tests updated and passing?
-5. Is the scan load proportionate to user value, assuming this will run on a recurring weekly schedule?
+5. Is the scan load proportionate to user value, given this runs on a recurring weekly schedule?
+6. Does it stay within the plain-JS, no-build, no-database architecture?
