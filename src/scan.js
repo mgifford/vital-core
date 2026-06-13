@@ -114,8 +114,20 @@ for (const item of batch) {
   try {
     const response = await page.goto(fetchUrl, { waitUntil: 'load' });
     const status = response?.status() ?? 0;
-    // Settle delay: let client-side hydration finish before auditing.
-    // This is the documented fix for transient pre-hydration findings.
+    // Let late async rendering settle before auditing. Government sites
+    // routinely fetch/hydrate after the load event, which produces
+    // transient false positives if axe/alfa run too early.
+    //
+    //   1. Wait for the network to go quiet (best-effort: capped so a
+    //      site with persistent connections — analytics beacons,
+    //      websockets — can't stall the scan).
+    //   2. Then always wait the fixed settle delay (default 1s).
+    try {
+      await page.waitForLoadState('networkidle', { timeout: target.nav_timeout_ms });
+    } catch {
+      // networkidle never reached within the cap; the settle delay below
+      // still gives the page time to finish rendering.
+    }
     await page.waitForTimeout(settleDelay);
 
     const record = {
