@@ -1,0 +1,43 @@
+# Spelling allowlist — terms treated as correctly spelled by the
+# plain-language engine's spell check. One term per line; # for comments.
+# Add domain/agency jargon here as you triage false positives in reports.
+# Matching is case-insensitive via the dictionary's own rules.
+
+# Programs & agencies
+Medicaid
+Medicare
+CHIP
+HealthCare
+healthcare
+telehealth
+coinsurance
+copay
+copayment
+deductible
+formulary
+enrollee
+enrollees
+preauthorization
+wellness
+caregiver
+caregivers
+
+# Web / tech terms common in gov content
+website
+online
+login
+dropdown
+chatbot
+dataset
+datasets
+metadata
+APIs
+URL
+URLs
+usability
+chooser
+
+# Common gov abbreviations spelled out inconsistently
+ePrescribing
+eHealth
+mHealth

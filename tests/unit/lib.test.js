@@ -10,6 +10,7 @@ import { splitSentences, estimateSyllables } from '../../src/engines/plain-langu
 import { checkLink } from '../../src/lib/links.js';
 import { normalizeRate, shouldRun } from '../../src/lib/sampling.js';
 import { updateFindings } from '../../src/lib/findings.js';
+import { findMisspellings } from '../../src/lib/spell.js';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -322,4 +323,28 @@ test('findings: ledger tracks first/last-seen and is idempotent per week', () =>
   // Idempotent: re-running W24 does not inflate weeksSeen.
   updateFindings(ledger, '2026-W24', [reportA]);
   assert.equal(ledger.findings['VS-aaa'].weeksSeen, 2, 're-run same week is idempotent');
+});
+
+test('spell: flags real misspellings, skips numbers/acronyms/allowlist/jargon', () => {
+  const r = findMisspellings([
+    'The', 'quick', 'accessibility', // correct dictionary words
+    'teh', 'recieve', 'xyzzy',        // genuine misspellings
+    'Medicaid', 'telehealth',          // allowlisted jargon
+    'COVID', 'API',                    // ALL-CAPS acronyms -> skipped
+    '2026', 'v4',                      // contain digits -> skipped
+    'a', 'to',                         // too short -> skipped
+  ]);
+  assert.equal(r.misspelledCount, 3);
+  assert.deepEqual(r.misspelled.sort(), ['recieve', 'teh', 'xyzzy']);
+});
+
+test('spell: tolerates possessives and caps the distinct list', () => {
+  const r = findMisspellings(["government's", 'agency’s']);
+  assert.equal(r.misspelledCount, 0, "possessive of a real word is not a misspelling");
+
+  const many = Array.from({ length: 40 }, (_, i) => `xqzzx${String.fromCharCode(97 + (i % 26))}${i}`)
+    .map((w) => w.replace(/\d/g, '')); // strip digits so they're checkable
+  const capped = findMisspellings(many, 25);
+  assert.ok(capped.misspelled.length <= 25, 'distinct list is capped');
+  assert.ok(capped.misspelledCount >= capped.misspelled.length, 'count tracks all, list is capped');
 });

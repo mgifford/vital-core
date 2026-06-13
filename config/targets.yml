@@ -17,6 +17,13 @@ defaults:
   retention_weeks: 8        # page-level detail kept this long; weekly summaries kept forever
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
 
+# Which sustainability figure the reports headline: "co2" (grams CO2 per
+# page) or "energy" (watt-hours per page). Both are always recorded in the
+# data — this only changes what's shown, so switching needs no re-scan.
+# The SWD model computes CO2 = energy x grid carbon intensity, so energy
+# is the underlying physical quantity.
+sustainability_metric: co2
+
 # Per-engine weekly coverage rates. Each value is the share of the week's
 # unique pages an engine runs on, as a fraction (0.3) or percent (30).
 # 0 (or omitted) disables an engine. Selection is deterministic per page

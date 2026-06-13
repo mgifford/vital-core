@@ -20,12 +20,14 @@ export function loadConfig() {
   // can override individual rates without restating the whole block
   // (ratesFor merges these defaults with target.sampling).
   const sampling = cfg.sampling ?? {};
+  // Report display preference: 'co2' (default) or 'energy'.
+  const sustainabilityMetric = cfg.sustainability_metric === 'energy' ? 'energy' : 'co2';
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
     t.key = domainKey(t.domain);
   }
-  return { defaults, sampling, targets };
+  return { defaults, sampling, sustainabilityMetric, targets };
 }
 
 /** Filesystem-safe identifier for a domain. Stable across runs. */

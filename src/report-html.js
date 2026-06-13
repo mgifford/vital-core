@@ -15,6 +15,20 @@ import path from 'node:path';
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const kb = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB');
+
+// Report-wide display preference for the sustainability figure, set once
+// by aggregate via setSustainabilityMetric(). 'co2' or 'energy'.
+let SUSTAINABILITY_METRIC = 'co2';
+export function setSustainabilityMetric(metric) {
+  SUSTAINABILITY_METRIC = metric === 'energy' ? 'energy' : 'co2';
+}
+/** The headline sustainability stat for a page, per the configured metric. */
+function sustainabilityHeadline(s) {
+  if (!s) return null;
+  return SUSTAINABILITY_METRIC === 'energy'
+    ? { label: 'Estimated energy per page (mean)', value: `${s.meanEnergyWh ?? 'n/a'} Wh` }
+    : { label: 'Estimated CO₂ per page (mean)', value: `${s.meanCo2g} g` };
+}
 const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
 const fmtMedian = (n) => (n == null ? 'n/a' : String(n));
 
@@ -195,15 +209,17 @@ ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'F
   <div><dt>Lighthouse best practices (median)</dt><dd>${fmtScore(summary.lighthouse.medianBestPractices)}</dd></div>
   ${summary.lighthouse.medianAgentic != null ? `<div><dt>Lighthouse agentic (median)</dt><dd>${fmtScore(summary.lighthouse.medianAgentic)}</dd></div>` : ''}` : ''}
   ${summary.plainLanguage ? `
-  <div><dt>Reading ease (median)</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${summary.plainLanguage.pagesScored} prose pages</span></dd></div>
-  ${summary.plainLanguage.medianGrade != null ? `<div><dt>Reading grade (median)</dt><dd>${summary.plainLanguage.medianGrade}</dd></div>` : ''}` : ''}
+  <div><dt>Words per page (median)</dt><dd>${summary.plainLanguage.medianWordsPerPage ?? 'n/a'}<span class="bug-meta"> main content, nav excluded</span></dd></div>
+  ${summary.plainLanguage.medianReadingEase != null ? `<div><dt>Reading ease (median)</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${summary.plainLanguage.pagesScored} prose pages</span></dd></div>` : ''}
+  ${summary.plainLanguage.medianGrade != null ? `<div><dt>Reading grade (median)</dt><dd>${summary.plainLanguage.medianGrade}</dd></div>` : ''}
+  ${summary.plainLanguage.topMisspellings?.length ? `<div><dt>Misspellings</dt><dd>${summary.plainLanguage.topMisspellings.length}+ distinct</dd></div>` : ''}` : ''}
   ${summary.linkCheck ? `
   <div><dt>Broken links</dt><dd>${summary.linkCheck.brokenCount}</dd></div>` : ''}
   ${summary.sustainability ? `
   <div><dt>Median page weight</dt><dd>${kb(summary.sustainability.medianBytes)}
     ${diff?.sustainability ? delta(Math.round(diff.sustainability.medianBytesDelta / 1024), { unit: ' KB' }) : ''}</dd></div>
   <div><dt>Median requests per page</dt><dd>${summary.sustainability.medianRequests}</dd></div>
-  <div><dt>Estimated CO₂ per page (mean)</dt><dd>${summary.sustainability.meanCo2g} g</dd></div>` : ''}
+  <div><dt>${sustainabilityHeadline(summary.sustainability).label}</dt><dd>${sustainabilityHeadline(summary.sustainability).value}</dd></div>` : ''}
 </dl>
 ${prev && summary.pagesScanned !== prev.pagesScanned ? `<p class="note">Note: page counts differ between weeks (${prev.pagesScanned} → ${summary.pagesScanned}). Prefer the “pages affected” columns over raw instance counts when comparing.</p>` : ''}
 ${coverageTable(summary)}
@@ -245,6 +261,13 @@ ${summary.plainLanguage?.topUnexplainedAcronyms?.length ? `
 <h2 id="h-acronyms">Unexplained acronyms</h2>
 <p class="meta">Acronyms used without an on-page expansion (e.g. “Centers for Medicare &amp; Medicaid Services (CMS)”), by pages affected.</p>
 <ul>${summary.plainLanguage.topUnexplainedAcronyms.map((a) => `<li><code>${esc(a.acronym)}</code> — ${a.pages} page(s)</li>`).join('')}</ul>
+</section>` : ''}
+
+${summary.plainLanguage?.topMisspellings?.length ? `
+<section aria-labelledby="h-spelling">
+<h2 id="h-spelling">Possible misspellings</h2>
+<p class="meta">Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.</p>
+<ul>${summary.plainLanguage.topMisspellings.map((m) => `<li><code>${esc(m.word)}</code> — ${m.pages} page(s)</li>`).join('')}</ul>
 </section>` : ''}
 
 ${summary.errorPages.length ? `

@@ -16,6 +16,8 @@
  * trends and triage, not authoritative linguistics.
  */
 
+import { findMisspellings } from '../lib/spell.js';
+
 const LONG_SENTENCE_WORDS = 20;
 const ACRONYM_CAP = 25;
 
@@ -84,10 +86,16 @@ export async function runPlainLanguage(page) {
     if (unexplained.size >= ACRONYM_CAP) break;
   }
 
+  // Spelling: check the main-content words (already nav-excluded) against
+  // the dictionary + project allowlist. Words-per-page is wordCount below.
+  const spelling = findMisspellings(words);
+
   return {
     engine: 'plain-language',
     scored: hasProse, // false = too little prose to score readability meaningfully
     wordCount: words.length,
+    misspelledCount: spelling.misspelledCount,
+    misspelled: spelling.misspelled,
     sentenceCount: sentences.length,
     fleschReadingEase,
     fleschKincaidGrade,

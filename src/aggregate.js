@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 
@@ -22,6 +22,7 @@ import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 const MAX_RULE_INSTANCES = 5; // representative failing instances kept per rule
 
 const config = loadConfig();
+setSustainabilityMetric(config.sustainabilityMetric);
 fs.mkdirSync(DIRS.docs, { recursive: true });
 
 const dashboard = [];
@@ -130,6 +131,7 @@ function summarizeWeek(target, week) {
   const bytesList = [];
   const requestsList = [];
   let co2Total = 0;
+  let energyTotal = 0;
   let pagesWithAudit = 0;
   const errorPages = [];
   const blockedStatuses = {}; // status code -> count, for the blocked callout
@@ -138,6 +140,9 @@ function summarizeWeek(target, week) {
   const gradeList = [];
   let plPagesScored = 0;
   const acronymCounts = {}; // acronym -> pages it was unexplained on
+  const misspellingCounts = {}; // word -> pages it was misspelled on
+  let plPagesChecked = 0; // pages plain-language ran on (for words/page)
+  const wordCounts = []; // per-page main-content word counts
   // Lighthouse: collect sampled scores for medians.
   const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
   // Link check: union broken links across the week's runs (deduped).
@@ -191,6 +196,7 @@ function summarizeWeek(target, week) {
       bytesList.push(rec.sustainability.bytes);
       requestsList.push(rec.sustainability.requests);
       co2Total += rec.sustainability.co2g;
+      energyTotal += rec.sustainability.energyWh ?? 0;
     }
 
     // Per-engine coverage: which engines actually ran on this page.
@@ -199,6 +205,8 @@ function summarizeWeek(target, week) {
       if (rec[key]) enginePageCounts[e] = (enginePageCounts[e] ?? 0) + 1;
     }
     if (rec.plainLanguage) {
+      plPagesChecked++;
+      if (typeof rec.plainLanguage.wordCount === 'number') wordCounts.push(rec.plainLanguage.wordCount);
       if (rec.plainLanguage.scored) {
         plPagesScored++;
         if (rec.plainLanguage.fleschReadingEase != null) freList.push(rec.plainLanguage.fleschReadingEase);
@@ -206,6 +214,9 @@ function summarizeWeek(target, week) {
       }
       for (const a of rec.plainLanguage.unexplainedAcronyms ?? []) {
         acronymCounts[a] = (acronymCounts[a] ?? 0) + 1;
+      }
+      for (const w of rec.plainLanguage.misspelled ?? []) {
+        misspellingCounts[w] = (misspellingCounts[w] ?? 0) + 1;
       }
     }
     if (rec.lighthouse?.scores) {
@@ -269,6 +280,8 @@ function summarizeWeek(target, week) {
           medianRequests: median(requestsList),
           totalCo2g: Math.round(co2Total * 100) / 100,
           meanCo2g: Math.round((co2Total / bytesList.length) * 10000) / 10000,
+          totalEnergyWh: Math.round(energyTotal * 100) / 100,
+          meanEnergyWh: Math.round((energyTotal / bytesList.length) * 10000) / 10000,
         }
       : null,
     deprecatedHtml: Object.keys(deprecatedRules).length
@@ -277,16 +290,24 @@ function summarizeWeek(target, week) {
           rules: deprecatedRules,
         }
       : null,
-    plainLanguage: plPagesScored
+    plainLanguage: plPagesChecked
       ? {
+          pagesChecked: plPagesChecked,
           pagesScored: plPagesScored,
-          medianReadingEase: median(freList),
+          medianWordsPerPage: wordCounts.length ? median(wordCounts) : null,
+          // Readability only over pages with enough prose to score.
+          medianReadingEase: freList.length ? median(freList) : null,
           medianGrade: gradeList.length ? median(gradeList) : null,
           // Most common unexplained acronyms, by pages affected.
           topUnexplainedAcronyms: Object.entries(acronymCounts)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 15)
             .map(([acronym, pages]) => ({ acronym, pages })),
+          // Most common misspellings, by pages affected.
+          topMisspellings: Object.entries(misspellingCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 25)
+            .map(([word, pages]) => ({ word, pages })),
         }
       : null,
     lighthouse: lhScores.performance.length

@@ -68,6 +68,7 @@ function writeSite({ fixed }) {
 <html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title></head>
 <body><main><h1>Page ${i}</h1>
 ${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
+<p>This is a short paragraph of ordinary readable prose written so the plain language engine has real sentences to score. It deliberately contains one mispelled word for the spell check to catch, and enough words to count as content rather than navigation.</p>
 <nav aria-label="All pages"><ul>${nav}</ul></nav></main></body></html>`
     );
   }
@@ -147,6 +148,14 @@ try {
   assert(w1.alfa.failedTotal > 0, `week 1 found Alfa failures (${w1.alfa.failedTotal})`);
   assert('image-alt' in w1.axe.rules, 'image-alt rule recorded');
   assert(w1.sustainability && w1.sustainability.medianBytes > 0, 'sustainability metrics recorded');
+  assert(w1.sustainability.meanEnergyWh > 0 && w1.sustainability.meanCo2g > 0, 'both energy (Wh) and CO2 (g) recorded');
+  // Energy and CO2 are linked by grid intensity (~494 g/kWh in the SWD model).
+  const gPerKWh = w1.sustainability.meanCo2g / (w1.sustainability.meanEnergyWh / 1000);
+  assert(gPerKWh > 100 && gPerKWh < 1000, `energy/CO2 ratio is a plausible grid intensity (got ${gPerKWh.toFixed(0)} g/kWh)`);
+  // Plain language: words-per-page (nav excluded) and spelling.
+  assert(w1.plainLanguage.medianWordsPerPage > 0, 'median words per page recorded (main content)');
+  const misspelled = w1.plainLanguage.topMisspellings.map((m) => m.word);
+  assert(misspelled.includes('mispelled'), `spell check caught the deliberate misspelling (got ${misspelled.join(', ')})`);
   assert(typeof w1.pagesAudited === 'number' && w1.pagesAudited > 0 && w1.pagesAudited <= w1.pagesScanned, 'unique pages audited recorded and bounded by pages scanned');
   assert(typeof w1.axe.medianViolations === 'number', 'median axe violations per page recorded');
   assert(typeof w1.alfa.medianFailures === 'number', 'median Alfa failures per page recorded');
