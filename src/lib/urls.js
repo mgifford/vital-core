@@ -10,9 +10,23 @@ const TRACKING_PARAMS = /^(utm_|fbclid|gclid|msclkid|mc_cid|mc_eid|ref$)/i;
 const SKIP_EXTENSIONS = /\.(pdf|zip|gz|tar|doc|docx|xls|xlsx|ppt|pptx|jpg|jpeg|png|gif|svg|webp|avif|ico|mp3|mp4|webm|mov|avi|css|js|mjs|json|xml|rss|atom|woff2?|ttf|eot|map)$/i;
 
 /**
+ * Strip a single leading `www.` label, lowercased. Used for host
+ * comparison so the apex domain and its www variant count as the same
+ * site (cdc.gov == www.cdc.gov), while any other subdomain stays
+ * distinct (data.cms.gov != www.cms.gov).
+ */
+function bareHost(hostname) {
+  return hostname.toLowerCase().replace(/^www\./, '');
+}
+
+/**
  * Normalize a URL relative to a base. Returns the canonical string,
  * or null if the URL should not be crawled (off-host, non-http,
  * binary asset, mailto, etc.).
+ *
+ * Host matching treats the apex and its `www.` variant as the same
+ * host. The normalized URL keeps the link's actual hostname, so a site
+ * that lives on (or redirects to) www stores www URLs consistently.
  */
 export function normalizeUrl(raw, baseUrl, host) {
   let u;
@@ -22,7 +36,7 @@ export function normalizeUrl(raw, baseUrl, host) {
     return null;
   }
   if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
-  if (host && u.hostname.toLowerCase() !== host.toLowerCase()) return null;
+  if (host && bareHost(u.hostname) !== bareHost(host)) return null;
   if (SKIP_EXTENSIONS.test(u.pathname)) return null;
 
   u.hash = '';
