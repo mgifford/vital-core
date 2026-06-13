@@ -87,6 +87,11 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Scan
+        # Per-page audit memory is freed between pages (see alfa engine),
+        # so heap should stay flat. The raised limit is headroom for the
+        # occasional very large DOM, well under the runner's 16 GB.
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192
         run: |
           BUDGET_FLAG=""
           if [ -n "${{ github.event.inputs.budget }}" ]; then

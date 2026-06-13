@@ -14,47 +14,55 @@ const MAX_SNIPPET = 200;
  * which is one of its strengths).
  */
 export async function runAlfa(page) {
+  // Playwright JSHandle to the page's document. It MUST be disposed:
+  // an undisposed handle pins both the Node-side wrapper and the
+  // browser-side DOM, and across a few hundred large government pages
+  // that leak grows until the run runs out of heap (OOM).
   const documentHandle = await page.evaluateHandle(() => window.document);
-  const alfaPage = await Playwright.toPage(documentHandle);
-  const audit = await Audit.run(alfaPage);
+  try {
+    const alfaPage = await Playwright.toPage(documentHandle);
+    const audit = await Audit.run(alfaPage);
 
-  const failed = {};
-  let failedCount = 0;
-  let cantTellCount = 0;
-  let passedRules = 0;
+    const failed = {};
+    let failedCount = 0;
+    let cantTellCount = 0;
+    let passedRules = 0;
 
-  for (const [ruleUrl, agg] of audit.resultAggregates) {
-    const ruleId = ruleUrl.split('/').pop(); // e.g. sia-r2
-    if (agg.failed > 0) {
-      failedCount += agg.failed;
-      failed[ruleId] = { count: agg.failed, ruleUrl, examples: [] };
+    for (const [ruleUrl, agg] of audit.resultAggregates) {
+      const ruleId = ruleUrl.split('/').pop(); // e.g. sia-r2
+      if (agg.failed > 0) {
+        failedCount += agg.failed;
+        failed[ruleId] = { count: agg.failed, ruleUrl, examples: [] };
+      }
+      cantTellCount += agg.cantTell;
+      if (agg.passed > 0 && agg.failed === 0) passedRules++;
     }
-    cantTellCount += agg.cantTell;
-    if (agg.passed > 0 && agg.failed === 0) passedRules++;
-  }
 
-  // Attach capped examples for failed rules.
-  for (const [ruleUrl, outcomes] of audit.outcomes) {
-    const ruleId = ruleUrl.split('/').pop();
-    if (!failed[ruleId]) continue;
-    for (const o of outcomes) {
-      if (failed[ruleId].examples.length >= MAX_EXAMPLES) break;
-      const oj = o.toJSON();
-      if (oj.outcome !== 'failed') continue;
-      failed[ruleId].examples.push({
-        target: describeTarget(oj.target).slice(0, MAX_SNIPPET),
-      });
+    // Attach capped examples for failed rules.
+    for (const [ruleUrl, outcomes] of audit.outcomes) {
+      const ruleId = ruleUrl.split('/').pop();
+      if (!failed[ruleId]) continue;
+      for (const o of outcomes) {
+        if (failed[ruleId].examples.length >= MAX_EXAMPLES) break;
+        const oj = o.toJSON();
+        if (oj.outcome !== 'failed') continue;
+        failed[ruleId].examples.push({
+          target: describeTarget(oj.target).slice(0, MAX_SNIPPET),
+        });
+      }
     }
-  }
 
-  return {
-    engine: 'alfa',
-    version: audit.alfaVersion ?? null,
-    failedCount,
-    failed,
-    cantTellCount,
-    passedRules,
-  };
+    return {
+      engine: 'alfa',
+      version: audit.alfaVersion ?? null,
+      failedCount,
+      failed,
+      cantTellCount,
+      passedRules,
+    };
+  } finally {
+    await documentHandle.dispose().catch(() => {});
+  }
 }
 
 function describeTarget(target) {
