@@ -6,6 +6,7 @@ import { compareWeeks } from './lib/week.js';
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
+import { writeCsvs } from './lib/csv.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -20,6 +21,7 @@ import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
  */
 
 const MAX_RULE_INSTANCES = 5; // representative failing instances kept per rule
+const MAX_AFFECTED_PAGES = 5000; // full affected-page list cap per rule (for CSV)
 
 const config = loadConfig();
 setSustainabilityMetric(config.sustainabilityMetric);
@@ -38,7 +40,13 @@ for (const target of config.targets) {
     const summary = summarizeWeek(target, week);
     if (summary) {
       series.push(summary);
-      fs.writeFileSync(path.join(domainDir, week, 'summary.json'), JSON.stringify(summary, null, 1));
+      // The full per-page lists are large and reconstructable; keep them
+      // in memory for CSV generation but don't commit them to summary.json.
+      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList']);
+      fs.writeFileSync(
+        path.join(domainDir, week, 'summary.json'),
+        JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
+      );
     }
   }
   if (series.length === 0) continue;
@@ -79,7 +87,13 @@ for (const target of config.targets) {
     const repDir = path.join(DIRS.docs, 'reports', target.key, summary.week);
     fs.mkdirSync(repDir, { recursive: true });
 
-    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs);
+    // CSVs of affected pages, then link each bug to its per-rule CSV.
+    const csvLinks = writeCsvs(repDir, summary);
+    for (const b of bugs) {
+      b.affected_pages_csv = csvLinks.byRule[`${b.engine_key}:${b.rule_id}`] ?? null;
+    }
+
+    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks);
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
     fs.writeFileSync(
@@ -128,6 +142,8 @@ function summarizeWeek(target, week) {
   const axeCountsPerPage = [];
   const alfaCountsPerPage = [];
   const auditedPageIds = new Set(); // pages scanned by axe and/or alfa
+  const pagesWithAxe = []; // URLs with >=1 axe violation (for the CSV behind "37 of 598")
+  const pagesWithAlfa = []; // URLs with >=1 alfa failure
   const bytesList = [];
   const requestsList = [];
   let co2Total = 0;
@@ -160,35 +176,38 @@ function summarizeWeek(target, week) {
     if (rec.axe) {
       auditedPageIds.add(rec.pageId ?? rec.url);
       axeCountsPerPage.push(rec.axe.violationCount);
-      if (rec.axe.violationCount > 0) pagesWithAxeViolations++;
+      if (rec.axe.violationCount > 0) { pagesWithAxeViolations++; pagesWithAxe.push(rec.url); }
       axeViolationTotal += rec.axe.violationCount;
       for (const [id, v] of Object.entries(rec.axe.violations)) {
-        const r = (axeRules[id] ??= { count: 0, pages: 0, impact: v.impact, help: v.help, helpUrl: v.helpUrl, tags: v.tags ?? [], examplePages: [], instances: [] });
+        const r = (axeRules[id] ??= { count: 0, pages: 0, impact: v.impact, help: v.help, helpUrl: v.helpUrl, tags: v.tags ?? [], examplePages: [], affectedPages: [], instances: [] });
         r.count += v.count;
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
+        if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
         addInstances(r, rec.url, v.examples);
       }
     }
     if (rec.alfa) {
       auditedPageIds.add(rec.pageId ?? rec.url);
       alfaCountsPerPage.push(rec.alfa.failedCount);
-      if (rec.alfa.failedCount > 0) pagesWithAlfaFailures++;
+      if (rec.alfa.failedCount > 0) { pagesWithAlfaFailures++; pagesWithAlfa.push(rec.url); }
       alfaFailedTotal += rec.alfa.failedCount;
       for (const [id, v] of Object.entries(rec.alfa.failed)) {
-        const r = (alfaRules[id] ??= { count: 0, pages: 0, ruleUrl: v.ruleUrl, examplePages: [], instances: [] });
+        const r = (alfaRules[id] ??= { count: 0, pages: 0, ruleUrl: v.ruleUrl, examplePages: [], affectedPages: [], instances: [] });
         r.count += v.count;
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
+        if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
         addInstances(r, rec.url, v.examples);
       }
     }
     if (rec.deprecatedHtml) {
       for (const [id, v] of Object.entries(rec.deprecatedHtml.findings)) {
-        const r = (deprecatedRules[id] ??= { count: 0, pages: 0, help: v.help, examplePages: [], instances: [] });
+        const r = (deprecatedRules[id] ??= { count: 0, pages: 0, help: v.help, examplePages: [], affectedPages: [], instances: [] });
         r.count += v.count;
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
+        if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
         addInstances(r, rec.url, v.examples);
       }
     }
@@ -252,6 +271,11 @@ function summarizeWeek(target, week) {
     week,
     generatedAt: new Date().toISOString(),
     pagesScanned,
+    // Full lists of pages with any axe/alfa finding — used to write the
+    // CSVs behind the "N of M" report numbers. Omitted from the committed
+    // summary.json (see the JSON replacer at write time); kept in memory.
+    pagesWithAxeList: pagesWithAxe,
+    pagesWithAlfaList: pagesWithAlfa,
     // Unique pages scanned by axe and/or alfa this week (deduped by page).
     pagesAudited: auditedPageIds.size,
     // Per-engine coverage: unique pages each engine ran on, vs pages

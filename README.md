@@ -1,22 +1,17 @@
-# vital-scans
+# VITAL Scans
 
-An open source website quality engine. It crawls 5–10 domains slowly and
+An open source website quality engine. It crawls 5–20 domains slowly and
 politely across each week, scans thousands of pages per domain with
 [axe-core](https://github.com/dequelabs/axe-core) and
 [Siteimprove Alfa](https://github.com/Siteimprove/alfa) (the open source
 engine behind Siteimprove's commercial checker), measures page weight and
-estimated emissions with [co2.js](https://github.com/thegreenwebfoundation/co2.js),
-and publishes week-over-week reports to GitHub Pages. Everything runs on
-GitHub Actions. There is no server, no database, and no budget line.
+estimated energy costs, and publishes week-over-week reports to GitHub Pages. Everything runs on GitHub Actions. There is no server, no database, and no budget line.
 
 Continuous measurement beats one-off audits. The question this answers is
 not "is this site accessible?" but "is this site **getting more
-accessible**, and is it getting lighter?"
+accessible** to more people?"
 
 ## Design principles
-
-These come from hard lessons. Earlier attempts failed because they had
-too many sources of truth. This system has one rule above all others:
 
 **Files are the only state. Data is append-only. Reports are pure
 functions of the data directory.**
@@ -103,9 +98,7 @@ If you operate a site being scanned and want changes, open an issue.
 
 - Automated checkers find roughly 30–40% of WCAG barriers. A clean
   report is a floor, not a finish line. Manual testing with assistive
-  technology remains essential.
-- CO₂ figures use the Sustainable Web Design model (v4); they are
-  estimates suitable for trends, not absolute claims.
+  technology remains essential. Testing with users with disabilities throughout the design stage. Using a well supported design system is key to learning from past mistakes. 
 - Byte counts are decoded body sizes seen by the browser, not on-wire
   transfer sizes. They are consistent week over week, which is what the
   trend needs.
@@ -121,4 +114,4 @@ JavaScript, no web fonts, ~2 KB of CSS, dark mode respected.
 
 ## License
 
-MIT.
+AGPL.

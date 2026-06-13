@@ -162,6 +162,19 @@ try {
   // axe rate is 100%, so it ran on every auditable (200-HTML) page; that
   // equals pagesAudited, which excludes error pages like the 404.
   assert(w1.coverage && w1.coverage.axe === w1.pagesAudited, 'per-engine coverage recorded (axe 100% of auditable pages)');
+  // CSV exports of affected pages.
+  const csvDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'csv');
+  assert(fs.existsSync(path.join(csvDir, 'axe-pages-with-violations.csv')), 'axe pages-with-violations CSV written');
+  const imageAltCsv = path.join(csvDir, 'axe-core__image-alt.csv');
+  assert(fs.existsSync(imageAltCsv), 'per-rule CSV written for image-alt');
+  const csvBody = fs.readFileSync(imageAltCsv, 'utf8');
+  assert(csvBody.startsWith('url,instances'), 'CSV has a header row');
+  assert(csvBody.split('\n').filter(Boolean).length - 1 === w1.axe.rules['image-alt'].pages, 'CSV lists every affected page');
+  // Impact in the bug report: image-alt -> WCAG 1.1.1 -> vision groups.
+  const bugs1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'bugs.json')));
+  const imgAltBug = bugs1.reports.find((r) => r.rule_id === 'image-alt');
+  assert(imgAltBug.impact.groups.some((g) => /vision/i.test(g.group)), 'image-alt bug shows vision-impact groups');
+  assert(imgAltBug.affected_pages_csv && imgAltBug.affected_pages_csv.endsWith('.csv'), 'bug report links its affected-pages CSV');
   // Findings ledger written with first/last-seen for this week.
   const ledger1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'findings.json')));
   const anyFinding = Object.values(ledger1.findings)[0];

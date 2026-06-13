@@ -36,6 +36,14 @@ Each engine has a **weekly coverage rate** set in one place — `config/targets.
 
 A committed per-domain ledger (`data/<domain>/findings.json`) tracks every unique finding by `pattern_id` with first-seen / last-seen / weeks-seen, accumulated across the domain's whole history (it survives page-detail pruning). Bug reports show when each issue was first discovered and last observed.
 
+### Affected-page CSV exports
+
+Every reported number is traceable to its pages. Each domain/week report writes CSVs under `docs/reports/<domain>/<week>/csv/`: one per failing rule (every affected URL + per-page instance count) plus `axe-pages-with-violations.csv` / `alfa-pages-with-failures.csv` behind the summary counts. The HTML report, the rule tables, and the bug reports all link to these so a developer can pull the full list to reproduce and fix an issue (`src/lib/csv.js`).
+
+### Human-impact modeling
+
+Each finding's WCAG success criterion maps to the [Section 508 Functional Performance Criteria](https://www.section508.gov/develop/mapping-wcag-to-fpc/) and on to disability groups with US population prevalence (ACS 2022), so a bug report says *who* it affects — e.g. "Affects Without vision (1.0%), Limited vision (2.4%)" — instead of an opaque placeholder (`src/lib/fpc.js`, full WCAG 2.2 A/AA mapping). When a target sets `page_loads_per_week` in config, reports also show a rough estimated-people-excluded figure (prevalence × loads × share of pages affected). Without page-load data, only prevalence percentages are shown — no fabricated counts.
+
 ### Reporting and Dashboard
 
 - Static site generated to `docs/` by `src/aggregate.js` — a pure function of `data/`. Never committed; shipped as a GitHub Pages artifact, so it cannot drift from the data.

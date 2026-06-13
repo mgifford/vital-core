@@ -11,6 +11,8 @@ import { checkLink } from '../../src/lib/links.js';
 import { normalizeRate, shouldRun } from '../../src/lib/sampling.js';
 import { updateFindings } from '../../src/lib/findings.js';
 import { findMisspellings } from '../../src/lib/spell.js';
+import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
+import { toCsv, ruleSlug } from '../../src/lib/csv.js';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -199,8 +201,10 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.equal(reports[0].xpath, '.btn');
   assert.ok(reports[0].html_snippet.includes('btn'));
 
-  // Honest placeholder for unobservable field.
-  assert.match(reports[0].impact, /requires manual testing/i);
+  // Impact: WCAG 1.4.3 (contrast) maps to vision-related FPC groups.
+  assert.ok(reports[0].impact.groups.length > 0, 'mapped SC yields impact groups');
+  assert.ok(reports[0].impact.groups.some((g) => /vision/i.test(g.group)), 'contrast affects a vision group');
+  assert.match(reports[0].impact.summary, /Affects/);
 
   // Stable ids: same input -> same ids.
   const again = buildBugReports(target, summary);
@@ -347,4 +351,49 @@ test('spell: tolerates possessives and caps the distinct list', () => {
   const capped = findMisspellings(many, 25);
   assert.ok(capped.misspelled.length <= 25, 'distinct list is capped');
   assert.ok(capped.misspelledCount >= capped.misspelled.length, 'count tracks all, list is capped');
+});
+
+test('fpc: maps WCAG SC to disability groups with prevalence', () => {
+  const contrast = impactFor('1.4.3');
+  assert.ok(contrast.groups.some((g) => g.code === 'LV'), 'contrast affects limited vision');
+  assert.ok(contrast.maxPrevalence > 0 && contrast.maxPrevalence < 1);
+  const altText = impactFor('1.1.1');
+  assert.ok(altText.groups.some((g) => g.code === 'WV'), 'non-text content affects without-vision');
+  assert.equal(impactFor('9.9.9'), null, 'unknown SC -> null');
+  assert.equal(pct(0.024), '2.4%');
+});
+
+test('fpc: estimateExcluded scales prevalence by page loads', () => {
+  assert.equal(estimateExcluded(0.01, 1_000_000), 10000);
+  assert.equal(estimateExcluded(0.024, 0), null, 'no loads -> null');
+  assert.equal(estimateExcluded(0.01, undefined), null);
+});
+
+test('csv: escapes fields and slugs rule ids', () => {
+  const csv = toCsv(['url', 'instances'], [['https://x/a,b', 3], ['https://x/"q"', 1]]);
+  assert.match(csv, /^url,instances\n/);
+  assert.match(csv, /"https:\/\/x\/a,b",3/, 'comma field quoted');
+  assert.match(csv, /"https:\/\/x\/""q""",1/, 'quotes doubled');
+  assert.equal(ruleSlug('axe-core', 'color-contrast'), 'axe-core__color-contrast');
+  assert.equal(ruleSlug('alfa', 'sia-r12'), 'alfa__sia-r12');
+  assert.equal(ruleSlug('x', 'weird/id:1'), 'x__weird-id-1', 'unsafe chars slugged');
+});
+
+test('buildBugReports: page-load estimate appears when target sets page_loads_per_week', () => {
+  const target = { domain: 'x', key: 'x', page_loads_per_week: 1_000_000 };
+  const summary = {
+    domain: 'x', week: '2026-W24', generatedAt: '2026-06-13T00:00:00Z', pagesScanned: 10,
+    axe: { rules: { 'color-contrast': { count: 5, pages: 10, impact: 'serious',
+      help: 'Contrast', helpUrl: 'https://x', tags: ['wcag143'], examplePages: ['https://x/a'],
+      instances: [{ url: 'https://x/a', target: '.b', html: '<a>' }] } } },
+    alfa: { rules: {} },
+  };
+  const [r] = buildBugReports(target, summary);
+  assert.ok(r.impact.groups.length > 0);
+  // 100% of pages affected, prevalence applied to full page loads.
+  assert.ok(r.impact.groups.every((g) => g.estimatedExcluded > 0), 'excluded estimates present with page loads');
+
+  // Without page_loads_per_week, no estimate (just percentages).
+  const [r2] = buildBugReports({ domain: 'x', key: 'x' }, summary);
+  assert.ok(r2.impact.groups.every((g) => g.estimatedExcluded == null), 'no estimate without page loads');
 });

@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { resolveWcag, severityFor } from './wcag.js';
+import { impactFor, estimateExcluded, pct } from './fpc.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -50,6 +51,26 @@ export function buildBugReports(target, summary) {
     const scLabel = wcag ? `WCAG ${wcag.sc}` : 'WCAG criterion undetermined';
     const component = componentLabel(ruleId, rule.help);
 
+    // Human impact: disability groups affected (via WCAG SC -> Section 508
+    // FPC) with US prevalence. If the target supplies page_loads_per_week,
+    // also estimate excluded users, scaled by the share of pages affected.
+    const fpc = wcag ? impactFor(wcag.sc) : null;
+    const loads = target.page_loads_per_week;
+    const affectedShare = total > 0 ? rule.pages / total : 0;
+    const impact = fpc
+      ? {
+          groups: fpc.groups.map((g) => {
+            const excluded =
+              loads ? estimateExcluded(g.prevalence, loads * affectedShare) : null;
+            return { code: g.code, group: g.group, prevalence: g.prevalence, percent: pct(g.prevalence), estimatedExcluded: excluded };
+          }),
+          summary:
+            'Affects ' +
+            fpc.groups.map((g) => `${g.group} (${pct(g.prevalence)})`).join(', ') +
+            '.',
+        }
+      : { groups: [], summary: PLACEHOLDER };
+
     return {
       instance_id: instanceId,
       pattern_id: patternId,
@@ -60,6 +81,7 @@ export function buildBugReports(target, summary) {
       wcag_name: wcag?.name ?? null,
       wcag_level: wcag?.level ?? null,
       rule_id: ruleId,
+      engine_key: engine, // 'axe-core' | 'alfa' | 'deprecated-html' (stable; for CSV lookup)
       tool: toolName,
       rule_url: rule.helpUrl ?? rule.ruleUrl ?? null,
       severity,
@@ -80,8 +102,10 @@ export function buildBugReports(target, summary) {
         html_snippet: i.html ?? null,
       })),
       example_pages: rule.examplePages ?? [],
-      // Honest placeholders for what automated scanning cannot observe.
-      impact: PLACEHOLDER,
+      // Human impact derived from the WCAG SC (Section 508 FPC + US
+      // prevalence). Empty groups => undetermined SC; falls back to the
+      // manual-testing note. Severity/exact reproduction still need a human.
+      impact,
       testing_environment: `Automated: ${toolName}, headless Chromium (Playwright). Manual AT verification: ${PLACEHOLDER}`,
       steps_to_reproduce: [
         `Open ${first?.url ?? 'an affected page (see example pages)'}.`,
@@ -151,7 +175,18 @@ export function bugReportToMarkdown(r) {
   r.steps_to_reproduce.forEach((s, i) => lines.push(`${i + 1}. ${s}`));
   lines.push('');
   lines.push('### Impact');
-  lines.push(r.impact);
+  lines.push(r.impact.summary);
+  for (const g of r.impact.groups ?? []) {
+    const excl = g.estimatedExcluded != null ? ` — ~${g.estimatedExcluded.toLocaleString()} people/week potentially excluded` : '';
+    lines.push(`- **${g.group}** (${g.percent} of population)${excl}`);
+  }
+  lines.push('');
+  lines.push('### Affected pages');
+  lines.push(
+    r.affected_pages_csv
+      ? `${r.frequency.pages_affected} pages — [download CSV](${r.affected_pages_csv})`
+      : `${r.frequency.pages_affected} pages affected.`
+  );
   lines.push('');
   lines.push('### Testing environment');
   lines.push(r.testing_environment);

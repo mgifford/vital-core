@@ -87,7 +87,7 @@ ${body}
 </html>`;
 }
 
-function ruleTable(caption, rules, kind) {
+function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
   const ids = Object.keys(rules).sort((a, b) => rules[b].pages - rules[a].pages || rules[b].count - rules[a].count);
   if (ids.length === 0) return `<p>No ${esc(kind)} findings this week.</p>`;
   const rows = ids
@@ -95,18 +95,20 @@ function ruleTable(caption, rules, kind) {
       const r = rules[id];
       const link = r.helpUrl ?? r.ruleUrl;
       const label = r.help ? `${esc(id)}: ${esc(r.help)}` : esc(id);
+      const csv = csvLinks.byRule?.[`${engineKey}:${id}`];
       return `<tr>
   <th scope="row">${link ? `<a href="${esc(link)}">${label}</a>` : label}</th>
   <td>${r.impact ? esc(r.impact) : 'n/a'}</td>
   <td class="num">${r.pages}</td>
   <td class="num">${r.count}</td>
   <td>${(r.examplePages ?? []).map((u) => `<a href="${esc(u)}">${esc(new URL(u).pathname)}</a>`).join('<br>')}</td>
+  <td>${csv ? `<a href="${esc(csv)}">all ${r.pages} pages (CSV)</a>` : '—'}</td>
 </tr>`;
     })
     .join('\n');
   return `<table>
 <caption>${esc(caption)}</caption>
-<thead><tr><th scope="col">Rule</th><th scope="col">Impact</th><th scope="col">Pages affected</th><th scope="col">Instances</th><th scope="col">Example pages</th></tr></thead>
+<thead><tr><th scope="col">Rule</th><th scope="col">Impact</th><th scope="col">Pages affected</th><th scope="col">Instances</th><th scope="col">Example pages</th><th scope="col">All affected</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
 }
@@ -149,7 +151,13 @@ function bugReportsSection(bugs) {
 ${b.html_snippet ? `<p class="bug-label">HTML snippet</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
 <p class="bug-label">Description</p><p>${esc(b.description)}</p>
 <p class="bug-label">Steps to reproduce</p><ol>${b.steps_to_reproduce.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
-<p class="bug-label">Impact</p><p class="bug-placeholder">${esc(b.impact)}</p>
+<p class="bug-label">Impact</p>
+${b.impact?.groups?.length
+        ? `<p>${esc(b.impact.summary)}</p><ul class="impact-groups">${b.impact.groups
+            .map((g) => `<li><strong>${esc(g.group)}</strong> — ${esc(g.percent)} of population${g.estimatedExcluded != null ? ` (~${g.estimatedExcluded.toLocaleString()} people/week potentially excluded)` : ''}</li>`)
+            .join('')}</ul>`
+        : `<p class="bug-placeholder">${esc(b.impact?.summary ?? 'Requires manual testing.')}</p>`}
+<p class="bug-label">Affected pages</p><p>${b.frequency.pages_affected} pages${b.affected_pages_csv ? ` — <a href="${esc(b.affected_pages_csv)}">download CSV</a>` : ''}</p>
 <p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
 <p class="bug-label">Suggested fix</p><p>${esc(b.suggested_fix)}</p>
 </details>`;
@@ -188,8 +196,9 @@ function coverageTable(summary) {
 </details>`;
 }
 
-export function renderDomainReport(target, summary, prev, diff, series, bugs = []) {
+export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }) {
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
+  const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${text}</a>` : '');
   const body = `
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
 <p class="meta">${summary.pagesScanned} pages scanned. Generated ${esc(summary.generatedAt.slice(0, 10))}.
@@ -199,9 +208,9 @@ ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'F
 <h2 id="h-summary">This week at a glance</h2>
 <dl class="ledger">
   <div><dt>Median axe violations / page</dt><dd>${fmtMedian(summary.axe.medianViolations)} ${sparkline(trendViol)}</dd></div>
-  <div><dt>Pages with axe violations</dt><dd>${summary.axe.pagesWithViolations} of ${summary.axe.pagesScanned ?? summary.pagesScanned}</dd></div>
+  <div><dt>Pages with axe violations</dt><dd>${summary.axe.pagesWithViolations} of ${summary.axe.pagesScanned ?? summary.pagesScanned}${csvLink(csvLinks.axeAll, 'CSV')}</dd></div>
   <div><dt>Median Alfa failures / page</dt><dd>${fmtMedian(summary.alfa.medianFailures)}</dd></div>
-  <div><dt>Pages with Alfa failures</dt><dd>${summary.alfa.pagesWithFailures} of ${summary.alfa.pagesScanned ?? summary.pagesScanned}</dd></div>
+  <div><dt>Pages with Alfa failures</dt><dd>${summary.alfa.pagesWithFailures} of ${summary.alfa.pagesScanned ?? summary.pagesScanned}${csvLink(csvLinks.alfaAll, 'CSV')}</dd></div>
   <div><dt>Unique pages audited</dt><dd>${summary.pagesAudited ?? summary.pagesScanned}</dd></div>
   ${summary.lighthouse ? `
   <div><dt>Lighthouse performance (median)</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${summary.lighthouse.pagesSampled} sampled</span></dd></div>
@@ -234,12 +243,12 @@ ${changeList('Alfa', diff.alfa)}
 
 <section aria-labelledby="h-axe">
 <h2 id="h-axe">axe-core findings</h2>
-${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summary.axe.rules, 'axe-core')}
+${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summary.axe.rules, 'axe-core', 'axe-core', csvLinks)}
 </section>
 
 <section aria-labelledby="h-alfa">
 <h2 id="h-alfa">Siteimprove Alfa findings</h2>
-${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.alfa.rules, 'Alfa')}
+${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.alfa.rules, 'Alfa', 'alfa', csvLinks)}
 </section>
 
 ${bugReportsSection(bugs)}
