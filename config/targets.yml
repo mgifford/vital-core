@@ -22,11 +22,21 @@ defaults:
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-scans; accessibility and sustainability monitoring)"
 
 targets:
-  # 5-10 domains or sub-domains. Overrides per target are allowed.
-  # Discovery is host-scoped, so each host below is crawled independently.
+  # Discovery is host-scoped. The apex domain and its `www.` variant are
+  # treated as the same site (so cdc.gov and www.cdc.gov are crawled
+  # together), but any other subdomain is a distinct target
+  # (data.cms.gov is separate from www.cms.gov).
   - domain: www.cms.gov
   - domain: www.medicare.gov
   - domain: www.medicaid.gov
   - domain: data.healthcare.gov
   - domain: www.hhs.gov
   - domain: openpaymentsdata.cms.gov
+  - domain: www.cdc.gov
+  - domain: data.cms.gov
+  - domain: data.medicaid.gov
+  - domain: www.healthcare.gov
+  # nih.gov sits behind a WAF that currently returns 403 to automated
+  # browsers, so pages record as blocked with no audit data until the
+  # scanner is allowlisted. Kept in to track once access is sorted.
+  - domain: www.nih.gov

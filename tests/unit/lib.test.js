@@ -18,6 +18,32 @@ test('normalizeUrl: identity is stable and tracking-free', () => {
   assert.equal(normalizeUrl('https://example.gov/', base, 'example.gov'), 'https://example.gov/', 'root keeps slash');
 });
 
+test('normalizeUrl: apex and www are the same host, other subdomains are not', () => {
+  // Target the apex: www links of the same registrable domain are accepted...
+  assert.equal(
+    normalizeUrl('https://www.cdc.gov/about', 'https://cdc.gov/', 'cdc.gov'),
+    'https://www.cdc.gov/about',
+    'www variant accepted, actual host preserved'
+  );
+  // ...and vice versa: target www, apex link accepted.
+  assert.equal(
+    normalizeUrl('https://cdc.gov/about', 'https://www.cdc.gov/', 'www.cdc.gov'),
+    'https://cdc.gov/about',
+    'apex variant accepted from a www target'
+  );
+  // Any other subdomain is a different site and is rejected.
+  assert.equal(
+    normalizeUrl('https://data.cms.gov/x', 'https://www.cms.gov/', 'www.cms.gov'),
+    null,
+    'non-www subdomain rejected'
+  );
+  assert.equal(
+    normalizeUrl('https://www.cms.gov/x', 'https://data.cms.gov/', 'data.cms.gov'),
+    null,
+    'www of base domain rejected when target is a different subdomain'
+  );
+});
+
 test('pageId: deterministic', () => {
   assert.equal(pageId('https://example.gov/a'), pageId('https://example.gov/a'));
   assert.notEqual(pageId('https://example.gov/a'), pageId('https://example.gov/b'));
