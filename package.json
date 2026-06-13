@@ -5,45 +5,13 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-<<<<<<< HEAD
-    "scan": "npx tsx src/index.ts",
-    "scan:local": "VITAL_TARGET_LIMIT=5 npm run scan",
-    "scan:deep": "VITAL_SCAN_INTENSITY=deep VITAL_TARGET_LIMIT=5 npm run scan",
-    "validate": "npm run validate:profile",
-    "validate:discovery:smoke": "npx tsx tests/smoke/validate-discovery-smoke.ts",
-    "validate:browser:smoke": "npx tsx tests/smoke/validate-browser-smoke.ts",
-    "validate:workers:smoke": "npx tsx tests/smoke/validate-workers-smoke.ts",
-    "validate:reporting:smoke": "npx tsx tests/smoke/validate-reporting-smoke.ts",
-    "validate:standards:source": "npx tsx tests/smoke/validate-standards-source.ts",
-    "build": "tsc",
-    "validate:types": "tsc --noEmit",
-    "validate:profile": "npx tsx tests/smoke/validate-profile-contract.ts",
-    "validate:standards": "npm run validate:standards:source",
-    "test:phase": "npm run validate:profile && npm run validate:standards",
-    "test:phase:live": "npm run validate:discovery:smoke && npm run validate:browser:smoke && npm run validate:workers:smoke && npm run validate:reporting:smoke",
-    "test:unit": "vitest run",
-    "test:unit:coverage": "vitest run --coverage",
-    "test:watch": "vitest",
-    "test": "npm run validate:types && npm run test:phase && npm run test:unit",
-    "test:ci": "npm run validate:types && npm run test:phase && npm run test:unit:coverage",
-    "submodules:init": "git submodule update --init --recursive",
-    "submodules:update": "git submodule update --remote --merge --recursive",
-    "history:fetch": "node scripts/fetch-history.mjs",
-    "plan": "npx tsx src/plan.ts",
-    "seeds:refresh": "npx tsx scripts/refresh-priority-seeds.ts",
-    "inventory:export": "node scripts/export-target-inventory.mjs",
-    "act-mapping:update": "node scripts/update-act-mapping.mjs",
-    "api:sqlite": "node scripts/sqlite-api-server.mjs",
-    "duckduckgo-fetch": "npx tsx src/cli/duckduckgo-fetch.ts",
-    "compile": "npx tsx src/compile.ts profiles/us-health.yml"
-=======
     "scan": "node src/scan.js",
     "aggregate": "node src/aggregate.js",
     "comment": "node src/issue-comment.js",
     "prune": "node src/prune.js",
-    "test:unit": "node --test tests/unit/*.test.js",
-    "test:e2e": "node tests/e2e.mjs"
->>>>>>> 34f1991 (trying to see if claude can fix this)
+    "test:unit": "node --test 'tests/unit/**/*.test.js'",
+    "test:e2e": "node tests/e2e.mjs",
+    "test": "npm run test:unit && npm run test:e2e"
   },
   "engines": { "node": ">=20" },
   "dependencies": {
