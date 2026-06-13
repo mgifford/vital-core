@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { DIRS } from './config.js';
 
 /**
@@ -39,12 +40,22 @@ export function saveState(domainKey, state) {
   fs.renameSync(tmp, p); // atomic-ish: never leave a half-written state file
 }
 
-export function addPage(state, id, url, depth) {
-  if (state.pages[id]) return false;
+export function addPage(state, id, url, depth, { priority = false } = {}) {
+  if (state.pages[id]) {
+    // A URL already in the frontier that is now also a configured priority
+    // URL gets promoted (e.g. discovered by crawl, then added to the
+    // top-tasks file). Promotion only, never demotion.
+    if (priority && !state.pages[id].priority) {
+      state.pages[id].priority = true;
+      return true;
+    }
+    return false;
+  }
   state.pages[id] = {
     url,
     discoveredAt: new Date().toISOString(),
     depth,
+    priority,
     lastScannedWeek: null,
     lastScannedAt: null,
     lastStatus: null,
@@ -55,9 +66,17 @@ export function addPage(state, id, url, depth) {
 
 /**
  * Pick the next batch to scan this week.
- * Priority: never-scanned pages by depth then discovery order, then pages
- * whose lastScannedWeek is oldest. Pages already scanned this week and
- * pages that failed 3+ times this week are excluded.
+ *
+ * No URL is scanned more than once per week: pages with lastScannedWeek
+ * === week are excluded, so coverage accumulates across the week's runs
+ * without repeats. Within that constraint, ordering is:
+ *
+ *   1. Priority pages (configured top tasks) first, so they are always
+ *      covered early in the week before the budget runs out.
+ *   2. Then the rest in a stable per-week random order — a different
+ *      random spread of a large site each week, deterministic for replay.
+ *
+ * Pages that failed 3+ times this week are excluded.
  */
 export function pickBatch(state, week, budget, scannedThisWeekCap) {
   const entries = Object.entries(state.pages);
@@ -68,18 +87,28 @@ export function pickBatch(state, week, budget, scannedThisWeekCap) {
 
   const candidates = entries
     .filter(([, p]) => p.lastScannedWeek !== week && p.failCount < 3)
-    .sort(([, a], [, b]) => {
-      const aNew = a.lastScannedWeek === null ? 0 : 1;
-      const bNew = b.lastScannedWeek === null ? 0 : 1;
-      if (aNew !== bNew) return aNew - bNew; // never-scanned first
-      if (aNew === 0) {
-        if (a.depth !== b.depth) return a.depth - b.depth;
-        return a.discoveredAt.localeCompare(b.discoveredAt);
-      }
-      return (a.lastScannedWeek ?? '').localeCompare(b.lastScannedWeek ?? '');
+    .map(([id, p]) => ({ id, p, rank: weeklyRank(id, week) }))
+    .sort((a, b) => {
+      // Priority first.
+      const ap = a.p.priority ? 0 : 1;
+      const bp = b.p.priority ? 0 : 1;
+      if (ap !== bp) return ap - bp;
+      // Then never-scanned before previously-scanned (freshness for trends).
+      const an = a.p.lastScannedWeek === null ? 0 : 1;
+      const bn = b.p.lastScannedWeek === null ? 0 : 1;
+      if (an !== bn) return an - bn;
+      // Then a stable per-week random order, so large sites get a
+      // different random sample each week rather than the same shallow set.
+      return a.rank - b.rank;
     })
     .slice(0, n)
-    .map(([id, p]) => ({ id, url: p.url, depth: p.depth }));
+    .map(({ id, p }) => ({ id, url: p.url, depth: p.depth, priority: !!p.priority }));
 
   return { batch: candidates, scannedThisWeek };
+}
+
+/** Stable per-week uniform rank in [0,1) for shuffling the frontier. */
+function weeklyRank(pageId, week) {
+  const hex = crypto.createHash('sha256').update(`${pageId}|${week}`).digest('hex').slice(0, 13);
+  return parseInt(hex, 16) / 2 ** 52;
 }

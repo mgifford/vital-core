@@ -73,6 +73,27 @@ rules: { ruleId: { count, help, examples } } }` record, dispatch it in
 `src/aggregate.js`, and add a rate line under `sampling:`. The
 deprecated-html engine is a complete worked example.
 
+#### Page selection: priority + weekly sampling
+
+`pickBatch` (`src/lib/state.js`) decides which pages each run scans, with
+one hard rule: **no URL is scanned more than once per ISO week** (pages
+already scanned this week are excluded, so coverage accumulates across
+the week's runs without repeats). Within that:
+
+1. **Priority URLs first.** A target's `priority_urls` / `priority_urls_file`
+   (top tasks, e.g. from top-task-finder — one URL per line, `#` comments
+   ok) are seeded at depth 0 with `priority: true` every run and scanned
+   before anything else, so they're always covered early in the week.
+2. **Then never-scanned before previously-scanned**, for trend freshness.
+3. **Then a stable per-week random order** (hash of `pageId + week`), so a
+   large site gets a different random sample each week instead of the same
+   shallow pages — reproducible within a week for replay.
+
+`importance` (1–5, default 3) per target scales `max_pages_per_week`
+(3 = the configured cap, 1 = a third, 5 = 5/3) so low-value domains
+(near-identical open-data sites) consume less weekly budget than key
+ones.
+
 #### Findings ledger
 
 `data/<domain>/findings.json` (committed) tracks every unique finding by

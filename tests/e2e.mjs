@@ -50,6 +50,9 @@ sampling:
   sustainability: 100
 targets:
   - domain: localhost
+    importance: 3
+    priority_urls:
+      - http://localhost:${PORT}/page-20.html
 `
 );
 
@@ -170,8 +173,17 @@ try {
   const state = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
   assert(!Object.values(state.pages).some((p) => p.url.includes('/private/')), 'robots.txt disallow respected');
 
+  // Priority URL handling: page-20 was configured as a priority URL and is
+  // marked priority in state, and was scanned in the FIRST run (budget 10)
+  // even though it would otherwise be deep in the queue.
+  const prio = Object.values(state.pages).find((p) => p.url.includes('/page-20.html'));
+  assert(prio && prio.priority === true, 'configured priority URL is flagged in state');
   const runsDir = path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'runs');
-  assert(fs.readdirSync(runsDir).length === 2, 'two run logs recorded for week 1');
+  const runFiles = fs.readdirSync(runsDir).filter((f) => /T.*Z.*\.json$/.test(f)).sort();
+  const firstRun = JSON.parse(fs.readFileSync(path.join(runsDir, runFiles[0])));
+  const prioId = Object.keys(state.pages).find((id) => state.pages[id].url.includes('/page-20.html'));
+  assert(firstRun.scanned.includes(prioId), 'priority URL scanned in the first run (budget 10), not deferred');
+  assert(runFiles.length === 2, 'two run logs recorded for week 1');
 
   // --- 3. Week 2: violations fixed ------------------------------------
   writeSite({ fixed: true });

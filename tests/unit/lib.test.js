@@ -90,7 +90,9 @@ test('pickBatch: never-scanned first, weekly cap respected, no rescan same week'
   state.pages.b.lastScannedWeek = '2026-W23';
 
   const { batch } = pickBatch(state, '2026-W24', 10, 100);
-  assert.deepEqual(batch.map((b) => b.id), ['c', 'b'], 'c (new) before b (stale); a excluded (already this week)');
+  // a excluded (already scanned this week); c (never scanned) before b (stale).
+  assert.equal(batch.find((x) => x.id === 'a'), undefined, 'a excluded — already scanned this week');
+  assert.deepEqual(batch.map((b) => b.id), ['c', 'b'], 'never-scanned (c) before previously-scanned (b)');
 
   // Weekly cap: 1 already scanned this week, cap 2 -> only 1 more allowed.
   const { batch: capped } = pickBatch(state, '2026-W24', 10, 2);
@@ -100,6 +102,45 @@ test('pickBatch: never-scanned first, weekly cap respected, no rescan same week'
   state.pages.c.failCount = 3;
   const { batch: noFail } = pickBatch(state, '2026-W24', 10, 100);
   assert.deepEqual(noFail.map((b) => b.id), ['b']);
+});
+
+test('pickBatch: priority URLs scanned first, no rescan within a week', () => {
+  const state = { domain: 'x', pages: {} };
+  // 5 normal pages, 1 priority page added later (so not first by insertion).
+  for (let i = 0; i < 5; i++) addPage(state, 'n' + i, `https://x/n${i}`, 1);
+  addPage(state, 'top', 'https://x/top', 0, { priority: true });
+
+  const { batch } = pickBatch(state, '2026-W24', 3, 100);
+  assert.equal(batch[0].id, 'top', 'priority page comes first regardless of insertion order');
+  assert.equal(batch[0].priority, true);
+
+  // Simulate scanning the batch this week; none reappear in the same week.
+  for (const b of batch) state.pages[b.id].lastScannedWeek = '2026-W24';
+  const { batch: next } = pickBatch(state, '2026-W24', 10, 100);
+  assert.ok(!next.some((b) => batch.some((p) => p.id === b.id)), 'already-scanned pages not repeated this week');
+});
+
+test('pickBatch: non-priority order is stable per week but varies across weeks', () => {
+  const state = { domain: 'x', pages: {} };
+  for (let i = 0; i < 50; i++) addPage(state, 'p' + i, `https://x/p${i}`, 1);
+
+  const w24a = pickBatch(state, '2026-W24', 50, 100).batch.map((b) => b.id);
+  const w24b = pickBatch(state, '2026-W24', 50, 100).batch.map((b) => b.id);
+  const w25 = pickBatch(state, '2026-W25', 50, 100).batch.map((b) => b.id);
+
+  assert.deepEqual(w24a, w24b, 'same week -> identical order (deterministic, replayable)');
+  assert.notDeepEqual(w24a, w25, 'different week -> different random spread');
+  // Same set, just reordered.
+  assert.deepEqual([...w24a].sort(), [...w25].sort(), 'same pages, different order');
+});
+
+test('addPage: priority promotes an existing page without duplicating', () => {
+  const state = { domain: 'x', pages: {} };
+  assert.equal(addPage(state, 'a', 'https://x/a', 1), true, 'first add');
+  assert.equal(addPage(state, 'a', 'https://x/a', 1), false, 'duplicate add is a no-op');
+  assert.equal(state.pages.a.priority, false);
+  assert.equal(addPage(state, 'a', 'https://x/a', 0, { priority: true }), true, 'promotion counts as a change');
+  assert.equal(state.pages.a.priority, true, 'existing page promoted to priority');
 });
 
 test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {

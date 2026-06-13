@@ -41,18 +41,38 @@ targets:
   # together), but any other subdomain is a distinct target
   # (data.cms.gov is separate from www.cms.gov).
   #
+  # Per-target options (all optional):
+  #   importance: 1-5 (default 3). Scales max_pages_per_week: 3 = the
+  #     configured cap, 1 = a third (good for near-identical open-data
+  #     sites), 5 = 5/3. Tune low-value domains down, key domains up.
+  #   priority_urls_file: path to a file of top-task URLs (one per line,
+  #     # comments ok — top-task-finder output). These are covered first
+  #     every week, before the rest of the site is sampled. No URL is ever
+  #     scanned more than once per ISO week.
+  #   priority_urls: [ ... ] inline list, for a handful of must-cover URLs.
+  #
   # WAF-blocked: hhs.gov and nih.gov return 403 "Access Denied" to
   # automated browsers and record as blocked with no audit data until the
   # scanner's user-agent is allowlisted. Kept in to track once access is
   # sorted — see WAF-ALLOWLIST.md for the request template and status.
   - domain: www.cms.gov
+    importance: 5
+    # priority_urls_file: profiles/www.cms.gov-top-tasks.txt
   - domain: www.medicare.gov
+    importance: 5
   - domain: www.medicaid.gov
+    importance: 4
   - domain: data.healthcare.gov
+    importance: 2                  # open-data site; pages are template-similar
   - domain: www.hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
   - domain: openpaymentsdata.cms.gov
+    importance: 2                  # open-data site
   - domain: www.cdc.gov
+    importance: 5
   - domain: data.cms.gov
+    importance: 2                  # open-data site
   - domain: data.medicaid.gov
+    importance: 2                  # open-data site
   - domain: www.healthcare.gov
+    importance: 4
   - domain: www.nih.gov            # WAF-blocked (see WAF-ALLOWLIST.md)

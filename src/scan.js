@@ -68,6 +68,18 @@ if (Object.keys(state.pages).length === 0) {
   saveState(target.key, state);
 }
 
+// --- Priority URLs ----------------------------------------------------
+// Top tasks (e.g. from top-task-finder) that must be covered every week.
+// Re-applied every run so the list can change and newly-added priority
+// URLs are promoted in the frontier. pickBatch scans these first.
+const priorityUrls = loadPriorityUrls(target, baseOrigin, host);
+if (priorityUrls.length) {
+  let promoted = 0;
+  for (const u of priorityUrls) if (addPage(state, pageId(u), u, 0, { priority: true })) promoted++;
+  log(`priority: ${priorityUrls.length} configured, ${promoted} added/promoted`);
+  saveState(target.key, state);
+}
+
 // --- Robots -----------------------------------------------------------
 const robots = await fetchRobots(baseOrigin, target.user_agent);
 const delayMs = Math.max(
@@ -76,8 +88,13 @@ const delayMs = Math.max(
 );
 
 // --- Batch ------------------------------------------------------------
-const { batch, scannedThisWeek } = pickBatch(state, week, budget, target.max_pages_per_week);
-log(`${scannedThisWeek} pages already scanned in ${week}; batch of ${batch.length}`);
+// importance (1-5, default 3) scales the weekly cap so low-value domains
+// (e.g. near-identical open-data sites) consume less budget than key
+// sites. importance 3 = the configured cap; 1 = 1/3; 5 = 5/3.
+const importance = Math.max(1, Math.min(5, target.importance ?? 3));
+const weeklyCap = Math.max(1, Math.round((target.max_pages_per_week * importance) / 3));
+const { batch, scannedThisWeek } = pickBatch(state, week, budget, weeklyCap);
+log(`${scannedThisWeek} scanned in ${week}; cap ${weeklyCap} (importance ${importance}); batch of ${batch.length}`);
 if (batch.length === 0) {
   log('nothing to do');
   process.exit(0);
@@ -300,6 +317,40 @@ function parseArgs(argv) {
     if (argv[i].startsWith('--')) {
       const key = argv[i].slice(2);
       out[key] = argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true;
+    }
+  }
+  return out;
+}
+
+/**
+ * Collect a target's priority (top-task) URLs from an inline
+ * `priority_urls` list and/or a `priority_urls_file` (one URL per line,
+ * `#` comments allowed — the format top-task-finder emits). URLs are
+ * normalized to the canonical host; off-host or unparseable entries are
+ * dropped. Returns a deduplicated list of normalized URLs.
+ */
+function loadPriorityUrls(target, origin, hostName) {
+  const raw = [...(target.priority_urls ?? [])];
+  if (target.priority_urls_file) {
+    const p = path.isAbsolute(target.priority_urls_file)
+      ? target.priority_urls_file
+      : path.join(DIRS.root, target.priority_urls_file);
+    if (fs.existsSync(p)) {
+      for (const line of fs.readFileSync(p, 'utf8').split('\n')) {
+        const t = line.trim();
+        if (t && !t.startsWith('#')) raw.push(t);
+      }
+    } else {
+      console.warn(`[${target.key}] priority_urls_file not found: ${p}`);
+    }
+  }
+  const seen = new Set();
+  const out = [];
+  for (const u of raw) {
+    const norm = normalizeUrl(u, origin, hostName);
+    if (norm && !seen.has(norm)) {
+      seen.add(norm);
+      out.push(norm);
     }
   }
   return out;
