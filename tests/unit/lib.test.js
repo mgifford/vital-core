@@ -6,6 +6,8 @@ import { parseRobots } from '../../src/lib/robots.js';
 import { addPage, pickBatch } from '../../src/lib/state.js';
 import { resolveWcag, severityFor } from '../../src/lib/wcag.js';
 import { buildBugReports, bugReportToMarkdown } from '../../src/lib/bug-report.js';
+import { splitSentences, estimateSyllables } from '../../src/engines/plain-language.js';
+import { checkLink } from '../../src/lib/links.js';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -172,3 +174,54 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.match(md, /### Steps to reproduce/);
   assert.match(md, /\*\*WCAG SC:\*\* 1\.4\.3/);
 });
+
+test('plain-language: sentence splitting and syllable estimation', () => {
+  const s = splitSentences('The cat sat. It was happy! Was it? Yes.');
+  assert.equal(s.length, 4);
+  // Short words = 1 syllable; multi-vowel-group words counted.
+  assert.equal(estimateSyllables('cat'), 1);
+  assert.equal(estimateSyllables('happy'), 2);
+  assert.equal(estimateSyllables('accessibility') >= 4, true);
+  assert.equal(estimateSyllables(''), 0);
+});
+
+test('checkLink: classifies status codes, soft-ok, and network errors', async () => {
+  const realFetch = globalThis.fetch;
+  try {
+    globalThis.fetch = async () => ({ status: 200 });
+    assert.deepEqual(await pick(checkLink('https://x/ok')), { ok: true, broken: false, status: 200 });
+
+    globalThis.fetch = async () => ({ status: 404 });
+    assert.deepEqual(await pick(checkLink('https://x/missing')), { ok: false, broken: true, status: 404 });
+
+    // 403/429 are soft-ok: bots get challenged but the link is fine.
+    globalThis.fetch = async () => ({ status: 403 });
+    assert.deepEqual(await pick(checkLink('https://x/forbidden')), { ok: true, broken: false, status: 403 });
+
+    // HEAD unsupported (405) retries with GET.
+    let calls = 0;
+    globalThis.fetch = async (_u, opts) => {
+      calls++;
+      return { status: opts.method === 'HEAD' ? 405 : 200 };
+    };
+    const retried = await checkLink('https://x/headless');
+    assert.equal(retried.ok, true);
+    assert.equal(calls, 2, 'retried with GET after 405');
+
+    // Network failure -> broken with reason.
+    globalThis.fetch = async () => {
+      throw Object.assign(new Error('boom'), { cause: { code: 'ENOTFOUND' } });
+    };
+    const dead = await checkLink('https://nope/');
+    assert.equal(dead.broken, true);
+    assert.equal(dead.status, 0);
+    assert.match(dead.reason, /ENOTFOUND/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+async function pick(p) {
+  const r = await p;
+  return { ok: r.ok, broken: r.broken, status: r.status };
+}

@@ -15,6 +15,7 @@ import path from 'node:path';
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const kb = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB');
+const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
 
 /** Delta rendered as text first; symbol is reinforcement, not the meaning. */
 function delta(n, { goodWhenDown = true, unit = '' } = {}) {
@@ -165,6 +166,16 @@ ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'F
   <div><dt>Alfa failed outcomes</dt><dd>${summary.alfa.failedTotal}
     ${diff ? delta(diff.alfa.failedDelta) : ''}</dd></div>
   <div><dt>Pages with Alfa failures</dt><dd>${summary.alfa.pagesWithFailures} of ${summary.pagesScanned}</dd></div>
+  ${summary.lighthouse ? `
+  <div><dt>Lighthouse performance (median)</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${summary.lighthouse.pagesSampled} sampled</span></dd></div>
+  <div><dt>Lighthouse SEO (median)</dt><dd>${fmtScore(summary.lighthouse.medianSeo)}</dd></div>
+  <div><dt>Lighthouse best practices (median)</dt><dd>${fmtScore(summary.lighthouse.medianBestPractices)}</dd></div>
+  ${summary.lighthouse.medianAgentic != null ? `<div><dt>Lighthouse agentic (median)</dt><dd>${fmtScore(summary.lighthouse.medianAgentic)}</dd></div>` : ''}` : ''}
+  ${summary.plainLanguage ? `
+  <div><dt>Reading ease (median)</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${summary.plainLanguage.pagesScored} prose pages</span></dd></div>
+  ${summary.plainLanguage.medianGrade != null ? `<div><dt>Reading grade (median)</dt><dd>${summary.plainLanguage.medianGrade}</dd></div>` : ''}` : ''}
+  ${summary.linkCheck ? `
+  <div><dt>Broken links</dt><dd>${summary.linkCheck.brokenCount}</dd></div>` : ''}
   ${summary.sustainability ? `
   <div><dt>Median page weight</dt><dd>${kb(summary.sustainability.medianBytes)}
     ${diff?.sustainability ? delta(Math.round(diff.sustainability.medianBytesDelta / 1024), { unit: ' KB' }) : ''}</dd></div>
@@ -192,6 +203,25 @@ ${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.
 </section>
 
 ${bugReportsSection(bugs)}
+
+${summary.linkCheck ? `
+<section aria-labelledby="h-links">
+<h2 id="h-links">Broken links</h2>
+<table>
+<caption>${summary.linkCheck.brokenCount} broken link(s) found on scanned pages in ${summary.week}.</caption>
+<thead><tr><th scope="col">Broken URL</th><th scope="col">Status</th><th scope="col">Found on</th></tr></thead>
+<tbody>${summary.linkCheck.broken
+    .map((b) => `<tr><th scope="row"><a href="${esc(b.url)}">${esc(b.url)}</a></th><td>${esc(b.status || b.reason)}</td><td>${b.foundOn ? `<a href="${esc(b.foundOn)}">${esc(new URL(b.foundOn).pathname)}</a>` : 'n/a'}</td></tr>`)
+    .join('\n')}</tbody>
+</table>
+</section>` : ''}
+
+${summary.plainLanguage?.topUnexplainedAcronyms?.length ? `
+<section aria-labelledby="h-acronyms">
+<h2 id="h-acronyms">Unexplained acronyms</h2>
+<p class="meta">Acronyms used without an on-page expansion (e.g. “Centers for Medicare &amp; Medicaid Services (CMS)”), by pages affected.</p>
+<ul>${summary.plainLanguage.topUnexplainedAcronyms.map((a) => `<li><code>${esc(a.acronym)}</code> — ${a.pages} page(s)</li>`).join('')}</ul>
+</section>` : ''}
 
 ${summary.errorPages.length ? `
 <section aria-labelledby="h-errors">

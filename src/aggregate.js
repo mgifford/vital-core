@@ -104,11 +104,20 @@ function summarizeWeek(target, week) {
   let pagesWithAudit = 0;
   const errorPages = [];
   const blockedStatuses = {}; // status code -> count, for the blocked callout
+  // Plain-language: collect scored pages' readability for medians.
+  const freList = [];
+  const gradeList = [];
+  let plPagesScored = 0;
+  const acronymCounts = {}; // acronym -> pages it was unexplained on
+  // Lighthouse: collect sampled scores for medians.
+  const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
+  // Link check: union broken links across the week's runs (deduped).
+  const brokenLinks = new Map(); // url -> { url, status, reason, foundOn }
 
   for (const f of files) {
     const rec = JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'));
     pagesScanned++;
-    if (rec.axe || rec.alfa || rec.sustainability) pagesWithAudit++;
+    if (rec.axe || rec.alfa || rec.sustainability || rec.plainLanguage || rec.lighthouse) pagesWithAudit++;
     if (typeof rec.status === 'number' && rec.status >= 400) {
       errorPages.push({ url: rec.url, status: rec.status });
       blockedStatuses[rec.status] = (blockedStatuses[rec.status] ?? 0) + 1;
@@ -140,6 +149,33 @@ function summarizeWeek(target, week) {
       bytesList.push(rec.sustainability.bytes);
       requestsList.push(rec.sustainability.requests);
       co2Total += rec.sustainability.co2g;
+    }
+    if (rec.plainLanguage) {
+      if (rec.plainLanguage.scored) {
+        plPagesScored++;
+        if (rec.plainLanguage.fleschReadingEase != null) freList.push(rec.plainLanguage.fleschReadingEase);
+        if (rec.plainLanguage.fleschKincaidGrade != null) gradeList.push(rec.plainLanguage.fleschKincaidGrade);
+      }
+      for (const a of rec.plainLanguage.unexplainedAcronyms ?? []) {
+        acronymCounts[a] = (acronymCounts[a] ?? 0) + 1;
+      }
+    }
+    if (rec.lighthouse?.scores) {
+      for (const k of Object.keys(lhScores)) {
+        const v = rec.lighthouse.scores[k];
+        if (typeof v === 'number') lhScores[k].push(v);
+      }
+    }
+  }
+
+  // Link check: fold this week's run logs (deduped broken links).
+  const runsDirPath = path.join(DIRS.data, target.key, week, 'runs');
+  if (fs.existsSync(runsDirPath)) {
+    for (const rf of fs.readdirSync(runsDirPath).filter((f) => f.endsWith('.json'))) {
+      const run = JSON.parse(fs.readFileSync(path.join(runsDirPath, rf), 'utf8'));
+      for (const b of run.linkCheck?.broken ?? []) {
+        if (!brokenLinks.has(b.url)) brokenLinks.set(b.url, b);
+      }
     }
   }
 
@@ -176,6 +212,34 @@ function summarizeWeek(target, week) {
           medianRequests: median(requestsList),
           totalCo2g: Math.round(co2Total * 100) / 100,
           meanCo2g: Math.round((co2Total / bytesList.length) * 10000) / 10000,
+        }
+      : null,
+    plainLanguage: plPagesScored
+      ? {
+          pagesScored: plPagesScored,
+          medianReadingEase: median(freList),
+          medianGrade: gradeList.length ? median(gradeList) : null,
+          // Most common unexplained acronyms, by pages affected.
+          topUnexplainedAcronyms: Object.entries(acronymCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 15)
+            .map(([acronym, pages]) => ({ acronym, pages })),
+        }
+      : null,
+    lighthouse: lhScores.performance.length
+      ? {
+          pagesSampled: lhScores.performance.length,
+          medianPerformance: median(lhScores.performance),
+          medianAccessibility: lhScores.accessibility.length ? median(lhScores.accessibility) : null,
+          medianBestPractices: lhScores.bestPractices.length ? median(lhScores.bestPractices) : null,
+          medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
+          medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
+        }
+      : null,
+    linkCheck: brokenLinks.size
+      ? {
+          brokenCount: brokenLinks.size,
+          broken: [...brokenLinks.values()].slice(0, 50),
         }
       : null,
     errorPages: errorPages.slice(0, 25),

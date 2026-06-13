@@ -9,8 +9,11 @@ import { loadState, saveState, addPage, pickBatch } from './lib/state.js';
 import { isoWeek } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
+import { checkLinks } from './lib/links.js';
 import { runAxe } from './engines/axe.js';
 import { runAlfa } from './engines/alfa.js';
+import { runPlainLanguage } from './engines/plain-language.js';
+import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
 
 /**
@@ -92,7 +95,26 @@ const context = await browser.newContext({
 context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 
 const runLog = { runId, week, domain: target.domain, startedAt: new Date().toISOString(), scanned: [], errors: [] };
-const engines = target.engines ?? ['axe', 'alfa', 'sustainability'];
+const engines = target.engines ?? ['axe', 'alfa', 'plain-language', 'sustainability'];
+
+// Link checking: collect every resolvable http(s) link seen on scanned
+// pages, then probe a capped sample once after the scan. Off unless
+// link-check is in the engines list.
+const checkLinksEnabled = engines.includes('link-check');
+const linksSeen = new Set();
+const linkSources = new Map(); // url -> a page it was found on (for reports)
+
+// Lighthouse: slow (own Chrome), so sampled — audit at most this many
+// pages per run, homepage first. Off unless lighthouse is enabled.
+const lighthouseEnabled = engines.includes('lighthouse');
+const lighthouseSampleCap = parseInt(process.env.VITAL_LIGHTHOUSE_SAMPLE ?? '5', 10);
+let lighthouse = null;
+let lighthouseAudited = 0;
+if (lighthouseEnabled && !args['base-url']) {
+  // Lighthouse audits the live URL directly, so it's skipped in test
+  // mode (--base-url points at a local fixture server).
+  lighthouse = await createLighthouseRunner({ timeoutMs: target.nav_timeout_ms, log });
+}
 
 // Checkpoint state every STATE_SAVE_EVERY pages rather than after every
 // page. saveState re-serializes the whole crawl frontier, which grows as
@@ -156,13 +178,29 @@ for (const item of batch) {
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
       if (engines.includes('axe')) record.axe = await runAxe(page);
       if (engines.includes('alfa')) record.alfa = await runAlfa(page);
+      if (engines.includes('plain-language')) record.plainLanguage = await runPlainLanguage(page);
       if (sustain) record.sustainability = sustain.collect();
 
-      // Link discovery: same-host only, depth-capped.
+      // Lighthouse: sampled. Audit the live URL (its own Chrome) up to
+      // the per-run cap. Batch ordering puts low-depth pages (incl. the
+      // homepage) first, so the sample favors the most important pages.
+      if (lighthouse?.available && lighthouseAudited < lighthouseSampleCap) {
+        const lh = await lighthouse.audit(item.url);
+        if (lh) {
+          record.lighthouse = lh;
+          lighthouseAudited++;
+          log(`lighthouse ${urlPath} perf:${lh.scores.performance ?? '-'} a11y:${lh.scores.accessibility ?? '-'} seo:${lh.scores.seo ?? '-'}`);
+        }
+      }
+
+      // Extract links once; use them for discovery (same-host,
+      // depth-capped) and, if enabled, for link checking (all links).
+      const hrefs = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('a[href]'), (a) => a.getAttribute('href'))
+      );
+
+      // Discovery: same-host only, depth-capped.
       if (item.depth < target.max_crawl_depth) {
-        const hrefs = await page.evaluate(() =>
-          Array.from(document.querySelectorAll('a[href]'), (a) => a.getAttribute('href'))
-        );
         let added = 0;
         for (const href of hrefs) {
           // Normalize against the canonical domain, not the test base-url.
@@ -170,6 +208,26 @@ for (const item of batch) {
           if (norm && addPage(state, pageId(norm), norm, item.depth + 1)) added++;
         }
         if (added) log(`+${added} URLs discovered on ${urlPath}`);
+      }
+
+      // Link checking: collect absolute http(s) links (same-host and
+      // external) resolved against the real page URL.
+      if (checkLinksEnabled) {
+        for (const href of hrefs) {
+          let abs;
+          try {
+            abs = new URL(href, item.url);
+          } catch {
+            continue;
+          }
+          if (abs.protocol !== 'http:' && abs.protocol !== 'https:') continue;
+          abs.hash = '';
+          const u = abs.toString();
+          if (!linksSeen.has(u)) {
+            linksSeen.add(u);
+            linkSources.set(u, item.url);
+          }
+        }
       }
     } else if (sustain) {
       sustain.collect(); // detach listener
@@ -197,6 +255,29 @@ for (const item of batch) {
     sincePersist = 0;
   }
   await new Promise((r) => setTimeout(r, delayMs));
+}
+
+// --- Link check (post-scan, capped and polite) ------------------------
+if (checkLinksEnabled && linksSeen.size > 0) {
+  const cap = parseInt(process.env.VITAL_LINK_CHECK_CAP ?? '500', 10);
+  log(`link-check: ${linksSeen.size} unique links seen; checking up to ${cap}`);
+  const { checked, total, broken } = await checkLinks([...linksSeen], {
+    userAgent: target.user_agent,
+    timeoutMs: target.nav_timeout_ms,
+    cap,
+  });
+  runLog.linkCheck = {
+    total,
+    checked,
+    brokenCount: broken.length,
+    broken: broken.map((b) => ({ url: b.url, status: b.status, reason: b.reason, foundOn: linkSources.get(b.url) ?? null })),
+  };
+  log(`link-check: ${broken.length} broken of ${checked} checked`);
+}
+
+if (lighthouse) {
+  runLog.lighthouseAudited = lighthouseAudited;
+  await lighthouse.close();
 }
 
 runLog.finishedAt = new Date().toISOString();

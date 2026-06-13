@@ -40,7 +40,7 @@ fs.writeFileSync(
   settle_delay_ms: 100
   max_crawl_depth: 4
   retention_weeks: 8
-  engines: [axe, alfa, sustainability]
+  engines: [axe, alfa, plain-language, link-check, sustainability]
   user_agent: "vital-scans-e2e/0.1 (+local test)"
 targets:
   - domain: localhost
@@ -65,7 +65,8 @@ ${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;backgr
   fs.writeFileSync(
     path.join(SITE, 'index.html'),
     `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Fixture home</title></head>
-<body><main><h1>Fixture</h1><ul>${nav}</ul></main></body></html>`
+<body><main><h1>Fixture</h1><ul>${nav}</ul>
+<p><a href="/does-not-exist-404.html">A deliberately broken link</a></p></main></body></html>`
   );
   // 1x1 png
   fs.writeFileSync(path.join(SITE, 'pixel.png'), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64'));
@@ -137,6 +138,19 @@ try {
   assert(w1.alfa.failedTotal > 0, `week 1 found Alfa failures (${w1.alfa.failedTotal})`);
   assert('image-alt' in w1.axe.rules, 'image-alt rule recorded');
   assert(w1.sustainability && w1.sustainability.medianBytes > 0, 'sustainability metrics recorded');
+  assert(w1.linkCheck && w1.linkCheck.brokenCount >= 1, `link check found the broken link (${w1.linkCheck?.brokenCount ?? 0})`);
+  assert(
+    w1.linkCheck.broken.some((b) => b.url.includes('does-not-exist-404')),
+    'the deliberately broken link is reported'
+  );
+  // Plain-language ran on every page; the fixture pages are link-heavy so
+  // few will have enough prose to score, but the engine must have run and
+  // recorded data on the page records.
+  const sampleRec = JSON.parse(
+    fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages', fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages'))[0]))
+  );
+  assert(sampleRec.plainLanguage && typeof sampleRec.plainLanguage.wordCount === 'number', 'plain-language engine ran and recorded data');
+
   const state = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
   assert(!Object.values(state.pages).some((p) => p.url.includes('/private/')), 'robots.txt disallow respected');
 

@@ -22,11 +22,14 @@ still being implemented.
 
 ### Auditing and Data Collection
 
-Engines are selected per target via the `engines:` key (default: all three). Each writes a compact record onto the per-page JSON.
+Engines are selected per target via the `engines:` key. Each writes a compact record onto the per-page JSON.
 
 - **axe-core** (`src/engines/axe.js`): WCAG 2.x / Section 508 accessibility audit, injected into the page via Playwright. Stores rule ids, counts, and pages affected — not full node lists — so records stay small and comparable week over week.
 - **Alfa** (`src/engines/alfa.js`): Independent ACT-rules accessibility audit via Siteimprove Alfa (`@siteimprove/alfa-*`), the open source core of Siteimprove's commercial checker. Runs alongside axe for cross-engine coverage.
+- **Plain language** (`src/engines/plain-language.js`): Readability of the main content — Flesch Reading Ease, Flesch-Kincaid grade, average sentence length, long-sentence and passive-voice heuristics, word count, and acronyms used without an on-page expansion. Pages with too little prose to score honestly report `scored: false` rather than a misleading grade.
 - **Sustainability** (`src/engines/sustainability.js`): Page weight (decoded body bytes seen by the browser) and estimated CO₂ via co2.js using the Sustainable Web Design model (v4).
+- **Lighthouse** (`src/engines/lighthouse.js`, opt-in): Google Lighthouse performance, accessibility, best-practices, and SEO scores (plus the experimental agentic-browsing category when enabled). Runs its own headless Chrome, so it is **sampled** — a capped number of pages per run (`VITAL_LIGHTHOUSE_SAMPLE`, default 5) — while the other engines run on every page. Enable by adding `lighthouse` to a target's `engines`.
+- **Link checking** (`src/lib/links.js`, via the `link-check` engine): collects every link seen on scanned pages and probes a capped, deduplicated sample (`VITAL_LINK_CHECK_CAP`, default 500) with polite per-host pacing, recording broken links (4xx/5xx, DNS failures, timeouts). 401/403/429 are treated as soft-OK to avoid bot-challenge false positives.
 
 ### Reporting and Dashboard
 

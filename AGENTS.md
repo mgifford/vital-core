@@ -49,11 +49,17 @@ compact, comparison-friendly record onto the per-page JSON.
 |-------------|------|------------------|
 | `src/engines/axe.js` | **axe-core** (injected into the page) | WCAG 2.x / Section 508 violations, reduced to rule ids, counts, and pages affected (full node lists are not stored). |
 | `src/engines/alfa.js` | **Siteimprove Alfa** (`@siteimprove/alfa-*`) | Independent ACT-rules audit. Alfa is the open source core of Siteimprove's commercial checker. |
+| `src/engines/plain-language.js` | text analysis (in-page) | Readability (Flesch / Flesch-Kincaid), sentence/passive-voice heuristics, unexplained acronyms. `scored: false` when there's too little prose. |
 | `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD model v4) | Page weight (decoded body bytes) and estimated emissions. |
+| `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO scores (+ experimental agentic). **Sampled**, not per-page. Opt-in. |
+| `src/lib/links.js` (`link-check`) | `fetch` HEAD/GET probes | Broken links (4xx/5xx, DNS, timeout) found on scanned pages, checked once per run, capped and polite. |
 
-Both axe and Alfa run on every page by default for cross-engine
-coverage. Engines are selected per target via the `engines:` key in
-`config/targets.yml`.
+axe, Alfa, plain-language, and link-check run on every page (link-check
+defers its probes to one capped pass after the scan). Lighthouse is
+sampled because it drives its own browser. Engines are selected per
+target via the `engines:` key in `config/targets.yml`. Relevant env
+overrides: `VITAL_LIGHTHOUSE_SAMPLE`, `VITAL_LIGHTHOUSE_AGENTIC`,
+`VITAL_LINK_CHECK_CAP`.
 
 ### Environment variables
 
