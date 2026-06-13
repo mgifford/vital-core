@@ -23,8 +23,10 @@ defaults:
 
 targets:
   # 5-10 domains or sub-domains. Overrides per target are allowed.
-  - domain: example.gov
-  - domain: www.example.org
-    pages_per_run: 150
-  # - domain: digital.canada.ca
-  # - domain: accessibility.civicactions.com
+  # Discovery is host-scoped, so each host below is crawled independently.
+  - domain: www.cms.gov
+  - domain: www.medicare.gov
+  - domain: www.medicaid.gov
+  - domain: data.healthcare.gov
+  - domain: www.hhs.gov
+  - domain: openpaymentsdata.cms.gov
