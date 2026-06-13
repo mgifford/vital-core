@@ -57,22 +57,24 @@ targets:
   # sorted — see WAF-ALLOWLIST.md for the request template and status.
   - domain: www.cms.gov
     importance: 5
-    # priority_urls_file: profiles/www.cms.gov-top-tasks.txt
+    priority_urls_file: profiles/www.cms.gov-top-tasks.txt
   - domain: www.medicare.gov
     importance: 5
   - domain: www.medicaid.gov
-    importance: 4
-  - domain: data.healthcare.gov
-    importance: 2                  # open-data site; pages are template-similar
-  - domain: www.hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
-  - domain: openpaymentsdata.cms.gov
-    importance: 2                  # open-data site
-  - domain: www.cdc.gov
     importance: 5
+  - domain: data.healthcare.gov
+    importance: 3                  # open-data site; pages are template-similar
+  - domain: openpaymentsdata.cms.gov
+    importance: 3                  # open-data site
+  - domain: www.cdc.gov
+    importance: 1
   - domain: data.cms.gov
-    importance: 2                  # open-data site
+    importance: 3                  # open-data site
   - domain: data.medicaid.gov
-    importance: 2                  # open-data site
+    importance: 3                  # open-data site
   - domain: www.healthcare.gov
-    importance: 4
+    importance: 3
   - domain: www.nih.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
+    importance: 1
+  - domain: www.hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
+    importance: 1
