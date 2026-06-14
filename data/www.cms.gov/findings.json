@@ -1,6 +1,6 @@
 {
  "domain": "www.cms.gov",
- "updatedAt": "2026-06-14T02:38:09.115Z",
+ "updatedAt": "2026-06-14T12:24:55.942Z",
  "findings": {
   "VS-2208081b": {
    "engine": "Siteimprove Alfa",
@@ -14,7 +14,7 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 924
+   "lastPagesAffected": 961
   },
   "VS-7118fead": {
    "engine": "Siteimprove Alfa",
@@ -28,7 +28,7 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 924
+   "lastPagesAffected": 961
   },
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
@@ -42,7 +42,7 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 924
+   "lastPagesAffected": 961
   },
   "VS-c18be945": {
    "engine": "Siteimprove Alfa",
@@ -56,7 +56,21 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 551
+   "lastPagesAffected": 583
+  },
+  "VS-8ade3360": {
+   "engine": "axe-core",
+   "ruleId": "link-in-text-block",
+   "summary": "Links must be distinguishable without relying on color (WCAG 1.4.1)",
+   "wcag": "1.4.1",
+   "severity": "High",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 7
   },
   "VS-e9fe47ac": {
    "engine": "axe-core",
@@ -71,6 +85,20 @@
    ],
    "weeksSeen": 1,
    "lastPagesAffected": 6
+  },
+  "VS-dd1c019f": {
+   "engine": "axe-core",
+   "ruleId": "valid-lang",
+   "summary": "lang attribute must have a valid value (WCAG 3.1.2)",
+   "wcag": "3.1.2",
+   "severity": "High",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
   },
   "VS-a0bdbdf6": {
    "engine": "axe-core",
@@ -112,7 +140,7 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 128
+   "lastPagesAffected": 138
   },
   "VS-f054f4a4": {
    "engine": "Siteimprove Alfa",
@@ -126,7 +154,7 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 99
+   "lastPagesAffected": 105
   },
   "VS-2cd767ca": {
    "engine": "Siteimprove Alfa",
@@ -140,7 +168,7 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 24
+   "lastPagesAffected": 27
   },
   "VS-fa44f293": {
    "engine": "axe-core",
@@ -170,6 +198,34 @@
    "weeksSeen": 1,
    "lastPagesAffected": 6
   },
+  "VS-646b1e0b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r66",
+   "summary": "sia-r66 (WCAG 1.4.3)",
+   "wcag": "1.4.3",
+   "severity": "Medium",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 4
+  },
+  "VS-f7dba940": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r14",
+   "summary": "sia-r14 (WCAG 2.5.3)",
+   "wcag": "2.5.3",
+   "severity": "Medium",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 4
+  },
   "VS-179ad9b3": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r113",
@@ -198,6 +254,20 @@
    "weeksSeen": 1,
    "lastPagesAffected": 3
   },
+  "VS-fbf54eba": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r74",
+   "summary": "sia-r74 (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Medium",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 3
+  },
   "VS-0ba8ce9d": {
    "engine": "axe-core",
    "ruleId": "scope-attr-valid",
@@ -212,25 +282,11 @@
    "weeksSeen": 1,
    "lastPagesAffected": 2
   },
-  "VS-646b1e0b": {
+  "VS-d6097011": {
    "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r66",
-   "summary": "sia-r66 (WCAG 1.4.3)",
-   "wcag": "1.4.3",
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
-   "_weeks": [
-    "2026-W24"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 2
-  },
-  "VS-f7dba940": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r14",
-   "summary": "sia-r14 (WCAG 2.5.3)",
-   "wcag": "2.5.3",
+   "ruleId": "sia-r68",
+   "summary": "sia-r68 (WCAG criterion undetermined)",
+   "wcag": null,
    "severity": "Medium",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W24",
@@ -282,20 +338,6 @@
    "weeksSeen": 1,
    "lastPagesAffected": 1
   },
-  "VS-fbf54eba": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r74",
-   "summary": "sia-r74 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
-   "_weeks": [
-    "2026-W24"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 1
-  },
   "VS-f2542d87": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r79",
@@ -324,20 +366,6 @@
    "weeksSeen": 1,
    "lastPagesAffected": 1
   },
-  "VS-d6097011": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r68",
-   "summary": "sia-r68 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
-   "_weeks": [
-    "2026-W24"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 1
-  },
   "VS-0066c67d": {
    "engine": "axe-core",
    "ruleId": "empty-heading",
@@ -350,7 +378,7 @@
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 4
+   "lastPagesAffected": 6
   },
   "VS-d69fc059": {
    "engine": "axe-core",
