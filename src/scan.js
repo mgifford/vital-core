@@ -125,7 +125,7 @@ const runLog = { runId, week, domain: target.domain, startedAt: new Date().toISO
 // sample, then probe them once after the scan. Rate > 0 enables it.
 const checkLinksEnabled = normalizeRate(rates['link-check']) > 0;
 const linksSeen = new Set();
-const linkSources = new Map(); // url -> a page it was found on (for reports)
+const linkSources = new Map(); // url -> Set of pages that link to it (capped)
 
 // Lighthouse: slow (own Chrome). Launched once if its rate is > 0 and
 // not in test mode (it audits the live URL, not a local fixture).
@@ -250,10 +250,15 @@ for (const item of batch) {
           if (abs.protocol !== 'http:' && abs.protocol !== 'https:') continue;
           abs.hash = '';
           const u = abs.toString();
-          if (!linksSeen.has(u)) {
-            linksSeen.add(u);
-            linkSources.set(u, item.url);
+          linksSeen.add(u);
+          // Record every page that links to this URL, so a broken link can
+          // be traced back to all the pages that need fixing (capped).
+          let srcs = linkSources.get(u);
+          if (!srcs) {
+            srcs = new Set();
+            linkSources.set(u, srcs);
           }
+          if (srcs.size < 50) srcs.add(item.url);
         }
       }
     } else if (sustain) {
@@ -297,7 +302,7 @@ if (checkLinksEnabled && linksSeen.size > 0) {
     total,
     checked,
     brokenCount: broken.length,
-    broken: broken.map((b) => ({ url: b.url, status: b.status, reason: b.reason, foundOn: linkSources.get(b.url) ?? null })),
+    broken: broken.map((b) => ({ url: b.url, status: b.status, reason: b.reason, foundOn: [...(linkSources.get(b.url) ?? [])] })),
   };
   log(`link-check: ${broken.length} broken of ${checked} checked`);
 }

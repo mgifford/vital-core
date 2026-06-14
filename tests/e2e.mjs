@@ -30,6 +30,13 @@ for (const d of ['src', 'node_modules', 'package.json']) {
   fs.cpSync(path.join(ROOT, d), path.join(SANDBOX, d), { recursive: true });
 }
 fs.mkdirSync(path.join(SANDBOX, 'config'));
+// Copy the real config data files the engines/reports read (remediation
+// tips, spelling allowlist) so the sandbox exercises them too. targets.yml
+// is written below with test-specific values.
+for (const f of ['remediation-tips.json', 'spelling-allowlist.txt']) {
+  const src = path.join(ROOT, 'config', f);
+  if (fs.existsSync(src)) fs.cpSync(src, path.join(SANDBOX, 'config', f));
+}
 fs.writeFileSync(
   path.join(SANDBOX, 'config', 'targets.yml'),
   `defaults:
@@ -179,6 +186,11 @@ try {
   const imgAltBug = bugs1.reports.find((r) => r.rule_id === 'image-alt');
   assert(imgAltBug.impact.groups.some((g) => /vision/i.test(g.group)), 'image-alt bug shows vision-impact groups');
   assert(imgAltBug.affected_pages_csv && imgAltBug.affected_pages_csv.endsWith('.csv'), 'bug report links its affected-pages CSV');
+  assert(imgAltBug.remediation_tip && /alt/i.test(imgAltBug.remediation_tip), 'bug report carries a remediation tip');
+  // Cross-engine consensus: unique issues are not the naive axe+alfa sum.
+  assert(w1.consensus && w1.consensus.uniqueIssues > 0, 'consensus computed');
+  assert(w1.consensus.uniqueIssues <= w1.consensus.rawAxe + w1.consensus.rawAlfa, 'unique issues never exceed the raw engine sum');
+  assert(w1.consensus.consensus > 0, 'at least one issue caught by BOTH engines (image-alt / sia-r2)');
   // Resource catalog: PDFs and embedded media found and inventoried.
   assert(w1.resources && w1.resources.total > 0, 'resources cataloged');
   assert(w1.resources.byType.pdf > 0, 'PDF links cataloged');
@@ -193,9 +205,12 @@ try {
   const anyFinding = Object.values(ledger1.findings)[0];
   assert(anyFinding && anyFinding.firstSeen === '2026-W23' && anyFinding.lastSeen === '2026-W23', 'findings ledger tracks first/last-seen');
   assert(w1.linkCheck && w1.linkCheck.brokenCount >= 1, `link check found the broken link (${w1.linkCheck?.brokenCount ?? 0})`);
+  const brokenLink = w1.linkCheck.broken.find((b) => b.url.includes('does-not-exist-404'));
+  assert(brokenLink, 'the deliberately broken link is reported');
+  // The broken link is traced back to the page(s) that link to it.
   assert(
-    w1.linkCheck.broken.some((b) => b.url.includes('does-not-exist-404')),
-    'the deliberately broken link is reported'
+    Array.isArray(brokenLink.foundOn) && brokenLink.foundOn.some((u) => u.endsWith('/') || u.includes('index')),
+    `broken link records its source page(s) (got ${JSON.stringify(brokenLink.foundOn)})`
   );
   // Plain-language ran on every page; the fixture pages are link-heavy so
   // few will have enough prose to score, but the engine must have run and

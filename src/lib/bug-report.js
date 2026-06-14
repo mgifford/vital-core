@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { resolveWcag, severityFor } from './wcag.js';
 import { impactFor, estimateExcluded, pct } from './fpc.js';
+import { remediationTip } from './remediation.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -112,6 +113,7 @@ export function buildBugReports(target, summary) {
         first?.target ? `Locate the element: ${first.target}` : 'Locate the affected element.',
         `Confirm the ${toolName} finding for rule ${ruleId}${wcag ? ` against ${scLabel} ${wcag.name}` : ''}.`,
       ],
+      remediation_tip: remediationTip(engine, ruleId),
       suggested_fix: rule.helpUrl ?? rule.ruleUrl
         ? `See remediation guidance: ${rule.helpUrl ?? rule.ruleUrl}`
         : PLACEHOLDER,
@@ -192,6 +194,7 @@ export function bugReportToMarkdown(r) {
   lines.push(r.testing_environment);
   lines.push('');
   lines.push('### Suggested fix');
+  if (r.remediation_tip) lines.push(`**How to fix:** ${r.remediation_tip}`, '');
   lines.push(r.suggested_fix);
   if (r.example_pages.length > 1) {
     lines.push('');

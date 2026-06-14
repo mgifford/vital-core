@@ -7,6 +7,7 @@ import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric } 
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeResourceCsv } from './lib/csv.js';
+import { buildConsensus } from './lib/consensus.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
 
 /**
@@ -275,7 +276,13 @@ function summarizeWeek(target, week) {
     for (const rf of fs.readdirSync(runsDirPath).filter((f) => f.endsWith('.json'))) {
       const run = JSON.parse(fs.readFileSync(path.join(runsDirPath, rf), 'utf8'));
       for (const b of run.linkCheck?.broken ?? []) {
-        if (!brokenLinks.has(b.url)) brokenLinks.set(b.url, b);
+        const existing = brokenLinks.get(b.url);
+        if (!existing) {
+          brokenLinks.set(b.url, { ...b, foundOn: new Set(b.foundOn ?? (b.foundOn === null ? [] : [])) });
+        } else {
+          // Merge source pages across runs.
+          for (const s of b.foundOn ?? []) existing.foundOn.add(s);
+        }
       }
     }
   }
@@ -319,6 +326,10 @@ function summarizeWeek(target, week) {
       medianFailures: alfaCountsPerPage.length ? median(alfaCountsPerPage) : null,
       rules: alfaRules,
     },
+    // Cross-engine consolidation via W3C ACT rules: how many unique issues
+    // there really are (not axe + alfa double-counted), and how many both
+    // engines agree on.
+    consensus: buildConsensus(axeRules, alfaRules),
     sustainability: bytesList.length
       ? {
           pages: bytesList.length,
@@ -379,7 +390,12 @@ function summarizeWeek(target, week) {
     linkCheck: brokenLinks.size
       ? {
           brokenCount: brokenLinks.size,
-          broken: [...brokenLinks.values()].slice(0, 50),
+          broken: [...brokenLinks.values()].slice(0, 50).map((b) => ({
+            url: b.url,
+            status: b.status,
+            reason: b.reason,
+            foundOn: [...(b.foundOn ?? [])], // pages that link to this broken URL
+          })),
         }
       : null,
     errorPages: errorPages.slice(0, 25),

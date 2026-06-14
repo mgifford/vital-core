@@ -32,6 +32,18 @@ Each engine has a **weekly coverage rate** set in one place — `config/targets.
 - **Lighthouse** (`src/engines/lighthouse.js`): Google Lighthouse performance, accessibility, best-practices, and SEO scores (plus the experimental agentic-browsing category via `VITAL_LIGHTHOUSE_AGENTIC`). Runs its own headless Chrome; keep its sampling rate low (e.g. 10%). 
 - **Link checking** (`src/lib/links.js`, via the `link-check` engine): collects links seen on sampled pages and probes a capped, deduplicated sample (`VITAL_LINK_CHECK_CAP`, default 500) with polite per-host pacing, recording broken links (4xx/5xx, DNS failures, timeouts). 401/403/429 are treated as soft-OK to avoid bot-challenge false positives.
 
+### Cross-engine consensus (ACT-rule deduplication)
+
+axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.
+
+### Remediation tips
+
+Bug reports include a short, plain-language "How to fix" tip per rule (`config/remediation-tips.json`, seeded for common axe and Alfa rules), shown alongside the engine's own reference URL. Add tips as you triage; unknown rules fall back to the reference link.
+
+### Broken-link source tracking
+
+When the link-check engine finds a broken link, the report shows which scanned page(s) link to it ("Linked from: /a, /b +3 more"), so a 404 can be traced to the pages that need fixing, not just the dead URL.
+
 ### Embedded & linked resource inventory
 
 The audit engines only see HTML, but sites also serve PDFs, Word/PowerPoint/Excel documents, iframes, embedded videos and audio, and other non-HTML resources whose accessibility the site owner still owns. The `resources` engine (`src/engines/resources.js`) catalogs every such resource each page links to or embeds, classified by type (it inventories URLs and types; it does not fetch or audit the files). A committed per-domain ledger (`data/<domain>/resources.json`) tracks first-seen / last-seen per resource, so the report answers two questions a site owner can't otherwise: *what PDFs/embeds does this site have?* and *what was added in the last week?* (a "New this week" section, plus a full `resources.csv` with first-seen dates).

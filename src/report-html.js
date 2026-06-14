@@ -31,6 +31,18 @@ function sustainabilityHeadline(s) {
 }
 const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
 const fmtMedian = (n) => (n == null ? 'n/a' : String(n));
+/** Render the pages that link to a broken URL, capped with a "+N more". */
+function linkedFrom(sources) {
+  const list = Array.isArray(sources) ? sources : sources ? [sources] : [];
+  if (list.length === 0) return 'n/a';
+  const shown = list.slice(0, 3).map((u) => {
+    let label = u;
+    try { label = new URL(u).pathname || u; } catch { /* keep raw */ }
+    return `<a href="${esc(u)}">${esc(label)}</a>`;
+  });
+  const more = list.length > 3 ? ` +${list.length - 3} more` : '';
+  return shown.join('<br>') + more;
+}
 
 /** Delta rendered as text first; symbol is reinforcement, not the meaning. */
 function delta(n, { goodWhenDown = true, unit = '' } = {}) {
@@ -159,7 +171,7 @@ ${b.impact?.groups?.length
         : `<p class="bug-placeholder">${esc(b.impact?.summary ?? 'Requires manual testing.')}</p>`}
 <p class="bug-label">Affected pages</p><p>${b.frequency.pages_affected} pages${b.affected_pages_csv ? ` — <a href="${esc(b.affected_pages_csv)}">download CSV</a>` : ''}</p>
 <p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
-<p class="bug-label">Suggested fix</p><p>${esc(b.suggested_fix)}</p>
+<p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
 </details>`;
     })
     .join('\n');
@@ -232,6 +244,29 @@ ${newBlock}
 </section>`;
 }
 
+/**
+ * Cross-engine consensus: the true number of unique accessibility issues
+ * (deduplicated across axe and Alfa via W3C ACT rules), and how many both
+ * engines agree on. Prevents the "looks like 2x the errors" problem of
+ * summing two engines that overlap.
+ */
+function consensusSection(summary) {
+  const c = summary.consensus;
+  if (!c || c.uniqueIssues === 0) return '';
+  const naive = c.rawAxe + c.rawAlfa;
+  const saved = naive - c.uniqueIssues;
+  return `<section aria-labelledby="h-consensus">
+<h2 id="h-consensus">Unique accessibility issues (axe + Alfa consolidated)</h2>
+<p class="meta">axe and Alfa both implement W3C ACT rules, so the same issue is often caught by both. These are deduplicated by ACT rule and page, so a shared finding counts once${saved > 0 ? ` (${naive} raw engine findings → ${c.uniqueIssues} unique)` : ''}.</p>
+<dl class="ledger">
+  <div><dt>Unique issues (rule × page)</dt><dd>${c.uniqueIssues}</dd></div>
+  <div><dt>Caught by both engines</dt><dd>${c.consensus}<span class="bug-meta"> highest confidence</span></dd></div>
+  <div><dt>axe only</dt><dd>${c.axeOnly}</dd></div>
+  <div><dt>Alfa only</dt><dd>${c.alfaOnly}</dd></div>
+</dl>
+</section>`;
+}
+
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }) {
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${text}</a>` : '');
@@ -277,6 +312,8 @@ ${changeList('axe-core', diff.axe)}
 ${changeList('Alfa', diff.alfa)}
 </section>` : ''}
 
+${consensusSection(summary)}
+
 <section aria-labelledby="h-axe">
 <h2 id="h-axe">axe-core findings</h2>
 ${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summary.axe.rules, 'axe-core', 'axe-core', csvLinks)}
@@ -294,9 +331,9 @@ ${summary.linkCheck ? `
 <h2 id="h-links">Broken links</h2>
 <table>
 <caption>${summary.linkCheck.brokenCount} broken link(s) found on scanned pages in ${summary.week}.</caption>
-<thead><tr><th scope="col">Broken URL</th><th scope="col">Status</th><th scope="col">Found on</th></tr></thead>
+<thead><tr><th scope="col">Broken URL</th><th scope="col">Status</th><th scope="col">Linked from</th></tr></thead>
 <tbody>${summary.linkCheck.broken
-    .map((b) => `<tr><th scope="row"><a href="${esc(b.url)}">${esc(b.url)}</a></th><td>${esc(b.status || b.reason)}</td><td>${b.foundOn ? `<a href="${esc(b.foundOn)}">${esc(new URL(b.foundOn).pathname)}</a>` : 'n/a'}</td></tr>`)
+    .map((b) => `<tr><th scope="row"><a href="${esc(b.url)}">${esc(b.url)}</a></th><td>${esc(b.status || b.reason)}</td><td>${linkedFrom(b.foundOn)}</td></tr>`)
     .join('\n')}</tbody>
 </table>
 </section>` : ''}

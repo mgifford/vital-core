@@ -424,3 +424,43 @@ test('resource ledger: tracks first/last-seen and flags new-this-week', () => {
   assert.deepEqual(again.map((r) => r.url), ['https://x/b.pdf'], 'a this-week resource is new on re-run too');
   assert.equal(ledger.resources['https://x/b.pdf'].weeksSeen, 1, 're-run does not inflate weeksSeen');
 });
+
+test('act + consensus: axe and alfa for the same ACT rule are one issue', async () => {
+  const { canonicalRuleKey, actRuleIdsFor } = await import('../../src/lib/act.js');
+  const { buildConsensus } = await import('../../src/lib/consensus.js');
+
+  // image-alt (axe) and sia-r2 (alfa) are both ACT rule 23a2a8.
+  assert.deepEqual(actRuleIdsFor('axe-core', 'image-alt'), ['23a2a8']);
+  assert.deepEqual(actRuleIdsFor('alfa', 'sia-r2'), ['23a2a8']);
+  assert.equal(canonicalRuleKey('axe-core', 'image-alt'), canonicalRuleKey('alfa', 'sia-r2'));
+  // An unmapped rule keeps its own engine-scoped key (never merged).
+  assert.equal(canonicalRuleKey('axe-core', 'made-up-rule'), 'axe-core:made-up-rule');
+
+  const axe = { 'image-alt': { affectedPages: [{ url: 'p/a', instances: 1 }, { url: 'p/b', instances: 1 }] } };
+  const alfa = { 'sia-r2': { affectedPages: [{ url: 'p/a', instances: 1 }] } };
+  const c = buildConsensus(axe, alfa);
+  // /a: both engines -> consensus; /b: axe only. 2 unique from 3 raw.
+  assert.equal(c.uniqueIssues, 2, 'deduped to 2 unique issues');
+  assert.equal(c.consensus, 1, '/a caught by both');
+  assert.equal(c.axeOnly, 1, '/b axe only');
+  assert.equal(c.alfaOnly, 0);
+  assert.equal(c.rawAxe + c.rawAlfa, 3, 'naive count would be 3');
+  assert.equal(c.byKey['act:23a2a8'].engines, 'both');
+});
+
+test('consensus: unmapped rules from different engines stay separate', async () => {
+  const { buildConsensus } = await import('../../src/lib/consensus.js');
+  // Two unmapped rules on the same page must NOT merge.
+  const axe = { 'zzz-unmapped': { affectedPages: [{ url: 'p/a', instances: 1 }] } };
+  const alfa = { 'sia-rZZZ': { affectedPages: [{ url: 'p/a', instances: 1 }] } };
+  const c = buildConsensus(axe, alfa);
+  assert.equal(c.uniqueIssues, 2, 'distinct unmapped rules are distinct issues');
+  assert.equal(c.consensus, 0, 'no false consensus across unrelated rules');
+});
+
+test('remediation: tips resolve for known rules, null otherwise', async () => {
+  const { remediationTip } = await import('../../src/lib/remediation.js');
+  assert.match(remediationTip('axe-core', 'image-alt'), /alt/i);
+  assert.match(remediationTip('alfa', 'sia-r2'), /alt/i);
+  assert.equal(remediationTip('axe-core', 'no-such-rule'), null);
+});
