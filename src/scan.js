@@ -15,6 +15,7 @@ import { runAxe } from './engines/axe.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
 import { runDeprecatedHtml } from './engines/deprecated-html.js';
+import { runResources } from './engines/resources.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
 
@@ -203,6 +204,7 @@ for (const item of batch) {
       if (runs('alfa')) { record.alfa = await runAlfa(page); mark('alfa'); }
       if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
+      if (runs('resources')) { record.resources = await runResources(page, item.url); mark('resources'); }
       if (sustain) { record.sustainability = sustain.collect(); mark('sustainability'); }
 
       // Lighthouse: only when this page is in lighthouse's sample AND its

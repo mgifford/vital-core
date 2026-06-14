@@ -27,6 +27,21 @@ export function ruleSlug(engine, ruleId) {
 }
 
 /**
+ * Write the resource inventory CSV (every linked/embedded non-HTML
+ * resource: PDFs, docs, iframes, media) with type, pages it appears on,
+ * and when it was first seen (from the resource ledger). Returns the
+ * relative path "resources.csv".
+ */
+export function writeResourceCsv(repDir, resources, ledger) {
+  const rows = resources.list.map((r) => {
+    const led = ledger.resources[r.url];
+    return [r.url, r.type, r.pages, led?.firstSeen ?? '', led?.lastSeen ?? ''];
+  });
+  fs.writeFileSync(path.join(repDir, 'resources.csv'), toCsv(['url', 'type', 'pages', 'first_seen', 'last_seen'], rows));
+  return 'resources.csv';
+}
+
+/**
  * Write all CSVs for one domain/week into <repDir>/csv/. Returns a map of
  * { axeAll, alfaAll, byRule: { "<engine>:<ruleId>": "<relative csv path>" } }
  * so the report can link to each. Relative paths are from the report's

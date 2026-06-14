@@ -6,7 +6,8 @@ import { compareWeeks } from './lib/week.js';
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs } from './lib/csv.js';
+import { writeCsvs, writeResourceCsv } from './lib/csv.js';
+import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -67,6 +68,9 @@ for (const target of config.targets) {
   // each aggregate run (idempotent) by replaying weeks oldest-first.
   const ledger = loadFindings(target.key, target.domain);
   ledger.findings = {}; // recompute deterministically from retained weeks
+  // Resource inventory ledger (PDFs, docs, iframes, media) — same pattern.
+  const resLedger = loadResourceLedger(target.key, target.domain);
+  resLedger.resources = {};
 
   // Human reports + structured bug reports (Markdown, JSON, and inline HTML).
   for (let i = 0; i < series.length; i++) {
@@ -93,6 +97,16 @@ for (const target of config.targets) {
       b.affected_pages_csv = csvLinks.byRule[`${b.engine_key}:${b.rule_id}`] ?? null;
     }
 
+    // Resource inventory: update the ledger, mark which are new this week,
+    // and write a resources CSV.
+    const newResources = summary.resources
+      ? updateResourceLedger(resLedger, summary.week, summary.resources.list)
+      : [];
+    if (summary.resources) {
+      summary.resources.newThisWeek = newResources;
+      summary.resources.csv = writeResourceCsv(repDir, summary.resources, resLedger);
+    }
+
     const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks);
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
@@ -103,6 +117,7 @@ for (const target of config.targets) {
   }
 
   saveFindings(target.key, ledger);
+  saveResourceLedger(target.key, resLedger);
 
   dashboard.push({ target, series, diffs });
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
@@ -130,6 +145,7 @@ function summarizeWeek(target, week) {
   const alfaRules = {};
   const deprecatedRules = {}; // ruleId -> { count, pages, help, examplePages, instances }
   const enginePageCounts = {}; // engine -> unique pages it ran on (coverage)
+  const resourceMap = new Map(); // resource url -> { url, type, foundOn:Set }
   let pagesScanned = 0;
   let pagesWithAxeViolations = 0;
   let pagesWithAlfaFailures = 0;
@@ -211,6 +227,13 @@ function summarizeWeek(target, week) {
         addInstances(r, rec.url, v.examples);
       }
     }
+    if (rec.resources) {
+      for (const res of rec.resources.resources ?? []) {
+        const entry = resourceMap.get(res.url) ?? { url: res.url, type: res.type, foundOn: new Set() };
+        entry.foundOn.add(rec.url);
+        resourceMap.set(res.url, entry);
+      }
+    }
     if (rec.sustainability) {
       bytesList.push(rec.sustainability.bytes);
       requestsList.push(rec.sustainability.requests);
@@ -219,7 +242,7 @@ function summarizeWeek(target, week) {
     }
 
     // Per-engine coverage: which engines actually ran on this page.
-    for (const e of ['axe', 'alfa', 'plain-language', 'deprecated-html', 'lighthouse', 'sustainability']) {
+    for (const e of ['axe', 'alfa', 'plain-language', 'deprecated-html', 'resources', 'lighthouse', 'sustainability']) {
       const key = { 'plain-language': 'plainLanguage', 'deprecated-html': 'deprecatedHtml' }[e] ?? e;
       if (rec[key]) enginePageCounts[e] = (enginePageCounts[e] ?? 0) + 1;
     }
@@ -314,6 +337,15 @@ function summarizeWeek(target, week) {
           rules: deprecatedRules,
         }
       : null,
+    resources: resourceMap.size
+      ? {
+          total: resourceMap.size,
+          byType: countBy([...resourceMap.values()], (r) => r.type),
+          // Full list (url, type, count of pages it appears on) for the
+          // ledger, inventory, and CSV. foundOn Set -> count.
+          list: [...resourceMap.values()].map((r) => ({ url: r.url, type: r.type, pages: r.foundOn.size })),
+        }
+      : null,
     plainLanguage: plPagesChecked
       ? {
           pagesChecked: plPagesChecked,
@@ -397,6 +429,15 @@ function addInstances(rule, url, examples) {
       html: ex.html ?? null, // minimal failing markup (axe only)
     });
   }
+}
+
+function countBy(items, keyFn) {
+  const out = {};
+  for (const it of items) {
+    const k = keyFn(it);
+    out[k] = (out[k] ?? 0) + 1;
+  }
+  return out;
 }
 
 function median(list) {

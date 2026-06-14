@@ -32,6 +32,10 @@ Each engine has a **weekly coverage rate** set in one place — `config/targets.
 - **Lighthouse** (`src/engines/lighthouse.js`): Google Lighthouse performance, accessibility, best-practices, and SEO scores (plus the experimental agentic-browsing category via `VITAL_LIGHTHOUSE_AGENTIC`). Runs its own headless Chrome; keep its sampling rate low (e.g. 10%). 
 - **Link checking** (`src/lib/links.js`, via the `link-check` engine): collects links seen on sampled pages and probes a capped, deduplicated sample (`VITAL_LINK_CHECK_CAP`, default 500) with polite per-host pacing, recording broken links (4xx/5xx, DNS failures, timeouts). 401/403/429 are treated as soft-OK to avoid bot-challenge false positives.
 
+### Embedded & linked resource inventory
+
+The audit engines only see HTML, but sites also serve PDFs, Word/PowerPoint/Excel documents, iframes, embedded videos and audio, and other non-HTML resources whose accessibility the site owner still owns. The `resources` engine (`src/engines/resources.js`) catalogs every such resource each page links to or embeds, classified by type (it inventories URLs and types; it does not fetch or audit the files). A committed per-domain ledger (`data/<domain>/resources.json`) tracks first-seen / last-seen per resource, so the report answers two questions a site owner can't otherwise: *what PDFs/embeds does this site have?* and *what was added in the last week?* (a "New this week" section, plus a full `resources.csv` with first-seen dates).
+
 ### Findings history
 
 A committed per-domain ledger (`data/<domain>/findings.json`) tracks every unique finding by `pattern_id` with first-seen / last-seen / weeks-seen, accumulated across the domain's whole history (it survives page-detail pruning). Bug reports show when each issue was first discovered and last observed.

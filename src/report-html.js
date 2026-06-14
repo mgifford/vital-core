@@ -196,6 +196,42 @@ function coverageTable(summary) {
 </details>`;
 }
 
+/**
+ * Embedded/linked non-HTML resources: PDFs, Office docs, iframes,
+ * embedded media. Leads with what's NEW this week (the question a site
+ * owner most wants answered), then the by-type inventory, with a CSV of
+ * everything (incl. first-seen).
+ */
+const RESOURCE_LABELS = {
+  pdf: 'PDF documents', document: 'Word/text documents', presentation: 'Presentations',
+  spreadsheet: 'Spreadsheets', archive: 'Archives (zip, etc.)', video: 'Video files',
+  audio: 'Audio files', image: 'Images', svg: 'SVG', iframe: 'Iframes',
+  'embedded-media': 'Embedded media players', embed: 'Embeds / objects',
+};
+function resourcesSection(summary) {
+  const r = summary.resources;
+  if (!r) return '';
+  const typeRows = Object.entries(r.byType)
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, n]) => `<tr><th scope="row">${esc(RESOURCE_LABELS[type] ?? type)}</th><td class="num">${n}</td></tr>`)
+    .join('\n');
+  const newList = (r.newThisWeek ?? []);
+  const newBlock = newList.length
+    ? `<h3>New this week (${newList.length})</h3>
+<ul>${newList.slice(0, 100).map((n) => `<li><span class="bug-meta">${esc(RESOURCE_LABELS[n.type] ?? n.type)}:</span> <a href="${esc(n.url)}">${esc(n.url)}</a></li>`).join('')}</ul>`
+    : `<p>No new resources first seen this week.</p>`;
+  return `<section aria-labelledby="h-resources">
+<h2 id="h-resources">Embedded &amp; linked resources</h2>
+<p class="meta">Non-HTML resources this site links to or embeds — PDFs, Office documents, iframes, and media. The site owner is responsible for their accessibility too. ${r.csv ? `Full inventory with first-seen dates: <a href="${esc(r.csv)}">CSV</a>.` : ''}</p>
+${newBlock}
+<table>
+<caption>${r.total} distinct resources, by type.</caption>
+<thead><tr><th scope="col">Type</th><th scope="col">Count</th></tr></thead>
+<tbody>${typeRows}</tbody>
+</table>
+</section>`;
+}
+
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }) {
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${text}</a>` : '');
@@ -278,6 +314,8 @@ ${summary.plainLanguage?.topMisspellings?.length ? `
 <p class="meta">Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.</p>
 <ul>${summary.plainLanguage.topMisspellings.map((m) => `<li><code>${esc(m.word)}</code> — ${m.pages} page(s)</li>`).join('')}</ul>
 </section>` : ''}
+
+${resourcesSection(summary)}
 
 ${summary.errorPages.length ? `
 <section aria-labelledby="h-errors">

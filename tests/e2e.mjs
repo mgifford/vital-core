@@ -46,6 +46,7 @@ sampling:
   alfa: 100
   plain-language: 100
   deprecated-html: 100
+  resources: 100
   link-check: 100
   sustainability: 100
 targets:
@@ -69,6 +70,9 @@ function writeSite({ fixed }) {
 <body><main><h1>Page ${i}</h1>
 ${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
 <p>This is a short paragraph of ordinary readable prose written so the plain language engine has real sentences to score. It deliberately contains one mispelled word for the spell check to catch, and enough words to count as content rather than navigation.</p>
+<p><a href="/files/report-${i}.pdf">Annual report (PDF)</a></p>
+${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a></p>' : ''}
+<iframe src="https://www.youtube.com/embed/abc${i}" title="Embedded video ${i}"></iframe>
 <nav aria-label="All pages"><ul>${nav}</ul></nav></main></body></html>`
     );
   }
@@ -175,6 +179,15 @@ try {
   const imgAltBug = bugs1.reports.find((r) => r.rule_id === 'image-alt');
   assert(imgAltBug.impact.groups.some((g) => /vision/i.test(g.group)), 'image-alt bug shows vision-impact groups');
   assert(imgAltBug.affected_pages_csv && imgAltBug.affected_pages_csv.endsWith('.csv'), 'bug report links its affected-pages CSV');
+  // Resource catalog: PDFs and embedded media found and inventoried.
+  assert(w1.resources && w1.resources.total > 0, 'resources cataloged');
+  assert(w1.resources.byType.pdf > 0, 'PDF links cataloged');
+  assert(w1.resources.byType['embedded-media'] > 0, 'embedded media (YouTube iframe) cataloged');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'resources.csv')), 'resources CSV written');
+  // Resource ledger first-seen; in week 1 everything is new this week.
+  const resLedger1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'resources.json')));
+  const anyRes = Object.values(resLedger1.resources)[0];
+  assert(anyRes && anyRes.firstSeen === '2026-W23', 'resource ledger tracks first-seen');
   // Findings ledger written with first/last-seen for this week.
   const ledger1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'findings.json')));
   const anyFinding = Object.values(ledger1.findings)[0];
@@ -225,6 +238,18 @@ try {
   const ledger2 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'findings.json')));
   const imageAlt = Object.values(ledger2.findings).find((f) => f.ruleId === 'image-alt');
   assert(imageAlt && imageAlt.firstSeen === '2026-W23' && imageAlt.lastSeen === '2026-W23', 'resolved finding keeps its last-seen week');
+
+  // Resource ledger: the week-2-only PDF is flagged firstSeen W24; the
+  // week-1 PDFs are not new in week 2.
+  const resLedger2 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'resources.json')));
+  const newPdf = Object.entries(resLedger2.resources).find(([url]) => url.includes('brand-new-week2.pdf'));
+  assert(newPdf && newPdf[1].firstSeen === '2026-W24', 'newly added PDF is first-seen in week 2');
+  const oldPdf = Object.entries(resLedger2.resources).find(([url]) => url.includes('report-1.pdf'));
+  assert(oldPdf && oldPdf[1].firstSeen === '2026-W23', 'week-1 PDF keeps its earlier first-seen');
+  const w2summary = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W24', 'summary.json')));
+  // (summary.json omits newThisWeek; verify via the ledger above. The
+  // report's "New this week" list is driven by the same firstSeen check.)
+  assert(w2summary.resources.total > 0, 'week 2 resources cataloged');
 
   // --- 4. Reports ------------------------------------------------------
   const reportPath = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'index.html');

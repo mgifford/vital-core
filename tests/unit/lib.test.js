@@ -13,6 +13,7 @@ import { updateFindings } from '../../src/lib/findings.js';
 import { findMisspellings } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
 import { toCsv, ruleSlug } from '../../src/lib/csv.js';
+import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -396,4 +397,30 @@ test('buildBugReports: page-load estimate appears when target sets page_loads_pe
   // Without page_loads_per_week, no estimate (just percentages).
   const [r2] = buildBugReports({ domain: 'x', key: 'x' }, summary);
   assert.ok(r2.impact.groups.every((g) => g.estimatedExcluded == null), 'no estimate without page loads');
+});
+
+test('resource ledger: tracks first/last-seen and flags new-this-week', () => {
+  const ledger = { domain: 'x', resources: {} };
+  const w1 = updateResourceLedger(ledger, '2026-W23', [
+    { url: 'https://x/a.pdf', type: 'pdf', pages: 3 },
+    { url: 'https://x/embed', type: 'iframe', pages: 1 },
+  ]);
+  assert.equal(w1.length, 2, 'all resources are new in the first week');
+  assert.equal(ledger.resources['https://x/a.pdf'].firstSeen, '2026-W23');
+
+  // Week 2: a.pdf persists, b.pdf is brand new.
+  const w2 = updateResourceLedger(ledger, '2026-W24', [
+    { url: 'https://x/a.pdf', type: 'pdf', pages: 4 },
+    { url: 'https://x/b.pdf', type: 'pdf', pages: 1 },
+  ]);
+  assert.deepEqual(w2.map((r) => r.url), ['https://x/b.pdf'], 'only the genuinely new resource is flagged');
+  assert.equal(ledger.resources['https://x/a.pdf'].firstSeen, '2026-W23', 'persisting resource keeps first-seen');
+  assert.equal(ledger.resources['https://x/a.pdf'].lastSeen, '2026-W24', 'lastSeen advances');
+  assert.equal(ledger.resources['https://x/b.pdf'].firstSeen, '2026-W24');
+
+  // Re-running the same week is idempotent for weeksSeen (no inflation);
+  // a resource first seen this week is still correctly "new this week".
+  const again = updateResourceLedger(ledger, '2026-W24', [{ url: 'https://x/b.pdf', type: 'pdf', pages: 1 }]);
+  assert.deepEqual(again.map((r) => r.url), ['https://x/b.pdf'], 'a this-week resource is new on re-run too');
+  assert.equal(ledger.resources['https://x/b.pdf'].weeksSeen, 1, 're-run does not inflate weeksSeen');
 });
