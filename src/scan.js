@@ -167,6 +167,27 @@ for (const item of batch) {
   const runs = (engine) => shouldRun(engine, item.id, week, rates[engine]);
   const mark = (engine) => { enginesRun[engine] = (enginesRun[engine] ?? 0) + 1; };
 
+  // Pre-flight HEAD check: some links have no file extension but serve a
+  // PDF/binary (e.g. /files/document/...pdf). Navigating to those makes
+  // Chromium start a download and throws. A cheap HEAD lets us detect the
+  // content type first and skip navigation for non-HTML, recording it as
+  // a non-HTML resource instead of erroring.
+  const headType = await headContentType(fetchUrl, target.user_agent, target.nav_timeout_ms);
+  if (headType && !headType.includes('html') && !headType.includes('xml')) {
+    state.pages[item.id].lastScannedWeek = week;
+    state.pages[item.id].lastScannedAt = new Date().toISOString();
+    state.pages[item.id].lastStatus = 'non-html';
+    fs.writeFileSync(
+      path.join(pagesDir, `${item.id}.json`),
+      JSON.stringify({ pageId: item.id, url: item.url, week, runId, scannedAt: new Date().toISOString(), status: 200, depth: item.depth, nonHtml: { contentType: headType } })
+    );
+    runLog.scanned.push(item.id);
+    log(`skip non-HTML (${headType.split(';')[0]}): ${urlPath}`);
+    if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
+    await new Promise((r) => setTimeout(r, delayMs));
+    continue;
+  }
+
   const page = await context.newPage();
   const sustain = runs('sustainability') ? createSustainabilityCollector(page) : null;
 
@@ -273,9 +294,23 @@ for (const item of batch) {
     state.pages[item.id].failCount = 0;
     log(`${status} ${urlPath} ${record.axe ? `axe:${record.axe.violationCount}` : ''} ${record.alfa ? `alfa:${record.alfa.failedCount}` : ''}`);
   } catch (err) {
-    state.pages[item.id].failCount = (state.pages[item.id].failCount ?? 0) + 1;
-    runLog.errors.push({ pageId: item.id, url: item.url, error: String(err).slice(0, 300) });
-    log(`ERROR ${urlPath}: ${String(err).slice(0, 120)}`);
+    const msg = String(err);
+    // A download (binary the HEAD check missed) is not a failure — record
+    // it as a non-HTML page and move on, don't count it as an error.
+    if (/Download is starting/i.test(msg)) {
+      state.pages[item.id].lastScannedWeek = week;
+      state.pages[item.id].lastStatus = 'non-html';
+      fs.writeFileSync(
+        path.join(pagesDir, `${item.id}.json`),
+        JSON.stringify({ pageId: item.id, url: item.url, week, runId, scannedAt: new Date().toISOString(), status: 200, depth: item.depth, nonHtml: { contentType: 'download' } })
+      );
+      runLog.scanned.push(item.id);
+      log(`skip non-HTML (download): ${urlPath}`);
+    } else {
+      state.pages[item.id].failCount = (state.pages[item.id].failCount ?? 0) + 1;
+      runLog.errors.push({ pageId: item.id, url: item.url, error: msg.slice(0, 300) });
+      log(`ERROR ${urlPath}: ${msg.slice(0, 120)}`);
+    }
   } finally {
     await page.close().catch(() => {});
   }
@@ -317,6 +352,25 @@ saveState(target.key, state);
 await browser.close();
 const coverage = Object.entries(enginesRun).map(([e, n]) => `${e}:${n}`).join(' ');
 log(`done: ${runLog.scanned.length} scanned, ${runLog.errors.length} errors${coverage ? ` | ${coverage}` : ''}`);
+
+/**
+ * Cheap HEAD request to learn a URL's content-type before navigating, so
+ * we can skip non-HTML resources (PDFs/binaries) instead of letting
+ * Chromium try to download them. Returns the lowercased content-type, or
+ * null if HEAD is unsupported/failed (then we fall back to navigating).
+ */
+async function headContentType(url, userAgent, timeoutMs) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), Math.min(timeoutMs ?? 15000, 15000));
+  try {
+    const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: ctrl.signal, headers: { 'user-agent': userAgent } });
+    return (res.headers.get('content-type') || '').toLowerCase() || null;
+  } catch {
+    return null; // HEAD blocked/failed — let goto handle it (with the download catch)
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 function parseArgs(argv) {
   const out = {};

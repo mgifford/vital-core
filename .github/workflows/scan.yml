@@ -15,8 +15,15 @@ name: scan
 
 on:
   schedule:
-    - cron: '23 5 * * *'   # nightly ~01:23 ET
-    - cron: '41 7 * * 2,4,6' # second pass three nights a week for bigger budgets
+    # Off-peak for US government audiences = ~01:00-05:00 ET (05:00-09:00
+    # UTC). Several passes per night so weekly coverage accumulates faster;
+    # avoid :00 minutes (GitHub delays on-the-hour crons heavily).
+    - cron: '17 5 * * *'    # nightly ~01:17 ET
+    - cron: '23 7 * * *'    # nightly ~03:23 ET
+    - cron: '41 9 * * *'    # nightly ~05:41 ET
+    # Extra weekend passes (Sat/Sun) when traffic is lowest.
+    - cron: '13 3 * * 0,6'  # weekend ~23:13 ET (Fri/Sat night)
+    - cron: '47 11 * * 0,6' # weekend ~07:47 ET
   workflow_dispatch:
     inputs:
       domain:
@@ -108,10 +115,24 @@ jobs:
             echo "no changes"; exit 0
           fi
           git commit -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)"
-          # Rebase-retry push: absorbs races with sibling matrix jobs.
+          # Rebase-retry push. Parallel matrix jobs can race on the same
+          # data/state files (two runs touching the same domain, or the
+          # state crawl.json). These files are append-only and regenerable,
+          # so -X theirs auto-resolves any conflict in favor of the incoming
+          # branch tip — the push never fails on a merge conflict, and at
+          # most a few pages re-scan next run. One job's race never blocks
+          # the others.
           for i in 1 2 3 4 5; do
             if git push; then exit 0; fi
-            git pull --rebase origin "${GITHUB_REF_NAME}"
+            if ! git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"; then
+              # Conflict -X theirs couldn't auto-resolve (e.g. delete/modify):
+              # abort and re-stage our files onto the fresh tip.
+              git rebase --abort 2>/dev/null || true
+              git reset --soft HEAD~1 2>/dev/null || true
+              git pull --rebase origin "${GITHUB_REF_NAME}"
+              git add state/ data/
+              git commit -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)" || true
+            fi
             sleep $((RANDOM % 10 + 2))
           done
           echo "push failed after retries" >&2

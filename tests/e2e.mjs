@@ -271,6 +271,10 @@ try {
   const report = fs.readFileSync(reportPath, 'utf8');
   assert(report.includes('Changes since 2026-W23'), 'report includes week-over-week section');
   assert(report.includes('lang="en"') && report.includes('Skip to content'), 'report has basic accessibility scaffolding');
+  // Theme toggle: action-describing aria-label, sun+moon icons, no-flash script.
+  assert(report.includes('id="theme-toggle"') && /aria-label="Switch to (dark|light) mode"/.test(report), 'theme toggle present with action label');
+  assert(report.includes('icon-sun') && report.includes('icon-moon'), 'toggle has sun and moon icons');
+  assert(report.includes("data-theme") && report.includes('vital-theme'), 'no-flash theme script + persistence present');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'index.html')), 'dashboard generated');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'style.css')), 'stylesheet generated');
 

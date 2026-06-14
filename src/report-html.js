@@ -65,6 +65,56 @@ function sparkline(values, width = 220, height = 36) {
   return `<svg class="spark" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
 }
 
+/**
+ * Accessible light/dark theme toggle, following the light-dark-mode skill
+ * from mgifford/accessibility-skills:
+ *  - defaults to prefers-color-scheme; manual choice persists in localStorage
+ *  - aria-label describes the ACTION ("Switch to dark mode"), updated on click
+ *  - shows the moon in light mode (action: go dark) and sun in dark mode
+ *  - keyboard-operable native <button>, placed after nav, not sticky
+ * The toggle and its tiny script are the only JS in the reports; with JS
+ * off, prefers-color-scheme still applies (progressive enhancement).
+ */
+function themeToggle() {
+  return `<button id="theme-toggle" type="button" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false" hidden>
+  <svg class="icon-sun" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20">
+    <circle cx="12" cy="12" r="5" fill="currentColor"/>
+    <path stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"
+      d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
+  </svg>
+  <svg class="icon-moon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20">
+    <path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+  </svg>
+  <span class="theme-label">Theme</span>
+</button>
+<script>
+  (function () {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.hidden = false; // only show the control when JS can drive it
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    function current() {
+      var attr = document.documentElement.getAttribute('data-theme');
+      return attr || (mq.matches ? 'dark' : 'light');
+    }
+    function sync() {
+      var dark = current() === 'dark';
+      // Label/pressed describe the action and state for screen readers.
+      btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      btn.setAttribute('aria-pressed', String(dark));
+    }
+    sync();
+    btn.addEventListener('click', function () {
+      var next = current() === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('vital-theme', next); } catch (e) {}
+      sync();
+    });
+    mq.addEventListener && mq.addEventListener('change', sync);
+  })();
+</script>`;
+}
+
 function layout({ title, breadcrumb, body, depth }) {
   const base = '../'.repeat(depth);
   return `<!DOCTYPE html>
@@ -75,12 +125,21 @@ function layout({ title, breadcrumb, body, depth }) {
 <meta name="color-scheme" content="light dark">
 <title>${esc(title)}</title>
 <link rel="stylesheet" href="${base}style.css">
+<script>
+  // Apply the saved theme before first paint to avoid a flash of the
+  // wrong colour scheme. No saved choice = follow the OS (prefers-color-scheme).
+  try {
+    var t = localStorage.getItem('vital-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header>
   <p class="brand"><a href="${base}index.html">vital-scans</a> <span class="tag">open quality ledger</span></p>
   ${breadcrumb ? `<nav aria-label="Breadcrumb"><ol class="crumbs">${breadcrumb}</ol></nav>` : ''}
+  ${themeToggle()}
 </header>
 <main id="main">
 ${body}
@@ -461,10 +520,30 @@ const CSS = `/* vital-scans ledger. System fonts only; ~2 KB; honors user color 
   --better: #1d5c2f; --worse: #8c2f1b; --muted: #5a6166;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --ink: #e8e6e1; --paper: #14181a; --accent: #6fd2d6; --rule: #3a4145;
+  :root:not([data-theme="light"]) { --ink: #e8e6e1; --paper: #14181a; --accent: #6fd2d6; --rule: #3a4145;
           --better: #8fd6a0; --worse: #f0a48d; --muted: #9aa3a8; }
 }
+/* Manual overrides (mirror the values above) win over the OS preference. */
+:root[data-theme="light"] { --ink: #1c2326; --paper: #fbfaf7; --accent: #00585c; --rule: #c9c4b8;
+          --better: #1d5c2f; --worse: #8c2f1b; --muted: #5a6166; }
+:root[data-theme="dark"] { --ink: #e8e6e1; --paper: #14181a; --accent: #6fd2d6; --rule: #3a4145;
+          --better: #8fd6a0; --worse: #f0a48d; --muted: #9aa3a8; }
 * { box-sizing: border-box; }
+.theme-toggle { display: inline-flex; align-items: center; gap: .35rem; margin-top: .5rem;
+  background: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: 4px;
+  padding: .3rem .6rem; font: inherit; font-size: .85rem; cursor: pointer; }
+.theme-toggle:hover { border-color: var(--accent); }
+.theme-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: inline; }
+:root[data-theme="dark"] .theme-toggle .icon-sun,
+.theme-toggle[aria-pressed="true"] .icon-sun { display: inline; }
+:root[data-theme="dark"] .theme-toggle .icon-moon,
+.theme-toggle[aria-pressed="true"] .icon-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: inline; }
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
+}
 body { margin: 0 auto; max-width: 72rem; padding: 1rem 1.25rem 3rem;
   font-family: ui-sans-serif, system-ui, sans-serif; line-height: 1.55;
   color: var(--ink); background: var(--paper); }
