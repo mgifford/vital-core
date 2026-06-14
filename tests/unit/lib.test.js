@@ -464,3 +464,43 @@ test('remediation: tips resolve for known rules, null otherwise', async () => {
   assert.match(remediationTip('alfa', 'sia-r2'), /alt/i);
   assert.equal(remediationTip('axe-core', 'no-such-rule'), null);
 });
+
+test('score: clean site scores high, broken site scores low, grades map', async () => {
+  const { scoreFor, grade, trajectory } = await import('../../src/lib/score.js');
+  const clean = { pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 2, medianViolations: 0 }, alfa: { pagesScanned: 100, pagesWithFailures: 1, medianFailures: 0 } };
+  const broken = { pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 90, medianViolations: 15 }, alfa: { pagesScanned: 100, pagesWithFailures: 80, medianFailures: 20 } };
+  const sc = scoreFor(clean), sb = scoreFor(broken);
+  assert.ok(sc.score > sb.score, 'clean scores higher than broken');
+  assert.ok(sc.score >= 90, `clean is an A (${sc.score})`);
+  assert.ok(sb.score < 60, `broken is failing (${sb.score})`);
+  assert.equal(grade(95), 'A'); assert.equal(grade(72), 'C'); assert.equal(grade(40), 'F');
+  assert.equal(scoreFor({ pagesAudited: 0 }), null, 'no audited pages -> null');
+
+  // Trajectory: improving when later score is higher.
+  const series = [broken, { pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 30, medianViolations: 3 }, alfa: { pagesScanned: 100, pagesWithFailures: 20, medianFailures: 2 } }];
+  const t = trajectory(series, 4);
+  assert.equal(t.direction, 'improving');
+  assert.ok(t.delta > 0);
+});
+
+test('inventory: accumulates last-known status, keeps newer over older', async () => {
+  const { updateInventory, inventorySummary } = await import('../../src/lib/inventory.js');
+  const inv = { domain: 'x', pages: {} };
+  updateInventory(inv, '2026-W20', [
+    { url: 'x/a', pageId: 'a', status: 200, scannedAt: 't1', axe: { violationCount: 3 } },
+    { url: 'x/b', pageId: 'b', status: 200, scannedAt: 't1', axe: { violationCount: 0 }, alfa: { failedCount: 0 } },
+  ]);
+  // Later week re-checks /a (now clean); /b not re-scanned this week.
+  updateInventory(inv, '2026-W24', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
+  assert.equal(inv.pages['x/a'].lastWeek, '2026-W24', '/a advanced to newer week');
+  assert.equal(inv.pages['x/a'].hasIssues, false, '/a now clean');
+  assert.equal(inv.pages['x/b'].lastWeek, '2026-W20', '/b retains its older last-known result');
+
+  // Re-applying an older week must NOT clobber the newer /a result.
+  updateInventory(inv, '2026-W20', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't0', axe: { violationCount: 9 } }]);
+  assert.equal(inv.pages['x/a'].lastWeek, '2026-W24', 'older re-run did not overwrite newer');
+
+  const s = inventorySummary(inv, '2026-W24');
+  assert.equal(s.totalKnownPages, 2);
+  assert.equal(s.scannedThisWeek, 1);
+});

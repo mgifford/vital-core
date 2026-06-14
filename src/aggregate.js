@@ -8,6 +8,7 @@ import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeResourceCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
+import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
 
 /**
@@ -52,6 +53,21 @@ for (const target of config.targets) {
     }
   }
   if (series.length === 0) continue;
+
+  // Rolling site inventory: last-known status for every URL ever scanned.
+  // Updated incrementally from each retained week's page records (older
+  // weeks may already be pruned, but their results persist in inventory).
+  const inventory = loadInventory(target.key, target.domain);
+  for (const week of weeks) {
+    const pagesDir = path.join(domainDir, week, 'pages');
+    if (!fs.existsSync(pagesDir)) continue;
+    const records = fs.readdirSync(pagesDir)
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8')));
+    updateInventory(inventory, week, records);
+  }
+  saveInventory(target.key, inventory);
+  const invSummary = inventorySummary(inventory, series[series.length - 1].week);
 
   // Week-over-week diffs between consecutive summaries.
   const diffs = {};
@@ -108,7 +124,9 @@ for (const target of config.targets) {
       summary.resources.csv = writeResourceCsv(repDir, summary.resources, resLedger);
     }
 
-    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks);
+    // inventory totals only make sense on the latest week's report.
+    const isLatest = i === series.length - 1;
+    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null);
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
     fs.writeFileSync(
@@ -120,7 +138,7 @@ for (const target of config.targets) {
   saveFindings(target.key, ledger);
   saveResourceLedger(target.key, resLedger);
 
-  dashboard.push({ target, series, diffs });
+  dashboard.push({ target, series, diffs, inventory: invSummary });
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 

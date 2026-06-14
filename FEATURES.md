@@ -74,6 +74,17 @@ Each finding's WCAG success criterion maps to the [Section 508 Functional Perfor
 - Page-level detail (`data/<domain>/<week>/pages/*.json`) is pruned after `retention_weeks` by `src/prune.js`.
 - Weekly `summary.json` files are kept forever, so trend graphs never break.
 
+### Rolling site inventory (all pages ever scanned)
+
+Because each week only scans a sampled slice and page detail is pruned, a committed per-domain `data/<domain>/inventory.json` records the **last-known status of every URL ever scanned** — last week, status, and axe/Alfa counts — accumulated over time and surviving pruning (`src/lib/inventory.js`). This answers "what's the known state of the *whole* site?" and "how many known pages have issues?", not just this week's sample. Domain reports cite the totals (e.g. "Across 1,820 known pages, 340 have known issues; 300 re-checked this week").
+
+### Scores, trends, and cross-domain comparison
+
+- **Quality score + grade** per domain (0–100, A–F) from page-normalized signals — share of clean pages and median issues/page — comparable across sites of any size (`src/lib/score.js`). Shown as a scorecard on domain reports and a ranked **leaderboard** on the dashboard.
+- **Trajectory** (improving / stable / worsening vs ~4 weeks ago) on the leaderboard, so direction is visible, not just the snapshot.
+- **Multi-week trend charts** (accessible inline SVG, data-table fallback, no JS) on each domain report for median violations/page, reading ease, and page weight; plus a **cross-domain overlay chart** on the dashboard.
+- **Progress-first framing**: reports headline score deltas and the count of issue types **resolved** since last week (from the findings ledger), because trajectory proves progress even when the absolute count isn't zero. Scores are explicitly a relative, automated signal — a floor, not a finish line.
+
 ### Test Coverage
 
 - `npm run test:unit` (`node --test`): URL identity/normalization, ISO week math, robots.txt parsing, and batch picking.

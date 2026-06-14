@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { scoreFor, trajectory } from './lib/score.js';
 
 /**
  * Report design constraints, in priority order:
@@ -113,6 +114,51 @@ function themeToggle() {
     mq.addEventListener && mq.addEventListener('change', sync);
   })();
 </script>`;
+}
+
+/**
+ * Accessible multi-week line chart: labeled inline SVG with a visually-
+ * hidden data table fallback (the SVG is aria-hidden; screen readers get
+ * the table). No JavaScript. `points` is [{ week, value }]; lowerIsBetter
+ * controls the caption wording only.
+ */
+function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
+  const pts = points.filter((p) => p.value != null);
+  if (pts.length < 2) {
+    return `<p class="meta">${esc(title)}: not enough weeks yet for a trend.</p>`;
+  }
+  const W = 640, H = 180, padL = 40, padR = 12, padT = 16, padB = 28;
+  const vals = pts.map((p) => p.value);
+  const max = Math.max(...vals);
+  const min = Math.min(...vals, 0);
+  const span = max - min || 1;
+  const x = (i) => padL + (i / (pts.length - 1)) * (W - padL - padR);
+  const y = (v) => H - padB - ((v - min) / span) * (H - padT - padB);
+  const poly = pts.map((p, i) => `${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ');
+  const dots = pts.map((p, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="2.5" fill="currentColor"/>`).join('');
+  // A few x labels (first, middle, last) and y gridline labels (min/max).
+  const xlabels = [0, Math.floor((pts.length - 1) / 2), pts.length - 1]
+    .filter((v, idx, a) => a.indexOf(v) === idx)
+    .map((i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="axis">${esc(pts[i].week.slice(5))}</text>`)
+    .join('');
+  const ylabels = `<text x="4" y="${(y(max) + 4).toFixed(1)}" class="axis">${max}</text><text x="4" y="${(y(min) + 4).toFixed(1)}" class="axis">${min}</text>`;
+  const first = pts[0].value, last = pts[pts.length - 1].value;
+  const change = last - first;
+  const better = lowerIsBetter ? change < 0 : change > 0;
+  const trend = change === 0 ? 'unchanged' : `${better ? 'better' : 'worse'} (${first}${unit} → ${last}${unit})`;
+
+  const table = `<table class="visually-hidden"><caption>${esc(title)} by week</caption>
+<thead><tr><th scope="col">Week</th><th scope="col">${esc(title)}</th></tr></thead>
+<tbody>${pts.map((p) => `<tr><th scope="row">${esc(p.week)}</th><td>${p.value}${esc(unit)}</td></tr>`).join('')}</tbody></table>`;
+
+  return `<figure class="chart">
+<figcaption>${esc(title)} over ${pts.length} weeks — ${esc(trend)}</figcaption>
+<svg viewBox="0 0 ${W} ${H}" class="linechart" role="img" aria-label="${esc(title)} trend: ${esc(trend)}" preserveAspectRatio="xMidYMid meet">
+  <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2"/>
+  ${dots}${xlabels}${ylabels}
+</svg>
+${table}
+</figure>`;
 }
 
 function layout({ title, breadcrumb, body, depth }) {
@@ -326,13 +372,27 @@ function consensusSection(summary) {
 </section>`;
 }
 
-export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }) {
+export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }, invSummary = null) {
+  const score = scoreFor(summary);
+  const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${text}</a>` : '');
+  // Resolved issues this week (present last week, gone now) — progress.
+  const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
   const body = `
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
 <p class="meta">${summary.pagesScanned} pages scanned. Generated ${esc(summary.generatedAt.slice(0, 10))}.
 ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'First recorded week; no comparison yet.'}</p>
+
+${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
+  <span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>
+  <span class="score">${score.score}<span class="score-max">/100</span></span>
+  <span class="score-detail">${score.cleanShare}% of scanned pages had no violations.
+  ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(traj.direction)}</strong> (${traj.delta >= 0 ? '+' : ''}${traj.delta} pts since ${esc(traj.fromWeek)}).` : ''}
+  ${resolvedCount > 0 ? `<strong>${resolvedCount} issue type(s) resolved</strong> since last week.` : ''}</span>
+  <span class="score-caveat">Automated testing finds ~⅓ of barriers — a high score is a floor, not a finish line.</span>
+</aside>` : ''}
+${invSummary ? `<p class="meta">Across <strong>${invSummary.totalKnownPages}</strong> pages known on this site (scanned over time), <strong>${invSummary.pagesWithKnownIssues}</strong> have known accessibility issues. ${invSummary.scannedThisWeek} were re-checked this week.</p>` : ''}
 
 <section aria-labelledby="h-summary">
 <h2 id="h-summary">This week at a glance</h2>
@@ -363,6 +423,15 @@ ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'F
 ${prev && summary.pagesScanned !== prev.pagesScanned ? `<p class="note">Note: page counts differ between weeks (${prev.pagesScanned} → ${summary.pagesScanned}). Prefer the “pages affected” columns over raw instance counts when comparing.</p>` : ''}
 ${coverageTable(summary)}
 </section>
+
+${series.length > 1 ? `
+<section aria-labelledby="h-trends">
+<h2 id="h-trends">Trends over time</h2>
+${lineChart('Median axe violations per page', series.map((s) => ({ week: s.week, value: s.axe.medianViolations })), { lowerIsBetter: true })}
+${lineChart('Median Alfa failures per page', series.map((s) => ({ week: s.week, value: s.alfa.medianFailures })), { lowerIsBetter: true })}
+${series.some((s) => s.plainLanguage?.medianReadingEase != null) ? lineChart('Reading ease (median)', series.map((s) => ({ week: s.week, value: s.plainLanguage?.medianReadingEase ?? null })), { lowerIsBetter: false }) : ''}
+${series.some((s) => s.sustainability) ? lineChart('Median page weight (KB)', series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
+</section>` : ''}
 
 ${diff ? `
 <section aria-labelledby="h-wow">
@@ -439,6 +508,59 @@ function changeList(engineName, d) {
   return `<h3>${esc(engineName)}</h3><ul>${items.join('\n')}</ul>`;
 }
 
+/**
+ * Overlay line chart: every domain's median axe violations/page over the
+ * weeks they share. Accessible (role=img + aria-label + a data-table
+ * fallback). Each domain gets a distinct dash pattern (not color alone).
+ */
+function crossDomainChart(ranked) {
+  const withSeries = ranked.filter((d) => d.series.length > 1);
+  if (withSeries.length < 1) return '';
+  const allWeeks = [...new Set(withSeries.flatMap((d) => d.series.map((s) => s.week)))].sort();
+  if (allWeeks.length < 2) return '';
+  const W = 720, H = 240, padL = 40, padR = 140, padT = 16, padB = 28;
+  const valAt = (d, week) => {
+    const s = d.series.find((x) => x.week === week);
+    return s ? (s.axe.medianViolations ?? null) : null;
+  };
+  const allVals = withSeries.flatMap((d) => allWeeks.map((w) => valAt(d, w))).filter((v) => v != null);
+  if (allVals.length === 0) return '';
+  const max = Math.max(...allVals, 1);
+  const x = (i) => padL + (i / (allWeeks.length - 1)) * (W - padL - padR);
+  const y = (v) => H - padB - (v / max) * (H - padT - padB);
+  const dashes = ['', '6 3', '2 3', '8 3 2 3', '4 2'];
+
+  const lines = withSeries.map((d, di) => {
+    const pts = allWeeks
+      .map((w, i) => ({ i, v: valAt(d, w) }))
+      .filter((p) => p.v != null)
+      .map((p) => `${x(p.i).toFixed(1)},${y(p.v).toFixed(1)}`)
+      .join(' ');
+    const ly = padT + 14 + di * 16;
+    return {
+      line: `<polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="${dashes[di % dashes.length]}" opacity="0.85"/>`,
+      legend: `<g transform="translate(${W - padR + 6},${ly})"><line x1="0" y1="-4" x2="18" y2="-4" stroke="currentColor" stroke-width="2" stroke-dasharray="${dashes[di % dashes.length]}"/><text x="22" y="0" class="axis">${esc(d.target.domain)}</text></g>`,
+    };
+  });
+  const xlabels = [0, Math.floor((allWeeks.length - 1) / 2), allWeeks.length - 1]
+    .filter((v, idx, a) => a.indexOf(v) === idx)
+    .map((i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="axis">${esc(allWeeks[i].slice(5))}</text>`)
+    .join('');
+
+  const table = `<table class="visually-hidden"><caption>Median axe violations per page by domain and week</caption>
+<thead><tr><th scope="col">Domain</th>${allWeeks.map((w) => `<th scope="col">${esc(w)}</th>`).join('')}</tr></thead>
+<tbody>${withSeries.map((d) => `<tr><th scope="row">${esc(d.target.domain)}</th>${allWeeks.map((w) => `<td>${valAt(d, w) ?? '—'}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+
+  return `<figure class="chart">
+<figcaption>Median axe violations per page, all domains — lower is better</figcaption>
+<svg viewBox="0 0 ${W} ${H}" class="linechart" role="img" aria-label="Median axe violations per page over time, compared across ${withSeries.length} domains" preserveAspectRatio="xMidYMid meet">
+  ${lines.map((l) => l.line).join('')}${lines.map((l) => l.legend).join('')}${xlabels}
+  <text x="4" y="${(y(max) + 4).toFixed(1)}" class="axis">${max}</text><text x="4" y="${(y(0) + 4).toFixed(1)}" class="axis">0</text>
+</svg>
+${table}
+</figure>`;
+}
+
 export function renderIndex(dashboard) {
   // Separate targets whose latest week is blocked (e.g. a WAF returning
   // 403 to the scanner) so they don't read as zero-violation successes.
@@ -461,28 +583,35 @@ for how the scanner can be allowlisted.</p>
     .join('\n')}</ul>
 </section>`;
 
-  // Median per-page counts are comparable regardless of how many pages a
-  // week happened to cover; raw totals are not, so the table leads with
-  // medians. The trend tracks the median axe violations per page.
+  // Leaderboard: rank domains best->worst by score, with trajectory.
   const medAxe = (s) => s.axe.medianViolations ?? 0;
-  const medAlfa = (s) => s.alfa.medianFailures ?? 0;
-  const rows = active
-    .map(({ target, series }) => {
-      const latest = series[series.length - 1];
-      const prev = series.length > 1 ? series[series.length - 2] : null;
+  const ranked = active
+    .map((d) => ({ ...d, latest: d.series[d.series.length - 1], score: scoreFor(d.series[d.series.length - 1]), traj: trajectory(d.series, 4) }))
+    .sort((a, b) => (b.score?.score ?? -1) - (a.score?.score ?? -1));
+
+  const arrow = (t) => {
+    if (!t) return '<span class="traj traj-stable">— new</span>';
+    const sym = t.direction === 'improving' ? '▲' : t.direction === 'worsening' ? '▼' : '▬';
+    return `<span class="traj traj-${esc(t.direction)}">${sym} ${esc(t.direction)} ${t.delta >= 0 ? '+' : ''}${t.delta}</span>`;
+  };
+  const rows = ranked
+    .map((d) => {
+      const { target, series, latest, score, traj } = d;
       const trend = series.map(medAxe);
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a></th>
-  <td>${esc(latest.week)}</td>
+  <td class="num">${score ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span> ${score.score}` : 'n/a'}</td>
+  <td>${arrow(traj)}</td>
   <td class="num">${latest.pagesAudited ?? latest.pagesScanned}</td>
-  <td class="num">${fmtMedian(latest.axe.medianViolations)} ${prev ? delta(medAxe(latest) - medAxe(prev)) : ''}</td>
-  <td class="num">${fmtMedian(latest.alfa.medianFailures)} ${prev ? delta(medAlfa(latest) - medAlfa(prev)) : ''}</td>
-  <td class="num">${latest.sustainability ? kb(latest.sustainability.medianBytes) : 'n/a'}</td>
-  <td>${sparkline(trend)}<span class="visually-hidden">Trend over ${series.length} weeks: ${trend.join(', ')} median axe violations per page.</span></td>
-  <td>${series.slice(-8).map((s) => `<a href="reports/${esc(target.key)}/${esc(s.week)}/index.html">${esc(s.week.slice(5))}</a>`).join(' ')}</td>
+  <td class="num">${fmtMedian(latest.axe.medianViolations)}</td>
+  <td class="num">${fmtMedian(latest.alfa.medianFailures)}</td>
+  <td>${sparkline(trend)}<span class="visually-hidden">Median axe violations per page over ${series.length} weeks: ${trend.join(', ')}.</span></td>
 </tr>`;
     })
     .join('\n');
+
+  // Overlay chart: every domain's median axe violations/page over time.
+  const overlay = crossDomainChart(ranked);
 
   const body = `
 <h1>Weekly quality ledger</h1>
@@ -495,10 +624,12 @@ ${active.length === 0
         : '<p>No accessibility or sustainability data could be collected yet — every target is currently blocked (see above).</p>')
     : `
 <table>
-<caption>Latest week per domain. Counts are medians per page (comparable across weeks regardless of how many pages were covered); pages are unique pages scanned by axe and/or Alfa. Deltas compare against the previous recorded week.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Week</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Median weight</th><th scope="col">Trend</th><th scope="col">Past weeks</th></tr></thead>
+<caption>Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page, comparable across sites of any size.</caption>
+<thead><tr><th scope="col">Domain</th><th scope="col">Score</th><th scope="col">Trajectory</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
 <tbody>${rows}</tbody>
-</table>`}
+</table>
+<p class="score-caveat">Scores are a relative, automated signal (axe + Alfa, page-normalized). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
+${overlay}`}
 <section aria-labelledby="h-why">
 <h2 id="h-why">Why this exists</h2>
 <p>Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more
@@ -590,6 +721,23 @@ tbody th[scope="row"] { font-weight: 600; }
   clip-path: inset(50%); white-space: nowrap; }
 footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem;
   font-size: .85rem; color: var(--muted); }
+.scorecard { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem;
+  border: 1px solid var(--rule); border-left: 5px solid var(--accent); border-radius: 4px;
+  padding: .8rem 1rem; margin: 1rem 0; }
+.scorecard .grade { font-size: 2rem; font-weight: 700; line-height: 1;
+  padding: .1rem .5rem; border-radius: 4px; border: 2px solid currentColor; }
+.grade-A { color: var(--better); } .grade-B { color: var(--better); }
+.grade-C { color: var(--muted); } .grade-D { color: var(--worse); } .grade-F { color: var(--worse); }
+.scorecard .score { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.scorecard .score-max { font-size: .9rem; color: var(--muted); }
+.scorecard .score-detail { flex: 1 1 16rem; }
+.scorecard .score-caveat, p.score-caveat { color: var(--muted); font-size: .85rem; flex-basis: 100%; }
+.traj { white-space: nowrap; font-size: .9rem; }
+.traj-improving { color: var(--better); } .traj-worsening { color: var(--worse); } .traj-stable { color: var(--muted); }
+.chart { margin: 1.25rem 0; }
+.chart figcaption { color: var(--muted); font-size: .9rem; margin-bottom: .25rem; }
+.linechart { width: 100%; height: auto; color: var(--accent); }
+.linechart .axis { fill: var(--muted); font-size: 11px; }
 @media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
   margin: .6rem 0; padding: 0 .9rem; }

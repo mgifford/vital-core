@@ -277,6 +277,18 @@ try {
   assert(report.includes("data-theme") && report.includes('vital-theme'), 'no-flash theme script + persistence present');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'index.html')), 'dashboard generated');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'style.css')), 'stylesheet generated');
+  // Scorecard + trends on the domain report.
+  assert(/class="scorecard"/.test(report) && /class="grade grade-[A-F]"/.test(report), 'domain report shows a score + grade');
+  assert(report.includes('id="h-trends"') && report.includes('class="linechart"'), 'domain report shows multi-week trend charts');
+  // Rolling inventory committed and surfaced.
+  const inv = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'inventory.json')));
+  assert(Object.keys(inv.pages).length >= PAGES, `inventory tracks all known pages (${Object.keys(inv.pages).length})`);
+  assert(/pages known on this site/.test(report), 'report cites total known pages from inventory');
+  // Dashboard: leaderboard score + trajectory + cross-domain chart.
+  const dash = fs.readFileSync(path.join(SANDBOX, 'docs', 'index.html'), 'utf8');
+  assert(/<th scope="col">Score<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
+  assert(/class="traj traj-/.test(dash), 'dashboard shows trajectory arrows');
+  assert(dash.includes('all domains') && dash.includes('linechart'), 'dashboard has cross-domain overlay chart');
 
   const comment = run('src/issue-comment.js', [], '2026-W24');
   assert(comment.includes('localhost: 2026-W24') && comment.includes('Median axe violations'), 'issue comment generated with deltas');
