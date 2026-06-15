@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv } from './lib/csv.js';
@@ -46,7 +46,7 @@ for (const target of config.targets) {
       series.push(summary);
       // The full per-page lists are large and reconstructable; keep them
       // in memory for CSV generation but don't commit them to summary.json.
-      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows']);
+      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList']);
       fs.writeFileSync(
         path.join(domainDir, week, 'summary.json'),
         JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
@@ -136,14 +136,22 @@ for (const target of config.targets) {
       summary.plainLanguage.spellingCsv = spellingCsv;
     }
 
-    // Standalone Lighthouse page (per-sampled-page scores + metrics).
-    const lhHtml = renderLighthousePage(target, summary, lhCsv);
+    // Which standalone sub-pages this week has (drives the shared subnav).
+    const available = [];
+    if (summary.lighthouse?.pageDetail?.length) available.push('lighthouse');
+    if (summary.plainLanguage?.pageRows?.length) available.push('readability');
+
+    // Standalone Lighthouse page (per-sampled-page scores + metrics + perf impact).
+    const lhHtml = renderLighthousePage(target, summary, lhCsv, available);
     if (lhHtml) fs.writeFileSync(path.join(repDir, 'lighthouse.html'), lhHtml);
+    // Standalone Readability page (per-page reading metrics).
+    const readHtml = renderReadabilityPage(target, summary, readabilityCsv, available);
+    if (readHtml) fs.writeFileSync(path.join(repDir, 'readability.html'), readHtml);
 
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
     if (isLatest) latestBugs = bugs.map((b) => ({ ...b, _week: summary.week }));
-    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null);
+    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null, available);
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
     fs.writeFileSync(
@@ -438,6 +446,9 @@ function summarizeWeek(target, week) {
           meanCo2g: Math.round((co2Total / bytesList.length) * 10000) / 10000,
           totalEnergyWh: Math.round(energyTotal * 100) / 100,
           meanEnergyWh: Math.round((energyTotal / bytesList.length) * 10000) / 10000,
+          // Per-page byte sizes for the performance-impact estimate
+          // (omitted from committed summary.json — see the JSON replacer).
+          bytesList,
         }
       : null,
     deprecatedHtml: Object.keys(deprecatedRules).length

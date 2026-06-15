@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
 import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
+import { performanceImpact } from './lib/perf-impact.js';
 
 /**
  * Report design constraints, in priority order:
@@ -66,6 +67,120 @@ function linkedFrom(sources) {
   });
   const more = list.length > 3 ? ` +${list.length - 3} more` : '';
   return shown.join('<br>') + more;
+}
+
+/**
+ * Section heading with a shareable anchor link. The "#" reveals on
+ * hover/focus, links to the section, and is marked aria-hidden + given a
+ * data-attribute so it isn't read by screen readers or copied with the
+ * heading text (the CSS uses ::before so the glyph isn't in the DOM text).
+ */
+function heading(id, text, level = 2) {
+  return `<h${level} id="${esc(id)}"><a class="anchor" href="#${esc(id)}" aria-label="Link to this section"></a>${esc(text)}</h${level}>`;
+}
+
+/** A long URL: shown truncated (CSS ellipsis) with the full URL on
+ * hover/focus (title) and still fully selectable/copyable. */
+function urlCell(url) {
+  return `<a class="url" href="${esc(url)}" title="${esc(url)}">${esc(url)}</a>`;
+}
+
+/**
+ * Sub-page navigation shared by a domain's report / lighthouse /
+ * readability pages. `active` is the current page key. Links are relative
+ * within the same week directory.
+ */
+function subnav(active, available) {
+  const items = [
+    ['index.html', 'Overview', 'overview'],
+    ['lighthouse.html', 'Lighthouse', 'lighthouse'],
+    ['readability.html', 'Readability', 'readability'],
+  ].filter(([, , key]) => key === 'overview' || available.includes(key));
+  if (items.length < 2) return '';
+  return `<nav class="subnav" aria-label="Domain report pages"><ul>${items
+    .map(([href, label, key]) => key === active
+      ? `<li aria-current="page">${esc(label)}</li>`
+      : `<li><a href="${esc(href)}">${esc(label)}</a></li>`)
+    .join('')}</ul></nav>`;
+}
+
+/**
+ * A sortable data table (progressive enhancement: fully usable without
+ * JS; columns become click-to-sort when JS is on). Numeric columns sort
+ * numerically via a data-sort value. `cols` is [{label, num}], `rows` is
+ * arrays of { html, sort } cells.
+ */
+function sortableTable(caption, cols, rows) {
+  const thead = cols
+    .map((c, i) => `<th scope="col"${c.num ? ' class="num"' : ''}><button type="button" class="sort-btn" data-col="${i}">${esc(c.label)}<span class="sort-ind" aria-hidden="true"></span></button></th>`)
+    .join('');
+  const body = rows
+    .map((r) => `<tr>${r.map((cell, i) => (i === 0
+      ? `<th scope="row" data-sort="${esc(String(cell.sort))}">${cell.html}</th>`
+      : `<td class="num" data-sort="${esc(String(cell.sort))}">${cell.html}</td>`)).join('')}</tr>`)
+    .join('\n');
+  return `<table class="sortable">
+<caption>${esc(caption)} <span class="bug-meta">— click a column heading to sort</span></caption>
+<thead><tr>${thead}</tr></thead>
+<tbody>${body}</tbody>
+</table>`;
+}
+
+// One small script, included on pages with sortable tables. Tables work
+// fully without it; this just adds click-to-sort. No external deps.
+const SORT_SCRIPT = `<script>
+(function () {
+  for (const table of document.querySelectorAll('table.sortable')) {
+    const tbody = table.tBodies[0];
+    table.querySelectorAll('th .sort-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const col = +btn.dataset.col;
+        const asc = btn.dataset.dir !== 'asc';
+        table.querySelectorAll('.sort-btn').forEach((b) => { b.removeAttribute('data-dir'); b.querySelector('.sort-ind').textContent = ''; });
+        btn.dataset.dir = asc ? 'asc' : 'desc';
+        btn.querySelector('.sort-ind').textContent = asc ? ' ▲' : ' ▼';
+        const rows = [...tbody.rows];
+        rows.sort((ra, rb) => {
+          const a = ra.cells[col].dataset.sort, b = rb.cells[col].dataset.sort;
+          const na = parseFloat(a), nb = parseFloat(b);
+          const cmp = (!isNaN(na) && !isNaN(nb)) ? na - nb : String(a).localeCompare(String(b));
+          return asc ? cmp : -cmp;
+        });
+        rows.forEach((r) => tbody.appendChild(r));
+      });
+    });
+  }
+})();
+</script>`;
+
+/**
+ * One combined "Broken links & errors" section. Broken links (from the
+ * link-check engine) and pages that returned a non-404 error status
+ * (e.g. 403/5xx — 404s are already covered by broken-link checking, so
+ * listing them again is redundant). Returns '' when there's nothing.
+ */
+function linksAndErrorsSection(summary) {
+  const broken = summary.linkCheck?.broken ?? [];
+  // Non-404 error pages only (404s show up via broken-link checking).
+  const errors = (summary.errorPages ?? []).filter((e) => Number(e.status) !== 404);
+  if (broken.length === 0 && errors.length === 0) return '';
+
+  const brokenRows = broken
+    .map((b) => `<tr><th scope="row">${urlCell(b.url)}</th><td>${esc(b.status || b.reason)}</td><td>broken link</td><td>${linkedFrom(b.foundOn)}</td></tr>`)
+    .join('\n');
+  const errorRows = errors
+    .map((e) => `<tr><th scope="row">${urlCell(e.url)}</th><td>${esc(e.status)}</td><td>page error</td><td>n/a</td></tr>`)
+    .join('\n');
+
+  return `<section aria-labelledby="h-links">
+${heading('h-links', 'Broken links & errors')}
+<p class="meta">Broken links found on scanned pages, plus scanned pages that themselves returned a non-404 error (e.g. 403 or 5xx — 404s are already captured as broken links).</p>
+<table>
+<caption>${broken.length} broken link(s) and ${errors.length} page error(s) in ${esc(summary.week)}.</caption>
+<thead><tr><th scope="col">URL</th><th scope="col">Status</th><th scope="col">Type</th><th scope="col">Linked from</th></tr></thead>
+<tbody>${brokenRows}${errorRows}</tbody>
+</table>
+</section>`;
 }
 
 /** Delta rendered as text first; symbol is reinforcement, not the meaning. */
@@ -184,7 +299,7 @@ ${table}
 </figure>`;
 }
 
-function layout({ title, breadcrumb, body, depth }) {
+function layout({ title, breadcrumb, body, depth, extraScript = '' }) {
   const base = '../'.repeat(depth);
   return `<!DOCTYPE html>
 <html lang="en">
@@ -223,6 +338,7 @@ ${body}
   <a href="https://w3c.github.io/sustainableweb-wsg/">W3C Web Sustainability Guidelines</a>.</p>
   <p>Automated checks find roughly a third of accessibility barriers. A clean report is a floor, not a finish line.</p>
 </footer>
+${extraScript}
 </body>
 </html>`;
 }
@@ -261,7 +377,7 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
 function bugReportsSection(bugs) {
   if (!bugs || bugs.length === 0) {
     return `<section aria-labelledby="h-bugs">
-<h2 id="h-bugs">Bug reports</h2>
+${heading('h-bugs', `Bug reports`)}
 <p>No accessibility findings to report this week.</p>
 </section>`;
   }
@@ -306,7 +422,7 @@ ${affectedPagesBlock(b)}
     .join('\n');
 
   return `<section aria-labelledby="h-bugs">
-<h2 id="h-bugs">Bug reports</h2>
+${heading('h-bugs', `Bug reports`)}
 <p class="meta">${bugs.length} issue type(s): ${esc(sevSummary)}. One report per rule, following
 <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.
 Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON</a>.</p>
@@ -362,7 +478,7 @@ function resourcesSection(summary) {
 <ul>${newList.slice(0, 100).map((n) => `<li><span class="bug-meta">${esc(RESOURCE_LABELS[n.type] ?? n.type)}:</span> <a href="${esc(n.url)}">${esc(n.url)}</a></li>`).join('')}</ul>`
     : `<p>No new resources first seen this week.</p>`;
   return `<section aria-labelledby="h-resources">
-<h2 id="h-resources">Embedded &amp; linked resources</h2>
+${heading('h-resources', `Embedded & linked resources`)}
 <p class="meta">Non-HTML resources this site links to or embeds — PDFs, Office documents, iframes, and media. The site owner is responsible for their accessibility too. ${r.csv ? `Full inventory with first-seen dates: <a href="${esc(r.csv)}">CSV</a>.` : ''}</p>
 ${newBlock}
 <table>
@@ -398,7 +514,7 @@ function fixFirstSection(bugs) {
 </tr>`)
     .join('\n');
   return `<section aria-labelledby="h-fixfirst">
-<h2 id="h-fixfirst">Fix these first</h2>
+${heading('h-fixfirst', `Fix these first`)}
 <p class="meta">Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once.</p>
 <table>
 <caption>Top ${top.length} issues to prioritize this week.</caption>
@@ -434,7 +550,7 @@ ${checklist(sec.checks)}` : '';
 </table>
 ${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}` : '';
   return `<section aria-labelledby="h-standards">
-<h2 id="h-standards">Standards &amp; security</h2>
+${heading('h-standards', `Standards & security`)}
 <p class="meta">Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.</p>
 ${secBlock}
 ${stdBlock}
@@ -447,7 +563,7 @@ function consensusSection(summary) {
   const naive = c.rawAxe + c.rawAlfa;
   const saved = naive - c.uniqueIssues;
   return `<section aria-labelledby="h-consensus">
-<h2 id="h-consensus">Unique accessibility issues (axe + Alfa consolidated)</h2>
+${heading('h-consensus', `Unique accessibility issues (axe + Alfa consolidated)`)}
 <p class="meta">axe and Alfa both implement W3C ACT rules, so the same issue is often caught by both. These are deduplicated by ACT rule and page, so a shared finding counts once${saved > 0 ? ` (${naive} raw engine findings → ${c.uniqueIssues} unique)` : ''}.</p>
 <dl class="ledger">
   <div><dt>Unique issues (rule × page)</dt><dd>${c.uniqueIssues}</dd></div>
@@ -464,62 +580,141 @@ function consensusSection(summary) {
  * and the experimental agentic-browsing score) plus Core Web Vitals
  * metrics. Linked from the domain report. Returns null if no LH data.
  */
-export function renderLighthousePage(target, summary, csvHref) {
+export function renderLighthousePage(target, summary, csvHref, available = []) {
   const lh = summary.lighthouse;
   if (!lh || !lh.pageDetail?.length) return null;
   const ms = (v) => (v == null ? 'n/a' : `${(v / 1000).toFixed(1)}s`);
   const sc = (v) => (v == null ? 'n/a' : `${v}`);
-  const rows = lh.pageDetail
-    .map((p) => `<tr>
-  <th scope="row"><a href="${esc(p.url)}">${esc(new URL(p.url).pathname || '/')}</a></th>
-  <td class="num">${sc(p.scores.performance)}</td>
-  <td class="num">${sc(p.scores.accessibility)}</td>
-  <td class="num">${sc(p.scores.bestPractices)}</td>
-  <td class="num">${sc(p.scores.seo)}</td>
-  <td class="num">${sc(p.scores.agentic)}</td>
-  <td class="num">${ms(p.metrics.firstContentfulPaintMs)}</td>
-  <td class="num">${ms(p.metrics.largestContentfulPaintMs)}</td>
-  <td class="num">${ms(p.metrics.speedIndexMs)}</td>
-  <td class="num">${ms(p.metrics.totalBlockingTimeMs)}</td>
-  <td class="num">${p.metrics.cumulativeLayoutShift ?? 'n/a'}</td>
-</tr>`)
-    .join('\n');
+  const cell = (html, sort) => ({ html, sort: sort == null ? -1 : sort });
+  // Sortable per-page table: page name sorts alphabetically, metrics numerically.
+  const cols = [
+    { label: 'Page' }, { label: 'Perf', num: 1 }, { label: 'A11y', num: 1 },
+    { label: 'Best practices', num: 1 }, { label: 'SEO', num: 1 }, { label: 'Agentic', num: 1 },
+    { label: 'FCP', num: 1 }, { label: 'LCP', num: 1 }, { label: 'Speed Index', num: 1 },
+    { label: 'TBT', num: 1 }, { label: 'CLS', num: 1 },
+  ];
+  const rows = lh.pageDetail.map((p) => {
+    const path = (() => { try { return new URL(p.url).pathname || '/'; } catch { return p.url; } })();
+    const m = p.metrics || {};
+    return [
+      cell(`<a class="url" href="${esc(p.url)}" title="${esc(p.url)}">${esc(path)}</a>`, path),
+      cell(sc(p.scores.performance), p.scores.performance), cell(sc(p.scores.accessibility), p.scores.accessibility),
+      cell(sc(p.scores.bestPractices), p.scores.bestPractices), cell(sc(p.scores.seo), p.scores.seo),
+      cell(sc(p.scores.agentic), p.scores.agentic),
+      cell(ms(m.firstContentfulPaintMs), m.firstContentfulPaintMs), cell(ms(m.largestContentfulPaintMs), m.largestContentfulPaintMs),
+      cell(ms(m.speedIndexMs), m.speedIndexMs), cell(ms(m.totalBlockingTimeMs), m.totalBlockingTimeMs),
+      cell(p.metrics.cumulativeLayoutShift ?? 'n/a', p.metrics.cumulativeLayoutShift),
+    ];
+  });
   const m = lh.metrics ?? {};
+  const weights = summary.sustainability?.bytesList ?? [];
+  const impact = performanceImpact(lh.pageDetail, weights, target.page_loads_per_week ?? null);
+
   const body = `
 <h1>${esc(target.domain)}: Lighthouse — week ${esc(summary.week)}</h1>
+${subnav('lighthouse', available)}
 <p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals. ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
+${impact ? perfImpactSection(impact) : ''}
 <section aria-labelledby="h-lh-medians">
-<h2 id="h-lh-medians">Medians across sampled pages</h2>
+${heading('h-lh-medians', `Medians across sampled pages`)}
 <dl class="ledger">
   <div><dt>Performance</dt><dd>${fmtScore(lh.medianPerformance)}</dd></div>
   <div><dt>Accessibility</dt><dd>${fmtScore(lh.medianAccessibility)}</dd></div>
   <div><dt>Best practices</dt><dd>${fmtScore(lh.medianBestPractices)}</dd></div>
   <div><dt>SEO</dt><dd>${fmtScore(lh.medianSeo)}</dd></div>
   ${lh.medianAgentic != null ? `<div><dt>Agentic browsing</dt><dd>${fmtScore(lh.medianAgentic)}</dd></div>` : ''}
-  <div><dt>First Contentful Paint</dt><dd>${ms(m.firstContentfulPaintMs)}</dd></div>
   <div><dt>Largest Contentful Paint</dt><dd>${ms(m.largestContentfulPaintMs)}</dd></div>
+  <div><dt>First Contentful Paint</dt><dd>${ms(m.firstContentfulPaintMs)}</dd></div>
   <div><dt>Speed Index</dt><dd>${ms(m.speedIndexMs)}</dd></div>
   <div><dt>Total Blocking Time</dt><dd>${ms(m.totalBlockingTimeMs)}</dd></div>
   <div><dt>Cumulative Layout Shift</dt><dd>${m.cumulativeLayoutShift ?? 'n/a'}</dd></div>
 </dl>
 </section>
 <section aria-labelledby="h-lh-pages">
-<h2 id="h-lh-pages">Per-page results</h2>
-<table>
-<caption>Lighthouse scores and Core Web Vitals for each sampled page (${esc(summary.week)}). Agentic = experimental agentic-browsing score.</caption>
-<thead><tr><th scope="col">Page</th><th scope="col">Perf</th><th scope="col">A11y</th><th scope="col">Best practices</th><th scope="col">SEO</th><th scope="col">Agentic</th><th scope="col">FCP</th><th scope="col">LCP</th><th scope="col">Speed Index</th><th scope="col">TBT</th><th scope="col">CLS</th></tr></thead>
-<tbody>${rows}</tbody>
-</table>
+${heading('h-lh-pages', `Per-page results`)}
+${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}); Agentic = experimental agentic-browsing score.`, cols, rows)}
 </section>`;
   return layout({
     title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
     breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Lighthouse</li>`,
     body,
     depth: 3,
+    extraScript: SORT_SCRIPT,
   });
 }
 
-export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }, invSummary = null) {
+/**
+ * Performance-impact section: extra wait time and data vs Google's
+ * benchmarks (LCP 2.5s, page weight 1.6 MB). Per-page averages always;
+ * site-wide totals + Wikipedia-copies when traffic is configured.
+ */
+function perfImpactSection(impact) {
+  const secs = (ms) => (ms == null ? 'n/a' : `${(ms / 1000).toFixed(1)}s`);
+  const mb = (b) => (b == null ? 'n/a' : `${(b / 1e6).toFixed(2)} MB`);
+  const totals = impact.totals;
+  return `<section aria-labelledby="h-lh-impact">
+${heading('h-lh-impact', `Performance impact`)}
+<p class="meta">How far pages fall short of Google's "good" benchmarks: Largest Contentful Paint ≤ 2.5s and page weight ≤ 1.6 MB. Lower is better.</p>
+<dl class="ledger">
+  <div><dt>Avg extra LCP over 2.5s</dt><dd>${secs(impact.avgExtraLcpMs)}<span class="bug-meta"> ${impact.pagesOverLcp}/${impact.lcpPages} pages over</span></dd></div>
+  <div><dt>Avg extra weight over 1.6 MB</dt><dd>${mb(impact.avgExtraWeightBytes)}<span class="bug-meta"> ${impact.pagesOverWeight}/${impact.weightPages} pages over</span></dd></div>
+</dl>
+${totals ? `<p>With an estimated <strong>${totals.pageLoadsPerWeek.toLocaleString()}</strong> page loads/week, that is roughly <strong>${esc(totals.extraSecondsHuman)}</strong> of extra waiting and <strong>${esc(totals.extraBytesHuman)}</strong> of extra data transferred per week${totals.wikipediaCopies > 0 ? ` (~${totals.wikipediaCopies.toLocaleString()} copies of Wikipedia)` : ''}. Rough estimate, traffic spread evenly across sampled pages.</p>`
+    : `<p class="meta">Set <code>page_loads_per_week</code> for this target to also estimate total wasted time and data (the way <a href="https://github.com/mgifford/daily-dap">daily-dap</a> uses traffic counts).</p>`}
+</section>`;
+}
+
+/**
+ * Standalone readability page: a sortable table of every prose page with
+ * its word count, Flesch Reading Ease and Flesch-Kincaid grade, plus
+ * documentation of what the metrics mean. Returns null if no data.
+ */
+export function renderReadabilityPage(target, summary, csvHref, available = []) {
+  const pl = summary.plainLanguage;
+  if (!pl || !pl.pageRows?.length) return null;
+  const cell = (html, sort) => ({ html, sort: sort === '' || sort == null ? -1 : sort });
+  const cols = [
+    { label: 'Page' }, { label: 'Words', num: 1 }, { label: 'Reading ease', num: 1 },
+    { label: 'Grade level', num: 1 }, { label: 'Scored', num: 0 },
+  ];
+  const rows = pl.pageRows.map((r) => {
+    const path = (() => { try { return new URL(r.url).pathname || '/'; } catch { return r.url; } })();
+    return [
+      cell(`<a class="url" href="${esc(r.url)}" title="${esc(r.url)}">${esc(path)}</a>`, path),
+      cell(String(r.wordCount), r.wordCount),
+      cell(r.fleschReadingEase === '' ? 'n/a' : String(r.fleschReadingEase), r.fleschReadingEase),
+      cell(r.fleschKincaidGrade === '' ? 'n/a' : String(r.fleschKincaidGrade), r.fleschKincaidGrade),
+      cell(r.scored ? 'yes' : 'too little prose', r.scored ? 1 : 0),
+    ];
+  });
+  const body = `
+<h1>${esc(target.domain)}: Readability — week ${esc(summary.week)}</h1>
+${subnav('readability', available)}
+<p class="meta">Plain-language metrics for the main content of each scanned page (navigation, header, and footer excluded). ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
+<section aria-labelledby="h-read-about">
+${heading('h-read-about', `What these mean`)}
+<dl class="ledger">
+  <div><dt>Words per page</dt><dd>Main-content word count.<span class="bug-meta"> Median ${pl.medianWordsPerPage ?? 'n/a'}</span></dd></div>
+  <div><dt>Reading ease (Flesch)</dt><dd>0–100; higher is easier. ~60+ is plain language; below ~30 is very hard.<span class="bug-meta"> Median ${pl.medianReadingEase ?? 'n/a'}</span></dd></div>
+  <div><dt>Grade level (Flesch-Kincaid)</dt><dd>US school grade needed to read it; aim for ~8 or lower for the public.<span class="bug-meta"> Median ${pl.medianGrade ?? 'n/a'}</span></dd></div>
+  <div><dt>Scored</dt><dd>Pages with too little prose (mostly links/cards) are not scored — those numbers would be misleading.<span class="bug-meta"> ${pl.pagesScored} of ${pl.pagesChecked} scored</span></dd></div>
+</dl>
+<p class="meta">Heuristics for triage and trends, not authoritative linguistics. They flag pages worth a human plain-language review.</p>
+</section>
+<section aria-labelledby="h-read-pages">
+${heading('h-read-pages', `Per-page readability`)}
+${sortableTable(`Readability per scanned page (${summary.week}).`, cols, rows)}
+</section>`;
+  return layout({
+    title: `${target.domain} Readability ${summary.week} | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Readability</li>`,
+    body,
+    depth: 3,
+    extraScript: SORT_SCRIPT,
+  });
+}
+
+export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }, invSummary = null, available = []) {
   const score = scoreFor(summary);
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
@@ -528,6 +723,7 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
   const body = `
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
+${subnav('overview', available)}
 <p class="meta">${summary.pagesScanned} pages scanned. Generated ${esc(summary.generatedAt.slice(0, 10))}.
 ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'First recorded week; no comparison yet.'}</p>
 
@@ -544,7 +740,7 @@ ${invSummary ? `<p class="meta">Across <strong>${invSummary.totalKnownPages}</st
 ${fixFirstSection(bugs)}
 
 <section aria-labelledby="h-summary">
-<h2 id="h-summary">This week at a glance</h2>
+${heading('h-summary', `This week at a glance`)}
 <dl class="ledger">
   <div><dt>Median axe violations / page</dt><dd>${fmtMedian(summary.axe.medianViolations)} ${sparkline(trendViol)}</dd></div>
   <div><dt>Pages with axe violations</dt><dd>${summary.axe.pagesWithViolations} of ${summary.axe.pagesScanned ?? summary.pagesScanned}${csvLink(csvLinks.axeAll, 'CSV')}</dd></div>
@@ -575,7 +771,7 @@ ${coverageTable(summary)}
 
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
-<h2 id="h-trends">Trends over time</h2>
+${heading('h-trends', `Trends over time`)}
 ${lineChart('Median axe violations per page', series.map((s) => ({ week: s.week, value: s.axe.medianViolations })), { lowerIsBetter: true })}
 ${lineChart('Median Alfa failures per page', series.map((s) => ({ week: s.week, value: s.alfa.medianFailures })), { lowerIsBetter: true })}
 ${series.some((s) => s.plainLanguage?.medianReadingEase != null) ? lineChart('Reading ease (median)', series.map((s) => ({ week: s.week, value: s.plainLanguage?.medianReadingEase ?? null })), { lowerIsBetter: false }) : ''}
@@ -584,7 +780,7 @@ ${series.some((s) => s.sustainability) ? lineChart('Median page weight (KB)', se
 
 ${diff ? `
 <section aria-labelledby="h-wow">
-<h2 id="h-wow">Changes since ${esc(diff.prevWeek)}</h2>
+${heading('h-wow', `Changes since ${diff.prevWeek}`)}
 ${changeList('axe-core', diff.axe)}
 ${changeList('Alfa', diff.alfa)}
 </section>` : ''}
@@ -594,50 +790,34 @@ ${consensusSection(summary)}
 ${standardsSecuritySection(summary)}
 
 <section aria-labelledby="h-axe">
-<h2 id="h-axe">axe-core findings</h2>
+${heading('h-axe', `axe-core findings`)}
 ${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summary.axe.rules, 'axe-core', 'axe-core', csvLinks)}
 </section>
 
 <section aria-labelledby="h-alfa">
-<h2 id="h-alfa">Siteimprove Alfa findings</h2>
+${heading('h-alfa', `Siteimprove Alfa findings`)}
 ${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.alfa.rules, 'Alfa', 'alfa', csvLinks)}
 </section>
 
 ${bugReportsSection(bugs)}
 
-${summary.linkCheck ? `
-<section aria-labelledby="h-links">
-<h2 id="h-links">Broken links</h2>
-<table>
-<caption>${summary.linkCheck.brokenCount} broken link(s) found on scanned pages in ${summary.week}.</caption>
-<thead><tr><th scope="col">Broken URL</th><th scope="col">Status</th><th scope="col">Linked from</th></tr></thead>
-<tbody>${summary.linkCheck.broken
-    .map((b) => `<tr><th scope="row"><a href="${esc(b.url)}">${esc(b.url)}</a></th><td>${esc(b.status || b.reason)}</td><td>${linkedFrom(b.foundOn)}</td></tr>`)
-    .join('\n')}</tbody>
-</table>
-</section>` : ''}
+${linksAndErrorsSection(summary)}
 
 ${summary.plainLanguage?.topUnexplainedAcronyms?.length ? `
 <section aria-labelledby="h-acronyms">
-<h2 id="h-acronyms">Unexplained acronyms</h2>
+${heading('h-acronyms', `Unexplained acronyms`)}
 <p class="meta">Acronyms used without an on-page expansion (e.g. “Centers for Medicare &amp; Medicaid Services (CMS)”), by pages affected.</p>
 <ul>${summary.plainLanguage.topUnexplainedAcronyms.map((a) => `<li><code>${esc(a.acronym)}</code> — ${a.pages} page(s)</li>`).join('')}</ul>
 </section>` : ''}
 
 ${summary.plainLanguage?.topMisspellings?.length ? `
 <section aria-labelledby="h-spelling">
-<h2 id="h-spelling">Possible misspellings</h2>
+${heading('h-spelling', `Possible misspellings`)}
 <p class="meta">Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.</p>
 <ul>${summary.plainLanguage.topMisspellings.map((m) => `<li><code>${esc(m.word)}</code> — ${m.pages} page(s)</li>`).join('')}</ul>
 </section>` : ''}
 
 ${resourcesSection(summary)}
-
-${summary.errorPages.length ? `
-<section aria-labelledby="h-errors">
-<h2 id="h-errors">Pages that returned errors</h2>
-<ul>${summary.errorPages.map((e) => `<li>${esc(e.status)}: <a href="${esc(e.url)}">${esc(e.url)}</a></li>`).join('')}</ul>
-</section>` : ''}
 `;
   return layout({
     title: `${target.domain} ${summary.week} | vital-scans`,
@@ -720,7 +900,7 @@ export function renderIndex(dashboard) {
 
   const blockedCallout = blocked.length === 0 ? '' : `
 <section aria-labelledby="h-blocked" class="callout callout-blocked">
-<h2 id="h-blocked">Blocked targets</h2>
+${heading('h-blocked', `Blocked targets`)}
 <p>These sites returned only access-denied responses to the scanner, so no
 accessibility or sustainability data could be collected. This is typically a
 WAF or bot manager blocking automated traffic, not a scan failure. See
@@ -768,7 +948,7 @@ for how the scanner can be allowlisted.</p>
   const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
   const worstSection = worst.length === 0 ? '' : `
 <section aria-labelledby="h-worst">
-<h2 id="h-worst">Worst offenders across all domains</h2>
+${heading('h-worst', `Worst offenders across all domains`)}
 <p class="meta">Highest-impact issues fleet-wide, ranked by pages affected × severity × people reached — where to focus effort first.</p>
 <table>
 <caption>Top ${worst.length} issues across all active domains.</caption>
@@ -803,7 +983,7 @@ ${active.length === 0
 ${overlay}
 ${worstSection}`}
 <section aria-labelledby="h-why">
-<h2 id="h-why">Why this exists</h2>
+${heading('h-why', `Why this exists`)}
 <p>Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more
 accessible and lighter over time, using <a href="https://github.com/dequelabs/axe-core">axe-core</a> and
 <a href="https://github.com/Siteimprove/alfa">Alfa</a> (the open source engine behind Siteimprove) for
@@ -863,7 +1043,25 @@ header { border-bottom: 3px double var(--rule); padding-bottom: .5rem; margin-bo
 .crumbs li { display: inline; }
 .crumbs li + li::before { content: " / "; color: var(--muted); }
 h1 { font-size: 1.6rem; line-height: 1.2; }
-h2 { font-size: 1.2rem; border-bottom: 1px solid var(--rule); padding-bottom: .2rem; margin-top: 2.5rem; }
+h2 { font-size: 1.2rem; border-bottom: 1px solid var(--rule); padding-bottom: .2rem; margin-top: 2.5rem; scroll-margin-top: 1rem; }
+/* Shareable heading anchor: a "#" that appears on hover/focus. The glyph
+   is a CSS ::before so it is never part of the heading's copyable text. */
+.anchor { float: left; margin-left: -1.1em; padding-right: .3em; color: var(--rule);
+  text-decoration: none; opacity: 0; transition: opacity .1s, color .1s; }
+.anchor::before { content: "#"; }
+h2:hover .anchor, h2:focus-within .anchor, .anchor:focus { opacity: 1; color: var(--accent); }
+@media (max-width: 40rem) { .anchor { float: none; margin-left: 0; } }
+/* Long URLs: truncate with ellipsis, full URL on hover/focus (title);
+   the text stays fully selectable so it copies in full. */
+.url { display: inline-block; max-width: 28rem; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; vertical-align: bottom; }
+td .url, th .url { max-width: 22rem; }
+.subnav ul { list-style: none; display: flex; flex-wrap: wrap; gap: .25rem 1rem; padding: 0; margin: .25rem 0 1rem; font-size: .95rem; }
+.subnav li[aria-current="page"] { font-weight: 700; }
+.sort-btn { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit;
+  text-transform: inherit; letter-spacing: inherit; cursor: pointer; }
+.sort-btn:hover, .sort-btn:focus-visible { color: var(--accent); }
+.sort-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .meta, .note { color: var(--muted); }
 .note { border-left: 4px solid var(--rule); padding-left: .75rem; }
 .callout-blocked { border-left: 4px solid var(--worse); padding: .25rem 1rem;

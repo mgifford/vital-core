@@ -321,6 +321,20 @@ try {
   // bug reports list page URLs inline (in <ul class="affected">) rather
   // than only a "download CSV" link.
   assert(/class="affected"/.test(w1report), 'bug reports list affected page URLs inline when there are <=25');
+  // Anchor links on section headings (shareable, copy-safe via CSS ::before).
+  assert(/<a class="anchor" href="#h-axe"/.test(w1report), 'section headings have shareable anchor links');
+  // Merged broken-links & errors section (the deliberately broken link).
+  assert(/id="h-links"/.test(w1report) && /Broken links &amp; errors/.test(w1report), 'broken links and errors are one merged section');
+  assert(!/id="h-errors"/.test(w1report), 'no separate "Pages that returned errors" section');
+  // Long URLs use the truncatable .url class.
+  assert(/class="url"/.test(w1report), 'long URLs use the truncatable url class');
+  // Readability sub-page + subnav.
+  const readPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.html');
+  assert(fs.existsSync(readPage), 'standalone readability page written');
+  const readHtml = fs.readFileSync(readPage, 'utf8');
+  assert(/table class="sortable"/.test(readHtml), 'readability page has a sortable table');
+  assert(/class="subnav"/.test(readHtml) && /class="subnav"/.test(w1report), 'cross-page subnav present on report + readability');
+  assert(/Reading ease \(Flesch\)/.test(readHtml), 'readability page documents the metrics');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv')), 'readability CSV written');
   const readCsv = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv'), 'utf8');
   assert(readCsv.startsWith('url,words,reading_ease,grade,scored'), 'readability CSV has expected header');

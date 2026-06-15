@@ -610,3 +610,29 @@ test('affected pages: inline <=25, list 25 + CSV when more (Markdown)', async ()
   assert.match(sect26, /26 pages total/);
   assert.match(sect26, /download CSV/, 'CSV link appears above 25');
 });
+
+test('perf-impact: averages always; totals only with page loads', async () => {
+  const { performanceImpact, humanDuration, humanBytes } = await import('../../src/lib/perf-impact.js');
+  // Two pages: one over both benchmarks, one under.
+  const lhPages = [
+    { url: 'x/a', metrics: { largestContentfulPaintMs: 4500 } }, // 2s over 2.5s
+    { url: 'x/b', metrics: { largestContentfulPaintMs: 2000 } }, // under -> 0
+  ];
+  const weights = [2_600_000, 1_000_000]; // 1 MB over 1.6 MB, and under -> 0
+  const noTraffic = performanceImpact(lhPages, weights, null);
+  assert.equal(noTraffic.avgExtraLcpMs, 1000, 'avg extra LCP = (2000+0)/2 ms');
+  assert.equal(noTraffic.pagesOverLcp, 1);
+  assert.equal(noTraffic.avgExtraWeightBytes, 500000, 'avg extra weight = (1MB+0)/2');
+  assert.equal(noTraffic.totals, null, 'no totals without traffic');
+
+  // With traffic, totals appear (loads spread across sampled pages).
+  const withTraffic = performanceImpact(lhPages, weights, 1000);
+  assert.ok(withTraffic.totals, 'totals present with page loads');
+  // extra seconds = sum(maxOver/1000 * loads/nPages) = (2 + 0) * (1000/2) = 1000s
+  assert.equal(withTraffic.totals.extraSeconds, 1000);
+  assert.equal(withTraffic.totals.extraBytes, 500_000_000, '(1MB+0) * (1000/2)');
+
+  assert.equal(performanceImpact([], [], null), null, 'no data -> null');
+  assert.match(humanDuration(31557600 * 2 + 86400 * 3), /2 years, 3 days/);
+  assert.equal(humanBytes(2.5e12), '2.5 TB');
+});
