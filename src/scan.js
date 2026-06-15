@@ -16,6 +16,8 @@ import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
 import { runDeprecatedHtml } from './engines/deprecated-html.js';
 import { runResources } from './engines/resources.js';
+import { runStandards } from './engines/standards.js';
+import { runSecurity } from './engines/security.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
 
@@ -233,6 +235,10 @@ for (const item of batch) {
       if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
       if (runs('resources')) { record.resources = await runResources(page, item.url); mark('resources'); }
+      if (runs('standards')) { record.standards = await runStandards(page); mark('standards'); }
+      // Security is per-origin (headers/TLD/security.txt), so check it only
+      // when this page is in the sample; aggregate keeps the latest result.
+      if (runs('security')) { record.security = await runSecurity(baseOrigin, target.user_agent, target.nav_timeout_ms); mark('security'); }
 
       // Lighthouse: only when this page is in lighthouse's sample AND its
       // own Chrome launched. The sample rate keeps the (slow) audit count

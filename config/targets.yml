@@ -41,6 +41,8 @@ sampling:
   lighthouse: 25       # performance / a11y / best-practices / SEO (own Chrome; slow)
   deprecated-html: 25 # obsolete/legacy HTML (<font>, <center>, etc.)
   resources: 100       # catalog PDFs, Office docs, iframes, embedded media
+  standards: 50        # web standards / metadata / social (ScanGov-style, per page)
+  security: 10         # HTTPS, security headers, security.txt, .gov TLD (per origin)
   sustainability: 25  # page weight + estimated CO2
 
 targets:

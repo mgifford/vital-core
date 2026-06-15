@@ -207,6 +207,12 @@ function summarizeWeek(target, week) {
   const deprecatedRules = {}; // ruleId -> { count, pages, help, examplePages, instances }
   const enginePageCounts = {}; // engine -> unique pages it ran on (coverage)
   const resourceMap = new Map(); // resource url -> { url, type, foundOn:Set }
+  // Standards (per-page): checkId -> { label, pass, total } pass counts.
+  const standardsChecks = {};
+  let standardsPages = 0;
+  const socialSeen = new Map(); // platform -> example href
+  // Security (per-origin): keep the latest result seen this week.
+  let securityLatest = null;
   let pagesScanned = 0;
   let pagesWithAxeViolations = 0;
   let pagesWithAlfaFailures = 0;
@@ -299,6 +305,19 @@ function summarizeWeek(target, week) {
         resourceMap.set(res.url, entry);
       }
     }
+    if (rec.standards) {
+      standardsPages++;
+      for (const c of rec.standards.checks ?? []) {
+        const s = (standardsChecks[c.id] ??= { label: c.label, pass: 0, total: 0 });
+        s.total++;
+        if (c.pass) s.pass++;
+        s.label = c.label; // keep latest label (counts may be embedded)
+      }
+      for (const soc of rec.standards.social ?? []) {
+        if (!socialSeen.has(soc.platform)) socialSeen.set(soc.platform, soc.href);
+      }
+    }
+    if (rec.security) securityLatest = rec.security; // per-origin; latest wins
     if (rec.sustainability) {
       bytesList.push(rec.sustainability.bytes);
       requestsList.push(rec.sustainability.requests);
@@ -307,7 +326,7 @@ function summarizeWeek(target, week) {
     }
 
     // Per-engine coverage: which engines actually ran on this page.
-    for (const e of ['axe', 'alfa', 'plain-language', 'deprecated-html', 'resources', 'lighthouse', 'sustainability']) {
+    for (const e of ['axe', 'alfa', 'plain-language', 'deprecated-html', 'resources', 'standards', 'security', 'lighthouse', 'sustainability']) {
       const key = { 'plain-language': 'plainLanguage', 'deprecated-html': 'deprecatedHtml' }[e] ?? e;
       if (rec[key]) enginePageCounts[e] = (enginePageCounts[e] ?? 0) + 1;
     }
@@ -435,6 +454,20 @@ function summarizeWeek(target, week) {
           // ledger, inventory, and CSV. foundOn Set -> count.
           list: [...resourceMap.values()].map((r) => ({ url: r.url, type: r.type, pages: r.foundOn.size })),
         }
+      : null,
+    standards: standardsPages
+      ? {
+          pagesChecked: standardsPages,
+          // Per-check pass rate across the checked pages.
+          checks: Object.entries(standardsChecks).map(([id, s]) => ({
+            id, label: s.label, pass: s.pass, total: s.total,
+            rate: Math.round((s.pass / s.total) * 100),
+          })).sort((a, b) => a.rate - b.rate),
+          social: [...socialSeen.entries()].map(([platform, href]) => ({ platform, href })),
+        }
+      : null,
+    security: securityLatest
+      ? { checks: securityLatest.checks, passed: securityLatest.passed, total: securityLatest.total }
       : null,
     plainLanguage: plPagesChecked
       ? {

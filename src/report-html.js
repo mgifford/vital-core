@@ -385,6 +385,39 @@ function fixFirstSection(bugs) {
 </section>`;
 }
 
+/**
+ * Security + web-standards checklists, ScanGov-style (per ScanGov's
+ * Security/Botability/Usability topics), measured across our scan rather
+ * than just the homepage. Pass/fail with a check icon; credits ScanGov.
+ */
+function checklist(items) {
+  return `<ul class="checklist">${items
+    .map((c) => `<li class="${c.pass ? 'pass' : 'fail'}"><span class="check" aria-hidden="true">${c.pass ? '✓' : '✗'}</span> ${esc(c.label)}${c.detail ? ` <span class="bug-meta">${esc(String(c.detail))}</span>` : ''}<span class="visually-hidden">: ${c.pass ? 'pass' : 'fail'}</span></li>`)
+    .join('')}</ul>`;
+}
+function standardsSecuritySection(summary) {
+  const sec = summary.security;
+  const std = summary.standards;
+  if (!sec && !std) return '';
+  const secBlock = sec ? `
+<h3>Security &amp; domain hygiene <span class="bug-meta">${sec.passed}/${sec.total} on the origin</span></h3>
+${checklist(sec.checks)}` : '';
+  const stdBlock = std ? `
+<h3>Web standards &amp; metadata <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
+<table>
+<caption>Share of checked pages passing each standard (lowest first).</caption>
+<thead><tr><th scope="col">Standard</th><th scope="col">Pass rate</th><th scope="col">Pages</th></tr></thead>
+<tbody>${std.checks.map((c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`).join('')}</tbody>
+</table>
+${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}` : '';
+  return `<section aria-labelledby="h-standards">
+<h2 id="h-standards">Standards &amp; security</h2>
+<p class="meta">Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.</p>
+${secBlock}
+${stdBlock}
+</section>`;
+}
+
 function consensusSection(summary) {
   const c = summary.consensus;
   if (!c || c.uniqueIssues === 0) return '';
@@ -534,6 +567,8 @@ ${changeList('Alfa', diff.alfa)}
 </section>` : ''}
 
 ${consensusSection(summary)}
+
+${standardsSecuritySection(summary)}
 
 <section aria-labelledby="h-axe">
 <h2 id="h-axe">axe-core findings</h2>
@@ -853,6 +888,11 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .chart figcaption { color: var(--muted); font-size: .9rem; margin-bottom: .25rem; }
 .linechart { width: 100%; height: auto; color: var(--accent); }
 .linechart .axis { fill: var(--muted); font-size: 11px; }
+.checklist { list-style: none; padding: 0; margin: .5rem 0; }
+.checklist li { padding: .2rem 0; }
+.checklist .check { display: inline-block; width: 1.2em; font-weight: 700; }
+.checklist li.pass .check { color: var(--better); }
+.checklist li.fail .check { color: var(--worse); }
 @media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
   margin: .6rem 0; padding: 0 .9rem; }

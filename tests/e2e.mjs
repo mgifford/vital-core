@@ -55,6 +55,8 @@ sampling:
   deprecated-html: 100
   resources: 100
   link-check: 100
+  standards: 100
+  security: 100
   sustainability: 100
 targets:
   - domain: localhost
@@ -85,8 +87,12 @@ ${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a
   }
   fs.writeFileSync(
     path.join(SITE, 'index.html'),
-    `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Fixture home</title></head>
+    `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Fixture home</title>
+<meta name="description" content="A fixture home page for the e2e test.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="http://localhost:${PORT}/"></head>
 <body><main><h1>Fixture</h1><ul>${nav}</ul>
+<p><a rel="me" href="https://mastodon.social/@fixture">Follow us on Mastodon</a></p>
 <p><a href="/does-not-exist-404.html">A deliberately broken link</a></p></main></body></html>`
   );
   // 1x1 png
@@ -284,6 +290,13 @@ try {
   const inv = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'inventory.json')));
   assert(Object.keys(inv.pages).length >= PAGES, `inventory tracks all known pages (${Object.keys(inv.pages).length})`);
   assert(/pages known on this site/.test(report), 'report cites total known pages from inventory');
+  // ScanGov-style standards + security engines.
+  assert(w1.security && w1.security.checks.some((c) => c.id === 'https'), 'security checks recorded (per origin)');
+  assert(w1.security.checks.find((c) => c.id === 'gov-tld').pass === false, 'localhost is not a .gov (TLD check works)');
+  assert(w1.standards && w1.standards.checks.some((c) => c.id === 'canonical'), 'standards checks recorded (per page)');
+  assert(w1.standards.checks.find((c) => c.id === 'title').rate === 100, 'every page has a title (standard passes 100%)');
+  assert(w1.standards.social.some((s) => s.platform === 'mastodon'), 'Mastodon social link detected');
+  assert(/id="h-standards"/.test(report), 'report has a standards & security section');
   // Downloadable per-domain JSON: a single snapshot of everything known.
   const domainJsonPath = path.join(SANDBOX, 'docs', 'data', 'localhost', 'domain.json');
   assert(fs.existsSync(domainJsonPath), 'domain.json export written');

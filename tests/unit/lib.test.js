@@ -533,3 +533,38 @@ test('inventory: accumulates last-known status, keeps newer over older', async (
   assert.equal(s.totalKnownPages, 2);
   assert.equal(s.scannedThisWeek, 1);
 });
+
+test('security: classifies TLD, HTTPS, and headers from a mocked origin', async () => {
+  const { runSecurity } = await import('../../src/engines/security.js');
+  const realFetch = globalThis.fetch;
+  try {
+    // Origin with good headers; security.txt + www both resolve.
+    globalThis.fetch = async (u) => ({
+      ok: true, status: 200,
+      headers: new Map([
+        ['strict-transport-security', 'max-age=63072000'],
+        ['content-security-policy', "default-src 'self'; frame-ancestors 'none'"],
+        ['x-content-type-options', 'nosniff'],
+      ]),
+    });
+    // Map needs a .has(); Map has it. .get() too. Good enough for the engine.
+    const r = await runSecurity('https://example.gov', 'ua', 1000);
+    const by = Object.fromEntries(r.checks.map((c) => [c.id, c.pass]));
+    assert.equal(by['https'], true, 'https detected');
+    assert.equal(by['hsts'], true);
+    assert.equal(by['csp'], true);
+    assert.equal(by['x-content-type-options'], true);
+    assert.equal(by['clickjacking'], true, 'CSP frame-ancestors counts as clickjacking protection');
+    assert.equal(by['gov-tld'], true, '.gov is a sponsored TLD');
+
+    // A non-gov http origin with no headers fails the right checks.
+    globalThis.fetch = async () => ({ ok: false, status: 404, headers: new Map() });
+    const r2 = await runSecurity('http://example.com', 'ua', 1000);
+    const by2 = Object.fromEntries(r2.checks.map((c) => [c.id, c.pass]));
+    assert.equal(by2['https'], false, 'http is not https');
+    assert.equal(by2['gov-tld'], false, '.com is not sponsored');
+    assert.equal(by2['security-txt'], false);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});

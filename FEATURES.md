@@ -86,6 +86,15 @@ Because each week only scans a sampled slice and page detail is pruned, a commit
 - **Evidence CSVs**: per-page readability (`readability.csv`) and spelling (`spelling.csv`) alongside the existing per-rule and resource CSVs, so every headline number links to its underlying pages.
 - **Downloadable per-domain JSON** (`docs/data/<domain>/domain.json`): one self-contained snapshot — every scanned URL's last-known status (axe/Alfa counts, status; survives pruning), the findings ledger with first/last-seen, the weekly trend series + diffs, and the latest score. Linked from the domain report.
 
+### Standards & security checks (ScanGov-style)
+
+Two engines replicate, at site scale, the gaps between vital-core and [ScanGov](https://standards.scangov.org/) (which scores only the homepage; methodology CC0). They complement rather than compete — we run the same checks across the whole scan and track them week over week.
+
+- **Security** (`src/engines/security.js`, per origin): HTTPS, HSTS, CSP, X-Content-Type-Options, clickjacking protection (X-Frame-Options or CSP frame-ancestors), published `security.txt`, sponsored government TLD (.gov/.mil/.edu), and www resolution. Reported as a per-origin pass/fail checklist.
+- **Standards & metadata** (`src/engines/standards.js`, per page): schema.org GovernmentOrganization, canonical, hreflang, `<title>`, meta description, charset, document `lang`, responsive viewport (zoom not disabled), Open Graph tags (≥4/6), Twitter card — reported as a pass-rate table across checked pages. Also detects **open social presence** (Mastodon via `rel="me"`/known hosts, Bluesky) and surfaces the links.
+
+Both are rate-controlled engines (security low/per-origin, standards per-page) with their own report section, and roll into the per-domain `domain.json` export. We deliberately keep these out of the accessibility score — security and SEO are different dimensions.
+
 ### Notes on score fairness
 
 - The quality **score is based on axe alone**. axe runs on 100% of pages; Alfa is sampled (lower rate, configurable) and counts individual failing *elements* rather than unique rules, so folding it into the score would mix uneven coverage and inflate counts. Alfa still runs and is reported separately as independent cross-engine confirmation (and in the ACT consensus view) — it just doesn't skew the comparable score.
