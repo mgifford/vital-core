@@ -36,12 +36,12 @@ sustainability_metric: co2
 sampling:
   axe: 100             # WCAG / Section 508 (axe-core)
   alfa: 30             # independent ACT-rules audit (Siteimprove Alfa)
-  plain-language: 45   # readability of main content
-  link-check: 90       # broken-link probing of links seen on sampled pages
-  lighthouse: 10       # performance / a11y / best-practices / SEO (own Chrome; slow)
-  deprecated-html: 100 # obsolete/legacy HTML (<font>, <center>, etc.)
+  plain-language: 50   # readability of main content
+  link-check: 100       # broken-link probing of links seen on sampled pages
+  lighthouse: 25       # performance / a11y / best-practices / SEO (own Chrome; slow)
+  deprecated-html: 25 # obsolete/legacy HTML (<font>, <center>, etc.)
   resources: 100       # catalog PDFs, Office docs, iframes, embedded media
-  sustainability: 100  # page weight + estimated CO2
+  sustainability: 25  # page weight + estimated CO2
 
 targets:
   # Discovery is host-scoped. The apex domain and its `www.` variant are

@@ -289,6 +289,16 @@ try {
   assert(/<th scope="col">Score<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
   assert(/class="traj traj-/.test(dash), 'dashboard shows trajectory arrows');
   assert(dash.includes('all domains') && dash.includes('linechart'), 'dashboard has cross-domain overlay chart');
+  assert(/id="h-worst"/.test(dash), 'dashboard has fleet-wide worst-offenders section');
+
+  // Week-1 report (has violations): "Fix these first" + evidence CSVs.
+  const w1report = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
+  assert(/id="h-fixfirst"/.test(w1report), 'domain report has a "Fix these first" section');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv')), 'readability CSV written');
+  const readCsv = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv'), 'utf8');
+  assert(readCsv.startsWith('url,words,reading_ease,grade,scored'), 'readability CSV has expected header');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv')), 'spelling CSV written');
+  assert(/word,pages_affected,example_pages/.test(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv'), 'utf8')), 'spelling CSV has expected header');
 
   const comment = run('src/issue-comment.js', [], '2026-W24');
   assert(comment.includes('localhost: 2026-W24') && comment.includes('Median axe violations'), 'issue comment generated with deltas');

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { scoreFor, trajectory } from './lib/score.js';
+import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
+import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
 
 /**
  * Report design constraints, in priority order:
@@ -355,6 +356,35 @@ ${newBlock}
  * engines agree on. Prevents the "looks like 2x the errors" problem of
  * summing two engines that overlap.
  */
+/**
+ * "Fix these first" — the highest-leverage issues for this domain,
+ * ranked by pages affected × severity × people reached. Each row links
+ * its remediation tip and the CSV of affected pages, so a team can act.
+ */
+function fixFirstSection(bugs) {
+  const top = rankBugs(bugs, 8);
+  if (top.length === 0) return '';
+  const rows = top
+    .map((b) => `<tr>
+  <th scope="row">${b.rule_url ? `<a href="${esc(b.rule_url)}">${esc(b.summary)}</a>` : esc(b.summary)}</th>
+  <td><span class="sev-badge">${esc(b.severity)}</span></td>
+  <td class="num">${b.frequency.pages_affected}</td>
+  <td>${b.impact?.groups?.length ? esc(b.impact.groups.map((g) => g.group).slice(0, 2).join(', ')) : '—'}</td>
+  <td>${b.remediation_tip ? esc(b.remediation_tip) : (b.suggested_fix ? esc(b.suggested_fix) : '—')}</td>
+  <td>${b.affected_pages_csv ? `<a href="${esc(b.affected_pages_csv)}">pages (CSV)</a>` : '—'}</td>
+</tr>`)
+    .join('\n');
+  return `<section aria-labelledby="h-fixfirst">
+<h2 id="h-fixfirst">Fix these first</h2>
+<p class="meta">Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once.</p>
+<table>
+<caption>Top ${top.length} issues to prioritize this week.</caption>
+<thead><tr><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col">Pages</th><th scope="col">Who it affects</th><th scope="col">How to fix</th><th scope="col">Evidence</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</section>`;
+}
+
 function consensusSection(summary) {
   const c = summary.consensus;
   if (!c || c.uniqueIssues === 0) return '';
@@ -372,6 +402,67 @@ function consensusSection(summary) {
 </section>`;
 }
 
+/**
+ * Standalone Lighthouse page for a domain/week: every sampled URL with
+ * its category scores (performance, accessibility, best-practices, SEO,
+ * and the experimental agentic-browsing score) plus Core Web Vitals
+ * metrics. Linked from the domain report. Returns null if no LH data.
+ */
+export function renderLighthousePage(target, summary, csvHref) {
+  const lh = summary.lighthouse;
+  if (!lh || !lh.pageDetail?.length) return null;
+  const ms = (v) => (v == null ? 'n/a' : `${(v / 1000).toFixed(1)}s`);
+  const sc = (v) => (v == null ? 'n/a' : `${v}`);
+  const rows = lh.pageDetail
+    .map((p) => `<tr>
+  <th scope="row"><a href="${esc(p.url)}">${esc(new URL(p.url).pathname || '/')}</a></th>
+  <td class="num">${sc(p.scores.performance)}</td>
+  <td class="num">${sc(p.scores.accessibility)}</td>
+  <td class="num">${sc(p.scores.bestPractices)}</td>
+  <td class="num">${sc(p.scores.seo)}</td>
+  <td class="num">${sc(p.scores.agentic)}</td>
+  <td class="num">${ms(p.metrics.firstContentfulPaintMs)}</td>
+  <td class="num">${ms(p.metrics.largestContentfulPaintMs)}</td>
+  <td class="num">${ms(p.metrics.speedIndexMs)}</td>
+  <td class="num">${ms(p.metrics.totalBlockingTimeMs)}</td>
+  <td class="num">${p.metrics.cumulativeLayoutShift ?? 'n/a'}</td>
+</tr>`)
+    .join('\n');
+  const m = lh.metrics ?? {};
+  const body = `
+<h1>${esc(target.domain)}: Lighthouse — week ${esc(summary.week)}</h1>
+<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals. ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
+<section aria-labelledby="h-lh-medians">
+<h2 id="h-lh-medians">Medians across sampled pages</h2>
+<dl class="ledger">
+  <div><dt>Performance</dt><dd>${fmtScore(lh.medianPerformance)}</dd></div>
+  <div><dt>Accessibility</dt><dd>${fmtScore(lh.medianAccessibility)}</dd></div>
+  <div><dt>Best practices</dt><dd>${fmtScore(lh.medianBestPractices)}</dd></div>
+  <div><dt>SEO</dt><dd>${fmtScore(lh.medianSeo)}</dd></div>
+  ${lh.medianAgentic != null ? `<div><dt>Agentic browsing</dt><dd>${fmtScore(lh.medianAgentic)}</dd></div>` : ''}
+  <div><dt>First Contentful Paint</dt><dd>${ms(m.firstContentfulPaintMs)}</dd></div>
+  <div><dt>Largest Contentful Paint</dt><dd>${ms(m.largestContentfulPaintMs)}</dd></div>
+  <div><dt>Speed Index</dt><dd>${ms(m.speedIndexMs)}</dd></div>
+  <div><dt>Total Blocking Time</dt><dd>${ms(m.totalBlockingTimeMs)}</dd></div>
+  <div><dt>Cumulative Layout Shift</dt><dd>${m.cumulativeLayoutShift ?? 'n/a'}</dd></div>
+</dl>
+</section>
+<section aria-labelledby="h-lh-pages">
+<h2 id="h-lh-pages">Per-page results</h2>
+<table>
+<caption>Lighthouse scores and Core Web Vitals for each sampled page (${esc(summary.week)}). Agentic = experimental agentic-browsing score.</caption>
+<thead><tr><th scope="col">Page</th><th scope="col">Perf</th><th scope="col">A11y</th><th scope="col">Best practices</th><th scope="col">SEO</th><th scope="col">Agentic</th><th scope="col">FCP</th><th scope="col">LCP</th><th scope="col">Speed Index</th><th scope="col">TBT</th><th scope="col">CLS</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</section>`;
+  return layout({
+    title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Lighthouse</li>`,
+    body,
+    depth: 3,
+  });
+}
+
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }, invSummary = null) {
   const score = scoreFor(summary);
   const traj = trajectory(series, 4);
@@ -386,13 +477,15 @@ ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'F
 
 ${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
   <span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>
-  <span class="score">${score.score}<span class="score-max">/100</span></span>
-  <span class="score-detail">${score.cleanShare}% of scanned pages had no violations.
+  <span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>
+  <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(traj.direction)}</strong> (${traj.delta >= 0 ? '+' : ''}${traj.delta} pts since ${esc(traj.fromWeek)}).` : ''}
   ${resolvedCount > 0 ? `<strong>${resolvedCount} issue type(s) resolved</strong> since last week.` : ''}</span>
-  <span class="score-caveat">Automated testing finds ~⅓ of barriers — a high score is a floor, not a finish line.</span>
+  <span class="score-caveat">Score reflects the typical page’s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.</span>
 </aside>` : ''}
 ${invSummary ? `<p class="meta">Across <strong>${invSummary.totalKnownPages}</strong> pages known on this site (scanned over time), <strong>${invSummary.pagesWithKnownIssues}</strong> have known accessibility issues. ${invSummary.scannedThisWeek} were re-checked this week.</p>` : ''}
+
+${fixFirstSection(bugs)}
 
 <section aria-labelledby="h-summary">
 <h2 id="h-summary">This week at a glance</h2>
@@ -403,15 +496,15 @@ ${invSummary ? `<p class="meta">Across <strong>${invSummary.totalKnownPages}</st
   <div><dt>Pages with Alfa failures</dt><dd>${summary.alfa.pagesWithFailures} of ${summary.alfa.pagesScanned ?? summary.pagesScanned}${csvLink(csvLinks.alfaAll, 'CSV')}</dd></div>
   <div><dt>Unique pages audited</dt><dd>${summary.pagesAudited ?? summary.pagesScanned}</dd></div>
   ${summary.lighthouse ? `
-  <div><dt>Lighthouse performance (median)</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${summary.lighthouse.pagesSampled} sampled</span></dd></div>
+  <div><dt>Lighthouse performance (median)</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${summary.lighthouse.pagesSampled} sampled</span> ${csvLink('lighthouse.html', 'details')}</dd></div>
   <div><dt>Lighthouse SEO (median)</dt><dd>${fmtScore(summary.lighthouse.medianSeo)}</dd></div>
   <div><dt>Lighthouse best practices (median)</dt><dd>${fmtScore(summary.lighthouse.medianBestPractices)}</dd></div>
   ${summary.lighthouse.medianAgentic != null ? `<div><dt>Lighthouse agentic (median)</dt><dd>${fmtScore(summary.lighthouse.medianAgentic)}</dd></div>` : ''}` : ''}
   ${summary.plainLanguage ? `
   <div><dt>Words per page (median)</dt><dd>${summary.plainLanguage.medianWordsPerPage ?? 'n/a'}<span class="bug-meta"> main content, nav excluded</span></dd></div>
-  ${summary.plainLanguage.medianReadingEase != null ? `<div><dt>Reading ease (median)</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${summary.plainLanguage.pagesScored} prose pages</span></dd></div>` : ''}
+  ${summary.plainLanguage.medianReadingEase != null ? `<div><dt>Reading ease (median)</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${summary.plainLanguage.pagesScored} prose pages</span>${csvLink(summary.plainLanguage.readabilityCsv, 'CSV')}</dd></div>` : ''}
   ${summary.plainLanguage.medianGrade != null ? `<div><dt>Reading grade (median)</dt><dd>${summary.plainLanguage.medianGrade}</dd></div>` : ''}
-  ${summary.plainLanguage.topMisspellings?.length ? `<div><dt>Misspellings</dt><dd>${summary.plainLanguage.topMisspellings.length}+ distinct</dd></div>` : ''}` : ''}
+  ${summary.plainLanguage.topMisspellings?.length ? `<div><dt>Misspellings</dt><dd>${summary.plainLanguage.topMisspellings.length}+ distinct${csvLink(summary.plainLanguage.spellingCsv, 'CSV')}</dd></div>` : ''}` : ''}
   ${summary.linkCheck ? `
   <div><dt>Broken links</dt><dd>${summary.linkCheck.brokenCount}</dd></div>` : ''}
   ${summary.sustainability ? `
@@ -613,6 +706,26 @@ for how the scanner can be allowlisted.</p>
   // Overlay chart: every domain's median axe violations/page over time.
   const overlay = crossDomainChart(ranked);
 
+  // Fleet-wide worst offenders: highest-impact issues across all domains.
+  const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
+  const worstSection = worst.length === 0 ? '' : `
+<section aria-labelledby="h-worst">
+<h2 id="h-worst">Worst offenders across all domains</h2>
+<p class="meta">Highest-impact issues fleet-wide, ranked by pages affected × severity × people reached — where to focus effort first.</p>
+<table>
+<caption>Top ${worst.length} issues across all active domains.</caption>
+<thead><tr><th scope="col">Domain</th><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col">Pages</th></tr></thead>
+<tbody>${worst
+    .map((b) => `<tr>
+  <th scope="row"><a href="reports/${esc(b.key)}/${esc(b._week)}/index.html">${esc(b.domain)}</a></th>
+  <td>${esc(b.summary)}</td>
+  <td><span class="sev-badge">${esc(b.severity)}</span></td>
+  <td class="num">${b.frequency.pages_affected}</td>
+</tr>`)
+    .join('\n')}</tbody>
+</table>
+</section>`;
+
   const body = `
 <h1>Weekly quality ledger</h1>
 <p class="meta">Accessibility and sustainability, measured continuously with open source engines.
@@ -629,7 +742,8 @@ ${active.length === 0
 <tbody>${rows}</tbody>
 </table>
 <p class="score-caveat">Scores are a relative, automated signal (axe + Alfa, page-normalized). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
-${overlay}`}
+${overlay}
+${worstSection}`}
 <section aria-labelledby="h-why">
 <h2 id="h-why">Why this exists</h2>
 <p>Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more
@@ -730,6 +844,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .grade-C { color: var(--muted); } .grade-D { color: var(--worse); } .grade-F { color: var(--worse); }
 .scorecard .score { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
 .scorecard .score-max { font-size: .9rem; color: var(--muted); }
+.scorecard .band { font-size: 1rem; color: var(--muted); margin-left: .25rem; }
 .scorecard .score-detail { flex: 1 1 16rem; }
 .scorecard .score-caveat, p.score-caveat { color: var(--muted); font-size: .85rem; flex-basis: 100%; }
 .traj { white-space: nowrap; font-size: .9rem; }

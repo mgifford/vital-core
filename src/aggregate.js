@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeResourceCsv } from './lib/csv.js';
+import { writeCsvs, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
@@ -45,7 +45,7 @@ for (const target of config.targets) {
       series.push(summary);
       // The full per-page lists are large and reconstructable; keep them
       // in memory for CSV generation but don't commit them to summary.json.
-      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList']);
+      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows']);
       fs.writeFileSync(
         path.join(domainDir, week, 'summary.json'),
         JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
@@ -90,6 +90,7 @@ for (const target of config.targets) {
   resLedger.resources = {};
 
   // Human reports + structured bug reports (Markdown, JSON, and inline HTML).
+  let latestBugs = []; // latest week's bugs, for the fleet-wide worst-offenders view
   for (let i = 0; i < series.length; i++) {
     const summary = series[i];
     const prev = i > 0 ? series[i - 1] : null;
@@ -124,8 +125,23 @@ for (const target of config.targets) {
       summary.resources.csv = writeResourceCsv(repDir, summary.resources, resLedger);
     }
 
+    // Evidence CSVs: Lighthouse per-page, readability per-page, spelling.
+    const lhCsv = writeLighthouseCsv(repDir, summary.lighthouse);
+    const readabilityCsv = writeReadabilityCsv(repDir, summary.plainLanguage?.pageRows);
+    const spellingCsv = writeSpellingCsv(repDir, summary.plainLanguage?.topMisspellings);
+    if (summary.lighthouse) summary.lighthouse.csv = lhCsv;
+    if (summary.plainLanguage) {
+      summary.plainLanguage.readabilityCsv = readabilityCsv;
+      summary.plainLanguage.spellingCsv = spellingCsv;
+    }
+
+    // Standalone Lighthouse page (per-sampled-page scores + metrics).
+    const lhHtml = renderLighthousePage(target, summary, lhCsv);
+    if (lhHtml) fs.writeFileSync(path.join(repDir, 'lighthouse.html'), lhHtml);
+
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
+    if (isLatest) latestBugs = bugs.map((b) => ({ ...b, _week: summary.week }));
     const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null);
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
@@ -138,7 +154,7 @@ for (const target of config.targets) {
   saveFindings(target.key, ledger);
   saveResourceLedger(target.key, resLedger);
 
-  dashboard.push({ target, series, diffs, inventory: invSummary });
+  dashboard.push({ target, series, diffs, inventory: invSummary, bugs: latestBugs });
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 
@@ -191,11 +207,15 @@ function summarizeWeek(target, week) {
   const gradeList = [];
   let plPagesScored = 0;
   const acronymCounts = {}; // acronym -> pages it was unexplained on
-  const misspellingCounts = {}; // word -> pages it was misspelled on
+  const misspellingCounts = {}; // word -> { pages, examplePages[] }
+  const plRows = []; // per-page readability rows (for CSV)
   let plPagesChecked = 0; // pages plain-language ran on (for words/page)
   const wordCounts = []; // per-page main-content word counts
-  // Lighthouse: collect sampled scores for medians.
+  // Lighthouse: collect sampled scores + Core Web Vitals metrics for
+  // medians, and keep per-sampled-page detail for the Lighthouse page.
   const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
+  const lhMetrics = { firstContentfulPaintMs: [], largestContentfulPaintMs: [], speedIndexMs: [], totalBlockingTimeMs: [], cumulativeLayoutShift: [] };
+  const lhPages = []; // { url, scores, metrics }
   // Link check: union broken links across the week's runs (deduped).
   const brokenLinks = new Map(); // url -> { url, status, reason, foundOn }
 
@@ -268,6 +288,14 @@ function summarizeWeek(target, week) {
     if (rec.plainLanguage) {
       plPagesChecked++;
       if (typeof rec.plainLanguage.wordCount === 'number') wordCounts.push(rec.plainLanguage.wordCount);
+      // Per-page readability row (for the readability CSV).
+      plRows.push({
+        url: rec.url,
+        wordCount: rec.plainLanguage.wordCount ?? 0,
+        fleschReadingEase: rec.plainLanguage.fleschReadingEase ?? '',
+        fleschKincaidGrade: rec.plainLanguage.fleschKincaidGrade ?? '',
+        scored: rec.plainLanguage.scored ?? false,
+      });
       if (rec.plainLanguage.scored) {
         plPagesScored++;
         if (rec.plainLanguage.fleschReadingEase != null) freList.push(rec.plainLanguage.fleschReadingEase);
@@ -277,7 +305,9 @@ function summarizeWeek(target, week) {
         acronymCounts[a] = (acronymCounts[a] ?? 0) + 1;
       }
       for (const w of rec.plainLanguage.misspelled ?? []) {
-        misspellingCounts[w] = (misspellingCounts[w] ?? 0) + 1;
+        const m = (misspellingCounts[w] ??= { pages: 0, examplePages: [] });
+        m.pages++;
+        if (m.examplePages.length < 5) m.examplePages.push(rec.url);
       }
     }
     if (rec.lighthouse?.scores) {
@@ -285,6 +315,11 @@ function summarizeWeek(target, week) {
         const v = rec.lighthouse.scores[k];
         if (typeof v === 'number') lhScores[k].push(v);
       }
+      for (const k of Object.keys(lhMetrics)) {
+        const v = rec.lighthouse.metrics?.[k];
+        if (typeof v === 'number') lhMetrics[k].push(v);
+      }
+      lhPages.push({ url: rec.url, scores: rec.lighthouse.scores, metrics: rec.lighthouse.metrics ?? {} });
     }
   }
 
@@ -388,11 +423,13 @@ function summarizeWeek(target, week) {
             .sort((a, b) => b[1] - a[1])
             .slice(0, 15)
             .map(([acronym, pages]) => ({ acronym, pages })),
-          // Most common misspellings, by pages affected.
+          // Most common misspellings, by pages affected (with examples).
           topMisspellings: Object.entries(misspellingCounts)
-            .sort((a, b) => b[1] - a[1])
+            .sort((a, b) => b[1].pages - a[1].pages)
             .slice(0, 25)
-            .map(([word, pages]) => ({ word, pages })),
+            .map(([word, m]) => ({ word, pages: m.pages, examplePages: m.examplePages })),
+          // Per-page rows for the readability CSV (omitted from committed summary.json).
+          pageRows: plRows,
         }
       : null,
     lighthouse: lhScores.performance.length
@@ -403,6 +440,14 @@ function summarizeWeek(target, week) {
           medianBestPractices: lhScores.bestPractices.length ? median(lhScores.bestPractices) : null,
           medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
           medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
+          metrics: {
+            firstContentfulPaintMs: lhMetrics.firstContentfulPaintMs.length ? median(lhMetrics.firstContentfulPaintMs) : null,
+            largestContentfulPaintMs: lhMetrics.largestContentfulPaintMs.length ? median(lhMetrics.largestContentfulPaintMs) : null,
+            speedIndexMs: lhMetrics.speedIndexMs.length ? median(lhMetrics.speedIndexMs) : null,
+            totalBlockingTimeMs: lhMetrics.totalBlockingTimeMs.length ? median(lhMetrics.totalBlockingTimeMs) : null,
+            cumulativeLayoutShift: lhMetrics.cumulativeLayoutShift.length ? median(lhMetrics.cumulativeLayoutShift) : null,
+          },
+          pageDetail: lhPages, // per-sampled-page detail for the Lighthouse page (omitted from committed summary.json)
         }
       : null,
     linkCheck: brokenLinks.size

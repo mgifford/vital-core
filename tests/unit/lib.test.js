@@ -465,22 +465,47 @@ test('remediation: tips resolve for known rules, null otherwise', async () => {
   assert.equal(remediationTip('axe-core', 'no-such-rule'), null);
 });
 
-test('score: clean site scores high, broken site scores low, grades map', async () => {
-  const { scoreFor, grade, trajectory } = await import('../../src/lib/score.js');
-  const clean = { pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 2, medianViolations: 0 }, alfa: { pagesScanned: 100, pagesWithFailures: 1, medianFailures: 0 } };
-  const broken = { pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 90, medianViolations: 15 }, alfa: { pagesScanned: 100, pagesWithFailures: 80, medianFailures: 20 } };
-  const sc = scoreFor(clean), sb = scoreFor(broken);
-  assert.ok(sc.score > sb.score, 'clean scores higher than broken');
-  assert.ok(sc.score >= 90, `clean is an A (${sc.score})`);
-  assert.ok(sb.score < 60, `broken is failing (${sb.score})`);
-  assert.equal(grade(95), 'A'); assert.equal(grade(72), 'C'); assert.equal(grade(40), 'F');
+test('score: density-based, spreads across a curve so F is rare and meaningful', async () => {
+  const { scoreFor, grade, band, trajectory } = await import('../../src/lib/score.js');
+  const mk = (med) => ({ pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 100, medianViolations: med }, alfa: { pagesScanned: 100, pagesWithFailures: 100, medianFailures: 0 } });
+
+  // The key fix: sites where every page has SOME issue no longer all get F.
+  const excellent = scoreFor(mk(1)); // ~1/page
+  const typical = scoreFor(mk(6)); // typical gov page
+  const poor = scoreFor(mk(16)); // heavy burden
+  assert.ok(excellent.score > typical.score && typical.score > poor.score, 'monotonic: fewer issues score higher');
+  assert.ok(excellent.grade === 'A' || excellent.grade === 'B', `low density is A/B (${excellent.grade} ${excellent.score})`);
+  assert.equal(typical.grade, 'C', `typical site is a C, not F (${typical.score})`);
+  assert.equal(poor.grade, 'F', `heavy burden is F (${poor.score})`);
+  // A typical site is NOT failing — the whole point.
+  assert.ok(typical.score >= 65, `typical site passes (${typical.score})`);
+
+  assert.equal(grade(90), 'A'); assert.equal(grade(70), 'C'); assert.equal(grade(40), 'F');
+  assert.equal(band(90), 'Leading'); assert.equal(band(70), 'Typical'); assert.equal(band(40), 'At risk');
   assert.equal(scoreFor({ pagesAudited: 0 }), null, 'no audited pages -> null');
 
-  // Trajectory: improving when later score is higher.
-  const series = [broken, { pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 30, medianViolations: 3 }, alfa: { pagesScanned: 100, pagesWithFailures: 20, medianFailures: 2 } }];
+  // Trajectory: improving when the typical page's burden drops.
+  const series = [mk(16), mk(4)];
   const t = trajectory(series, 4);
   assert.equal(t.direction, 'improving');
   assert.ok(t.delta > 0);
+});
+
+test('priority: ranks by pages x severity x reach; fleet flattens across domains', async () => {
+  const { priorityScore, rankBugs, fleetWorstOffenders } = await import('../../src/lib/priority.js');
+  const bug = (sev, pages, prev) => ({ severity: sev, frequency: { pages_affected: pages }, impact: { groups: prev != null ? [{ prevalence: prev }] : [] }, summary: `${sev}/${pages}` });
+  const widespreadCritical = bug('Critical', 50, 0.1);
+  const rareLow = bug('Low', 1, 0.01);
+  assert.ok(priorityScore(widespreadCritical) > priorityScore(rareLow), 'widespread critical outranks rare low');
+
+  const ranked = rankBugs([rareLow, widespreadCritical], 5);
+  assert.equal(ranked[0].summary, 'Critical/50', 'highest priority first');
+
+  const fleet = fleetWorstOffenders([
+    { target: { domain: 'a.gov', key: 'a' }, bugs: [rareLow] },
+    { target: { domain: 'b.gov', key: 'b' }, bugs: [widespreadCritical] },
+  ], 10);
+  assert.equal(fleet[0].domain, 'b.gov', 'worst issue across domains floats to the top, tagged with its domain');
 });
 
 test('inventory: accumulates last-known status, keeps newer over older', async () => {

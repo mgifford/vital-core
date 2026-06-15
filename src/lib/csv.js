@@ -32,6 +32,38 @@ export function ruleSlug(engine, ruleId) {
  * and when it was first seen (from the resource ledger). Returns the
  * relative path "resources.csv".
  */
+/** Write the per-page Lighthouse CSV (scores + Core Web Vitals). */
+export function writeLighthouseCsv(repDir, lighthouse) {
+  if (!lighthouse?.pageDetail?.length) return null;
+  const rows = lighthouse.pageDetail.map((p) => [
+    p.url, p.scores.performance, p.scores.accessibility, p.scores.bestPractices,
+    p.scores.seo, p.scores.agentic, p.metrics.firstContentfulPaintMs,
+    p.metrics.largestContentfulPaintMs, p.metrics.speedIndexMs,
+    p.metrics.totalBlockingTimeMs, p.metrics.cumulativeLayoutShift,
+  ]);
+  fs.writeFileSync(path.join(repDir, 'lighthouse.csv'),
+    toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
+  return 'lighthouse.csv';
+}
+
+/** Write per-page readability CSV (words, Flesch reading ease, grade). */
+export function writeReadabilityCsv(repDir, plRows) {
+  if (!plRows?.length) return null;
+  const rows = plRows.map((r) => [r.url, r.wordCount, r.fleschReadingEase, r.fleschKincaidGrade, r.scored]);
+  fs.writeFileSync(path.join(repDir, 'readability.csv'),
+    toCsv(['url', 'words', 'reading_ease', 'grade', 'scored'], rows));
+  return 'readability.csv';
+}
+
+/** Write spelling CSV (misspelled word, pages affected, example URLs). */
+export function writeSpellingCsv(repDir, spellRows) {
+  if (!spellRows?.length) return null;
+  const rows = spellRows.map((s) => [s.word, s.pages, (s.examplePages ?? []).join(' ')]);
+  fs.writeFileSync(path.join(repDir, 'spelling.csv'),
+    toCsv(['word', 'pages_affected', 'example_pages'], rows));
+  return 'spelling.csv';
+}
+
 export function writeResourceCsv(repDir, resources, ledger) {
   const rows = resources.list.map((r) => {
     const led = ledger.resources[r.url];

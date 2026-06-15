@@ -80,7 +80,10 @@ Because each week only scans a sampled slice and page detail is pruned, a commit
 
 ### Scores, trends, and cross-domain comparison
 
-- **Quality score + grade** per domain (0–100, A–F) from page-normalized signals — share of clean pages and median issues/page — comparable across sites of any size (`src/lib/score.js`). Shown as a scorecard on domain reports and a ranked **leaderboard** on the dashboard.
+- **Quality score + grade + band** per domain (0–100, A–F, plus a plain "Leading / On track / Typical / Needs work / At risk" label) from the *typical page's issue density* mapped to realistic government-web benchmarks, so scores spread across a curve and an F is rare and genuinely bad — not handed to everyone (`src/lib/score.js`). axe (rule-level) is the primary signal; Alfa's element-level count is damped (`sqrt`) so its granularity doesn't unfairly tank a grade. The scorecard explains the score and names the single highest-leverage fix.
+- **"Fix these first"** ranked action list per domain (pages affected × severity × people reached, from the FPC impact data), each row linking its remediation tip and a CSV of affected pages; plus a **fleet-wide worst-offenders** view on the dashboard (`src/lib/priority.js`).
+- **Lighthouse detail page** per domain (`lighthouse.html` + `lighthouse.csv`): every sampled page with all category scores (performance, accessibility, best-practices, SEO, experimental agentic-browsing) and Core Web Vitals (FCP, LCP, Speed Index, TBT, CLS).
+- **Evidence CSVs**: per-page readability (`readability.csv`) and spelling (`spelling.csv`) alongside the existing per-rule and resource CSVs, so every headline number links to its underlying pages.
 - **Trajectory** (improving / stable / worsening vs ~4 weeks ago) on the leaderboard, so direction is visible, not just the snapshot.
 - **Multi-week trend charts** (accessible inline SVG, data-table fallback, no JS) on each domain report for median violations/page, reading ease, and page weight; plus a **cross-domain overlay chart** on the dashboard.
 - **Progress-first framing**: reports headline score deltas and the count of issue types **resolved** since last week (from the findings ledger), because trajectory proves progress even when the absolute count isn't zero. Scores are explicitly a relative, automated signal — a floor, not a finish line.
