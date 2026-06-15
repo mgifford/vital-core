@@ -1,27 +1,29 @@
 {
  "domain": "www.cdc.gov",
  "week": "2026-W25",
- "generatedAt": "2026-06-15T14:43:50.834Z",
+ "generatedAt": "2026-06-15T17:46:50.561Z",
  "pagesScanned": 600,
  "pagesAudited": 573,
  "coverage": {
   "axe": 573,
-  "plain-language": 267,
-  "deprecated-html": 573,
+  "plain-language": 281,
   "resources": 573,
-  "lighthouse": 64,
-  "sustainability": 573,
-  "alfa": 178
+  "standards": 156,
+  "lighthouse": 107,
+  "deprecated-html": 365,
+  "sustainability": 370,
+  "alfa": 178,
+  "security": 32
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 7773,
+  "violationTotal": 7772,
   "pagesWithViolations": 573,
   "pagesScanned": 573,
   "medianViolations": 5,
   "rules": {
    "color-contrast": {
-    "count": 195,
+    "count": 194,
     "pages": 114,
     "impact": "serious",
     "help": "Elements must meet minimum color contrast ratio thresholds",
@@ -130,7 +132,7 @@
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5916a2.htm",
-      "instances": 2
+      "instances": 1
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049041.htm",
@@ -2812,7 +2814,7 @@
     ]
    },
    "region": {
-    "count": 5148,
+    "count": 5147,
     "pages": 572,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
@@ -3328,7 +3330,7 @@
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5916a2.htm",
-      "instances": 28
+      "instances": 27
      },
      {
       "url": "https://www.cdc.gov/pcd/issues/2017/16_0344.htm",
@@ -6272,7 +6274,7 @@
     ]
    },
    "link-name": {
-    "count": 72,
+    "count": 73,
     "pages": 38,
     "impact": "serious",
     "help": "Links must have discernible text",
@@ -6306,7 +6308,7 @@
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5916a2.htm",
-      "instances": 2
+      "instances": 3
      },
      {
       "url": "http://www.cdc.gov/pcd/issues/2008/oct/08_0057_es.htm",
@@ -7525,7 +7527,7 @@
   }
  },
  "alfa": {
-  "failedTotal": 36314,
+  "failedTotal": 36315,
   "pagesWithFailures": 178,
   "pagesScanned": 178,
   "medianFailures": 84,
@@ -9163,7 +9165,7 @@
     ]
    },
    "sia-r111": {
-    "count": 5973,
+    "count": 5974,
     "pages": 178,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
@@ -9594,7 +9596,7 @@
      },
      {
       "url": "https://www.cdc.gov/mmwr/volumes/74/wr/mm7406a6.htm?s_cid=mm7406a6_w",
-      "instances": 18
+      "instances": 19
      },
      {
       "url": "https://www.cdc.gov/hepatitis/hcp/populations-settings/index.html",
@@ -12444,12 +12446,12 @@
     "instances": [
      {
       "url": "https://www.cdc.gov/tobacco/campaign/tips/diseases/secondhand-smoke-asthma.html",
-      "target": "<a class=\"noline\" href=\"#five\">",
+      "target": "<a class=\"noline\" href=\"#two\">",
       "html": null
      },
      {
       "url": "https://www.cdc.gov/tobacco/campaign/tips/diseases/secondhand-smoke-asthma.html",
-      "target": "<a class=\"noline\" href=\"#two\">",
+      "target": "<a class=\"noline\" href=\"#five\">",
       "html": null
      },
      {
@@ -13275,36 +13277,527 @@
   }
  },
  "sustainability": {
-  "pages": 573,
-  "medianBytes": 5502246,
-  "meanBytes": 6291965,
+  "pages": 370,
+  "medianBytes": 5497134,
+  "meanBytes": 6320568,
   "medianRequests": 45,
-  "totalCo2g": 534.31,
-  "meanCo2g": 0.9325,
-  "totalEnergyWh": 1081.59,
-  "meanEnergyWh": 1.8876
+  "totalCo2g": 346.58,
+  "meanCo2g": 0.9367,
+  "totalEnergyWh": 701.58,
+  "meanEnergyWh": 1.8962
  },
  "deprecatedHtml": {
-  "findingTotal": 23438,
+  "findingTotal": 16632,
   "rules": {
-   "font-element": {
-    "count": 833,
-    "pages": 110,
-    "help": "Obsolete <font> element (use CSS)",
+   "presentational-attr": {
+    "count": 15890,
+    "pages": 115,
+    "help": "Presentational attribute (use CSS)",
     "examplePages": [
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6010a7.htm?s_cid=mm6010a7_w",
+     "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
+     "https://www.cdc.gov/pcd/issues/2025/24_0270.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm"
     ],
     "affectedPages": [
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
+      "instances": 138
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/24_0270.htm",
       "instances": 8
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6010a7.htm?s_cid=mm6010a7_w",
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023565.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00048778.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001301.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2010/sep/cover.htm",
+      "instances": 69
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000840.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7107e2.htm?s_cid=mm7107e2_w",
+      "instances": 932
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2026/25_0288.htm",
+      "instances": 2
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5921a3.htm",
+      "instances": 97
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000757.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/25_0186.htm",
+      "instances": 7
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/25_0083.htm",
+      "instances": 7
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/66/wr/mm6603a7.htm",
       "instances": 1
      },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7118a4.htm?s_cid=mm7118a4_w",
+      "instances": 19
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001922.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/74/wr/mm7412a4.htm?s_cid=mm7412a4_w",
+      "instances": 161
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031959.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001313.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/24_0509.htm",
+      "instances": 7
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026747.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2017/16_0344.htm",
+      "instances": 271
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2019/18_0540.htm",
+      "instances": 204
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.htm?s_cid=mm7106e1_w",
+      "instances": 211
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049041.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2019/19_0165.htm",
+      "instances": 90
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7119e1.htm?s_cid=mm7119e1_w",
+      "instances": 717
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5711a4.htm",
+      "instances": 54
+     },
+     {
+      "url": "http://www.cdc.gov/pcd/issues/2008/oct/08_0057_es.htm",
+      "instances": 694
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000663.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5536a2.htm",
+      "instances": 54
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2005/nov/05_0070.htm",
+      "instances": 516
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0164_fr.htm",
+      "instances": 81
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7115e2.htm?s_cid=mm7115e2_w",
+      "instances": 391
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00048364.htm",
+      "instances": 51
+     },
+     {
+      "url": "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm5839a3.htm",
+      "instances": 78
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000836.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00015759.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00048515.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049839.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050266.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023631.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0169_zht.htm",
+      "instances": 81
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000818.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001042.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/69/wr/mm6932e3.htm?s_cid=mm6932e3_w",
+      "instances": 388
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026204.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049694.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033618.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000837.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7145a3.htm?s_cid=mm7145a3_w",
+      "instances": 187
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032080.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2010/jul/toc.htm",
+      "instances": 64
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2023/22_0400.htm",
+      "instances": 2
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5810a1.htm",
+      "instances": 55
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014841.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001312.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/wr/mm7316a1.htm",
+      "instances": 180
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001879.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001962.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2019/18_0531.htm",
+      "instances": 392
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2019/18_0681.htm",
+      "instances": 108
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047274.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023762.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e2.htm?s_cid=mm7106e2_w",
+      "instances": 377
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000043.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/65/wr/mm6540a1.htm",
+      "instances": 251
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001088.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2006/oct/06_0034.htm",
+      "instances": 126
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00015144.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2006/oct/05_0236_zht.htm",
+      "instances": 81
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049762.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000733.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/24_0505.htm",
+      "instances": 1
+     },
+     {
+      "url": "https://www.cdc.gov/growthcharts",
+      "instances": 2
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7141a2.htm?s_cid=mm7141a2_w",
+      "instances": 352
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2019/18_0633.htm",
+      "instances": 55
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/24_0199.htm",
+      "instances": 6
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033405.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000002.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/ss5906a2.htm",
+      "instances": 774
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00035826.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031981.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5912a1.htm",
+      "instances": 94
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047013.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2011/nov/11_0006_es.htm",
+      "instances": 83
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5704a1.htm",
+      "instances": 73
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5815a5.htm",
+      "instances": 55
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/72/wr/mm7202a3.htm",
+      "instances": 185
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5604a1.htm",
+      "instances": 89
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00030694.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2017/16_0381.htm",
+      "instances": 266
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2006/oct/06_0010.htm",
+      "instances": 723
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2019/19_0021.htm",
+      "instances": 114
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7146a2.htm?s_cid=mm7146a2_w",
+      "instances": 345
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2008/oct/08_0055.htm",
+      "instances": 686
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000669.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2011/nov/11_0029_es.htm",
+      "instances": 83
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001305.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2005/nov/05_0072.htm",
+      "instances": 92
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7144a3.htm?s_cid=mm7144a3_w",
+      "instances": 437
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001034.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2011/nov/10_0230.htm",
+      "instances": 104
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5830a2.htm",
+      "instances": 117
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/70/wr/mm7044e3.htm?s_cid=mm7044e3_w",
+      "instances": 455
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000792.htm",
+      "instances": 51
+     },
+     {
+      "url": "http://www.cdc.gov/pcd/issues/2008/oct/07_0169_zht.htm",
+      "instances": 81
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7123e1.htm?s_cid=mm7123e1_w",
+      "instances": 119
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000752.htm",
+      "instances": 51
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2008/oct/08_0057.htm",
+      "instances": 705
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0163_es.htm",
+      "instances": 81
+     },
+     {
+      "url": "https://www.cdc.gov/nchs/hus/data-finder.htm?subject=Diabetes",
+      "instances": 1
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7105a4.htm?s_cid=mm7105a4_w",
+      "instances": 112
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
+      "target": "th",
+      "html": "<th class=\"row1left\" scope=\"col\" align=\"left\" valign=\"bottom\">Characteristic</th>"
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
+      "target": "th",
+      "html": "<th class=\"row1\" scope=\"col\" align=\"center\" valign=\"bottom\">No. (%)</th>"
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
+      "target": "td",
+      "html": "<td colspan=\"2\" align=\"left\" valign=\"bottom\"><b><b>No. of permits (% of total)</b></b></td>"
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/24_0270.htm",
+      "target": "img",
+      "html": "<img decoding=\"async\" title=\"Return to your place in the text\" src=\"https://www.cdc.gov/pcd/images/arrow_up.gif\" alt=\"Return to your place in the text\" width=\"58\" height=\"34\" align=\"right\" border=\"0\">"
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2025/24_0270.htm",
+      "target": "table",
+      "html": "<table class=\"tablestyle\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\">\n<caption>Table 1. Sociodemographic Characteristics of Medicare Beneficiaries With Diabetes (≥65 y), Medicare Current Beneficiary S"
+     }
+    ]
+   },
+   "font-element": {
+    "count": 623,
+    "pages": 72,
+    "help": "Obsolete <font> element (use CSS)",
+    "examplePages": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023565.htm"
+    ],
+    "affectedPages": [
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
       "instances": 10
@@ -13312,10 +13805,6 @@
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
       "instances": 18
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050819.htm",
-      "instances": 16
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023565.htm",
@@ -13338,32 +13827,12 @@
       "instances": 8
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5144a1.htm",
-      "instances": 8
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5921a3.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6022a3.htm?s_cid=mm6022a3_w",
       "instances": 1
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000757.htm",
       "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6045a4.htm?s_cid=mm6045a4_w",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000718.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6026a6.htm?s_cid=mm6026a6_w",
-      "instances": 1
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001922.htm",
@@ -13386,20 +13855,8 @@
       "instances": 12
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5534a4.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5916a2.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049041.htm",
       "instances": 16
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
-      "instances": 8
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5711a4.htm",
@@ -13414,23 +13871,11 @@
       "instances": 8
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6004a8.htm?s_cid=mm6004a8_w",
-      "instances": 1
-     },
-     {
-      "url": "http://www.cdc.gov/pcd/issues/2006/oct/06_0033_zhs.htm",
-      "instances": 6
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5536a2.htm",
       "instances": 8
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00048364.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031947.htm",
       "instances": 8
      },
      {
@@ -13454,22 +13899,6 @@
       "instances": 12
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6001md.htm?s_cid=mm6001md_w",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6008a7.htm?s_cid=mm6008a7_w",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6005a4.htm?s_cid=mm6005a4_w",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00045975.htm",
-      "instances": 16
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050266.htm",
       "instances": 16
      },
@@ -13479,10 +13908,6 @@
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6041a3.htm?s_cid=mm6041a3_w",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6020a2.htm?s_cid=mm6020a2_w",
       "instances": 1
      },
      {
@@ -13502,14 +13927,6 @@
       "instances": 8
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6008a3.htm?s_cid=mm6008a3_w",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001929.htm",
-      "instances": 8
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033618.htm",
       "instances": 8
      },
@@ -13524,10 +13941,6 @@
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5810a1.htm",
       "instances": 7
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014814.htm",
-      "instances": 8
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014841.htm",
@@ -13562,32 +13975,12 @@
       "instances": 8
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6007a7.htm?s_cid=mm6007a7_w",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
-      "instances": 10
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-      "instances": 8
-     },
-     {
       "url": "https://www.cdc.gov/pcd/issues/2006/oct/06_0034.htm",
       "instances": 6
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033876.htm",
-      "instances": 8
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00015144.htm",
       "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6004a10.htm?s_cid=mm6004a10_w",
-      "instances": 1
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049762.htm",
@@ -13612,14 +14005,6 @@
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00035826.htm",
       "instances": 12
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001323.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6037a1.htm?s_cid=mm6037a1_w",
-      "instances": 1
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031981.htm",
@@ -13670,18 +14055,6 @@
       "instances": 10
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050128.htm",
-      "instances": 10
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6046a4.htm?s_cid=mm6046a4_w",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000669.htm",
       "instances": 8
      },
@@ -13695,14 +14068,6 @@
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001034.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000008.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00051539.htm",
       "instances": 8
      },
      {
@@ -13718,78 +14083,54 @@
       "instances": 1
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6048a1.htm?s_cid=mm6048a1_w",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000752.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047605.htm",
       "instances": 8
      }
     ],
     "instances": [
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
       "target": "font",
       "html": "<font size=\"3\" face=\"Arial, Helvetica, Verdana\" color=\"#FFFFFF\"><i><b>Weekly</b></i></font>"
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
       "target": "font",
-      "html": "<font size=\"2\" face=\"Arial, Helvetica, Verdana\" color=\"#333333\"><b>April 15, 1994 / 43(14);264-265</b></font>"
+      "html": "<font size=\"2\" face=\"Arial, Helvetica, Verdana\" color=\"#333333\"><b>March 04, 1994 / 43(08);149-151</b></font>"
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
       "target": "font",
       "html": "<font color=\"red\">Persons using assistive technology might not be able to fully access information in this file. For assistance, please send e-mail to: </font>"
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6010a7.htm?s_cid=mm6010a7_w",
-      "target": "font",
-      "html": "<font color=\"red\">Persons using assistive technology might not be able to fully access information in this file. For assistance, please send e-mail to: <a href=\"mailto:mmwrq@cdc.gov\">mmwrq@cdc.gov</a>"
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
       "target": "font",
       "html": "<font size=\"3\" face=\"Arial, Helvetica, Verdana\" color=\"#FFFFFF\"><i><b>Weekly</b></i></font>"
+     },
+     {
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
+      "target": "font",
+      "html": "<font size=\"2\" face=\"Arial, Helvetica, Verdana\" color=\"#333333\"><b>March 28, 1997 / 46(12);273-278</b></font>"
      }
     ]
    },
    "big-element": {
-    "count": 114,
-    "pages": 73,
+    "count": 83,
+    "pages": 52,
     "help": "Obsolete <big> element (use CSS)",
     "examplePages": [
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023565.htm"
     ],
     "affectedPages": [
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-      "instances": 1
-     },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
       "instances": 2
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
-      "instances": 5
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050819.htm",
       "instances": 5
      },
      {
@@ -13809,15 +14150,7 @@
       "instances": 1
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5144a1.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000757.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000718.htm",
       "instances": 1
      },
      {
@@ -13837,16 +14170,8 @@
       "instances": 3
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5534a4.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049041.htm",
       "instances": 5
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
-      "instances": 1
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5711a4.htm",
@@ -13865,10 +14190,6 @@
       "instances": 1
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031947.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000836.htm",
       "instances": 1
      },
@@ -13883,10 +14204,6 @@
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049839.htm",
       "instances": 3
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00045975.htm",
-      "instances": 5
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050266.htm",
@@ -13913,10 +14230,6 @@
       "instances": 1
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001929.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033618.htm",
       "instances": 1
      },
@@ -13926,10 +14239,6 @@
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032080.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014814.htm",
       "instances": 1
      },
      {
@@ -13965,18 +14274,6 @@
       "instances": 1
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033876.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00015144.htm",
       "instances": 1
      },
@@ -14001,10 +14298,6 @@
       "instances": 3
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001323.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031981.htm",
       "instances": 1
      },
@@ -14021,14 +14314,6 @@
       "instances": 2
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050128.htm",
-      "instances": 2
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000669.htm",
       "instances": 1
      },
@@ -14041,40 +14326,15 @@
       "instances": 1
      },
      {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000008.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00051539.htm",
-      "instances": 1
-     },
-     {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000792.htm",
       "instances": 1
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000752.htm",
       "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047605.htm",
-      "instances": 1
      }
     ],
     "instances": [
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-      "target": "big",
-      "html": "<big><strong>Disclaimer</strong></big>"
-     },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
       "target": "big",
@@ -14094,756 +14354,30 @@
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
       "target": "big",
       "html": "<big><strong>Note:</strong></big>"
-     }
-    ]
-   },
-   "presentational-attr": {
-    "count": 22431,
-    "pages": 169,
-    "help": "Presentational attribute (use CSS)",
-    "examplePages": [
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-     "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
-     "https://www.cdc.gov/pcd/issues/2025/24_0270.htm"
-    ],
-    "affectedPages": [
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
-      "instances": 138
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2025/24_0270.htm",
-      "instances": 8
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2005/jul/cover.htm",
-      "instances": 69
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/memoriam.htm",
-      "instances": 68
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/19_0129.htm",
-      "instances": 170
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2017/17_0170.htm",
-      "instances": 116
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/74/wr/mm7401a3.htm?s_cid=mm7401a3_w",
-      "instances": 60
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00025213.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2025/24_0149.htm",
-      "instances": 4
      },
      {
       "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047030.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050819.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023565.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00048778.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001301.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2010/sep/cover.htm",
-      "instances": 69
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000840.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7107e2.htm?s_cid=mm7107e2_w",
-      "instances": 932
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/74/wr/mm7435a2.htm?s_cid=OS_mm7435a2_w",
-      "instances": 729
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/19_0163.htm",
-      "instances": 179
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5144a1.htm",
-      "instances": 54
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2026/25_0288.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5921a3.htm",
-      "instances": 97
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000757.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2025/25_0186.htm",
-      "instances": 7
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2025/25_0083.htm",
-      "instances": 7
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000718.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/66/wr/mm6603a7.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7118a4.htm?s_cid=mm7118a4_w",
-      "instances": 19
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001922.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/74/wr/mm7412a4.htm?s_cid=mm7412a4_w",
-      "instances": 161
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031959.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2005/nov/05_0071_zhs.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001313.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2025/24_0509.htm",
-      "instances": 7
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026747.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5534a4.htm",
-      "instances": 54
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5916a2.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2017/16_0344.htm",
-      "instances": 271
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/18_0540.htm",
-      "instances": 204
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e1.htm?s_cid=mm7106e1_w",
-      "instances": 211
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049041.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/19_0165.htm",
-      "instances": 90
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7119e1.htm?s_cid=mm7119e1_w",
-      "instances": 717
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5711a4.htm",
-      "instances": 54
-     },
-     {
-      "url": "http://www.cdc.gov/pcd/issues/2008/oct/08_0057_es.htm",
-      "instances": 694
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/es/archive_es.htm",
-      "instances": 47
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000663.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/nchs/products/databriefs.htm",
-      "instances": 3
-     },
-     {
-      "url": "http://www.cdc.gov/pcd/issues/2006/oct/06_0033_zhs.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5536a2.htm",
-      "instances": 54
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2005/nov/05_0070.htm",
-      "instances": 516
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0164_fr.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7115e2.htm?s_cid=mm7115e2_w",
-      "instances": 391
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00048364.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031947.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/74/wr/mm7439a1.htm?s_cid=OS_mm7439a1_w",
-      "instances": 39
-     },
-     {
-      "url": "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm5839a3.htm",
-      "instances": 78
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000836.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00015759.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/cfa-behind-the-model/php/data-research/interactive-measles-outbreak-simulator.html",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00048515.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049839.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00045975.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050266.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023631.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2011/nov/11_0006.htm",
-      "instances": 825
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0169_zht.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000818.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001042.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/69/wr/mm6932e3.htm?s_cid=mm6932e3_w",
-      "instances": 388
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026204.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049694.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001929.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033618.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000837.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7145a3.htm?s_cid=mm7145a3_w",
-      "instances": 187
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032080.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2010/jul/toc.htm",
-      "instances": 64
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2023/22_0400.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5810a1.htm",
-      "instances": 55
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014814.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014841.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001312.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2010/jul/09_0167.htm",
-      "instances": 410
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/73/wr/mm7316a1.htm",
-      "instances": 180
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001879.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001962.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/18_0531.htm",
-      "instances": 392
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/18_0681.htm",
-      "instances": 108
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047274.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00023762.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7106e2.htm?s_cid=mm7106e2_w",
-      "instances": 377
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000043.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/65/wr/mm6540a1.htm",
-      "instances": 251
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001088.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/tobacco/campaign/tips/quit-smoking/quit-smoking-medications/how-to-use-quit-smoking-medicines/index.html",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/06_0034.htm",
-      "instances": 126
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033876.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00015144.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/05_0236_zht.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/18_0600.htm",
-      "instances": 258
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049762.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000733.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2025/24_0505.htm",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/growthcharts",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/74/wr/mm7410a3.htm?s_cid=mm7410a3_w",
-      "instances": 143
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7141a2.htm?s_cid=mm7141a2_w",
-      "instances": 352
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7107e4.htm?s_cid=mm7107e4_w",
-      "instances": 327
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/18_0633.htm",
-      "instances": 55
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2025/24_0199.htm",
-      "instances": 6
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00033405.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000002.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/ss5906a2.htm",
-      "instances": 774
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00035826.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001323.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00031981.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5912a1.htm",
-      "instances": 94
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/06_0031_es.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2017/16_0441.htm",
-      "instances": 110
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047013.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2011/nov/11_0006_es.htm",
-      "instances": 83
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2023/23_0022.htm",
-      "instances": 6
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5704a1.htm",
-      "instances": 73
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5815a5.htm",
-      "instances": 55
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/72/wr/mm7202a3.htm",
-      "instances": 185
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5604a1.htm",
-      "instances": 89
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00030694.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2011/nov/10_0179.htm",
-      "instances": 175
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2017/16_0381.htm",
-      "instances": 266
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/06_0010.htm",
-      "instances": 723
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/19_0021.htm",
-      "instances": 114
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050128.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7146a2.htm?s_cid=mm7146a2_w",
-      "instances": 345
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/08_0055.htm",
-      "instances": 686
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000669.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/dpdx/diagnosticProcedures/stool/morphcomp.html",
-      "instances": 22
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2011/nov/11_0029_es.htm",
-      "instances": 83
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001305.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2005/nov/05_0072.htm",
-      "instances": 92
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7144a3.htm?s_cid=mm7144a3_w",
-      "instances": 437
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001034.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000008.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2011/nov/10_0230.htm",
-      "instances": 104
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2017/16_0512.htm",
-      "instances": 468
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00051539.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5830a2.htm",
-      "instances": 117
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/08_0063_zht.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/70/wr/mm7044e3.htm?s_cid=mm7044e3_w",
-      "instances": 455
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000792.htm",
-      "instances": 51
-     },
-     {
-      "url": "http://www.cdc.gov/pcd/issues/2008/oct/07_0169_zht.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7123e1.htm?s_cid=mm7123e1_w",
-      "instances": 119
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/05_0009_zhs.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7108a3.htm?s_cid=mm7108a3_w",
-      "instances": 217
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000752.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/08_0057.htm",
-      "instances": 705
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0233_zht.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0163_es.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/nchs/hus/data-finder.htm?subject=Diabetes",
-      "instances": 1
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2019/19_0097.htm",
-      "instances": 449
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047605.htm",
-      "instances": 51
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0184_fr.htm",
-      "instances": 81
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7105a4.htm?s_cid=mm7105a4_w",
-      "instances": 112
-     }
-    ],
-    "instances": [
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-      "target": "body",
-      "html": "<body bgcolor=\"#ffffff\" leftmargin=\"0\" topmargin=\"0\" marginheight=\"0\" marginwidth=\"0\" class=\" dmat-load-complete\">\n<!-- report header -->\n<!--webbot bot=\"Include\" U-Include=\"../../headers_footers/repo"
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-      "target": "table",
-      "html": "<table border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n<tbody><tr>\n\t<td colspan=\"7\" bgcolor=\"#000099\">\n\t<img src=\"../../images/nav01.gif\" border=\"0\" width=\"5\" height=\"2\" alt=\"Skip Navigation "
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
-      "target": "td",
-      "html": "<td colspan=\"7\" bgcolor=\"#000099\">\n\t<img src=\"../../images/nav01.gif\" border=\"0\" width=\"5\" height=\"2\" alt=\"Skip Navigation Links\"><a href=\"#content_area\"><img src=\"../../images/nav01.gif\" border=\"0\" w"
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
-      "target": "th",
-      "html": "<th class=\"row1left\" scope=\"col\" align=\"left\" valign=\"bottom\">Characteristic</th>"
-     },
-     {
-      "url": "https://www.cdc.gov/mmwr/volumes/71/wr/mm7134a2.htm?s_cid=mm7134a2_w",
-      "target": "th",
-      "html": "<th class=\"row1\" scope=\"col\" align=\"center\" valign=\"bottom\">No. (%)</th>"
+      "target": "big",
+      "html": "<big><strong>Note:</strong></big>"
      }
     ]
    },
    "center-element": {
-    "count": 59,
-    "pages": 29,
+    "count": 35,
+    "pages": 17,
     "help": "Obsolete <center> element (use CSS)",
     "examplePages": [
-     "https://www.cdc.gov/pcd/issues/2005/jul/cover.htm",
-     "https://www.cdc.gov/pcd/issues/2006/oct/memoriam.htm",
-     "https://www.cdc.gov/pcd/issues/2010/sep/cover.htm"
+     "https://www.cdc.gov/pcd/issues/2010/sep/cover.htm",
+     "http://www.cdc.gov/pcd/issues/2008/oct/08_0057_es.htm",
+     "https://www.cdc.gov/pcd/issues/2005/nov/05_0070.htm"
     ],
     "affectedPages": [
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2005/jul/cover.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/memoriam.htm",
-      "instances": 2
-     },
      {
       "url": "https://www.cdc.gov/pcd/issues/2010/sep/cover.htm",
       "instances": 2
      },
      {
-      "url": "https://www.cdc.gov/pcd/issues/2005/nov/05_0071_zhs.htm",
-      "instances": 2
-     },
-     {
       "url": "http://www.cdc.gov/pcd/issues/2008/oct/08_0057_es.htm",
-      "instances": 2
-     },
-     {
-      "url": "http://www.cdc.gov/pcd/issues/2006/oct/06_0033_zhs.htm",
       "instances": 2
      },
      {
@@ -14855,19 +14389,11 @@
       "instances": 2
      },
      {
-      "url": "https://www.cdc.gov/pcd/issues/2011/nov/11_0006.htm",
-      "instances": 2
-     },
-     {
       "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0169_zht.htm",
       "instances": 2
      },
      {
       "url": "https://www.cdc.gov/pcd/issues/2010/jul/toc.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2010/jul/09_0167.htm",
       "instances": 2
      },
      {
@@ -14879,15 +14405,7 @@
       "instances": 2
      },
      {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/06_0031_es.htm",
-      "instances": 2
-     },
-     {
       "url": "https://www.cdc.gov/pcd/issues/2011/nov/11_0006_es.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2011/nov/10_0179.htm",
       "instances": 2
      },
      {
@@ -14911,15 +14429,7 @@
       "instances": 2
      },
      {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/08_0063_zht.htm",
-      "instances": 2
-     },
-     {
       "url": "http://www.cdc.gov/pcd/issues/2008/oct/07_0169_zht.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/05_0009_zhs.htm",
       "instances": 2
      },
      {
@@ -14927,41 +14437,33 @@
       "instances": 2
      },
      {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0233_zht.htm",
-      "instances": 2
-     },
-     {
       "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0163_es.htm",
-      "instances": 2
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2008/oct/07_0184_fr.htm",
       "instances": 2
      }
     ],
     "instances": [
      {
-      "url": "https://www.cdc.gov/pcd/issues/2005/jul/cover.htm",
+      "url": "https://www.cdc.gov/pcd/issues/2010/sep/cover.htm",
       "target": "center",
       "html": "<center>\n  <table border=\"0\" width=\"140\" cellspacing=\"0\" cellpadding=\"0\">\n    \n    <tbody><tr>\n      <td width=\"140\" bgcolor=\"#8A9683\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"140"
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2005/jul/cover.htm",
-      "target": "center",
-      "html": "<center>\n<table border=\"0\" width=\"136\" cellspacing=\"0\" cellpadding=\"4\">\n  <tbody><tr>\n    <td width=\"136\" valign=\"top\" align=\"center\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"10\" "
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/memoriam.htm",
-      "target": "center",
-      "html": "<center>\n  <table border=\"0\" width=\"140\" cellspacing=\"0\" cellpadding=\"0\">\n    \n    <tbody><tr>\n      <td width=\"140\" bgcolor=\"#8A9683\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"140"
-     },
-     {
-      "url": "https://www.cdc.gov/pcd/issues/2006/oct/memoriam.htm",
-      "target": "center",
-      "html": "<center>\n<table border=\"0\" width=\"136\" cellspacing=\"0\" cellpadding=\"4\">\n  <tbody><tr>\n    <td width=\"136\" valign=\"top\" align=\"center\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"10\" "
      },
      {
       "url": "https://www.cdc.gov/pcd/issues/2010/sep/cover.htm",
+      "target": "center",
+      "html": "<center>\n<table border=\"0\" width=\"136\" cellspacing=\"0\" cellpadding=\"4\">\n  <tbody><tr>\n    <td width=\"136\" valign=\"top\" align=\"center\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"10\" "
+     },
+     {
+      "url": "http://www.cdc.gov/pcd/issues/2008/oct/08_0057_es.htm",
+      "target": "center",
+      "html": "<center>\n  <table border=\"0\" width=\"140\" cellspacing=\"0\" cellpadding=\"0\">\n    \n    <tbody><tr>\n      <td width=\"140\" bgcolor=\"#8A9683\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"140"
+     },
+     {
+      "url": "http://www.cdc.gov/pcd/issues/2008/oct/08_0057_es.htm",
+      "target": "center",
+      "html": "<center>\n<table border=\"0\" width=\"136\" cellspacing=\"0\" cellpadding=\"4\">\n  <tbody><tr>\n    <td width=\"136\" valign=\"top\" align=\"center\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"10\" "
+     },
+     {
+      "url": "https://www.cdc.gov/pcd/issues/2005/nov/05_0070.htm",
       "target": "center",
       "html": "<center>\n  <table border=\"0\" width=\"140\" cellspacing=\"0\" cellpadding=\"0\">\n    \n    <tbody><tr>\n      <td width=\"140\" bgcolor=\"#8A9683\"><img border=\"0\" src=\"www.cdc.gov/navimages/spacer.gif\" width=\"140"
      }
@@ -15226,7 +14728,7 @@
     "pages": 1
    },
    {
-    "url": "https://9866052.fls.doubleclick.net/activityi;src=9866052;type=cdctips;cat=skndhdsm;rcb=1;ord=1;num=4481787892549;npa=0;auiddc=739162266.1781521536;uaa=x86;uab=64;uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0;uamb=0;uam=;uap=Windows;uapv=;uaw=0;pscdl=noapi;frm=0;_tu=aJA;gtm=45fe66b0h2v9178920917z8852963185za200zd9178920917xea;gcd=13l3l3l3l1l1;dma=0;dc_fmt=2;tag_exp=115938465~115938468~119392697~119392705~119456239~119456247;epver=2;dc_random=1781521955_SMog96TPfZ1_huIvrYMG1lYSVnIL9GZAoA;_dc_test=1;~oref=https%3A%2F%2Fwww.cdc.gov%2Ftobacco%2Fcampaign%2Ftips%2Fdiseases%2Fsecondhand-smoke-asthma.html?",
+    "url": "https://9866052.fls.doubleclick.net/activityi;src=9866052;type=cdctips;cat=skndhdsm;rcb=14;ord=1;num=7710935457216;npa=0;auiddc=1903088006.1781534563;uaa=x86;uab=64;uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0;uamb=0;uam=;uap=Windows;uapv=;uaw=0;pscdl=noapi;frm=0;_tu=aJA;gtm=45fe66b0h2v9178920917z8852963185za200zd9178920917xea;gcd=13l3l3l3l1l1;dma=0;dc_fmt=2;tag_exp=115938466~115938468~119381663~119392697~119392705~119400888~119400892~119456239~119456247;epver=2;dc_random=1781535068_9cQGlajrZby1enzFLDLMCMsE5KyL3Dzc-A;_dc_test=1;~oref=https%3A%2F%2Fwww.cdc.gov%2Ftobacco%2Fcampaign%2Ftips%2Fdiseases%2Fsecondhand-smoke-asthma.html?",
     "type": "iframe",
     "pages": 1
    },
@@ -17501,7 +17003,7 @@
     "pages": 2
    },
    {
-    "url": "https://9866052.fls.doubleclick.net/activityi;src=9866052;type=cdctips;cat=quihoind;rcb=16;ord=1;num=995387091326;npa=0;auiddc=739162266.1781521536;uaa=x86;uab=64;uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0;uamb=0;uam=;uap=Windows;uapv=;uaw=0;pscdl=noapi;frm=0;_tu=aJA;gtm=45fe66a1v9178920917z8852963185za200zd9178920917xea;gcd=13l3l3l3l1l1;dma=0;dc_fmt=2;tag_exp=115616986~115938465~115938468~119392697~119392705~119456239~119456247;epver=2;dc_random=1781528625_RuENnpUIf4iuLyQ_eakdVi4_aDsJfkbrpQ;_dc_test=1;~oref=https%3A%2F%2Fwww.cdc.gov%2Ftobacco%2Fcampaign%2Ftips%2Fquit-smoking%2Fquit-smoking-medications%2Fhow-to-use-quit-smoking-medicines%2Findex.html?",
+    "url": "https://9866052.fls.doubleclick.net/activityi;src=9866052;type=cdctips;cat=quihoind;rcb=5;ord=1;num=4378062424360;npa=0;auiddc=1903088006.1781534563;uaa=x86;uab=64;uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0;uamb=0;uam=;uap=Windows;uapv=;uaw=0;pscdl=noapi;frm=0;_tu=aJA;gtm=45fe66b0v9178920917z8852963185za200zd9178920917xea;gcd=13l3l3l3l1l1;dma=0;dc_fmt=2;tag_exp=115616985~115938466~115938469~119456239~119456247;epver=2;dc_random=1781542649_iw0zhRy8u-KjxnbmY6nye1eGqtM_-Y98OQ;_dc_test=1;~oref=https%3A%2F%2Fwww.cdc.gov%2Ftobacco%2Fcampaign%2Ftips%2Fquit-smoking%2Fquit-smoking-medications%2Fhow-to-use-quit-smoking-medicines%2Findex.html?",
     "type": "iframe",
     "pages": 1
    },
@@ -17556,7 +17058,7 @@
     "pages": 1
    },
    {
-    "url": "https://9866052.fls.doubleclick.net/activityi;src=9866052;type=cdc_tips;cat=tipsangi;rcb=5;ord=1;num=4424613531467;npa=0;auiddc=739162266.1781521536;uaa=x86;uab=64;uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0;uamb=0;uam=;uap=Windows;uapv=;uaw=0;pscdl=noapi;frm=0;_tu=aJA;gtm=45fe66b0h2v9178920917z8852963185za200zd9178920917xea;gcd=13l3l3l3l1l1;dma=0;dc_fmt=2;tag_exp=115938466~115938468~117776793~119392697~119392705~119456239~119456247~119527586;epver=2;dc_random=1781521536_sRrDXHDrtIrK0tFj3hfKZRUgVobtfJDBEw;_dc_test=1;~oref=https%3A%2F%2Fwww.cdc.gov%2Ftobacco%2Fcampaign%2Ftips%2Fstories%2Fangie-p.html%3Fs_cid%3DOSH_misc_M542?",
+    "url": "https://9866052.fls.doubleclick.net/activityi;src=9866052;type=cdc_tips;cat=tipsangi;rcb=12;ord=1;num=7167627003036;npa=0;auiddc=1903088006.1781534563;uaa=x86;uab=64;uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0;uamb=0;uam=;uap=Windows;uapv=;uaw=0;pscdl=noapi;frm=0;_tu=KJA;gtm=45fe66b0h2v9178920917z8852963185za200zb852963185zd852963185xea;gcd=13l3l3l3l1l1;dma=0;dc_fmt=2;tag_exp=115616986~115938466~115938468~117776794~119392697~119392705~119400888~119400892~119456239~119456247;epver=2;dc_random=1781534563_TOYGTgxKj3VYw5N86pzqOpZUvvDqQQbYRg;_dc_test=1;~oref=https%3A%2F%2Fwww.cdc.gov%2Ftobacco%2Fcampaign%2Ftips%2Fstories%2Fangie-p.html%3Fs_cid%3DOSH_misc_M542?",
     "type": "iframe",
     "pages": 1
    },
@@ -17841,12 +17343,12 @@
     "pages": 1
    },
    {
-    "url": "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LedK2wUAAAAAFa2y93zQ5xqO1LxrSibC-wgExxf&co=aHR0cHM6Ly93d3cuY2RjLmdvdjo0NDM.&hl=en&v=MerVUtRoajKEbP7pLiGXkL28&size=invisible&badge=inline&anchor-ms=20000&execute-ms=30000&cb=ycbg8vqa74zk",
+    "url": "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LedK2wUAAAAAFa2y93zQ5xqO1LxrSibC-wgExxf&co=aHR0cHM6Ly93d3cuY2RjLmdvdjo0NDM.&hl=en&v=ne1iDVwClkE7nKD3uA9Vqsvl&size=invisible&badge=inline&anchor-ms=20000&execute-ms=30000&cb=a83tphk3q8g0",
     "type": "iframe",
     "pages": 1
    },
    {
-    "url": "https://www.google.com/recaptcha/api2/bframe?hl=en&v=MerVUtRoajKEbP7pLiGXkL28&k=6LedK2wUAAAAAFa2y93zQ5xqO1LxrSibC-wgExxf&bft=0dAFcWeA6vEU4XjRTjVp5CNMip8Jr_B8lSk5L-AHGxLpnOARdVTsuf_i-fHRLcCScDeScFxdqvo07jJDEtwF1oJhUovhc2N9eCHw",
+    "url": "https://www.google.com/recaptcha/api2/bframe?hl=en&v=ne1iDVwClkE7nKD3uA9Vqsvl&k=6LedK2wUAAAAAFa2y93zQ5xqO1LxrSibC-wgExxf&bft=0dAFcWeA4nDzxBEUVg7smpWUNjOXkw2zaI1_ct4OC9lqYhJ9BKOtmAuIisEtNgtSQjmHXwAR-Ot625hcXN1r4QreQEV3C9CAGfeg",
     "type": "iframe",
     "pages": 1
    },
@@ -19112,46 +18614,181 @@
    }
   ]
  },
- "standards": null,
- "security": null,
+ "standards": {
+  "pagesChecked": 156,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 156,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 156,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 156,
+    "rate": 0
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (0/6)",
+    "pass": 97,
+    "total": 156,
+    "rate": 62
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 99,
+    "total": 156,
+    "rate": 63
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 107,
+    "total": 156,
+    "rate": 69
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 116,
+    "total": 156,
+    "rate": 74
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 116,
+    "total": 156,
+    "rate": 74
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 116,
+    "total": 156,
+    "rate": 74
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 131,
+    "total": 156,
+    "rate": 84
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 156,
+    "total": 156,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "security": {
+  "checks": [
+   {
+    "id": "https",
+    "label": "Served over HTTPS",
+    "pass": true,
+    "detail": "https:"
+   },
+   {
+    "id": "hsts",
+    "label": "HTTP Strict Transport Security (HSTS)",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "csp",
+    "label": "Content Security Policy (CSP)",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "x-content-type-options",
+    "label": "X-Content-Type-Options: nosniff",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "clickjacking",
+    "label": "Clickjacking protection (X-Frame-Options or CSP frame-ancestors)",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "gov-tld",
+    "label": "Sponsored government TLD (.gov/.mil/.edu)",
+    "pass": true,
+    "detail": "gov"
+   },
+   {
+    "id": "security-txt",
+    "label": "Published security.txt",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "www-resolution",
+    "label": "Resolves with and without www",
+    "pass": true,
+    "detail": "cdc.gov"
+   }
+  ],
+  "passed": 4,
+  "total": 8
+ },
  "plainLanguage": {
-  "pagesChecked": 267,
-  "pagesScored": 236,
-  "medianWordsPerPage": 922,
+  "pagesChecked": 281,
+  "pagesScored": 250,
+  "medianWordsPerPage": 904,
   "medianReadingEase": 45,
   "medianGrade": 12,
   "topUnexplainedAcronyms": [
    {
     "acronym": "CDC",
-    "pages": 173
+    "pages": 186
    },
    {
     "acronym": "US",
-    "pages": 71
+    "pages": 73
    },
    {
     "acronym": "MMWR",
-    "pages": 63
+    "pages": 66
    },
    {
     "acronym": "PDF",
-    "pages": 62
+    "pages": 65
    },
    {
     "acronym": "MD",
-    "pages": 60
+    "pages": 62
    },
    {
     "acronym": "GA",
-    "pages": 55
+    "pages": 57
    },
    {
     "acronym": "DC",
-    "pages": 52
+    "pages": 55
    },
    {
     "acronym": "HTML",
-    "pages": 47
+    "pages": 49
    },
    {
     "acronym": "MPH",
@@ -19163,29 +18800,29 @@
    },
    {
     "acronym": "COVID",
-    "pages": 33
+    "pages": 34
    },
    {
     "acronym": "DOI",
-    "pages": 29
+    "pages": 31
+   },
+   {
+    "acronym": "URL",
+    "pages": 27
+   },
+   {
+    "acronym": "JAMA",
+    "pages": 26
    },
    {
     "acronym": "ASCII",
     "pages": 26
-   },
-   {
-    "acronym": "JAMA",
-    "pages": 25
-   },
-   {
-    "acronym": "URL",
-    "pages": 25
    }
   ],
   "topMisspellings": [
    {
     "word": "cdc",
-    "pages": 98,
+    "pages": 102,
     "examplePages": [
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050819.htm",
@@ -19196,7 +18833,7 @@
    },
    {
     "word": "LinkedIn",
-    "pages": 87,
+    "pages": 93,
     "examplePages": [
      "https://www.cdc.gov/fungal/fungal-disease-awareness-week/index.html",
      "https://www.cdc.gov/tobacco/tobacco-features/health-equity.html",
@@ -19207,7 +18844,7 @@
    },
    {
     "word": "mmwrq",
-    "pages": 55,
+    "pages": 58,
     "examplePages": [
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026201.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00050819.htm",
@@ -19218,7 +18855,7 @@
    },
    {
     "word": "www",
-    "pages": 48,
+    "pages": 50,
     "examplePages": [
      "https://www.cdc.gov/mmwr/volumes/74/wr/mm7435a2.htm?s_cid=OS_mm7435a2_w",
      "https://www.cdc.gov/stop-overdose/caring/fentanyl-facts.html",
@@ -19229,7 +18866,7 @@
    },
    {
     "word": "http",
-    "pages": 43,
+    "pages": 45,
     "examplePages": [
      "https://www.cdc.gov/pcd/issues/2019/19_0163.htm",
      "https://www.cdc.gov/stop-overdose/caring/fentanyl-facts.html",
@@ -19283,6 +18920,17 @@
     ]
    },
    {
+    "word": "htm",
+    "pages": 26,
+    "examplePages": [
+     "https://www.cdc.gov/nchs/hus/topics.htm?Topics=Chronic+conditions",
+     "https://www.cdc.gov/pcd/issues/2005/nov/05_0071_zhs.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5711a4.htm",
+     "http://www.cdc.gov/pcd/issues/2006/oct/06_0033_zhs.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6008a7.htm?s_cid=mm6008a7_w"
+    ]
+   },
+   {
     "word": "Prev",
     "pages": 25,
     "examplePages": [
@@ -19291,17 +18939,6 @@
      "https://www.cdc.gov/pcd/issues/2019/19_0121.htm",
      "https://www.cdc.gov/pcd/issues/2017/16_0344.htm",
      "https://www.cdc.gov/pcd/issues/2011/nov/11_0006.htm"
-    ]
-   },
-   {
-    "word": "htm",
-    "pages": 25,
-    "examplePages": [
-     "https://www.cdc.gov/nchs/hus/topics.htm?Topics=Chronic+conditions",
-     "https://www.cdc.gov/pcd/issues/2005/nov/05_0071_zhs.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5711a4.htm",
-     "http://www.cdc.gov/pcd/issues/2006/oct/06_0033_zhs.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6008a7.htm?s_cid=mm6008a7_w"
     ]
    },
    {
@@ -19393,6 +19030,17 @@
     ]
    },
    {
+    "word": "mmwr",
+    "pages": 15,
+    "examplePages": [
+     "https://www.cdc.gov/stop-overdose/caring/fentanyl-facts.html",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6026a6.htm?s_cid=mm6026a6_w",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5935a6.htm",
+     "https://www.cdc.gov/epilepsy/data-research/facts-stats/index.html",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6004a8.htm?s_cid=mm6004a8_w"
+    ]
+   },
+   {
     "word": "los",
     "pages": 14,
     "examplePages": [
@@ -19404,14 +19052,14 @@
     ]
    },
    {
-    "word": "mmwr",
-    "pages": 14,
+    "word": "unvaccinated",
+    "pages": 13,
     "examplePages": [
-     "https://www.cdc.gov/stop-overdose/caring/fentanyl-facts.html",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6026a6.htm?s_cid=mm6026a6_w",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5935a6.htm",
-     "https://www.cdc.gov/epilepsy/data-research/facts-stats/index.html",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6004a8.htm?s_cid=mm6004a8_w"
+     "https://www.cdc.gov/covid/vaccines/benefits.html",
+     "https://www.cdc.gov/han/2024/han00504.html",
+     "https://www.cdc.gov/cfa-behind-the-model/php/data-research/interactive-measles-outbreak-simulator.html",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049694.htm",
+     "https://www.cdc.gov/mmwr/volumes/74/wr/mm7440a3.htm"
     ]
    },
    {
@@ -19426,6 +19074,17 @@
     ]
    },
    {
+    "word": "del",
+    "pages": 13,
+    "examplePages": [
+     "https://www.cdc.gov/mosquitoes/es/response/que-hacer-despues-de-un-huracan-o-una-inundacion.html",
+     "https://www.cdc.gov/meningococcal/es/about/acerca-de-la-enfermedad-meningococica.html",
+     "https://www.cdc.gov/ovarian-cancer/es/treatment/index.html",
+     "https://www.cdc.gov/flu/es/highrisk/la-influenza-y-el-embarazo.html",
+     "https://www.cdc.gov/flu/es/about/acerca-de-la-influenza.html"
+    ]
+   },
+   {
     "word": "que",
     "pages": 13,
     "examplePages": [
@@ -19435,48 +19094,26 @@
      "https://www.cdc.gov/ovarian-cancer/es/treatment/index.html",
      "https://www.cdc.gov/spanish/NIOSH/docs/wp-solutions/2013-104_sp"
     ]
-   },
-   {
-    "word": "unvaccinated",
-    "pages": 12,
-    "examplePages": [
-     "https://www.cdc.gov/covid/vaccines/benefits.html",
-     "https://www.cdc.gov/han/2024/han00504.html",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00049694.htm",
-     "https://www.cdc.gov/mmwr/volumes/74/wr/mm7440a3.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001879.htm"
-    ]
-   },
-   {
-    "word": "del",
-    "pages": 12,
-    "examplePages": [
-     "https://www.cdc.gov/mosquitoes/es/response/que-hacer-despues-de-un-huracan-o-una-inundacion.html",
-     "https://www.cdc.gov/ovarian-cancer/es/treatment/index.html",
-     "https://www.cdc.gov/flu/es/highrisk/la-influenza-y-el-embarazo.html",
-     "https://www.cdc.gov/flu/es/about/acerca-de-la-influenza.html",
-     "https://www.cdc.gov/diabetes/es/about/acerca-de-la-diabetes-tipo-2.html"
-    ]
    }
   ]
  },
  "lighthouse": {
-  "pagesSampled": 64,
-  "medianPerformance": 74,
+  "pagesSampled": 107,
+  "medianPerformance": 81,
   "medianAccessibility": 100,
   "medianBestPractices": 96,
   "medianSeo": 100,
   "medianAgentic": null,
   "metrics": {
-   "firstContentfulPaintMs": 1277,
-   "largestContentfulPaintMs": 3052,
-   "speedIndexMs": 2860,
-   "totalBlockingTimeMs": 165,
-   "cumulativeLayoutShift": 0
+   "firstContentfulPaintMs": 1246,
+   "largestContentfulPaintMs": 3039,
+   "speedIndexMs": 4133,
+   "totalBlockingTimeMs": 151,
+   "cumulativeLayoutShift": 0.056
   }
  },
  "linkCheck": {
-  "brokenCount": 57,
+  "brokenCount": 59,
   "broken": [
    {
     "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fglobal-immunization%2Fabout%2Findex.html&text=About%20CDC%27s%20Work%20in%20Global%20Immunization",
@@ -19590,7 +19227,13 @@
      "https://www.cdc.gov/museum/upcoming.htm",
      "https://www.cdc.gov/stillbirth/index.html",
      "https://www.cdc.gov/pcd/issues/2019/19_0097.htm",
-     "https://www.cdc.gov/vaccine-safety/recalls/index.html"
+     "https://www.cdc.gov/vaccine-safety/recalls/index.html",
+     "https://www.cdc.gov/niosh/construction/toolbox-talks/index.html",
+     "https://www.cdc.gov/meningococcal/es/about/acerca-de-la-enfermedad-meningococica.html",
+     "https://www.cdc.gov/dpdx/diagnosticprocedures/serum/submission.html",
+     "https://www.cdc.gov/mmwr/volumes/74/wr/mm7405a3.htm?s_cid=mm7405a3_w",
+     "https://www.cdc.gov/dpdx/diagnosticprocedures/serum/antibodydetection.html",
+     "https://www.cdc.gov/radiation-health/about/ionizing-radiation.html"
     ]
    },
    {
@@ -19697,7 +19340,11 @@
      "https://www.cdc.gov/hi-disease/php/surveillance/index.html",
      "https://www.cdc.gov/hearing-loss/about/index.html",
      "https://www.cdc.gov/group-a-strep/prevention/index.html",
-     "https://www.cdc.gov/me-cfs/hcp/clinical-care/monitoring-the-use-of-medicines-and-supplements.html"
+     "https://www.cdc.gov/me-cfs/hcp/clinical-care/monitoring-the-use-of-medicines-and-supplements.html",
+     "https://www.cdc.gov/meningococcal/es/about/acerca-de-la-enfermedad-meningococica.html",
+     "https://www.cdc.gov/radiation-health/about/ionizing-radiation.html",
+     "https://www.cdc.gov/stroke/signs-symptoms/index.html",
+     "https://www.cdc.gov/overdose-prevention/hcp/ehr/index.html"
     ]
    },
    {
@@ -19804,7 +19451,12 @@
      "http://www.cdc.gov/cdc-info",
      "https://www.cdc.gov/mmwr/volumes/71/wr/mm715152a4.htm?s_cid=mm715152a4_w",
      "https://www.cdc.gov/mumps/php/public-health-strategy/index.html",
-     "https://www.cdc.gov/tobacco/campaign/tips/stories/angie-p.html?s_cid=OSH_misc_M542"
+     "https://www.cdc.gov/tobacco/campaign/tips/stories/angie-p.html?s_cid=OSH_misc_M542",
+     "https://www.cdc.gov/niosh/construction/toolbox-talks/index.html",
+     "https://www.cdc.gov/meningococcal/es/about/acerca-de-la-enfermedad-meningococica.html",
+     "https://www.cdc.gov/dpdx/diagnosticprocedures/serum/submission.html",
+     "https://www.cdc.gov/mmwr/volumes/74/wr/mm7405a3.htm?s_cid=mm7405a3_w",
+     "https://www.cdc.gov/dpdx/diagnosticprocedures/serum/antibodydetection.html"
     ]
    },
    {
@@ -19952,7 +19604,9 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm"
     ]
    },
    {
@@ -20028,7 +19682,9 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm"
     ]
    },
    {
@@ -20144,7 +19800,9 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm"
     ]
    },
    {
@@ -20219,7 +19877,9 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm"
     ]
    },
    {
@@ -20302,7 +19962,9 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm"
     ]
    },
    {
@@ -20378,7 +20040,9 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000813.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032844.htm",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001930.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001877.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014498.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00032436.htm"
     ]
    },
    {
@@ -20492,7 +20156,9 @@
     "foundOn": [
      "https://www.cdc.gov/niosh/healthcare/impactwellbeing/professional-wellbeing.html",
      "https://www.cdc.gov/niosh/training/default.html",
-     "https://www.cdc.gov/niosh/fedreg"
+     "https://www.cdc.gov/niosh/fedreg",
+     "https://www.cdc.gov/niosh/construction/toolbox-talks/index.html",
+     "https://www.cdc.gov/niosh/ems"
     ]
    },
    {
@@ -20623,7 +20289,8 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6041a1.htm?s_cid=mm6041a1_w",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6004a8.htm?s_cid=mm6004a8_w",
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5916a2.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6046a4.htm?s_cid=mm6046a4_w"
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6046a4.htm?s_cid=mm6046a4_w",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6007a7.htm?s_cid=mm6007a7_w"
     ]
    }
   ]
