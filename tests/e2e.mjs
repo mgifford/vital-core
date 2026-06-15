@@ -317,6 +317,10 @@ try {
   // Week-1 report (has violations): "Fix these first" + evidence CSVs.
   const w1report = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
   assert(/id="h-fixfirst"/.test(w1report), 'domain report has a "Fix these first" section');
+  // Affected-pages display: the fixture's findings each hit <=25 pages, so
+  // bug reports list page URLs inline (in <ul class="affected">) rather
+  // than only a "download CSV" link.
+  assert(/class="affected"/.test(w1report), 'bug reports list affected page URLs inline when there are <=25');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv')), 'readability CSV written');
   const readCsv = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv'), 'utf8');
   assert(readCsv.startsWith('url,words,reading_ease,grade,scored'), 'readability CSV has expected header');

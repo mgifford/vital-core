@@ -568,3 +568,45 @@ test('security: classifies TLD, HTTPS, and headers from a mocked origin', async 
     globalThis.fetch = realFetch;
   }
 });
+
+test('remediation: expanded tips cover landmark-unique and aria rules', async () => {
+  const { remediationTip } = await import('../../src/lib/remediation.js');
+  assert.match(remediationTip('axe-core', 'landmark-unique'), /aria-label|accessible name/i);
+  assert.match(remediationTip('axe-core', 'aria-required-parent'), /parent/i);
+  assert.match(remediationTip('axe-core', 'target-size'), /24|spacing/i);
+  assert.equal(remediationTip('axe-core', 'totally-made-up'), null);
+});
+
+test('affected pages: inline <=25, list 25 + CSV when more (Markdown)', async () => {
+  const { buildBugReports, bugReportToMarkdown } = await import('../../src/lib/bug-report.js');
+  const mkRule = (n) => ({
+    count: n, pages: n, impact: 'serious', help: 'X', helpUrl: 'https://x', tags: ['wcag412'],
+    examplePages: [], affectedPages: Array.from({ length: Math.min(n, 5000) }, (_, i) => ({ url: `https://x/p${i}`, instances: 1 })),
+    instances: [{ url: 'https://x/p0', target: '.a', html: '<a>' }],
+  });
+  const summary = (n) => ({ domain: 'x', week: '2026-W24', generatedAt: '2026-06-15T00:00:00Z', pagesScanned: 1200, axe: { rules: { 'select-name': mkRule(n) } }, alfa: { rules: {} } });
+
+  // 1 affected page: the URL is listed, no "download CSV".
+  let [bug] = buildBugReports({ domain: 'x', key: 'x' }, summary(1));
+  bug.affected_pages_csv = 'csv/x.csv';
+  let md = bugReportToMarkdown(bug);
+  assert.match(md, /- https:\/\/x\/p0/, 'single affected page listed inline');
+  assert.doesNotMatch(md.split('### Affected pages')[1].split('###')[0], /download CSV/, 'no CSV link for a single page');
+
+  // 25 affected pages: all listed inline, still no CSV.
+  [bug] = buildBugReports({ domain: 'x', key: 'x' }, summary(25));
+  bug.affected_pages_csv = 'csv/x.csv';
+  md = bugReportToMarkdown(bug);
+  const sect25 = md.split('### Affected pages')[1].split('###')[0];
+  assert.equal((sect25.match(/- https:\/\/x\/p\d+/g) || []).length, 25, '25 pages listed inline');
+  assert.doesNotMatch(sect25, /download CSV/, 'no CSV link at exactly 25');
+
+  // 26 affected pages: list first 25 + CSV link.
+  [bug] = buildBugReports({ domain: 'x', key: 'x' }, summary(26));
+  bug.affected_pages_csv = 'csv/x.csv';
+  md = bugReportToMarkdown(bug);
+  const sect26 = md.split('### Affected pages')[1].split('###')[0];
+  assert.equal((sect26.match(/- https:\/\/x\/p\d+/g) || []).length, 25, 'first 25 listed');
+  assert.match(sect26, /26 pages total/);
+  assert.match(sect26, /download CSV/, 'CSV link appears above 25');
+});

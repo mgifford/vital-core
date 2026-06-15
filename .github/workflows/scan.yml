@@ -61,7 +61,7 @@ jobs:
   scan:
     needs: matrix
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 110   # hard cap: keep each domain job under 2 hours
     strategy:
       fail-fast: false
       max-parallel: 4

@@ -1,5 +1,5 @@
 {
-  "_comment": "Short, plain remediation tips keyed by engine rule id. Shown in bug reports alongside the engine's own help URL. Add tips here as you triage common findings; unknown rules fall back to the help URL. Keys are axe rule ids (e.g. 'color-contrast') and Siteimprove Alfa rule ids (e.g. 'sia-r2').",
+  "_comment": "Short, plain remediation tips keyed by engine rule id. Shown in bug reports alongside the engine's own help URL. Keys are axe rule ids (e.g. 'color-contrast') and Siteimprove Alfa rule ids (e.g. 'sia-r2'). Unknown rules fall back to the help URL. Guidance informed by Deque University (axe helpUrls) and GovTechSG/purple-ai's rule coverage; add tips as you triage common findings.",
   "axe": {
     "image-alt": "Give every <img> a meaningful alt attribute. Use alt=\"\" only for decorative images so screen readers skip them.",
     "role-img-alt": "Elements with role=\"img\" need an accessible name via aria-label or aria-labelledby.",
@@ -31,7 +31,30 @@
     "meta-viewport": "Don't disable zoom (user-scalable=no / maximum-scale=1); low-vision users need to zoom.",
     "td-headers-attr": "Associate data cells with their headers correctly using headers/id or scope.",
     "th-has-data-cells": "Ensure table headers actually describe data cells; use scope on <th>.",
-    "label-content-name-mismatch": "The accessible name should contain the visible label text so voice-control users can target it."
+    "label-content-name-mismatch": "The accessible name should contain the visible label text so voice-control users can target it.",
+    "landmark-unique": "When a landmark role/type repeats (e.g. two <nav>s), give each a distinct accessible name with aria-label or aria-labelledby (e.g. \"Primary\" and \"Footer\" navigation) so screen-reader users can tell them apart.",
+    "landmark-no-duplicate-banner": "Use only one banner landmark (<header> at the top level) per page.",
+    "landmark-no-duplicate-contentinfo": "Use only one contentinfo landmark (<footer> at the top level) per page.",
+    "landmark-complementary-is-top-level": "Place <aside>/complementary landmarks at the top level, not nested inside another landmark.",
+    "aria-required-parent": "Place this ARIA role inside its required parent role (e.g. an option must be inside a listbox).",
+    "aria-required-children": "Add the child roles this container role requires (e.g. a list needs listitem children).",
+    "aria-allowed-role": "Remove or change the ARIA role — it isn't allowed on this element type.",
+    "aria-roles": "Use a valid ARIA role; check spelling and that it's a real role from the ARIA spec.",
+    "aria-command-name": "Give the command (button/link/menuitem) an accessible name via text or aria-label.",
+    "aria-toggle-field-name": "Give the toggle (checkbox/switch/radio) an accessible name.",
+    "aria-tooltip-name": "Give the tooltip an accessible name.",
+    "aria-meter-name": "Give the meter an accessible name.",
+    "aria-progressbar-name": "Give the progressbar an accessible name.",
+    "aria-dialog-name": "Give the dialog an accessible name (aria-label or aria-labelledby).",
+    "presentation-role-conflict": "An element with role=\"presentation\"/\"none\" must not also be focusable or have a global ARIA attribute; remove the conflict.",
+    "nested-interactive": "Don't nest interactive controls (e.g. a button inside a link); split them apart.",
+    "select-name": "Give the <select> an accessible name via a <label> or aria-label.",
+    "skip-link": "Ensure the skip link targets a real, focusable element (its href must match an existing id).",
+    "bypass": "Provide a way to skip repeated blocks: a skip link, landmarks, or headings.",
+    "target-size": "Make interactive targets at least 24×24 CSS px (or add spacing) so they're usable by touch and motor-impaired users.",
+    "svg-img-alt": "Give the <svg> with an image role an accessible name (<title> or aria-label).",
+    "object-alt": "Give <object> elements alternative text describing their content.",
+    "video-caption": "Provide captions for <video> via a <track kind=\"captions\">."
   },
   "alfa": {
     "sia-r2": "Give every <img> an accessible name (alt text), or alt=\"\" if purely decorative.",

@@ -33,6 +33,28 @@ function sustainabilityHeadline(s) {
 }
 const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
 const fmtMedian = (n) => (n == null ? 'n/a' : String(n));
+/**
+ * Affected-page display for a bug: list URLs inline when there are 25 or
+ * fewer (more useful than a CSV link for a handful); above that, list the
+ * first 25 then link the full CSV. Used in the detailed bug blocks (not
+ * the compact "fix first" table, which stays a single count + CSV link).
+ */
+function affectedPagesBlock(b) {
+  const total = b.frequency.pages_affected;
+  const urls = b.affected_pages ?? [];
+  const li = (u) => {
+    let label = u;
+    try { label = new URL(u).pathname || u; } catch { /* keep raw */ }
+    return `<li><a href="${esc(u)}">${esc(label)}</a></li>`;
+  };
+  if (total <= 25 && urls.length >= total) {
+    return `<ul class="affected">${urls.map(li).join('')}</ul>`;
+  }
+  const more = b.affected_pages_csv
+    ? `<a href="${esc(b.affected_pages_csv)}">all ${total} pages (CSV)</a>`
+    : `${total} pages total`;
+  return `<ul class="affected">${urls.slice(0, 25).map(li).join('')}</ul><p>…and more — ${more}.</p>`;
+}
 /** Render the pages that link to a broken URL, capped with a "+N more". */
 function linkedFrom(sources) {
   const list = Array.isArray(sources) ? sources : sources ? [sources] : [];
@@ -275,7 +297,8 @@ ${b.impact?.groups?.length
             .map((g) => `<li><strong>${esc(g.group)}</strong> — ${esc(g.percent)} of population${g.estimatedExcluded != null ? ` (~${g.estimatedExcluded.toLocaleString()} people/week potentially excluded)` : ''}</li>`)
             .join('')}</ul>`
         : `<p class="bug-placeholder">${esc(b.impact?.summary ?? 'Requires manual testing.')}</p>`}
-<p class="bug-label">Affected pages</p><p>${b.frequency.pages_affected} pages${b.affected_pages_csv ? ` — <a href="${esc(b.affected_pages_csv)}">download CSV</a>` : ''}</p>
+<p class="bug-label">Affected pages</p>
+${affectedPagesBlock(b)}
 <p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
 <p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
 </details>`;

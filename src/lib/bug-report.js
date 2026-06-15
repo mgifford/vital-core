@@ -103,6 +103,9 @@ export function buildBugReports(target, summary) {
         html_snippet: i.html ?? null,
       })),
       example_pages: rule.examplePages ?? [],
+      // Up to 25 affected-page URLs for inline listing in the report; the
+      // CSV (set later) holds the complete set when there are more.
+      affected_pages: (rule.affectedPages ?? []).slice(0, 25).map((p) => p.url),
       // Human impact derived from the WCAG SC (Section 508 FPC + US
       // prevalence). Empty groups => undetermined SC; falls back to the
       // manual-testing note. Severity/exact reproduction still need a human.
@@ -184,11 +187,18 @@ export function bugReportToMarkdown(r) {
   }
   lines.push('');
   lines.push('### Affected pages');
-  lines.push(
-    r.affected_pages_csv
-      ? `${r.frequency.pages_affected} pages — [download CSV](${r.affected_pages_csv})`
-      : `${r.frequency.pages_affected} pages affected.`
-  );
+  // <=25 affected pages: list the URLs inline (more useful than a CSV link
+  // for a handful). >25: list the first 25, then link the full CSV.
+  const total = r.frequency.pages_affected;
+  const urls = r.affected_pages ?? [];
+  if (total <= 25 && urls.length >= total) {
+    urls.forEach((u) => lines.push(`- ${u}`));
+  } else {
+    urls.slice(0, 25).forEach((u) => lines.push(`- ${u}`));
+    lines.push('', r.affected_pages_csv
+      ? `…and more — ${total} pages total ([download CSV](${r.affected_pages_csv})).`
+      : `…and more — ${total} pages total.`);
+  }
   lines.push('');
   lines.push('### Testing environment');
   lines.push(r.testing_environment);

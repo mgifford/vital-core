@@ -5,10 +5,13 @@
 # and keep load on target servers polite.
 #
 # Weekly coverage = pages_per_run x scheduled runs per week (see scan.yml).
-# Example: 300 pages_per_run x 7 nightly runs = up to 2100 pages/week/domain.
+# Budget is sized so each domain job finishes well under 2 hours (shorter,
+# more robust runs): ~100 pages x ~11s/page ~= 18 min typical, with margin
+# for slow pages under the 110-min job cap. The 5 weekly crons accumulate
+# coverage: 100 x 5 ~= 500 pages/week/domain (more for higher importance).
 
 defaults:
-  pages_per_run: 300        # max pages scanned per domain per workflow run
+  pages_per_run: 100        # max pages scanned per domain per workflow run (keeps runs < 2h)
   max_pages_per_week: 2500  # hard weekly cap per domain
   delay_ms: 1500            # pause between page loads (politeness)
   nav_timeout_ms: 30000     # page navigation timeout
