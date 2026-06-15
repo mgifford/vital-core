@@ -220,13 +220,19 @@ for (const item of batch) {
       depth: item.depth,
     };
 
+    // Measure page weight from the page load itself — BEFORE running the
+    // audit engines. The audits (Alfa's DOM serialization, axe injection,
+    // any lazy content they trigger) generate their own network traffic;
+    // collecting after them would conflate audit activity with the real
+    // page weight and couple the number to which engines happened to run.
+    if (sustain) { record.sustainability = sustain.collect(); mark('sustainability'); }
+
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
       if (runs('axe')) { record.axe = await runAxe(page); mark('axe'); }
       if (runs('alfa')) { record.alfa = await runAlfa(page); mark('alfa'); }
       if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
       if (runs('resources')) { record.resources = await runResources(page, item.url); mark('resources'); }
-      if (sustain) { record.sustainability = sustain.collect(); mark('sustainability'); }
 
       // Lighthouse: only when this page is in lighthouse's sample AND its
       // own Chrome launched. The sample rate keeps the (slow) audit count
@@ -282,8 +288,6 @@ for (const item of batch) {
           if (srcs.size < 50) srcs.add(item.url);
         }
       }
-    } else if (sustain) {
-      sustain.collect(); // detach listener
     }
 
     fs.writeFileSync(path.join(pagesDir, `${item.id}.json`), JSON.stringify(record));

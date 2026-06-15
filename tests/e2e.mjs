@@ -284,6 +284,16 @@ try {
   const inv = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'inventory.json')));
   assert(Object.keys(inv.pages).length >= PAGES, `inventory tracks all known pages (${Object.keys(inv.pages).length})`);
   assert(/pages known on this site/.test(report), 'report cites total known pages from inventory');
+  // Downloadable per-domain JSON: a single snapshot of everything known.
+  const domainJsonPath = path.join(SANDBOX, 'docs', 'data', 'localhost', 'domain.json');
+  assert(fs.existsSync(domainJsonPath), 'domain.json export written');
+  const domainJson = JSON.parse(fs.readFileSync(domainJsonPath, 'utf8'));
+  assert(domainJson.pages.length >= PAGES, 'domain.json lists every known URL');
+  assert(domainJson.pages[0].url && 'axeViolations' in domainJson.pages[0], 'pages carry last-known status');
+  assert(domainJson.findings && typeof domainJson.findings === 'object', 'domain.json includes the findings ledger');
+  assert(domainJson.weekly.series.length === 2, 'domain.json includes the multi-week series');
+  assert(domainJson.latestScore && typeof domainJson.latestScore.score === 'number', 'domain.json includes the latest score');
+  assert(/data\/localhost\/domain\.json/.test(report), 'report links the JSON download');
   // Dashboard: leaderboard score + trajectory + cross-domain chart.
   const dash = fs.readFileSync(path.join(SANDBOX, 'docs', 'index.html'), 'utf8');
   assert(/<th scope="col">Score<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');

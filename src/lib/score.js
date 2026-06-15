@@ -49,19 +49,20 @@ export function scoreFor(summary) {
   const auditedPages = summary.pagesAudited ?? Math.max(axePages, alfaPages);
   if (!auditedPages) return null;
 
-  // The typical page's burden. axe counts unique rule violations
-  // (stable, comparable); Alfa counts individual failing elements, which
-  // can be an order of magnitude larger for one repeated pattern. Using
-  // max() would let Alfa's granularity dominate and unfairly tank a site
-  // vs an axe-only view. So weight axe as the primary signal and damp
-  // Alfa's element count (sqrt) as a secondary contributor.
-  const axeMed = summary.axe?.medianViolations ?? 0;
-  const alfaMed = summary.alfa?.medianFailures ?? 0;
-  const medianIssues = Math.round((axeMed + Math.sqrt(alfaMed)) * 10) / 10;
+  // The score is based on axe ALONE, deliberately:
+  //  - axe runs on 100% of pages; Alfa is sampled (~30%), so Alfa's median
+  //    is over a different, smaller page set — mixing two coverage levels
+  //    into one number is unsound.
+  //  - axe counts unique rule violations (stable, comparable across
+  //    sites); Alfa counts individual failing elements, which inflates
+  //    by an order of magnitude for one repeated pattern.
+  // Alfa still runs and is reported separately as independent cross-engine
+  // confirmation — it just doesn't skew the comparable score.
+  const medianIssues = summary.axe?.medianViolations ?? 0;
   const score = scoreFromDensity(medianIssues);
 
   // Kept for context in the report copy (not part of the score).
-  const dirtyPages = Math.max(summary.axe?.pagesWithViolations ?? 0, summary.alfa?.pagesWithFailures ?? 0);
+  const dirtyPages = summary.axe?.pagesWithViolations ?? 0;
   const cleanShare = Math.round(Math.max(0, 1 - dirtyPages / auditedPages) * 100);
 
   return { score, grade: grade(score), band: band(score), medianIssues, cleanShare };
@@ -99,7 +100,7 @@ export function scoreMeaning(summary, sc) {
   const action = topAxe
     ? `Biggest lever: fix “${topAxe.id}” — it affects ${topAxe.pages} page(s).`
     : 'Keep the typical page’s issue count low.';
-  return `The typical page has ${sc.medianIssues} accessibility issue(s) (axe/Alfa). ${action}`;
+  return `The typical page has ${sc.medianIssues} axe violation(s). ${action}`;
 }
 
 function topRule(rules) {

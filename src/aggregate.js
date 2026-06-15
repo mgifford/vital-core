@@ -9,6 +9,7 @@ import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
+import { scoreFor } from './lib/score.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
 
 /**
@@ -153,6 +154,31 @@ for (const target of config.targets) {
 
   saveFindings(target.key, ledger);
   saveResourceLedger(target.key, resLedger);
+
+  // Single downloadable snapshot of everything known about the domain:
+  // every scanned URL's latest status, current known findings (with
+  // first/last-seen), the weekly trend series, and the latest score.
+  const latest = series[series.length - 1];
+  fs.writeFileSync(
+    path.join(dataOut, 'domain.json'),
+    JSON.stringify(
+      {
+        domain: target.domain,
+        generatedAt: new Date().toISOString(),
+        latestWeek: latest.week,
+        latestScore: scoreFor(latest),
+        inventorySummary: invSummary,
+        // Last-known result for every URL ever scanned (survives pruning).
+        pages: Object.entries(inventory.pages).map(([url, p]) => ({ url, ...p })),
+        // Every unique finding with first/last-seen history.
+        findings: ledger.findings,
+        // Week-over-week trend series + diffs.
+        weekly: { series, diffs },
+      },
+      null,
+      1
+    )
+  );
 
   dashboard.push({ target, series, diffs, inventory: invSummary, bugs: latestBugs });
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);

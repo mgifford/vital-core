@@ -480,6 +480,10 @@ test('score: density-based, spreads across a curve so F is rare and meaningful',
   // A typical site is NOT failing — the whole point.
   assert.ok(typical.score >= 65, `typical site passes (${typical.score})`);
 
+  // Score is axe-only: Alfa's (sampled, element-level) count must not move it.
+  const lowAxeHighAlfa = scoreFor({ pagesAudited: 100, axe: { pagesScanned: 100, pagesWithViolations: 100, medianViolations: 1 }, alfa: { pagesScanned: 30, pagesWithFailures: 30, medianFailures: 99 } });
+  assert.equal(lowAxeHighAlfa.score, excellent.score, 'Alfa median does not affect the score (axe-only)');
+
   assert.equal(grade(90), 'A'); assert.equal(grade(70), 'C'); assert.equal(grade(40), 'F');
   assert.equal(band(90), 'Leading'); assert.equal(band(70), 'Typical'); assert.equal(band(40), 'At risk');
   assert.equal(scoreFor({ pagesAudited: 0 }), null, 'no audited pages -> null');

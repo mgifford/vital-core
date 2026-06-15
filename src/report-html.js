@@ -483,7 +483,7 @@ ${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
   ${resolvedCount > 0 ? `<strong>${resolvedCount} issue type(s) resolved</strong> since last week.` : ''}</span>
   <span class="score-caveat">Score reflects the typical page’s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.</span>
 </aside>` : ''}
-${invSummary ? `<p class="meta">Across <strong>${invSummary.totalKnownPages}</strong> pages known on this site (scanned over time), <strong>${invSummary.pagesWithKnownIssues}</strong> have known accessibility issues. ${invSummary.scannedThisWeek} were re-checked this week.</p>` : ''}
+${invSummary ? `<p class="meta">Across <strong>${invSummary.totalKnownPages}</strong> pages known on this site (scanned over time), <strong>${invSummary.pagesWithKnownIssues}</strong> have known accessibility issues. ${invSummary.scannedThisWeek} were re-checked this week. <a href="../../../data/${esc(target.key)}/domain.json">Download full data (JSON)</a>.</p>` : ''}
 
 ${fixFirstSection(bugs)}
 
@@ -741,7 +741,7 @@ ${active.length === 0
 <thead><tr><th scope="col">Domain</th><th scope="col">Score</th><th scope="col">Trajectory</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
-<p class="score-caveat">Scores are a relative, automated signal (axe + Alfa, page-normalized). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
+<p class="score-caveat">Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
 ${overlay}
 ${worstSection}`}
 <section aria-labelledby="h-why">
