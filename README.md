@@ -4,8 +4,10 @@ An open source website quality engine. It crawls 5–20 domains slowly and
 politely across each week, scans thousands of pages per domain with
 [axe-core](https://github.com/dequelabs/axe-core) and
 [Siteimprove Alfa](https://github.com/Siteimprove/alfa) (the open source
-engine behind Siteimprove's commercial checker), measures page weight and
-estimated energy costs, and publishes week-over-week reports to GitHub Pages. Everything runs on GitHub Actions. There is no server, no database, and no budget line.
+engine behind Siteimprove's commercial checker), measures page weight,
+estimated energy costs, image inventory, and technology stack, and publishes
+week-over-week reports to GitHub Pages. Everything runs on GitHub Actions.
+There is no server, no database, and no budget line.
 
 Continuous measurement beats one-off audits. The question this answers is
 not "is this site accessible?" but "is this site **getting more
@@ -43,6 +45,9 @@ Other deliberate choices:
 - **A settle delay before auditing** (`settle_delay_ms`, overridable
   with `VITAL_A11Y_SETTLE_DELAY_MS`) lets client-side hydration finish,
   which removes the largest source of transient false positives.
+- **URL path/query filtering.** Per-target `url_include` / `url_exclude`
+  substring arrays (set in `config/targets.yml`) narrow which pages are
+  crawled and scanned. Priority URLs always bypass the filter.
 - **Plain Node, no build step, no TypeScript, six dependencies.** Less
   machinery to break in CI.
 
@@ -102,6 +107,8 @@ If you operate a site being scanned and want changes, open an issue.
 - Byte counts are decoded body sizes seen by the browser, not on-wire
   transfer sizes. They are consistent week over week, which is what the
   trend needs.
+- Technology detection (Wappalyzer) fingerprints client-side signals and
+  is not authoritative; confidence scores reflect this.
 
 ## Commitments
 

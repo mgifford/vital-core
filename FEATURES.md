@@ -19,6 +19,7 @@ still being implemented.
 - Per-run budget (`pages_per_run`, overridable with `--budget`) and a hard weekly cap (`max_pages_per_week`). Coverage accumulates across runs into one weekly dataset per domain.
 - Politeness: configurable `delay_ms` between page loads, honored alongside `robots.txt` `Crawl-delay`.
 - Accessibility hydration settle delay (`settle_delay_ms`, overridable with `VITAL_A11Y_SETTLE_DELAY_MS`) before auditing, to reduce transient client-side timing false positives.
+- **URL path/query filtering**: per-target `url_include` / `url_exclude` substring arrays in `config/targets.yml` restrict which URLs are crawled and scanned. Priority URLs always bypass the filter. Both arrays accept multiple substrings (any match triggers); examples and documentation are inline in `targets.yml`.
 
 ### Auditing and Data Collection
 
@@ -29,7 +30,9 @@ Each engine has a **weekly coverage rate** set in one place — `config/targets.
 - **Plain language** (`src/engines/plain-language.js`): Readability of the main content (navigation/header/footer excluded) — Flesch Reading Ease, Flesch-Kincaid grade, average sentence length, long-sentence and passive-voice heuristics, **words per page**, acronyms used without an on-page expansion, and **spelling** (words not in the en dictionary or `config/spelling-allowlist.txt`, skipping numbers/acronyms/URLs). Pages with too little prose to score readability report `scored: false`.
 - **Sustainability** (`src/engines/sustainability.js`): Page weight (decoded body bytes) plus both **estimated CO₂ (g)** and **energy (Wh)** per page via co2.js (Sustainable Web Design model v4). `sustainability_metric: co2 | energy` in `config/targets.yml` picks which the reports headline — both are always recorded, so switching needs no re-scan.
 - **Deprecated HTML** (`src/engines/deprecated-html.js`): flags obsolete/legacy markup — `<font>`, `<center>`, `<marquee>`, `<frame>`, presentational attributes (`bgcolor`, `align`, …). A worked example of adding a rate-controlled scanner; the seed for a fuller open-site-review-style check.
-- **Lighthouse** (`src/engines/lighthouse.js`): Google Lighthouse performance, accessibility, best-practices, and SEO scores (plus the experimental agentic-browsing category via `VITAL_LIGHTHOUSE_AGENTIC`). Runs its own headless Chrome; keep its sampling rate low (e.g. 10%). 
+- **Lighthouse** (`src/engines/lighthouse.js`): Google Lighthouse performance, accessibility, best-practices, SEO, and agentic-browsing scores. Runs its own headless Chrome; keep its sampling rate low (e.g. 10%).
+- **Image inventory** (`src/engines/images.js`): for every `<img>` on sampled pages, records src URL, alt text (exact, including empty string), rendered and natural dimensions, loading/decoding attributes, and byte size (captured from the network response). Flags `isDecorative` (alt="") and `isMissingAlt` (alt attribute absent). Capped at 500 images per page; byte size is intercepted from in-flight responses with no extra fetches.
+- **Tech stack detection** (`src/engines/tech.js`): identifies CMS, frameworks, analytics, and other software from page signals (script sources, inline scripts, meta tags, JS globals, cookies, response headers) using the vendored HTTPArchive/wappalyzer fingerprint database (GPL-3.0, 3,454+ fingerprints, 108 categories). Results are aggregated by highest confidence across sampled pages and shown on a `tech.html` sub-page. Update the vendor copy with `scripts/update-wappalyzer.sh`.
 - **Link checking** (`src/lib/links.js`, via the `link-check` engine): collects links seen on sampled pages and probes a capped, deduplicated sample (`VITAL_LINK_CHECK_CAP`, default 500) with polite per-host pacing, recording broken links (4xx/5xx, DNS failures, timeouts). 401/403/429 are treated as soft-OK to avoid bot-challenge false positives.
 
 ### Cross-engine consensus (ACT-rule deduplication)
@@ -56,15 +59,29 @@ A committed per-domain ledger (`data/<domain>/findings.json`) tracks every uniqu
 
 Every reported number is traceable to its pages. Each domain/week report writes CSVs under `docs/reports/<domain>/<week>/csv/`: one per failing rule (every affected URL + per-page instance count) plus `axe-pages-with-violations.csv` / `alfa-pages-with-failures.csv` behind the summary counts. The HTML report, the rule tables, and the bug reports all link to these so a developer can pull the full list to reproduce and fix an issue (`src/lib/csv.js`).
 
+- **`bugs.csv`** — 32 columns covering every field in the HTML bug report: `combined_id`, description, steps to reproduce, suggested fix, remediation tip, testing environment, impact summary, impact groups, and more.
+- **`errors.csv`** (new) — broken links and HTTP error pages with type, URL, status code, and linked-from pages.
+
 ### Human-impact modeling
 
 Each finding's WCAG success criterion maps to the [Section 508 Functional Performance Criteria](https://www.section508.gov/develop/mapping-wcag-to-fpc/) and on to disability groups with US population prevalence (ACS 2022), so a bug report says *who* it affects — e.g. "Affects Without vision (1.0%), Limited vision (2.4%)" — instead of an opaque placeholder (`src/lib/fpc.js`, full WCAG 2.2 A/AA mapping). When a target sets `page_loads_per_week` in config, reports also show a rough estimated-people-excluded figure (prevalence × loads × share of pages affected). Without page-load data, only prevalence percentages are shown — no fabricated counts.
 
+### WCAG versioning
+
+Every WCAG success criterion in `src/lib/wcag.js` now carries a `wcag_version` field (`2.0`, `2.1`, or `2.2`). `classifyFinding()` returns a structured category string (e.g. "WCAG 2.2 AA", "Best Practice"). Bug reports sort findings WCAG 2.2 → 2.1 → 2.0 → AAA → Best Practice → Undetermined. When an axe and Alfa finding share the same WCAG SC and ≥ 50% page overlap, the Alfa finding is flagged `possible_duplicate_of` the axe finding in the report.
+
 ### Reporting and Dashboard
 
 - Static site generated to `docs/` by `src/aggregate.js` — a pure function of `data/`. Never committed; shipped as a GitHub Pages artifact, so it cannot drift from the data.
-- `docs/index.html` — dashboard with latest-week and trend views.
-- `docs/reports/<domain>/<week>/index.html` — per-domain weekly report pages.
+- `docs/index.html` — dashboard: scorecard → summary → trends → week-over-week changes → "Fix these first".
+- `docs/reports/<domain>/<week>/index.html` — per-domain Overview page (score, key metrics, trends).
+- `docs/reports/<domain>/<week>/accessibility.html` — bug reports (anchored per bug for deep-linking) + axe/Alfa rule tables + ACT consensus. "Fix these first" links deep-link here via `#VS-xxxx` anchors.
+- `docs/reports/<domain>/<week>/standards.html` — web standards & security checklists (standards.js + security.js results).
+- `docs/reports/<domain>/<week>/errors.html` — broken links and HTTP error pages.
+- `docs/reports/<domain>/<week>/lighthouse.html` — per-page Lighthouse scores and Core Web Vitals.
+- `docs/reports/<domain>/<week>/readability.html` — readability scores, unexplained acronyms, and misspellings.
+- `docs/reports/<domain>/<week>/tech.html` — detected tech stack (CMS, frameworks, analytics).
+- Per-domain Archive page listing every retained ISO week with score and week-over-week deltas; linked from the sub-page nav.
 - `docs/data/<domain>/weekly.json` — reusable trend series (summaries + week-over-week diffs) per domain.
 - `data/<domain>/<week>/summary.json` — the weekly rollup, committed so trend history survives page-level pruning.
 - Weekly Markdown summary posted to the "Weekly scan reports" tracking issue (`src/issue-comment.js`).
@@ -82,7 +99,7 @@ Because each week only scans a sampled slice and page detail is pruned, a commit
 
 - **Quality score + grade + band** per domain (0–100, A–F, plus a plain "Leading / On track / Typical / Needs work / At risk" label) from the *typical page's issue density* mapped to realistic government-web benchmarks, so scores spread across a curve and an F is rare and genuinely bad — not handed to everyone (`src/lib/score.js`). axe (rule-level) is the primary signal; Alfa's element-level count is damped (`sqrt`) so its granularity doesn't unfairly tank a grade. The scorecard explains the score and names the single highest-leverage fix.
 - **"Fix these first"** ranked action list per domain (pages affected × severity × people reached, from the FPC impact data), each row linking its remediation tip and a CSV of affected pages; plus a **fleet-wide worst-offenders** view on the dashboard (`src/lib/priority.js`).
-- **Lighthouse detail page** per domain (`lighthouse.html` + `lighthouse.csv`): every sampled page with all category scores (performance, accessibility, best-practices, SEO, experimental agentic-browsing) and Core Web Vitals (FCP, LCP, Speed Index, TBT, CLS). Columns are click-to-sort (progressive enhancement; works without JS). Includes a **performance-impact** section: average extra LCP over Google's 2.5s benchmark and extra page weight over 1.6 MB, and — when a target sets `page_loads_per_week` — total estimated wasted time and data (with Wikipedia-copies context), following the [daily-dap](https://github.com/mgifford/daily-dap) method.
+- **Lighthouse detail page** per domain (`lighthouse.html` + `lighthouse.csv`): every sampled page with all category scores (performance, accessibility, best-practices, SEO, agentic-browsing) and Core Web Vitals (FCP, LCP, Speed Index, TBT, CLS). Columns are click-to-sort (progressive enhancement; works without JS). Includes a **performance-impact** section: average extra LCP over Google's 2.5s benchmark and extra page weight over 1.6 MB, and — when a target sets `page_loads_per_week` — total estimated wasted time and data (with Wikipedia-copies context), following the [daily-dap](https://github.com/mgifford/daily-dap) method.
 - **Readability detail page** per domain (`readability.html` + `readability.csv`): a sortable table of every prose page (words, Flesch Reading Ease, Flesch-Kincaid grade) with documentation of what each metric means and why card/link-heavy pages aren't scored.
 - **Shared sub-page navigation** links a domain's Overview / Lighthouse / Readability pages; every section heading has a hover/focus **anchor link** for sharing (copy-safe). Long URLs truncate with an ellipsis (full URL on hover, still copyable).
 - **Evidence CSVs**: per-page readability (`readability.csv`) and spelling (`spelling.csv`) alongside the existing per-rule and resource CSVs, so every headline number links to its underlying pages.

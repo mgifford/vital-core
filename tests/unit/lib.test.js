@@ -4,7 +4,8 @@ import { normalizeUrl, pageId } from '../../src/lib/urls.js';
 import { isoWeekOf, previousWeekOf } from '../../src/lib/week.js';
 import { parseRobots } from '../../src/lib/robots.js';
 import { addPage, pickBatch } from '../../src/lib/state.js';
-import { resolveWcag, severityFor } from '../../src/lib/wcag.js';
+import { resolveWcag, severityFor, classifyFinding } from '../../src/lib/wcag.js';
+import { buildUrlFilter } from '../../src/lib/urls.js';
 import { buildBugReports, bugReportToMarkdown } from '../../src/lib/bug-report.js';
 import { splitSentences, estimateSyllables } from '../../src/engines/plain-language.js';
 import { checkLink } from '../../src/lib/links.js';
@@ -14,6 +15,7 @@ import { findMisspellings } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
 import { toCsv, ruleSlug } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
+import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -162,11 +164,11 @@ test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {
 });
 
 test('severityFor: axe impact maps, frequency amplifies', () => {
-  assert.equal(severityFor('critical', 1, 50), 'Critical');
-  assert.equal(severityFor('minor', 1, 50), 'Low', 'rare minor stays Low');
-  assert.equal(severityFor('minor', 30, 50), 'Medium', 'site-wide minor escalates one level');
-  assert.equal(severityFor('serious', 40, 50), 'Critical', 'site-wide serious escalates to Critical');
-  assert.equal(severityFor(null, 1, 50), 'Medium', 'no impact (alfa) defaults Medium');
+  assert.equal(severityFor('critical', 1, 50), 'critical');
+  assert.equal(severityFor('minor', 1, 50), 'minor', 'rare minor stays minor');
+  assert.equal(severityFor('minor', 30, 50), 'moderate', 'site-wide minor escalates one level');
+  assert.equal(severityFor('serious', 40, 50), 'critical', 'site-wide serious escalates to critical');
+  assert.equal(severityFor(null, 1, 50), 'moderate', 'no impact (alfa) defaults moderate');
 });
 
 test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
@@ -202,7 +204,7 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.ok(reports.indexOf(alfaReport) < reports.indexOf(axeReport),
     'WCAG 2.0 A (sia-r12) sorts before WCAG 2.0 AA (color-contrast)');
 
-  assert.equal(axeReport.severity, 'Critical', '6/10 pages escalates serious to critical');
+  assert.equal(axeReport.severity, 'critical', '6/10 pages escalates serious to critical');
   assert.equal(axeReport.wcag_sc, '1.4.3');
   assert.equal(axeReport.wcag_level, 'AA');
   assert.equal(axeReport.wcag_version, '2.0');
@@ -222,16 +224,16 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').instance_id, axeReport.instance_id);
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').pattern_id, axeReport.pattern_id);
 
-  // Alfa report: no impact -> Medium, mapped SC, WCAG category.
+  // Alfa report: no impact -> moderate, mapped SC, WCAG category.
   const alfa = reports.find((r) => r.rule_id === 'sia-r12');
-  assert.equal(alfa.severity, 'Medium');
+  assert.equal(alfa.severity, 'moderate');
   assert.equal(alfa.wcag_sc, '4.1.2');
   assert.equal(alfa.wcag_version, '2.0');
   assert.equal(alfa.wcag_category, 'WCAG 2.0 A');
 
   // Markdown renders the required headings.
   const md = bugReportToMarkdown(axeReport);
-  assert.match(md, /\*\*Severity:\*\* Critical/);
+  assert.match(md, /\*\*Severity:\*\* critical/);
   assert.match(md, /### Steps to reproduce/);
   assert.match(md, /\*\*WCAG SC:\*\* 1\.4\.3/);
 });
@@ -323,8 +325,8 @@ test('sampling: shouldRun is deterministic, ~rate, and per-engine independent', 
 
 test('findings: ledger tracks first/last-seen and is idempotent per week', () => {
   const ledger = { domain: 'x', findings: {} };
-  const reportA = { pattern_id: 'VS-aaa', tool: 'axe-core', rule_id: 'image-alt', summary: 'Images need alt (WCAG 1.1.1)', wcag_sc: '1.1.1', severity: 'Critical', frequency: { pages_affected: 5 } };
-  const reportB = { pattern_id: 'VS-bbb', tool: 'alfa', rule_id: 'sia-r12', summary: 'Button name (WCAG 4.1.2)', wcag_sc: '4.1.2', severity: 'Medium', frequency: { pages_affected: 2 } };
+  const reportA = { pattern_id: 'VS-aaa', tool: 'axe-core', rule_id: 'image-alt', summary: 'Images need alt (WCAG 1.1.1)', wcag_sc: '1.1.1', severity: 'critical', frequency: { pages_affected: 5 } };
+  const reportB = { pattern_id: 'VS-bbb', tool: 'alfa', rule_id: 'sia-r12', summary: 'Button name (WCAG 4.1.2)', wcag_sc: '4.1.2', severity: 'moderate', frequency: { pages_affected: 2 } };
 
   updateFindings(ledger, '2026-W23', [reportA, reportB]);
   assert.equal(ledger.findings['VS-aaa'].firstSeen, '2026-W23');
@@ -510,12 +512,12 @@ test('score: density-based, spreads across a curve so F is rare and meaningful',
 test('priority: ranks by pages x severity x reach; fleet flattens across domains', async () => {
   const { priorityScore, rankBugs, fleetWorstOffenders } = await import('../../src/lib/priority.js');
   const bug = (sev, pages, prev) => ({ severity: sev, frequency: { pages_affected: pages }, impact: { groups: prev != null ? [{ prevalence: prev }] : [] }, summary: `${sev}/${pages}` });
-  const widespreadCritical = bug('Critical', 50, 0.1);
-  const rareLow = bug('Low', 1, 0.01);
-  assert.ok(priorityScore(widespreadCritical) > priorityScore(rareLow), 'widespread critical outranks rare low');
+  const widespreadCritical = bug('critical', 50, 0.1);
+  const rareLow = bug('minor', 1, 0.01);
+  assert.ok(priorityScore(widespreadCritical) > priorityScore(rareLow), 'widespread critical outranks rare minor');
 
   const ranked = rankBugs([rareLow, widespreadCritical], 5);
-  assert.equal(ranked[0].summary, 'Critical/50', 'highest priority first');
+  assert.equal(ranked[0].summary, 'critical/50', 'highest priority first');
 
   const fleet = fleetWorstOffenders([
     { target: { domain: 'a.gov', key: 'a' }, bugs: [rareLow] },
@@ -663,4 +665,179 @@ test('dashboard: blocked targets render in a collapsed accordion, not up top', a
   assert.match(html, /Blocked targets \(1\)/, 'accordion summary shows the count');
   // The blocked accordion comes AFTER the leaderboard table, not before it.
   assert.ok(html.indexOf('<table') < html.indexOf('blocked-accordion'), 'accordion is below the main content');
+});
+
+test('buildUrlFilter: no config passes everything', () => {
+  const filter = buildUrlFilter({});
+  assert.equal(filter('https://example.gov/any/path?q=1'), true);
+});
+
+test('buildUrlFilter: url_include restricts to matching URLs', () => {
+  const filter = buildUrlFilter({ url_include: ['/children/'] });
+  assert.equal(filter('https://example.gov/children/page'), true, 'path match');
+  assert.equal(filter('https://example.gov/adults/page'), false, 'non-matching path');
+});
+
+test('buildUrlFilter: url_exclude blocks matching URLs after include', () => {
+  const filter = buildUrlFilter({ url_exclude: ['press_release', '?page='] });
+  assert.equal(filter('https://example.gov/news/press_release/2026'), false, 'exclude by keyword');
+  assert.equal(filter('https://example.gov/list?page=2'), false, 'exclude by query string');
+  assert.equal(filter('https://example.gov/about'), true, 'non-matching passes');
+});
+
+test('buildUrlFilter: url_include + url_exclude compose correctly', () => {
+  const filter = buildUrlFilter({ url_include: ['/news/'], url_exclude: ['press_release'] });
+  assert.equal(filter('https://example.gov/news/article'), true, 'include match, no exclude');
+  assert.equal(filter('https://example.gov/news/press_release'), false, 'include match but excluded');
+  assert.equal(filter('https://example.gov/about'), false, 'not in include list');
+});
+
+test('classifyFinding: WCAG version and level produce correct category', () => {
+  const wcag20aa = { sc: '1.4.3', name: 'Contrast', level: 'AA', wcag_version: '2.0' };
+  const wcag21a  = { sc: '1.3.4', name: 'Orientation', level: 'A', wcag_version: '2.1' };
+  const wcag22aa = { sc: '2.4.11', name: 'Focus Appearance', level: 'AA', wcag_version: '2.2' };
+  const wcagAAA  = { sc: '1.4.6', name: 'Contrast (Enhanced)', level: 'AAA', wcag_version: '2.0' };
+
+  assert.equal(classifyFinding('axe-core', {}, wcag20aa), 'WCAG 2.0 AA');
+  assert.equal(classifyFinding('axe-core', {}, wcag21a),  'WCAG 2.1 A');
+  assert.equal(classifyFinding('axe-core', {}, wcag22aa), 'WCAG 2.2 AA');
+  assert.equal(classifyFinding('axe-core', {}, wcagAAA),  'WCAG 2.x AAA');
+});
+
+test('classifyFinding: axe best-practice tag without WCAG mapping', () => {
+  assert.equal(classifyFinding('axe-core', { tags: ['best-practice'] }, null), 'Best Practice');
+});
+
+test('classifyFinding: no mapping returns Undetermined', () => {
+  assert.equal(classifyFinding('alfa', {}, null), 'Undetermined');
+});
+
+test('buildBugReports: WCAG sort order across version groups', () => {
+  const makeRule = (tags, pages = 5) => ({ pages, tags, count: pages * 2, examplePages: ['https://x/a'] });
+  const target = { domain: 'x.gov', key: 'x.gov' };
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 10,
+    axe: {
+      pagesScanned: 10,
+      rules: {
+        'focus-appearance':    makeRule(['wcag2aa', 'wcag2411']),  // 2.4.11 → WCAG 2.2 AA
+        reflow:                makeRule(['wcag21aa', 'wcag1410']), // 1.4.10 → WCAG 2.1 AA
+        'color-contrast':      makeRule(['wcag2aa', 'wcag143']),   // 1.4.3  → WCAG 2.0 AA
+        'avoid-inline-spacing': makeRule(['best-practice']),       // Best Practice
+      },
+    },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  // buildBugReports signature is (target, summary)
+  const reports = buildBugReports(target, summary);
+  const cats = reports.map((r) => r.wcag_category);
+
+  const i22 = cats.findIndex((c) => c?.startsWith('WCAG 2.2'));
+  const i21 = cats.findIndex((c) => c?.startsWith('WCAG 2.1'));
+  const i20 = cats.findIndex((c) => c?.startsWith('WCAG 2.0'));
+  const iBP = cats.findIndex((c) => c === 'Best Practice');
+
+  assert.ok(i22 !== -1, `WCAG 2.2 finding present — got: ${JSON.stringify(cats)}`);
+  assert.ok(i21 !== -1, 'WCAG 2.1 finding present');
+  assert.ok(i20 !== -1, 'WCAG 2.0 finding present');
+  assert.ok(iBP !== -1, 'Best Practice finding present');
+  assert.ok(i22 < i21, 'WCAG 2.2 before 2.1');
+  assert.ok(i21 < i20, 'WCAG 2.1 before 2.0');
+  assert.ok(i20 < iBP, 'WCAG 2.0 before Best Practice');
+});
+
+test('buildAcrData: does-not-support when failures span ≥5% of pages', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 100,
+    axe: {
+      pagesScanned: 100,
+      rules: {
+        // color-contrast → 1.4.3, 10/100 = 10% → does-not-support
+        'color-contrast': { pages: 10, tags: ['wcag2aa', 'wcag143'], examplePages: ['https://x/a'] },
+      },
+    },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap } = buildAcrData(summary);
+  const sc143 = scMap.get('1.4.3');
+  assert.ok(sc143, '1.4.3 entry present');
+  assert.equal(sc143.adherence, 'does-not-support', '10% failure rate → does-not-support');
+  assert.equal(sc143.pagesAffected, 10);
+  assert.ok(sc143.engines.includes('axe-core'));
+});
+
+test('buildAcrData: partially-supports when failures span <5% of pages', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 100,
+    axe: {
+      pagesScanned: 100,
+      rules: {
+        // color-contrast → 1.4.3, 4/100 = 4% → partially-supports
+        'color-contrast': { pages: 4, tags: ['wcag2aa', 'wcag143'], examplePages: [] },
+      },
+    },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap } = buildAcrData(summary);
+  assert.equal(scMap.get('1.4.3').adherence, 'partially-supports');
+});
+
+test('buildAcrData: zero-page failure is partially-supports, not supports', () => {
+  // A rule with pages=0 still enters scFailures (pages: max(0,0)=0).
+  // fail.pages/axePages = 0/50 = 0% < 5% → partially-supports, not supports.
+  // "supports" requires the SC to be in testedSCs but absent from scFailures,
+  // which can only happen via Alfa's resolveWcag path when resolveWcag returns
+  // an SC that was not reported at all in axe rules. This is an edge case of
+  // the current conservative implementation.
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 50,
+    axe: {
+      pagesScanned: 50,
+      rules: {
+        'image-alt': { pages: 0, tags: ['wcag2a', 'wcag111'], examplePages: [] },
+      },
+    },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap } = buildAcrData(summary);
+  const sc111 = scMap.get('1.1.1');
+  assert.ok(sc111, '1.1.1 entry present');
+  // pages=0 → fail rate 0% < 5% → partially-supports (not "supports")
+  assert.equal(sc111.adherence, 'partially-supports', 'zero-page failure is partially-supports');
+  assert.equal(sc111.pagesAffected, 0);
+});
+
+test('buildAcrData: not-evaluated for SCs no engine covers', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 50,
+    axe: { pagesScanned: 50, rules: {} },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap } = buildAcrData(summary);
+  // 1.2.5 (Audio Description) is rarely covered by automated tools
+  const sc125 = scMap.get('1.2.5');
+  assert.ok(sc125, '1.2.5 entry present in catalog');
+  assert.equal(sc125.adherence, 'not-evaluated');
+});
+
+test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 10,
+    axe: { pagesScanned: 10, version: '4.12.1', rules: {} },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const acrData = buildAcrData(summary);
+  const yaml = buildAcrYaml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
+  assert.match(yaml, /^title:/, 'starts with title field');
+  assert.match(yaml, /catalog: 2\.5-edition-wcag-2\.2-en/, 'references WCAG 2.2 catalog');
+  assert.match(yaml, /chapters:/, 'has chapters section');
+  assert.match(yaml, /success_criteria_level_a:/, 'has Level A section');
+  assert.match(yaml, /success_criteria_level_aa:/, 'has Level AA section');
+  assert.match(yaml, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence values');
 });

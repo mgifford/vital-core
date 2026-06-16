@@ -16,6 +16,7 @@ import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
 import { runDeprecatedHtml } from './engines/deprecated-html.js';
 import { runResources } from './engines/resources.js';
+import { runImages, createImageCollector } from './engines/images.js';
 import { runStandards } from './engines/standards.js';
 import { runSecurity } from './engines/security.js';
 import { runTech } from './engines/tech.js';
@@ -131,6 +132,7 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 // page's per-engine membership is recorded so reports can show coverage.
 const rates = ratesFor(config, target);
 const enginesRun = {}; // engine -> count of pages it ran on this run
+const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, error: 0 };
 const runLog = { runId, week, domain: target.domain, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates };
 
 // Link checking: collect links seen on pages that are in link-check's
@@ -165,12 +167,14 @@ for (const item of batch) {
     log(`url-filter skip: ${item.url}`);
     state.pages[item.id].lastScannedWeek = week;
     state.pages[item.id].lastStatus = 'url-filtered';
+    tally.url_filtered++;
     if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
     continue;
   }
 
   if (!robots.isAllowed(urlPath)) {
     log(`robots disallow: ${item.url}`);
+    tally.robots_skipped++;
     state.pages[item.id].lastScannedWeek = week; // do not retry this week
     state.pages[item.id].lastStatus = 'robots-disallowed';
     if (++sincePersist >= STATE_SAVE_EVERY) {
@@ -204,6 +208,7 @@ for (const item of batch) {
       path.join(pagesDir, `${item.id}.json`),
       JSON.stringify({ pageId: item.id, url: item.url, week, runId, scannedAt: new Date().toISOString(), status: 200, depth: item.depth, nonHtml: { contentType: headType } })
     );
+    tally.non_html++;
     runLog.scanned.push(item.id);
     log(`skip non-HTML (${headType.split(';')[0]}): ${urlPath}`);
     if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
@@ -213,6 +218,7 @@ for (const item of batch) {
 
   const page = await context.newPage();
   const sustain = runs('sustainability') ? createSustainabilityCollector(page) : null;
+  const imgCollector = runs('images') ? createImageCollector(page) : null;
 
   try {
     const response = await page.goto(fetchUrl, { waitUntil: 'load' });
@@ -256,6 +262,11 @@ for (const item of batch) {
       if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
       if (runs('resources')) { record.resources = await runResources(page, item.url); mark('resources'); }
+      if (imgCollector) {
+        const imgs = await runImages(page, item.url);
+        record.images = { ...imgs, images: imgCollector.collect(imgs.images) };
+        mark('images');
+      }
       if (runs('standards')) { record.standards = await runStandards(page); mark('standards'); }
       // Security is per-origin (headers/TLD/security.txt), so check it only
       // when this page is in the sample; aggregate keeps the latest result.
@@ -332,6 +343,8 @@ for (const item of batch) {
     state.pages[item.id].lastScannedAt = record.scannedAt;
     state.pages[item.id].lastStatus = status;
     state.pages[item.id].failCount = 0;
+    if (status >= 400) tally.blocked++;
+    else tally.ok++;
     log(`${status} ${urlPath} ${record.axe ? `axe:${record.axe.violationCount}` : ''} ${record.alfa ? `alfa:${record.alfa.failedCount}` : ''}`);
   } catch (err) {
     const msg = String(err);
@@ -344,9 +357,12 @@ for (const item of batch) {
         path.join(pagesDir, `${item.id}.json`),
         JSON.stringify({ pageId: item.id, url: item.url, week, runId, scannedAt: new Date().toISOString(), status: 200, depth: item.depth, nonHtml: { contentType: 'download' } })
       );
+      tally.non_html++;
       runLog.scanned.push(item.id);
       log(`skip non-HTML (download): ${urlPath}`);
     } else {
+      if (/timeout/i.test(msg) || /TimeoutError/i.test(msg)) tally.timeout++;
+      else tally.error++;
       state.pages[item.id].failCount = (state.pages[item.id].failCount ?? 0) + 1;
       runLog.errors.push({ pageId: item.id, url: item.url, error: msg.slice(0, 300) });
       log(`ERROR ${urlPath}: ${msg.slice(0, 120)}`);
@@ -386,12 +402,14 @@ if (lighthouse) await lighthouse.close();
 
 // Per-engine page counts for this run (coverage = enginesRun / scanned).
 runLog.enginesRun = enginesRun;
+runLog.tally = tally;
 runLog.finishedAt = new Date().toISOString();
 fs.writeFileSync(path.join(runsDir, `${runId}.json`), JSON.stringify(runLog, null, 1));
 saveState(target.key, state);
 await browser.close();
 const coverage = Object.entries(enginesRun).map(([e, n]) => `${e}:${n}`).join(' ');
-log(`done: ${runLog.scanned.length} scanned, ${runLog.errors.length} errors${coverage ? ` | ${coverage}` : ''}`);
+const tallyStr = `ok:${tally.ok} blocked:${tally.blocked} timeout:${tally.timeout} robots:${tally.robots_skipped} url-filter:${tally.url_filtered} non-html:${tally.non_html} error:${tally.error}`;
+log(`done: ${runLog.scanned.length} scanned | ${tallyStr}${coverage ? ` | ${coverage}` : ''}`);
 
 /**
  * Cheap HEAD request to learn a URL's content-type before navigating, so

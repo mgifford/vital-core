@@ -52,7 +52,9 @@ compact, comparison-friendly record onto the per-page JSON.
 | `src/engines/plain-language.js` | text analysis (in-page) | Readability (Flesch / Flesch-Kincaid), sentence/passive-voice heuristics, unexplained acronyms. `scored: false` when there's too little prose. |
 | `src/engines/deprecated-html.js` | DOM query (in-page) | Obsolete/legacy HTML (`<font>`, `<center>`, `<marquee>`, presentational attrs). Example of a rate-controlled scanner. |
 | `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD model v4) | Page weight (decoded body bytes) and estimated emissions. |
-| `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO scores (+ experimental agentic). Drives its own browser. |
+| `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO / agentic-browsing scores. Drives its own browser. |
+| `src/engines/images.js` | DOM eval + response interceptor | Per-page image inventory: src, alt text, dimensions, loading/decoding attrs, byte size, decorative/missing-alt flags. Capped at 500 images/page. |
+| `src/engines/tech.js` | **HTTPArchive/wappalyzer** (vendored, GPL-3.0) | Technology fingerprinting from in-page signals; aggregated by highest confidence across sampled pages. Update via `scripts/update-wappalyzer.sh`. |
 | `src/lib/links.js` (`link-check`) | `fetch` HEAD/GET probes | Broken links (4xx/5xx, DNS, timeout) found on sampled pages, checked once per run, capped and polite. |
 
 #### Weekly sampling rates
@@ -100,8 +102,7 @@ ones.
 `pattern_id` with `firstSeen` / `lastSeen` / `weeksSeen`, accumulated
 across the domain's whole history (survives page-detail pruning). Updated
 by `src/lib/findings.js` during aggregation; surfaced as first/last-seen
-in bug reports. Env overrides: `VITAL_LIGHTHOUSE_AGENTIC`,
-`VITAL_LINK_CHECK_CAP`.
+in bug reports.
 
 ### Environment variables
 
@@ -109,6 +110,7 @@ in bug reports. Env overrides: `VITAL_LIGHTHOUSE_AGENTIC`,
 |----------|---------|
 | `VITAL_WEEK` | Pin the ISO week (e.g. `2026-W23`). Used by the e2e test for determinism; normally derived from the run date. |
 | `VITAL_A11Y_SETTLE_DELAY_MS` | Override `settle_delay_ms` — the wait after page load before auditing, which lets client-side hydration finish and removes transient false positives. |
+| `VITAL_LINK_CHECK_CAP` | Override the per-run broken-link probe cap (default 500). |
 
 Most behavior is configured per target in `config/targets.yml`
 (`pages_per_run`, `max_pages_per_week`, `delay_ms`, `nav_timeout_ms`,
