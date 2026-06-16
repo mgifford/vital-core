@@ -2,10 +2,10 @@
 # per domain; coverage accumulates across the week into one ISO-week
 # dataset per domain.
 #
-# Off-hours: crons are UTC. The times below land between roughly
-# 01:00 and 03:00 US Eastern / 05:00-08:00 UTC, which is off-hours for
-# North American government sites. Adjust for your targets' audiences.
-# Avoid :00 minutes: GitHub delays on-the-hour crons heavily.
+# Off-hours: crons are UTC. These schedules target late evening through
+# early morning US Eastern. During daylight saving time they run roughly
+# 23:11-05:47 ET on weeknights and 21:13-07:37 ET on weekends.
+# During standard time, they run one hour earlier.
 #
 # Commit safety: each matrix job writes only state/<domain>/ and
 # data/<domain>/, so parallel jobs never touch the same files. The
