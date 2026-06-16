@@ -87,7 +87,7 @@ targets:
     importance: 3                  # open-data site
   - domain: www.healthcare.gov
     importance: 3
-  - domain: www.nih.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
+  - domain: nih.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
     importance: 1
-  - domain: www.hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
+  - domain: hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
     importance: 1
