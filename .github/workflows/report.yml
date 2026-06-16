@@ -4,12 +4,14 @@
 # published reports reflect the latest data daily (not just weekly).
 # Steps, in order (ordering matters and is intentional):
 #   1. aggregate : computes summaries from data/, writes docs/
-#   2. commit    : summary.json files go back into data/ so history
+#   2. prune     : page-level detail older than retention_weeks removed
+#   3. commit    : summary.json files go back into data/ so history
 #                   survives page-detail pruning
-#   3. deploy    : docs/ is shipped to GitHub Pages as an artifact;
+#   4. generate comment
+#   5. configure/deploy    : docs/ is shipped to GitHub Pages as an artifact;
 #                   generated HTML is never committed to the repo
-#   4. comment   : weekly Markdown summary posted to a pinned issue
-#   5. prune     : page-level detail older than retention_weeks removed
+#   6. post comment   : weekly Markdown summary posted to a pinned issue
+
 
 name: report
 
@@ -35,11 +37,14 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      # - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      # - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          # node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
