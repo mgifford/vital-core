@@ -95,7 +95,8 @@ function subnav(active, available) {
     ['index.html', 'Overview', 'overview'],
     ['lighthouse.html', 'Lighthouse', 'lighthouse'],
     ['readability.html', 'Readability', 'readability'],
-  ].filter(([, , key]) => key === 'overview' || available.includes(key));
+    ['archive.html', 'Archive', 'archive'],
+  ].filter(([, , key]) => key === 'overview' || key === 'archive' || available.includes(key));
   if (items.length < 2) return '';
   return `<nav class="subnav" aria-label="Domain report pages"><ul>${items
     .map(([href, label, key]) => key === active
@@ -714,6 +715,47 @@ ${sortableTable(`Readability per scanned page (${summary.week}).`, cols, rows)}
   });
 }
 
+/**
+ * Archive page: every retained ISO-week report for a domain, newest
+ * first, with key metrics and a week-over-week comparison. Lets reviewers
+ * jump back to W24 etc. Lives at the domain's latest-week directory and
+ * links into each week's own report folder.
+ */
+export function renderArchivePage(target, series, latestWeek) {
+  if (!series || series.length === 0) return null;
+  const ordered = [...series].reverse(); // newest first
+  const rows = ordered
+    .map((s, i) => {
+      const newer = ordered[i - 1]; // the week after this one (for delta)
+      const sc = scoreFor(s);
+      const med = s.axe.medianViolations ?? 0;
+      const d = newer ? med - (newer.axe.medianViolations ?? 0) : null;
+      return `<tr>
+  <th scope="row"><a href="../${esc(s.week)}/index.html">${esc(s.week)}</a></th>
+  <td class="num">${sc ? `<span class="grade grade-${esc(sc.grade)}">${esc(sc.grade)}</span> ${sc.score}` : 'n/a'}</td>
+  <td class="num">${s.pagesAudited ?? s.pagesScanned}</td>
+  <td class="num">${fmtMedian(s.axe.medianViolations)}${d != null && d !== 0 ? ` ${delta(d)}` : ''}</td>
+  <td class="num">${fmtMedian(s.alfa.medianFailures)}</td>
+</tr>`;
+    })
+    .join('\n');
+  const body = `
+<h1>${esc(target.domain)}: report archive</h1>
+${subnav('archive', ['archive'])}
+<p class="meta">Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.</p>
+<table>
+<caption>Weekly reports for ${esc(target.domain)} (${series.length} weeks).</caption>
+<thead><tr><th scope="col">Week</th><th scope="col">Score</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
+  return layout({
+    title: `${target.domain} archive | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">Archive</li>`,
+    body,
+    depth: 3,
+  });
+}
+
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {} }, invSummary = null, available = []) {
   const score = scoreFor(summary);
   const traj = trajectory(series, 4);
@@ -724,8 +766,8 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const body = `
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
 ${subnav('overview', available)}
-<p class="meta">${summary.pagesScanned} pages scanned. Generated ${esc(summary.generatedAt.slice(0, 10))}.
-${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} pages).` : 'First recorded week; no comparison yet.'}</p>
+<p class="meta">This is the <strong>${esc(summary.week)}</strong> ISO-week report (<strong>${summary.pagesScanned}</strong> pages fetched, <strong>${summary.pagesAudited ?? summary.pagesScanned}</strong> unique pages audited by axe/Alfa). Generated ${esc(summary.generatedAt.slice(0, 10))}.
+${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.</p>
 
 ${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
   <span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>
@@ -735,7 +777,7 @@ ${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
   ${resolvedCount > 0 ? `<strong>${resolvedCount} issue type(s) resolved</strong> since last week.` : ''}</span>
   <span class="score-caveat">Score reflects the typical page’s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.</span>
 </aside>` : ''}
-${invSummary ? `<p class="meta">Across <strong>${invSummary.totalKnownPages}</strong> pages known on this site (scanned over time), <strong>${invSummary.pagesWithKnownIssues}</strong> have known accessibility issues. ${invSummary.scannedThisWeek} were re-checked this week. <a href="../../../data/${esc(target.key)}/domain.json">Download full data (JSON)</a>.</p>` : ''}
+${invSummary ? `<p class="meta">Over the whole history of this site, <strong>${invSummary.totalKnownPages}</strong> unique pages have been scanned at least once; <strong>${invSummary.pagesWithKnownIssues}</strong> have known accessibility issues. <strong>${invSummary.scannedThisWeek}</strong> of them were re-checked this ISO week. <a href="../../../data/${esc(target.key)}/domain.json">Download full data (JSON)</a>.</p>` : ''}
 
 ${fixFirstSection(bugs)}
 
@@ -898,9 +940,12 @@ export function renderIndex(dashboard) {
   const blocked = dashboard.filter(({ series }) => series[series.length - 1].blocked);
   const active = dashboard.filter(({ series }) => !series[series.length - 1].blocked);
 
+  // Blocked targets are useful context but not the headline — collapsed
+  // into an accordion at the bottom of the dashboard, not up top.
   const blockedCallout = blocked.length === 0 ? '' : `
-<section aria-labelledby="h-blocked" class="callout callout-blocked">
-${heading('h-blocked', `Blocked targets`)}
+<section aria-labelledby="h-blocked">
+<details class="blocked-accordion">
+<summary><span id="h-blocked">Blocked targets (${blocked.length})</span></summary>
 <p>These sites returned only access-denied responses to the scanner, so no
 accessibility or sustainability data could be collected. This is typically a
 WAF or bot manager blocking automated traffic, not a scan failure. See
@@ -912,12 +957,18 @@ for how the scanner can be allowlisted.</p>
       return `<li><strong>${esc(target.domain)}</strong> — HTTP ${latest.blocked.status} (${esc(latest.week)})</li>`;
     })
     .join('\n')}</ul>
+</details>
 </section>`;
 
-  // Leaderboard: rank domains best->worst by score, with trajectory.
+  // Leaderboard: rank domains best->worst by score (computed over the
+  // trailing-7-day window so it's a fair, like-for-like benchmark), with
+  // trajectory. Links still point at the latest ISO-week report.
   const medAxe = (s) => s.axe.medianViolations ?? 0;
   const ranked = active
-    .map((d) => ({ ...d, latest: d.series[d.series.length - 1], score: scoreFor(d.series[d.series.length - 1]), traj: trajectory(d.series, 4) }))
+    .map((d) => {
+      const win = d.windowSummary ?? d.series[d.series.length - 1];
+      return { ...d, latest: d.series[d.series.length - 1], win, score: scoreFor(win), traj: trajectory(d.series, 4) };
+    })
     .sort((a, b) => (b.score?.score ?? -1) - (a.score?.score ?? -1));
 
   const arrow = (t) => {
@@ -927,15 +978,15 @@ for how the scanner can be allowlisted.</p>
   };
   const rows = ranked
     .map((d) => {
-      const { target, series, latest, score, traj } = d;
+      const { target, series, latest, win, score, traj } = d;
       const trend = series.map(medAxe);
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a></th>
   <td class="num">${score ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span> ${score.score}` : 'n/a'}</td>
   <td>${arrow(traj)}</td>
-  <td class="num">${latest.pagesAudited ?? latest.pagesScanned}</td>
-  <td class="num">${fmtMedian(latest.axe.medianViolations)}</td>
-  <td class="num">${fmtMedian(latest.alfa.medianFailures)}</td>
+  <td class="num">${win.pagesAudited ?? win.pagesScanned}</td>
+  <td class="num">${fmtMedian(win.axe.medianViolations)}</td>
+  <td class="num">${fmtMedian(win.alfa.medianFailures)}</td>
   <td>${sparkline(trend)}<span class="visually-hidden">Median axe violations per page over ${series.length} weeks: ${trend.join(', ')}.</span></td>
 </tr>`;
     })
@@ -968,20 +1019,20 @@ ${heading('h-worst', `Worst offenders across all domains`)}
 <h1>Weekly quality ledger</h1>
 <p class="meta">Accessibility and sustainability, measured continuously with open source engines.
 Thousands of pages per domain, scanned slowly and politely across each week.</p>
-${blockedCallout}
 ${active.length === 0
     ? (dashboard.length === 0
         ? '<p>No scan data yet. The first weekly report appears after the first scheduled scans complete.</p>'
-        : '<p>No accessibility or sustainability data could be collected yet — every target is currently blocked (see above).</p>')
+        : '<p>No accessibility or sustainability data could be collected yet — every target is currently blocked (see the bottom of this page).</p>')
     : `
 <table>
-<caption>Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page, comparable across sites of any size.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Score</th><th scope="col">Trajectory</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
+<caption>Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.</caption>
+<thead><tr><th scope="col">Domain</th><th scope="col">Score</th><th scope="col">Trajectory</th><th scope="col">Pages audited (7d)</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 <p class="score-caveat">Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
 ${overlay}
-${worstSection}`}
+${worstSection}
+${blockedCallout}`}
 <section aria-labelledby="h-why">
 ${heading('h-why', `Why this exists`)}
 <p>Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more
@@ -1068,6 +1119,8 @@ td .url, th .url { max-width: 22rem; }
   background: color-mix(in srgb, var(--worse) 8%, transparent); border-radius: 2px; }
 .callout-blocked h2 { color: var(--worse); border-bottom: none; margin-top: .75rem; }
 .callout-blocked ul { margin: .5rem 0; }
+.blocked-accordion { margin-top: 2rem; border-top: 1px solid var(--rule); padding-top: .5rem; }
+.blocked-accordion > summary { cursor: pointer; color: var(--muted); font-weight: 600; }
 .ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
   gap: .75rem 2rem; margin: 1rem 0; }
 .ledger div { border-top: 1px solid var(--rule); padding-top: .4rem; }

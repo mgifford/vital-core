@@ -97,6 +97,10 @@ Two engines replicate, at site scale, the gaps between vital-core and [ScanGov](
 
 Both are rate-controlled engines (security low/per-origin, standards per-page) with their own report section, and roll into the per-domain `domain.json` export. We deliberately keep these out of the accessibility score — security and SEO are different dimensions.
 
+### Time windows: rolling 7 days vs ISO-week archive
+
+The dashboard headline uses a **trailing 7-day window** (aggregated from page records by `scannedAt`, spanning ISO-week folders), so a domain's numbers aren't a partial Monday-to-now week measured against full historic weeks — a fairer, like-for-like benchmark. Per-domain **ISO-week reports** remain the detailed record, reachable from a per-domain **Archive** page (linked in the sub-page nav) that lists every retained week with score and week-over-week deltas. Page-count labels distinguish *fetched* vs *unique pages audited (this period)* vs *unique pages ever scanned* (all-time, from the inventory) so the numbers no longer look contradictory. Blocked targets are tucked into a collapsed accordion at the bottom of the dashboard rather than leading it.
+
 ### Notes on score fairness
 
 - The quality **score is based on axe alone**. axe runs on 100% of pages; Alfa is sampled (lower rate, configurable) and counts individual failing *elements* rather than unique rules, so folding it into the score would mix uneven coverage and inflate counts. Alfa still runs and is reported separately as independent cross-engine confirmation (and in the ACT consensus view) — it just doesn't skew the comparable score.

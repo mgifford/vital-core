@@ -636,3 +636,19 @@ test('perf-impact: averages always; totals only with page loads', async () => {
   assert.match(humanDuration(31557600 * 2 + 86400 * 3), /2 years, 3 days/);
   assert.equal(humanBytes(2.5e12), '2.5 TB');
 });
+
+test('dashboard: blocked targets render in a collapsed accordion, not up top', async () => {
+  const { renderIndex } = await import('../../src/report-html.js');
+  const wk = (week, blocked) => ({ week, blocked, pagesScanned: 1, pagesAudited: blocked ? 0 : 1,
+    axe: { medianViolations: 0, pagesWithViolations: 0, pagesScanned: 1 },
+    alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 1 } });
+  const dashboard = [
+    { target: { domain: 'good.gov', key: 'good.gov' }, series: [wk('2026-W25', null)], diffs: {}, bugs: [], windowSummary: wk('2026-W25', null) },
+    { target: { domain: 'blocked.gov', key: 'blocked.gov' }, series: [wk('2026-W25', { status: 403 })], diffs: {}, bugs: [] },
+  ];
+  const html = renderIndex(dashboard);
+  assert.match(html, /<details class="blocked-accordion">/, 'blocked targets are in a <details> accordion');
+  assert.match(html, /Blocked targets \(1\)/, 'accordion summary shows the count');
+  // The blocked accordion comes AFTER the leaderboard table, not before it.
+  assert.ok(html.indexOf('<table') < html.indexOf('blocked-accordion'), 'accordion is below the main content');
+});
