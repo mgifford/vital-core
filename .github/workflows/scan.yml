@@ -61,7 +61,7 @@ jobs:
       # - uses: actions/setup-node@v4
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
       - id: list
         run: |
           npm ci --omit=optional --ignore-scripts
@@ -88,13 +88,15 @@ jobs:
       group: scan-${{ matrix.domain }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      # - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
-      - uses: actions/setup-node@v4
+      # - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
