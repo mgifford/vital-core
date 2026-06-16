@@ -5,20 +5,17 @@
  * capped subset of pages per run (homepage first, then a few more),
  * while the other engines run on every page.
  *
- * Categories: performance, accessibility, best-practices, SEO. The
- * experimental "agentic-browsing" category is included when the
- * installed Lighthouse version supports it and VITAL_LIGHTHOUSE_AGENTIC
- * is set; otherwise its score is null.
+ * Categories: performance, accessibility, best-practices, SEO, and
+ * agentic-browsing. The agentic-browsing category shipped in the default
+ * Lighthouse config (lighthouse@13.4.0+) and is included in every audit.
+ * It scores how well the page works for AI agents: llms.txt, structured
+ * data, WebMCP, etc.
  *
  * lighthouse and chrome-launcher are imported dynamically so the engine
  * only loads (and only requires Chrome) when actually enabled.
  */
 
-const STABLE_CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo'];
-
-function wantAgentic() {
-  return /^(1|true|yes)$/i.test(process.env.VITAL_LIGHTHOUSE_AGENTIC || '');
-}
+const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'];
 
 /**
  * Create a runner that owns one shared Chrome for a batch of audits.
@@ -29,7 +26,6 @@ function wantAgentic() {
 export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {} } = {}) {
   let chrome = null;
   let lighthouse = null;
-  let categories = STABLE_CATEGORIES;
 
   try {
     const [{ launch }, lhModule] = await Promise.all([
@@ -38,7 +34,6 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
     ]);
     lighthouse = lhModule.default;
     chrome = await launch({ chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage'] });
-    if (wantAgentic()) categories = [...STABLE_CATEGORIES, 'agentic-browsing'];
     log(`lighthouse: Chrome on port ${chrome.port}`);
   } catch (err) {
     log(`lighthouse: unavailable (${String(err?.message || err).slice(0, 100)}); skipping`);
@@ -53,7 +48,7 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
           port: chrome.port,
           output: 'json',
           logLevel: 'silent',
-          onlyCategories: categories,
+          onlyCategories: CATEGORIES,
           maxWaitForLoad: Math.max(5000, Math.min(timeoutMs, 60000)),
         });
         const cats = result?.lhr?.categories ?? {};

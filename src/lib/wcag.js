@@ -7,59 +7,76 @@
  * rather than guess.
  */
 
-// WCAG 2.x success criteria: number -> [name, level]. Covers the criteria
-// the automated engines can flag. Extend as needed.
+// WCAG 2.x success criteria: number -> [name, level, wcag_version].
+//
+// wcag_version is the WCAG spec version that introduced the criterion:
+//   '2.0' — original WCAG 2.0 (2008)
+//   '2.1' — added in WCAG 2.1 (2018): 1.3.4, 1.3.5, 1.4.10–1.4.13,
+//            2.1.4, 2.5.1–2.5.4
+//   '2.2' — added in WCAG 2.2 (2023): 2.4.11, 2.4.12, 2.4.13, 2.5.7,
+//            2.5.8, 3.2.6, 3.3.7, 3.3.8, 3.3.9 (also removes 4.1.1)
+//
+// This lets the UI and CSV filter to "WCAG 2.2 AA" (the most common
+// compliance target) without showing 2.1-only or 2.0-only criteria unless
+// requested.
 const WCAG_CRITERIA = {
-  '1.1.1': ['Non-text Content', 'A'],
-  '1.2.1': ['Audio-only and Video-only (Prerecorded)', 'A'],
-  '1.2.2': ['Captions (Prerecorded)', 'A'],
-  '1.3.1': ['Info and Relationships', 'A'],
-  '1.3.2': ['Meaningful Sequence', 'A'],
-  '1.3.3': ['Sensory Characteristics', 'A'],
-  '1.3.4': ['Orientation', 'AA'],
-  '1.3.5': ['Identify Input Purpose', 'AA'],
-  '1.4.1': ['Use of Color', 'A'],
-  '1.4.2': ['Audio Control', 'A'],
-  '1.4.3': ['Contrast (Minimum)', 'AA'],
-  '1.4.4': ['Resize Text', 'AA'],
-  '1.4.5': ['Images of Text', 'AA'],
-  '1.4.10': ['Reflow', 'AA'],
-  '1.4.11': ['Non-text Contrast', 'AA'],
-  '1.4.12': ['Text Spacing', 'AA'],
-  '1.4.13': ['Content on Hover or Focus', 'AA'],
-  '2.1.1': ['Keyboard', 'A'],
-  '2.1.2': ['No Keyboard Trap', 'A'],
-  '2.1.4': ['Character Key Shortcuts', 'A'],
-  '2.2.1': ['Timing Adjustable', 'A'],
-  '2.2.2': ['Pause, Stop, Hide', 'A'],
-  '2.3.1': ['Three Flashes or Below Threshold', 'A'],
-  '2.4.1': ['Bypass Blocks', 'A'],
-  '2.4.2': ['Page Titled', 'A'],
-  '2.4.3': ['Focus Order', 'A'],
-  '2.4.4': ['Link Purpose (In Context)', 'A'],
-  '2.4.5': ['Multiple Ways', 'AA'],
-  '2.4.6': ['Headings and Labels', 'AA'],
-  '2.4.7': ['Focus Visible', 'AA'],
-  '2.5.1': ['Pointer Gestures', 'A'],
-  '2.5.2': ['Pointer Cancellation', 'A'],
-  '2.5.3': ['Label in Name', 'A'],
-  '2.5.4': ['Motion Actuation', 'A'],
-  '2.5.7': ['Dragging Movements', 'AA'],
-  '2.5.8': ['Target Size (Minimum)', 'AA'],
-  '3.1.1': ['Language of Page', 'A'],
-  '3.1.2': ['Language of Parts', 'AA'],
-  '3.2.1': ['On Focus', 'A'],
-  '3.2.2': ['On Input', 'A'],
-  '3.2.6': ['Consistent Help', 'A'],
-  '3.3.1': ['Error Identification', 'A'],
-  '3.3.2': ['Labels or Instructions', 'A'],
-  '3.3.3': ['Error Suggestion', 'AA'],
-  '3.3.4': ['Error Prevention (Legal, Financial, Data)', 'AA'],
-  '3.3.7': ['Redundant Entry', 'A'],
-  '3.3.8': ['Accessible Authentication (Minimum)', 'AA'],
-  '4.1.1': ['Parsing', 'A'],
-  '4.1.2': ['Name, Role, Value', 'A'],
-  '4.1.3': ['Status Messages', 'AA'],
+  // --- WCAG 2.0 ---
+  '1.1.1': ['Non-text Content', 'A', '2.0'],
+  '1.2.1': ['Audio-only and Video-only (Prerecorded)', 'A', '2.0'],
+  '1.2.2': ['Captions (Prerecorded)', 'A', '2.0'],
+  '1.3.1': ['Info and Relationships', 'A', '2.0'],
+  '1.3.2': ['Meaningful Sequence', 'A', '2.0'],
+  '1.3.3': ['Sensory Characteristics', 'A', '2.0'],
+  '1.4.1': ['Use of Color', 'A', '2.0'],
+  '1.4.2': ['Audio Control', 'A', '2.0'],
+  '1.4.3': ['Contrast (Minimum)', 'AA', '2.0'],
+  '1.4.4': ['Resize Text', 'AA', '2.0'],
+  '1.4.5': ['Images of Text', 'AA', '2.0'],
+  '2.1.1': ['Keyboard', 'A', '2.0'],
+  '2.1.2': ['No Keyboard Trap', 'A', '2.0'],
+  '2.2.1': ['Timing Adjustable', 'A', '2.0'],
+  '2.2.2': ['Pause, Stop, Hide', 'A', '2.0'],
+  '2.3.1': ['Three Flashes or Below Threshold', 'A', '2.0'],
+  '2.4.1': ['Bypass Blocks', 'A', '2.0'],
+  '2.4.2': ['Page Titled', 'A', '2.0'],
+  '2.4.3': ['Focus Order', 'A', '2.0'],
+  '2.4.4': ['Link Purpose (In Context)', 'A', '2.0'],
+  '2.4.5': ['Multiple Ways', 'AA', '2.0'],
+  '2.4.6': ['Headings and Labels', 'AA', '2.0'],
+  '2.4.7': ['Focus Visible', 'AA', '2.0'],
+  '3.1.1': ['Language of Page', 'A', '2.0'],
+  '3.1.2': ['Language of Parts', 'AA', '2.0'],
+  '3.2.1': ['On Focus', 'A', '2.0'],
+  '3.2.2': ['On Input', 'A', '2.0'],
+  '3.3.1': ['Error Identification', 'A', '2.0'],
+  '3.3.2': ['Labels or Instructions', 'A', '2.0'],
+  '3.3.3': ['Error Suggestion', 'AA', '2.0'],
+  '3.3.4': ['Error Prevention (Legal, Financial, Data)', 'AA', '2.0'],
+  '4.1.1': ['Parsing', 'A', '2.0'],  // deprecated in WCAG 2.2 but engines may still report it
+  '4.1.2': ['Name, Role, Value', 'A', '2.0'],
+  '4.1.3': ['Status Messages', 'AA', '2.0'],
+  // --- WCAG 2.1 additions ---
+  '1.3.4': ['Orientation', 'AA', '2.1'],
+  '1.3.5': ['Identify Input Purpose', 'AA', '2.1'],
+  '1.4.10': ['Reflow', 'AA', '2.1'],
+  '1.4.11': ['Non-text Contrast', 'AA', '2.1'],
+  '1.4.12': ['Text Spacing', 'AA', '2.1'],
+  '1.4.13': ['Content on Hover or Focus', 'AA', '2.1'],
+  '2.1.4': ['Character Key Shortcuts', 'A', '2.1'],
+  '2.5.1': ['Pointer Gestures', 'A', '2.1'],
+  '2.5.2': ['Pointer Cancellation', 'A', '2.1'],
+  '2.5.3': ['Label in Name', 'A', '2.1'],
+  '2.5.4': ['Motion Actuation', 'A', '2.1'],
+  // --- WCAG 2.2 additions ---
+  '2.4.11': ['Focus Not Obscured (Minimum)', 'AA', '2.2'],
+  '2.4.12': ['Focus Not Obscured (Enhanced)', 'AAA', '2.2'],
+  '2.4.13': ['Focus Appearance', 'AAA', '2.2'],
+  '2.5.7': ['Dragging Movements', 'AA', '2.2'],
+  '2.5.8': ['Target Size (Minimum)', 'AA', '2.2'],
+  '3.2.6': ['Consistent Help', 'A', '2.2'],
+  '3.3.7': ['Redundant Entry', 'A', '2.2'],
+  '3.3.8': ['Accessible Authentication (Minimum)', 'AA', '2.2'],
+  '3.3.9': ['Accessible Authentication (Enhanced)', 'AAA', '2.2'],
 };
 
 /**
@@ -115,7 +132,7 @@ const ALFA_SC = {
  *   engine: 'axe-core' | 'alfa'
  *   tags:   axe tags array (for axe)
  *   ruleId: rule id (sia-rN for alfa)
- * Returns { sc, name, level } or null when undetermined.
+ * Returns { sc, name, level, wcag_version } or null when undetermined.
  */
 export function resolveWcag(engine, { tags = [], ruleId } = {}) {
   let sc = null;
@@ -131,8 +148,33 @@ export function resolveWcag(engine, { tags = [], ruleId } = {}) {
     sc = ALFA_SC[ruleId] ?? null;
   }
   if (!sc || !WCAG_CRITERIA[sc]) return null;
-  const [name, level] = WCAG_CRITERIA[sc];
-  return { sc, name, level };
+  const [name, level, wcag_version] = WCAG_CRITERIA[sc];
+  return { sc, name, level, wcag_version };
+}
+
+/**
+ * Classify a finding's relationship to WCAG requirements for filtering.
+ * Returns one of:
+ *   'WCAG 2.0 A'   — required in WCAG 2.0, Level A
+ *   'WCAG 2.0 AA'  — required in WCAG 2.0, Level AA
+ *   'WCAG 2.1 A'   — new in WCAG 2.1, Level A
+ *   'WCAG 2.1 AA'  — new in WCAG 2.1, Level AA
+ *   'WCAG 2.2 A'   — new in WCAG 2.2, Level A
+ *   'WCAG 2.2 AA'  — new in WCAG 2.2, Level AA (most common compliance target)
+ *   'WCAG 2.x AAA' — AAA criteria (rarely required)
+ *   'Best Practice' — axe best-practice rules, not tied to a WCAG criterion
+ *   'Undetermined' — no WCAG mapping found
+ *
+ * For axe findings, also inspects the tags array for 'best-practice'.
+ */
+export function classifyFinding(engine, { tags = [], ruleId } = {}, resolvedWcag = null) {
+  if (engine === 'axe-core' && Array.isArray(tags) && tags.includes('best-practice') && !resolvedWcag) {
+    return 'Best Practice';
+  }
+  if (!resolvedWcag) return 'Undetermined';
+  const { level, wcag_version } = resolvedWcag;
+  if (level === 'AAA') return 'WCAG 2.x AAA';
+  return `WCAG ${wcag_version} ${level}`;
 }
 
 /**

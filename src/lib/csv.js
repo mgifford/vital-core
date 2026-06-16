@@ -74,6 +74,111 @@ export function writeResourceCsv(repDir, resources, ledger) {
 }
 
 /**
+ * Write a flat bugs.csv containing one row per bug report (one per failing
+ * rule), with every field an accessibility engineer needs to triage, filter,
+ * reproduce, and file in JIRA — matching what the HTML report shows:
+ *
+ * Identity: bug_id, pattern_id, combined_id (JIRA filter format)
+ * Classification: engine, rule_id, wcag_category, wcag_sc, wcag_name,
+ *   wcag_level, wcag_version, severity
+ * Frequency: pages_affected, instances, total_pages_scanned
+ * Reproduction: example_url, xpath, html_snippet
+ * Narrative: summary, description, steps_to_reproduce, suggested_fix,
+ *   remediation_tip, testing_environment
+ * Impact: impact_summary, impact_groups (serialized)
+ * History: first_seen, last_seen, weeks_seen
+ * Deduplication: possible_duplicate_of, possible_duplicate_pattern
+ * Links: affected_pages_csv, rule_url
+ *
+ * Returns the relative path "bugs.csv" (from index.html) or null.
+ */
+export function writeBugsCsv(repDir, bugs) {
+  if (!bugs?.length) return null;
+  const headers = [
+    'bug_id', 'pattern_id', 'combined_id',
+    'engine', 'rule_id', 'rule_url',
+    'wcag_category', 'wcag_sc', 'wcag_name', 'wcag_level', 'wcag_version',
+    'severity', 'pages_affected', 'instances', 'total_pages_scanned',
+    'example_url', 'xpath', 'html_snippet',
+    'summary', 'description', 'steps_to_reproduce', 'suggested_fix',
+    'remediation_tip', 'testing_environment',
+    'impact_summary', 'impact_groups',
+    'first_seen', 'last_seen', 'weeks_seen',
+    'possible_duplicate_of', 'possible_duplicate_pattern',
+    'affected_pages_csv',
+  ];
+  const rows = bugs.map((b) => {
+    const groups = (b.impact?.groups ?? [])
+      .map((g) => `${g.group} (${g.percent})`)
+      .join('; ');
+    return [
+      b.instance_id,
+      b.pattern_id,
+      `${b.instance_id} (pattern ${b.pattern_id})`,
+      b.engine_key,
+      b.rule_id,
+      b.rule_url ?? '',
+      b.wcag_category ?? '',
+      b.wcag_sc ?? '',
+      b.wcag_name ?? '',
+      b.wcag_level ?? '',
+      b.wcag_version ?? '',
+      b.severity,
+      b.frequency.pages_affected,
+      b.frequency.instances,
+      b.frequency.total_pages_scanned,
+      b.url ?? '',
+      b.xpath ?? '',
+      b.html_snippet ?? '',
+      b.summary ?? '',
+      b.description ?? '',
+      (b.steps_to_reproduce ?? []).join(' | '),
+      b.suggested_fix ?? '',
+      b.remediation_tip ?? '',
+      b.testing_environment ?? '',
+      b.impact?.summary ?? '',
+      groups,
+      b.first_seen ?? '',
+      b.last_seen ?? '',
+      b.weeks_seen ?? '',
+      b.possible_duplicate_of ?? '',
+      b.possible_duplicate_pattern ?? '',
+      b.affected_pages_csv ?? '',
+    ];
+  });
+  fs.writeFileSync(path.join(repDir, 'bugs.csv'), toCsv(headers, rows));
+  return 'bugs.csv';
+}
+
+/**
+ * Write a flat errors.csv for broken links and non-404 error pages.
+ * Returns the relative path "errors.csv" or null if there's nothing to write.
+ */
+export function writeErrorsCsv(repDir, summary) {
+  const broken = summary.linkCheck?.broken ?? [];
+  const errors = (summary.errorPages ?? []).filter((e) => Number(e.status) !== 404);
+  if (!broken.length && !errors.length) return null;
+
+  const headers = ['type', 'url', 'status', 'linked_from'];
+  const rows = [
+    ...broken.map((b) => [
+      'broken_link',
+      b.url,
+      b.status || b.reason || '',
+      Array.isArray(b.foundOn) ? b.foundOn.join(' | ') : (b.foundOn ?? ''),
+    ]),
+    ...errors.map((e) => [
+      'page_error',
+      e.url,
+      e.status,
+      '',
+    ]),
+  ];
+  fs.writeFileSync(path.join(repDir, 'errors.csv'), toCsv(headers, rows));
+  return 'errors.csv';
+}
+
+/**
  * Write all CSVs for one domain/week into <repDir>/csv/. Returns a map of
  * { axeAll, alfaAll, byRule: { "<engine>:<ruleId>": "<relative csv path>" } }
  * so the report can link to each. Relative paths are from the report's

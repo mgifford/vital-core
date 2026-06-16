@@ -149,14 +149,14 @@ test('addPage: priority promotes an existing page without duplicating', () => {
 
 test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {
   assert.deepEqual(resolveWcag('axe-core', { tags: ['cat.color', 'wcag2aa', 'wcag143'] }), {
-    sc: '1.4.3', name: 'Contrast (Minimum)', level: 'AA',
+    sc: '1.4.3', name: 'Contrast (Minimum)', level: 'AA', wcag_version: '2.0',
   });
   assert.deepEqual(resolveWcag('axe-core', { tags: ['wcag412'] }), {
-    sc: '4.1.2', name: 'Name, Role, Value', level: 'A',
+    sc: '4.1.2', name: 'Name, Role, Value', level: 'A', wcag_version: '2.0',
   });
   assert.equal(resolveWcag('axe-core', { tags: ['best-practice', 'wcag2a'] }), null, 'level-only tags have no SC');
   assert.deepEqual(resolveWcag('alfa', { ruleId: 'sia-r12' }), {
-    sc: '4.1.2', name: 'Name, Role, Value', level: 'A',
+    sc: '4.1.2', name: 'Name, Role, Value', level: 'A', wcag_version: '2.0',
   });
   assert.equal(resolveWcag('alfa', { ruleId: 'sia-r9999' }), null, 'unknown alfa rule undetermined');
 });
@@ -192,33 +192,45 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   const reports = buildBugReports(target, summary);
   assert.equal(reports.length, 2);
 
-  // Sorted: serious+site-wide axe (escalated to Critical) before medium alfa.
-  assert.equal(reports[0].rule_id, 'color-contrast');
-  assert.equal(reports[0].severity, 'Critical', '6/10 pages escalates serious to critical');
-  assert.equal(reports[0].wcag_sc, '1.4.3');
-  assert.equal(reports[0].wcag_level, 'AA');
-  assert.match(reports[0].summary, /\(WCAG 1\.4\.3\)$/);
-  assert.equal(reports[0].frequency.pages_affected, 6);
-  assert.equal(reports[0].xpath, '.btn');
-  assert.ok(reports[0].html_snippet.includes('btn'));
+  // New sort order: WCAG 2.0 A (sia-r12 → 4.1.2) before WCAG 2.0 AA
+  // (color-contrast → 1.4.3). Level A requirements sort before Level AA
+  // so engineers tackle the baseline compliance obligations first.
+  const alfaReport = reports.find((r) => r.rule_id === 'sia-r12');
+  const axeReport = reports.find((r) => r.rule_id === 'color-contrast');
+  assert.ok(alfaReport, 'alfa sia-r12 present');
+  assert.ok(axeReport, 'axe color-contrast present');
+  assert.ok(reports.indexOf(alfaReport) < reports.indexOf(axeReport),
+    'WCAG 2.0 A (sia-r12) sorts before WCAG 2.0 AA (color-contrast)');
+
+  assert.equal(axeReport.severity, 'Critical', '6/10 pages escalates serious to critical');
+  assert.equal(axeReport.wcag_sc, '1.4.3');
+  assert.equal(axeReport.wcag_level, 'AA');
+  assert.equal(axeReport.wcag_version, '2.0');
+  assert.equal(axeReport.wcag_category, 'WCAG 2.0 AA');
+  assert.match(axeReport.summary, /\(WCAG 1\.4\.3\)$/);
+  assert.equal(axeReport.frequency.pages_affected, 6);
+  assert.equal(axeReport.xpath, '.btn');
+  assert.ok(axeReport.html_snippet.includes('btn'));
 
   // Impact: WCAG 1.4.3 (contrast) maps to vision-related FPC groups.
-  assert.ok(reports[0].impact.groups.length > 0, 'mapped SC yields impact groups');
-  assert.ok(reports[0].impact.groups.some((g) => /vision/i.test(g.group)), 'contrast affects a vision group');
-  assert.match(reports[0].impact.summary, /Affects/);
+  assert.ok(axeReport.impact.groups.length > 0, 'mapped SC yields impact groups');
+  assert.ok(axeReport.impact.groups.some((g) => /vision/i.test(g.group)), 'contrast affects a vision group');
+  assert.match(axeReport.impact.summary, /Affects/);
 
   // Stable ids: same input -> same ids.
   const again = buildBugReports(target, summary);
-  assert.equal(again[0].instance_id, reports[0].instance_id);
-  assert.equal(again[0].pattern_id, reports[0].pattern_id);
+  assert.equal(again.find((r) => r.rule_id === 'color-contrast').instance_id, axeReport.instance_id);
+  assert.equal(again.find((r) => r.rule_id === 'color-contrast').pattern_id, axeReport.pattern_id);
 
-  // Alfa report: no impact -> Medium, mapped SC.
+  // Alfa report: no impact -> Medium, mapped SC, WCAG category.
   const alfa = reports.find((r) => r.rule_id === 'sia-r12');
   assert.equal(alfa.severity, 'Medium');
   assert.equal(alfa.wcag_sc, '4.1.2');
+  assert.equal(alfa.wcag_version, '2.0');
+  assert.equal(alfa.wcag_category, 'WCAG 2.0 A');
 
   // Markdown renders the required headings.
-  const md = bugReportToMarkdown(reports[0]);
+  const md = bugReportToMarkdown(axeReport);
   assert.match(md, /\*\*Severity:\*\* Critical/);
   assert.match(md, /### Steps to reproduce/);
   assert.match(md, /\*\*WCAG SC:\*\* 1\.4\.3/);

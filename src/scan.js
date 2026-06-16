@@ -4,7 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { chromium } from 'playwright';
 import { loadConfig, getTarget, DIRS } from './lib/config.js';
-import { normalizeUrl, pageId } from './lib/urls.js';
+import { normalizeUrl, pageId, buildUrlFilter } from './lib/urls.js';
 import { loadState, saveState, addPage, pickBatch } from './lib/state.js';
 import { isoWeek } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
@@ -18,6 +18,7 @@ import { runDeprecatedHtml } from './engines/deprecated-html.js';
 import { runResources } from './engines/resources.js';
 import { runStandards } from './engines/standards.js';
 import { runSecurity } from './engines/security.js';
+import { runTech } from './engines/tech.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
 
@@ -81,6 +82,15 @@ if (priorityUrls.length) {
   for (const u of priorityUrls) if (addPage(state, pageId(u), u, 0, { priority: true })) promoted++;
   log(`priority: ${priorityUrls.length} configured, ${promoted} added/promoted`);
   saveState(target.key, state);
+}
+
+// --- URL filter -------------------------------------------------------
+// url_include / url_exclude substrings from targets.yml. Applied when
+// adding URLs to the frontier and before scanning each page. Priority URLs
+// bypass the filter so must-cover pages are never accidentally excluded.
+const urlFilter = buildUrlFilter(target);
+if (target.url_include?.length || target.url_exclude?.length) {
+  log(`URL filter: include=${JSON.stringify(target.url_include ?? [])}, exclude=${JSON.stringify(target.url_exclude ?? [])}`);
 }
 
 // --- Robots -----------------------------------------------------------
@@ -148,6 +158,17 @@ let sincePersist = 0;
 
 for (const item of batch) {
   const urlPath = new URL(item.url).pathname;
+
+  // URL filter: skip pages that don't match url_include / url_exclude, unless
+  // explicitly marked as a priority URL (those bypass filtering).
+  if (!item.priority && !urlFilter(item.url)) {
+    log(`url-filter skip: ${item.url}`);
+    state.pages[item.id].lastScannedWeek = week;
+    state.pages[item.id].lastStatus = 'url-filtered';
+    if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
+    continue;
+  }
+
   if (!robots.isAllowed(urlPath)) {
     log(`robots disallow: ${item.url}`);
     state.pages[item.id].lastScannedWeek = week; // do not retry this week
@@ -239,6 +260,15 @@ for (const item of batch) {
       // Security is per-origin (headers/TLD/security.txt), so check it only
       // when this page is in the sample; aggregate keeps the latest result.
       if (runs('security')) { record.security = await runSecurity(baseOrigin, target.user_agent, target.nav_timeout_ms); mark('security'); }
+      // Tech detection: identify CMS, frameworks, CDNs, analytics.
+      // Runs on a small sample (default 10%) because the tech stack doesn't
+      // change page-to-page; aggregate merges all detections for the week
+      // into a unified result for the tech page.
+      if (runs('tech')) {
+        const pageHeaders = (await response?.allHeaders?.()) ?? {};
+        record.tech = await runTech(page, pageHeaders);
+        mark('tech');
+      }
 
       // Lighthouse: only when this page is in lighthouse's sample AND its
       // own Chrome launched. The sample rate keeps the (slow) audit count
@@ -258,13 +288,13 @@ for (const item of batch) {
         Array.from(document.querySelectorAll('a[href]'), (a) => a.getAttribute('href'))
       );
 
-      // Discovery: same-host only, depth-capped.
+      // Discovery: same-host only, depth-capped, URL-filtered.
       if (item.depth < target.max_crawl_depth) {
         let added = 0;
         for (const href of hrefs) {
           // Normalize against the canonical domain, not the test base-url.
           const norm = normalizeUrl(href, item.url, host === 'localhost' || host === '127.0.0.1' ? host : new URL(`https://${target.domain}`).hostname);
-          if (norm && addPage(state, pageId(norm), norm, item.depth + 1)) added++;
+          if (norm && urlFilter(norm) && addPage(state, pageId(norm), norm, item.depth + 1)) added++;
         }
         if (added) log(`+${added} URLs discovered on ${urlPath}`);
       }

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { resolveWcag, severityFor } from './wcag.js';
+import { resolveWcag, classifyFinding, severityFor } from './wcag.js';
 import { impactFor, estimateExcluded, pct } from './fpc.js';
 import { remediationTip } from './remediation.js';
 
@@ -45,6 +45,7 @@ export function buildBugReports(target, summary) {
 
   const fromRule = (engine, toolName, ruleId, rule) => {
     const wcag = resolveWcag(engine, { tags: rule.tags, ruleId });
+    const wcag_category = classifyFinding(engine, { tags: rule.tags, ruleId }, wcag);
     const severity = severityFor(rule.impact ?? null, rule.pages, total);
     const patternId = `${PREFIX}-${shortHash(engine, ruleId)}`;
     const first = rule.instances?.[0];
@@ -81,6 +82,8 @@ export function buildBugReports(target, summary) {
       wcag_sc: wcag?.sc ?? null,
       wcag_name: wcag?.name ?? null,
       wcag_level: wcag?.level ?? null,
+      wcag_version: wcag?.wcag_version ?? null,
+      wcag_category,
       rule_id: ruleId,
       engine_key: engine, // 'axe-core' | 'alfa' | 'deprecated-html' (stable; for CSV lookup)
       tool: toolName,
@@ -133,13 +136,51 @@ export function buildBugReports(target, summary) {
     reports.push(fromRule('deprecated-html', 'deprecated-html', id, rule));
   }
 
-  // Most severe and most widespread first.
+  // Sort order for engineers: WCAG 2.2 AA requirements first (the primary
+  // compliance target), then 2.1 additions, then 2.0 baseline, then AAA,
+  // then Best Practice (not a WCAG requirement), then undetermined.
+  // Within each category: by WCAG SC number so axe + alfa for the same
+  // criterion are adjacent, then severity, then pages affected.
+  const catRank = {
+    'WCAG 2.2 A': 0, 'WCAG 2.2 AA': 1,
+    'WCAG 2.1 A': 2, 'WCAG 2.1 AA': 3,
+    'WCAG 2.0 A': 4, 'WCAG 2.0 AA': 5,
+    'WCAG 2.x AAA': 6,
+    'Best Practice': 7,
+    'Undetermined': 8,
+  };
   const sevRank = { Critical: 0, High: 1, Medium: 2, Low: 3 };
   reports.sort(
     (a, b) =>
+      (catRank[a.wcag_category ?? 'Undetermined'] ?? 8) - (catRank[b.wcag_category ?? 'Undetermined'] ?? 8) ||
+      (a.wcag_sc ?? 'zzz').localeCompare(b.wcag_sc ?? 'zzz') ||
       sevRank[a.severity] - sevRank[b.severity] ||
       b.frequency.pages_affected - a.frequency.pages_affected
   );
+
+  // Duplicate detection: when axe and alfa both flag the same WCAG SC on
+  // overlapping pages, the alfa report is likely a duplicate of the axe one
+  // (axe is the canonical source for engineers since it ships remediation
+  // tips). Mark the alfa (or second-engine) report so it can be filtered
+  // in spreadsheets and de-prioritised in JIRA.
+  const axeBySc = new Map(); // wcag_sc -> first axe bug that covers it
+  for (const r of reports) {
+    if (r.engine_key === 'axe-core' && r.wcag_sc) axeBySc.set(r.wcag_sc, r);
+  }
+  for (const r of reports) {
+    if (r.engine_key !== 'axe-core' && r.wcag_sc && axeBySc.has(r.wcag_sc)) {
+      const axeMatch = axeBySc.get(r.wcag_sc);
+      // Only flag when the page-overlap is meaningful (>50% of the smaller
+      // set) — avoids false positives on rules with very different scope.
+      const smaller = Math.min(r.frequency.pages_affected, axeMatch.frequency.pages_affected);
+      const larger = Math.max(r.frequency.pages_affected, axeMatch.frequency.pages_affected);
+      if (smaller > 0 && smaller / larger >= 0.5) {
+        r.possible_duplicate_of = axeMatch.instance_id;
+        r.possible_duplicate_pattern = axeMatch.pattern_id;
+      }
+    }
+  }
+
   return reports;
 }
 

@@ -61,3 +61,32 @@ export function normalizeUrl(raw, baseUrl, host) {
 export function pageId(normalizedUrl) {
   return crypto.createHash('sha256').update(normalizedUrl).digest('hex').slice(0, 16);
 }
+
+/**
+ * Build a URL filter from a target's url_include / url_exclude config.
+ *
+ * Both accept an array of strings. Each string is matched against the
+ * full normalized URL (so it can match on path, query string, or domain).
+ * Simple substring match — no regex complexity in config files.
+ *
+ * url_include: if set, only URLs whose full string contains at least one
+ *   of the listed substrings are crawled/scanned. Used to restrict a scan
+ *   to a subtree (e.g. url_include: ["/children/"]).
+ *
+ * url_exclude: URLs whose full string contains any of the listed substrings
+ *   are skipped. Applied after url_include. Used to prune noise
+ *   (e.g. url_exclude: ["press_release", "?page=", "/search?"]).
+ *
+ * Returns a function (url: string) -> boolean (true = keep, false = skip).
+ * When neither is configured, always returns true.
+ */
+export function buildUrlFilter(target) {
+  const includes = (target.url_include ?? []).map(String);
+  const excludes = (target.url_exclude ?? []).map(String);
+  if (!includes.length && !excludes.length) return () => true;
+  return (url) => {
+    if (includes.length && !includes.some((p) => url.includes(p))) return false;
+    if (excludes.some((p) => url.includes(p))) return false;
+    return true;
+  };
+}

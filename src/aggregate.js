@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderArchivePage } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { scoreFor } from './lib/score.js';
@@ -116,6 +116,12 @@ for (const target of config.targets) {
       b.affected_pages_csv = csvLinks.byRule[`${b.engine_key}:${b.rule_id}`] ?? null;
     }
 
+    // Flat bugs.csv: all findings in one spreadsheet-friendly file.
+    // Written after affected_pages_csv is set on each bug so the links are included.
+    csvLinks.bugsAll = writeBugsCsv(repDir, bugs);
+    // Broken links + error pages CSV.
+    csvLinks.errorsAll = writeErrorsCsv(repDir, summary);
+
     // Resource inventory: update the ledger, mark which are new this week,
     // and write a resources CSV.
     const newResources = summary.resources
@@ -137,16 +143,34 @@ for (const target of config.targets) {
     }
 
     // Which standalone sub-pages this week has (drives the shared subnav).
-    const available = [];
+    // Accessibility page is always present (even if empty — shows "no findings").
+    const available = ['accessibility'];
     if (summary.lighthouse?.pageDetail?.length) available.push('lighthouse');
     if (summary.plainLanguage?.pageRows?.length) available.push('readability');
+    if (summary.tech?.length) available.push('tech');
+    // Standards and errors pages only exist when there's data.
+    const hasStandards = !!(summary.security || summary.standards);
+    const hasErrors = !!(summary.linkCheck?.broken?.length || summary.errorPages?.some((e) => Number(e.status) !== 404));
+    if (hasStandards) available.push('standards');
+    if (hasErrors) available.push('errors');
 
+    // Standalone Accessibility page (bug reports + axe/alfa rule tables + consensus).
+    const a11yHtml = renderAccessibilityPage(target, summary, bugs, csvLinks, available);
+    fs.writeFileSync(path.join(repDir, 'accessibility.html'), a11yHtml);
+    // Standalone Standards & Security page.
+    const stdHtml = renderStandardsPage(target, summary, available);
+    if (stdHtml) fs.writeFileSync(path.join(repDir, 'standards.html'), stdHtml);
+    // Standalone Broken Links & Errors page.
+    const errHtml = renderErrorsPage(target, summary, csvLinks.errorsAll ?? null, available);
+    if (errHtml) fs.writeFileSync(path.join(repDir, 'errors.html'), errHtml);
     // Standalone Lighthouse page (per-sampled-page scores + metrics + perf impact).
     const lhHtml = renderLighthousePage(target, summary, lhCsv, available);
     if (lhHtml) fs.writeFileSync(path.join(repDir, 'lighthouse.html'), lhHtml);
-    // Standalone Readability page (per-page reading metrics).
+    // Standalone Readability page (per-page reading metrics + acronyms + spelling).
     const readHtml = renderReadabilityPage(target, summary, readabilityCsv, available);
     if (readHtml) fs.writeFileSync(path.join(repDir, 'readability.html'), readHtml);
+    const techHtml = renderTechPage(target, summary, available);
+    if (techHtml) fs.writeFileSync(path.join(repDir, 'tech.html'), techHtml);
     // Archive page (all weeks). Written in each week folder so the subnav
     // "Archive" link resolves from any week's report.
     const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
@@ -310,6 +334,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   let pagesWithAudit = 0;
   const errorPages = [];
   const blockedStatuses = {}; // status code -> count, for the blocked callout
+  const techDetections = new Map(); // name -> detection (merged across pages)
   // Plain-language: collect scored pages' readability for medians.
   const freList = [];
   const gradeList = [];
@@ -392,6 +417,18 @@ function summarizeRecords(target, week, records, brokenLinks) {
       }
     }
     if (rec.security) securityLatest = rec.security; // per-origin; latest wins
+    if (rec.tech) {
+      for (const d of rec.tech) {
+        const existing = techDetections.get(d.name);
+        // Merge: keep highest-confidence detection; track how many pages confirmed it.
+        // confidence is 0–100 (Wappalyzer's scale), higher is better.
+        if (!existing || d.confidence > existing.confidence) {
+          techDetections.set(d.name, { ...d, pagesConfirmed: (existing?.pagesConfirmed ?? 0) + 1 });
+        } else {
+          existing.pagesConfirmed++;
+        }
+      }
+    }
     if (rec.sustainability) {
       bytesList.push(rec.sustainability.bytes);
       requestsList.push(rec.sustainability.requests);
@@ -400,7 +437,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
     }
 
     // Per-engine coverage: which engines actually ran on this page.
-    for (const e of ['axe', 'alfa', 'plain-language', 'deprecated-html', 'resources', 'standards', 'security', 'lighthouse', 'sustainability']) {
+    for (const e of ['axe', 'alfa', 'plain-language', 'deprecated-html', 'resources', 'standards', 'security', 'lighthouse', 'sustainability', 'tech']) {
       const key = { 'plain-language': 'plainLanguage', 'deprecated-html': 'deprecatedHtml' }[e] ?? e;
       if (rec[key]) enginePageCounts[e] = (enginePageCounts[e] ?? 0) + 1;
     }
@@ -581,6 +618,9 @@ function summarizeRecords(target, week, records, brokenLinks) {
         }
       : null,
     errorPages: errorPages.slice(0, 25),
+    tech: techDetections.size
+      ? [...techDetections.values()].sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name))
+      : null,
   };
 }
 

@@ -46,7 +46,8 @@ sampling:
   resources: 100       # catalog PDFs, Office docs, iframes, embedded media
   standards: 50        # web standards / metadata / social (ScanGov-style, per page)
   security: 10         # HTTPS, security headers, security.txt, .gov TLD (per origin)
-  sustainability: 25  # page weight + estimated CO2
+  sustainability: 25   # page weight + estimated CO2
+  tech: 10             # technology detection (CMS, frameworks, CDNs, analytics) — small sample sufficient
 
 targets:
   # Discovery is host-scoped. The apex domain and its `www.` variant are
@@ -63,6 +64,23 @@ targets:
   #     every week, before the rest of the site is sampled. No URL is ever
   #     scanned more than once per ISO week.
   #   priority_urls: [ ... ] inline list, for a handful of must-cover URLs.
+  #
+  #   url_include: [ ... ] optional list of substrings. When set, ONLY URLs
+  #     whose full normalized URL contains at least one substring are crawled
+  #     and scanned. Useful for focusing a scan on a subtree or topic area.
+  #     Examples:
+  #       url_include: ["/children/"]          # only paths containing /children/
+  #       url_include: ["medicare", "medicaid"] # either word in the URL
+  #     Priority URLs always bypass this filter.
+  #
+  #   url_exclude: [ ... ] optional list of substrings. URLs whose full
+  #     normalized URL contains any of these are silently skipped during
+  #     crawl and scan. Applied after url_include. Useful for pruning noise
+  #     or known-inaccessible paths that would skew results.
+  #     Examples:
+  #       url_exclude: ["press_release", "/news/", "?page="]
+  #       url_exclude: ["/es/", "/zh/"]  # skip non-English language sections
+  #     Priority URLs always bypass this filter.
   #
   # WAF-blocked: hhs.gov and nih.gov return 403 "Access Denied" to
   # automated browsers and record as blocked with no audit data until the
