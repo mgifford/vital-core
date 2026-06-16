@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderArchivePage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv } from './lib/csv.js';
@@ -147,6 +147,10 @@ for (const target of config.targets) {
     // Standalone Readability page (per-page reading metrics).
     const readHtml = renderReadabilityPage(target, summary, readabilityCsv, available);
     if (readHtml) fs.writeFileSync(path.join(repDir, 'readability.html'), readHtml);
+    // Archive page (all weeks). Written in each week folder so the subnav
+    // "Archive" link resolves from any week's report.
+    const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
+    if (archiveHtml) fs.writeFileSync(path.join(repDir, 'archive.html'), archiveHtml);
 
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
@@ -188,7 +192,13 @@ for (const target of config.targets) {
     )
   );
 
-  dashboard.push({ target, series, diffs, inventory: invSummary, bugs: latestBugs });
+  // Trailing-7-day rolling summary for the dashboard (and the latest
+  // report's headline), so the headline isn't a partial ISO week measured
+  // against full historic weeks. Falls back to the latest week if the
+  // window is empty (e.g. old data only).
+  const windowSummary = summarizeWindow(target, 7) ?? series[series.length - 1];
+
+  dashboard.push({ target, series, diffs, inventory: invSummary, bugs: latestBugs, windowSummary });
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 
@@ -207,9 +217,67 @@ function summarizeWeek(target, week) {
     return fs.existsSync(summaryPath) ? JSON.parse(fs.readFileSync(summaryPath, 'utf8')) : null;
   }
 
-  const files = fs.readdirSync(pagesDir).filter((f) => f.endsWith('.json'));
-  if (files.length === 0) return null;
+  const records = fs.readdirSync(pagesDir)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8')));
+  if (records.length === 0) return null;
 
+  // Broken links from this week's run logs.
+  const broken = readBrokenLinks(path.join(DIRS.data, target.key, week, 'runs'));
+  return summarizeRecords(target, week, records, broken);
+}
+
+/**
+ * Trailing-window summary: aggregate all page records across retained
+ * weeks whose scannedAt falls within the last `days` days. This is the
+ * default "last 7 days" view, so the headline numbers aren't a partial
+ * ISO week compared against full historic weeks.
+ */
+function summarizeWindow(target, days = 7) {
+  const domainDir = path.join(DIRS.data, target.key);
+  if (!fs.existsSync(domainDir)) return null;
+  const cutoff = Date.now() - days * 86400000;
+  const records = [];
+  const runDirs = [];
+  for (const week of fs.readdirSync(domainDir).filter((w) => /^\d{4}-W\d{2}$/.test(w))) {
+    const pagesDir = path.join(domainDir, week, 'pages');
+    if (!fs.existsSync(pagesDir)) continue;
+    for (const f of fs.readdirSync(pagesDir).filter((x) => x.endsWith('.json'))) {
+      const rec = JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'));
+      if (rec.scannedAt && Date.parse(rec.scannedAt) >= cutoff) records.push(rec);
+    }
+    runDirs.push(path.join(domainDir, week, 'runs'));
+  }
+  if (records.length === 0) return null;
+  // Broken links from run logs whose finishedAt is within the window.
+  const broken = readBrokenLinks(runDirs, cutoff);
+  const s = summarizeRecords(target, 'last-7-days', records, broken);
+  if (s) s.windowDays = days;
+  return s;
+}
+
+/** Fold broken links from one or more runs dirs (optionally since cutoff ms). */
+function readBrokenLinks(runsDirOrDirs, sinceMs = null) {
+  const dirs = Array.isArray(runsDirOrDirs) ? runsDirOrDirs : [runsDirOrDirs];
+  const brokenLinks = new Map();
+  for (const dir of dirs) {
+    if (!fs.existsSync(dir)) continue;
+    for (const rf of fs.readdirSync(dir).filter((f) => f.endsWith('.json'))) {
+      const run = JSON.parse(fs.readFileSync(path.join(dir, rf), 'utf8'));
+      if (sinceMs && run.finishedAt && Date.parse(run.finishedAt) < sinceMs) continue;
+      for (const b of run.linkCheck?.broken ?? []) {
+        const existing = brokenLinks.get(b.url);
+        if (!existing) brokenLinks.set(b.url, { ...b, foundOn: new Set(b.foundOn ?? []) });
+        else for (const s of b.foundOn ?? []) existing.foundOn.add(s);
+      }
+    }
+  }
+  return brokenLinks;
+}
+
+/** Aggregate a set of page records into a summary (shared by week + window). */
+function summarizeRecords(target, week, records, brokenLinks) {
+  const files = records; // loop below iterates parsed records directly
   const axeRules = {}; // ruleId -> { count, pages, impact, help, helpUrl, examples }
   const alfaRules = {};
   const deprecatedRules = {}; // ruleId -> { count, pages, help, examplePages, instances }
@@ -256,11 +324,9 @@ function summarizeWeek(target, week) {
   const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
   const lhMetrics = { firstContentfulPaintMs: [], largestContentfulPaintMs: [], speedIndexMs: [], totalBlockingTimeMs: [], cumulativeLayoutShift: [] };
   const lhPages = []; // { url, scores, metrics }
-  // Link check: union broken links across the week's runs (deduped).
-  const brokenLinks = new Map(); // url -> { url, status, reason, foundOn }
+  // brokenLinks is supplied by the caller (folded from run logs).
 
-  for (const f of files) {
-    const rec = JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'));
+  for (const rec of files) {
     pagesScanned++;
     if (rec.axe || rec.alfa || rec.sustainability || rec.plainLanguage || rec.lighthouse) pagesWithAudit++;
     if (typeof rec.status === 'number' && rec.status >= 400) {
@@ -373,23 +439,6 @@ function summarizeWeek(target, week) {
         if (typeof v === 'number') lhMetrics[k].push(v);
       }
       lhPages.push({ url: rec.url, scores: rec.lighthouse.scores, metrics: rec.lighthouse.metrics ?? {} });
-    }
-  }
-
-  // Link check: fold this week's run logs (deduped broken links).
-  const runsDirPath = path.join(DIRS.data, target.key, week, 'runs');
-  if (fs.existsSync(runsDirPath)) {
-    for (const rf of fs.readdirSync(runsDirPath).filter((f) => f.endsWith('.json'))) {
-      const run = JSON.parse(fs.readFileSync(path.join(runsDirPath, rf), 'utf8'));
-      for (const b of run.linkCheck?.broken ?? []) {
-        const existing = brokenLinks.get(b.url);
-        if (!existing) {
-          brokenLinks.set(b.url, { ...b, foundOn: new Set(b.foundOn ?? (b.foundOn === null ? [] : [])) });
-        } else {
-          // Merge source pages across runs.
-          for (const s of b.foundOn ?? []) existing.foundOn.add(s);
-        }
-      }
     }
   }
 

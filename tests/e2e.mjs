@@ -289,7 +289,7 @@ try {
   // Rolling inventory committed and surfaced.
   const inv = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'inventory.json')));
   assert(Object.keys(inv.pages).length >= PAGES, `inventory tracks all known pages (${Object.keys(inv.pages).length})`);
-  assert(/pages known on this site/.test(report), 'report cites total known pages from inventory');
+  assert(/unique pages have been scanned at least once/.test(report), 'report cites total known pages from inventory');
   // ScanGov-style standards + security engines.
   assert(w1.security && w1.security.checks.some((c) => c.id === 'https'), 'security checks recorded (per origin)');
   assert(w1.security.checks.find((c) => c.id === 'gov-tld').pass === false, 'localhost is not a .gov (TLD check works)');
@@ -313,10 +313,18 @@ try {
   assert(/class="traj traj-/.test(dash), 'dashboard shows trajectory arrows');
   assert(dash.includes('all domains') && dash.includes('linechart'), 'dashboard has cross-domain overlay chart');
   assert(/id="h-worst"/.test(dash), 'dashboard has fleet-wide worst-offenders section');
+  // Dashboard uses the trailing-7-day window ("Pages audited (7d)" header).
+  assert(/Pages audited \(7d\)/.test(dash), 'dashboard column reflects the rolling 7-day window');
+  // Archive page exists and lists weeks; subnav links to it.
+  const archivePath = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'archive.html');
+  assert(fs.existsSync(archivePath), 'archive page written');
+  const archiveHtml = fs.readFileSync(archivePath, 'utf8');
+  assert(/2026-W23/.test(archiveHtml) && /2026-W24/.test(archiveHtml), 'archive lists both weeks');
 
   // Week-1 report (has violations): "Fix these first" + evidence CSVs.
   const w1report = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
   assert(/id="h-fixfirst"/.test(w1report), 'domain report has a "Fix these first" section');
+  assert(/href="archive.html">Archive/.test(w1report), 'subnav links to the archive');
   // Affected-pages display: the fixture's findings each hit <=25 pages, so
   // bug reports list page URLs inline (in <ul class="affected">) rather
   // than only a "download CSV" link.
