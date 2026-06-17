@@ -369,7 +369,18 @@ try {
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'style.css')), 'stylesheet generated');
   // Scorecard + trends on the domain report.
   assert(/class="scorecard"/.test(report) && /class="grade grade-[A-F]"/.test(report), 'domain report shows a score + grade');
-  assert(report.includes('id="h-trends"') && report.includes('class="linechart"'), 'domain report shows multi-week trend charts');
+  assert(report.includes('id="h-trends"') && /class="linechart/.test(report), 'domain report shows multi-week trend charts');
+  // ParaCharts progressive enhancement: each trend chart carries a manifest
+  // for the <para-chart> upgrade, keeps the SVG as the no-JS fallback, and the
+  // page lazy-imports the vendored runtime (copied into docs/ as an asset).
+  assert(/class="chart" data-parachart="/.test(report), 'trend charts carry a ParaCharts manifest');
+  assert(/class="linechart chart-fallback"/.test(report), 'SVG kept as the no-JS chart fallback');
+  assert(/import\('[^']*paracharts\.js'\)/.test(report), 'page lazy-imports the ParaCharts runtime');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'paracharts.js')), 'ParaCharts runtime copied into docs/');
+  // The manifest is valid JSON with the JIM shape the runtime requires.
+  const mfMatch = report.match(/data-parachart="([^"]*)"/);
+  const mf = JSON.parse(mfMatch[1].replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&'));
+  assert(mf.datasets?.[0]?.data?.source === 'inline' && mf.datasets[0].series?.[0]?.records?.length >= 1, 'manifest has the JIM dataset/series shape');
   // Rolling inventory committed and surfaced.
   const inv = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'inventory.json')));
   assert(Object.keys(inv.pages).length >= PAGES, `inventory tracks all known pages (${Object.keys(inv.pages).length})`);

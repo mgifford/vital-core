@@ -145,7 +145,8 @@ environment variables.
 
 ## Repository Rules for Agents
 
-1. **Plain Node, no build step, no TypeScript.** Source is `.js` under `src/` and runs directly with `node`. Do not reintroduce a build step, TypeScript, or a database.
+1. **Plain Node, no build step, no TypeScript.** Source is `.js` under `src/` and runs directly with `node`. Do not reintroduce a build step, TypeScript, or a database. Third-party client runtimes (e.g. ParaCharts) are vendored as **prebuilt** bundles under `vendor/` and served first-party — never built from source in the pipeline.
+1a. **Reports degrade gracefully.** Report HTML must be fully usable with no JavaScript. Charts render as static accessible SVG + a data-table fallback; JS is only ever a *progressive enhancement* layered on top (e.g. the ParaCharts upgrade — `src/lib/paracharts.js` builds the manifest, a lazy `import()` loader in `report-html.js` mounts `<para-chart>` and hides the SVG fallback, restoring it if the runtime fails). Never make a report's core content depend on JS.
 2. **Preserve schema compatibility.** Never introduce breaking changes to the per-page JSON record or `summary.json` without a migration plan — breaking changes destroy historical weekly trend graphs.
 3. **Stable identity.** `src/lib/urls.js` defines page identity everywhere; treat it as a frozen contract. Week-over-week comparison depends on it.
 4. Keep changes small, reviewable, and test-backed.

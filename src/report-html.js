@@ -4,6 +4,7 @@ import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
 import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
+import { buildLineManifest } from './lib/paracharts.js';
 
 /**
  * Report design constraints, in priority order:
@@ -304,9 +305,17 @@ function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
 <thead><tr><th scope="col">Week</th><th scope="col">${esc(title)}</th></tr></thead>
 <tbody>${pts.map((p) => `<tr><th scope="row">${esc(p.week)}</th><td>${p.value}${esc(unit)}</td></tr>`).join('')}</tbody></table>`;
 
-  return `<figure class="chart">
+  // Progressive enhancement: the SVG + table below are the no-JS baseline. The
+  // data-parachart attribute carries a ParaCharts manifest; the loader script
+  // (PARACHART_LOADER) lazy-imports the runtime, mounts an accessible
+  // <para-chart>, and hides the SVG fallback. If JS is off or the runtime
+  // fails to load, the SVG + table remain — nothing regresses.
+  const manifest = buildLineManifest(title, title, pts, { unit });
+  const dataAttr = esc(JSON.stringify(manifest));
+
+  return `<figure class="chart" data-parachart="${dataAttr}">
 <figcaption>${esc(title)} over ${pts.length} weeks — ${esc(trend)}</figcaption>
-<svg viewBox="0 0 ${W} ${H}" class="linechart" role="img" aria-label="${esc(title)} trend: ${esc(trend)}" preserveAspectRatio="xMidYMid meet">
+<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(title)} trend: ${esc(trend)}" preserveAspectRatio="xMidYMid meet">
   <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2"/>
   ${dots}${xlabels}${ylabels}
 </svg>
@@ -353,9 +362,44 @@ ${body}
   <a href="https://w3c.github.io/sustainableweb-wsg/">W3C Web Sustainability Guidelines</a>.</p>
   <p>Automated checks find roughly a third of accessibility barriers. A clean report is a floor, not a finish line.</p>
 </footer>
+${paraChartLoader(base)}
 ${extraScript}
 </body>
 </html>`;
+}
+
+/**
+ * Progressive-enhancement loader for ParaCharts. Emitted on every report page;
+ * a no-op unless the page has `.chart[data-parachart]` figures. Lazy-imports
+ * the vendored runtime (so the 2.8 MB AGPL bundle never blocks first paint or
+ * the no-JS baseline), then for each chart builds a <para-chart> from the
+ * figure's manifest, mounts it, and hides the static SVG fallback. If the
+ * import fails, the SVG + data table remain untouched.
+ */
+function paraChartLoader(base) {
+  return `<script type="module">
+const figs = document.querySelectorAll('.chart[data-parachart]');
+if (figs.length) {
+  import('${base}paracharts.js').then(() => {
+    figs.forEach((fig) => {
+      let manifest;
+      try { manifest = fig.getAttribute('data-parachart'); } catch (e) { return; }
+      if (!manifest) return;
+      const chart = document.createElement('para-chart');
+      chart.setAttribute('manifestType', 'content');
+      chart.setAttribute('type', 'line');
+      chart.setAttribute('manifest', manifest);
+      chart.style.display = 'block';
+      chart.style.width = '100%';
+      chart.style.maxWidth = '640px';
+      chart.style.aspectRatio = '16 / 7';
+      const fallback = fig.querySelector('.chart-fallback');
+      if (fallback) fallback.hidden = true;
+      fig.insertBefore(chart, fig.firstChild ? fig.firstChild.nextSibling : null);
+    });
+  }).catch(() => { /* keep the SVG + table fallback */ });
+}
+</script>`;
 }
 
 function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
@@ -1498,6 +1542,14 @@ CO₂ estimates for sustainability. Everything here is open: the scanner, the da
 
 export function writeAsset(docsDir) {
   fs.writeFileSync(path.join(docsDir, 'style.css'), CSS);
+  // Serve the vendored ParaCharts runtime first-party (AGPL-3.0). Charts are
+  // progressively enhanced: the static SVG + table render without it; this
+  // bundle is lazy-imported only on report pages to upgrade them. Copied as a
+  // build artifact (never committed to docs/), like style.css.
+  const vendorBundle = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../vendor/paracharts/paracharts.js');
+  if (fs.existsSync(vendorBundle)) {
+    fs.copyFileSync(vendorBundle, path.join(docsDir, 'paracharts.js'));
+  }
 }
 
 const CSS = `/* vital-scans ledger. System fonts only; ~2 KB; honors user color scheme. */

@@ -117,8 +117,19 @@ This project follows public commitments to
 [sustainability](SUSTAINABILITY.md), and aims to advance the
 [W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/).
 The reports themselves are part of the argument: semantic HTML, no
-JavaScript, no web fonts, ~2 KB of CSS, dark mode respected.
+web fonts, ~2 KB of CSS, dark mode respected. They work fully without
+JavaScript — every chart renders as a static SVG with a data-table
+fallback. Where JavaScript is available, charts are progressively
+enhanced into interactive, keyboard- and screen-reader-navigable
+[ParaCharts](https://github.com/fizzstudio/ParaCharts), vendored and
+served first-party (no CDN).
 
 ## License
 
-AGPL.
+AGPL-3.0. Vendored third-party components: the
+[HTTPArchive/wappalyzer](https://github.com/HTTPArchive/wappalyzer)
+fingerprint database (GPL-3.0, `vendor/wappalyzer/`, refreshed via
+`scripts/update-wappalyzer.sh`) and the
+[ParaCharts](https://github.com/fizzstudio/ParaCharts) accessible-charts
+runtime (AGPL-3.0, `vendor/paracharts/`, refreshed via
+`scripts/update-paracharts.sh`).
