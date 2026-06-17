@@ -477,8 +477,11 @@ function coverageTable(summary) {
     .sort((a, b) => b[1] - a[1])
     .map(([engine, n]) => `<tr><th scope="row">${esc(engine)}</th><td class="num">${n}</td><td class="num">${Math.round((100 * n) / total)}%</td></tr>`)
     .join('\n');
+  const attemptLine = (summary.pagesAttempted != null)
+    ? ` · ${summary.pagesSucceeded ?? '?'} succeeded of ${summary.pagesAttempted} attempted`
+    : '';
   return `<details class="coverage">
-<summary>Scan coverage this week (${summary.pagesScanned} pages)</summary>
+<summary>Scan coverage this week (${summary.pagesScanned} pages${attemptLine})</summary>
 <table>
 <caption>Pages each engine ran on, per the configured weekly sampling rates.</caption>
 <thead><tr><th scope="col">Engine</th><th scope="col">Pages</th><th scope="col">Coverage</th></tr></thead>
@@ -1065,6 +1068,35 @@ function changeList(engineName, d) {
 }
 
 /**
+ * Fleet-wide sustainability trend: fleet mean CO₂g (or Wh) per page across
+ * all active domains by week, expressed as a simple week-over-week line chart.
+ * Only weeks where ≥1 domain has sustainability data contribute.
+ */
+function fleetSustainabilityChart(ranked) {
+  const withData = ranked.filter((d) => d.series.some((s) => s.sustainability));
+  if (withData.length === 0) return '';
+  const allWeeks = [...new Set(withData.flatMap((d) => d.series.map((s) => s.week)))].sort();
+  if (allWeeks.length < 2) return '';
+
+  // Per week: fleet mean of each domain's mean CO₂g/page (equal-weight per domain).
+  const useEnergy = SUSTAINABILITY_METRIC === 'energy';
+  const pts = allWeeks.map((week) => {
+    const vals = withData
+      .map((d) => {
+        const s = d.series.find((x) => x.week === week);
+        return useEnergy ? (s?.sustainability?.meanEnergyWh ?? null) : (s?.sustainability?.meanCo2g ?? null);
+      })
+      .filter((v) => v != null);
+    return { week, value: vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 1000) / 1000 : null };
+  }).filter((p) => p.value != null);
+  if (pts.length < 2) return '';
+
+  const label = useEnergy ? 'Fleet mean energy per page (Wh)' : 'Fleet mean CO₂ per page (g)';
+  const unit = useEnergy ? ' Wh' : ' g';
+  return lineChart(label, pts, { unit, lowerIsBetter: true });
+}
+
+/**
  * Overlay line chart: every domain's median axe violations/page over the
  * weeks they share. Accessible (role=img + aria-label + a data-table
  * fallback). Each domain gets a distinct dash pattern (not color alone).
@@ -1177,6 +1209,8 @@ for how the scanner can be allowlisted.</p>
 
   // Overlay chart: every domain's median axe violations/page over time.
   const overlay = crossDomainChart(ranked);
+  // Fleet sustainability trend: mean CO₂g/page across all domains by week.
+  const sustainTrend = fleetSustainabilityChart(ranked);
 
   // Fleet-wide worst offenders: highest-impact issues across all domains.
   const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
@@ -1214,6 +1248,7 @@ ${active.length === 0
 </table>
 <p class="score-caveat">Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
 ${overlay}
+${sustainTrend}
 ${worstSection}
 ${blockedCallout}`}
 <section aria-labelledby="h-why">

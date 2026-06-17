@@ -262,9 +262,15 @@ function summarizeWeek(target, week) {
     .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8')));
   if (records.length === 0) return null;
 
-  // Broken links from this week's run logs.
-  const broken = readBrokenLinks(path.join(DIRS.data, target.key, week, 'runs'));
-  return summarizeRecords(target, week, records, broken);
+  const runsDir = path.join(DIRS.data, target.key, week, 'runs');
+  const broken = readBrokenLinks(runsDir);
+  const tally = readTallyTotals(runsDir);
+  const summary = summarizeRecords(target, week, records, broken);
+  if (summary && tally) {
+    summary.pagesAttempted = tally.attempted;
+    summary.pagesSucceeded = tally.succeeded;
+  }
+  return summary;
 }
 
 /**
@@ -289,11 +295,38 @@ function summarizeWindow(target, days = 7) {
     runDirs.push(path.join(domainDir, week, 'runs'));
   }
   if (records.length === 0) return null;
-  // Broken links from run logs whose finishedAt is within the window.
   const broken = readBrokenLinks(runDirs, cutoff);
+  const tally = readTallyTotals(runDirs, cutoff);
   const s = summarizeRecords(target, 'last-7-days', records, broken);
-  if (s) s.windowDays = days;
+  if (s) {
+    s.windowDays = days;
+    if (tally) { s.pagesAttempted = tally.attempted; s.pagesSucceeded = tally.succeeded; }
+  }
   return s;
+}
+
+/**
+ * Sum tally fields across all run logs in one or more runs directories.
+ * Returns { attempted, succeeded } where attempted = ok+blocked+timeout+error
+ * and succeeded = ok (status < 400, non-redirect HTML responses).
+ * Returns null when no run logs with a tally are found.
+ */
+function readTallyTotals(runsDirOrDirs, sinceMs = null) {
+  const dirs = Array.isArray(runsDirOrDirs) ? runsDirOrDirs : [runsDirOrDirs];
+  let attempted = 0, succeeded = 0, found = false;
+  for (const dir of dirs) {
+    if (!fs.existsSync(dir)) continue;
+    for (const rf of fs.readdirSync(dir).filter((f) => f.endsWith('.json'))) {
+      const run = JSON.parse(fs.readFileSync(path.join(dir, rf), 'utf8'));
+      if (sinceMs && run.finishedAt && Date.parse(run.finishedAt) < sinceMs) continue;
+      if (!run.tally) continue;
+      found = true;
+      const t = run.tally;
+      attempted += (t.ok ?? 0) + (t.blocked ?? 0) + (t.timeout ?? 0) + (t.error ?? 0);
+      succeeded += (t.ok ?? 0);
+    }
+  }
+  return found ? { attempted, succeeded } : null;
 }
 
 /** Fold broken links from one or more runs dirs (optionally since cutoff ms). */

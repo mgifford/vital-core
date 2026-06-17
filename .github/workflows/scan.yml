@@ -116,6 +116,21 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Check Wappalyzer vendor age
+        run: |
+          DATE=$(grep '^date:' vendor/wappalyzer/VERSION | awk '{print $2}')
+          if [ -z "$DATE" ]; then
+            echo "::warning::vendor/wappalyzer/VERSION has no date field — cannot check age"
+            exit 0
+          fi
+          VENDOR_EPOCH=$(date -d "$DATE" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$DATE" +%s)
+          NOW_EPOCH=$(date +%s)
+          AGE_DAYS=$(( (NOW_EPOCH - VENDOR_EPOCH) / 86400 ))
+          echo "Wappalyzer vendor age: ${AGE_DAYS} days (vendored ${DATE})"
+          if [ "$AGE_DAYS" -gt 90 ]; then
+            echo "::warning file=vendor/wappalyzer/VERSION::Wappalyzer fingerprints are ${AGE_DAYS} days old (vendored ${DATE}). Run scripts/update-wappalyzer.sh to refresh."
+          fi
+
       - name: Scan
         # Per-page audit memory is freed between pages (see alfa engine),
         # so heap should stay flat. The raised limit is headroom for the
