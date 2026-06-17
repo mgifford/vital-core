@@ -59,10 +59,12 @@ Other deliberate choices:
    yet been scanned this ISO week, discovering new same-host links as it
    goes. Coverage accumulates: 300 pages/run × 7 runs ≈ 2,000+
    pages/domain/week, within the `max_pages_per_week` cap.
-3. Sunday evening, the `report` workflow aggregates the week, deploys
-   the reports to GitHub Pages, posts a Markdown summary as a comment on
-   the "Weekly scan reports" issue, and prunes page-level detail older
-   than `retention_weeks`.
+3. After the night's scans finish, the `report` workflow aggregates the
+   week, deploys the reports to GitHub Pages, and prunes page-level
+   detail older than `retention_weeks`.
+
+For how crawling, storage, and the pipeline work in more detail, see
+**[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
 ## Setup
 
