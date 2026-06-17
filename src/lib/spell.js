@@ -44,14 +44,21 @@ function checkable(word) {
  * Find misspelled words in a list of tokens. Returns
  * { misspelledCount, misspelled: [...capped distinct words...] }.
  * Possessives and a leading capital (sentence start) are tolerated.
+ *
+ * extraAllowlist: optional string[] of per-target terms (from
+ * target.spelling_allowlist in targets.yml) layered on top of the
+ * project-wide config/spelling-allowlist.txt.
  */
-export function findMisspellings(words, cap = 25) {
+export function findMisspellings(words, cap = 25, extraAllowlist = []) {
   const spell = getSpeller();
+  // Build a per-call allowed set so the shared speller is never mutated.
+  const extra = new Set(extraAllowlist.map((w) => w.toLowerCase()));
   const distinct = new Set();
   let count = 0;
   for (const w of words) {
     if (!checkable(w)) continue;
     const bare = w.replace(/['']s$/, ''); // strip possessive
+    if (extra.has(bare.toLowerCase())) continue;
     if (spell.correct(bare) || spell.correct(bare.toLowerCase())) continue;
     count++;
     if (distinct.size < cap) distinct.add(bare);

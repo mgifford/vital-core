@@ -24,7 +24,7 @@ const ACRONYM_CAP = 25;
 // "was written", "are being held", "has been reviewed", etc.
 const PASSIVE = /\b(?:is|are|was|were|be|been|being|am)\b\s+(?:\w+ed|\w+en|done|made|sent|put|set|read|built|held|kept|told|shown|known|given|taken|seen|found)\b/i;
 
-export async function runPlainLanguage(page) {
+export async function runPlainLanguage(page, { extraAllowlist = [] } = {}) {
   // Extract main-content text in the browser. Prefer <main>/<article>;
   // strip script/style/nav/header/footer so chrome doesn't pollute prose.
   const text = await page.evaluate(() => {
@@ -88,7 +88,7 @@ export async function runPlainLanguage(page) {
 
   // Spelling: check the main-content words (already nav-excluded) against
   // the dictionary + project allowlist. Words-per-page is wordCount below.
-  const spelling = findMisspellings(words);
+  const spelling = findMisspellings(words, 25, extraAllowlist);
 
   return {
     engine: 'plain-language',
