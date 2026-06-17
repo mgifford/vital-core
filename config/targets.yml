@@ -11,8 +11,8 @@
 # coverage: 100 x 5 ~= 500 pages/week/domain (more for higher importance).
 
 defaults:
-  pages_per_run: 100        # max pages scanned per domain per workflow run (keeps runs < 2h)
-  max_pages_per_week: 2500  # hard weekly cap per domain
+  pages_per_run: 150        # max pages scanned per domain per workflow run (keeps runs < 2h)
+  max_pages_per_week: 5000  # hard weekly cap per domain
   delay_ms: 1500            # pause between page loads (politeness)
   nav_timeout_ms: 30000     # page navigation timeout
   settle_delay_ms: 1000     # wait after load + network-idle before auditing (avoids pre-hydration false positives)
@@ -25,7 +25,7 @@ defaults:
 # data — this only changes what's shown, so switching needs no re-scan.
 # The SWD model computes CO2 = energy x grid carbon intensity, so energy
 # is the underlying physical quantity.
-sustainability_metric: co2
+sustainability_metric: energy
 
 # Base URL for published reports (used to generate absolute links in CSV exports
 # so that affected_pages_csv cells are clickable in Google Sheets / Excel).
@@ -43,16 +43,16 @@ report_base_url: "https://mgifford.github.io/vital-core"
 # in scan.js, and add a rate line here — that's the single control point.
 sampling:
   axe: 100             # WCAG / Section 508 (axe-core)
-  alfa: 30             # independent ACT-rules audit (Siteimprove Alfa)
+  alfa: 50             # independent ACT-rules audit (Siteimprove Alfa)
   plain-language: 50   # readability of main content
   link-check: 100       # broken-link probing of links seen on sampled pages
-  lighthouse: 25       # performance / a11y / best-practices / SEO (own Chrome; slow)
-  deprecated-html: 25 # obsolete/legacy HTML (<font>, <center>, etc.)
+  lighthouse: 10       # performance / a11y / best-practices / SEO (own Chrome; slow)
+  deprecated-html: 10 # obsolete/legacy HTML (<font>, <center>, etc.)
   resources: 100       # catalog PDFs, Office docs, iframes, embedded media
-  images: 50           # inline <img> inventory: alt text, dimensions, file size
+  images: 100           # inline <img> inventory: alt text, dimensions, file size
   standards: 50        # web standards / metadata / social (ScanGov-style, per page)
   security: 10         # HTTPS, security headers, security.txt, .gov TLD (per origin)
-  sustainability: 25   # page weight + estimated CO2
+  sustainability: 10   # page weight + estimated CO2
   tech: 10             # technology detection (CMS, frameworks, CDNs, analytics) — small sample sufficient
 
 targets:
