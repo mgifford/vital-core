@@ -26,8 +26,13 @@ than done in one big sweep. One run handles one domain:
 
 1. **Seeding** (first run only, when `state/<domain>/crawl.json` is
    empty): the crawler reads the site's **`sitemap.xml`**
-   (`src/lib/sitemap.js`) and the homepage to get an initial set of
-   URLs.
+   (`src/lib/sitemap.js`) — following one level of sitemap-index nesting,
+   capped at 20,000 URLs — **and** always adds the **homepage** as a
+   seed. If there is no sitemap (or it can't be fetched), seeding falls
+   back to just the homepage; link discovery in step 5 takes it from
+   there. Sitemap and crawling are **complementary, not either/or** —
+   the sitemap gives a fast, broad starting set, and link discovery runs
+   on every page regardless of whether a sitemap was found.
 2. **Priority URLs** (re-applied every run): URLs listed in a target's
    `priority_urls` / `priority_urls_file` (e.g. top-task pages) are
    always queued first, before the rest of the site.
@@ -106,6 +111,60 @@ page-detail pruning and answer "when did this first appear?".
 **Retention:** per-page detail under `pages/` is pruned after
 `retention_weeks` (default 8) by `src/prune.js`; the weekly summaries and
 ledgers are kept indefinitely.
+
+## Per-domain configuration (institutional tuning)
+
+Every site is configured in **one file**, `config/targets.yml`. There's a
+`defaults:` block, a global `sampling:` block, and a list of `targets:`.
+Each target is just a `domain:` line plus optional per-domain overrides,
+so an institution can tune how its own sites are scanned without touching
+code. All options are optional; a bare `- domain: example.gov` works.
+
+```yaml
+targets:
+  - domain: www.cms.gov
+    importance: 5
+    priority_urls_file: profiles/www.cms.gov-top-tasks.txt
+    spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA"]
+  - domain: data.cms.gov
+    importance: 3            # open-data site; scanned less heavily
+    url_exclude: ["?page=", "/api/"]
+```
+
+The per-domain options:
+
+- **`importance:` (1–5, default 3)** — scales the weekly page budget
+  (`max_pages_per_week`). 5 = scan more of this site; 1 = a fraction
+  (good for large, template-similar open-data sites where a sample is
+  representative).
+
+- **Top-task pages** — `priority_urls_file:` points at a text file of the
+  site's most important URLs (one per line, `#` comments allowed; this is
+  the output format of the `top-task-finder` tool). Relative paths
+  resolve under `config/` (e.g. `profiles/x.txt` → `config/profiles/x.txt`).
+  `priority_urls:` is an inline list for a handful of URLs. **Priority
+  URLs are covered first every week, before the rest of the site is
+  sampled, and bypass the include/exclude filters** — so an agency's
+  top-task pages are always audited even if the broader crawl is scoped
+  down. (No URL is scanned more than once per ISO week regardless.)
+
+- **`url_include:` / `url_exclude:`** — substring filters on the full URL.
+  `url_include` restricts the scan to matching URLs only (focus on a
+  subtree or topic, e.g. `["/children/"]`); `url_exclude` drops noisy or
+  off-limits paths (e.g. `["/news/", "?page="]`). Applied during both
+  crawl and scan. Priority URLs always bypass both.
+
+- **`spelling_allowlist:`** — domain-specific terms (program names,
+  medical jargon, agency acronyms) the spell checker should accept,
+  layered on top of the project-wide `config/spelling-allowlist.txt`.
+
+- **`sampling:`** — a target may override any per-engine coverage rate
+  from the global `sampling:` block (e.g. run Lighthouse on more or fewer
+  of one site's pages).
+
+This is the institutional configuration surface: which sites, how heavily
+each is scanned, which pages matter most, what to include or exclude, and
+domain-specific vocabulary — all declarative, all in `targets.yml`.
 
 ## The pipeline
 
