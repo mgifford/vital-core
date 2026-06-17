@@ -432,6 +432,14 @@ try {
   // plus the no-JS-safe filter script.
   assert(/class="bug-filter"/.test(w1a11y) && /id="filter-sev"/.test(w1a11y) && /id="filter-cat"/.test(w1a11y), 'accessibility page has severity + category filter controls');
   assert(/<details[^>]*class="bug[^"]*"[^>]*data-severity=/.test(w1a11y), 'bug blocks carry data-severity for filtering');
+  // Engine rule tables are collapsed by default (bugs above are the focus);
+  // the axe section is retitled "Deque axe-core findings".
+  assert(/Deque axe-core findings/.test(w1a11y), 'axe section retitled "Deque axe-core findings"');
+  assert(/<details class="engine-findings">\s*<summary>Rule-level axe-core summary/.test(w1a11y), 'axe rule table is in a closed details');
+  assert(/<details class="engine-findings">\s*<summary>Rule-level Alfa summary/.test(w1a11y), 'Alfa rule table is in a closed details');
+  // Consensus section lists the rules caught by both engines (high confidence).
+  assert(/caught by both engines — highest confidence/.test(w1a11y), 'consensus lists rules caught by both engines');
+  assert(/image-alt/.test(w1a11y) && /sia-r2/.test(w1a11y), 'both-engines table references the shared axe + Alfa rule ids');
   // Broken-links & errors are on their own errors.html sub-page.
   assert(/id="h-links"/.test(w1errors) && /Broken links/.test(w1errors), 'broken links section on errors sub-page');
   // Long URLs use the truncatable .url class (e.g. in errors table).

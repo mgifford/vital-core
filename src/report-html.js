@@ -706,6 +706,43 @@ function consensusSection(summary) {
   if (!c || c.uniqueIssues === 0) return '';
   const naive = c.rawAxe + c.rawAlfa;
   const saved = naive - c.uniqueIssues;
+
+  // Rules flagged by BOTH engines — the highest-confidence findings, since two
+  // independent implementations of the same ACT rule agree. List them with
+  // links to each engine's rule docs and the canonical ACT rule.
+  const axeRules = summary.axe?.rules ?? {};
+  const alfaRules = summary.alfa?.rules ?? {};
+  const both = Object.values(c.byKey ?? {})
+    .filter((g) => g.engines === 'both')
+    .sort((a, b) => b.pages - a.pages);
+  const bothRows = both
+    .map((g) => {
+      const axeId = g.axeRules[0];
+      const alfaId = g.alfaRules[0];
+      const help = axeId ? (axeRules[axeId]?.help ?? axeId) : (alfaId ?? '');
+      const axeUrl = axeId ? axeRules[axeId]?.helpUrl : null;
+      const alfaUrl = alfaId ? alfaRules[alfaId]?.ruleUrl : null;
+      const actUrl = g.actRuleId ? `https://act-rules.github.io/rules/${esc(g.actRuleId)}` : null;
+      const links = [
+        axeUrl ? `<a href="${esc(axeUrl)}">axe ${esc(axeId)}</a>` : (axeId ? `axe ${esc(axeId)}` : ''),
+        alfaUrl ? `<a href="${esc(alfaUrl)}">Alfa ${esc(alfaId)}</a>` : (alfaId ? `Alfa ${esc(alfaId)}` : ''),
+        actUrl ? `<a href="${esc(actUrl)}">ACT ${esc(g.actRuleId)}</a>` : '',
+      ].filter(Boolean).join(' · ');
+      return `<tr><th scope="row">${esc(help)}</th><td class="num">${g.pages}</td><td class="bug-meta">${links}</td></tr>`;
+    })
+    .join('\n');
+  const bothTable = both.length
+    ? `<details class="engine-findings" open>
+<summary>${both.length} rule type(s) caught by both engines — highest confidence</summary>
+<p class="meta">Two independent ACT-rule implementations (Deque axe-core and Siteimprove Alfa) flagged the same issue on the same pages. Agreement between separate engines is strong evidence the barrier is real, not a single-tool false positive — the best place to start.</p>
+<table>
+<caption>Rules flagged by both axe-core and Alfa in ${esc(summary.week)}, by pages affected.</caption>
+<thead><tr><th scope="col">Issue</th><th scope="col">Pages</th><th scope="col">Rule references</th></tr></thead>
+<tbody>${bothRows}</tbody>
+</table>
+</details>`
+    : '<p class="meta">No issues were flagged by both engines on the same pages this week.</p>';
+
   return `<section aria-labelledby="h-consensus">
 ${heading('h-consensus', `Unique accessibility issues (axe + Alfa consolidated)`)}
 <p class="meta">axe and Alfa both implement W3C ACT rules, so the same issue is often caught by both. These are deduplicated by ACT rule and page, so a shared finding counts once${saved > 0 ? ` (${naive} raw engine findings → ${c.uniqueIssues} unique)` : ''}.</p>
@@ -715,6 +752,7 @@ ${heading('h-consensus', `Unique accessibility issues (axe + Alfa consolidated)`
   <div><dt>axe only</dt><dd>${c.axeOnly}</dd></div>
   <div><dt>Alfa only</dt><dd>${c.alfaOnly}</dd></div>
 </dl>
+${bothTable}
 </section>`;
 }
 
@@ -1233,14 +1271,20 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, availab
 ${subnav('accessibility', available)}
 ${bugReportsSection(bugs, csvLinks.bugsAll ?? null)}
 <section aria-labelledby="h-axe">
-${heading('h-axe', `axe-core findings`)}
-<p class="meta">Rule-level summary. Each failing rule links out to the axe-core documentation. For full element-level detail including HTML snippets and XPaths, see the bug reports above.</p>
+${heading('h-axe', `Deque axe-core findings`)}
+<details class="engine-findings">
+<summary>Rule-level axe-core summary (${Object.keys(summary.axe.rules).length} rule type(s))</summary>
+<p class="meta">Each failing rule links out to the axe-core documentation. For full element-level detail including HTML snippets and XPaths, see the bug reports above.</p>
 ${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summary.axe.rules, 'axe-core', 'axe-core', csvLinks)}
+</details>
 </section>
 <section aria-labelledby="h-alfa">
 ${heading('h-alfa', `Siteimprove Alfa findings`)}
+<details class="engine-findings">
+<summary>Rule-level Alfa summary (${Object.keys(summary.alfa.rules).length} rule type(s))</summary>
 <p class="meta">Rule-level summary from Siteimprove Alfa (W3C ACT-based). Findings that overlap with axe-core on the same WCAG success criterion are noted as possible duplicates in the bug reports above.</p>
 ${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.alfa.rules, 'Alfa', 'alfa', csvLinks)}
+</details>
 </section>
 ${consensusSection(summary)}
 `;
@@ -1685,6 +1729,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   margin: .6rem 0; padding: 0 .9rem; }
 .bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }
 .bug[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
+.engine-findings > summary { cursor: pointer; font-weight: 600; padding: .4rem 0; }
 .bug.sev-critical { border-left-color: var(--worse); }
 .bug.sev-high { border-left-color: var(--worse); }
 .bug.sev-medium { border-left-color: var(--accent); }
