@@ -1627,6 +1627,59 @@ ${heading('h-techfindings', `Cross-technology issues`)}
     }
   }
 
+  // Fleet-wide Lighthouse recommendations: merge each domain's latest
+  // non-accessibility recommendations by audit id, tracking how many sites and
+  // how many pages each affects, plus total estimated savings. A recommendation
+  // common across many independent government sites is a shared platform/CDN
+  // problem worth a coordinated fix.
+  const lhMerged = {}; // auditId -> { id, category, title, sites, pages, savingsBytes, savingsMs }
+  for (const d of active) {
+    const recos = d.series[d.series.length - 1]?.lighthouse?.recommendations ?? [];
+    for (const r of recos) {
+      const e = (lhMerged[r.id] ??= { id: r.id, category: r.category, title: r.title, sites: 0, pages: 0, savingsBytes: 0, savingsMs: 0 });
+      e.sites++;
+      e.pages += r.pages ?? 0;
+      e.savingsBytes += r.savingsBytes ?? 0;
+      e.savingsMs += r.savingsMs ?? 0;
+    }
+  }
+  const lhFleet = Object.values(lhMerged)
+    .filter((e) => e.sites >= 2) // only issues common to multiple sites
+    .sort((a, b) => b.sites - a.sites || b.pages - a.pages)
+    .slice(0, 25);
+  let lighthouseFleetSection = '';
+  if (lhFleet.length) {
+    const catLabel = (c) => LH_CATEGORY_LABELS[c] ?? c;
+    lighthouseFleetSection = `
+<section aria-labelledby="h-lhfleet">
+${heading('h-lhfleet', `Common Lighthouse recommendations`)}
+<p class="meta">Non-accessibility issues Google Lighthouse flagged on multiple sites' sampled pages — performance, best-practices, SEO, and AI-readiness. Recurring across independent government sites usually points at a shared platform, theme, or CDN, where one coordinated fix helps everyone. Ranked by number of sites affected. Accessibility audits are omitted (they overlap with axe-core).</p>
+<table class="sortable">
+<caption>Top ${lhFleet.length} Lighthouse recommendations spanning ≥2 sites.</caption>
+<thead><tr>
+  <th scope="col">Recommendation</th>
+  <th scope="col">Category</th>
+  <th scope="col" class="num">Sites</th>
+  <th scope="col" class="num">Pages</th>
+  <th scope="col" class="num">Est. saving</th>
+</tr></thead>
+<tbody>${lhFleet
+        .map((e) => {
+          const saving = [fmtSavingsBytes(e.savingsBytes), e.savingsMs ? `${(e.savingsMs / 1000).toFixed(1)}s` : '']
+            .filter(Boolean).join(' · ') || '—';
+          return `<tr>
+  <th scope="row">${esc(e.title)}</th>
+  <td>${esc(catLabel(e.category))}</td>
+  <td class="num">${e.sites}</td>
+  <td class="num">${e.pages}</td>
+  <td class="num">${saving}</td>
+</tr>`;
+        })
+        .join('\n')}</tbody>
+</table>
+</section>`;
+  }
+
   const body = `
 <h1>Weekly quality ledger</h1>
 <p class="meta">Accessibility and sustainability, measured continuously with open source engines.
@@ -1646,6 +1699,7 @@ ${overlay}
 ${sustainTrend}
 ${worstSection}
 ${techFindingsSection}
+${lighthouseFleetSection}
 ${blockedCallout}`}
 <section aria-labelledby="h-why">
 ${heading('h-why', `Why this exists`)}
