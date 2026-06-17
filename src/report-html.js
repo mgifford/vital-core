@@ -3,6 +3,7 @@ import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
 import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
+import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
 
 /**
  * Report design constraints, in priority order:
@@ -99,6 +100,7 @@ function subnav(active, available) {
     ['lighthouse.html', 'Lighthouse', 'lighthouse'],
     ['readability.html', 'Readability', 'readability'],
     ['tech.html', 'Tech stack', 'tech'],
+    ['tech-findings.html', 'Tech ↔ issues', 'tech-findings'],
     ['images.html', 'Images', 'images'],
     ['archive.html', 'Archive', 'archive'],
   ].filter(([, , key]) => key === 'overview' || key === 'archive' || available.includes(key));
@@ -875,6 +877,75 @@ ${sections}`;
   });
 }
 
+/** "axe:color-contrast" -> "color-contrast (axe)" for display. */
+function findingLabel(key) {
+  const [engine, ...rest] = String(key).split(':');
+  const id = rest.join(':');
+  return `${id} (${engine})`;
+}
+
+/**
+ * Tech ↔ issues page: surfaces accessibility findings that are statistically
+ * over-represented on pages running a given technology. The signal is lift
+ * (how much more likely a finding is on pages with the tech vs. its overall
+ * rate). High lift across many pages is a candidate systemic issue — a barrier
+ * that travels with a CMS/theme/widget rather than with any one page's content.
+ *
+ * Association is not causation: the page says "associated with", and notes that
+ * a stack of technologies detected on the same pages will share lift values
+ * (collinearity), so the implicated component still needs human confirmation.
+ */
+export function renderTechFindingsPage(target, summary, available = []) {
+  const tf = summary.techFindings;
+  if (!tf || !tf.associations?.length) return null;
+  const model = tf.model;
+
+  // Group the ranked associations by technology, strongest first.
+  const byTech = {};
+  for (const a of tf.associations) (byTech[a.tech] ??= []).push(a);
+  const techOrder = Object.keys(byTech).sort(
+    (a, b) => (byTech[b][0]?.lift ?? 0) - (byTech[a][0]?.lift ?? 0)
+  );
+
+  const sections = techOrder
+    .map((tech) => {
+      const rows = byTech[tech]
+        .map((a) => `<tr>
+  <th scope="row">${esc(findingLabel(a.finding))}</th>
+  <td class="num">${a.lift.toFixed(2)}×</td>
+  <td class="num">${a.pairPages} / ${a.techPages}</td>
+  <td class="num">${a.findingPages}</td>
+</tr>`)
+        .join('\n');
+      return `<h3>${esc(tech)} <span class="bug-meta">${model.tech[tech]} pages</span></h3>
+<table class="sortable">
+<caption>Findings over-represented on pages running ${esc(tech)} (lift ≥ 1, ≥5 pages support).</caption>
+<thead><tr>
+  <th scope="col">Finding</th>
+  <th scope="col" class="num">Lift</th>
+  <th scope="col" class="num">On tech pages</th>
+  <th scope="col" class="num">On all pages</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
+    })
+    .join('\n');
+
+  const body = `
+<h1>${esc(target.domain)}: technology ↔ issues</h1>
+${subnav('tech-findings', available)}
+<p class="meta">Accessibility findings that appear disproportionately on pages running a given technology, across the ${model.pages} page(s) in <strong>${esc(summary.week)}</strong> where both technology detection and an accessibility engine ran. <strong>Lift</strong> is how many times more likely a finding is on pages with the technology than on pages overall — a value of 2× means twice the baseline rate.</p>
+<p class="note">This is an <em>association</em>, not proof of cause. Technologies that are detected on the same set of pages (e.g. a CMS, its host, and its language) will share identical lift values; the listing groups by technology but cannot tell which one in a co-located stack is responsible. Treat high-lift pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page's content.</p>
+${sections}`;
+  return layout({
+    title: `${target.domain} Tech ↔ Issues ${summary.week} | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Tech ↔ issues</li>`,
+    body,
+    depth: 3,
+    extraScript: SORT_SCRIPT,
+  });
+}
+
 /**
  * Images page: per-page alt-text coverage summary and a table of all
  * images found during the week's scan, with their alt text, dimensions,
@@ -1292,6 +1363,48 @@ ${heading('h-worst', `Worst offenders across all domains`)}
 </table>
 </section>`;
 
+  // Fleet-wide tech ↔ issue associations: merge every active domain's latest
+  // tech↔finding model, then rank pairs by lift × sites-affected. A finding
+  // that recurs with the same technology across multiple independent sites is
+  // the strongest systemic signal — likely a bug in that technology itself.
+  const tfEntries = active
+    .map((d) => {
+      const latest = d.series[d.series.length - 1];
+      return latest.techFindings?.model ? { domain: d.target.domain, model: latest.techFindings.model } : null;
+    })
+    .filter(Boolean);
+  let techFindingsSection = '';
+  if (tfEntries.length >= 2) {
+    const fleet = mergeFleet(tfEntries);
+    const fleetPairs = rankFleetAssociations(fleet, { minPages: 5, minSites: 2, limit: 25 });
+    if (fleetPairs.length) {
+      techFindingsSection = `
+<section aria-labelledby="h-techfindings">
+${heading('h-techfindings', `Cross-technology issues`)}
+<p class="meta">Accessibility findings that recur with the same technology across multiple sites — the strongest signal that a barrier lives in a shared CMS, theme, or widget rather than in one site's content. Ranked by lift × number of sites affected. Association, not proof of cause: confirm before attributing.</p>
+<table class="sortable">
+<caption>Top ${fleetPairs.length} technology ↔ finding associations spanning ≥2 sites.</caption>
+<thead><tr>
+  <th scope="col">Technology</th>
+  <th scope="col">Finding</th>
+  <th scope="col" class="num">Lift</th>
+  <th scope="col" class="num">Sites</th>
+  <th scope="col" class="num">Pages</th>
+</tr></thead>
+<tbody>${fleetPairs
+        .map((p) => `<tr>
+  <th scope="row">${esc(p.tech)}</th>
+  <td>${esc(findingLabel(p.finding))}</td>
+  <td class="num">${p.lift.toFixed(2)}×</td>
+  <td class="num">${p.sites}</td>
+  <td class="num">${p.pairPages}</td>
+</tr>`)
+        .join('\n')}</tbody>
+</table>
+</section>`;
+    }
+  }
+
   const body = `
 <h1>Weekly quality ledger</h1>
 <p class="meta">Accessibility and sustainability, measured continuously with open source engines.
@@ -1310,6 +1423,7 @@ ${active.length === 0
 ${overlay}
 ${sustainTrend}
 ${worstSection}
+${techFindingsSection}
 ${blockedCallout}`}
 <section aria-labelledby="h-why">
 ${heading('h-why', `Why this exists`)}

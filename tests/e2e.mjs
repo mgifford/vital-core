@@ -259,6 +259,23 @@ try {
   assert(Array.isArray(techResult) && techResult.length > 0, 'tech detection returned at least one technology');
   assert(techResult.some((t) => /wordpress/i.test(t.name)), 'WordPress detected via meta generator tag');
 
+  // Tech ↔ finding join: every page runs WordPress and the broken pages have
+  // image-alt violations, so the co-occurrence model should pair WordPress
+  // with image-alt, and the association list + sub-page should surface it.
+  assert(w1.techFindings && w1.techFindings.model, 'techFindings model recorded in summary');
+  assert(w1.techFindings.model.tech.WordPress >= 5, 'WordPress co-occurrence has enough page support');
+  assert('axe:image-alt' in w1.techFindings.model.finding, 'image-alt tracked as a finding key');
+  assert(
+    w1.techFindings.associations.some((a) => /wordpress/i.test(a.tech) && a.finding === 'axe:image-alt'),
+    'WordPress ↔ image-alt association surfaced'
+  );
+  const techFindingsPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech-findings.html');
+  assert(fs.existsSync(techFindingsPage), 'tech-findings.html sub-page written');
+  const tfHtml = fs.readFileSync(techFindingsPage, 'utf8');
+  assert(/WordPress/.test(tfHtml) && /image-alt/.test(tfHtml), 'tech-findings page lists WordPress and image-alt');
+  const w1index = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
+  assert(/href="tech-findings.html">Tech/.test(w1index), 'subnav links to tech-findings page');
+
   const state = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
   assert(!Object.values(state.pages).some((p) => p.url.includes('/private/')), 'robots.txt disallow respected');
 

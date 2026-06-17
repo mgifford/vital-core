@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeImagesCsv } from './lib/csv.js';
@@ -12,6 +12,7 @@ import { loadInventory, saveInventory, updateInventory, inventorySummary } from 
 import { scoreFor } from './lib/score.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
 import { loadLinkLedger, saveLinkLedger, updateLinkLedger } from './lib/link-ledger.js';
+import { buildCooccurrence, rankAssociations } from './lib/tech-findings.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -159,6 +160,7 @@ for (const target of config.targets) {
     if (summary.lighthouse?.pageDetail?.length) available.push('lighthouse');
     if (summary.plainLanguage?.pageRows?.length) available.push('readability');
     if (summary.tech?.length) available.push('tech');
+    if (summary.techFindings?.associations?.length) available.push('tech-findings');
     if (summary.images) available.push('images');
     // Standards and errors pages only exist when there's data.
     const hasStandards = !!(summary.security || summary.standards);
@@ -183,6 +185,8 @@ for (const target of config.targets) {
     if (readHtml) fs.writeFileSync(path.join(repDir, 'readability.html'), readHtml);
     const techHtml = renderTechPage(target, summary, available);
     if (techHtml) fs.writeFileSync(path.join(repDir, 'tech.html'), techHtml);
+    const techFindingsHtml = renderTechFindingsPage(target, summary, available);
+    if (techFindingsHtml) fs.writeFileSync(path.join(repDir, 'tech-findings.html'), techFindingsHtml);
     const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, summary) : null;
     const imagesHtml = renderImagesPage(target, summary, imagesCsv, available);
     if (imagesHtml) fs.writeFileSync(path.join(repDir, 'images.html'), imagesHtml);
@@ -224,6 +228,9 @@ for (const target of config.targets) {
         pages: Object.entries(inventory.pages).map(([url, p]) => ({ url, ...p })),
         // Every unique finding with first/last-seen history.
         findings: ledger.findings,
+        // Latest week's tech↔finding associations (lift-ranked), for anyone
+        // building cross-site analyses. The full model lives in weekly.series.
+        techFindings: latest.techFindings?.associations ?? null,
         // Week-over-week trend series + diffs.
         weekly: { series, diffs },
       },
@@ -404,6 +411,11 @@ function summarizeRecords(target, week, records, brokenLinks) {
   let imagesTotalCount = 0;
   let imagesMissingAlt = 0;
   let imagesDecorative = 0;
+  // Tech↔finding join: one row per page where the tech engine ran, listing
+  // the technologies on it and the accessibility findings on it. Only pages
+  // with tech detection contribute, so the co-occurrence denominator is the
+  // set of pages we actually have technology data for.
+  const techFindingPages = []; // { techs: string[], findings: string[] }
 
   // brokenLinks is supplied by the caller (folded from run logs).
 
@@ -484,6 +496,14 @@ function summarizeRecords(target, week, records, brokenLinks) {
           existing.pagesConfirmed++;
         }
       }
+      // Tech↔finding row for this page: the technologies on it paired with the
+      // accessibility findings on it. Keyed engine:ruleId. Only built for pages
+      // with tech data so the co-occurrence denominator is well-defined.
+      const findings = [
+        ...Object.keys(rec.axe?.violations ?? {}).map((id) => `axe:${id}`),
+        ...Object.keys(rec.alfa?.failed ?? {}).map((id) => `alfa:${id}`),
+      ];
+      techFindingPages.push({ techs: rec.tech.map((d) => d.name), findings });
     }
     if (rec.images) {
       imagePagesScanned++;
@@ -696,6 +716,15 @@ function summarizeRecords(target, week, records, brokenLinks) {
           // Per-image rows for the CSV and images.html page (omitted from committed summary.json).
           imageRows,
         }
+      : null,
+    // Tech↔finding association: the compact co-occurrence model (for the
+    // fleet merge on the dashboard) plus this week's ranked associations.
+    // Null when no page had both tech detection and the join is meaningless.
+    techFindings: techFindingPages.length
+      ? (() => {
+          const model = buildCooccurrence(techFindingPages);
+          return { model, associations: rankAssociations(model, { minPages: 5, limit: 50 }) };
+        })()
       : null,
   };
 }

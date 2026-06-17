@@ -17,6 +17,7 @@ import { toCsv, ruleSlug } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
 import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
+import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -894,4 +895,77 @@ test('wappalyzer: Akamai cookies/headers do not crash and are detected', () => {
     detections = W.resolve(W.analyze({ url: 'https://www.cms.gov', html: '<html></html>', scriptSrc: [], scripts: '', meta: {}, cookies, js: {}, headers }));
   }, 'string-valued cookies/headers must not crash analyzeManyToMany');
   assert.ok(detections.some((d) => /akamai/i.test(d.name)), 'Akamai detected from its cookies/headers');
+});
+
+test('tech-findings: co-occurrence dedupes findings per page', () => {
+  const pages = [
+    { techs: ['WordPress', 'GTM'], findings: ['axe:color-contrast', 'axe:color-contrast', 'axe:image-alt'] },
+    { techs: ['WordPress'], findings: ['axe:color-contrast'] },
+    { techs: ['Drupal'], findings: ['axe:region'] },
+  ];
+  const m = buildCooccurrence(pages);
+  assert.equal(m.pages, 3);
+  assert.equal(m.tech.WordPress, 2);
+  assert.equal(m.tech.GTM, 1);
+  // color-contrast counted once per page despite appearing twice on page 1.
+  assert.equal(m.finding['axe:color-contrast'], 2);
+  assert.equal(m.pair.WordPress['axe:color-contrast'], 2);
+  assert.equal(m.pair.GTM['axe:image-alt'], 1);
+});
+
+test('tech-findings: lift over- and under-representation, support guard', () => {
+  // 10 pages. GTM on 5 of them; every GTM page has the finding, only those do.
+  const pages = [];
+  for (let i = 0; i < 5; i++) pages.push({ techs: ['GTM'], findings: ['axe:contrast'] });
+  for (let i = 0; i < 5; i++) pages.push({ techs: ['Other'], findings: [] });
+  const m = buildCooccurrence(pages);
+  // P(finding|GTM)=1, P(finding)=0.5 -> lift 2.0
+  assert.equal(lift(m, 'GTM', 'axe:contrast', 5), 2);
+  // Below min support -> null.
+  assert.equal(lift(m, 'GTM', 'axe:contrast', 6), null, 'support guard rejects techPages < minPages');
+  // Unknown pair -> null.
+  assert.equal(lift(m, 'GTM', 'axe:missing', 1), null);
+});
+
+test('tech-findings: rankAssociations sorts by lift then support', () => {
+  const pages = [];
+  for (let i = 0; i < 6; i++) pages.push({ techs: ['A'], findings: ['axe:x'] });
+  for (let i = 0; i < 6; i++) pages.push({ techs: ['B'], findings: i < 3 ? ['axe:x'] : [] });
+  const m = buildCooccurrence(pages);
+  const ranked = rankAssociations(m, { minPages: 3 });
+  assert.ok(ranked.length >= 1);
+  // A (finding on all 6) has higher lift than B (finding on 3 of 6).
+  assert.equal(ranked[0].tech, 'A');
+  assert.ok(ranked[0].lift >= (ranked[1]?.lift ?? 0));
+});
+
+test('tech-findings: fleet merge counts distinct sites and scores breadth', () => {
+  // Each site: 6 GTM pages all with the finding + 6 other pages without it.
+  // Per site P(finding)=0.5, P(finding|GTM)=1 -> lift 2.0.
+  const mk = () => {
+    const pages = [];
+    for (let i = 0; i < 6; i++) pages.push({ techs: ['GTM'], findings: ['axe:x'] });
+    for (let i = 0; i < 6; i++) pages.push({ techs: ['Other'], findings: [] });
+    return buildCooccurrence(pages);
+  };
+  const fleet = mergeFleet([
+    { domain: 'a.gov', model: mk() },
+    { domain: 'b.gov', model: mk() },
+    { domain: 'c.gov', model: mk() },
+  ]);
+  assert.equal(fleet.techSites.GTM, 3, 'GTM seen on 3 sites');
+  assert.equal(fleet.pairSites.GTM['axe:x'], 3, 'pair seen on 3 sites');
+  const ranked = rankFleetAssociations(fleet, { minPages: 5, minSites: 2 });
+  assert.equal(ranked[0].tech, 'GTM');
+  assert.equal(ranked[0].sites, 3);
+  // score = lift(2.0) * sites(3) = 6.0
+  assert.equal(ranked[0].score, 6);
+});
+
+test('tech-findings: fleet minSites filters single-site coincidences', () => {
+  const pages = [];
+  for (let i = 0; i < 6; i++) pages.push({ techs: ['Solo'], findings: ['axe:y'] });
+  const fleet = mergeFleet([{ domain: 'only.gov', model: buildCooccurrence(pages) }]);
+  const ranked = rankFleetAssociations(fleet, { minPages: 5, minSites: 2 });
+  assert.equal(ranked.length, 0, 'single-site pair excluded by minSites=2');
 });

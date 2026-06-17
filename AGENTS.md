@@ -104,6 +104,20 @@ across the domain's whole history (survives page-detail pruning). Updated
 by `src/lib/findings.js` during aggregation; surfaced as first/last-seen
 in bug reports.
 
+#### Technology ↔ finding association
+
+`src/lib/tech-findings.js` joins each page's detected technologies with its
+accessibility findings (both already in the page record), building a
+per-page co-occurrence model in `summarizeRecords`. **Lift** =
+`P(finding | tech) / P(finding)` quantifies over-representation; only pages
+where both tech and an accessibility engine ran are counted, with a 5-page
+minimum support. The model is stored on the weekly summary (`techFindings`,
+~9 KB), rendered per-domain as `tech-findings.html`, and merged across
+domains on the dashboard (`mergeFleet` / `rankFleetAssociations`) into the
+**Cross-technology issues** matrix scored by `lift × sites`. It is an
+*association* surface — co-located technologies share identical lift, so the
+UI says "associated with", never "caused by".
+
 ### Environment variables
 
 | Variable | Purpose |
