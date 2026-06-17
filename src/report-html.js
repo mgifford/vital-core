@@ -762,6 +762,78 @@ ${bothTable}
  * and the experimental agentic-browsing score) plus Core Web Vitals
  * metrics. Linked from the domain report. Returns null if no LH data.
  */
+// Human labels for the recommendation categories (engine uses LH category ids).
+const LH_CATEGORY_LABELS = {
+  performance: 'Performance',
+  seo: 'SEO',
+  'best-practices': 'Best Practices',
+  'agentic-browsing': 'Agentic (AI-readiness)',
+};
+const LH_CATEGORY_ORDER = ['performance', 'best-practices', 'seo', 'agentic-browsing'];
+
+/** "340 KB", "1.2 MB", or '' for zero. */
+function fmtSavingsBytes(b) {
+  if (!b) return '';
+  return b >= 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${Math.round(b / 1024)} KB`;
+}
+
+/**
+ * Recommendations rolled up from Lighthouse's non-accessibility audits,
+ * grouped by category and ranked by pages affected then estimated impact.
+ * Mirrors the axe rule table: each row is an issue with how many sampled
+ * pages it hit and an estimated saving where Lighthouse provides one.
+ */
+function lighthouseRecommendations(recommendations, pagesSampled) {
+  if (!recommendations?.length) return '';
+  const byCat = {};
+  for (const r of recommendations) (byCat[r.category] ??= []).push(r);
+  const sections = LH_CATEGORY_ORDER
+    .filter((cat) => byCat[cat]?.length)
+    .map((cat) => {
+      const rows = byCat[cat]
+        .map((r) => {
+          const savings = [fmtSavingsBytes(r.savingsBytes), r.savingsMs ? `${(r.savingsMs / 1000).toFixed(1)}s` : '']
+            .filter(Boolean).join(' · ') || '—';
+          return `<tr>
+  <th scope="row">${esc(r.title)}</th>
+  <td class="num">${r.pages}/${pagesSampled}</td>
+  <td class="num">${savings}</td>
+</tr>`;
+        })
+        .join('\n');
+      return `<h3>${esc(LH_CATEGORY_LABELS[cat] ?? cat)}</h3>
+<table>
+<caption>${esc(LH_CATEGORY_LABELS[cat] ?? cat)} recommendations from Lighthouse, by sampled pages affected.</caption>
+<thead><tr><th scope="col">Recommendation</th><th scope="col">Pages</th><th scope="col">Est. saving</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
+    })
+    .join('\n');
+  return `<section aria-labelledby="h-lh-reco">
+${heading('h-lh-reco', `Recommendations`)}
+<p class="meta">Issues Lighthouse flagged across the ${pagesSampled} sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Estimated savings (transfer bytes or load time) are Lighthouse's own estimates where available. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessibility.html">Accessibility page</a>.</p>
+${sections}
+</section>`;
+}
+
+/**
+ * Plain-language explainer for the Agentic (AI-readiness) score, which is new
+ * in Lighthouse 13.4+ and unfamiliar to most readers.
+ */
+function agenticExplainer(lh) {
+  if (lh.medianAgentic == null) return '';
+  const agenticRecos = (lh.recommendations ?? []).filter((r) => r.category === 'agentic-browsing');
+  const gaps = agenticRecos.length
+    ? `<p class="meta">Gaps found on the sampled pages: ${agenticRecos.map((r) => `${esc(r.title)} (${r.pages})`).join(', ')}.</p>`
+    : '';
+  return `<section aria-labelledby="h-lh-agentic">
+${heading('h-lh-agentic', `What the Agentic score means`)}
+<p>The <strong>Agentic (AI-readiness)</strong> score is new in Google Lighthouse (13.4+). It measures how well a page works for <strong>AI agents and assistants</strong> — the tools that increasingly mediate how people find and use government services. It checks for things like an <code>llms.txt</code> file (a machine-readable guide for language models), valid <a href="https://schema.org/">structured data</a>, a well-formed accessibility tree that agents can parse, and <a href="https://github.com/webmachinelearning/webmcp">WebMCP</a> tool/form descriptions. A higher score means an AI assistant is more likely to understand the page and complete tasks on a citizen's behalf correctly.</p>
+<p class="meta">It is experimental and evolving; treat it as a forward-looking signal, not a compliance requirement. Median across sampled pages: <strong>${fmtScore(lh.medianAgentic)}</strong>.</p>
+${gaps}
+</section>`;
+}
+
 export function renderLighthousePage(target, summary, csvHref, available = []) {
   const lh = summary.lighthouse;
   if (!lh || !lh.pageDetail?.length) return null;
@@ -812,6 +884,8 @@ ${heading('h-lh-medians', `Medians across sampled pages`)}
   <div><dt>Cumulative Layout Shift</dt><dd>${m.cumulativeLayoutShift ?? 'n/a'}</dd></div>
 </dl>
 </section>
+${lighthouseRecommendations(lh.recommendations, lh.pageDetail.length)}
+${agenticExplainer(lh)}
 <section aria-labelledby="h-lh-pages">
 ${heading('h-lh-pages', `Per-page results`)}
 ${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}); Agentic = experimental agentic-browsing score.`, cols, rows)}

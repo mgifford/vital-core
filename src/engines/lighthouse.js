@@ -70,6 +70,10 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
             totalBlockingTimeMs: numeric(audits['total-blocking-time']),
             cumulativeLayoutShift: numericRaw(audits['cumulative-layout-shift']),
           },
+          // Failing/actionable audits across the non-accessibility categories,
+          // the substance Lighthouse produces beyond the headline scores.
+          // Accessibility audits are excluded — they mostly duplicate axe.
+          audits: extractAudits(cats, audits),
         };
       } catch (err) {
         log(`lighthouse: audit failed for ${url}: ${String(err?.message || err).slice(0, 100)}`);
@@ -84,6 +88,67 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
       }
     },
   };
+}
+
+// Categories we surface recommendations for. Accessibility is excluded — its
+// audits largely duplicate axe-core, which we report in full elsewhere.
+const RECO_CATEGORIES = {
+  performance: 'Performance',
+  seo: 'SEO',
+  'best-practices': 'Best Practices',
+  'agentic-browsing': 'Agentic',
+};
+
+/**
+ * Pull the failing/actionable audits out of a Lighthouse result, tagged with
+ * their category. An audit is a recommendation when it has a real score below
+ * Lighthouse's "good" threshold (0.9) in a pass/fail mode (numeric/binary).
+ * For the Agentic category we also keep `notApplicable` audits, because
+ * "no llms.txt / no WebMCP" is itself the finding worth surfacing.
+ *
+ * Savings (where Lighthouse provides them) are captured so aggregate can rank
+ * by impact: overallSavingsBytes (real transfer bytes) and the largest
+ * per-metric millisecond saving from metricSavings.
+ */
+export function extractAudits(categories, audits) {
+  // Map audit id -> category id via each category's auditRefs.
+  const auditCat = {};
+  for (const [catId, cat] of Object.entries(categories)) {
+    if (!RECO_CATEGORIES[catId]) continue;
+    for (const ref of cat.auditRefs ?? []) auditCat[ref.id] = catId;
+  }
+  const out = [];
+  for (const [id, a] of Object.entries(audits)) {
+    const catId = auditCat[id];
+    if (!catId) continue;
+    const mode = a.scoreDisplayMode;
+    const isAgentic = catId === 'agentic-browsing';
+    const savingsBytes = typeof a.details?.overallSavingsBytes === 'number' ? a.details.overallSavingsBytes : 0;
+    const savingsMs = a.metricSavings
+      ? Math.max(0, ...Object.values(a.metricSavings).filter((v) => typeof v === 'number'))
+      : 0;
+    // A recommendation is:
+    //  - a failing pass/fail audit (numeric/binary score below LH's 0.9 "good"
+    //    threshold), OR
+    //  - a "metricSavings" opportunity with a real estimated saving (the perf
+    //    opportunities — unused CSS/JS, render-blocking — use this mode), OR
+    //  - an Agentic feature-absent gap (notApplicable, e.g. no llms.txt).
+    const failingScore = typeof a.score === 'number' && a.score < 0.9 && (mode === 'numeric' || mode === 'binary');
+    const savingsOpportunity = mode === 'metricSavings' && (savingsBytes > 1024 || savingsMs >= 50);
+    const agenticGap = isAgentic && mode === 'notApplicable';
+    if (!failingScore && !savingsOpportunity && !agenticGap) continue;
+    out.push({
+      id,
+      category: catId,
+      title: a.title ?? id,
+      score: typeof a.score === 'number' ? a.score : null,
+      savingsBytes,
+      savingsMs: Math.round(savingsMs),
+      // How many elements/resources triggered it on this page (context).
+      items: Array.isArray(a.details?.items) ? a.details.items.length : 0,
+    });
+  }
+  return out;
 }
 
 /** Lighthouse category score is 0-1; surface as 0-100 integer, or null. */
