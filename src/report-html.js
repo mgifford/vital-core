@@ -81,6 +81,15 @@ function heading(id, text, level = 2) {
   return `<h${level} id="${esc(id)}"><a class="anchor" href="#${esc(id)}" aria-label="Link to this section"></a>${esc(text)}</h${level}>`;
 }
 
+/** " Download: CSV · JSON." from optional relative hrefs; '' if none. */
+function downloadLinks(csvHref, jsonHref) {
+  const parts = [
+    csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '',
+    jsonHref ? `<a href="${esc(jsonHref)}">JSON</a>` : '',
+  ].filter(Boolean);
+  return parts.length ? ` Download: ${parts.join(' · ')}.` : '';
+}
+
 /** A long URL: shown truncated (CSS ellipsis) with the full URL on
  * hover/focus (title) and still fully selectable/copyable. */
 function urlCell(url) {
@@ -965,12 +974,12 @@ ${sortableTable(`Readability per scanned page (${summary.week}).`, cols, rows)}
 </section>
 ${acronyms.length ? `<section aria-labelledby="h-acronyms">
 ${heading('h-acronyms', `Unexplained acronyms`)}
-<p class="meta">Acronyms used without an on-page expansion (e.g. "Centers for Medicare &amp; Medicaid Services (CMS)"), by pages affected.</p>
+<p class="meta">Acronyms used without an on-page expansion (e.g. "Centers for Medicare &amp; Medicaid Services (CMS)"), by pages affected.${downloadLinks(summary.plainLanguage?.acronymsCsv, summary.plainLanguage?.acronymsJson)}</p>
 <ul>${acronyms.map((a) => `<li><code>${esc(a.acronym)}</code> — ${a.pages} page(s)</li>`).join('')}</ul>
 </section>` : ''}
 ${misspellings.length ? `<section aria-labelledby="h-spelling">
 ${heading('h-spelling', `Possible misspellings`)}
-<p class="meta">Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.</p>
+<p class="meta">Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.${downloadLinks(summary.plainLanguage?.spellingCsv, summary.plainLanguage?.spellingJson)}</p>
 <ul>${misspellings.map((m) => `<li><code>${esc(m.word)}</code> — ${m.pages} page(s)</li>`).join('')}</ul>
 </section>` : ''}`;
   return layout({
@@ -988,8 +997,16 @@ ${heading('h-spelling', `Possible misspellings`)}
  * analytics, CDN, etc.), with confidence level and the evidence signals that
  * triggered each detection. Linked from the domain's subnav when data exists.
  */
-export function renderTechPage(target, summary, available = []) {
+export function renderTechPage(target, summary, csvHref, available = []) {
   if (!summary.tech?.length) return null;
+  // Denominator for coverage is the number of pages the tech engine actually
+  // ran on (its sample), not every page scanned — so "59% (63 of 106)" reads
+  // as "found on 63 of the 106 pages we checked for technology".
+  const techRan = summary.coverage?.tech ?? null;
+  const coverage = (d) => {
+    if (!techRan) return `${d.pagesConfirmed}`;
+    return `${Math.round((100 * d.pagesConfirmed) / techRan)}% <span class="bug-meta">(${d.pagesConfirmed} of ${techRan})</span>`;
+  };
   const byCategory = {};
   for (const d of summary.tech) {
     (byCategory[d.category] ??= []).push(d);
@@ -1003,34 +1020,39 @@ export function renderTechPage(target, summary, available = []) {
           const nameCell = d.website
             ? `<a href="${esc(d.website)}">${esc(d.name)}</a>`
             : esc(d.name);
+          const examples = (d.examplePages ?? []).length
+            ? `<details><summary class="bug-meta">${d.examplePages.length} example page(s)</summary><ul>${d.examplePages.map((u) => `<li>${urlCell(u)}</li>`).join('')}</ul></details>`
+            : '';
           return `<tr>
-  <th scope="row">${nameCell}${d.version ? ` <span class="bug-meta">v${esc(d.version)}</span>` : ''}</th>
+  <th scope="row">${nameCell}${d.version ? ` <span class="bug-meta">v${esc(d.version)}</span>` : ''}${examples}</th>
   <td class="num" style="color:${confColor(d.confidence)}">${d.confidence}%</td>
-  <td class="num">${d.pagesConfirmed}</td>
+  <td class="num" data-sort="${d.pagesConfirmed}">${coverage(d)}</td>
   <td class="bug-meta">${esc(d.categories.join(', '))}</td>
 </tr>`;
         })
         .join('\n');
       return `<h3>${esc(cat)}</h3>
-<table>
+<table class="sortable">
 <caption>${esc(cat)} technologies detected on ${esc(target.domain)}, ${esc(summary.week)}.</caption>
-<thead><tr><th scope="col">Technology</th><th scope="col">Confidence</th><th scope="col">Pages confirmed</th><th scope="col">All categories</th></tr></thead>
+<thead><tr><th scope="col">Technology</th><th scope="col">Confidence</th><th scope="col">Coverage</th><th scope="col">All categories</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
     })
     .join('\n');
 
+  const ranNote = techRan ? ` The technology engine ran on <strong>${techRan}</strong> of ${summary.pagesScanned} pages scanned this week; coverage below is the share of those ${techRan} pages where each technology was found.` : '';
   const body = `
 <h1>${esc(target.domain)}: technology stack</h1>
 ${subnav('tech', available)}
-<p class="meta">Technologies detected on <strong>${summary.tech.length}</strong> of ${summary.pagesScanned} pages scanned in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.</p>
-<p class="note">Detection is additive across the week's sampled pages. A technology listed here was found on at least one sampled page, not necessarily site-wide.</p>
+<p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, 'tech.json')}</p>
+<p class="note">Detection is additive across the week's sampled pages. Expand a technology to see example pages where it was found.</p>
 ${sections}`;
   return layout({
     title: `${target.domain} Tech Stack ${summary.week} | vital-scans`,
     breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Tech stack</li>`,
     body,
     depth: 3,
+    extraScript: SORT_SCRIPT,
   });
 }
 
@@ -1167,41 +1189,92 @@ ${subnav('third-party', available)}
  * images found during the week's scan, with their alt text, dimensions,
  * and lazy-loading attributes. Links to the images.csv download.
  */
+// Human label + explanation for each alt-text verdict.
+const ALT_VERDICT_INFO = {
+  MISSING: ['Missing alt', 'No alt attribute — a screen reader may announce the filename.'],
+  FILENAME: ['Filename as alt', 'The alt text looks like a filename (e.g. hero_1234.jpg), not a description.'],
+  SUSPICIOUS: ['Redundant / meaningless', 'Phrases like "image of…" or bare values like "photo" add nothing.'],
+  TOO_SHORT: ['Too short', 'A single character or word unlikely to convey the image\'s meaning.'],
+  TOO_LONG: ['Too long', 'So long it probably belongs in a caption or a separate description.'],
+  DECORATIVE: ['Decorative', 'alt="" or aria-hidden — intentionally not announced. Not a problem.'],
+  GOOD: ['Looks good', 'Present, plausible, no red flags (still worth a human spot-check).'],
+};
+const ALT_VERDICT_ORDER = ['MISSING', 'FILENAME', 'SUSPICIOUS', 'TOO_SHORT', 'TOO_LONG', 'GOOD', 'DECORATIVE'];
+
 export function renderImagesPage(target, summary, csvHref, available = []) {
   const img = summary.images;
   if (!img) return null;
-  const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">Download CSV</a>` : '';
+  const links = [
+    csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '',
+    `<a href="images.json">JSON</a>`,
+  ].filter(Boolean).join(' · ');
+  const dlLink = links ? ` Download: ${links}.` : '';
   const pct = (n) => img.totalImages ? `${Math.round((n / img.totalImages) * 100)}%` : '0%';
+
   const statsTable = `<table class="stats-table">
 <caption>Image alt-text coverage across ${img.pagesScanned} page(s) scanned in ${esc(summary.week)}.</caption>
 <thead><tr><th scope="col">Category</th><th scope="col">Count</th><th scope="col">Share</th></tr></thead>
 <tbody>
-<tr><th scope="row">Total images</th><td class="num">${img.totalImages}</td><td class="num">—</td></tr>
+<tr><th scope="row">Total image occurrences</th><td class="num">${img.totalImages}</td><td class="num">—</td></tr>
+<tr><th scope="row">Unique images</th><td class="num">${img.uniqueImages ?? '—'}</td><td class="num">—</td></tr>
 <tr><th scope="row">Has alt text</th><td class="num">${img.withAlt}</td><td class="num">${pct(img.withAlt)}</td></tr>
 <tr><th scope="row">Decorative (alt="")</th><td class="num">${img.decorative}</td><td class="num">${pct(img.decorative)}</td></tr>
 <tr><th scope="row">Missing alt attribute</th><td class="num">${img.missingAlt}</td><td class="num">${pct(img.missingAlt)}</td></tr>
 </tbody>
 </table>`;
-  const rows = (img.imageRows ?? []).slice(0, 500).map((r) => {
-    const altCell = r.isMissingAlt
+
+  // Alt-text quality summary (counted over unique images).
+  const verdicts = img.altVerdicts ?? {};
+  const totalUnique = img.uniqueImages || 1;
+  const qualityRows = ALT_VERDICT_ORDER
+    .filter((v) => verdicts[v])
+    .map((v) => {
+      const [label, expl] = ALT_VERDICT_INFO[v];
+      const cls = (v === 'GOOD' || v === 'DECORATIVE') ? '' : ' class="error"';
+      return `<tr><th scope="row"${cls}>${esc(label)}</th><td class="num">${verdicts[v]}</td><td class="num">${Math.round((100 * verdicts[v]) / totalUnique)}%</td><td>${esc(expl)}</td></tr>`;
+    })
+    .join('\n');
+  const qualitySection = qualityRows ? `<section aria-labelledby="h-images-quality">
+${heading('h-images-quality', 'Alt-text quality')}
+<p class="meta">Beyond present-vs-missing, each unique image's alt text is classified for quality. Filenames, redundant phrasing ("image of…"), and too-short or too-long values are technically present but unhelpful — the cases a human should rewrite. Decorative and "looks good" are not problems.</p>
+<table>
+<caption>Alt-text quality across ${img.uniqueImages} unique image(s).</caption>
+<thead><tr><th scope="col">Verdict</th><th scope="col">Images</th><th scope="col">Share</th><th scope="col">What it means</th></tr></thead>
+<tbody>${qualityRows}</tbody>
+</table>
+</section>` : '';
+
+  // Deduplicated image table: one row per unique image, with occurrence count,
+  // filesize, and alt-text verdict. Sorted by occurrences (most-reused first).
+  const rows = (img.uniqueImageList ?? []).slice(0, 500).map((u) => {
+    const altCell = u.altVerdict === 'MISSING'
       ? '<span class="error">missing</span>'
-      : r.isDecorative
+      : u.altVerdict === 'DECORATIVE'
         ? '<em>decorative</em>'
-        : esc(r.alt ?? '');
-    const dims = (r.naturalWidth && r.naturalHeight) ? `${r.naturalWidth}×${r.naturalHeight}` : '';
-    const lazy = r.loading === 'lazy' ? ' <span class="bug-meta">lazy</span>' : '';
-    return `<tr><th scope="row">${urlCell(r.pageUrl)}</th><td>${urlCell(r.src)}</td><td>${altCell}</td><td class="num">${dims}</td><td>${lazy}</td></tr>`;
+        : esc(u.alt ?? '');
+    const [vlabel] = ALT_VERDICT_INFO[u.altVerdict] ?? [u.altVerdict];
+    const vCls = (u.altVerdict === 'GOOD' || u.altVerdict === 'DECORATIVE') ? 'bug-meta' : 'error';
+    const inconsistent = u.altCount > 1 ? ` <span class="bug-meta">${u.altCount} alt variants</span>` : '';
+    return `<tr>
+  <th scope="row">${urlCell(u.src)}</th>
+  <td>${altCell}${inconsistent}</td>
+  <td><span class="${vCls}">${esc(vlabel)}</span></td>
+  <td class="num" data-sort="${u.bytes ?? 0}">${u.bytes != null ? kb(u.bytes) : '—'}</td>
+  <td class="num" data-sort="${u.occurrences}">${u.occurrences}</td>
+</tr>`;
   }).join('\n');
+
   const body = `
 <h1>${esc(target.domain)}: image inventory</h1>
 ${subnav('images', available)}
-<p class="meta">All images encountered on scanned pages in <strong>${esc(summary.week)}</strong>. Images on pages not sampled this week are not listed.${dlLink}</p>
+<p class="meta">Unique images encountered on scanned pages in <strong>${esc(summary.week)}</strong>, deduplicated by URL — the same image reused across pages is one row with an occurrence count. Images on pages not sampled this week are not listed.${dlLink}</p>
 ${statsTable}
+${qualitySection}
 <section aria-labelledby="h-images-detail">
 ${heading('h-images-detail', 'Image detail')}
-<table>
-<caption>Up to 500 images from ${img.pagesScanned} page(s) scanned.</caption>
-<thead><tr><th scope="col">Page</th><th scope="col">Image URL</th><th scope="col">Alt text</th><th scope="col">Dimensions</th><th scope="col">Loading</th></tr></thead>
+<table class="sortable">
+<caption>Up to 500 unique images from ${img.pagesScanned} page(s) scanned, most-reused first.</caption>
+<thead><tr><th scope="col">Image URL</th><th scope="col">Alt text</th><th scope="col">Alt verdict</th><th scope="col" class="num">Size</th><th scope="col" class="num">Occurrences</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </section>`;
@@ -1210,6 +1283,7 @@ ${heading('h-images-detail', 'Image detail')}
     breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Images</li>`,
     body,
     depth: 3,
+    extraScript: SORT_SCRIPT,
   });
 }
 

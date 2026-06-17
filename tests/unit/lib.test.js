@@ -21,6 +21,7 @@ import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssocia
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
 import { extractAudits } from '../../src/engines/lighthouse.js';
+import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -1069,4 +1070,38 @@ test('extractAudits: pulls failing non-a11y audits, tags category, skips a11y/pa
   assert.equal(css.savingsMs, 350, 'max metricSavings ms captured');
   const seo = out.find((a) => a.id === 'meta-description');
   assert.equal(seo.category, 'seo', 'category tagged from auditRefs');
+});
+
+test('assessAltText: classifies each alt-text problem', () => {
+  const v = (img) => assessAltText(img).verdict;
+  // Missing / decorative / hidden.
+  assert.equal(v({ isMissingAlt: true, hasAlt: false }), ALT_VERDICTS.MISSING);
+  assert.equal(v({ hasAlt: true, alt: '', isDecorative: true }), ALT_VERDICTS.DECORATIVE);
+  assert.equal(v({ hasAlt: true, alt: 'x', ariaHidden: true }), ALT_VERDICTS.DECORATIVE, 'aria-hidden wins');
+  assert.equal(v({ hasAlt: true, alt: 'x', rolePresentation: true }), ALT_VERDICTS.DECORATIVE);
+  // Filename-like.
+  assert.equal(v({ hasAlt: true, alt: 'hero_banner_2024.jpg' }), ALT_VERDICTS.FILENAME);
+  assert.equal(v({ hasAlt: true, alt: 'IMG_4821.PNG' }), ALT_VERDICTS.FILENAME);
+  // Redundant / meaningless phrasing.
+  assert.equal(v({ hasAlt: true, alt: 'Image of a senior couple smiling' }), ALT_VERDICTS.SUSPICIOUS);
+  assert.equal(v({ hasAlt: true, alt: 'photo' }), ALT_VERDICTS.SUSPICIOUS);
+  assert.equal(v({ hasAlt: true, alt: 'logo' }), ALT_VERDICTS.SUSPICIOUS);
+  // Too short.
+  assert.equal(v({ hasAlt: true, alt: '.' }), ALT_VERDICTS.SUSPICIOUS, 'bare dot is meaningless'); // '.' is in MEANINGLESS_EXACT
+  assert.equal(v({ hasAlt: true, alt: 'ab' }), ALT_VERDICTS.TOO_SHORT);
+  assert.equal(v({ hasAlt: true, alt: 'CMS' }), ALT_VERDICTS.TOO_SHORT, 'single 3-char word too short');
+  // Too long.
+  assert.equal(v({ hasAlt: true, alt: 'x '.repeat(200).trim() }), ALT_VERDICTS.TOO_LONG);
+  // Good.
+  assert.equal(v({ hasAlt: true, alt: 'Secretary signs the funding bill at a podium' }), ALT_VERDICTS.GOOD);
+  // A real filename inside a sentence is NOT flagged as a filename.
+  assert.equal(v({ hasAlt: true, alt: 'Screenshot of the report.pdf download page' }), ALT_VERDICTS.SUSPICIOUS, 'leads with "screenshot of"');
+});
+
+test('isAltProblem: GOOD and DECORATIVE are not problems', () => {
+  assert.equal(isAltProblem(ALT_VERDICTS.GOOD), false);
+  assert.equal(isAltProblem(ALT_VERDICTS.DECORATIVE), false);
+  assert.equal(isAltProblem(ALT_VERDICTS.FILENAME), true);
+  assert.equal(isAltProblem(ALT_VERDICTS.MISSING), true);
+  assert.equal(isAltProblem(ALT_VERDICTS.TOO_SHORT), true);
 });
