@@ -178,48 +178,29 @@ for (const target of config.targets) {
       }
     }
 
-    // Which standalone sub-pages this week has (drives the shared subnav).
-    // Accessibility page is always present (even if empty — shows "no findings").
-    const available = ['accessibility'];
-    if (summary.lighthouse?.pageDetail?.length) available.push('lighthouse');
-    if (summary.plainLanguage?.pageRows?.length) available.push('readability');
-    if (summary.tech?.length) available.push('tech');
-    if (summary.techFindings?.associations?.length) available.push('tech-findings');
-    if (summary.thirdParty?.vendors?.length) available.push('third-party');
-    if (summary.images) available.push('images');
-    // Standards and errors pages only exist when there's data.
-    const hasStandards = !!(summary.security || summary.standards);
-    const hasErrors = !!(summary.linkCheck?.broken?.length || summary.errorPages?.some((e) => Number(e.status) !== 404));
-    if (hasStandards) available.push('standards');
-    if (hasErrors) available.push('errors');
+    // Every sub-page is written for every week, so the shared subnav is
+    // identical on every domain and every week — no missing tabs, no 404s. A
+    // criterion with no data this week renders a clear empty-state page. CSV/
+    // JSON downloads are still only written when there's data to put in them.
 
-    // Standalone Accessibility page (bug reports + axe/alfa rule tables + consensus).
-    const a11yHtml = renderAccessibilityPage(target, summary, bugs, csvLinks, available);
-    fs.writeFileSync(path.join(repDir, 'accessibility.html'), a11yHtml);
-    // Standalone Standards & Security page.
-    const stdHtml = renderStandardsPage(target, summary, available);
-    if (stdHtml) fs.writeFileSync(path.join(repDir, 'standards.html'), stdHtml);
-    // Standalone Broken Links & Errors page.
-    const errHtml = renderErrorsPage(target, summary, csvLinks.errorsAll ?? null, available);
-    if (errHtml) fs.writeFileSync(path.join(repDir, 'errors.html'), errHtml);
-    // Standalone Lighthouse page (per-sampled-page scores + metrics + perf impact).
-    const lhHtml = renderLighthousePage(target, summary, lhCsv, available);
-    if (lhHtml) fs.writeFileSync(path.join(repDir, 'lighthouse.html'), lhHtml);
-    // Standalone Readability page (per-page reading metrics + acronyms + spelling).
-    const readHtml = renderReadabilityPage(target, summary, readabilityCsv, available);
-    if (readHtml) fs.writeFileSync(path.join(repDir, 'readability.html'), readHtml);
+    // Accessibility (always has content — shows "no findings" when clean).
+    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks));
+    fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
+    fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
+    fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv));
+    fs.writeFileSync(path.join(repDir, 'readability.html'), renderReadabilityPage(target, summary, readabilityCsv));
+
     const techCsv = summary.tech?.length ? writeTechCsv(repDir, summary.tech) : null;
     if (summary.tech?.length) {
       fs.writeFileSync(path.join(repDir, 'tech.json'),
         JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, pagesScanned: summary.pagesScanned, technologies: summary.tech }, null, 1));
     }
-    const techHtml = renderTechPage(target, summary, techCsv, available);
-    if (techHtml) fs.writeFileSync(path.join(repDir, 'tech.html'), techHtml);
-    const techFindingsHtml = renderTechFindingsPage(target, summary, available);
-    if (techFindingsHtml) fs.writeFileSync(path.join(repDir, 'tech-findings.html'), techFindingsHtml);
+    fs.writeFileSync(path.join(repDir, 'tech.html'), renderTechPage(target, summary, techCsv));
+    fs.writeFileSync(path.join(repDir, 'tech-findings.html'), renderTechFindingsPage(target, summary));
+
     const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, summary) : null;
-    const thirdPartyHtml = renderThirdPartyPage(target, summary, tpCsv, available);
-    if (thirdPartyHtml) fs.writeFileSync(path.join(repDir, 'third-party.html'), thirdPartyHtml);
+    fs.writeFileSync(path.join(repDir, 'third-party.html'), renderThirdPartyPage(target, summary, tpCsv));
+
     const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, summary) : null;
     // Deduplicated image inventory as JSON (src, alt, bytes, occurrences,
     // alt-text verdict, example pages).
@@ -229,8 +210,7 @@ for (const target of config.targets) {
         JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, images: summary.images.uniqueImageList }, null, 1)
       );
     }
-    const imagesHtml = renderImagesPage(target, summary, imagesCsv, available);
-    if (imagesHtml) fs.writeFileSync(path.join(repDir, 'images.html'), imagesHtml);
+    fs.writeFileSync(path.join(repDir, 'images.html'), renderImagesPage(target, summary, imagesCsv));
     // Archive page (all weeks). Written in each week folder so the subnav
     // "Archive" link resolves from any week's report.
     const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
@@ -239,7 +219,7 @@ for (const target of config.targets) {
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
     if (isLatest) latestBugs = bugs.map((b) => ({ ...b, _week: summary.week }));
-    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null, available);
+    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null);
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
     fs.writeFileSync(

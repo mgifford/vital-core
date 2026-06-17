@@ -97,30 +97,51 @@ function urlCell(url) {
 }
 
 /**
- * Sub-page navigation shared by a domain's report / lighthouse /
- * readability pages. `active` is the current page key. Links are relative
- * within the same week directory.
+ * Sub-page navigation shared by every page in a domain's weekly report.
+ * `active` is the current page key. The nav is FIXED — it always lists every
+ * criterion we evaluate, in the same order, on every domain and every week —
+ * so navigation is consistent and predictable. Every sub-page is always
+ * written (with a "no data this week" empty state where a criterion had none),
+ * so no link 404s. Links are relative within the same week directory.
  */
-function subnav(active, available) {
-  const items = [
-    ['index.html', 'Overview', 'overview'],
-    ['accessibility.html', 'Accessibility', 'accessibility'],
-    ['standards.html', 'Standards', 'standards'],
-    ['errors.html', 'Errors', 'errors'],
-    ['lighthouse.html', 'Lighthouse', 'lighthouse'],
-    ['readability.html', 'Readability', 'readability'],
-    ['tech.html', 'Tech stack', 'tech'],
-    ['tech-findings.html', 'Tech ↔ issues', 'tech-findings'],
-    ['third-party.html', 'Third parties', 'third-party'],
-    ['images.html', 'Images', 'images'],
-    ['archive.html', 'Archive', 'archive'],
-  ].filter(([, , key]) => key === 'overview' || key === 'archive' || available.includes(key));
-  if (items.length < 2) return '';
-  return `<nav class="subnav" aria-label="Domain report pages"><ul>${items
+const SUBNAV_ITEMS = [
+  ['index.html', 'Overview', 'overview'],
+  ['accessibility.html', 'Accessibility', 'accessibility'],
+  ['standards.html', 'Standards', 'standards'],
+  ['errors.html', 'Errors', 'errors'],
+  ['lighthouse.html', 'Lighthouse', 'lighthouse'],
+  ['readability.html', 'Readability', 'readability'],
+  ['tech.html', 'Tech stack', 'tech'],
+  ['tech-findings.html', 'Tech ↔ issues', 'tech-findings'],
+  ['third-party.html', 'Third parties', 'third-party'],
+  ['images.html', 'Images', 'images'],
+  ['archive.html', 'Archive', 'archive'],
+];
+function subnav(active) {
+  return `<nav class="subnav" aria-label="Domain report pages"><ul>${SUBNAV_ITEMS
     .map(([href, label, key]) => key === active
       ? `<li aria-current="page">${esc(label)}</li>`
       : `<li><a href="${esc(href)}">${esc(label)}</a></li>`)
     .join('')}</ul></nav>`;
+}
+
+/**
+ * A consistent empty-state page for a criterion that had no data this week.
+ * Keeps the full shared nav so navigation never breaks and the page reads as
+ * "we evaluate this, there just wasn't data this week" rather than 404.
+ */
+function emptyCriterionPage(target, summary, { active, label, message }) {
+  const body = `
+<h1>${esc(target.domain)}: ${esc(label)} — week ${esc(summary.week)}</h1>
+${subnav(active)}
+<p class="meta">${esc(message)}</p>
+<p class="note">This criterion is evaluated for every domain, but a given week's sample may not include pages with data for it. Check the <a href="archive.html">archive</a> for other weeks, or the <a href="index.html">overview</a>.</p>`;
+  return layout({
+    title: `${target.domain} ${label} ${summary.week} | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${esc(label)}</li>`,
+    body,
+    depth: 3,
+  });
 }
 
 /**
@@ -843,9 +864,11 @@ ${gaps}
 </section>`;
 }
 
-export function renderLighthousePage(target, summary, csvHref, available = []) {
+export function renderLighthousePage(target, summary, csvHref) {
   const lh = summary.lighthouse;
-  if (!lh || !lh.pageDetail?.length) return null;
+  if (!lh || !lh.pageDetail?.length) {
+    return emptyCriterionPage(target, summary, { active: 'lighthouse', label: 'Lighthouse', message: 'No Lighthouse audits ran on this week\'s sampled pages (Lighthouse is sampled at a low rate; some weeks have none).' });
+  }
   const ms = (v) => (v == null ? 'n/a' : `${(v / 1000).toFixed(1)}s`);
   const sc = (v) => (v == null ? 'n/a' : `${v}`);
   const cell = (html, sort) => ({ html, sort: sort == null ? -1 : sort });
@@ -875,7 +898,7 @@ export function renderLighthousePage(target, summary, csvHref, available = []) {
 
   const body = `
 <h1>${esc(target.domain)}: Lighthouse — week ${esc(summary.week)}</h1>
-${subnav('lighthouse', available)}
+${subnav('lighthouse')}
 <p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals. ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
 ${impact ? perfImpactSection(impact) : ''}
 <section aria-labelledby="h-lh-medians">
@@ -934,9 +957,11 @@ ${totals ? `<p>With an estimated <strong>${totals.pageLoadsPerWeek.toLocaleStrin
  * its word count, Flesch Reading Ease and Flesch-Kincaid grade, plus
  * documentation of what the metrics mean. Returns null if no data.
  */
-export function renderReadabilityPage(target, summary, csvHref, available = []) {
+export function renderReadabilityPage(target, summary, csvHref) {
   const pl = summary.plainLanguage;
-  if (!pl || !pl.pageRows?.length) return null;
+  if (!pl || !pl.pageRows?.length) {
+    return emptyCriterionPage(target, summary, { active: 'readability', label: 'Readability', message: 'No readable prose pages were sampled this week, so there are no readability metrics to report.' });
+  }
   const cell = (html, sort) => ({ html, sort: sort === '' || sort == null ? -1 : sort });
   const cols = [
     { label: 'Page' }, { label: 'Words', num: 1 }, { label: 'Reading ease', num: 1 },
@@ -956,7 +981,7 @@ export function renderReadabilityPage(target, summary, csvHref, available = []) 
   const misspellings = summary.plainLanguage?.topMisspellings ?? [];
   const body = `
 <h1>${esc(target.domain)}: Readability — week ${esc(summary.week)}</h1>
-${subnav('readability', available)}
+${subnav('readability')}
 <p class="meta">Plain-language metrics for the main content of each scanned page (navigation, header, and footer excluded). ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
 <section aria-labelledby="h-read-about">
 ${heading('h-read-about', `What these mean`)}
@@ -997,8 +1022,10 @@ ${heading('h-spelling', `Possible misspellings`)}
  * analytics, CDN, etc.), with confidence level and the evidence signals that
  * triggered each detection. Linked from the domain's subnav when data exists.
  */
-export function renderTechPage(target, summary, csvHref, available = []) {
-  if (!summary.tech?.length) return null;
+export function renderTechPage(target, summary, csvHref) {
+  if (!summary.tech?.length) {
+    return emptyCriterionPage(target, summary, { active: 'tech', label: 'Technology stack', message: 'No technology was detected in this week\'s sampled pages.' });
+  }
   // Denominator for coverage is the number of pages the tech engine actually
   // ran on (its sample), not every page scanned — so "59% (63 of 106)" reads
   // as "found on 63 of the 106 pages we checked for technology".
@@ -1043,7 +1070,7 @@ export function renderTechPage(target, summary, csvHref, available = []) {
   const ranNote = techRan ? ` The technology engine ran on <strong>${techRan}</strong> of ${summary.pagesScanned} pages scanned this week; coverage below is the share of those ${techRan} pages where each technology was found.` : '';
   const body = `
 <h1>${esc(target.domain)}: technology stack</h1>
-${subnav('tech', available)}
+${subnav('tech')}
 <p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, 'tech.json')}</p>
 <p class="note">Detection is additive across the week's sampled pages. Expand a technology to see example pages where it was found.</p>
 ${sections}`;
@@ -1074,9 +1101,11 @@ function findingLabel(key) {
  * a stack of technologies detected on the same pages will share lift values
  * (collinearity), so the implicated component still needs human confirmation.
  */
-export function renderTechFindingsPage(target, summary, available = []) {
+export function renderTechFindingsPage(target, summary) {
   const tf = summary.techFindings;
-  if (!tf || !tf.associations?.length) return null;
+  if (!tf || !tf.associations?.length) {
+    return emptyCriterionPage(target, summary, { active: 'tech-findings', label: 'Technology ↔ issues', message: 'No technology-to-finding associations cleared the support threshold this week (need enough pages where both technology detection and an accessibility engine ran).' });
+  }
   const model = tf.model;
 
   // Group the ranked associations by technology, strongest first.
@@ -1112,7 +1141,7 @@ export function renderTechFindingsPage(target, summary, available = []) {
 
   const body = `
 <h1>${esc(target.domain)}: technology ↔ issues</h1>
-${subnav('tech-findings', available)}
+${subnav('tech-findings')}
 <p class="meta">Accessibility findings that appear disproportionately on pages running a given technology, across the ${model.pages} page(s) in <strong>${esc(summary.week)}</strong> where both technology detection and an accessibility engine ran. <strong>Lift</strong> is how many times more likely a finding is on pages with the technology than on pages overall — a value of 2× means twice the baseline rate.</p>
 <p class="note">This is an <em>association</em>, not proof of cause. Technologies that are detected on the same set of pages (e.g. a CMS, its host, and its language) will share identical lift values; the listing groups by technology but cannot tell which one in a co-located stack is responsible. Treat high-lift pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page's content.</p>
 ${sections}`;
@@ -1137,9 +1166,11 @@ ${sections}`;
  * pages will co-occur with findings without causing them. The rigorous causal
  * test (blocked-load comparison) is a separate, heavier mode.
  */
-export function renderThirdPartyPage(target, summary, csvHref, available = []) {
+export function renderThirdPartyPage(target, summary, csvHref) {
   const tp = summary.thirdParty;
-  if (!tp || !tp.vendors?.length) return null;
+  if (!tp || !tp.vendors?.length) {
+    return emptyCriterionPage(target, summary, { active: 'third-party', label: 'Third parties', message: 'No third-party origins were recorded on this week\'s sampled pages (the third-party engine is sampled; some weeks have none).' });
+  }
   const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">Download CSV</a>` : '';
 
   const rows = tp.vendors
@@ -1160,7 +1191,7 @@ export function renderThirdPartyPage(target, summary, csvHref, available = []) {
   const scriptVendors = tp.vendors.filter((v) => v.isScriptVendor).length;
   const body = `
 <h1>${esc(target.domain)}: third parties</h1>
-${subnav('third-party', available)}
+${subnav('third-party')}
 <p class="meta">Third-party origins serving resources to <strong>${esc(target.domain)}</strong> across the ${tp.pagesScanned} page(s) measured in <strong>${esc(summary.week)}</strong>. <strong>${tp.vendors.length}</strong> distinct third-party domains, <strong>${scriptVendors}</strong> of them serving JavaScript (<span class="wcag-badge">JS</span>). Costs are medians per page the vendor appears on.${dlLink}</p>
 <p class="note">Third-party JavaScript is easy to add and often reduces accessibility and performance — it injects DOM the site owner never reviewed and adds load time. "Pages w/ finding" is the share of pages carrying this vendor that also had an accessibility finding: an <em>association</em> to investigate, not proof the vendor caused it. Third parties vary per page, so a vendor on few pages may simply not have been sampled elsewhere.</p>
 <table class="sortable">
@@ -1201,9 +1232,11 @@ const ALT_VERDICT_INFO = {
 };
 const ALT_VERDICT_ORDER = ['MISSING', 'FILENAME', 'SUSPICIOUS', 'TOO_SHORT', 'TOO_LONG', 'GOOD', 'DECORATIVE'];
 
-export function renderImagesPage(target, summary, csvHref, available = []) {
+export function renderImagesPage(target, summary, csvHref) {
   const img = summary.images;
-  if (!img) return null;
+  if (!img) {
+    return emptyCriterionPage(target, summary, { active: 'images', label: 'Image inventory', message: 'No images were inventoried on this week\'s sampled pages.' });
+  }
   const links = [
     csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '',
     `<a href="images.json">JSON</a>`,
@@ -1266,7 +1299,7 @@ ${heading('h-images-quality', 'Alt-text quality')}
 
   const body = `
 <h1>${esc(target.domain)}: image inventory</h1>
-${subnav('images', available)}
+${subnav('images')}
 <p class="meta">Unique images encountered on scanned pages in <strong>${esc(summary.week)}</strong>, deduplicated by URL — the same image reused across pages is one row with an occurrence count. Images on pages not sampled this week are not listed.${dlLink}</p>
 ${statsTable}
 ${qualitySection}
@@ -1313,7 +1346,7 @@ export function renderArchivePage(target, series, latestWeek) {
     .join('\n');
   const body = `
 <h1>${esc(target.domain)}: report archive</h1>
-${subnav('archive', ['archive'])}
+${subnav('archive')}
 <p class="meta">Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.</p>
 <table>
 <caption>Weekly reports for ${esc(target.domain)} (${series.length} weeks).</caption>
@@ -1328,7 +1361,7 @@ ${subnav('archive', ['archive'])}
   });
 }
 
-export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null, available = []) {
+export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null) {
   const score = scoreFor(summary);
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
@@ -1336,7 +1369,7 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
   const body = `
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
-${subnav('overview', available)}
+${subnav('overview')}
 <p class="meta">This is the <strong>${esc(summary.week)}</strong> ISO-week report (<strong>${summary.pagesScanned}</strong> pages fetched, <strong>${summary.pagesAudited ?? summary.pagesScanned}</strong> unique pages audited by axe/Alfa). Generated ${esc(summary.generatedAt.slice(0, 10))}.
 ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.</p>
 
@@ -1413,10 +1446,10 @@ ${resourcesSection(summary)}
  * axe-core and Alfa rule tables, and the consensus deduplication summary.
  * Linked from the overview and from "Fix these first" deep links.
  */
-export function renderAccessibilityPage(target, summary, bugs, csvLinks, available = []) {
+export function renderAccessibilityPage(target, summary, bugs, csvLinks) {
   const body = `
 <h1>${esc(target.domain)}: Accessibility — week ${esc(summary.week)}</h1>
-${subnav('accessibility', available)}
+${subnav('accessibility')}
 ${bugReportsSection(bugs, csvLinks.bugsAll ?? null)}
 <section aria-labelledby="h-axe">
 ${heading('h-axe', `Deque axe-core findings`)}
@@ -1447,12 +1480,14 @@ ${consensusSection(summary)}
 /**
  * Standalone standards & security page.
  */
-export function renderStandardsPage(target, summary, available = []) {
+export function renderStandardsPage(target, summary) {
   const content = standardsSecuritySection(summary);
-  if (!content) return null;
+  if (!content) {
+    return emptyCriterionPage(target, summary, { active: 'standards', label: 'Standards & Security', message: 'No web-standards or security checks ran on this week\'s sampled pages.' });
+  }
   const body = `
 <h1>${esc(target.domain)}: Standards &amp; Security — week ${esc(summary.week)}</h1>
-${subnav('standards', available)}
+${subnav('standards')}
 ${content}
 `;
   return layout({
@@ -1466,12 +1501,14 @@ ${content}
 /**
  * Standalone errors page: broken links and non-404 error pages.
  */
-export function renderErrorsPage(target, summary, csvHref = null, available = []) {
+export function renderErrorsPage(target, summary, csvHref = null) {
   const content = linksAndErrorsSection(summary, csvHref);
-  if (!content) return null;
+  if (!content) {
+    return emptyCriterionPage(target, summary, { active: 'errors', label: 'Broken Links & Errors', message: 'No broken links or error pages were found on this week\'s sampled pages — clean week.' });
+  }
   const body = `
 <h1>${esc(target.domain)}: Broken Links &amp; Errors — week ${esc(summary.week)}</h1>
-${subnav('errors', available)}
+${subnav('errors')}
 ${content}
 `;
   return layout({

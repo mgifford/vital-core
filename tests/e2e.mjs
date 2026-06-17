@@ -417,6 +417,35 @@ try {
   const archiveHtml = fs.readFileSync(archivePath, 'utf8');
   assert(/2026-W23/.test(archiveHtml) && /2026-W24/.test(archiveHtml), 'archive lists both weeks');
 
+  // Consistent navigation: every sub-page is written for the week, and every
+  // page (including archive.html) carries the identical full subnav. A
+  // criterion with no data this week still renders, with an empty-state page.
+  const weekDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23');
+  const SUBPAGES = ['index', 'accessibility', 'standards', 'errors', 'lighthouse', 'readability', 'tech', 'tech-findings', 'third-party', 'images', 'archive'];
+  const navOf = (html) => {
+    const m = html.match(/<nav class="subnav"[\s\S]*?<\/nav>/);
+    if (!m) return null;
+    return [...m[0].matchAll(/<(?:a[^>]*>|li[^>]*>)([^<]+)<\/(?:a|li)>/g)].map((x) => x[1].trim()).filter(Boolean).join('|');
+  };
+  // The 2026-W23 archive.html lives in the 2026-W24 dir (written at latest week);
+  // check the per-week pages in this week's dir.
+  let referenceNav = null;
+  for (const p of SUBPAGES) {
+    if (p === 'archive') continue; // archive.html is written in the latest-week dir
+    const f = path.join(weekDir, `${p}.html`);
+    assert(fs.existsSync(f), `sub-page ${p}.html is written (consistent nav, no 404)`);
+    const nav = navOf(fs.readFileSync(f, 'utf8'));
+    assert(nav && nav.split('|').length === SUBPAGES.length, `${p}.html has the full ${SUBPAGES.length}-item subnav`);
+    if (referenceNav === null) referenceNav = nav;
+    assert(nav === referenceNav, `${p}.html subnav is identical to the others`);
+  }
+  // archive.html (in the W24 dir) must carry the same full nav too.
+  assert(navOf(archiveHtml) === referenceNav, 'archive.html has the identical full subnav');
+  // Lighthouse is sampled and may have no data in the e2e: its page must still
+  // exist with the nav (empty-state), proving the no-404 guarantee.
+  const lhHtml = fs.readFileSync(path.join(weekDir, 'lighthouse.html'), 'utf8');
+  assert(/class="subnav"/.test(lhHtml), 'lighthouse.html (possibly empty) still has the subnav');
+
   // Week-1 report (has violations): "Fix these first" + evidence CSVs.
   const w1report = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
   const w1a11y = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessibility.html'), 'utf8');
