@@ -420,6 +420,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
   const lhMetrics = { firstContentfulPaintMs: [], largestContentfulPaintMs: [], speedIndexMs: [], totalBlockingTimeMs: [], cumulativeLayoutShift: [] };
   const lhPages = []; // { url, scores, metrics }
+  // Lighthouse recommendations (non-a11y audits) rolled up across sampled pages.
+  const lhReco = {}; // auditId -> { id, category, title, pages, examplePages[], savingsBytes, savingsMs }
   // Images: per-page flat list for CSV + aggregate alt-text metrics.
   const imageRows = []; // { pageUrl, src, alt, hasAlt, isDecorative, isMissingAlt, width, height, loading, bytes }
   let imagePagesScanned = 0;
@@ -584,6 +586,15 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (typeof v === 'number') lhMetrics[k].push(v);
       }
       lhPages.push({ url: rec.url, scores: rec.lighthouse.scores, metrics: rec.lighthouse.metrics ?? {} });
+      // Roll up failing audits into recommendations (like axe rules): one
+      // entry per audit id, counting pages affected and summing savings.
+      for (const a of rec.lighthouse.audits ?? []) {
+        const r = (lhReco[a.id] ??= { id: a.id, category: a.category, title: a.title, pages: 0, examplePages: [], savingsBytes: 0, savingsMs: 0 });
+        r.pages++;
+        if (r.examplePages.length < 10) r.examplePages.push(rec.url);
+        r.savingsBytes += a.savingsBytes ?? 0;
+        r.savingsMs += a.savingsMs ?? 0;
+      }
     }
   }
 
@@ -712,6 +723,11 @@ function summarizeRecords(target, week, records, brokenLinks) {
             cumulativeLayoutShift: lhMetrics.cumulativeLayoutShift.length ? median(lhMetrics.cumulativeLayoutShift) : null,
           },
           pageDetail: lhPages, // per-sampled-page detail for the Lighthouse page (omitted from committed summary.json)
+          // Aggregated non-accessibility recommendations, ranked by reach then
+          // impact. Stored in the committed summary (compact, like axe rules).
+          recommendations: Object.values(lhReco).sort(
+            (a, b) => b.pages - a.pages || (b.savingsBytes + b.savingsMs * 1000) - (a.savingsBytes + a.savingsMs * 1000)
+          ),
         }
       : null,
     linkCheck: brokenLinks.size

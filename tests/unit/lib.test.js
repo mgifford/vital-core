@@ -20,6 +20,7 @@ import { headersToWappalyzer } from '../../src/engines/tech.js';
 import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
+import { extractAudits } from '../../src/engines/lighthouse.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -1035,4 +1036,37 @@ test('buildLineManifest: JIM shape with facets, string records, data.source', ()
   assert.equal(d.series[0].records.length, 2, 'null value filtered out');
   assert.deepEqual(d.series[0].records[0], { x: '2026-W23', y: '6' });
   assert.equal(typeof d.series[0].records[0].y, 'string', 'y is a string per runtime contract');
+});
+
+test('extractAudits: pulls failing non-a11y audits, tags category, skips a11y/passing', () => {
+  const categories = {
+    performance: { auditRefs: [{ id: 'unused-css-rules' }, { id: 'server-response-time' }, { id: 'speed-index' }] },
+    seo: { auditRefs: [{ id: 'meta-description' }] },
+    accessibility: { auditRefs: [{ id: 'color-contrast' }] }, // must be ignored
+    'agentic-browsing': { auditRefs: [{ id: 'llms-txt' }] },
+  };
+  const audits = {
+    'unused-css-rules': { title: 'Reduce unused CSS', score: 0.5, scoreDisplayMode: 'metricSavings',
+      metricSavings: { LCP: 350 }, details: { overallSavingsBytes: 177580, items: [1, 2, 3] } },
+    'server-response-time': { title: 'Server response', score: 1, scoreDisplayMode: 'binary' }, // passing -> skip
+    'speed-index': { title: 'Speed Index', score: 0.4, scoreDisplayMode: 'numeric', details: {} },
+    'meta-description': { title: 'No meta description', score: 0, scoreDisplayMode: 'binary', details: { items: [] } },
+    'color-contrast': { title: 'Contrast', score: 0, scoreDisplayMode: 'binary' }, // a11y -> skip
+    'llms-txt': { title: 'llms.txt follows recommendations', score: null, scoreDisplayMode: 'notApplicable' },
+  };
+  const out = extractAudits(categories, audits);
+  const ids = out.map((a) => a.id).sort();
+  // unused-css-rules: metricSavings mode with 177580 bytes -> kept as a savings opportunity.
+  // speed-index (numeric, 0.4) kept; meta-description (binary, 0) kept; llms-txt (agentic notApplicable) kept.
+  assert.ok(ids.includes('unused-css-rules'), 'metricSavings opportunity with real savings kept');
+  assert.ok(ids.includes('speed-index'), 'numeric failing audit kept');
+  assert.ok(ids.includes('meta-description'), 'binary failing audit kept');
+  assert.ok(ids.includes('llms-txt'), 'agentic notApplicable gap kept');
+  assert.ok(!ids.includes('color-contrast'), 'accessibility audit excluded');
+  assert.ok(!ids.includes('server-response-time'), 'passing audit excluded');
+  const css = out.find((a) => a.id === 'unused-css-rules');
+  assert.equal(css.savingsBytes, 177580, 'savings bytes captured');
+  assert.equal(css.savingsMs, 350, 'max metricSavings ms captured');
+  const seo = out.find((a) => a.id === 'meta-description');
+  assert.equal(seo.category, 'seo', 'category tagged from auditRefs');
 });
