@@ -366,6 +366,10 @@ try {
   assert(/class="affected"/.test(w1a11y), 'bug reports list affected page URLs inline when there are <=25');
   // Anchor links on section headings (shareable, copy-safe via CSS ::before).
   assert(/<a class="anchor" href="#h-axe"/.test(w1a11y), 'section headings have shareable anchor links');
+  // Bug-report filter: severity + WCAG category controls and data attributes,
+  // plus the no-JS-safe filter script.
+  assert(/class="bug-filter"/.test(w1a11y) && /id="filter-sev"/.test(w1a11y) && /id="filter-cat"/.test(w1a11y), 'accessibility page has severity + category filter controls');
+  assert(/<details[^>]*class="bug[^"]*"[^>]*data-severity=/.test(w1a11y), 'bug blocks carry data-severity for filtering');
   // Broken-links & errors are on their own errors.html sub-page.
   assert(/id="h-links"/.test(w1errors) && /Broken links/.test(w1errors), 'broken links section on errors sub-page');
   // Long URLs use the truncatable .url class (e.g. in errors table).

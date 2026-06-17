@@ -43,6 +43,24 @@ const Wappalyzer = (() => {
 })();
 
 /**
+ * Shape HTTP response headers for Wappalyzer. Headers are matched
+ * "many-to-many" (header name -> values), so the result must be
+ * { 'header-name': [value, ...] } with array values — the same contract as
+ * cookies and meta. A bare string value makes Wappalyzer call value.forEach
+ * and throw "values.forEach is not a function", crashing the page scan; an
+ * array-of-pairs shape never matches any fingerprint at all. Exported for
+ * regression testing of that contract.
+ */
+export function headersToWappalyzer(pageHeaders = {}) {
+  const headers = {};
+  for (const [k, v] of Object.entries(pageHeaders)) {
+    const key = k.toLowerCase();
+    (headers[key] ??= []).push(...(Array.isArray(v) ? v : [v]));
+  }
+  return headers;
+}
+
+/**
  * Run Wappalyzer detection on the current Playwright page.
  *
  * pageHeaders: plain object of HTTP response headers (any case keys) from
@@ -72,11 +90,14 @@ export async function runTech(page, pageHeaders = {}) {
       if (key) (meta[key] ??= []).push(val);
     }
 
-    // Cookies: { name -> value }.
+    // Cookies: { name -> [value] }. Wappalyzer's cookie/header/meta patterns
+    // are "many-to-many" and call value.forEach, so each value MUST be an
+    // array. A bare string here throws "values.forEach is not a function"
+    // and crashes the whole page scan (e.g. Akamai's ak_bmsc cookie).
     const cookies = {};
     for (const part of document.cookie.split(';')) {
       const [k, ...rest] = part.trim().split('=');
-      if (k) cookies[k.trim()] = rest.join('=').trim();
+      if (k) (cookies[k.trim()] ??= []).push(rest.join('=').trim());
     }
 
     // JS globals — Wappalyzer's `js` patterns test window[property].
@@ -104,8 +125,7 @@ export async function runTech(page, pageHeaders = {}) {
     };
   });
 
-  // Headers: Wappalyzer expects an array of [name, value] pairs (lowercased).
-  const headers = Object.entries(pageHeaders).map(([k, v]) => [k.toLowerCase(), v]);
+  const headers = headersToWappalyzer(pageHeaders);
 
   const detections = Wappalyzer.analyze({
     url: pageData.url,

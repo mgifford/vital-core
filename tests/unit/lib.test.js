@@ -16,6 +16,11 @@ import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
 import { toCsv, ruleSlug } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
 import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
+import { headersToWappalyzer } from '../../src/engines/tech.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -164,11 +169,11 @@ test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {
 });
 
 test('severityFor: axe impact maps, frequency amplifies', () => {
-  assert.equal(severityFor('critical', 1, 50), 'critical');
-  assert.equal(severityFor('minor', 1, 50), 'minor', 'rare minor stays minor');
-  assert.equal(severityFor('minor', 30, 50), 'moderate', 'site-wide minor escalates one level');
-  assert.equal(severityFor('serious', 40, 50), 'critical', 'site-wide serious escalates to critical');
-  assert.equal(severityFor(null, 1, 50), 'moderate', 'no impact (alfa) defaults moderate');
+  assert.equal(severityFor('critical', 1, 50), 'Critical');
+  assert.equal(severityFor('minor', 1, 50), 'Low', 'rare minor stays low');
+  assert.equal(severityFor('minor', 30, 50), 'Medium', 'site-wide minor escalates one level');
+  assert.equal(severityFor('serious', 40, 50), 'Critical', 'site-wide serious escalates to critical');
+  assert.equal(severityFor(null, 1, 50), 'Medium', 'no impact (alfa) defaults medium');
 });
 
 test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
@@ -204,7 +209,7 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.ok(reports.indexOf(alfaReport) < reports.indexOf(axeReport),
     'WCAG 2.0 A (sia-r12) sorts before WCAG 2.0 AA (color-contrast)');
 
-  assert.equal(axeReport.severity, 'critical', '6/10 pages escalates serious to critical');
+  assert.equal(axeReport.severity, 'Critical', '6/10 pages escalates serious to critical');
   assert.equal(axeReport.wcag_sc, '1.4.3');
   assert.equal(axeReport.wcag_level, 'AA');
   assert.equal(axeReport.wcag_version, '2.0');
@@ -224,16 +229,16 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').instance_id, axeReport.instance_id);
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').pattern_id, axeReport.pattern_id);
 
-  // Alfa report: no impact -> moderate, mapped SC, WCAG category.
+  // Alfa report: no impact -> Medium (default), mapped SC, WCAG category.
   const alfa = reports.find((r) => r.rule_id === 'sia-r12');
-  assert.equal(alfa.severity, 'moderate');
+  assert.equal(alfa.severity, 'Medium');
   assert.equal(alfa.wcag_sc, '4.1.2');
   assert.equal(alfa.wcag_version, '2.0');
   assert.equal(alfa.wcag_category, 'WCAG 2.0 A');
 
   // Markdown renders the required headings.
   const md = bugReportToMarkdown(axeReport);
-  assert.match(md, /\*\*Severity:\*\* critical/);
+  assert.match(md, /\*\*Severity:\*\* Critical/);
   assert.match(md, /### Steps to reproduce/);
   assert.match(md, /\*\*WCAG SC:\*\* 1\.4\.3/);
 });
@@ -850,4 +855,43 @@ test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
   assert.match(yaml, /success_criteria_level_a:/, 'has Level A section');
   assert.match(yaml, /success_criteria_level_aa:/, 'has Level AA section');
   assert.match(yaml, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence values');
+});
+
+test('headersToWappalyzer: produces array-valued, lowercased object shape', () => {
+  const out = headersToWappalyzer({ 'Content-Type': 'text/html', Server: 'AkamaiGHost' });
+  assert.deepEqual(out, { 'content-type': ['text/html'], server: ['AkamaiGHost'] });
+  // Already-array values are flattened, not nested.
+  assert.deepEqual(headersToWappalyzer({ 'Set-Cookie': ['a=1', 'b=2'] }), { 'set-cookie': ['a=1', 'b=2'] });
+});
+
+// Regression: Akamai-fronted sites (e.g. cms.gov) set ak_bmsc/bm_sv/bm_sz
+// cookies that match a Wappalyzer fingerprint. If cookie/header values are
+// bare strings instead of arrays, analyzeManyToMany throws "values.forEach
+// is not a function" and crashes the whole page scan. This loads the real
+// vendored Wappalyzer and asserts the shapes our tech engine produces are
+// crash-free and actually detect Akamai.
+test('wappalyzer: Akamai cookies/headers do not crash and are detected', () => {
+  const require = createRequire(import.meta.url);
+  const VENDOR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../vendor/wappalyzer');
+  const fn = new Function('module', 'exports', 'require', fs.readFileSync(path.join(VENDOR, 'wappalyzer.js'), 'utf8'));
+  const m = { exports: {} };
+  fn(m, m.exports, require);
+  const W = m.exports;
+  W.setCategories(JSON.parse(fs.readFileSync(path.join(VENDOR, 'categories.json'), 'utf8')));
+  let tech = {};
+  for (const f of fs.readdirSync(path.join(VENDOR, 'technologies'))) {
+    if (f.endsWith('.json')) Object.assign(tech, JSON.parse(fs.readFileSync(path.join(VENDOR, 'technologies', f), 'utf8')));
+  }
+  W.setTechnologies(tech);
+
+  // Cookies as the engine now builds them: { name -> [value] }.
+  const cookies = {};
+  for (const [k, v] of Object.entries({ ak_bmsc: 'F1', bm_sv: 'x', bm_sz: 'a' })) (cookies[k] ??= []).push(v);
+  const headers = headersToWappalyzer({ Server: 'AkamaiGHost' });
+
+  let detections;
+  assert.doesNotThrow(() => {
+    detections = W.resolve(W.analyze({ url: 'https://www.cms.gov', html: '<html></html>', scriptSrc: [], scripts: '', meta: {}, cookies, js: {}, headers }));
+  }, 'string-valued cookies/headers must not crash analyzeManyToMany');
+  assert.ok(detections.some((d) => /akamai/i.test(d.name)), 'Akamai detected from its cookies/headers');
 });

@@ -416,7 +416,7 @@ ${heading('h-bugs', `Bug reports`)}
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
         : '';
-      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}">
+      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
 <summary><span class="sev-badge">${esc(b.severity)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span></summary>
 <dl class="bug-fields">
@@ -448,6 +448,23 @@ ${affectedPagesBlock(b)}
     })
     .join('\n');
 
+  // Progressive-enhancement filter. Without JS every bug is visible; the
+  // script below reveals the controls and filters the <details> blocks by
+  // their data-severity / data-category attributes.
+  const sevPresent = ['Critical', 'High', 'Medium', 'Low'].filter((s) => sevCount[s]);
+  const catPresent = catOrder.filter((c) => catCounts[c]);
+  const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${esc(s)} (${sevCount[s]})</option>`).join('');
+  const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${esc(c)} (${catCounts[c]})</option>`).join('');
+  const filterBar = `<form class="bug-filter" hidden aria-label="Filter bug reports" data-total="${bugs.length}">
+<div class="bug-filter-row">
+<label>Severity <select id="filter-sev"><option value="">All severities</option>${sevOpts}</select></label>
+<label>WCAG category <select id="filter-cat"><option value="">All categories</option>${catOpts}</select></label>
+<label class="bug-filter-check"><input type="checkbox" id="filter-dup"> Hide possible duplicates</label>
+<button type="button" id="filter-reset">Reset</button>
+</div>
+<p class="bug-filter-count" aria-live="polite" id="filter-count">Showing all ${bugs.length} issue type(s).</p>
+</form>`;
+
   const csvLink = csvBugsHref ? ` · <a href="${esc(csvBugsHref)}">CSV (all findings)</a>` : '';
   const dupLine = dupCount > 0
     ? `<p class="note">${dupCount} finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.</p>`
@@ -461,9 +478,52 @@ ${heading('h-bugs', `Bug reports`)}
 Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON</a>${csvLink}.</p>
 <p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
 ${dupLine}
-${blocks}
+${filterBar}
+<div class="bug-list">${blocks}</div>
+<p class="bug-filter-empty" hidden>No issues match the current filters. <button type="button" id="filter-reset-2">Clear filters</button></p>
+${BUG_FILTER_SCRIPT}
 </section>`;
 }
+
+// Progressive-enhancement filtering for the bug-report list. Reveals the
+// filter form (hidden by default so no-JS users see every bug) and toggles
+// each .bug <details> by its data-severity / data-category attributes.
+const BUG_FILTER_SCRIPT = `<script>
+(function () {
+  var form = document.querySelector('.bug-filter');
+  if (!form) return;
+  form.hidden = false;
+  var sev = document.getElementById('filter-sev');
+  var cat = document.getElementById('filter-cat');
+  var dup = document.getElementById('filter-dup');
+  var count = document.getElementById('filter-count');
+  var empty = document.querySelector('.bug-filter-empty');
+  var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
+  var total = bugs.length;
+  function apply() {
+    var s = sev.value, c = cat.value, hideDup = dup.checked, shown = 0;
+    bugs.forEach(function (b) {
+      var ok = (!s || b.getAttribute('data-severity') === s)
+        && (!c || b.getAttribute('data-category') === c)
+        && (!hideDup || b.getAttribute('data-duplicate') !== '1');
+      b.hidden = !ok;
+      if (ok) shown++;
+    });
+    var filtered = s || c || hideDup;
+    count.textContent = filtered
+      ? 'Showing ' + shown + ' of ' + total + ' issue type(s).'
+      : 'Showing all ' + total + ' issue type(s).';
+    if (empty) empty.hidden = shown !== 0;
+  }
+  function reset() { sev.value = ''; cat.value = ''; dup.checked = false; apply(); }
+  sev.addEventListener('change', apply);
+  cat.addEventListener('change', apply);
+  dup.addEventListener('change', apply);
+  document.getElementById('filter-reset').addEventListener('click', reset);
+  var r2 = document.getElementById('filter-reset-2');
+  if (r2) r2.addEventListener('click', reset);
+})();
+</script>`;
 
 /**
  * Per-engine coverage: how many of the week's pages each engine ran on,
@@ -1386,6 +1446,15 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .checklist li.pass .check { color: var(--better); }
 .checklist li.fail .check { color: var(--worse); }
 @media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }
+.bug-filter { margin: .75rem 0 1rem; padding: .75rem .9rem; border: 1px solid var(--rule);
+  border-radius: 2px; background: color-mix(in srgb, var(--accent) 5%, transparent); }
+.bug-filter-row { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; align-items: end; }
+.bug-filter label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; font-weight: 600; }
+.bug-filter-check { flex-direction: row; align-items: center; gap: .4rem; }
+.bug-filter select { font: inherit; padding: .25rem .4rem; }
+.bug-filter button { font: inherit; padding: .3rem .7rem; cursor: pointer; }
+.bug-filter-count { margin: .6rem 0 0; font-size: .85rem; color: var(--muted); }
+.bug-filter-empty { padding: .9rem; border: 1px dashed var(--rule); border-radius: 2px; color: var(--muted); }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
   margin: .6rem 0; padding: 0 .9rem; }
 .bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }
