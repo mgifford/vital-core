@@ -19,6 +19,7 @@ import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
 import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
+import { buildLineManifest } from '../../src/lib/paracharts.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -1018,4 +1019,20 @@ test('rollupThirdParty: per-vendor pages, medians, script flag, finding co-occur
   assert.equal(cdn.pages, 1);
   // Sorted by pages desc: gtm (3) before cdn (1).
   assert.equal(r.vendors[0].origin, 'gtm.com');
+});
+
+test('buildLineManifest: JIM shape with facets, string records, data.source', () => {
+  const m = buildLineManifest('Median axe violations', 'Median axe violations',
+    [{ week: '2026-W23', value: 6 }, { week: '2026-W24', value: 3 }, { week: '2026-W25', value: null }],
+    { unit: ' KB' });
+  assert.equal(m.datasets.length, 1);
+  const d = m.datasets[0];
+  assert.equal(d.type, 'line');
+  assert.equal(d.data.source, 'inline', 'data.source present (runtime throws without it)');
+  assert.ok(d.facets.x && d.facets.y, 'x and y facets present');
+  assert.equal(d.facets.y.units, 'KB', 'unit trimmed onto y facet');
+  // null-valued points dropped; remaining records are string-typed.
+  assert.equal(d.series[0].records.length, 2, 'null value filtered out');
+  assert.deepEqual(d.series[0].records[0], { x: '2026-W23', y: '6' });
+  assert.equal(typeof d.series[0].records[0].y, 'string', 'y is a string per runtime contract');
 });
