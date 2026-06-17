@@ -382,6 +382,15 @@ try {
   assert(readCsv.startsWith('url,words,reading_ease,grade,scored'), 'readability CSV has expected header');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv')), 'spelling CSV written');
   assert(/word,pages_affected,example_pages/.test(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv'), 'utf8')), 'spelling CSV has expected header');
+  // Images sub-page + CSV.
+  const imagesPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.html');
+  assert(fs.existsSync(imagesPage), 'images.html sub-page written');
+  const imagesHtml = fs.readFileSync(imagesPage, 'utf8');
+  assert(/id="h-images-detail"/.test(imagesHtml), 'images page has detail section');
+  assert(/href="images.html">Images/.test(w1report), 'subnav links to images page');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.csv')), 'images CSV written');
+  const imagesCsvContent = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.csv'), 'utf8');
+  assert(imagesCsvContent.startsWith('page_url,src,alt,has_alt,is_decorative,is_missing_alt'), 'images CSV has expected header');
 
   const comment = run('src/issue-comment.js', [], '2026-W24');
   assert(comment.includes('localhost: 2026-W24') && comment.includes('Median axe violations'), 'issue comment generated with deltas');

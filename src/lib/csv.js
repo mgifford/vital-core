@@ -151,6 +151,33 @@ export function writeBugsCsv(repDir, bugs) {
 }
 
 /**
+ * Write a flat images.csv — one row per image found across scanned pages.
+ * Returns the relative path "images.csv" or null if there's nothing to write.
+ */
+export function writeImagesCsv(repDir, summary) {
+  const rows = summary.images?.imageRows;
+  if (!rows?.length) return null;
+  const headers = ['page_url', 'src', 'alt', 'has_alt', 'is_decorative', 'is_missing_alt', 'width', 'height', 'natural_width', 'natural_height', 'loading', 'decoding', 'bytes'];
+  const data = rows.map((img) => [
+    img.pageUrl,
+    img.src,
+    img.alt ?? '',
+    img.hasAlt ? 'true' : 'false',
+    img.isDecorative ? 'true' : 'false',
+    img.isMissingAlt ? 'true' : 'false',
+    img.width ?? '',
+    img.height ?? '',
+    img.naturalWidth ?? '',
+    img.naturalHeight ?? '',
+    img.loading ?? '',
+    img.decoding ?? '',
+    img.bytes ?? '',
+  ]);
+  fs.writeFileSync(path.join(repDir, 'images.csv'), toCsv(headers, data));
+  return 'images.csv';
+}
+
+/**
  * Write a flat errors.csv for broken links and non-404 error pages.
  * Returns the relative path "errors.csv" or null if there's nothing to write.
  */

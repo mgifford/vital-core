@@ -3,14 +3,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeImagesCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { scoreFor } from './lib/score.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
+import { loadLinkLedger, saveLinkLedger, updateLinkLedger } from './lib/link-ledger.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -46,7 +47,7 @@ for (const target of config.targets) {
       series.push(summary);
       // The full per-page lists are large and reconstructable; keep them
       // in memory for CSV generation but don't commit them to summary.json.
-      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList']);
+      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows']);
       fs.writeFileSync(
         path.join(domainDir, week, 'summary.json'),
         JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
@@ -89,6 +90,9 @@ for (const target of config.targets) {
   // Resource inventory ledger (PDFs, docs, iframes, media) — same pattern.
   const resLedger = loadResourceLedger(target.key, target.domain);
   resLedger.resources = {};
+  // Broken-link ledger — accumulated across whole history.
+  const linkLedger = loadLinkLedger(target.key, target.domain);
+  linkLedger.links = {};
 
   // Human reports + structured bug reports (Markdown, JSON, and inline HTML).
   let latestBugs = []; // latest week's bugs, for the fleet-wide worst-offenders view
@@ -119,6 +123,13 @@ for (const target of config.targets) {
     // Flat bugs.csv: all findings in one spreadsheet-friendly file.
     // Written after affected_pages_csv is set on each bug so the links are included.
     csvLinks.bugsAll = writeBugsCsv(repDir, bugs);
+    // Broken-link ledger: track first/last-seen and weeks-broken per URL,
+    // then annotate summary entries so the errors page can show history.
+    if (summary.linkCheck?.broken?.length) {
+      const annotated = updateLinkLedger(linkLedger, summary.week, summary.linkCheck.broken);
+      summary.linkCheck.broken = annotated;
+    }
+
     // Broken links + error pages CSV.
     csvLinks.errorsAll = writeErrorsCsv(repDir, summary);
 
@@ -148,6 +159,7 @@ for (const target of config.targets) {
     if (summary.lighthouse?.pageDetail?.length) available.push('lighthouse');
     if (summary.plainLanguage?.pageRows?.length) available.push('readability');
     if (summary.tech?.length) available.push('tech');
+    if (summary.images) available.push('images');
     // Standards and errors pages only exist when there's data.
     const hasStandards = !!(summary.security || summary.standards);
     const hasErrors = !!(summary.linkCheck?.broken?.length || summary.errorPages?.some((e) => Number(e.status) !== 404));
@@ -171,6 +183,9 @@ for (const target of config.targets) {
     if (readHtml) fs.writeFileSync(path.join(repDir, 'readability.html'), readHtml);
     const techHtml = renderTechPage(target, summary, available);
     if (techHtml) fs.writeFileSync(path.join(repDir, 'tech.html'), techHtml);
+    const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, summary) : null;
+    const imagesHtml = renderImagesPage(target, summary, imagesCsv, available);
+    if (imagesHtml) fs.writeFileSync(path.join(repDir, 'images.html'), imagesHtml);
     // Archive page (all weeks). Written in each week folder so the subnav
     // "Archive" link resolves from any week's report.
     const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
@@ -190,6 +205,7 @@ for (const target of config.targets) {
 
   saveFindings(target.key, ledger);
   saveResourceLedger(target.key, resLedger);
+  saveLinkLedger(target.key, linkLedger);
 
   // Single downloadable snapshot of everything known about the domain:
   // every scanned URL's latest status, current known findings (with
@@ -349,6 +365,13 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
   const lhMetrics = { firstContentfulPaintMs: [], largestContentfulPaintMs: [], speedIndexMs: [], totalBlockingTimeMs: [], cumulativeLayoutShift: [] };
   const lhPages = []; // { url, scores, metrics }
+  // Images: per-page flat list for CSV + aggregate alt-text metrics.
+  const imageRows = []; // { pageUrl, src, alt, hasAlt, isDecorative, isMissingAlt, width, height, loading, bytes }
+  let imagePagesScanned = 0;
+  let imagesTotalCount = 0;
+  let imagesMissingAlt = 0;
+  let imagesDecorative = 0;
+
   // brokenLinks is supplied by the caller (folded from run logs).
 
   for (const rec of files) {
@@ -427,6 +450,15 @@ function summarizeRecords(target, week, records, brokenLinks) {
         } else {
           existing.pagesConfirmed++;
         }
+      }
+    }
+    if (rec.images) {
+      imagePagesScanned++;
+      imagesTotalCount += rec.images.count;
+      for (const img of rec.images.images ?? []) {
+        if (img.isMissingAlt) imagesMissingAlt++;
+        if (img.isDecorative) imagesDecorative++;
+        imageRows.push({ pageUrl: rec.url, ...img });
       }
     }
     if (rec.sustainability) {
@@ -620,6 +652,17 @@ function summarizeRecords(target, week, records, brokenLinks) {
     errorPages: errorPages.slice(0, 25),
     tech: techDetections.size
       ? [...techDetections.values()].sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name))
+      : null,
+    images: imagePagesScanned
+      ? {
+          pagesScanned: imagePagesScanned,
+          totalImages: imagesTotalCount,
+          missingAlt: imagesMissingAlt,
+          decorative: imagesDecorative,
+          withAlt: imagesTotalCount - imagesMissingAlt - imagesDecorative,
+          // Per-image rows for the CSV and images.html page (omitted from committed summary.json).
+          imageRows,
+        }
       : null,
   };
 }

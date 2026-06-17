@@ -99,6 +99,7 @@ function subnav(active, available) {
     ['lighthouse.html', 'Lighthouse', 'lighthouse'],
     ['readability.html', 'Readability', 'readability'],
     ['tech.html', 'Tech stack', 'tech'],
+    ['images.html', 'Images', 'images'],
     ['archive.html', 'Archive', 'archive'],
   ].filter(([, , key]) => key === 'overview' || key === 'archive' || available.includes(key));
   if (items.length < 2) return '';
@@ -171,7 +172,12 @@ function linksAndErrorsSection(summary, csvHref = null) {
   if (broken.length === 0 && errors.length === 0) return '';
 
   const brokenRows = broken
-    .map((b) => `<tr><th scope="row">${urlCell(b.url)}</th><td>${esc(b.status || b.reason)}</td><td>broken link</td><td>${linkedFrom(b.foundOn)}</td></tr>`)
+    .map((b) => {
+      const history = b.weeksBroken > 1
+        ? ` <span class="bug-meta">(broken for ${b.weeksBroken} weeks, first seen ${esc(b.firstSeen)})</span>`
+        : (b.firstSeen ? ` <span class="bug-meta">(first seen ${esc(b.firstSeen)})</span>` : '');
+      return `<tr><th scope="row">${urlCell(b.url)}${history}</th><td>${esc(b.status || b.reason)}</td><td>broken link</td><td>${linkedFrom(b.foundOn)}</td></tr>`;
+    })
     .join('\n');
   const errorRows = errors
     .map((e) => `<tr><th scope="row">${urlCell(e.url)}</th><td>${esc(e.status)}</td><td>page error</td><td>n/a</td></tr>`)
@@ -801,6 +807,57 @@ ${sections}`;
   return layout({
     title: `${target.domain} Tech Stack ${summary.week} | vital-scans`,
     breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Tech stack</li>`,
+    body,
+    depth: 3,
+  });
+}
+
+/**
+ * Images page: per-page alt-text coverage summary and a table of all
+ * images found during the week's scan, with their alt text, dimensions,
+ * and lazy-loading attributes. Links to the images.csv download.
+ */
+export function renderImagesPage(target, summary, csvHref, available = []) {
+  const img = summary.images;
+  if (!img) return null;
+  const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">Download CSV</a>` : '';
+  const pct = (n) => img.totalImages ? `${Math.round((n / img.totalImages) * 100)}%` : '0%';
+  const statsTable = `<table class="stats-table">
+<caption>Image alt-text coverage across ${img.pagesScanned} page(s) scanned in ${esc(summary.week)}.</caption>
+<thead><tr><th scope="col">Category</th><th scope="col">Count</th><th scope="col">Share</th></tr></thead>
+<tbody>
+<tr><th scope="row">Total images</th><td class="num">${img.totalImages}</td><td class="num">—</td></tr>
+<tr><th scope="row">Has alt text</th><td class="num">${img.withAlt}</td><td class="num">${pct(img.withAlt)}</td></tr>
+<tr><th scope="row">Decorative (alt="")</th><td class="num">${img.decorative}</td><td class="num">${pct(img.decorative)}</td></tr>
+<tr><th scope="row">Missing alt attribute</th><td class="num">${img.missingAlt}</td><td class="num">${pct(img.missingAlt)}</td></tr>
+</tbody>
+</table>`;
+  const rows = (img.imageRows ?? []).slice(0, 500).map((r) => {
+    const altCell = r.isMissingAlt
+      ? '<span class="error">missing</span>'
+      : r.isDecorative
+        ? '<em>decorative</em>'
+        : esc(r.alt ?? '');
+    const dims = (r.naturalWidth && r.naturalHeight) ? `${r.naturalWidth}×${r.naturalHeight}` : '';
+    const lazy = r.loading === 'lazy' ? ' <span class="bug-meta">lazy</span>' : '';
+    return `<tr><th scope="row">${urlCell(r.pageUrl)}</th><td>${urlCell(r.src)}</td><td>${altCell}</td><td class="num">${dims}</td><td>${lazy}</td></tr>`;
+  }).join('\n');
+  const body = `
+<h1>${esc(target.domain)}: image inventory</h1>
+${subnav('images', available)}
+<p class="meta">All images encountered on scanned pages in <strong>${esc(summary.week)}</strong>. Images on pages not sampled this week are not listed.${dlLink}</p>
+${statsTable}
+<section aria-labelledby="h-images-detail">
+${heading('h-images-detail', 'Image detail')}
+<table>
+<caption>Up to 500 images from ${img.pagesScanned} page(s) scanned.</caption>
+<thead><tr><th scope="col">Page</th><th scope="col">Image URL</th><th scope="col">Alt text</th><th scope="col">Dimensions</th><th scope="col">Loading</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</section>`;
+  return layout({
+    title: `${target.domain} Images ${summary.week} | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Images</li>`,
     body,
     depth: 3,
   });
