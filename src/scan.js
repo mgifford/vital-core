@@ -259,7 +259,7 @@ for (const item of batch) {
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
       if (runs('axe')) { record.axe = await runAxe(page); mark('axe'); }
       if (runs('alfa')) { record.alfa = await runAlfa(page); mark('alfa'); }
-      if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page); mark('plain-language'); }
+      if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page, { extraAllowlist: target.spelling_allowlist ?? [] }); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
       if (runs('resources')) { record.resources = await runResources(page, item.url); mark('resources'); }
       if (imgCollector) {

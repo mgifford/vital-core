@@ -26,8 +26,9 @@ const PORT = 8123;
 // --- 0. Sandbox: run scan/aggregate from a copy so real config/state/data stay untouched.
 fs.rmSync(SANDBOX, { recursive: true, force: true });
 fs.mkdirSync(SITE, { recursive: true });
-for (const d of ['src', 'node_modules', 'package.json']) {
-  fs.cpSync(path.join(ROOT, d), path.join(SANDBOX, d), { recursive: true });
+for (const d of ['src', 'node_modules', 'package.json', 'vendor']) {
+  const p = path.join(ROOT, d);
+  if (fs.existsSync(p)) fs.cpSync(p, path.join(SANDBOX, d), { recursive: true });
 }
 fs.mkdirSync(path.join(SANDBOX, 'config'));
 // Copy the real config data files the engines/reports read (remediation
@@ -54,6 +55,8 @@ sampling:
   plain-language: 100
   deprecated-html: 100
   resources: 100
+  images: 100
+  tech: 100
   link-check: 100
   standards: 100
   security: 100
@@ -75,7 +78,8 @@ function writeSite({ fixed }) {
     fs.writeFileSync(
       path.join(SITE, `page-${i}.html`),
       `<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title></head>
+<html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title>
+<meta name="generator" content="WordPress 6.5"></head>
 <body><main><h1>Page ${i}</h1>
 ${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
 <p>This is a short paragraph of ordinary readable prose written so the plain language engine has real sentences to score. It deliberately contains one mispelled word for the spell check to catch, and enough words to count as content rather than navigation.</p>
@@ -179,11 +183,15 @@ try {
   // axe rate is 100%, so it ran on every auditable (200-HTML) page; that
   // equals pagesAudited, which excludes error pages like the 404.
   assert(w1.coverage && w1.coverage.axe === w1.pagesAudited, 'per-engine coverage recorded (axe 100% of auditable pages)');
-  // CSV exports of affected pages.
+  // CSV exports of affected pages. Filenames may be date-prefixed (e.g.
+  // "localhost_16Jun2026_axe-pages-with-violations.csv"), so match by suffix.
   const csvDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'csv');
-  assert(fs.existsSync(path.join(csvDir, 'axe-pages-with-violations.csv')), 'axe pages-with-violations CSV written');
-  const imageAltCsv = path.join(csvDir, 'axe-core__image-alt.csv');
-  assert(fs.existsSync(imageAltCsv), 'per-rule CSV written for image-alt');
+  const csvFiles = fs.readdirSync(csvDir);
+  const axePagesCsv = csvFiles.find((f) => f.endsWith('axe-pages-with-violations.csv'));
+  assert(axePagesCsv, 'axe pages-with-violations CSV written');
+  const imageAltCsvName = csvFiles.find((f) => f.endsWith('axe-core__image-alt.csv'));
+  assert(imageAltCsvName, 'per-rule CSV written for image-alt');
+  const imageAltCsv = path.join(csvDir, imageAltCsvName);
   const csvBody = fs.readFileSync(imageAltCsv, 'utf8');
   assert(csvBody.startsWith('url,instances'), 'CSV has a header row');
   assert(csvBody.split('\n').filter(Boolean).length - 1 === w1.axe.rules['image-alt'].pages, 'CSV lists every affected page');
@@ -225,6 +233,31 @@ try {
     fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages', fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages'))[0]))
   );
   assert(sampleRec.plainLanguage && typeof sampleRec.plainLanguage.wordCount === 'number', 'plain-language engine ran and recorded data');
+
+  // Image inventory: every page has a <img src="/pixel.png">, so images engine
+  // should record at least one image per page with src and hasAlt fields.
+  const pagesDir = path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages');
+  const htmlPageRecs = fs.readdirSync(pagesDir)
+    .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f))))
+    .filter((r) => r.status === 200 && r.images);
+  assert(htmlPageRecs.length > 0, 'at least one page record has images data');
+  const imgRec = htmlPageRecs[0].images;
+  assert(imgRec && Array.isArray(imgRec.images), 'images field is an array');
+  assert(imgRec.images.length > 0, 'at least one image recorded per page');
+  const firstImg = imgRec.images[0];
+  assert(typeof firstImg.src === 'string' && firstImg.src.includes('pixel.png'), 'image src recorded');
+  assert('hasAlt' in firstImg, 'hasAlt field present on image record');
+  assert(typeof firstImg.isDecorative === 'boolean', 'isDecorative field present');
+
+  // Tech detection: the <meta name="generator" content="WordPress 6.5"> on
+  // every page should be picked up by the Wappalyzer fingerprints.
+  const techPageRecs = fs.readdirSync(pagesDir)
+    .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f))))
+    .filter((r) => r.status === 200 && r.tech);
+  assert(techPageRecs.length > 0, 'at least one page record has tech data');
+  const techResult = techPageRecs[0].tech;
+  assert(Array.isArray(techResult) && techResult.length > 0, 'tech detection returned at least one technology');
+  assert(techResult.some((t) => /wordpress/i.test(t.name)), 'WordPress detected via meta generator tag');
 
   const state = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
   assert(!Object.values(state.pages).some((p) => p.url.includes('/private/')), 'robots.txt disallow respected');
@@ -296,7 +329,8 @@ try {
   assert(w1.standards && w1.standards.checks.some((c) => c.id === 'canonical'), 'standards checks recorded (per page)');
   assert(w1.standards.checks.find((c) => c.id === 'title').rate === 100, 'every page has a title (standard passes 100%)');
   assert(w1.standards.social.some((s) => s.platform === 'mastodon'), 'Mastodon social link detected');
-  assert(/id="h-standards"/.test(report), 'report has a standards & security section');
+  const standardsPage = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'standards.html'), 'utf8');
+  assert(/id="h-standards"/.test(standardsPage), 'standards sub-page has a standards & security section');
   // Downloadable per-domain JSON: a single snapshot of everything known.
   const domainJsonPath = path.join(SANDBOX, 'docs', 'data', 'localhost', 'domain.json');
   assert(fs.existsSync(domainJsonPath), 'domain.json export written');
@@ -323,19 +357,19 @@ try {
 
   // Week-1 report (has violations): "Fix these first" + evidence CSVs.
   const w1report = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
+  const w1a11y = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessibility.html'), 'utf8');
+  const w1errors = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'errors.html'), 'utf8');
   assert(/id="h-fixfirst"/.test(w1report), 'domain report has a "Fix these first" section');
   assert(/href="archive.html">Archive/.test(w1report), 'subnav links to the archive');
-  // Affected-pages display: the fixture's findings each hit <=25 pages, so
-  // bug reports list page URLs inline (in <ul class="affected">) rather
-  // than only a "download CSV" link.
-  assert(/class="affected"/.test(w1report), 'bug reports list affected page URLs inline when there are <=25');
+  // Affected-pages display: bug reports on accessibility.html list page URLs
+  // inline (in <ul class="affected">) when there are <=25 affected pages.
+  assert(/class="affected"/.test(w1a11y), 'bug reports list affected page URLs inline when there are <=25');
   // Anchor links on section headings (shareable, copy-safe via CSS ::before).
-  assert(/<a class="anchor" href="#h-axe"/.test(w1report), 'section headings have shareable anchor links');
-  // Merged broken-links & errors section (the deliberately broken link).
-  assert(/id="h-links"/.test(w1report) && /Broken links &amp; errors/.test(w1report), 'broken links and errors are one merged section');
-  assert(!/id="h-errors"/.test(w1report), 'no separate "Pages that returned errors" section');
-  // Long URLs use the truncatable .url class.
-  assert(/class="url"/.test(w1report), 'long URLs use the truncatable url class');
+  assert(/<a class="anchor" href="#h-axe"/.test(w1a11y), 'section headings have shareable anchor links');
+  // Broken-links & errors are on their own errors.html sub-page.
+  assert(/id="h-links"/.test(w1errors) && /Broken links/.test(w1errors), 'broken links section on errors sub-page');
+  // Long URLs use the truncatable .url class (e.g. in errors table).
+  assert(/class="url"/.test(w1errors), 'long URLs use the truncatable url class');
   // Readability sub-page + subnav.
   const readPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.html');
   assert(fs.existsSync(readPage), 'standalone readability page written');

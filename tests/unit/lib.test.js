@@ -357,6 +357,16 @@ test('spell: flags real misspellings, skips numbers/acronyms/allowlist/jargon', 
   assert.deepEqual(r.misspelled.sort(), ['recieve', 'teh', 'xyzzy']);
 });
 
+test('spell: per-call extraAllowlist suppresses target-specific jargon', () => {
+  const words = ['MACRA', 'CHIPRA', 'xyzzy', 'beneficiares']; // MACRA/CHIPRA = ALL-CAPS -> always skipped; xyzzy/beneficiares = misspellings
+  const withoutExtra = findMisspellings(words);
+  assert.ok(withoutExtra.misspelled.includes('xyzzy'), 'xyzzy flagged without allowlist');
+
+  const withExtra = findMisspellings(words, 25, ['xyzzy', 'beneficiares']);
+  assert.equal(withExtra.misspelledCount, 0, 'extraAllowlist suppresses domain-specific terms');
+  assert.deepEqual(withExtra.misspelled, []);
+});
+
 test('spell: tolerates possessives and caps the distinct list', () => {
   const r = findMisspellings(["government's", 'agency’s']);
   assert.equal(r.misspelledCount, 0, "possessive of a real word is not a misspelling");

@@ -27,6 +27,11 @@ defaults:
 # is the underlying physical quantity.
 sustainability_metric: co2
 
+# Base URL for published reports (used to generate absolute links in CSV exports
+# so that affected_pages_csv cells are clickable in Google Sheets / Excel).
+# Trailing slash is optional. Leave empty to keep CSV links relative.
+report_base_url: "https://mgifford.github.io/vital-core"
+
 # Per-engine weekly coverage rates. Each value is the share of the week's
 # unique pages an engine runs on, as a fraction (0.3) or percent (30).
 # 0 (or omitted) disables an engine. Selection is deterministic per page
@@ -44,6 +49,7 @@ sampling:
   lighthouse: 25       # performance / a11y / best-practices / SEO (own Chrome; slow)
   deprecated-html: 25 # obsolete/legacy HTML (<font>, <center>, etc.)
   resources: 100       # catalog PDFs, Office docs, iframes, embedded media
+  images: 50           # inline <img> inventory: alt text, dimensions, file size
   standards: 50        # web standards / metadata / social (ScanGov-style, per page)
   security: 10         # HTTPS, security headers, security.txt, .gov TLD (per origin)
   sustainability: 25   # page weight + estimated CO2
@@ -81,6 +87,15 @@ targets:
   #       url_exclude: ["press_release", "/news/", "?page="]
   #       url_exclude: ["/es/", "/zh/"]  # skip non-English language sections
   #     Priority URLs always bypass this filter.
+  #
+  #   spelling_allowlist: [ ... ] optional list of domain-specific terms that
+  #     the spell checker should accept without flagging. Layered on top of
+  #     config/spelling-allowlist.txt (project-wide). Useful for government
+  #     program names, medical terms, and agency acronyms that aren't in a
+  #     general English dictionary.
+  #     Examples:
+  #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
+  #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
   #
   # WAF-blocked: hhs.gov and nih.gov return 403 "Access Denied" to
   # automated browsers and record as blocked with no audit data until the
