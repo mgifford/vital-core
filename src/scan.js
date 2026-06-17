@@ -22,6 +22,7 @@ import { runSecurity } from './engines/security.js';
 import { runTech } from './engines/tech.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
+import { createThirdPartyCollector } from './engines/third-party.js';
 
 /**
  * One scan run for one domain. Designed to be boring:
@@ -219,6 +220,10 @@ for (const item of batch) {
   const page = await context.newPage();
   const sustain = runs('sustainability') ? createSustainabilityCollector(page) : null;
   const imgCollector = runs('images') ? createImageCollector(page) : null;
+  // Third-party collector must be attached before navigation so it sees every
+  // response (like sustainability). Keyed on the page's canonical URL so
+  // same-site subdomains are classified first-party.
+  const thirdParty = runs('third-party') ? createThirdPartyCollector(page, item.url) : null;
 
   try {
     const response = await page.goto(fetchUrl, { waitUntil: 'load' });
@@ -280,6 +285,11 @@ for (const item of batch) {
         record.tech = await runTech(page, pageHeaders);
         mark('tech');
       }
+
+      // Third-party resource/JS cost: collected from the page's own network
+      // and Resource Timing, before navigating away. Audit traffic shares the
+      // page's origin so it doesn't add third-party origins.
+      if (thirdParty) { record.thirdParty = await thirdParty.collect(); mark('third-party'); }
 
       // Lighthouse: only when this page is in lighthouse's sample AND its
       // own Chrome launched. The sample rate keeps the (slow) audit count

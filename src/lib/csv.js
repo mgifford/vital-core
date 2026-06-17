@@ -178,6 +178,33 @@ export function writeImagesCsv(repDir, summary) {
 }
 
 /**
+ * Write a flat third-party.csv — one row per third-party vendor (registrable
+ * domain) with its load cost and finding co-occurrence. Returns the relative
+ * path "third-party.csv" or null if there's nothing to write.
+ */
+export function writeThirdPartyCsv(repDir, summary) {
+  const vendors = summary.thirdParty?.vendors;
+  if (!vendors?.length) return null;
+  const headers = ['origin', 'is_script_vendor', 'pages', 'pages_with_scripts', 'median_bytes', 'median_requests', 'median_duration_ms', 'pages_with_finding', 'first_seen', 'last_seen', 'weeks_seen', 'example_pages'];
+  const data = vendors.map((v) => [
+    v.origin,
+    v.isScriptVendor ? 'true' : 'false',
+    v.pages,
+    v.pagesWithScripts ?? '',
+    v.medianBytes,
+    v.medianRequests,
+    v.medianDurationMs,
+    v.pagesWithFindings,
+    v.firstSeen ?? '',
+    v.lastSeen ?? '',
+    v.weeksSeen ?? '',
+    Array.isArray(v.examplePages) ? v.examplePages.join(' | ') : '',
+  ]);
+  fs.writeFileSync(path.join(repDir, 'third-party.csv'), toCsv(headers, data));
+  return 'third-party.csv';
+}
+
+/**
  * Write a flat errors.csv for broken links and non-404 error pages.
  * Returns the relative path "errors.csv" or null if there's nothing to write.
  */

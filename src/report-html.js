@@ -101,6 +101,7 @@ function subnav(active, available) {
     ['readability.html', 'Readability', 'readability'],
     ['tech.html', 'Tech stack', 'tech'],
     ['tech-findings.html', 'Tech ↔ issues', 'tech-findings'],
+    ['third-party.html', 'Third parties', 'third-party'],
     ['images.html', 'Images', 'images'],
     ['archive.html', 'Archive', 'archive'],
   ].filter(([, , key]) => key === 'overview' || key === 'archive' || available.includes(key));
@@ -940,6 +941,65 @@ ${sections}`;
   return layout({
     title: `${target.domain} Tech ↔ Issues ${summary.week} | vital-scans`,
     breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Tech ↔ issues</li>`,
+    body,
+    depth: 3,
+    extraScript: SORT_SCRIPT,
+  });
+}
+
+/**
+ * Third parties page: every third-party vendor (registrable domain) serving
+ * resources to the site, with its load cost (median bytes/requests/duration
+ * per page it appears on), whether it serves JavaScript, how widely it's
+ * deployed, and what share of the pages carrying it also had an accessibility
+ * finding. Third-party JS is easy to add and frequently degrades a page; this
+ * makes the cost visible. New-this-week vendors are flagged from the ledger.
+ *
+ * The finding share is an association, not proof of cause — a vendor on heavy
+ * pages will co-occur with findings without causing them. The rigorous causal
+ * test (blocked-load comparison) is a separate, heavier mode.
+ */
+export function renderThirdPartyPage(target, summary, csvHref, available = []) {
+  const tp = summary.thirdParty;
+  if (!tp || !tp.vendors?.length) return null;
+  const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">Download CSV</a>` : '';
+
+  const rows = tp.vendors
+    .map((v) => {
+      const isNew = v.firstSeen && v.firstSeen === summary.week;
+      const findingShare = v.pages ? Math.round((100 * v.pagesWithFindings) / v.pages) : 0;
+      return `<tr>
+  <th scope="row">${esc(v.origin)}${isNew ? ' <span class="bug-meta">new</span>' : ''}${v.isScriptVendor ? ' <span class="wcag-badge">JS</span>' : ''}</th>
+  <td class="num" data-sort="${v.pages}">${v.pages}</td>
+  <td class="num" data-sort="${v.medianBytes}">${kb(v.medianBytes)}</td>
+  <td class="num" data-sort="${v.medianRequests}">${v.medianRequests}</td>
+  <td class="num" data-sort="${v.medianDurationMs}">${v.medianDurationMs} ms</td>
+  <td class="num" data-sort="${findingShare}">${findingShare}%</td>
+</tr>`;
+    })
+    .join('\n');
+
+  const scriptVendors = tp.vendors.filter((v) => v.isScriptVendor).length;
+  const body = `
+<h1>${esc(target.domain)}: third parties</h1>
+${subnav('third-party', available)}
+<p class="meta">Third-party origins serving resources to <strong>${esc(target.domain)}</strong> across the ${tp.pagesScanned} page(s) measured in <strong>${esc(summary.week)}</strong>. <strong>${tp.vendors.length}</strong> distinct third-party domains, <strong>${scriptVendors}</strong> of them serving JavaScript (<span class="wcag-badge">JS</span>). Costs are medians per page the vendor appears on.${dlLink}</p>
+<p class="note">Third-party JavaScript is easy to add and often reduces accessibility and performance — it injects DOM the site owner never reviewed and adds load time. "Pages w/ finding" is the share of pages carrying this vendor that also had an accessibility finding: an <em>association</em> to investigate, not proof the vendor caused it. Third parties vary per page, so a vendor on few pages may simply not have been sampled elsewhere.</p>
+<table class="sortable">
+<caption>Third-party vendors on ${esc(target.domain)}, ${esc(summary.week)} — sortable.</caption>
+<thead><tr>
+  <th scope="col">Vendor (registrable domain)</th>
+  <th scope="col" class="num">Pages</th>
+  <th scope="col" class="num">Median bytes</th>
+  <th scope="col" class="num">Median requests</th>
+  <th scope="col" class="num">Median load</th>
+  <th scope="col" class="num">Pages w/ finding</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
+  return layout({
+    title: `${target.domain} Third Parties ${summary.week} | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Third parties</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,

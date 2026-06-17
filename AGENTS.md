@@ -55,6 +55,7 @@ compact, comparison-friendly record onto the per-page JSON.
 | `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO / agentic-browsing scores. Drives its own browser. |
 | `src/engines/images.js` | DOM eval + response interceptor | Per-page image inventory: src, alt text, dimensions, loading/decoding attrs, byte size, decorative/missing-alt flags. Capped at 500 images/page. |
 | `src/engines/tech.js` | **HTTPArchive/wappalyzer** (vendored, GPL-3.0) | Technology fingerprinting from in-page signals; aggregated by highest confidence across sampled pages. Update via `scripts/update-wappalyzer.sh`. |
+| `src/engines/third-party.js` | response hook + Resource Timing API | Per-page third-party (different eTLD+1) resource cost: requests, bytes, load duration, script count per origin. Collector attached before navigation, like sustainability. Rolled up per vendor in `src/lib/third-party-rollup.js`. |
 | `src/lib/links.js` (`link-check`) | `fetch` HEAD/GET probes | Broken links (4xx/5xx, DNS, timeout) found on sampled pages, checked once per run, capped and polite. |
 
 #### Weekly sampling rates
@@ -117,6 +118,17 @@ domains on the dashboard (`mergeFleet` / `rankFleetAssociations`) into the
 **Cross-technology issues** matrix scored by `lift × sites`. It is an
 *association* surface — co-located technologies share identical lift, so the
 UI says "associated with", never "caused by".
+
+#### Third-party evaluation
+
+`src/engines/third-party.js` records, per page, every third-party origin's
+load cost; `src/lib/third-party-rollup.js` rolls it up per vendor for the
+week (`summary.thirdParty`), and `src/lib/third-party-ledger.js` keeps a
+committed `third-parties.json` with first/last-seen per vendor (annotated
+in-memory for the report after `summary.json` is written, same pattern as
+the link ledger). Rendered as `third-party.html` + `third-party.csv`.
+"Pages w/ finding" is co-occurrence (association), not a causal claim — the
+rigorous blocked-load comparison is a planned heavier mode, not yet built.
 
 ### Environment variables
 

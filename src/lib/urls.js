@@ -19,6 +19,46 @@ function bareHost(hostname) {
   return hostname.toLowerCase().replace(/^www\./, '');
 }
 
+// Common multi-label public suffixes. Not the full Public Suffix List (that
+// would be a heavy dependency for marginal gain here), but enough to classify
+// first- vs third-party correctly for the gov/edu/org/co.uk-style hosts we
+// actually encounter. eTLD+1 falls back to the last two labels otherwise.
+const MULTI_LABEL_SUFFIXES = new Set([
+  'co.uk', 'org.uk', 'gov.uk', 'ac.uk', 'me.uk', 'net.uk', 'sch.uk',
+  'com.au', 'net.au', 'org.au', 'gov.au', 'edu.au',
+  'co.nz', 'govt.nz', 'org.nz', 'co.jp', 'or.jp', 'go.jp',
+  'com.br', 'gov.br', 'org.br', 'co.za', 'gov.za', 'org.za',
+  'com.mx', 'gob.mx', 'gc.ca', 'on.ca', 'qc.ca',
+]);
+
+/**
+ * Registrable domain (eTLD+1) of a hostname — the unit at which we judge
+ * "same site" vs "third party". E.g. fonts.googleapis.com -> googleapis.com,
+ * www.cdc.gov -> cdc.gov, x.service.gov.uk -> service.gov.uk. Lowercased.
+ * Returns the input lowercased if it has too few labels to reduce.
+ */
+export function registrableDomain(hostname) {
+  if (!hostname) return '';
+  const labels = hostname.toLowerCase().split('.').filter(Boolean);
+  if (labels.length <= 2) return labels.join('.');
+  const lastTwo = labels.slice(-2).join('.');
+  if (MULTI_LABEL_SUFFIXES.has(lastTwo)) return labels.slice(-3).join('.');
+  return lastTwo;
+}
+
+/**
+ * Is `resourceUrl` served from a different registrable domain than the page?
+ * Third-party = different eTLD+1. Same-site subdomains (cdn.cms.gov for a
+ * cms.gov page) are first-party. Non-http(s) URLs (data:, blob:) are not
+ * third party. Returns false on parse failure (conservative).
+ */
+export function isThirdParty(resourceUrl, pageUrl) {
+  let r, p;
+  try { r = new URL(resourceUrl); p = new URL(pageUrl); } catch { return false; }
+  if (r.protocol !== 'http:' && r.protocol !== 'https:') return false;
+  return registrableDomain(r.hostname) !== registrableDomain(p.hostname);
+}
+
 /**
  * Normalize a URL relative to a base. Returns the canonical string,
  * or null if the URL should not be crawled (off-host, non-http,

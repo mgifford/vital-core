@@ -3,16 +3,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeImagesCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { scoreFor } from './lib/score.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
 import { loadLinkLedger, saveLinkLedger, updateLinkLedger } from './lib/link-ledger.js';
 import { buildCooccurrence, rankAssociations } from './lib/tech-findings.js';
+import { rollupThirdParty } from './lib/third-party-rollup.js';
+import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -94,6 +96,9 @@ for (const target of config.targets) {
   // Broken-link ledger — accumulated across whole history.
   const linkLedger = loadLinkLedger(target.key, target.domain);
   linkLedger.links = {};
+  // Third-party vendor ledger — first/last-seen per vendor across history.
+  const tpLedger = loadThirdPartyLedger(target.key, target.domain);
+  tpLedger.vendors = {}; // recompute deterministically from retained weeks
 
   // Human reports + structured bug reports (Markdown, JSON, and inline HTML).
   let latestBugs = []; // latest week's bugs, for the fleet-wide worst-offenders view
@@ -130,6 +135,11 @@ for (const target of config.targets) {
       const annotated = updateLinkLedger(linkLedger, summary.week, summary.linkCheck.broken);
       summary.linkCheck.broken = annotated;
     }
+    // Third-party vendor ledger: annotate vendors with first/last-seen so the
+    // report can flag ones new this week.
+    if (summary.thirdParty?.vendors?.length) {
+      summary.thirdParty.vendors = updateThirdPartyLedger(tpLedger, summary.week, summary.thirdParty.vendors);
+    }
 
     // Broken links + error pages CSV.
     csvLinks.errorsAll = writeErrorsCsv(repDir, summary);
@@ -161,6 +171,7 @@ for (const target of config.targets) {
     if (summary.plainLanguage?.pageRows?.length) available.push('readability');
     if (summary.tech?.length) available.push('tech');
     if (summary.techFindings?.associations?.length) available.push('tech-findings');
+    if (summary.thirdParty?.vendors?.length) available.push('third-party');
     if (summary.images) available.push('images');
     // Standards and errors pages only exist when there's data.
     const hasStandards = !!(summary.security || summary.standards);
@@ -187,6 +198,9 @@ for (const target of config.targets) {
     if (techHtml) fs.writeFileSync(path.join(repDir, 'tech.html'), techHtml);
     const techFindingsHtml = renderTechFindingsPage(target, summary, available);
     if (techFindingsHtml) fs.writeFileSync(path.join(repDir, 'tech-findings.html'), techFindingsHtml);
+    const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, summary) : null;
+    const thirdPartyHtml = renderThirdPartyPage(target, summary, tpCsv, available);
+    if (thirdPartyHtml) fs.writeFileSync(path.join(repDir, 'third-party.html'), thirdPartyHtml);
     const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, summary) : null;
     const imagesHtml = renderImagesPage(target, summary, imagesCsv, available);
     if (imagesHtml) fs.writeFileSync(path.join(repDir, 'images.html'), imagesHtml);
@@ -210,6 +224,7 @@ for (const target of config.targets) {
   saveFindings(target.key, ledger);
   saveResourceLedger(target.key, resLedger);
   saveLinkLedger(target.key, linkLedger);
+  saveThirdPartyLedger(target.key, tpLedger);
 
   // Single downloadable snapshot of everything known about the domain:
   // every scanned URL's latest status, current known findings (with
@@ -416,6 +431,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
   // with tech detection contribute, so the co-occurrence denominator is the
   // set of pages we actually have technology data for.
   const techFindingPages = []; // { techs: string[], findings: string[] }
+  // Third-party rollup: one row per page the third-party engine ran on.
+  const thirdPartyPages = []; // { pageUrl, hasFindings, origins[] }
 
   // brokenLinks is supplied by the caller (folded from run logs).
 
@@ -504,6 +521,12 @@ function summarizeRecords(target, week, records, brokenLinks) {
         ...Object.keys(rec.alfa?.failed ?? {}).map((id) => `alfa:${id}`),
       ];
       techFindingPages.push({ techs: rec.tech.map((d) => d.name), findings });
+    }
+    if (rec.thirdParty) {
+      // hasFindings: did this page have any accessibility finding? Used to
+      // correlate third-party presence with findings (association only).
+      const hasFindings = !!(rec.axe?.violationCount || rec.alfa?.failedCount);
+      thirdPartyPages.push({ pageUrl: rec.url, hasFindings, origins: rec.thirdParty.origins ?? [] });
     }
     if (rec.images) {
       imagePagesScanned++;
@@ -726,6 +749,9 @@ function summarizeRecords(target, week, records, brokenLinks) {
           return { model, associations: rankAssociations(model, { minPages: 5, limit: 50 }) };
         })()
       : null,
+    // Third-party resource/JS cost rolled up per vendor across the pages the
+    // third-party engine ran on. Page-resolved (3rd-party JS varies per page).
+    thirdParty: thirdPartyPages.length ? rollupThirdParty(thirdPartyPages) : null,
   };
 }
 

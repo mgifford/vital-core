@@ -57,6 +57,7 @@ sampling:
   resources: 100
   images: 100
   tech: 100
+  third-party: 100
   link-check: 100
   standards: 100
   security: 100
@@ -79,7 +80,8 @@ function writeSite({ fixed }) {
       path.join(SITE, `page-${i}.html`),
       `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title>
-<meta name="generator" content="WordPress 6.5"></head>
+<meta name="generator" content="WordPress 6.5">
+<script src="http://127.0.0.1:${PORT}/thirdparty.js"></script></head>
 <body><main><h1>Page ${i}</h1>
 ${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
 <p>This is a short paragraph of ordinary readable prose written so the plain language engine has real sentences to score. It deliberately contains one mispelled word for the spell check to catch, and enough words to count as content rather than navigation.</p>
@@ -101,6 +103,10 @@ ${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a
   );
   // 1x1 png
   fs.writeFileSync(path.join(SITE, 'pixel.png'), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64'));
+  // A "third-party" script: served from the same server but referenced via
+  // 127.0.0.1 while pages load from localhost, so its registrable domain
+  // differs and the third-party engine classifies it as third party.
+  fs.writeFileSync(path.join(SITE, 'thirdparty.js'), 'window.__thirdparty = 1;\n');
   fs.writeFileSync(path.join(SITE, 'robots.txt'), `User-agent: *\nDisallow: /private/\n`);
   fs.writeFileSync(
     path.join(SITE, 'sitemap.xml'),
@@ -121,7 +127,7 @@ http.createServer((req, res) => {
   const reqPath = req.url.split('?')[0];
   const f = path.join(SITE, reqPath === '/' ? 'index.html' : reqPath);
   if (fs.existsSync(f) && fs.statSync(f).isFile()) {
-    res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
+    res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.js') ? 'application/javascript' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
     res.end(fs.readFileSync(f));
   } else {
     res.statusCode = 404; res.setHeader('content-type', 'text/html');
@@ -275,6 +281,34 @@ try {
   assert(/WordPress/.test(tfHtml) && /image-alt/.test(tfHtml), 'tech-findings page lists WordPress and image-alt');
   const w1index = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
   assert(/href="tech-findings.html">Tech/.test(w1index), 'subnav links to tech-findings page');
+
+  // Third-party JS: every page loads a script from 127.0.0.1 while the page
+  // itself is on localhost — a different registrable domain — so the engine
+  // classifies it as a third-party script vendor.
+  const tpPageRec = fs.readdirSync(pagesDir)
+    .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f))))
+    .find((r) => r.status === 200 && r.thirdParty && r.thirdParty.thirdPartyOrigins > 0);
+  assert(tpPageRec, 'a page record has third-party data with at least one origin');
+  assert(tpPageRec.thirdParty.totalThirdPartyScripts >= 1, 'third-party script counted');
+  assert(tpPageRec.thirdParty.origins.some((o) => o.scripts > 0), 'an origin served a script');
+  // Summary rollup + ledger.
+  assert(w1.thirdParty && w1.thirdParty.vendors.length >= 1, 'third-party rollup recorded in summary');
+  const scriptVendor = w1.thirdParty.vendors.find((v) => v.isScriptVendor);
+  assert(scriptVendor, 'a script vendor surfaced in the rollup');
+  // firstSeen lives in the committed ledger (annotated in-memory for the
+  // report, after summary.json is written — same pattern as the link ledger).
+  const tpLedger = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'third-parties.json')));
+  assert(Object.keys(tpLedger.vendors).length >= 1, 'third-party ledger committed with vendors');
+  assert(tpLedger.vendors[scriptVendor.origin]?.firstSeen === '2026-W23', 'vendor first-seen recorded in ledger');
+  // Sub-page + CSV + subnav.
+  const tpPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'third-party.html');
+  assert(fs.existsSync(tpPage), 'third-party.html sub-page written');
+  const tpHtml = fs.readFileSync(tpPage, 'utf8');
+  assert(/third parties/i.test(tpHtml) && /Median bytes/.test(tpHtml), 'third-party page has the vendor table');
+  assert(/href="third-party.html">Third parties/.test(w1index), 'subnav links to third-party page');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'third-party.csv')), 'third-party CSV written');
+  const tpCsv = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'third-party.csv'), 'utf8');
+  assert(tpCsv.startsWith('origin,is_script_vendor,pages'), 'third-party CSV has expected header');
 
   const state = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
   assert(!Object.values(state.pages).some((p) => p.url.includes('/private/')), 'robots.txt disallow respected');

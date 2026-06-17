@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeUrl, pageId } from '../../src/lib/urls.js';
+import { normalizeUrl, pageId, registrableDomain, isThirdParty } from '../../src/lib/urls.js';
 import { isoWeekOf, previousWeekOf } from '../../src/lib/week.js';
 import { parseRobots } from '../../src/lib/robots.js';
 import { addPage, pickBatch } from '../../src/lib/state.js';
@@ -18,6 +18,7 @@ import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
 import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
 import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
+import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -968,4 +969,53 @@ test('tech-findings: fleet minSites filters single-site coincidences', () => {
   const fleet = mergeFleet([{ domain: 'only.gov', model: buildCooccurrence(pages) }]);
   const ranked = rankFleetAssociations(fleet, { minPages: 5, minSites: 2 });
   assert.equal(ranked.length, 0, 'single-site pair excluded by minSites=2');
+});
+
+test('registrableDomain: reduces to eTLD+1, handles multi-label suffixes', () => {
+  assert.equal(registrableDomain('www.cdc.gov'), 'cdc.gov');
+  assert.equal(registrableDomain('fonts.googleapis.com'), 'googleapis.com');
+  assert.equal(registrableDomain('a.b.c.example.com'), 'example.com');
+  assert.equal(registrableDomain('cms.gov'), 'cms.gov');
+  assert.equal(registrableDomain('service.gov.uk'), 'service.gov.uk');
+  assert.equal(registrableDomain('x.service.gov.uk'), 'service.gov.uk');
+  assert.equal(registrableDomain('localhost'), 'localhost');
+  assert.equal(registrableDomain(''), '');
+});
+
+test('isThirdParty: different registrable domain only', () => {
+  const page = 'https://www.cms.gov/page';
+  assert.equal(isThirdParty('https://www.googletagmanager.com/gtm.js', page), true);
+  assert.equal(isThirdParty('https://cdn.cms.gov/app.js', page), false, 'same-site subdomain is first party');
+  assert.equal(isThirdParty('https://cms.gov/a.js', page), false, 'apex of same site is first party');
+  assert.equal(isThirdParty('data:text/js,1', page), false, 'data URI is not third party');
+  assert.equal(isThirdParty('not a url', page), false, 'parse failure is not third party');
+});
+
+test('rollupThirdParty: per-vendor pages, medians, script flag, finding co-occurrence', () => {
+  const pages = [
+    { pageUrl: 'p1', hasFindings: true,  origins: [
+      { origin: 'gtm.com', requests: 2, bytes: 100, scripts: 1, totalDurationMs: 50 },
+      { origin: 'cdn.com', requests: 1, bytes: 400, scripts: 0, totalDurationMs: 20 },
+    ] },
+    { pageUrl: 'p2', hasFindings: false, origins: [
+      { origin: 'gtm.com', requests: 4, bytes: 300, scripts: 1, totalDurationMs: 90 },
+    ] },
+    { pageUrl: 'p3', hasFindings: true,  origins: [
+      { origin: 'gtm.com', requests: 3, bytes: 200, scripts: 1, totalDurationMs: 70 },
+    ] },
+  ];
+  const r = rollupThirdParty(pages);
+  assert.equal(r.pagesScanned, 3);
+  const gtm = r.vendors.find((v) => v.origin === 'gtm.com');
+  assert.equal(gtm.pages, 3);
+  assert.equal(gtm.isScriptVendor, true);
+  assert.equal(gtm.medianBytes, 200, 'median of [100,300,200] -> 200');
+  assert.equal(gtm.medianRequests, 3);
+  assert.equal(gtm.pagesWithFindings, 2, 'gtm on p1+p3 (with findings) and p2 (without)');
+  // cdn.com is not a script vendor and appears on one page.
+  const cdn = r.vendors.find((v) => v.origin === 'cdn.com');
+  assert.equal(cdn.isScriptVendor, false);
+  assert.equal(cdn.pages, 1);
+  // Sorted by pages desc: gtm (3) before cdn (1).
+  assert.equal(r.vendors[0].origin, 'gtm.com');
 });
