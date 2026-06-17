@@ -64,6 +64,33 @@ export function writeSpellingCsv(repDir, spellRows) {
   return 'spelling.csv';
 }
 
+/** Write tech CSV (technology, category, confidence, pages, example URLs). */
+export function writeTechCsv(repDir, tech) {
+  if (!tech?.length) return null;
+  const headers = ['technology', 'category', 'all_categories', 'confidence', 'version', 'pages_confirmed', 'website', 'example_pages'];
+  const rows = tech.map((d) => [
+    d.name,
+    d.category,
+    (d.categories ?? []).join(' | '),
+    d.confidence,
+    d.version ?? '',
+    d.pagesConfirmed ?? '',
+    d.website ?? '',
+    (d.examplePages ?? []).join(' '),
+  ]);
+  fs.writeFileSync(path.join(repDir, 'tech.csv'), toCsv(headers, rows));
+  return 'tech.csv';
+}
+
+/** Write acronyms CSV (unexplained acronym, pages affected, example URLs). */
+export function writeAcronymsCsv(repDir, acronymRows) {
+  if (!acronymRows?.length) return null;
+  const rows = acronymRows.map((a) => [a.acronym, a.pages, (a.examplePages ?? []).join(' ')]);
+  fs.writeFileSync(path.join(repDir, 'acronyms.csv'),
+    toCsv(['acronym', 'pages_affected', 'example_pages'], rows));
+  return 'acronyms.csv';
+}
+
 export function writeResourceCsv(repDir, resources, ledger) {
   const rows = resources.list.map((r) => {
     const led = ledger.resources[r.url];
@@ -157,11 +184,13 @@ export function writeBugsCsv(repDir, bugs) {
 export function writeImagesCsv(repDir, summary) {
   const rows = summary.images?.imageRows;
   if (!rows?.length) return null;
-  const headers = ['page_url', 'src', 'alt', 'has_alt', 'is_decorative', 'is_missing_alt', 'width', 'height', 'natural_width', 'natural_height', 'loading', 'decoding', 'bytes'];
+  const headers = ['page_url', 'src', 'alt', 'alt_verdict', 'alt_reason', 'has_alt', 'is_decorative', 'is_missing_alt', 'width', 'height', 'natural_width', 'natural_height', 'loading', 'decoding', 'bytes'];
   const data = rows.map((img) => [
     img.pageUrl,
     img.src,
     img.alt ?? '',
+    img.altVerdict ?? '',
+    img.altReason ?? '',
     img.hasAlt ? 'true' : 'false',
     img.isDecorative ? 'true' : 'false',
     img.isMissingAlt ? 'true' : 'false',

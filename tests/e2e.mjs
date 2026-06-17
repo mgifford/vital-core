@@ -456,6 +456,18 @@ try {
   assert(readCsv.startsWith('url,words,reading_ease,grade,scored'), 'readability CSV has expected header');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv')), 'spelling CSV written');
   assert(/word,pages_affected,example_pages/.test(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv'), 'utf8')), 'spelling CSV has expected header');
+  // Spelling JSON download + the readability page links it.
+  const readHtmlFull = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.html'), 'utf8');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.json')), 'spelling JSON written');
+  assert(/href="spelling.json"/.test(readHtmlFull) && /href="spelling.csv"/.test(readHtmlFull), 'readability page links spelling CSV + JSON');
+  // Tech downloads + concise coverage + example pages.
+  const techHtmlFull = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.html'), 'utf8');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.csv')), 'tech CSV written');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.json')), 'tech JSON written');
+  assert(/technology,category,all_categories,confidence/.test(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.csv'), 'utf8')), 'tech CSV has expected header');
+  assert(/href="tech.csv"/.test(techHtmlFull) && /href="tech.json"/.test(techHtmlFull), 'tech page links CSV + JSON');
+  assert(/of \d+\)/.test(techHtmlFull), 'tech page shows concise "N of M" coverage');
+  assert(/example page\(s\)/.test(techHtmlFull), 'tech page lists example pages per technology');
   // Images sub-page + CSV.
   const imagesPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.html');
   assert(fs.existsSync(imagesPage), 'images.html sub-page written');
@@ -464,7 +476,19 @@ try {
   assert(/href="images.html">Images/.test(w1report), 'subnav links to images page');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.csv')), 'images CSV written');
   const imagesCsvContent = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.csv'), 'utf8');
-  assert(imagesCsvContent.startsWith('page_url,src,alt,has_alt,is_decorative,is_missing_alt'), 'images CSV has expected header');
+  assert(imagesCsvContent.startsWith('page_url,src,alt,alt_verdict,alt_reason,has_alt,is_decorative,is_missing_alt'), 'images CSV has expected header');
+  // Deduplication: /pixel.png is on every page, so it collapses to one unique
+  // image with an occurrence count and a filesize; the engine classifies its
+  // alt text and the page shows the alt-text quality section + JSON download.
+  assert(/Occurrences/.test(imagesHtml) && /Unique images/.test(imagesHtml), 'images page shows dedup occurrences + unique count');
+  assert(/id="h-images-quality"/.test(imagesHtml), 'images page has alt-text quality section');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.json')), 'images JSON written');
+  const imagesJson = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.json'), 'utf8'));
+  const pixel = imagesJson.images.find((i) => /pixel\.png$/.test(i.src));
+  assert(pixel && pixel.occurrences > 1, 'reused image deduplicated with occurrence count > 1');
+  assert('altVerdict' in pixel, 'unique image carries an alt-text verdict');
+  // CSV per-occurrence includes the alt verdict (GOOD for "A test pixel").
+  assert(/,GOOD,/.test(imagesCsvContent) || /,MISSING,/.test(imagesCsvContent), 'images CSV rows include alt verdict');
 
   const comment = run('src/issue-comment.js', [], '2026-W24');
   assert(comment.includes('localhost: 2026-W24') && comment.includes('Median axe violations'), 'issue comment generated with deltas');

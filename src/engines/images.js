@@ -21,6 +21,8 @@
  * The byte-size collector piggybacks on responses already in flight.
  */
 
+import { assessAltText } from '../lib/alt-text.js';
+
 const MAX_IMAGES = 500; // per page cap
 
 export function createImageCollector(page) {
@@ -74,6 +76,8 @@ export async function runImages(page, pageUrl) {
         hasAlt,
         isDecorative: hasAlt && alt === '',
         isMissingAlt: !hasAlt,
+        ariaHidden: el.getAttribute('aria-hidden') === 'true',
+        rolePresentation: el.getAttribute('role') === 'presentation' || el.getAttribute('role') === 'none',
         renderedWidth:  el.width  || null,
         renderedHeight: el.height || null,
         naturalWidth:   el.naturalWidth  || null,
@@ -96,7 +100,9 @@ export async function runImages(page, pageUrl) {
     }
     // Strip hash; keep query string (some CDNs use it for transforms).
     abs = abs.replace(/#.*$/, '');
-    images.push({ ...img, src: abs });
+    // Alt-text quality verdict (MISSING/FILENAME/SUSPICIOUS/TOO_SHORT/…).
+    const { verdict: altVerdict, reason: altReason } = assessAltText(img);
+    images.push({ ...img, src: abs, altVerdict, altReason });
   }
 
   return { engine: 'images', count: images.length, images };

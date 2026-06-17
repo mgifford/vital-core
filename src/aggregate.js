@@ -6,7 +6,7 @@ import { compareWeeks } from './lib/week.js';
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { scoreFor } from './lib/score.js';
@@ -50,7 +50,7 @@ for (const target of config.targets) {
       series.push(summary);
       // The full per-page lists are large and reconstructable; keep them
       // in memory for CSV generation but don't commit them to summary.json.
-      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows']);
+      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows', 'uniqueImageList']);
       fs.writeFileSync(
         path.join(domainDir, week, 'summary.json'),
         JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
@@ -158,10 +158,24 @@ for (const target of config.targets) {
     const lhCsv = writeLighthouseCsv(repDir, summary.lighthouse);
     const readabilityCsv = writeReadabilityCsv(repDir, summary.plainLanguage?.pageRows);
     const spellingCsv = writeSpellingCsv(repDir, summary.plainLanguage?.topMisspellings);
+    const acronymsCsv = writeAcronymsCsv(repDir, summary.plainLanguage?.topUnexplainedAcronyms);
     if (summary.lighthouse) summary.lighthouse.csv = lhCsv;
     if (summary.plainLanguage) {
       summary.plainLanguage.readabilityCsv = readabilityCsv;
       summary.plainLanguage.spellingCsv = spellingCsv;
+      summary.plainLanguage.acronymsCsv = acronymsCsv;
+      // JSON downloads for spelling + acronyms (word/acronym, pages, examples).
+      const pl = summary.plainLanguage;
+      if (pl.topMisspellings?.length) {
+        fs.writeFileSync(path.join(repDir, 'spelling.json'),
+          JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, misspellings: pl.topMisspellings }, null, 1));
+        pl.spellingJson = 'spelling.json';
+      }
+      if (pl.topUnexplainedAcronyms?.length) {
+        fs.writeFileSync(path.join(repDir, 'acronyms.json'),
+          JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, acronyms: pl.topUnexplainedAcronyms }, null, 1));
+        pl.acronymsJson = 'acronyms.json';
+      }
     }
 
     // Which standalone sub-pages this week has (drives the shared subnav).
@@ -194,7 +208,12 @@ for (const target of config.targets) {
     // Standalone Readability page (per-page reading metrics + acronyms + spelling).
     const readHtml = renderReadabilityPage(target, summary, readabilityCsv, available);
     if (readHtml) fs.writeFileSync(path.join(repDir, 'readability.html'), readHtml);
-    const techHtml = renderTechPage(target, summary, available);
+    const techCsv = summary.tech?.length ? writeTechCsv(repDir, summary.tech) : null;
+    if (summary.tech?.length) {
+      fs.writeFileSync(path.join(repDir, 'tech.json'),
+        JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, pagesScanned: summary.pagesScanned, technologies: summary.tech }, null, 1));
+    }
+    const techHtml = renderTechPage(target, summary, techCsv, available);
     if (techHtml) fs.writeFileSync(path.join(repDir, 'tech.html'), techHtml);
     const techFindingsHtml = renderTechFindingsPage(target, summary, available);
     if (techFindingsHtml) fs.writeFileSync(path.join(repDir, 'tech-findings.html'), techFindingsHtml);
@@ -202,6 +221,14 @@ for (const target of config.targets) {
     const thirdPartyHtml = renderThirdPartyPage(target, summary, tpCsv, available);
     if (thirdPartyHtml) fs.writeFileSync(path.join(repDir, 'third-party.html'), thirdPartyHtml);
     const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, summary) : null;
+    // Deduplicated image inventory as JSON (src, alt, bytes, occurrences,
+    // alt-text verdict, example pages).
+    if (summary.images?.uniqueImageList?.length) {
+      fs.writeFileSync(
+        path.join(repDir, 'images.json'),
+        JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, images: summary.images.uniqueImageList }, null, 1)
+      );
+    }
     const imagesHtml = renderImagesPage(target, summary, imagesCsv, available);
     if (imagesHtml) fs.writeFileSync(path.join(repDir, 'images.html'), imagesHtml);
     // Archive page (all weeks). Written in each week folder so the subnav
@@ -410,7 +437,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const freList = [];
   const gradeList = [];
   let plPagesScored = 0;
-  const acronymCounts = {}; // acronym -> pages it was unexplained on
+  const acronymCounts = {}; // acronym -> { pages, examplePages[] }
   const misspellingCounts = {}; // word -> { pages, examplePages[] }
   const plRows = []; // per-page readability rows (for CSV)
   let plPagesChecked = 0; // pages plain-language ran on (for words/page)
@@ -428,6 +455,10 @@ function summarizeRecords(target, week, records, brokenLinks) {
   let imagesTotalCount = 0;
   let imagesMissingAlt = 0;
   let imagesDecorative = 0;
+  // Deduplicated by src: the same image reused across pages collapses to one
+  // entry with an occurrence count, so the page table isn't full of repeats.
+  const imageBySrc = new Map(); // src -> { src, alt, bytes, occurrences, pages:Set, altVerdict, altReason, alts:Set }
+  const altVerdictCounts = {}; // verdict -> unique-image count (for the quality summary)
   // Tech↔finding join: one row per page where the tech engine ran, listing
   // the technologies on it and the accessibility findings on it. Only pages
   // with tech detection contribute, so the co-occurrence denominator is the
@@ -507,12 +538,19 @@ function summarizeRecords(target, week, records, brokenLinks) {
     if (rec.tech) {
       for (const d of rec.tech) {
         const existing = techDetections.get(d.name);
-        // Merge: keep highest-confidence detection; track how many pages confirmed it.
+        // Merge: keep highest-confidence detection; track how many pages
+        // confirmed it and a few example pages where it was found.
         // confidence is 0–100 (Wappalyzer's scale), higher is better.
-        if (!existing || d.confidence > existing.confidence) {
-          techDetections.set(d.name, { ...d, pagesConfirmed: (existing?.pagesConfirmed ?? 0) + 1 });
+        if (!existing) {
+          techDetections.set(d.name, { ...d, pagesConfirmed: 1, examplePages: [rec.url] });
         } else {
           existing.pagesConfirmed++;
+          if (existing.examplePages.length < 10) existing.examplePages.push(rec.url);
+          if (d.confidence > existing.confidence) {
+            // Adopt the higher-confidence detection's fields but keep the
+            // accumulated count + example pages.
+            Object.assign(existing, d, { pagesConfirmed: existing.pagesConfirmed, examplePages: existing.examplePages });
+          }
         }
       }
       // Tech↔finding row for this page: the technologies on it paired with the
@@ -537,6 +575,16 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (img.isMissingAlt) imagesMissingAlt++;
         if (img.isDecorative) imagesDecorative++;
         imageRows.push({ pageUrl: rec.url, ...img });
+        // Deduplicate by src for the page view.
+        let e = imageBySrc.get(img.src);
+        if (!e) {
+          e = { src: img.src, alt: img.alt, bytes: img.bytes ?? null, occurrences: 0, pages: new Set(), alts: new Set(), altVerdict: img.altVerdict, altReason: img.altReason };
+          imageBySrc.set(img.src, e);
+        }
+        e.occurrences++;
+        e.pages.add(rec.url);
+        if (img.alt != null) e.alts.add(img.alt);
+        if (e.bytes == null && img.bytes != null) e.bytes = img.bytes;
       }
     }
     if (rec.sustainability) {
@@ -568,7 +616,9 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (rec.plainLanguage.fleschKincaidGrade != null) gradeList.push(rec.plainLanguage.fleschKincaidGrade);
       }
       for (const a of rec.plainLanguage.unexplainedAcronyms ?? []) {
-        acronymCounts[a] = (acronymCounts[a] ?? 0) + 1;
+        const e = (acronymCounts[a] ??= { pages: 0, examplePages: [] });
+        e.pages++;
+        if (e.examplePages.length < 5) e.examplePages.push(rec.url);
       }
       for (const w of rec.plainLanguage.misspelled ?? []) {
         const m = (misspellingCounts[w] ??= { pages: 0, examplePages: [] });
@@ -695,9 +745,9 @@ function summarizeRecords(target, week, records, brokenLinks) {
           medianGrade: gradeList.length ? median(gradeList) : null,
           // Most common unexplained acronyms, by pages affected.
           topUnexplainedAcronyms: Object.entries(acronymCounts)
-            .sort((a, b) => b[1] - a[1])
+            .sort((a, b) => b[1].pages - a[1].pages)
             .slice(0, 15)
-            .map(([acronym, pages]) => ({ acronym, pages })),
+            .map(([acronym, e]) => ({ acronym, pages: e.pages, examplePages: e.examplePages })),
           // Most common misspellings, by pages affected (with examples).
           topMisspellings: Object.entries(misspellingCounts)
             .sort((a, b) => b[1].pages - a[1].pages)
@@ -746,15 +796,38 @@ function summarizeRecords(target, week, records, brokenLinks) {
       ? [...techDetections.values()].sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name))
       : null,
     images: imagePagesScanned
-      ? {
-          pagesScanned: imagePagesScanned,
-          totalImages: imagesTotalCount,
-          missingAlt: imagesMissingAlt,
-          decorative: imagesDecorative,
-          withAlt: imagesTotalCount - imagesMissingAlt - imagesDecorative,
-          // Per-image rows for the CSV and images.html page (omitted from committed summary.json).
-          imageRows,
-        }
+      ? (() => {
+          // Deduplicated, occurrence-counted unique images for the page table,
+          // plus the alt-text quality verdict tally (counted per unique image).
+          const uniqueImages = [...imageBySrc.values()]
+            .map((e) => ({
+              src: e.src,
+              alt: e.alt,
+              bytes: e.bytes,
+              occurrences: e.occurrences,
+              pages: e.pages.size,
+              altCount: e.alts.size, // >1 means inconsistent alt across uses
+              altVerdict: e.altVerdict,
+              altReason: e.altReason,
+              examplePages: [...e.pages].slice(0, 10),
+            }))
+            .sort((a, b) => b.occurrences - a.occurrences || (b.bytes ?? 0) - (a.bytes ?? 0));
+          for (const u of uniqueImages) altVerdictCounts[u.altVerdict] = (altVerdictCounts[u.altVerdict] ?? 0) + 1;
+          return {
+            pagesScanned: imagePagesScanned,
+            totalImages: imagesTotalCount,
+            uniqueImages: uniqueImages.length,
+            missingAlt: imagesMissingAlt,
+            decorative: imagesDecorative,
+            withAlt: imagesTotalCount - imagesMissingAlt - imagesDecorative,
+            // Alt-text quality verdict counts over unique images.
+            altVerdicts: altVerdictCounts,
+            // Deduplicated unique-image list (committed; bounded by site image variety).
+            uniqueImageList: uniqueImages,
+            // Per-occurrence rows for the CSV (omitted from committed summary.json).
+            imageRows,
+          };
+        })()
       : null,
     // Tech↔finding association: the compact co-occurrence model (for the
     // fleet merge on the dashboard) plus this week's ranked associations.
