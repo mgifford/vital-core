@@ -21,23 +21,23 @@ on:
     # These avoid :00 because GitHub delays top-of-hour schedules.
 
     # Weeknights: roughly 23:11-05:47 ET during EDT.
-    - cron: '11 3 * * 1-5'   # ~23:11 ET previous evening
-    - cron: '29 4 * * 1-5'   # ~00:29 ET
-    - cron: '43 5 * * 1-5'   # ~01:43 ET
-    - cron: '07 7 * * 1-5'   # ~03:07 ET
-    - cron: '31 8 * * 1-5'   # ~04:31 ET
-    - cron: '47 9 * * 1-5'   # ~05:47 ET
+    - cron: '11 3 * * 1-5'
+    - cron: '29 4 * * 1-5'
+    - cron: '43 5 * * 1-5'
+    - cron: '07 7 * * 1-5'
+    - cron: '31 8 * * 1-5'
+    - cron: '47 9 * * 1-5'
 
     # Weekend: roughly 21:13-07:37 ET during EDT.
-    - cron: '13 1 * * 0,6'   # ~21:13 ET previous evening
-    - cron: '27 2 * * 0,6'   # ~22:27 ET previous evening
-    - cron: '41 3 * * 0,6'   # ~23:41 ET previous evening
-    - cron: '09 5 * * 0,6'   # ~01:09 ET
-    - cron: '23 6 * * 0,6'   # ~02:23 ET
-    - cron: '37 7 * * 0,6'   # ~03:37 ET
-    - cron: '51 8 * * 0,6'   # ~04:51 ET
-    - cron: '19 10 * * 0,6'  # ~06:19 ET
-    - cron: '37 11 * * 0,6'  # ~07:37 ET
+    - cron: '13 1 * * 0,6'
+    - cron: '27 2 * * 0,6'
+    - cron: '41 3 * * 0,6'
+    - cron: '09 5 * * 0,6'
+    - cron: '23 6 * * 0,6'
+    - cron: '37 7 * * 0,6'
+    - cron: '51 8 * * 0,6'
+    - cron: '19 10 * * 0,6'
+    - cron: '37 11 * * 0,6'
 
   workflow_dispatch:
     inputs:
@@ -62,12 +62,12 @@ jobs:
     outputs:
       domains: ${{ steps.list.outputs.domains }}
     steps:
-      # - uses: actions/checkout@v4
       - uses: actions/checkout@v5
-      # - uses: actions/setup-node@v4
+
       - uses: actions/setup-node@v5
         with:
           node-version: 24
+
       - id: list
         run: |
           npm ci --omit=optional --ignore-scripts
@@ -83,23 +83,22 @@ jobs:
   scan:
     needs: matrix
     runs-on: ubuntu-latest
-    timeout-minutes: 110   # hard cap: keep each domain job under 2 hours
+    timeout-minutes: 110
     strategy:
       fail-fast: false
       max-parallel: 4
       matrix:
         domain: ${{ fromJson(needs.matrix.outputs.domains) }}
-    # Never let two runs scan the same domain at once.
+
     concurrency:
       group: scan-${{ matrix.domain }}
       cancel-in-progress: false
+
     steps:
-      # - uses: actions/checkout@v4
       - uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
-      # - uses: actions/setup-node@v4
       - uses: actions/setup-node@v5
         with:
           node-version: 24
@@ -108,11 +107,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # - name: Cache Playwright browser
-      #  uses: actions/cache@v4
-      #  with:
-      #    path: ~/.cache/ms-playwright
-      #    key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Cache Playwright browser
         uses: actions/cache@v5
         with:
@@ -126,7 +120,7 @@ jobs:
         run: |
           DATE=$(grep '^date:' vendor/wappalyzer/VERSION | awk '{print $2}')
           if [ -z "$DATE" ]; then
-            echo "::warning::vendor/wappalyzer/VERSION has no date field — cannot check age"
+            echo "::warning::vendor/wappalyzer/VERSION has no date field - cannot check age"
             exit 0
           fi
           VENDOR_EPOCH=$(date -d "$DATE" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$DATE" +%s)
@@ -138,9 +132,6 @@ jobs:
           fi
 
       - name: Scan
-        # Per-page audit memory is freed between pages (see alfa engine),
-        # so heap should stay flat. The raised limit is headroom for the
-        # occasional very large DOM, well under the runner's 16 GB.
         env:
           NODE_OPTIONS: --max-old-space-size=8192
         run: |
@@ -156,21 +147,15 @@ jobs:
           git config user.email "vital-scans@users.noreply.github.com"
           git add state/ data/
           if git diff --cached --quiet; then
-            echo "no changes"; exit 0
+            echo "no changes"
+            exit 0
           fi
           git commit -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)"
-          # Rebase-retry push. Parallel matrix jobs can race on the same
-          # data/state files (two runs touching the same domain, or the
-          # state crawl.json). These files are append-only and regenerable,
-          # so -X theirs auto-resolves any conflict in favor of the incoming
-          # branch tip — the push never fails on a merge conflict, and at
-          # most a few pages re-scan next run. One job's race never blocks
-          # the others.
           for i in 1 2 3 4 5; do
-            if git push; then exit 0; fi
+            if git push; then
+              exit 0
+            fi
             if ! git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"; then
-              # Conflict -X theirs couldn't auto-resolve (e.g. delete/modify):
-              # abort and re-stage our files onto the fresh tip.
               git rebase --abort 2>/dev/null || true
               git reset --soft HEAD~1 2>/dev/null || true
               git pull --rebase origin "${GITHUB_REF_NAME}"
@@ -179,10 +164,10 @@ jobs:
             fi
             sleep $((RANDOM % 10 + 2))
           done
+          echo "push failed after retries" >&2
+          exit 1
 
   optional-report:
     needs: scan
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_report }}
     uses: ./.github/workflows/report.yml
-          echo "push failed after retries" >&2
-          exit 1
