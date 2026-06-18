@@ -157,7 +157,9 @@ function sortableTable(caption, cols, rows) {
   const body = rows
     .map((r) => `<tr>${r.map((cell, i) => (i === 0
       ? `<th scope="row" data-sort="${esc(String(cell.sort))}">${cell.html}</th>`
-      : `<td class="num" data-sort="${esc(String(cell.sort))}">${cell.html}</td>`)).join('')}</tr>`)
+      : (cols[i]?.num
+        ? `<td class="num" data-sort="${esc(String(cell.sort))}">${cell.html}</td>`
+        : `<td data-sort="${esc(String(cell.sort))}">${cell.html}</td>`))).join('')}</tr>`)
     .join('\n');
   return `<table class="sortable">
 <caption>${esc(caption)} <span class="bug-meta">— click a column heading to sort</span></caption>
@@ -1277,9 +1279,18 @@ ${heading('h-images-quality', 'Alt-text quality')}
 </table>
 </section>` : '';
 
-  // Deduplicated image table: one row per unique image, with occurrence count,
-  // filesize, and alt-text verdict. Sorted by occurrences (most-reused first).
-  const rows = (img.uniqueImageList ?? []).slice(0, 500).map((u) => {
+  // Deduplicated images table using the reusable sortableTable helper.
+  const tableCols = [
+    { label: 'Image URL' },
+    { label: 'Alt text' },
+    { label: 'Alt verdict' },
+    { label: 'Loading' },
+    { label: 'Size', num: true },
+    { label: 'Pages', num: true },
+    { label: 'Occurrences', num: true },
+  ];
+
+  const tableRows = (img.uniqueImageList ?? []).slice(0, 500).map((u) => {
     const altCell = u.altVerdict === 'MISSING'
       ? '<span class="error">missing</span>'
       : u.altVerdict === 'DECORATIVE'
@@ -1287,29 +1298,35 @@ ${heading('h-images-quality', 'Alt-text quality')}
         : esc(u.alt ?? '');
     const [vlabel] = ALT_VERDICT_INFO[u.altVerdict] ?? [u.altVerdict];
     const vCls = (u.altVerdict === 'GOOD' || u.altVerdict === 'DECORATIVE') ? 'bug-meta' : 'error';
-    const inconsistent = u.altCount > 1 ? ` <span class="bug-meta">${u.altCount} alt variants</span>` : '';
-    return `<tr>
-  <th scope="row">${urlCell(u.src)}</th>
-  <td>${altCell}${inconsistent}</td>
-  <td><span class="${vCls}">${esc(vlabel)}</span></td>
-  <td class="num" data-sort="${u.bytes ?? 0}">${u.bytes != null ? kb(u.bytes) : '—'}</td>
-  <td class="num" data-sort="${u.occurrences}">${u.occurrences}</td>
-</tr>`;
-  }).join('\n');
+    const inconsistent = (u.altCount ?? 1) > 1 ? ` <span class="bug-meta">${u.altCount} alt variants</span>` : '';
+    const loadingVal = u.loading ?? '—';
+
+    return [
+      { html: urlCell(u.src), sort: u.src },
+      { html: altCell + inconsistent, sort: u.alt ?? '' },
+      { html: `<span class="${vCls}">${esc(vlabel)}</span>`, sort: u.altVerdict },
+      { html: esc(loadingVal), sort: loadingVal },
+      { html: u.bytes != null ? kb(u.bytes) : '—', sort: u.bytes ?? 0 },
+      { html: String(u.pages ?? 1), sort: u.pages ?? 1 },
+      { html: String(u.occurrences), sort: u.occurrences },
+    ];
+  });
+
+  const detailTable = sortableTable(
+    `Up to 500 unique image occurrences from ${img.pagesScanned} page(s) scanned, most-reused first.`,
+    tableCols,
+    tableRows
+  );
 
   const body = `
 <h1>${esc(target.domain)}: image inventory</h1>
 ${subnav('images')}
-<p class="meta">Unique images encountered on scanned pages in <strong>${esc(summary.week)}</strong>, deduplicated by URL — the same image reused across pages is one row with an occurrence count. Images on pages not sampled this week are not listed.${dlLink}</p>
+<p class="meta">Unique images encountered on scanned pages in <strong>${esc(summary.week)}</strong>, deduplicated by URL and Alt — the same image reused across pages with the same explanation is one row. Images with alternate captions are split into separate rows. ${dlLink}</p>
 ${statsTable}
 ${qualitySection}
 <section aria-labelledby="h-images-detail">
 ${heading('h-images-detail', 'Image detail')}
-<table class="sortable">
-<caption>Up to 500 unique images from ${img.pagesScanned} page(s) scanned, most-reused first.</caption>
-<thead><tr><th scope="col">Image URL</th><th scope="col">Alt text</th><th scope="col">Alt verdict</th><th scope="col" class="num">Size</th><th scope="col" class="num">Occurrences</th></tr></thead>
-<tbody>${rows}</tbody>
-</table>
+${detailTable}
 </section>`;
   return layout({
     title: `${target.domain} Images ${summary.week} | vital-scans`,
@@ -1995,4 +2012,5 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug-placeholder { color: var(--muted); font-style: italic; }
 .bug pre { background: color-mix(in srgb, var(--ink) 6%, transparent); padding: .6rem .8rem;
   border-radius: 2px; overflow-x: auto; font-size: .85rem; }
+.error { color: var(--worse); font-weight: 600; }
 `;

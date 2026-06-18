@@ -555,15 +555,25 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (img.isMissingAlt) imagesMissingAlt++;
         if (img.isDecorative) imagesDecorative++;
         imageRows.push({ pageUrl: rec.url, ...img });
-        // Deduplicate by src for the page view.
-        let e = imageBySrc.get(img.src);
+        // Deduplicate by src and alt for the page view.
+        const key = `${img.src}|${img.alt ?? ''}`;
+        let e = imageBySrc.get(key);
         if (!e) {
-          e = { src: img.src, alt: img.alt, bytes: img.bytes ?? null, occurrences: 0, pages: new Set(), alts: new Set(), altVerdict: img.altVerdict, altReason: img.altReason };
-          imageBySrc.set(img.src, e);
+          e = {
+            src: img.src,
+            alt: img.alt,
+            bytes: img.bytes ?? null,
+            occurrences: 0,
+            pages: new Set(),
+            loadings: new Set(),
+            altVerdict: img.altVerdict,
+            altReason: img.altReason
+          };
+          imageBySrc.set(key, e);
         }
         e.occurrences++;
         e.pages.add(rec.url);
-        if (img.alt != null) e.alts.add(img.alt);
+        if (img.loading) e.loadings.add(img.loading);
         if (e.bytes == null && img.bytes != null) e.bytes = img.bytes;
       }
     }
@@ -777,6 +787,10 @@ function summarizeRecords(target, week, records, brokenLinks) {
       : null,
     images: imagePagesScanned
       ? (() => {
+          const srcAltCounts = {};
+          for (const e of imageBySrc.values()) {
+            srcAltCounts[e.src] = (srcAltCounts[e.src] ?? 0) + 1;
+          }
           // Deduplicated, occurrence-counted unique images for the page table,
           // plus the alt-text quality verdict tally (counted per unique image).
           const uniqueImages = [...imageBySrc.values()]
@@ -786,7 +800,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
               bytes: e.bytes,
               occurrences: e.occurrences,
               pages: e.pages.size,
-              altCount: e.alts.size, // >1 means inconsistent alt across uses
+              loading: e.loadings.size > 0 ? [...e.loadings].sort().join(', ') : null,
+              altCount: srcAltCounts[e.src], // >1 means inconsistent alt across uses
               altVerdict: e.altVerdict,
               altReason: e.altReason,
               examplePages: [...e.pages].slice(0, 10),

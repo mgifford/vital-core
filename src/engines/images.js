@@ -56,7 +56,22 @@ export function createImageCollector(page) {
       page.off('response', onResponse);
       // Attach the byte size we captured from the network to each image record.
       for (const img of images) {
-        img.bytes = sizes.get(img.src) ?? null;
+        let size = sizes.get(img.src);
+        if (size === undefined || size === null) {
+          // Fallback 1: try matching without query variables
+          const noQuerySrc = img.src.split('?')[0];
+          size = sizes.get(noQuerySrc);
+          if (size === undefined || size === null) {
+            // Fallback 2: search inside sizes for any matching prefix/suffix
+            for (const [sUrl, sBytes] of sizes.entries()) {
+              if (sUrl.split('?')[0] === noQuerySrc) {
+                size = sBytes;
+                break;
+              }
+            }
+          }
+        }
+        img.bytes = size ?? null;
       }
       return images;
     },
