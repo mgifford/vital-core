@@ -221,6 +221,12 @@ test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {
   assert.deepEqual(resolveWcag('alfa', { ruleId: 'sia-r12' }), {
     sc: '4.1.2', name: 'Name, Role, Value', level: 'A', wcag_version: '2.0',
   });
+  assert.deepEqual(resolveWcag('alfa', { ruleId: '90' }), {
+    sc: '4.1.2', name: 'Name, Role, Value', level: 'A', wcag_version: '2.0',
+  }, 'numeric SI id is normalized to sia-rN and mapped');
+  assert.deepEqual(resolveWcag('alfa', { ruleId: 'sia-r67' }), {
+    sc: '1.1.1', name: 'Non-text Content', level: 'A', wcag_version: '2.0',
+  }, 'alfa map from data file resolves additional rules');
   assert.equal(resolveWcag('alfa', { ruleId: 'sia-r9999' }), null, 'unknown alfa rule undetermined');
 });
 

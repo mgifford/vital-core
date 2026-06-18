@@ -5,6 +5,7 @@ import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
 import { buildLineManifest } from './lib/paracharts.js';
+import { rulePlainLabel } from './lib/rule-label.js';
 
 /**
  * Report design constraints, in priority order:
@@ -441,7 +442,8 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
     .map((id) => {
       const r = rules[id];
       const link = r.helpUrl ?? r.ruleUrl;
-      const label = r.help ? `${esc(id)}: ${esc(r.help)}` : esc(id);
+      const plain = rulePlainLabel(engineKey, id, { help: r.help });
+      const label = plain ? `${esc(plain)} <span class="bug-meta">(${esc(id)})</span>` : esc(id);
       const csv = csvLinks.byRule?.[`${engineKey}:${id}`];
       return `<tr>
   <th scope="row">${link ? `<a href="${esc(link)}">${label}</a>` : label}</th>
@@ -489,9 +491,12 @@ ${heading('h-bugs', `Bug reports`)}
       const wcagDetail = b.wcag_sc
         ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (Level ${esc(b.wcag_level)}, WCAG ${esc(b.wcag_version ?? '2.x')})`
         : b.wcag_category === 'Best Practice' ? 'Best Practice — not a WCAG requirement' : 'undetermined';
+      const ruleLabel = b.rule_label && b.rule_label !== b.rule_id
+        ? `${esc(b.rule_label)} <span class="bug-meta">(${esc(b.rule_id)})</span>`
+        : esc(b.rule_id);
       const ruleLink = b.rule_url
-        ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${esc(b.rule_id)}</a>`
-        : `${esc(b.tool)} — ${esc(b.rule_id)}`;
+        ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${ruleLabel}</a>`
+        : `${esc(b.tool)} — ${ruleLabel}`;
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
         : '';
@@ -751,7 +756,9 @@ function consensusSection(summary) {
     .map((g) => {
       const axeId = g.axeRules[0];
       const alfaId = g.alfaRules[0];
-      const help = axeId ? (axeRules[axeId]?.help ?? axeId) : (alfaId ?? '');
+      const help = axeId
+        ? (rulePlainLabel('axe-core', axeId, { help: axeRules[axeId]?.help }) ?? axeId)
+        : (alfaId ? (rulePlainLabel('alfa', alfaId) ?? alfaId) : '');
       const axeUrl = axeId ? axeRules[axeId]?.helpUrl : null;
       const alfaUrl = alfaId ? alfaRules[alfaId]?.ruleUrl : null;
       const actUrl = g.actRuleId ? `https://act-rules.github.io/rules/${esc(g.actRuleId)}` : null;

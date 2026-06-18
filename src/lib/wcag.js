@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { DIRS } from './config.js';
+
 /**
  * Map scanner output to WCAG Success Criteria and a severity, following
  * the bug-reporting best-practices guide
@@ -91,12 +95,13 @@ function scFromAxeTag(tag) {
 }
 
 /**
- * Best-effort WCAG SC mapping for common Siteimprove Alfa rule ids
- * (sia-rN). Alfa rules map to ACT rules, which map to WCAG; this covers
- * the rules seen most often. Unknown rules return null and the report
- * says the criterion is undetermined.
+ * Fallback WCAG SC mapping for Siteimprove Alfa rule ids (sia-rN).
+ *
+ * Primary mapping is loaded from src/data/alfa-wcag-rules.json, which tracks
+ * SI rule-number coverage across WCAG criteria. This fallback preserves older
+ * hand-curated mappings for any rule ids not present in that dataset.
  */
-const ALFA_SC = {
+const ALFA_SC_FALLBACK = {
   'sia-r2': '1.1.1', // img has accessible name
   'sia-r3': '4.1.1', // id attribute unique
   'sia-r4': '3.1.1', // lang of page
@@ -127,6 +132,68 @@ const ALFA_SC = {
   'sia-r111': '2.5.8', // target size
 };
 
+let alfaRuleToSc = null;
+
+function parseSc(sc) {
+  return String(sc)
+    .split('.')
+    .map((n) => Number.parseInt(n, 10) || 0);
+}
+
+function compareSc(a, b) {
+  const aa = parseSc(a);
+  const bb = parseSc(b);
+  for (let i = 0; i < Math.max(aa.length, bb.length); i++) {
+    const d = (aa[i] ?? 0) - (bb[i] ?? 0);
+    if (d !== 0) return d;
+  }
+  return 0;
+}
+
+function normalizeAlfaRuleId(id) {
+  const s = String(id ?? '').trim().toLowerCase();
+  if (!s) return '';
+  if (s.startsWith('sia-r')) return s;
+  return `sia-r${s}`;
+}
+
+function loadAlfaRuleToSc() {
+  if (alfaRuleToSc) return alfaRuleToSc;
+  const byRule = {};
+  const p = path.join(DIRS.root, 'src', 'data', 'alfa-wcag-rules.json');
+  try {
+    const raw = JSON.parse(fs.readFileSync(p, 'utf8'));
+    for (const [sc, ids] of Object.entries(raw.rules ?? {})) {
+      for (const id of ids ?? []) {
+        const ruleId = normalizeAlfaRuleId(id);
+        if (!ruleId) continue;
+        const arr = (byRule[ruleId] ??= []);
+        if (!arr.includes(sc)) arr.push(sc);
+      }
+    }
+    for (const arr of Object.values(byRule)) {
+      arr.sort(compareSc);
+    }
+  } catch {
+    // Optional dataset: if missing, we fall back to curated constants.
+  }
+  alfaRuleToSc = byRule;
+  return alfaRuleToSc;
+}
+
+function alfaScForRule(ruleId) {
+  const normalized = normalizeAlfaRuleId(ruleId);
+  if (!normalized) return null;
+  const mapped = loadAlfaRuleToSc()[normalized];
+  if (Array.isArray(mapped) && mapped.length > 0) {
+    // Some SI rules map to multiple SCs; choose the lowest SC for a stable,
+    // deterministic primary category while retaining "Undetermined" for rules
+    // with no known mapping.
+    return mapped[0];
+  }
+  return ALFA_SC_FALLBACK[normalized] ?? null;
+}
+
 /**
  * Resolve a finding's WCAG criterion.
  *   engine: 'axe-core' | 'alfa'
@@ -145,7 +212,7 @@ export function resolveWcag(engine, { tags = [], ruleId } = {}) {
       }
     }
   } else if (engine === 'alfa') {
-    sc = ALFA_SC[ruleId] ?? null;
+    sc = alfaScForRule(ruleId);
   }
   if (!sc || !WCAG_CRITERIA[sc]) return null;
   const [name, level, wcag_version] = WCAG_CRITERIA[sc];

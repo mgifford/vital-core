@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { resolveWcag, classifyFinding, severityFor } from './wcag.js';
 import { impactFor, estimateExcluded, pct } from './fpc.js';
 import { remediationTip } from './remediation.js';
+import { rulePlainLabel } from './rule-label.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -25,14 +26,11 @@ function shortHash(...parts) {
   return crypto.createHash('sha256').update(parts.join('|')).digest('hex').slice(0, 8);
 }
 
-/** Derive a short component label from a rule's help text or id. */
-function componentLabel(ruleId, help) {
-  if (help) {
-    // axe help reads like "Elements must have sufficient color contrast";
-    // take the leading subject phrase, capped.
-    return help.replace(/\s+/g, ' ').trim().slice(0, 60);
-  }
-  return ruleId;
+/** Derive a short human label from scanner metadata, with rule-id fallback. */
+function componentLabel(engineKey, ruleId, help, wcag) {
+  const label = rulePlainLabel(engineKey, ruleId, { help, wcag });
+  if (!label) return ruleId;
+  return label.replace(/\s+/g, ' ').trim().slice(0, 80);
 }
 
 /**
@@ -51,7 +49,7 @@ export function buildBugReports(target, summary) {
     const first = rule.instances?.[0];
     const instanceId = `${PREFIX}-${shortHash(patternId, first?.url ?? '', first?.target ?? '')}`;
     const scLabel = wcag ? `WCAG ${wcag.sc}` : 'WCAG criterion undetermined';
-    const component = componentLabel(ruleId, rule.help);
+    const component = componentLabel(engine, ruleId, rule.help, wcag);
 
     // Human impact: disability groups affected (via WCAG SC -> Section 508
     // FPC) with US prevalence. If the target supplies page_loads_per_week,
@@ -85,6 +83,7 @@ export function buildBugReports(target, summary) {
       wcag_version: wcag?.wcag_version ?? null,
       wcag_category,
       rule_id: ruleId,
+      rule_label: component,
       engine_key: engine, // 'axe-core' | 'alfa' | 'deprecated-html' (stable; for CSV lookup)
       tool: toolName,
       rule_url: rule.helpUrl ?? rule.ruleUrl ?? null,
@@ -95,10 +94,7 @@ export function buildBugReports(target, summary) {
         total_pages_scanned: total,
       },
       summary: `${component} (${scLabel})`,
-      description:
-        rule.help
-          ? `${rule.help}. Detected by ${toolName} rule ${ruleId} on ${rule.pages} of ${total} scanned pages (${rule.count} instances).`
-          : `${toolName} rule ${ruleId} failed on ${rule.pages} of ${total} scanned pages (${rule.count} instances).`,
+      description: `${component}. Detected by ${toolName} rule ${ruleId} on ${rule.pages} of ${total} scanned pages (${rule.count} instances).`,
       // Capped representative instances with real DOM context.
       examples: (rule.instances ?? []).map((i) => ({
         url: i.url,
