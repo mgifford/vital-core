@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { normalizeUrl, pageId, registrableDomain, isThirdParty } from '../../src/lib/urls.js';
 import { isoWeekOf, previousWeekOf } from '../../src/lib/week.js';
 import { parseRobots } from '../../src/lib/robots.js';
+import { discoverFromSitemaps } from '../../src/lib/sitemap.js';
 import { addPage, pickBatch } from '../../src/lib/state.js';
 import { resolveWcag, severityFor, classifyFinding } from '../../src/lib/wcag.js';
 import { buildUrlFilter } from '../../src/lib/urls.js';
@@ -97,6 +98,39 @@ test('robots: empty file allows everything', () => {
   assert.equal(r.crawlDelay, null);
 });
 
+test('sitemap: traverses multiple sibling index branches one level deep', async () => {
+  const realFetch = globalThis.fetch;
+  try {
+    const xml = {
+      'https://example.gov/sitemap.xml':
+        '<?xml version="1.0"?><sitemapindex>' +
+        '<sitemap><loc>https://example.gov/sitemap-a.xml</loc></sitemap>' +
+        '<sitemap><loc>https://example.gov/sitemap-b.xml</loc></sitemap>' +
+        '</sitemapindex>',
+      'https://example.gov/sitemap-a.xml':
+        '<?xml version="1.0"?><urlset>' +
+        '<url><loc>https://example.gov/a</loc></url>' +
+        '</urlset>',
+      'https://example.gov/sitemap-b.xml':
+        '<?xml version="1.0"?><urlset>' +
+        '<url><loc>https://example.gov/b</loc></url>' +
+        '</urlset>',
+    };
+
+    globalThis.fetch = async (input) => {
+      const key = String(input);
+      const body = xml[key];
+      if (!body) return { ok: false, text: async () => '' };
+      return { ok: true, text: async () => body };
+    };
+
+    const found = await discoverFromSitemaps('https://example.gov', 'example.gov', 'vital-scans/0.1');
+    assert.deepEqual(found.sort(), ['https://example.gov/a', 'https://example.gov/b']);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
 test('pickBatch: never-scanned first, weekly cap respected, no rescan same week', () => {
   const state = { domain: 'x', pages: {} };
   addPage(state, 'a', 'https://x/a', 0);
@@ -148,6 +182,23 @@ test('pickBatch: non-priority order is stable per week but varies across weeks',
   assert.notDeepEqual(w24a, w25, 'different week -> different random spread');
   // Same set, just reordered.
   assert.deepEqual([...w24a].sort(), [...w25].sort(), 'same pages, different order');
+});
+
+test('pickBatch: failed pages can retry in-week until fail threshold', () => {
+  const state = { domain: 'x', pages: {} };
+  addPage(state, 'done', 'https://x/done', 1);
+  addPage(state, 'retry', 'https://x/retry', 1);
+  addPage(state, 'blocked', 'https://x/blocked', 1);
+
+  // done: completed this week -> excluded.
+  state.pages.done.lastScannedWeek = '2026-W24';
+  // retry: no completed outcome yet this week and below fail threshold -> eligible.
+  state.pages.retry.failCount = 2;
+  // blocked: reached fail threshold -> excluded.
+  state.pages.blocked.failCount = 3;
+
+  const { batch } = pickBatch(state, '2026-W24', 10, 100);
+  assert.deepEqual(batch.map((b) => b.id), ['retry']);
 });
 
 test('addPage: priority promotes an existing page without duplicating', () => {

@@ -38,9 +38,11 @@ than done in one big sweep. One run handles one domain:
    always queued first, before the rest of the site.
 3. **Batch selection** (`src/lib/state.js` → `pickBatch`): each run
    scans up to `pages_per_run` pages (default 150) that have **not yet
-   been scanned this ISO week**, never-scanned pages first. No page is
-   scanned more than once per week. Selection within a week is
-   deterministic, so runs are replayable.
+  been scanned this ISO week**, never-scanned pages first. Pages with a
+  completed outcome are not scanned more than once per week; timeout/
+  error pages are retried in-week (up to 3 failed attempts) so transient
+  failures can recover. Selection within a week is deterministic, so
+  runs are replayable.
 4. **Scanning**: each page is loaded in a real browser (Playwright /
    headless Chromium), the engines run on it (see FEATURES.md), and one
    JSON record is written per page.

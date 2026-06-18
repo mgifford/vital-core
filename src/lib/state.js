@@ -67,16 +67,21 @@ export function addPage(state, id, url, depth, { priority = false } = {}) {
 /**
  * Pick the next batch to scan this week.
  *
- * No URL is scanned more than once per week: pages with lastScannedWeek
- * === week are excluded, so coverage accumulates across the week's runs
- * without repeats. Within that constraint, ordering is:
+ * Pages with a completed outcome are not rescanned in the same ISO week:
+ * pages with lastScannedWeek === week are excluded, so coverage accumulates
+ * across the week's runs without repeats.
+ *
+ * Timeout/error pages are intentionally left unmarked for the week and can
+ * be retried in-week (up to the fail threshold) to recover from transient
+ * failures. Within that constraint, ordering is:
  *
  *   1. Priority pages (configured top tasks) first, so they are always
  *      covered early in the week before the budget runs out.
  *   2. Then the rest in a stable per-week random order — a different
  *      random spread of a large site each week, deterministic for replay.
  *
- * Pages that failed 3+ times this week are excluded.
+ * Pages with failCount >= 3 are excluded until a successful scan resets
+ * the counter.
  */
 export function pickBatch(state, week, budget, scannedThisWeekCap) {
   const entries = Object.entries(state.pages);

@@ -78,10 +78,12 @@ deprecated-html engine is a complete worked example.
 
 #### Page selection: priority + weekly sampling
 
-`pickBatch` (`src/lib/state.js`) decides which pages each run scans, with
-one hard rule: **no URL is scanned more than once per ISO week** (pages
-already scanned this week are excluded, so coverage accumulates across
-the week's runs without repeats). Within that:
+`pickBatch` (`src/lib/state.js`) decides which pages each run scans. The
+default rule is that pages with a completed outcome are not rescanned in
+the same ISO week (`lastScannedWeek` excludes them), so coverage
+accumulates across the week's runs without repeats. Timeout/error pages
+are intentionally retried in-week (up to 3 failed attempts) to recover
+from transient failures. Within that:
 
 1. **Priority URLs first.** A target's `priority_urls` / `priority_urls_file`
    (top tasks, e.g. from top-task-finder — one URL per line, `#` comments

@@ -8,12 +8,11 @@ import { normalizeUrl } from './urls.js';
  */
 export async function discoverFromSitemaps(origin, host, userAgent, cap = 20000) {
   const found = new Set();
-  const queue = [new URL('/sitemap.xml', origin).toString()];
+  const queue = [{ url: new URL('/sitemap.xml', origin).toString(), depth: 0 }];
   const seenSitemaps = new Set();
-  let indexDepth = 0;
 
   while (queue.length && found.size < cap && seenSitemaps.size < 50) {
-    const smUrl = queue.shift();
+    const { url: smUrl, depth } = queue.shift();
     if (seenSitemaps.has(smUrl)) continue;
     seenSitemaps.add(smUrl);
 
@@ -32,9 +31,8 @@ export async function discoverFromSitemaps(origin, host, userAgent, cap = 20000)
     const isIndex = /<sitemapindex[\s>]/i.test(text);
     const locs = [...text.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map((m) => decodeEntities(m[1]));
 
-    if (isIndex && indexDepth < 1) {
-      indexDepth++;
-      for (const loc of locs.slice(0, 25)) queue.push(loc);
+    if (isIndex && depth < 1) {
+      for (const loc of locs.slice(0, 25)) queue.push({ url: loc, depth: depth + 1 });
     } else if (!isIndex) {
       for (const loc of locs) {
         const norm = normalizeUrl(loc, origin, host);
