@@ -7,7 +7,7 @@ import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, r
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { scoreFor } from './lib/score.js';
@@ -159,10 +159,18 @@ for (const target of config.targets) {
 
     // Evidence CSVs: Lighthouse per-page, readability per-page, spelling.
     const lhCsv = writeLighthouseCsv(repDir, summary.lighthouse);
+    const lhJson = writeLighthouseJson(repDir, summary.lighthouse, {
+      domain: target.domain,
+      week: summary.week,
+      generatedAt: summary.generatedAt,
+    });
     const readabilityCsv = writeReadabilityCsv(repDir, summary.plainLanguage?.pageRows);
     const spellingCsv = writeSpellingCsv(repDir, summary.plainLanguage?.topMisspellings);
     const acronymsCsv = writeAcronymsCsv(repDir, summary.plainLanguage?.topUnexplainedAcronyms);
-    if (summary.lighthouse) summary.lighthouse.csv = lhCsv;
+    if (summary.lighthouse) {
+      summary.lighthouse.csv = lhCsv;
+      summary.lighthouse.json = lhJson;
+    }
     if (summary.plainLanguage) {
       summary.plainLanguage.readabilityCsv = readabilityCsv;
       summary.plainLanguage.spellingCsv = spellingCsv;
@@ -190,7 +198,7 @@ for (const target of config.targets) {
     fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, { ...reporting, keyPages }));
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
-    fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv));
+    fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv, lhJson));
     fs.writeFileSync(path.join(repDir, 'readability.html'), renderReadabilityPage(target, summary, readabilityCsv));
 
     const techCsv = summary.tech?.length ? writeTechCsv(repDir, summary.tech) : null;

@@ -15,6 +15,7 @@ import { updateFindings } from '../../src/lib/findings.js';
 import { findMisspellings } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
 import { toCsv, ruleSlug } from '../../src/lib/csv.js';
+import { writeLighthouseCsv, writeLighthouseJson } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
 import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
@@ -22,6 +23,7 @@ import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssocia
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
 import { extractAudits } from '../../src/engines/lighthouse.js';
+import { renderLighthousePage } from '../../src/report-html.js';
 import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
 import { loadPriorityUrls } from '../../src/lib/top-tasks.js';
 import { prioritizeAccessibilityBugs } from '../../src/lib/accessibility-priority.js';
@@ -306,6 +308,51 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.match(md, /\*\*Severity:\*\* Critical/);
   assert.match(md, /### Steps to reproduce/);
   assert.match(md, /\*\*WCAG SC:\*\* 1\.4\.3/);
+});
+
+test('lighthouse exports and page link the raw dataset', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'lighthouse-'));
+  const summary = {
+    domain: 'example.gov',
+    week: '2026-W25',
+    generatedAt: '2026-06-18T00:00:00.000Z',
+    lighthouse: {
+      pageDetail: [
+        {
+          url: 'https://example.gov/high',
+          scores: { performance: 90, accessibility: 91, bestPractices: 92, seo: 93, agentic: 94 },
+          metrics: { firstContentfulPaintMs: 100, largestContentfulPaintMs: 200, speedIndexMs: 300, totalBlockingTimeMs: 400, cumulativeLayoutShift: 0.01 },
+        },
+        {
+          url: 'https://example.gov/low',
+          scores: { performance: 30, accessibility: 31, bestPractices: 32, seo: 33, agentic: 34 },
+          metrics: { firstContentfulPaintMs: 500, largestContentfulPaintMs: 600, speedIndexMs: 700, totalBlockingTimeMs: 800, cumulativeLayoutShift: 0.2 },
+        },
+      ],
+      medianPerformance: 60,
+      medianAccessibility: 61,
+      medianBestPractices: 62,
+      medianSeo: 63,
+      medianAgentic: 64,
+      metrics: {},
+      recommendations: [],
+    },
+  };
+
+  const csvHref = writeLighthouseCsv(tmpDir, summary.lighthouse);
+  const jsonHref = writeLighthouseJson(tmpDir, summary.lighthouse, { domain: summary.domain, week: summary.week, generatedAt: summary.generatedAt });
+
+  assert.equal(csvHref, 'lighthouse.csv');
+  assert.equal(jsonHref, 'lighthouse.json');
+
+  const rawJson = JSON.parse(fs.readFileSync(path.join(tmpDir, 'lighthouse.json'), 'utf8'));
+  assert.equal(rawJson.pages[0].url, 'https://example.gov/low', 'raw JSON is sorted by lowest performance first');
+  assert.equal(rawJson.pages[1].url, 'https://example.gov/high');
+
+  const html = renderLighthousePage({ domain: 'example.gov', page_loads_per_week: null }, summary, csvHref, jsonHref);
+  assert.match(html, /Download raw dataset:/);
+  assert.match(html, /href="lighthouse\.csv"/);
+  assert.match(html, /href="lighthouse\.json"/);
 });
 
 test('plain-language: sentence splitting and syllable estimation', () => {

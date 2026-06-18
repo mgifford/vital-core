@@ -35,7 +35,8 @@ export function ruleSlug(engine, ruleId) {
 /** Write the per-page Lighthouse CSV (scores + Core Web Vitals). */
 export function writeLighthouseCsv(repDir, lighthouse) {
   if (!lighthouse?.pageDetail?.length) return null;
-  const rows = lighthouse.pageDetail.map((p) => [
+  const pages = sortLighthousePages(lighthouse.pageDetail);
+  const rows = pages.map((p) => [
     p.url, p.scores.performance, p.scores.accessibility, p.scores.bestPractices,
     p.scores.seo, p.scores.agentic, p.metrics.firstContentfulPaintMs,
     p.metrics.largestContentfulPaintMs, p.metrics.speedIndexMs,
@@ -44,6 +45,32 @@ export function writeLighthouseCsv(repDir, lighthouse) {
   fs.writeFileSync(path.join(repDir, 'lighthouse.csv'),
     toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
   return 'lighthouse.csv';
+}
+
+/** Write the raw per-page Lighthouse JSON dataset, sorted by Performance ASC. */
+export function writeLighthouseJson(repDir, lighthouse, meta = {}) {
+  if (!lighthouse?.pageDetail?.length) return null;
+  const pages = sortLighthousePages(lighthouse.pageDetail);
+  fs.writeFileSync(
+    path.join(repDir, 'lighthouse.json'),
+    JSON.stringify(
+      {
+        ...meta,
+        pages,
+      },
+      null,
+      1
+    )
+  );
+  return 'lighthouse.json';
+}
+
+function sortLighthousePages(pageDetail) {
+  return [...pageDetail].sort(
+    (a, b) =>
+      (a.scores.performance ?? Number.POSITIVE_INFINITY) - (b.scores.performance ?? Number.POSITIVE_INFINITY) ||
+      String(a.url ?? '').localeCompare(String(b.url ?? ''))
+  );
 }
 
 /** Write per-page readability CSV (words, Flesch reading ease, grade). */

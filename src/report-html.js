@@ -886,7 +886,7 @@ ${gaps}
 </section>`;
 }
 
-export function renderLighthousePage(target, summary, csvHref) {
+export function renderLighthousePage(target, summary, csvHref, jsonHref = null) {
   const lh = summary.lighthouse;
   if (!lh || !lh.pageDetail?.length) {
     return emptyCriterionPage(target, summary, { active: 'lighthouse', label: 'Lighthouse', message: 'No Lighthouse audits ran on this week\'s sampled pages (Lighthouse is sampled at a low rate; some weeks have none).' });
@@ -921,7 +921,7 @@ export function renderLighthousePage(target, summary, csvHref) {
   const body = `
 <h1>${esc(target.domain)}: Lighthouse — week ${esc(summary.week)}</h1>
 ${subnav('lighthouse')}
-<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals. ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
+<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals. ${csvHref || jsonHref ? `Download raw dataset: ${[csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '', jsonHref ? `<a href="${esc(jsonHref)}">JSON</a>` : ''].filter(Boolean).join(' · ')}.` : ''}</p>
 ${impact ? perfImpactSection(impact) : ''}
 <section aria-labelledby="h-lh-medians">
 ${heading('h-lh-medians', `Medians across sampled pages`)}
