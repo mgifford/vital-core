@@ -44,6 +44,15 @@ EOF
 log() { printf '[sync-hosting] %s\n' "$*"; }
 die() { printf '[sync-hosting] ERROR: %s\n' "$*" >&2; exit 1; }
 
+load_local_env() {
+  if [[ -f .env ]]; then
+    set -a
+    # shellcheck disable=SC1091
+    . ./.env
+    set +a
+  fi
+}
+
 require_clean_worktree() {
   git diff --quiet --ignore-submodules -- && git diff --cached --quiet --ignore-submodules --
 }
@@ -61,6 +70,16 @@ ensure_hf_remote() {
   fi
   log "Adding Hugging Face remote '$HF_REMOTE' -> '$HF_URL'"
   git remote add "$HF_REMOTE" "$HF_URL"
+}
+
+ensure_hf_auth() {
+  if hf auth whoami >/dev/null 2>&1; then
+    return 0
+  fi
+
+  [[ -n "${HF_TOKEN:-}" ]] || die "HF_TOKEN is not set; add it to .env or export it, then rerun."
+  log "Logging into Hugging Face for git pushes"
+  hf auth login --token "$HF_TOKEN" --add-to-git-credential --force >/dev/null
 }
 
 fetch_remotes() {
@@ -82,12 +101,27 @@ push_branch() {
   local branch="$1"
   local remote="$2"
   local remote_ref="${3:-$branch}"
+  local lease_arg=""
+
   if [[ "$PUSH" != "1" ]]; then
     log "Skipping push for '$branch' (--no-push)"
     return 0
   fi
+
+  if [[ "$remote" == "$HF_REMOTE" && "$remote_ref" == main ]]; then
+    local remote_tip
+    remote_tip="$(git ls-remote "$remote" "refs/heads/$remote_ref" | awk '{print $1}')"
+    if [[ -n "$remote_tip" ]]; then
+      lease_arg="--force-with-lease=$remote_ref:$remote_tip"
+    fi
+  fi
+
   log "Pushing '$branch' -> '$remote/$remote_ref'"
-  git push -u "$remote" "$branch:$remote_ref"
+  if [[ -n "$lease_arg" ]]; then
+    git push -u "$lease_arg" "$remote" "$branch:$remote_ref"
+  else
+    git push -u "$remote" "$branch:$remote_ref"
+  fi
 }
 
 switch_merge() {
@@ -113,8 +147,10 @@ sync_from_main() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
+  ensure_hf_auth
   fetch_remotes
 
   ensure_branch "$BASE_BRANCH" "$GITHUB_REMOTE/$BASE_BRANCH"
@@ -134,8 +170,10 @@ sync_from_github() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
+  ensure_hf_auth
   fetch_remotes
 
   ensure_branch "$GITHUB_BRANCH" "$GITHUB_REMOTE/$BASE_BRANCH"
@@ -152,8 +190,10 @@ sync_from_hf() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
+  ensure_hf_auth
   fetch_remotes
 
   ensure_branch "$HF_BRANCH" "$HF_REMOTE/main"
@@ -175,6 +215,7 @@ main() {
       show_status
       ;;
     setup)
+      load_local_env
       require_clean_worktree || die "Working tree must be clean before setup."
       ensure_hf_remote
       fetch_remotes
