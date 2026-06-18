@@ -9,6 +9,7 @@ HF_REMOTE="${HF_REMOTE:-hf}"
 HF_BRANCH="${HF_BRANCH:-hf-spaces}"
 HF_URL="${HF_URL:-https://huggingface.co/spaces/mgifford/vital-core.git}"
 PUSH="${PUSH:-1}"
+HF_MAX_FILE_BYTES="${HF_MAX_FILE_BYTES:-10485760}"
 
 load_local_env() {
   if [[ -f .env ]]; then
@@ -27,6 +28,25 @@ ensure_hf_auth() {
   [[ -n "${HF_TOKEN:-}" ]] || die "HF_TOKEN is not set; add it to .env or export it, then rerun."
   log "Logging into Hugging Face for git pushes"
   hf auth login --token "$HF_TOKEN" --add-to-git-credential --force >/dev/null
+}
+
+prune_hf_oversized_files() {
+  local oversized=()
+  local file size
+
+  while IFS= read -r file; do
+    [[ -n "$file" ]] || continue
+    size="$(stat -f%z "$file")"
+    if (( size > HF_MAX_FILE_BYTES )); then
+      oversized+=("$file")
+    fi
+  done < <(git ls-files)
+
+  if ((${#oversized[@]})); then
+    log "Pruning ${#oversized[@]} tracked file(s) above ${HF_MAX_FILE_BYTES} bytes for Hugging Face Spaces"
+    git rm -q -- "${oversized[@]}"
+    git commit -m "Prune oversized files for Hugging Face Spaces"
+  fi
 }
 
 usage() {
@@ -101,7 +121,7 @@ push_branch() {
   local branch="$1"
   local remote="$2"
   local remote_ref="${3:-$branch}"
-  local lease_arg=()
+  local lease_arg=""
   if [[ "$PUSH" != "1" ]]; then
     log "Skipping push for '$branch' (--no-push)"
     return 0
@@ -110,11 +130,15 @@ push_branch() {
     local remote_tip
     remote_tip="$(git ls-remote "$remote" "refs/heads/$remote_ref" | awk '{print $1}')"
     if [[ -n "$remote_tip" ]]; then
-      lease_arg=(--force-with-lease="$remote_ref:$remote_tip")
+      lease_arg="--force-with-lease=$remote_ref:$remote_tip"
     fi
   fi
   log "Pushing '$branch' -> '$remote/$remote_ref'"
-  git push -u "${lease_arg[@]}" "$remote" "$branch:$remote_ref"
+  if [[ -n "$lease_arg" ]]; then
+    git push -u "$lease_arg" "$remote" "$branch:$remote_ref"
+  else
+    git push -u "$remote" "$branch:$remote_ref"
+  fi
 }
 
 switch_merge() {
@@ -154,6 +178,7 @@ sync_from_main() {
   push_branch "$GITHUB_BRANCH" "$GITHUB_REMOTE"
 
   switch_merge "$HF_BRANCH" "$BASE_BRANCH"
+  prune_hf_oversized_files
   push_branch "$HF_BRANCH" "$HF_REMOTE" main
 
   git switch "$original_branch" >/dev/null
@@ -173,6 +198,7 @@ sync_from_github() {
   ensure_branch "$HF_BRANCH" "$HF_REMOTE/main"
 
   switch_merge "$HF_BRANCH" "$GITHUB_BRANCH"
+  prune_hf_oversized_files
   push_branch "$HF_BRANCH" "$HF_REMOTE" main
 
   push_branch "$GITHUB_BRANCH" "$GITHUB_REMOTE"
@@ -193,6 +219,7 @@ sync_from_hf() {
   ensure_branch "$GITHUB_BRANCH" "$GITHUB_REMOTE/$BASE_BRANCH"
 
   switch_merge "$GITHUB_BRANCH" "$HF_BRANCH"
+  prune_hf_oversized_files
   push_branch "$GITHUB_BRANCH" "$GITHUB_REMOTE"
 
   push_branch "$HF_BRANCH" "$HF_REMOTE" main
