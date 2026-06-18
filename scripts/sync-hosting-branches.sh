@@ -10,6 +10,25 @@ HF_BRANCH="${HF_BRANCH:-hf-spaces}"
 HF_URL="${HF_URL:-https://huggingface.co/spaces/mgifford/vital-core.git}"
 PUSH="${PUSH:-1}"
 
+load_local_env() {
+  if [[ -f .env ]]; then
+    set -a
+    # shellcheck disable=SC1091
+    . ./.env
+    set +a
+  fi
+}
+
+ensure_hf_auth() {
+  if hf auth whoami >/dev/null 2>&1; then
+    return 0
+  fi
+
+  [[ -n "${HF_TOKEN:-}" ]] || die "HF_TOKEN is not set; add it to .env or export it, then rerun."
+  log "Logging into Hugging Face for git pushes"
+  hf auth login --token "$HF_TOKEN" --add-to-git-credential --force >/dev/null
+}
+
 usage() {
   cat <<'EOF'
 sync-hosting-branches.sh - keep GitHub and Hugging Face hosting branches in sync
@@ -113,9 +132,11 @@ sync_from_main() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
   fetch_remotes
+  ensure_hf_auth
 
   ensure_branch "$BASE_BRANCH" "$GITHUB_REMOTE/$BASE_BRANCH"
   ensure_branch "$GITHUB_BRANCH" "$BASE_BRANCH"
@@ -134,9 +155,11 @@ sync_from_github() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
   fetch_remotes
+  ensure_hf_auth
 
   ensure_branch "$GITHUB_BRANCH" "$GITHUB_REMOTE/$BASE_BRANCH"
   ensure_branch "$HF_BRANCH" "$HF_REMOTE/main"
@@ -152,9 +175,11 @@ sync_from_hf() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
   fetch_remotes
+  ensure_hf_auth
 
   ensure_branch "$HF_BRANCH" "$HF_REMOTE/main"
   ensure_branch "$GITHUB_BRANCH" "$GITHUB_REMOTE/$BASE_BRANCH"
@@ -175,6 +200,7 @@ main() {
       show_status
       ;;
     setup)
+      load_local_env
       require_clean_worktree || die "Working tree must be clean before setup."
       ensure_hf_remote
       fetch_remotes
