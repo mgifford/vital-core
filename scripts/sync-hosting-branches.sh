@@ -101,12 +101,20 @@ push_branch() {
   local branch="$1"
   local remote="$2"
   local remote_ref="${3:-$branch}"
+  local lease_arg=()
   if [[ "$PUSH" != "1" ]]; then
     log "Skipping push for '$branch' (--no-push)"
     return 0
   fi
+  if [[ "$remote" == "$HF_REMOTE" && "$remote_ref" == main ]]; then
+    local remote_tip
+    remote_tip="$(git ls-remote "$remote" "refs/heads/$remote_ref" | awk '{print $1}')"
+    if [[ -n "$remote_tip" ]]; then
+      lease_arg=(--force-with-lease="$remote_ref:$remote_tip")
+    fi
+  fi
   log "Pushing '$branch' -> '$remote/$remote_ref'"
-  git push -u "$remote" "$branch:$remote_ref"
+  git push -u "${lease_arg[@]}" "$remote" "$branch:$remote_ref"
 }
 
 switch_merge() {
