@@ -19,15 +19,10 @@
 name: report
 
 on:
-  # Run after the scan workflow finishes, so the published reports always
-  # reflect the data the morning's scans just produced. The scan workflow
-  # fires several times a night (one job per cron); to avoid re-publishing
-  # after every single scan, the gate job below only proceeds once the last
-  # scan of the morning has run (see the time-window check).
-  workflow_run:
-    workflows: ["scan"]
-    types: [completed]
+  schedule:
+    - cron: '37 12 * * *'
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: write
