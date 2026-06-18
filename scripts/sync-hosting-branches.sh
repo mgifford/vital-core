@@ -36,7 +36,7 @@ push_hf_snapshot() {
 
   remote_tip="$(git ls-remote "$HF_REMOTE" "refs/heads/main" | awk '{print $1}')"
   temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/vital-core-hf.XXXXXX")"
-  trap 'rm -rf "$temp_dir"' RETURN
+  trap '[[ -n "${temp_dir:-}" ]] && rm -rf "$temp_dir"' RETURN
 
   git archive --format=tar "$source_ref" | tar -x -C "$temp_dir"
   rm -rf "$temp_dir/state"
