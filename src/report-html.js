@@ -469,6 +469,7 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
  * JavaScript-free (native <details>). Prioritized so the most actionable
  * issues appear first. Downloadable as CSV, Markdown,
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
+ */
 function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}) {
   const view = prioritizeAccessibilityBugs(summary, bugs, { keyPages: reporting.keyPages ?? [], reporting });
   const ordered = view.bugs;
