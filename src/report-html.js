@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
 import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
+import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
 import { buildLineManifest } from './lib/paracharts.js';
@@ -465,28 +466,29 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
 /**
  * Structured per-rule bug reports following the best-practices format.
  * Each report is a collapsible block — semantic, keyboard-operable, and
- * JavaScript-free (native <details>). Sorted by WCAG SC so axe and Alfa
- * findings for the same criterion are adjacent. Downloadable as CSV, Markdown,
+ * JavaScript-free (native <details>). Prioritized so the most actionable
+ * issues appear first. Downloadable as CSV, Markdown,
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
- */
-function bugReportsSection(bugs, csvBugsHref = null) {
-  if (!bugs || bugs.length === 0) {
+function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}) {
+  const view = prioritizeAccessibilityBugs(summary, bugs, { keyPages: reporting.keyPages ?? [], reporting });
+  const ordered = view.bugs;
+  if (!ordered || ordered.length === 0) {
     return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', `Bug reports`)}
 <p>No accessibility findings to report this week.</p>
 </section>`;
   }
-  const sevCount = bugs.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
+  const sevCount = ordered.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
   const sevSummary = ['Critical', 'High', 'Medium', 'Low']
     .filter((s) => sevCount[s])
     .map((s) => `${sevCount[s]} ${s.toLowerCase()}`)
     .join(', ');
-  const dupCount = bugs.filter((b) => b.possible_duplicate_of).length;
-  const catCounts = bugs.reduce((m, b) => ((m[b.wcag_category ?? 'Undetermined'] = (m[b.wcag_category ?? 'Undetermined'] ?? 0) + 1), m), {});
+  const dupCount = ordered.filter((b) => b.possible_duplicate_of).length;
+  const catCounts = ordered.reduce((m, b) => ((m[b.wcag_category ?? 'Undetermined'] = (m[b.wcag_category ?? 'Undetermined'] ?? 0) + 1), m), {});
   const catOrder = ['WCAG 2.0 A', 'WCAG 2.0 AA', 'WCAG 2.1 A', 'WCAG 2.1 AA', 'WCAG 2.2 A', 'WCAG 2.2 AA', 'WCAG 2.x AAA', 'Best Practice', 'Undetermined'];
   const catSummary = catOrder.filter((c) => catCounts[c]).map((c) => `${catCounts[c]} ${c}`).join(', ');
 
-  const blocks = bugs
+  const blocks = ordered
     .map((b) => {
       const wcagDetail = b.wcag_sc
         ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (Level ${esc(b.wcag_level)}, WCAG ${esc(b.wcag_version ?? '2.x')})`
@@ -500,7 +502,7 @@ ${heading('h-bugs', `Bug reports`)}
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
         : '';
-      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
+      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
 <summary><span class="sev-badge">${esc(b.severity)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span></summary>
 <dl class="bug-fields">
@@ -539,28 +541,34 @@ ${affectedPagesBlock(b)}
   const catPresent = catOrder.filter((c) => catCounts[c]);
   const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${esc(s)} (${sevCount[s]})</option>`).join('');
   const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${esc(c)} (${catCounts[c]})</option>`).join('');
-  const filterBar = `<form class="bug-filter" hidden aria-label="Filter bug reports" data-total="${bugs.length}">
+  const filterBar = `<form class="bug-filter" hidden aria-label="Filter bug reports" data-total="${ordered.length}" data-prioritized="${view.visibleCount}">
 <div class="bug-filter-row">
+<label class="bug-filter-check"><input type="checkbox" id="filter-all"> Show everything</label>
 <label>Severity <select id="filter-sev"><option value="">All severities</option>${sevOpts}</select></label>
 <label>WCAG category <select id="filter-cat"><option value="">All categories</option>${catOpts}</select></label>
 <label class="bug-filter-check"><input type="checkbox" id="filter-dup"> Hide possible duplicates</label>
 <button type="button" id="filter-reset">Reset</button>
 </div>
-<p class="bug-filter-count" aria-live="polite" id="filter-count">Showing all ${bugs.length} issue type(s).</p>
+<p class="bug-filter-count" aria-live="polite" id="filter-count">Showing ${view.visibleCount} prioritized issue type(s) out of ${ordered.length}.</p>
 </form>`;
 
   const csvLink = csvBugsHref ? ` · <a href="${esc(csvBugsHref)}">CSV (all findings)</a>` : '';
+  const hiddenCount = ordered.length - view.visibleCount;
+  const priorityLine = hiddenCount > 0
+    ? `<p class="note">Default view shows ${view.visibleCount} prioritized issue type(s); ${hiddenCount} more are available if you switch to "Show everything".</p>`
+    : `<p class="note">All findings fit within the prioritized view this week.</p>`;
   const dupLine = dupCount > 0
     ? `<p class="note">${dupCount} finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.</p>`
     : '';
 
   return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', `Bug reports`)}
-<p class="meta">${bugs.length} issue type(s) by severity: ${esc(sevSummary)}.</p>
-<p class="meta">By WCAG category: ${esc(catSummary)}. Sorted by WCAG success criterion (WCAG 2.2 AA first) so overlapping axe and Alfa findings for the same criterion appear together. Following
+<p class="meta">${view.visibleCount} issue type(s) are shown by default out of ${ordered.length} total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.</p>
+  <p class="meta">Overall severity mix: ${esc(sevSummary)}. By WCAG category: ${esc(catSummary)}. Ordered by severity, key-page impact, WCAG level, and prevalence. Following
 <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.
 Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON</a>${csvLink}.</p>
 <p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
+${priorityLine}
 ${dupLine}
 ${filterBar}
 <div class="bug-list">${blocks}</div>
@@ -577,6 +585,7 @@ const BUG_FILTER_SCRIPT = `<script>
   var form = document.querySelector('.bug-filter');
   if (!form) return;
   form.hidden = false;
+  var showAll = document.getElementById('filter-all');
   var sev = document.getElementById('filter-sev');
   var cat = document.getElementById('filter-cat');
   var dup = document.getElementById('filter-dup');
@@ -584,28 +593,32 @@ const BUG_FILTER_SCRIPT = `<script>
   var empty = document.querySelector('.bug-filter-empty');
   var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
   var total = bugs.length;
+  var prioritized = Number(form.getAttribute('data-prioritized') || '0');
   function apply() {
-    var s = sev.value, c = cat.value, hideDup = dup.checked, shown = 0;
+    var s = sev.value, c = cat.value, hideDup = dup.checked, showEverything = showAll.checked, shown = 0;
     bugs.forEach(function (b) {
-      var ok = (!s || b.getAttribute('data-severity') === s)
+      var ok = (showEverything || b.getAttribute('data-default-visible') === '1')
+        && (!s || b.getAttribute('data-severity') === s)
         && (!c || b.getAttribute('data-category') === c)
         && (!hideDup || b.getAttribute('data-duplicate') !== '1');
       b.hidden = !ok;
       if (ok) shown++;
     });
-    var filtered = s || c || hideDup;
+    var filtered = showEverything || s || c || hideDup;
     count.textContent = filtered
-      ? 'Showing ' + shown + ' of ' + total + ' issue type(s).'
-      : 'Showing all ' + total + ' issue type(s).';
+      ? (showEverything ? 'Showing all ' + shown + ' issue type(s).' : 'Showing ' + shown + ' of ' + total + ' issue type(s).')
+      : 'Showing ' + prioritized + ' prioritized issue type(s) out of ' + total + '.';
     if (empty) empty.hidden = shown !== 0;
   }
-  function reset() { sev.value = ''; cat.value = ''; dup.checked = false; apply(); }
+  function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; dup.checked = false; apply(); }
+  showAll.addEventListener('change', apply);
   sev.addEventListener('change', apply);
   cat.addEventListener('change', apply);
   dup.addEventListener('change', apply);
   document.getElementById('filter-reset').addEventListener('click', reset);
   var r2 = document.getElementById('filter-reset-2');
   if (r2) r2.addEventListener('click', reset);
+  apply();
 })();
 </script>`;
 
@@ -1470,11 +1483,11 @@ ${resourcesSection(summary)}
  * axe-core and Alfa rule tables, and the consensus deduplication summary.
  * Linked from the overview and from "Fix these first" deep links.
  */
-export function renderAccessibilityPage(target, summary, bugs, csvLinks) {
+export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}) {
   const body = `
 <h1>${esc(target.domain)}: Accessibility — week ${esc(summary.week)}</h1>
 ${subnav('accessibility')}
-${bugReportsSection(bugs, csvLinks.bugsAll ?? null)}
+${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting)}
 <section aria-labelledby="h-axe">
 ${heading('h-axe', `Deque axe-core findings`)}
 <details class="engine-findings">

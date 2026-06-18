@@ -11,6 +11,7 @@ import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
 import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
+import { loadPriorityUrls } from './lib/top-tasks.js';
 import { runAxe } from './engines/axe.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
@@ -451,63 +452,3 @@ function parseArgs(argv) {
   return out;
 }
 
-/**
- * Collect a target's priority (top-task) URLs from an inline
- * `priority_urls` list and/or a `priority_urls_file` (one URL per line,
- * `#` comments allowed — the format top-task-finder emits). URLs are
- * normalized to the canonical host; off-host or unparseable entries are
- * dropped. Returns a deduplicated list of normalized URLs.
- */
-function loadPriorityUrls(target, origin, hostName) {
-  const raw = [...(target.priority_urls ?? [])];
-  if (target.priority_urls_file) {
-    const file = target.priority_urls_file;
-    // A relative path is resolved against config/ first (where the file
-    // lives next to targets.yml — e.g. "profiles/x.txt" ->
-    // config/profiles/x.txt), then the repo root as a fallback.
-    const candidates = path.isAbsolute(file)
-      ? [file]
-      : [path.join(DIRS.config, file), path.join(DIRS.root, file)];
-    const p = candidates.find((c) => fs.existsSync(c));
-    if (p) {
-      for (const line of fs.readFileSync(p, 'utf8').split('\n')) {
-        const t = line.trim();
-        if (t && !t.startsWith('#')) raw.push(t);
-      }
-    } else {
-      console.warn(`[${target.key}] priority_urls_file not found: tried ${candidates.join(', ')}`);
-    }
-  }
-  const seen = new Set();
-  const out = [];
-  for (const u of raw) {
-    // Canonicalize to the target's host first, so an apex-host entry in
-    // the file (e.g. cms.gov/x) gets the same identity as the www-host
-    // links discovered by the crawler (www.cms.gov/x) — they share a
-    // pageId and aren't scanned twice. www-equivalence keeps them valid.
-    const canon = canonicalizeHost(u, hostName);
-    const norm = normalizeUrl(canon, origin, hostName);
-    if (norm && !seen.has(norm)) {
-      seen.add(norm);
-      out.push(norm);
-    }
-  }
-  return out;
-}
-
-/**
- * Rewrite a URL's host to `hostName` when it differs only by a leading
- * `www.` (apex <-> www), so priority URLs match the host the crawler
- * uses. Leaves genuinely different hosts untouched (normalizeUrl rejects
- * those as off-host).
- */
-function canonicalizeHost(rawUrl, hostName) {
-  try {
-    const u = new URL(rawUrl);
-    const bare = (h) => h.toLowerCase().replace(/^www\./, '');
-    if (bare(u.hostname) === bare(hostName)) u.hostname = hostName;
-    return u.toString();
-  } catch {
-    return rawUrl; // relative or unparseable; normalizeUrl handles it
-  }
-}

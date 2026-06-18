@@ -25,6 +25,7 @@ export function loadConfig() {
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
+    t.reporting = { ...(defaults.reporting ?? {}), ...(t.reporting ?? {}) };
     t.key = domainKey(t.domain);
   }
   return { defaults, sampling, sustainabilityMetric, targets };
