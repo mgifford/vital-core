@@ -117,8 +117,11 @@ push_branch() {
   fi
 
   log "Pushing '$branch' -> '$remote/$remote_ref'"
-  # shellcheck disable=SC2086
-  git push -u $lease_arg "$remote" "$branch:$remote_ref"
+  if [[ -n "$lease_arg" ]]; then
+    git push -u "$lease_arg" "$remote" "$branch:$remote_ref"
+  else
+    git push -u "$remote" "$branch:$remote_ref"
+  fi
 }
 
 switch_merge() {
@@ -144,6 +147,7 @@ sync_from_main() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
   ensure_hf_auth
@@ -166,6 +170,7 @@ sync_from_github() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
   ensure_hf_auth
@@ -185,6 +190,7 @@ sync_from_hf() {
   local original_branch
   original_branch="$(current_branch)"
 
+  load_local_env
   require_clean_worktree || die "Working tree must be clean before syncing."
   ensure_hf_remote
   ensure_hf_auth
@@ -210,6 +216,7 @@ main() {
       show_status
       ;;
     setup)
+      load_local_env
       require_clean_worktree || die "Working tree must be clean before setup."
       ensure_hf_remote
       fetch_remotes
