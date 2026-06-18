@@ -1,25 +1,26 @@
 # Aggregation and publishing.
 #
-# Triggered by the scan workflow completing (workflow_run), so the published
-# reports always reflect the data the morning's scans just produced. The gate
-# job publishes once per morning — after the final scheduled scan — rather
-# than after every individual scan run. Manual workflow_dispatch always
-# publishes immediately.
-# Steps, in order (ordering matters and is intentional):
-#   1. aggregate : computes summaries from data/, writes docs/
-#   2. prune     : page-level detail older than retention_weeks removed
-#   3. commit    : summary.json files go back into data/ so history
-#                   survives page-detail pruning
-#   4. generate comment
-#   5. configure/deploy    : docs/ is shipped to GitHub Pages as an artifact;
-#                   generated HTML is never committed to the repo
-#   6. post comment   : weekly Markdown summary posted to a pinned issue
-
+# Triggered once each morning by schedule, manually by workflow_dispatch,
+# or optionally from scan.yml by workflow_call when a manual scan is run
+# with the run_report checkbox selected.
+#
+# It is intentionally not triggered by workflow_run. Automated scans and
+# reports are separate by default.
+#
+# Steps, in order:
+#   1. aggregate         : computes summaries from data/, writes docs/
+#   2. prune             : removes page-level detail older than retention_weeks
+#   3. commit            : writes summaries and retention marker back to data/
+#   4. generate comment  : creates docs/comment.md
+#   5. deploy            : publishes docs/ to GitHub Pages
+#   6. post comment      : posts weekly Markdown summary to a pinned issue
 
 name: report
 
 on:
   schedule:
+    # GitHub cron is UTC. 12:37 UTC is roughly 08:37 ET during daylight
+    # saving time and 07:37 ET during standard time.
     - cron: '37 12 * * *'
   workflow_dispatch:
   workflow_call:
@@ -35,17 +36,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Decide whether this scan completion should publish a report. Goal: exactly
-  # one report per calendar day, published after the morning's scans are in.
-  #
-  # Two guards combined:
-  #   1. Time floor — only consider completions at/after 10:00 UTC, so we don't
-  #      publish off an early-night scan before the batch has accumulated. (The
-  #      final scheduled scans start 09:47 UTC weekdays / 11:37 UTC weekends.)
-  #   2. Once-per-day marker — data/.last-report-date holds the last published
-  #      UTC date. If it already equals today, skip; the report job updates it.
-  #
-  # A manual workflow_dispatch always publishes (ignores both guards).
   gate:
     runs-on: ubuntu-latest
     outputs:
@@ -54,31 +44,33 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 1
+
       - id: decide
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "publish=true" >> "$GITHUB_OUTPUT"; exit 0
-          fi
-          # Only react to successful scan runs.
-          if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
-            echo "manual=false skip: scan not successful"
-            echo "publish=false" >> "$GITHUB_OUTPUT"; exit 0
-          fi
-          # Time floor: wait until the morning batch is in (>= 10:00 UTC).
-          if [ "$(date -u +%H)" -lt 10 ]; then
-            echo "skip: before 10:00 UTC, batch not complete"
-            echo "publish=false" >> "$GITHUB_OUTPUT"; exit 0
-          fi
-          # Once-per-day marker.
-          TODAY=$(date -u +%Y-%m-%d)
-          LAST=$(cat data/.last-report-date 2>/dev/null || echo "")
-          if [ "$LAST" = "$TODAY" ]; then
-            echo "skip: already published $TODAY"
-            echo "publish=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "publish: first qualifying scan completion for $TODAY (last=$LAST)"
             echo "publish=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
+          if [ "${{ github.event_name }}" = "workflow_call" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            TODAY=$(date -u +%Y-%m-%d)
+            LAST=$(cat data/.last-report-date 2>/dev/null || echo "")
+            if [ "$LAST" = "$TODAY" ]; then
+              echo "skip: already published $TODAY"
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "publish: scheduled report for $TODAY (last=$LAST)"
+              echo "publish=true" >> "$GITHUB_OUTPUT"
+            fi
+            exit 0
+          fi
+
+          echo "publish=false" >> "$GITHUB_OUTPUT"
 
   report:
     needs: gate
@@ -87,14 +79,12 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
+
     steps:
-      # - uses: actions/checkout@v4
       - uses: actions/checkout@v5
 
-      # - uses: actions/setup-node@v4
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v5
         with:
-          # node-version: 22
           node-version: 24
           cache: npm
 
@@ -111,19 +101,35 @@ jobs:
         run: |
           git config user.name "vital-scans[bot]"
           git config user.email "vital-scans@users.noreply.github.com"
-          # Record today's publish so the gate publishes at most once per day.
+
           date -u +%Y-%m-%d > data/.last-report-date
           git add data/
-          if ! git diff --cached --quiet; then
-            git commit -m "report: summaries $(date -u +%Y-%m-%d)"
-            # -X theirs so a race with a still-running scan never fails the
-            # report (summaries/ledgers are regenerable next run).
-            for i in 1 2 3 4 5; do
-              git push && break
-              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" || git rebase --abort 2>/dev/null || true
-              sleep $((RANDOM % 8 + 2))
-            done
+
+          if git diff --cached --quiet; then
+            echo "no data changes"
+            exit 0
           fi
+
+          git commit -m "report: summaries $(date -u +%Y-%m-%d)"
+
+          for i in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+
+            if ! git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"; then
+              git rebase --abort 2>/dev/null || true
+              git reset --soft HEAD~1 2>/dev/null || true
+              git pull --rebase origin "${GITHUB_REF_NAME}"
+              git add data/
+              git commit -m "report: summaries $(date -u +%Y-%m-%d)" || true
+            fi
+
+            sleep $((RANDOM % 8 + 2))
+          done
+
+          echo "push failed after retries" >&2
+          exit 1
 
       - name: Generate issue comment
         env:
@@ -149,29 +155,42 @@ jobs:
             const fs = require('fs');
             const body = fs.readFileSync('docs/comment.md', 'utf8');
             const title = 'Weekly scan reports';
-            // Find or create the single tracking issue, then add this
-            // week's comment: mirrors the open-scans pattern.
+
             const issues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              state: 'open', creator: 'app/github-actions', per_page: 100,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              creator: 'app/github-actions',
+              per_page: 100,
             });
+
             let issue = issues.data.find(i => i.title === title);
+
             if (!issue) {
               const all = await github.rest.issues.listForRepo({
-                owner: context.repo.owner, repo: context.repo.repo,
-                state: 'open', per_page: 100,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                per_page: 100,
               });
+
               issue = all.data.find(i => i.title === title);
             }
+
             if (!issue) {
               const created = await github.rest.issues.create({
-                owner: context.repo.owner, repo: context.repo.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 title,
                 body: 'Automated weekly accessibility and sustainability summaries are posted as comments here.',
               });
+
               issue = created.data;
             }
+
             await github.rest.issues.createComment({
-              owner: context.repo.owner, repo: context.repo.repo,
-              issue_number: issue.number, body,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body,
             });
