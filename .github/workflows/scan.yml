@@ -38,6 +38,7 @@ on:
     - cron: '51 8 * * 0,6'   # ~04:51 ET
     - cron: '19 10 * * 0,6'  # ~06:19 ET
     - cron: '37 11 * * 0,6'  # ~07:37 ET
+
   workflow_dispatch:
     inputs:
       domain:
@@ -46,6 +47,11 @@ on:
       budget:
         description: 'Override pages_per_run'
         required: false
+      run_report:
+        description: 'Run report after this manual scan'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -173,5 +179,10 @@ jobs:
             fi
             sleep $((RANDOM % 10 + 2))
           done
+
+  optional-report:
+    needs: scan
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_report }}
+    uses: ./.github/workflows/report.yml
           echo "push failed after retries" >&2
           exit 1
