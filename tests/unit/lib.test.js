@@ -23,7 +23,10 @@ import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
 import { extractAudits } from '../../src/engines/lighthouse.js';
 import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
+import { loadPriorityUrls } from '../../src/lib/top-tasks.js';
+import { prioritizeAccessibilityBugs } from '../../src/lib/accessibility-priority.js';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
@@ -769,6 +772,19 @@ test('buildUrlFilter: url_include + url_exclude compose correctly', () => {
   assert.equal(filter('https://example.gov/about'), false, 'not in include list');
 });
 
+test('loadPriorityUrls: normalizes apex/www urls and reads files', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'priority-'));
+  const file = path.join(tmpDir, 'top-tasks.txt');
+  fs.writeFileSync(file, '# comment\nhttps://www.example.gov/a\nhttps://example.gov/b\nhttps://example.gov/a\n');
+  const target = { key: 'example.gov', domain: 'example.gov', priority_urls: ['https://example.gov/c'], priority_urls_file: file };
+  const urls = loadPriorityUrls(target);
+  assert.deepEqual(urls.sort(), [
+    'https://example.gov/a',
+    'https://example.gov/b',
+    'https://example.gov/c',
+  ]);
+});
+
 test('classifyFinding: WCAG version and level produce correct category', () => {
   const wcag20aa = { sc: '1.4.3', name: 'Contrast', level: 'AA', wcag_version: '2.0' };
   const wcag21a  = { sc: '1.3.4', name: 'Orientation', level: 'A', wcag_version: '2.1' };
@@ -822,6 +838,31 @@ test('buildBugReports: WCAG sort order across version groups', () => {
   assert.ok(i22 < i21, 'WCAG 2.2 before 2.1');
   assert.ok(i21 < i20, 'WCAG 2.1 before 2.0');
   assert.ok(i20 < iBP, 'WCAG 2.0 before Best Practice');
+});
+
+test('prioritizeAccessibilityBugs: keeps critical, key-page widespread, and top prevalence before the cap', () => {
+  const summary = {
+    pagesScanned: 100,
+    axe: { rules: { 'color-contrast': { affectedPages: [{ url: 'https://example.gov/top' }], pages: 6 } } },
+    alfa: { rules: {} },
+    deprecatedHtml: { rules: {} },
+  };
+  const bugs = [
+    { instance_id: 'a', severity: 'Critical', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 1, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'x', summary: 'a' },
+    { instance_id: 'b', severity: 'Low', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 12, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'color-contrast', summary: 'b' },
+    { instance_id: 'c', severity: 'Low', wcag_category: 'WCAG 2.0 A', frequency: { pages_affected: 20, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'y', summary: 'c' },
+    { instance_id: 'd', severity: 'Low', wcag_category: 'Best Practice', frequency: { pages_affected: 30, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'z', summary: 'd' },
+  ];
+  const keyPages = ['https://example.gov/top'];
+  const view = prioritizeAccessibilityBugs(summary, bugs, {
+    keyPages,
+    reporting: { max_html_issues: 3, moderate_issue_threshold_percent: 5, include_key_page_issues: true },
+  });
+  assert.equal(view.visibleCount, 3, 'critical + key-page widespread + one expansion item shown before the cap');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'a').default_visible, true);
+  assert.equal(view.bugs.find((b) => b.instance_id === 'b').default_visible, true);
+  assert.equal(view.bugs.find((b) => b.instance_id === 'c').default_visible, true, 'first expansion item is included when room remains');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'd').default_visible, false);
 });
 
 test('buildAcrData: does-not-support when failures span ≥5% of pages', () => {

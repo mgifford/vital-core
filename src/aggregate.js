@@ -5,6 +5,7 @@ import { loadConfig, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
+import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
@@ -40,6 +41,8 @@ const dashboard = [];
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
   if (!fs.existsSync(domainDir)) continue;
+  const reporting = target.reporting ?? {};
+  const keyPages = reporting.include_key_page_issues ? loadPriorityUrls(target) : [];
 
   const weeks = fs.readdirSync(domainDir).filter((w) => /^\d{4}-W\d{2}$/.test(w)).sort(compareWeeks);
   const series = [];
@@ -184,7 +187,7 @@ for (const target of config.targets) {
     // JSON downloads are still only written when there's data to put in them.
 
     // Accessibility (always has content — shows "no findings" when clean).
-    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks));
+    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, { ...reporting, keyPages }));
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
     fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv));

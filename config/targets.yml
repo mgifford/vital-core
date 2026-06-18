@@ -19,6 +19,10 @@ defaults:
   max_crawl_depth: 6        # BFS depth from seeds
   retention_weeks: 8        # page-level detail kept this long; weekly summaries kept forever
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
+  reporting:
+    max_html_issues: 50
+    moderate_issue_threshold_percent: 5
+    include_key_page_issues: true
 
 # Which sustainability figure the reports headline: "co2" (grams CO2 per
 # page) or "energy" (watt-hours per page). Both are always recorded in the
