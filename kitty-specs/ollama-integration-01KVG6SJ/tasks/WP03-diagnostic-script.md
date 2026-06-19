@@ -1,18 +1,23 @@
 ---
-work_package_id: "WP03"
-title: "Diagnostic script + package.json entry"
+work_package_id: WP03
+title: Diagnostic script + package.json entry
 dependencies:
-  - WP01
+- WP01
 requirement_refs:
-  - FR-06
+- FR-06
+planning_base_branch: public-interest-checks
+merge_target_branch: public-interest-checks
+branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
 subtasks:
-  - T009
-  - T010
+- T009
+- T010
+history: []
+authoritative_surface: scripts/
+execution_mode: code_change
 owned_files:
-  - "scripts/check-ollama.js"
-  - "package.json"
-authoritative_surface: "scripts/"
-execution_mode: "code_change"
+- scripts/check-ollama.js
+- package.json
+tags: []
 ---
 
 # WP03: Diagnostic script + package.json entry
