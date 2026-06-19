@@ -123,7 +123,7 @@ BP/Undetermined; 2 = Moderate/Minor + WCAG A/AA + ≥10 pages; 5 = hidden.
 ## Testing
 
 - Unit tests live in `tests/unit/**/*.test.js`.
-- All 91 unit tests must pass before any PR is merged.
+- All unit tests must pass before any PR is merged.
 - No mocking of the database or filesystem in unit tests — use the real
   module APIs with small synthetic inputs.
 - Run `npm run test:unit` after every change that touches `src/lib/`.
@@ -137,3 +137,24 @@ BP/Undetermined; 2 = Moderate/Minor + WCAG A/AA + ≥10 pages; 5 = hidden.
   against `main` after merge, so merge before asking them to validate.
 - Never force-push to `main`.
 - Never use `--no-verify` to skip hooks.
+
+---
+
+## Static JSON API
+
+`npm run aggregate` writes a versioned static JSON API to `docs/api/v1/` alongside
+the HTML reports. Files are gitignored locally and deployed to GitHub Pages.
+
+**Endpoint families** (all served from `https://<pages-host>/api/v1/`):
+
+| Path | Description |
+|---|---|
+| `index.json` | All domains — severity counts, latest week, links |
+| `<domain-key>/snapshot.json` | Full domain history — summary, findings ledger, weekly series |
+| `<domain-key>/<week>/findings.json` | Per-week findings with trend status |
+
+**Schema version**: `schema_version: "1"` in every file. Bump to `"2"` only with a
+breaking change; add the new path under `api/v2/` and keep `v1/` until consumers migrate.
+
+**No server required** — these are pre-built static files. The `src/lib/api-writer.js`
+module builds them; `src/aggregate.js` calls `writeApiFiles()` once at the end of each run.
