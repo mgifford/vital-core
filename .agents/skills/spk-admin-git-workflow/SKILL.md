@@ -1,0 +1,1 @@
+/Users/AlexUA_1/.agents/skills/spk-admin-git-workflow/SKILL.md
