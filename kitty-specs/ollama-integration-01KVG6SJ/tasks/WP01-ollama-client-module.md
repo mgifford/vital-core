@@ -149,3 +149,7 @@ that adds the timeout and handles JSON parsing.
 
 **Files**: `tests/unit/ollama.test.js` (new)
 **Validation**: `npm run test:unit` — all existing 91 tests plus new ollama tests pass; no tests skipped
+
+## Activity Log
+
+- 2026-06-19T19:05:44Z – unknown – Moved to done
