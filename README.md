@@ -68,6 +68,20 @@ For how crawling, storage, and the pipeline work in more detail, see
 
 ## Setup
 
+### Repository Roles
+
+GitHub is the source of truth for this project. The `main` branch keeps
+the full working history, and that is where development should land.
+Hugging Face Spaces is a deployment target, not a second source branch:
+it should receive a clean snapshot of the current site state on its own
+`main` branch, with large `state/` crawl artifacts stripped out before
+push.
+
+That split keeps the weekly reporting history intact on GitHub while
+making the Space easier to understand and easier to rebuild. It also
+means we do not need legacy branch names like `copilot/main-old` as part
+of the long-term workflow.
+
 1. Create a repository from these files and push to GitHub.
 2. Edit `config/targets.yml`: list your 5–10 domains and adjust budgets.
 3. In repository **Settings → Pages**, set the source to **GitHub
@@ -105,7 +119,7 @@ If you operate a site being scanned and want changes, open an issue.
 
 - Automated checkers find roughly 30–40% of WCAG barriers. A clean
   report is a floor, not a finish line. Manual testing with assistive
-  technology remains essential. Testing with users with disabilities throughout the design stage. Using a well supported design system is key to learning from past mistakes. 
+  technology remains essential. Testing with users with disabilities throughout the design stage. Using a well supported design system is key to learning from past mistakes.
 - Byte counts are decoded body sizes seen by the browser, not on-wire
   transfer sizes. They are consistent week over week, which is what the
   trend needs.

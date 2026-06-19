@@ -9,7 +9,7 @@
     "aggregate": "node src/aggregate.js",
     "comment": "node src/issue-comment.js",
     "prune": "node src/prune.js",
-    "sync:hosting": "bash scripts/sync-hosting-branches.sh",
+    "sync:hosting": "bash scripts/publish-repos.sh",
     "test:unit": "node --test 'tests/unit/**/*.test.js'",
     "test:e2e": "node tests/e2e.mjs",
     "test": "npm run test:unit && npm run test:e2e"
