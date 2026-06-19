@@ -18,6 +18,7 @@ import { buildCooccurrence, rankAssociations } from './lib/tech-findings.js';
 import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
 import { buildAiFindings } from './lib/ai-findings.js';
+import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -45,6 +46,9 @@ setSustainabilityMetric(config.sustainabilityMetric);
 fs.mkdirSync(DIRS.docs, { recursive: true });
 
 const dashboard = [];
+const apiIndexEntries = [];
+const apiSnapshots = [];
+const apiWeekFindings = [];
 
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
@@ -128,6 +132,10 @@ for (const target of config.targets) {
         b.weeks_seen = h.weeksSeen;
       }
     }
+    if (bugs.length) {
+      apiWeekFindings.push({ key: target.key, week: summary.week, data: buildWeekFindings(target, summary, bugs, ledger.findings) });
+    }
+
     const repDir = path.join(DIRS.docs, 'reports', target.key, summary.week);
     fs.mkdirSync(repDir, { recursive: true });
 
@@ -287,6 +295,11 @@ for (const target of config.targets) {
   saveLinkLedger(target.key, linkLedger);
   saveThirdPartyLedger(target.key, tpLedger);
 
+  const latestSummary = series[series.length - 1];
+  const latestBugsOnly = latestBugs.map(({ _week, ...b }) => b);
+  apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
+  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, series, diffs, ledger, invSummary, latestBugsOnly) });
+
   // Single downloadable snapshot of everything known about the domain:
   // every scanned URL's latest status, current known findings (with
   // first/last-seen), the weekly trend series, and the latest score.
@@ -327,6 +340,7 @@ for (const target of config.targets) {
 
 fs.writeFileSync(path.join(DIRS.docs, 'index.html'), renderIndex(dashboard, { branding: profile?.branding }));
 writeAsset(DIRS.docs);
+writeApiFiles(DIRS.docs, apiIndexEntries, apiSnapshots, apiWeekFindings);
 console.log('docs/ written');
 
 // ---------------------------------------------------------------------
