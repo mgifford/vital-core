@@ -1,0 +1,20 @@
+# Auto-generated from charter.md — do not edit directly.
+# Run 'spec-kitty charter sync' to regenerate.
+
+directives:
+- id: DIR-001
+  title: Keep specification, plan, tasks, implementation, a
+  description: Keep specification, plan, tasks, implementation, and review artifacts consistent.
+  severity: warn
+- id: DIR-002
+  title: 'Severity labels must use axe taxonomy: Critical / '
+  description: 'Severity labels must use axe taxonomy: Critical / Serious / Moderate / Minor.'
+  severity: warn
+- id: DIR-003
+  title: Engine modules go in `src/engines/`; wire into `sr
+  description: Engine modules go in `src/engines/`; wire into `src/scan.js` and `src/aggregate.js`.
+  severity: warn
+- id: DIR-004
+  title: Report UI CSS changes go in `src/report-html.js` (
+  description: Report UI CSS changes go in `src/report-html.js` (the CSS string constant), never `docs/`.
+  severity: warn
