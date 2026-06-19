@@ -12,6 +12,8 @@ subtasks:
 - T009
 - T010
 history: []
+agent: claude
+shell_pid: 0
 authoritative_surface: scripts/
 execution_mode: code_change
 owned_files:
@@ -71,3 +73,7 @@ Exit code is always 0 — this is a diagnostic, not a CI gate.
 
 **Files**: `package.json`
 **Validation**: `npm run check:ollama` executes the script; exit code 0
+
+## Activity Log
+
+- 2026-06-19T19:16:48Z – unknown – Moved to done

@@ -14,6 +14,8 @@ subtasks:
 - T007
 - T008
 history: []
+agent: claude
+shell_pid: 0
 authoritative_surface: src/lib/
 execution_mode: code_change
 owned_files:
@@ -98,3 +100,7 @@ No existing field changes.
 
 **Files**: `src/lib/ai-findings.js`
 **Validation**: Field present in JSON when Ollama reachable; absent when not; unit tests pass
+
+## Activity Log
+
+- 2026-06-19T19:16:47Z – unknown – Moved to done
