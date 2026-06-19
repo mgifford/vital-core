@@ -1,0 +1,1 @@
+/Users/AlexUA_1/.agents/skills/spk-gate-accept/SKILL.md

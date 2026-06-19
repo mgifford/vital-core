@@ -1,0 +1,1 @@
+/Users/AlexUA_1/.agents/skills/spec-kitty-setup-doctor/references/common-failure-signatures.md
