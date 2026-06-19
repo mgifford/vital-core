@@ -16,6 +16,7 @@ import { loadLinkLedger, saveLinkLedger, updateLinkLedger } from './lib/link-led
 import { buildCooccurrence, rankAssociations } from './lib/tech-findings.js';
 import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
+import { buildAiFindings } from './lib/ai-findings.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -235,6 +236,19 @@ for (const target of config.targets) {
       path.join(repDir, 'bugs.json'),
       JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, reports: bugs }, null, 1)
     );
+
+    // AI-oriented findings summary: compact, problem-focused, LLM-ready.
+    // Intentionally excludes healthy pages; uses representative examples rather
+    // than exhaustive lists. The existing bugs.json and domain.json are the
+    // archival sources of truth and are not replaced.
+    const aiDoc = buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
+    if (aiDoc) {
+      const aiJson = JSON.stringify(aiDoc, null, 1);
+      fs.writeFileSync(path.join(repDir, 'ai-findings.json'), aiJson);
+      // Warn in the build log if the file is large (context-limit concern for LLMs).
+      const kbSize = Math.round(aiJson.length / 1024);
+      if (kbSize > 500) console.warn(`  [ai-findings] ${target.key} ${summary.week}: ${kbSize}KB — may exceed LLM context limits`);
+    }
   }
 
   saveFindings(target.key, ledger);
