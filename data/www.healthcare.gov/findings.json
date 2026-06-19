@@ -1,13 +1,13 @@
 {
  "domain": "www.healthcare.gov",
- "updatedAt": "2026-06-19T13:43:41.643Z",
+ "updatedAt": "2026-06-19T14:02:29.544Z",
  "findings": {
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r111",
-   "summary": "Target Size (Minimum) (WCAG 2.5.8)",
+   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.5.8)",
    "wcag": "2.5.8",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -20,9 +20,9 @@
   "VS-179ad9b3": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r113",
-   "summary": "Target Size (Minimum) (WCAG 2.5.8)",
+   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.2) (WCAG 2.5.8)",
    "wcag": "2.5.8",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -50,9 +50,9 @@
   "VS-a24eaa8c": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r2",
-   "summary": "Give every <img> an accessible name (alt text), or alt=\"\" if purely decorative. (WCAG 1.1.1)",
+   "summary": "Image has accessible name (WCAG 1.1.1)",
    "wcag": "1.1.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W24",
    "_weeks": [
@@ -66,7 +66,7 @@
    "ruleId": "definition-list",
    "summary": "<dl> elements must only directly contain properly-ordered <dt> and <dd> groups,  (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -81,7 +81,7 @@
    "ruleId": "td-headers-attr",
    "summary": "Table cell headers attributes must refer to other <th> elements in the same tabl (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -96,7 +96,7 @@
    "ruleId": "list",
    "summary": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -106,12 +106,27 @@
    "weeksSeen": 2,
    "lastPagesAffected": 1
   },
+  "VS-7118fead": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r61",
+   "summary": "Form field label is visible (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 165
+  },
   "VS-f054f4a4": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r53",
-   "summary": "Use headings in a logical, non-skipping order. (WCAG 1.3.1)",
+   "summary": "Headings are structured hierarchically (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -124,9 +139,9 @@
   "VS-3c632d31": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r64",
-   "summary": "Info and Relationships (WCAG 1.3.1)",
+   "summary": "Element has required owned roles (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W24",
    "_weeks": [
@@ -135,12 +150,12 @@
    "weeksSeen": 1,
    "lastPagesAffected": 2
   },
-  "VS-8ade3360": {
-   "engine": "axe-core",
-   "ruleId": "link-in-text-block",
-   "summary": "Links must be distinguishable without relying on color (WCAG 1.4.1)",
-   "wcag": "1.4.1",
-   "severity": "High",
+  "VS-2cd767ca": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r78",
+   "summary": "Table header has scope (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -148,6 +163,49 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
+   "lastPagesAffected": 1
+  },
+  "VS-8ade3360": {
+   "engine": "axe-core",
+   "ruleId": "link-in-text-block",
+   "summary": "Links must be distinguishable without relying on color (WCAG 1.4.1)",
+   "wcag": "1.4.1",
+   "severity": "Serious",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 1
+  },
+  "VS-c18be945": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r57",
+   "summary": "Scrolling content can be accessed by keyboard (WCAG 2.1.1)",
+   "wcag": "2.1.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 5
+  },
+  "VS-3804c2fa": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r86",
+   "summary": "Focus is not lost after interaction (WCAG 2.4.3)",
+   "wcag": "2.4.3",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
    "lastPagesAffected": 1
   },
   "VS-af36d20c": {
@@ -168,9 +226,9 @@
   "VS-e05344b9": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r18",
-   "summary": "Only use ARIA states/properties that are allowed on this element/role. (WCAG 4.1.2)",
+   "summary": "aria attribute is permitted for element role (WCAG 4.1.2)",
    "wcag": "4.1.2",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -183,9 +241,9 @@
   "VS-f6cf30ff": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r17",
-   "summary": "Name, Role, Value (WCAG 4.1.2)",
+   "summary": "aria-hidden element does not contain focusable elements (WCAG 4.1.2)",
    "wcag": "4.1.2",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W24",
    "_weeks": [
@@ -199,7 +257,7 @@
    "ruleId": "color-contrast",
    "summary": "Elements must meet minimum color contrast ratio thresholds (WCAG 1.4.3)",
    "wcag": "1.4.3",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -209,12 +267,27 @@
    "weeksSeen": 2,
    "lastPagesAffected": 5
   },
+  "VS-2208081b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r73",
+   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG 1.4.3)",
+   "wcag": "1.4.3",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 169
+  },
   "VS-646b1e0b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r66",
-   "summary": "Increase text contrast to meet WCAG AAA (7:1). (WCAG 1.4.3)",
+   "summary": "Text has sufficient color contrast (WCAG 1.4.3)",
    "wcag": "1.4.3",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -227,9 +300,9 @@
   "VS-f7e99f4b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r69",
-   "summary": "Increase text contrast to meet WCAG AA (4.5:1, or 3:1 for large text). (WCAG 1.4.3)",
+   "summary": "Text has sufficient color contrast (Enhanced) (WCAG 1.4.3)",
    "wcag": "1.4.3",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -244,7 +317,7 @@
    "ruleId": "heading-order",
    "summary": "Heading levels should only increase by one (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -259,7 +332,7 @@
    "ruleId": "landmark-unique",
    "summary": "Landmarks should have a unique role or role/label/title (i.e. accessible name) c (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -274,7 +347,7 @@
    "ruleId": "region",
    "summary": "All page content should be contained by landmarks (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -289,7 +362,7 @@
    "ruleId": "empty-heading",
    "summary": "Headings should not be empty (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Low",
+   "severity": "Minor",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -298,79 +371,6 @@
    ],
    "weeksSeen": 2,
    "lastPagesAffected": 4
-  },
-  "VS-2208081b": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r73",
-   "summary": "sia-r73 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 169
-  },
-  "VS-7118fead": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r61",
-   "summary": "sia-r61 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 165
-  },
-  "VS-c18be945": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r57",
-   "summary": "sia-r57 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
-   "_weeks": [
-    "2026-W24"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 5
-  },
-  "VS-3804c2fa": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r86",
-   "summary": "sia-r86 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
-   "_weeks": [
-    "2026-W24"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 1
-  },
-  "VS-2cd767ca": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r78",
-   "summary": "sia-r78 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 1
   }
  }
 }
