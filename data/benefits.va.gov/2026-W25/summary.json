@@ -1,0 +1,910 @@
+{
+ "domain": "benefits.va.gov",
+ "week": "2026-W25",
+ "generatedAt": "2026-06-19T12:17:04.405Z",
+ "pagesScanned": 1,
+ "pagesAudited": 1,
+ "coverage": {
+  "axe": 1,
+  "alfa": 1,
+  "plain-language": 1,
+  "resources": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 16,
+  "pagesWithViolations": 1,
+  "pagesScanned": 1,
+  "medianViolations": 16,
+  "rules": {
+   "landmark-one-main": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-one-main?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "html",
+      "html": "<html lang=\"en\" style=\"font-size: 10px;\">"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": ".cloned.slide:nth-child(1) > .slider-info[aria-label=\"Slide show Story\"][role=\"region\"]",
+      "html": "<div class=\"slider-info\" role=\"region\" aria-label=\"Slide show Story\">"
+     }
+    ]
+   },
+   "region": {
+    "count": 14,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 14
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "#slider-controls",
+      "html": "<div id=\"slider-controls\">"
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": ".cloned.slide:nth-child(1) > a[href=\"javascript:void(0);\"]",
+      "html": "<a href=\"javascript:void(0);\" tabindex=\"-1\">\n\t\t\t\t\t\t\t\t<img src=\"/BENEFITS/images/slider/claim-predators-500x275.png\" alt=\"beware of claims predators\">\n\t\t\t\t\t\t\t</a>"
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": ".slide:nth-child(2) > a[href=\"javascript:void(0);\"]",
+      "html": "<a href=\"javascript:void(0);\" tabindex=\"-1\">\n\t\t\t\t\t\t\t\t<img src=\"/BENEFITS/images/slider/april-fin-literacy-500x275.png\" alt=\"April is financial literacy month, VALife\">\n\t\t\t\t\t\t\t</a>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 175,
+  "pagesWithFailures": 1,
+  "pagesScanned": 1,
+  "medianFailures": 175,
+  "rules": {
+   "sia-r66": {
+    "count": 77,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 77
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "text: \"Contact us\"",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "text: \"Sign in\"",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "text: \"Home\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 11,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 11
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<p>",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<p>",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<p>",
+      "html": null
+     }
+    ]
+   },
+   "sia-r14": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r14",
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<a href=\"tel:711\" aria-label=\"TTY: 7 1 1.\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r113": {
+    "count": 2,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r113",
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<a rel=\"noopener noreferrer\" href=\"/BENEFITS/derivative_sc.asp\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<a href=\"https://www.prevention.va.gov/PCL/PCL-VA-Navigator.asp\" title=\"list of resources and benefits\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 10,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 10
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "text: \"VA Outreach Events\"",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "text: \"Veterans benefits help Veterans and their families buy homes, earn degrees, start careers, stay healthy, and more. Join an event for conversation and information.\"",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "text: \"SHOW ALL VA EVENTS\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 74,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://benefits.va.gov/",
+      "instances": 74
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<select name=\"subscription_type\" id=\"subscription_type\">",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<a rel=\"noopener noreferrer\" href=\"https://www.va.gov/resources/disaster-help/\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://benefits.va.gov/",
+      "target": "<a rel=\"noopener noreferrer\" href=\"https://www.va.gov/education/verify-school-enrollment/\" target=\"_blank\" title=\"Verify school enrollment\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "consensus": {
+  "uniqueIssues": 9,
+  "consensus": 0,
+  "axeOnly": 3,
+  "alfaOnly": 6,
+  "rawAxe": 3,
+  "rawAlfa": 6,
+  "byKey": {
+   "axe-core:landmark-one-main": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-one-main"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "alfa:sia-r66": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r66"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r73": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r73"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "act:2ee8b8": {
+    "actRuleId": "2ee8b8",
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r14"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r113": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r113"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r57": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r57"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r111": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r111"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   }
+  }
+ },
+ "sustainability": null,
+ "deprecatedHtml": null,
+ "resources": null,
+ "standards": null,
+ "security": null,
+ "plainLanguage": {
+  "pagesChecked": 1,
+  "pagesScored": 0,
+  "medianWordsPerPage": 1209,
+  "medianReadingEase": null,
+  "medianGrade": null,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "AM",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "II",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "VA",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "GI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "VET",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "TEC",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "STEM",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "LAPP",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "VALERI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "SGLI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "VGLI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "FSGLI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "TSGLI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "DVI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "acronym": "VMLI",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "SkillBridge",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "Pre",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "Workstudy",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "VetSuccess",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "Buydown",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "SARs",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "Nonsupervised",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "Servicers",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "Servicer",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "Servicemembers",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "VALife",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "CoE",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "HealtheVet",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "VeteransCrisisLine",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "responders",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "word": "chatFor",
+    "pages": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   }
+  ]
+ },
+ "lighthouse": null,
+ "linkCheck": {
+  "brokenCount": 14,
+  "broken": [
+   {
+    "url": "https://www.cem.va.gov/cems/listcem.asp",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/veterans-and-families/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/cem/history/index.asp",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/cem/legacy/index.asp",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.caregiver.va.gov/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/burial-memorial-benefits/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/nationwide-gravesite-locator/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/find-cemetery/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/grants/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/hmm/cemetery-restoration.asp",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/legacy/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "https://www.cem.va.gov/history/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "url": "http://www.benefits.va.gov/warms/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://benefits.va.gov/"
+    ]
+   }
+  ]
+ },
+ "errorPages": [],
+ "tech": null,
+ "images": {
+  "pagesScanned": 1,
+  "totalImages": 78,
+  "uniqueImages": 47,
+  "missingAlt": 0,
+  "decorative": 9,
+  "withAlt": 69,
+  "altVerdicts": {
+   "GOOD": 37,
+   "DECORATIVE": 9,
+   "TOO_SHORT": 1
+  }
+ },
+ "techFindings": null,
+ "thirdParty": {
+  "pagesScanned": 1,
+  "vendors": [
+   {
+    "origin": "amazonaws.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 818045,
+    "medianDurationMs": 4780,
+    "medianRequests": 16,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "googletagmanager.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 756564,
+    "medianDurationMs": 601,
+    "medianRequests": 5,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "jquery.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 98366,
+    "medianDurationMs": 48,
+    "medianRequests": 2,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "digitalgov.gov",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 29714,
+    "medianDurationMs": 930,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "siteimproveanalytics.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 14108,
+    "medianDurationMs": 949,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "ads-twitter.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 13407,
+    "medianDurationMs": 77,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "youtube.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 9835,
+    "medianDurationMs": 47,
+    "medianRequests": 2,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "govdelivery.com",
+    "pages": 1,
+    "pagesWithScripts": 0,
+    "isScriptVendor": false,
+    "medianBytes": 59,
+    "medianDurationMs": 1014,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "t.co",
+    "pages": 1,
+    "pagesWithScripts": 0,
+    "isScriptVendor": false,
+    "medianBytes": 43,
+    "medianDurationMs": 72,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "twitter.com",
+    "pages": 1,
+    "pagesWithScripts": 0,
+    "isScriptVendor": false,
+    "medianBytes": 43,
+    "medianDurationMs": 142,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "siteimproveanalytics.io",
+    "pages": 1,
+    "pagesWithScripts": 0,
+    "isScriptVendor": false,
+    "medianBytes": 34,
+    "medianDurationMs": 115,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   },
+   {
+    "origin": "google-analytics.com",
+    "pages": 1,
+    "pagesWithScripts": 0,
+    "isScriptVendor": false,
+    "medianBytes": 0,
+    "medianDurationMs": 81,
+    "medianRequests": 3,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://benefits.va.gov/"
+    ]
+   }
+  ]
+ },
+ "pagesAttempted": 1,
+ "pagesSucceeded": 1
+}
