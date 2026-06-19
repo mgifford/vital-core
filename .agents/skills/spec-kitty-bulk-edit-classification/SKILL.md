@@ -1,0 +1,1 @@
+/Users/AlexUA_1/.agents/skills/spec-kitty-bulk-edit-classification/SKILL.md
