@@ -22,6 +22,11 @@ dist/
 *.log
 .DS_Store
 
+# Spec Kitty runtime state (transient, machine-specific)
+.kittify/runtime/
+.kittify/charter/context-state.json
+.worktrees/
+
 # HF-only targets — scanned on Hugging Face, not GitHub Actions.
 # Guard against accidental commit of their scan data to this repo.
 data/www.va.gov/

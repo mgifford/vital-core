@@ -1,0 +1,63 @@
+work_packages:
+  - id: WP01
+    title: "Ollama client module + unit tests"
+    dependencies: []
+    owned_files:
+      - "src/lib/ollama.js"
+      - "tests/unit/ollama.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - FR-03
+      - NFR-01
+      - NFR-02
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+      - T005
+    prompt_file: "tasks/WP01-ollama-client-module.md"
+
+  - id: WP02
+    title: "Wire Ollama into ai-findings.js"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/lib/ai-findings.js"
+    requirement_refs:
+      - FR-04
+      - FR-05
+    subtasks:
+      - T006
+      - T007
+      - T008
+    prompt_file: "tasks/WP02-wire-ai-findings.md"
+
+  - id: WP03
+    title: "Diagnostic script + package.json entry"
+    dependencies:
+      - WP01
+    owned_files:
+      - "scripts/check-ollama.js"
+      - "package.json"
+    requirement_refs:
+      - FR-06
+    subtasks:
+      - T009
+      - T010
+    prompt_file: "tasks/WP03-diagnostic-script.md"
+
+  - id: WP04
+    title: "Smoke test + CLAUDE.md update"
+    dependencies:
+      - WP02
+      - WP03
+    owned_files:
+      - "CLAUDE.md"
+    requirement_refs:
+      - NFR-02
+    subtasks:
+      - T011
+      - T012
+    prompt_file: "tasks/WP04-smoke-test-docs.md"
