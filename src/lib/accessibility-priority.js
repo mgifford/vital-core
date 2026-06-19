@@ -4,7 +4,7 @@ const DEFAULT_REPORTING = {
   include_key_page_issues: true,
 };
 
-const SEVERITY_RANK = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+const SEVERITY_RANK = { Critical: 0, Serious: 1, Moderate: 2, Minor: 3 };
 
 export function normalizeAccessibilityReporting(reporting = {}) {
   return {
@@ -46,15 +46,10 @@ export function prioritizeAccessibilityBugs(summary, bugs, { keyPages = [], repo
     String(a.summary ?? '').localeCompare(String(b.summary ?? ''))
   );
 
-  const visible = [];
-  for (const bug of decorated) {
-    if (bug.priority_tier <= 1) visible.push(bug);
-  }
-  for (const bug of decorated) {
-    if (bug.priority_tier <= 1) continue;
-    if (cfg.max_html_issues > 0 && visible.length >= cfg.max_html_issues) break;
-    visible.push(bug);
-  }
+  // Tiers 0–2 are the VITAL default view (Critical/Serious on WCAG A/AA;
+  // Moderate/Minor on WCAG A/AA with ≥10 pages). Tier 5 is hidden by default
+  // (Best Practice, Undetermined, low-page-count findings).
+  const visible = decorated.filter((bug) => bug.priority_tier <= 2);
 
   const visibleSet = new Set(visible.map((b) => b.instance_id));
   return {
@@ -69,11 +64,20 @@ export function prioritizeAccessibilityBugs(summary, bugs, { keyPages = [], repo
 }
 
 function priorityTier(bug, prevalencePercent, keyPageHit, thresholdPercent, includeKeyPages) {
-  if (bug.severity === 'Critical' || bug.severity === 'High') return 0;
-  if (includeKeyPages && keyPageHit && prevalencePercent > thresholdPercent) return 1;
-  if (isWcagAorAa(bug.wcag_category)) return 2;
-  if (bug.wcag_category === 'Best Practice') return 3;
-  if (bug.wcag_category === 'WCAG 2.x AAA') return 4;
+  const sev = bug.severity;
+  const pagesAffected = bug.frequency?.pages_affected ?? 0;
+  const isWcag = isWcagAorAa(bug.wcag_category);
+  const isBestPractice = bug.wcag_category === 'Best Practice';
+
+  // VITAL errors: Critical/Serious on any WCAG A/AA issue, always surface.
+  if ((sev === 'Critical' || sev === 'Serious') && isWcag) return 0;
+  // Critical/Serious on Best Practice or Undetermined — show but lower priority.
+  if (sev === 'Critical' || sev === 'Serious') return 1;
+  // Moderate/Minor on WCAG A/AA with ≥10 pages affected.
+  if (isWcag && !isBestPractice && pagesAffected >= 10) return 2;
+  // Key-page hits on WCAG A/AA with enough prevalence.
+  if (includeKeyPages && keyPageHit && isWcag && prevalencePercent > thresholdPercent) return 2;
+  // Best Practice and Undetermined, and low-page-count WCAG findings — hidden by default.
   return 5;
 }
 

@@ -6,12 +6,12 @@
  * Priority score per issue = pages affected × severity weight × people
  * reach. Each factor is something we actually measure:
  *   - pages affected: how widespread (one fix often clears many pages)
- *   - severity: Critical/High/Medium/Low from axe impact + frequency
+ *   - severity: Critical/Serious/Moderate/Minor from axe impact + frequency
  *   - reach: the most-affected disability group's population prevalence
  *     (from the WCAG→FPC mapping), so issues hurting more people rank up.
  */
 
-const SEVERITY_WEIGHT = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+const SEVERITY_WEIGHT = { Critical: 4, Serious: 3, Moderate: 2, Minor: 1 };
 
 /** Priority score for one bug report (higher = fix sooner). */
 export function priorityScore(bug) {

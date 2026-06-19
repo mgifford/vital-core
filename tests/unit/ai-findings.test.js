@@ -34,7 +34,7 @@ const FAKE_BUG = {
   wcag_version: '2.0',
   wcag_category: 'WCAG 2.0 AA',
   rule_url: 'https://dequeuniversity.com/rules/axe/4.12/color-contrast',
-  severity: 'High',
+  severity: 'Serious',
   frequency: { instances: 42, pages_affected: 30, total_pages_scanned: 100 },
   summary: 'Contrast (Minimum) (WCAG 1.4.3)',
   description: 'Elements must meet minimum color contrast ratio thresholds.',
@@ -59,7 +59,7 @@ const FAKE_LEDGER = {
   findings: {
     'VS-aabbccdd': {
       engine: 'axe-core', ruleId: 'color-contrast',
-      severity: 'High', firstSeen: '2026-W24', lastSeen: '2026-W25',
+      severity: 'Serious', firstSeen: '2026-W24', lastSeen: '2026-W25',
       weeksSeen: 2, lastPagesAffected: 20, _weeks: ['2026-W24', '2026-W25'],
     },
   },

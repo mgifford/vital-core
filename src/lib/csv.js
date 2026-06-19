@@ -358,7 +358,7 @@ export function buildPriorityPages(bugs, lhDetail, total) {
     if (!byUrl.has(url)) {
       byUrl.set(url, {
         url,
-        a11y_critical: 0, a11y_high: 0, a11y_medium: 0, a11y_low: 0,
+        a11y_critical: 0, a11y_serious: 0, a11y_moderate: 0, a11y_minor: 0,
         a11y_issues: [], // { severity, label }
         lh_performance: null, lh_accessibility: null,
         lh_lcp_ms: null, lh_tbt_ms: null, lh_cls: null,
@@ -368,7 +368,7 @@ export function buildPriorityPages(bugs, lhDetail, total) {
   };
 
   // Tally accessibility bugs per affected page.
-  const sevKey = { Critical: 'a11y_critical', High: 'a11y_high', Medium: 'a11y_medium', Low: 'a11y_low' };
+  const sevKey = { Critical: 'a11y_critical', Serious: 'a11y_serious', Moderate: 'a11y_moderate', Minor: 'a11y_minor' };
   for (const bug of bugs ?? []) {
     const affectedUrls = bug.affected_pages ?? bug.example_pages ?? (bug.url ? [bug.url] : []);
     for (const url of affectedUrls) {
@@ -393,15 +393,15 @@ export function buildPriorityPages(bugs, lhDetail, total) {
 
   // Compute composite priority score (higher = worse page, fix first):
   //   Critical bugs: 40 pts each
-  //   High bugs: 20 pts each
-  //   Medium bugs: 8 pts each
-  //   Low bugs: 2 pts each
+  //   Serious bugs: 20 pts each
+  //   Moderate bugs: 8 pts each
+  //   Minor bugs: 2 pts each
   //   Lighthouse performance penalty: (100 - score) × 0.3, capped at 30
   // Only pages with at least one a11y finding or a very low LH score are included.
   const rows = [];
   for (const [, row] of byUrl) {
     const lhPenalty = row.lh_performance != null ? Math.min(30, (100 - row.lh_performance) * 0.3) : 0;
-    const a11yScore = row.a11y_critical * 40 + row.a11y_high * 20 + row.a11y_medium * 8 + row.a11y_low * 2;
+    const a11yScore = row.a11y_critical * 40 + row.a11y_serious * 20 + row.a11y_moderate * 8 + row.a11y_minor * 2;
     const priority_score = Math.round(a11yScore + lhPenalty);
     const hasA11y = a11yScore > 0;
     const hasLhProblem = row.lh_performance != null && row.lh_performance < 50;
@@ -410,9 +410,9 @@ export function buildPriorityPages(bugs, lhDetail, total) {
       url: row.url,
       priority_score,
       a11y_critical_bugs: row.a11y_critical,
-      a11y_high_bugs: row.a11y_high,
-      a11y_medium_bugs: row.a11y_medium,
-      a11y_low_bugs: row.a11y_low,
+      a11y_serious_bugs: row.a11y_serious,
+      a11y_moderate_bugs: row.a11y_moderate,
+      a11y_minor_bugs: row.a11y_minor,
       lh_performance: row.lh_performance,
       lh_accessibility: row.lh_accessibility,
       lh_lcp_ms: row.lh_lcp_ms,
@@ -434,10 +434,10 @@ export function writePriorityPages(repDir, domain, week, generatedAt, bugs, lhDe
   if (!rows.length) return { csv: null, json: null };
 
   // CSV: flat, spreadsheet-ready.
-  const headers = ['priority_score', 'url', 'a11y_critical_bugs', 'a11y_high_bugs', 'a11y_medium_bugs', 'a11y_low_bugs', 'lh_performance', 'lh_accessibility', 'lh_lcp_ms', 'lh_tbt_ms', 'lh_cls', 'top_a11y_issues'];
+  const headers = ['priority_score', 'url', 'a11y_critical_bugs', 'a11y_serious_bugs', 'a11y_moderate_bugs', 'a11y_minor_bugs', 'lh_performance', 'lh_accessibility', 'lh_lcp_ms', 'lh_tbt_ms', 'lh_cls', 'top_a11y_issues'];
   const csvRows = rows.map((r) => [
     r.priority_score, r.url,
-    r.a11y_critical_bugs, r.a11y_high_bugs, r.a11y_medium_bugs, r.a11y_low_bugs,
+    r.a11y_critical_bugs, r.a11y_serious_bugs, r.a11y_moderate_bugs, r.a11y_minor_bugs,
     r.lh_performance ?? '', r.lh_accessibility ?? '',
     r.lh_lcp_ms ?? '', r.lh_tbt_ms ?? '', r.lh_cls ?? '',
     r.top_a11y_issues,
@@ -449,7 +449,7 @@ export function writePriorityPages(repDir, domain, week, generatedAt, bugs, lhDe
     domain,
     week,
     generated_at: generatedAt,
-    description: 'Pages ranked by composite accessibility + performance priority score. Critical a11y bugs = 40 pts, High = 20, Medium = 8, Low = 2. Lighthouse performance penalty up to 30 pts. Higher score = fix first.',
+    description: 'Pages ranked by composite accessibility + performance priority score. Critical a11y bugs = 40 pts, Serious = 20, Moderate = 8, Minor = 2. Lighthouse performance penalty up to 30 pts. Higher score = fix first.',
     total_pages_scanned: total,
     priority_pages: rows,
   };

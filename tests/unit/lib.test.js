@@ -235,10 +235,10 @@ test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {
 
 test('severityFor: axe impact maps, frequency amplifies', () => {
   assert.equal(severityFor('critical', 1, 50), 'Critical');
-  assert.equal(severityFor('minor', 1, 50), 'Low', 'rare minor stays low');
-  assert.equal(severityFor('minor', 30, 50), 'Medium', 'site-wide minor escalates one level');
+  assert.equal(severityFor('minor', 1, 50), 'Minor', 'rare minor stays minor');
+  assert.equal(severityFor('minor', 30, 50), 'Moderate', 'site-wide minor escalates one level');
   assert.equal(severityFor('serious', 40, 50), 'Critical', 'site-wide serious escalates to critical');
-  assert.equal(severityFor(null, 1, 50), 'Medium', 'no impact (alfa) defaults medium');
+  assert.equal(severityFor(null, 1, 50), 'Moderate', 'no impact (alfa) defaults moderate');
 });
 
 test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
@@ -294,9 +294,9 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').instance_id, axeReport.instance_id);
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').pattern_id, axeReport.pattern_id);
 
-  // Alfa report: no impact -> Medium (default), mapped SC, WCAG category.
+  // Alfa report: no impact -> Moderate (default), mapped SC, WCAG category.
   const alfa = reports.find((r) => r.rule_id === 'sia-r12');
-  assert.equal(alfa.severity, 'Medium');
+  assert.equal(alfa.severity, 'Moderate');
   assert.equal(alfa.wcag_sc, '4.1.2');
   assert.equal(alfa.wcag_version, '2.0');
   assert.equal(alfa.wcag_category, 'WCAG 2.0 A');
@@ -592,12 +592,12 @@ test('score: density-based, spreads across a curve so F is rare and meaningful',
 test('priority: ranks by pages x severity x reach; fleet flattens across domains', async () => {
   const { priorityScore, rankBugs, fleetWorstOffenders } = await import('../../src/lib/priority.js');
   const bug = (sev, pages, prev) => ({ severity: sev, frequency: { pages_affected: pages }, impact: { groups: prev != null ? [{ prevalence: prev }] : [] }, summary: `${sev}/${pages}` });
-  const widespreadCritical = bug('critical', 50, 0.1);
-  const rareLow = bug('minor', 1, 0.01);
+  const widespreadCritical = bug('Critical', 50, 0.1);
+  const rareLow = bug('Minor', 1, 0.01);
   assert.ok(priorityScore(widespreadCritical) > priorityScore(rareLow), 'widespread critical outranks rare minor');
 
   const ranked = rankBugs([rareLow, widespreadCritical], 5);
-  assert.equal(ranked[0].summary, 'critical/50', 'highest priority first');
+  assert.equal(ranked[0].summary, 'Critical/50', 'highest priority first');
 
   const fleet = fleetWorstOffenders([
     { target: { domain: 'a.gov', key: 'a' }, bugs: [rareLow] },
@@ -840,7 +840,7 @@ test('buildBugReports: WCAG sort order across version groups', () => {
   assert.ok(i20 < iBP, 'WCAG 2.0 before Best Practice');
 });
 
-test('prioritizeAccessibilityBugs: keeps critical, key-page widespread, and top prevalence before the cap', () => {
+test('prioritizeAccessibilityBugs: VITAL default view — Critical/Serious always; Moderate/Minor WCAG A/AA ≥10 pages; Best Practice hidden', () => {
   const summary = {
     pagesScanned: 100,
     axe: { rules: { 'color-contrast': { affectedPages: [{ url: 'https://example.gov/top' }], pages: 6 } } },
@@ -849,20 +849,26 @@ test('prioritizeAccessibilityBugs: keeps critical, key-page widespread, and top 
   };
   const bugs = [
     { instance_id: 'a', severity: 'Critical', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 1, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'x', summary: 'a' },
-    { instance_id: 'b', severity: 'Low', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 12, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'color-contrast', summary: 'b' },
-    { instance_id: 'c', severity: 'Low', wcag_category: 'WCAG 2.0 A', frequency: { pages_affected: 20, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'y', summary: 'c' },
-    { instance_id: 'd', severity: 'Low', wcag_category: 'Best Practice', frequency: { pages_affected: 30, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'z', summary: 'd' },
+    // Minor on WCAG AA, 12 pages ≥ 10 threshold → visible
+    { instance_id: 'b', severity: 'Minor', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 12, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'color-contrast', summary: 'b' },
+    // Minor on WCAG A, 20 pages ≥ 10 threshold → visible
+    { instance_id: 'c', severity: 'Minor', wcag_category: 'WCAG 2.0 A', frequency: { pages_affected: 20, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'y', summary: 'c' },
+    // Minor on Best Practice, any page count → hidden by default
+    { instance_id: 'd', severity: 'Minor', wcag_category: 'Best Practice', frequency: { pages_affected: 30, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'z', summary: 'd' },
+    // Minor on WCAG A, 5 pages < 10 threshold → hidden by default
+    { instance_id: 'e', severity: 'Minor', wcag_category: 'WCAG 2.0 A', frequency: { pages_affected: 5, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'w', summary: 'e' },
   ];
   const keyPages = ['https://example.gov/top'];
   const view = prioritizeAccessibilityBugs(summary, bugs, {
     keyPages,
-    reporting: { max_html_issues: 3, moderate_issue_threshold_percent: 5, include_key_page_issues: true },
+    reporting: { max_html_issues: 50, moderate_issue_threshold_percent: 5, include_key_page_issues: true },
   });
-  assert.equal(view.visibleCount, 3, 'critical + key-page widespread + one expansion item shown before the cap');
-  assert.equal(view.bugs.find((b) => b.instance_id === 'a').default_visible, true);
-  assert.equal(view.bugs.find((b) => b.instance_id === 'b').default_visible, true);
-  assert.equal(view.bugs.find((b) => b.instance_id === 'c').default_visible, true, 'first expansion item is included when room remains');
-  assert.equal(view.bugs.find((b) => b.instance_id === 'd').default_visible, false);
+  assert.equal(view.visibleCount, 3, 'critical + two WCAG minor-but-widespread issues shown; best-practice and low-page-count hidden');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'a').default_visible, true, 'Critical always shown');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'b').default_visible, true, 'Minor WCAG AA ≥10 pages shown');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'c').default_visible, true, 'Minor WCAG A ≥10 pages shown');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'd').default_visible, false, 'Best Practice hidden by default');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'e').default_visible, false, 'Minor WCAG A <10 pages hidden by default');
 });
 
 test('buildAcrData: does-not-support when failures span ≥5% of pages', () => {

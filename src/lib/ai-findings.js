@@ -24,11 +24,11 @@ const MAX_EXAMPLES = 5;
 const MAX_FRAGMENTS = 3;
 const MAX_SELECTORS = 3;
 const MAX_TOP_RISKS = 10;
-const SEVERITY_RANK = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+const SEVERITY_RANK = { Critical: 0, Serious: 1, Moderate: 2, Minor: 3 };
 const PRIORITY_THRESHOLDS = {
-  p1: { severities: ['Critical', 'High'], minPages: 1 },
-  p2: { severities: ['Medium'], minPages: 10 },
-  p3: { severities: ['Low'], minPages: 25 },
+  p1: { severities: ['Critical', 'Serious'], minPages: 1 },
+  p2: { severities: ['Moderate'], minPages: 10 },
+  p3: { severities: ['Minor'], minPages: 25 },
 };
 
 // ---------------------------------------------------------------------------
@@ -96,9 +96,9 @@ function deriveTrend(ledgerEntry, currentPages, prevPages) {
 }
 
 function priorityFor(severity, pagesAffected, isOnKeyPage, isPersistent) {
-  if (severity === 'Critical' || (severity === 'High' && pagesAffected >= 1)) return 'p1';
-  if (severity === 'High' || (severity === 'Medium' && (isOnKeyPage || pagesAffected >= 50))) return 'p2';
-  if (severity === 'Medium' || (severity === 'Low' && pagesAffected >= 100)) return 'p3';
+  if (severity === 'Critical' || (severity === 'Serious' && pagesAffected >= 1)) return 'p1';
+  if (severity === 'Serious' || (severity === 'Moderate' && (isOnKeyPage || pagesAffected >= 50))) return 'p2';
+  if (severity === 'Moderate' || (severity === 'Minor' && pagesAffected >= 100)) return 'p3';
   return 'p4';
 }
 

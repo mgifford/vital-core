@@ -277,14 +277,14 @@ export function classifyFinding(engine, { tags = [], ruleId } = {}, resolvedWcag
  *   totalPages:       pages scanned this week
  */
 export function severityFor(impact, pagesAffected, totalPages) {
-  const order = ['Low', 'Medium', 'High', 'Critical'];
-  // axe impact -> guide severity baseline.
+  const order = ['Minor', 'Moderate', 'Serious', 'Critical'];
+  // axe impact -> axe severity label (kept verbatim for engineer familiarity).
   const base = {
     critical: 'Critical',
-    serious: 'High',
-    moderate: 'Medium',
-    minor: 'Low',
-  }[impact] ?? 'Medium'; // Alfa has no impact; default to Medium.
+    serious: 'Serious',
+    moderate: 'Moderate',
+    minor: 'Minor',
+  }[impact] ?? 'Moderate'; // Alfa has no impact; default to Moderate.
 
   let idx = order.indexOf(base);
   // Frequency amplification: appears on a majority of scanned pages.

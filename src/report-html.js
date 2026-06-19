@@ -568,7 +568,7 @@ ${heading('h-bugs', `Bug reports`)}
 </section>`;
   }
   const sevCount = ordered.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
-  const sevSummary = ['Critical', 'High', 'Medium', 'Low']
+  const sevSummary = ['Critical', 'Serious', 'Moderate', 'Minor']
     .filter((s) => sevCount[s])
     .map((s) => `${sevCount[s]} ${s.toLowerCase()}`)
     .join(', ');
@@ -626,7 +626,7 @@ ${affectedPagesBlock(b)}
   // Progressive-enhancement filter. Without JS every bug is visible; the
   // script below reveals the controls and filters the <details> blocks by
   // their data-severity / data-category attributes.
-  const sevPresent = ['Critical', 'High', 'Medium', 'Low'].filter((s) => sevCount[s]);
+  const sevPresent = ['Critical', 'Serious', 'Moderate', 'Minor'].filter((s) => sevCount[s]);
   const catPresent = catOrder.filter((c) => catCounts[c]);
   const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${esc(s)} (${sevCount[s]})</option>`).join('');
   const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${esc(c)} (${catCounts[c]})</option>`).join('');
@@ -2160,15 +2160,15 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
 .engine-findings > summary { cursor: pointer; font-weight: 600; padding: .4rem 0; }
 .bug.sev-critical { border-left-color: var(--worse); }
-.bug.sev-high { border-left-color: var(--worse); }
-.bug.sev-medium { border-left-color: var(--accent); }
-.bug.sev-low { border-left-color: var(--muted); }
+.bug.sev-serious { border-left-color: var(--worse); }
+.bug.sev-moderate { border-left-color: var(--accent); }
+.bug.sev-minor { border-left-color: var(--muted); }
 .sev-badge { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: .05em; padding: 0 .4rem; border: 1px solid currentColor; border-radius: 2px;
   vertical-align: middle; margin-right: .4rem; }
-.sev-critical .sev-badge, .sev-high .sev-badge { color: var(--worse); }
-.sev-medium .sev-badge { color: var(--accent); }
-.sev-low .sev-badge { color: var(--muted); }
+.sev-critical .sev-badge, .sev-serious .sev-badge { color: var(--worse); }
+.sev-moderate .sev-badge { color: var(--accent); }
+.sev-minor .sev-badge { color: var(--muted); }
 .wcag-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: 0 .4rem;
   border-radius: 2px; vertical-align: middle; margin-right: .35rem;
   background: color-mix(in srgb, var(--accent) 12%, transparent);
