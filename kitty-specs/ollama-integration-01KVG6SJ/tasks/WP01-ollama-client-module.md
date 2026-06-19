@@ -1,24 +1,29 @@
 ---
-work_package_id: "WP01"
-title: "Ollama client module + unit tests"
+work_package_id: WP01
+title: Ollama client module + unit tests
 dependencies: []
 requirement_refs:
-  - FR-01
-  - FR-02
-  - FR-03
-  - NFR-01
-  - NFR-02
+- FR-01
+- FR-02
+- FR-03
+- NFR-01
+- NFR-02
+planning_base_branch: public-interest-checks
+merge_target_branch: public-interest-checks
+branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
 subtasks:
-  - T001
-  - T002
-  - T003
-  - T004
-  - T005
+- T001
+- T002
+- T003
+- T004
+- T005
+history: []
+authoritative_surface: src/lib/
+execution_mode: code_change
 owned_files:
-  - "src/lib/ollama.js"
-  - "tests/unit/ollama.test.js"
-authoritative_surface: "src/lib/"
-execution_mode: "code_change"
+- src/lib/ollama.js
+- tests/unit/ollama.test.js
+tags: []
 ---
 
 # WP01: Ollama client module + unit tests
