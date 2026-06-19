@@ -1,0 +1,61 @@
+work_packages:
+  - id: WP01
+    title: "Ollama client module + unit tests"
+    dependencies: []
+    owned_files:
+      - "src/lib/ollama.js"
+      - "tests/unit/ollama.test.js"
+    requirement_refs:
+      - "src/lib/ollama.js — isAvailable(), detectModel(), chat()"
+      - "isAvailable() 2-second timeout"
+      - "VITAL_OLLAMA_URL / VITAL_OLLAMA_MODEL env vars"
+      - "Unit tests — isAvailable up/down/timeout, chat success/error"
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+      - T005
+
+  - id: WP02
+    title: "Wire Ollama into ai-findings.js"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/lib/ai-findings.js"
+    requirement_refs:
+      - "ai-findings.js calls ollama.chat() when available"
+      - "ollama_summary field in output JSON"
+      - "No change to output when Ollama absent"
+    subtasks:
+      - T006
+      - T007
+      - T008
+
+  - id: WP03
+    title: "Diagnostic script + package.json entry"
+    dependencies:
+      - WP01
+    owned_files:
+      - "scripts/check-ollama.js"
+      - "package.json"
+    requirement_refs:
+      - "scripts/check-ollama.js diagnostic"
+      - "check:ollama npm script"
+    subtasks:
+      - T009
+      - T010
+
+  - id: WP04
+    title: "Smoke test + CLAUDE.md update"
+    dependencies:
+      - WP02
+      - WP03
+    owned_files:
+      - "CLAUDE.md"
+    requirement_refs:
+      - "All 91 existing unit tests still pass"
+      - "check-ollama.js verified against local Ollama"
+    subtasks:
+      - T011
+      - T012
