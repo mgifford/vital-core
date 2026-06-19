@@ -1,0 +1,64 @@
+{
+  "mission_slug": "ollama-integration-01KVG6SJ",
+  "mission_type": "software-dev",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "src/lib/ollama.js exports isAvailable(), detectModel(), chat()",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/lib/ollama.js created with all three named exports"
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "isAvailable() uses a 2-second timeout; returns false on any error",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "AbortSignal.timeout(2000) in ollamaFetch; tests/unit/ollama.test.js covers timeout + network error cases"
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Config via VITAL_OLLAMA_URL and VITAL_OLLAMA_MODEL env vars",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Module reads env vars at load time; documented in .env.example"
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "ai-findings.js calls ollama.chat() when available; adds ollama_summary field",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "buildAiFindings() is async; calls isAvailable()+chat(); spreads ollama_summary conditionally into output doc"
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "No change to output shape when Ollama is absent",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "All 10 existing ai-findings unit tests pass with fetch stubbed to unavailable"
+    },
+    {
+      "criterion_id": "FR-06",
+      "description": "scripts/check-ollama.js diagnostic; check:ollama npm script",
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "npm run check:ollama verified live against Ollama server; --json flag outputs valid JSON; exit 0 always",
+      "verified_by": "mike.gifford@gmail.com",
+      "verified_at": "2026-06-19"
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "No new npm dependencies",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Uses only node:crypto and globalThis.fetch (Node 18+ built-in); package.json unchanged"
+    },
+    {
+      "criterion_id": "NFR-02",
+      "description": "All 91 existing unit tests still pass; new ollama unit tests added",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "npm run test:unit: 91 pass, 0 fail; 11 new ollama tests in tests/unit/ollama.test.js"
+    }
+  ]
+}

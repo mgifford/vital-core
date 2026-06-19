@@ -23,6 +23,13 @@ npm run test:e2e      # smoke test
 npm run check:public-interest www.cms.gov   # quick 4-check diagnostic
 ```
 
+**Optional — local Ollama LLM** (adds `ollama_summary` to ai-findings output):
+```bash
+# Set in .env (see .env.example); defaults to http://localhost:11434
+npm run check:ollama   # verify connectivity
+```
+Ollama is always optional — absent or unreachable = no change in report output.
+
 ---
 
 ## Spec Kitty workflow
