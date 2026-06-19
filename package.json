@@ -5,6 +5,7 @@
   "type": "module",
   "license": "AGPL-3.0-only",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "scan": "node src/scan.js",
     "aggregate": "node src/aggregate.js",
     "comment": "node src/issue-comment.js",
