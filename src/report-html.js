@@ -546,7 +546,7 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
     .join('\n');
   return `<table>
 <caption>${esc(caption)}</caption>
-<thead><tr><th scope="col">Rule</th><th scope="col">Impact</th><th scope="col">Pages affected</th><th scope="col">Instances</th><th scope="col">Example pages</th><th scope="col">All affected</th></tr></thead>
+<thead><tr><th scope="col">Rule</th><th scope="col">Impact</th><th scope="col" class="num">Pages affected</th><th scope="col" class="num">Instances</th><th scope="col">Example pages</th><th scope="col">All affected</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
 }
@@ -730,7 +730,7 @@ function coverageTable(summary) {
 <summary>Scan coverage this week (${summary.pagesScanned} pages${attemptLine})</summary>
 <table>
 <caption>Pages each engine ran on, per the configured weekly sampling rates.</caption>
-<thead><tr><th scope="col">Engine</th><th scope="col">Pages</th><th scope="col">Coverage</th></tr></thead>
+<thead><tr><th scope="col">Engine</th><th scope="col" class="num">Pages</th><th scope="col" class="num">Coverage</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </details>`;
@@ -766,7 +766,7 @@ ${heading('h-resources', `Embedded & linked resources`)}
 ${newBlock}
 <table>
 <caption>${r.total} distinct resources, by type.</caption>
-<thead><tr><th scope="col">Type</th><th scope="col">Count</th></tr></thead>
+<thead><tr><th scope="col">Type</th><th scope="col" class="num">Count</th></tr></thead>
 <tbody>${typeRows}</tbody>
 </table>
 </section>`;
@@ -801,7 +801,7 @@ ${heading('h-fixfirst', `Fix these first`)}
 <p class="meta">Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessibility.html#h-bugs">Accessibility page</a>.</p>
 <table>
 <caption>Top ${top.length} issues to prioritize this week.</caption>
-<thead><tr><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col">Pages</th><th scope="col">Who it affects</th><th scope="col">How to fix</th><th scope="col">Evidence</th></tr></thead>
+<thead><tr><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col" class="num">Pages</th><th scope="col">Who it affects</th><th scope="col">How to fix</th><th scope="col">Evidence</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </section>`;
@@ -828,7 +828,7 @@ ${checklist(sec.checks)}` : '';
 <h3>Web standards &amp; metadata <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
 <table>
 <caption>Share of checked pages passing each standard (lowest first).</caption>
-<thead><tr><th scope="col">Standard</th><th scope="col">Pass rate</th><th scope="col">Pages</th></tr></thead>
+<thead><tr><th scope="col">Standard</th><th scope="col" class="num">Pass rate</th><th scope="col" class="num">Pages</th></tr></thead>
 <tbody>${std.checks.map((c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`).join('')}</tbody>
 </table>
 ${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}` : '';
@@ -840,11 +840,20 @@ ${stdBlock}
 </section>`;
 }
 
-function consensusSection(summary) {
+function consensusSection(summary, bugs = []) {
   const c = summary.consensus;
   if (!c || c.uniqueIssues === 0) return '';
   const naive = c.rawAxe + c.rawAlfa;
   const saved = naive - c.uniqueIssues;
+
+  // Build a lookup from axe rule_id → bug instance_id so we can link to
+  // the full bug detail on the accessibility page.
+  const bugByAxeRule = new Map();
+  for (const b of bugs) {
+    if (b.engine_key === 'axe-core' && b.rule_id && b.instance_id) {
+      bugByAxeRule.set(b.rule_id, b.instance_id);
+    }
+  }
 
   // Rules flagged by BOTH engines — the highest-confidence findings, since two
   // independent implementations of the same ACT rule agree. List them with
@@ -869,7 +878,12 @@ function consensusSection(summary) {
         alfaUrl ? `<a href="${esc(alfaUrl)}">Alfa ${esc(alfaId)}</a>` : (alfaId ? `Alfa ${esc(alfaId)}` : ''),
         actUrl ? `<a href="${esc(actUrl)}">ACT ${esc(g.actRuleId)}</a>` : '',
       ].filter(Boolean).join(' · ');
-      return `<tr><th scope="row">${esc(help)}</th><td class="num">${g.pages}</td><td class="bug-meta">${links}</td></tr>`;
+      // Link to the axe bug detail on the accessibility page if available.
+      const bugAnchor = axeId ? bugByAxeRule.get(axeId) : null;
+      const issueCell = bugAnchor
+        ? `<a href="accessibility.html#${esc(bugAnchor)}">${esc(help)}</a>`
+        : esc(help);
+      return `<tr><th scope="row">${issueCell}</th><td class="num">${g.pages}</td><td class="bug-meta">${links}</td></tr>`;
     })
     .join('\n');
   const bothTable = both.length
@@ -878,7 +892,7 @@ function consensusSection(summary) {
 <p class="meta">Two independent ACT-rule implementations (Deque axe-core and Siteimprove Alfa) flagged the same issue on the same pages. Agreement between separate engines is strong evidence the barrier is real, not a single-tool false positive — the best place to start.</p>
 <table>
 <caption>Rules flagged by both axe-core and Alfa in ${esc(summary.week)}, by pages affected.</caption>
-<thead><tr><th scope="col">Issue</th><th scope="col">Pages</th><th scope="col">Rule references</th></tr></thead>
+<thead><tr><th scope="col">Issue</th><th scope="col" class="num">Pages</th><th scope="col">Rule references</th></tr></thead>
 <tbody>${bothRows}</tbody>
 </table>
 </details>`
@@ -945,7 +959,7 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
       return `<h3>${esc(LH_CATEGORY_LABELS[cat] ?? cat)}</h3>
 <table>
 <caption>${esc(LH_CATEGORY_LABELS[cat] ?? cat)} recommendations from Lighthouse, by sampled pages affected.</caption>
-<thead><tr><th scope="col">Recommendation</th><th scope="col">Pages</th><th scope="col">Est. saving</th></tr></thead>
+<thead><tr><th scope="col">Recommendation</th><th scope="col" class="num">Pages</th><th scope="col">Est. saving</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
     })
@@ -1019,7 +1033,7 @@ ${heading('h-lh-pwa', `PWA / offline readiness`)}
 <p class="meta">${interpretation} Checks run on ${pagesChecked} sampled page(s). Service workers and offline access allow pages to load without a network connection, and enable "Add to Home Screen" install on mobile.</p>
 <table>
 <caption>PWA and offline readiness audit results from Lighthouse.</caption>
-<thead><tr><th scope="col"></th><th scope="col">Audit</th><th scope="col">Pages passing</th><th scope="col">Pass rate</th><th scope="col">What it checks</th></tr></thead>
+<thead><tr><th scope="col"></th><th scope="col">Audit</th><th scope="col" class="num">Pages passing</th><th scope="col" class="num">Pass rate</th><th scope="col">What it checks</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </section>`;
@@ -1417,7 +1431,7 @@ export function renderImagesPage(target, summary, csvHref) {
 
   const statsTable = `<table class="stats-table">
 <caption>Image alt-text coverage across ${img.pagesScanned} page(s) scanned in ${esc(summary.week)}.</caption>
-<thead><tr><th scope="col">Category</th><th scope="col">Count</th><th scope="col">Share</th></tr></thead>
+<thead><tr><th scope="col">Category</th><th scope="col" class="num">Count</th><th scope="col" class="num">Share</th></tr></thead>
 <tbody>
 <tr><th scope="row">Total image occurrences</th><td class="num">${img.totalImages}</td><td class="num">—</td></tr>
 <tr><th scope="row">Unique images</th><td class="num">${img.uniqueImages ?? '—'}</td><td class="num">—</td></tr>
@@ -1536,7 +1550,7 @@ ${subnav('archive')}
 <p class="meta">Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.</p>
 <table>
 <caption>Weekly reports for ${esc(target.domain)} (${series.length} weeks).</caption>
-<thead><tr><th scope="col">Week</th><th scope="col">Score</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th></tr></thead>
+<thead><tr><th scope="col">Week</th><th scope="col" class="num">Score</th><th scope="col" class="num">Pages audited</th><th scope="col" class="num">Median axe / page</th><th scope="col" class="num">Median Alfa / page</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
   return layout({
@@ -1651,7 +1665,7 @@ ${heading('h-alfa', `Siteimprove Alfa findings`)}
 ${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.alfa.rules, 'Alfa', 'alfa', csvLinks)}
 </details>
 </section>
-${consensusSection(summary)}
+${consensusSection(summary, bugs)}
 `;
   return layout({
     title: `${target.domain} Accessibility ${summary.week} | vital-scans`,
@@ -1875,7 +1889,7 @@ ${heading('h-worst', `Worst offenders across all domains`)}
 <p class="meta">Highest-impact issues fleet-wide, ranked by pages affected × severity × people reached — where to focus effort first.</p>
 <table>
 <caption>Top ${worst.length} issues across all active domains.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col">Pages</th></tr></thead>
+<thead><tr><th scope="col">Domain</th><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col" class="num">Pages</th></tr></thead>
 <tbody>${worst
     .map((b) => `<tr>
   <th scope="row"><a href="reports/${esc(b.key)}/${esc(b._week)}/index.html">${esc(b.domain)}</a></th>
@@ -1992,7 +2006,7 @@ ${active.length === 0
     : `
 <table>
 <caption>Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Score</th><th scope="col">Trajectory</th><th scope="col">Pages audited (7d)</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
+<thead><tr><th scope="col">Domain</th><th scope="col" class="num">Score</th><th scope="col">Trajectory</th><th scope="col" class="num">Pages audited (7d)</th><th scope="col" class="num">Median axe / page</th><th scope="col" class="num">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 <p class="score-caveat">Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
@@ -2114,7 +2128,8 @@ th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(-
   vertical-align: top; }
 thead th { border-bottom: 2px solid var(--ink); font-size: .8rem; text-transform: uppercase;
   letter-spacing: .05em; }
-td.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+th.num button { width: 100%; text-align: right; }
 tbody th[scope="row"] { font-weight: 600; }
 .spark { color: var(--accent); vertical-align: middle; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden;
