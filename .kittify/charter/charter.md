@@ -8,8 +8,11 @@ Last updated: 2026-06-19
 ## Project Purpose
 
 vital-core is an open-source website quality engine that crawls government sites
-with Playwright/Chromium, runs axe-core + Siteimprove Alfa accessibility audits,
-and generates static HTML reports published to GitHub Pages.
+with Playwright+Browser (normally Chromium), runs Deque's axe-core + Siteimprove's Alfa 
+accessibility scans, Google Lighthoiuse, runs other quality scans and generates static 
+HTML reports published to GitHub Pages.
+
+The object is to present the most vital website quality problems to those people who can do the most to address them. We want to prioritize those issues that have the biggest impact. 
 
 ## Testing Standards
 
@@ -21,20 +24,21 @@ and generates static HTML reports published to GitHub Pages.
 ## Quality Gates
 
 - `npm run test:unit` passes.
-- No `.env` or VA auth tokens committed.
-- VA domains (`hf_only: true`) must NOT run in GitHub Actions.
+- No `.env` or auth tokens committed.
+- This repository is centralized on one GitHub but also being pushed out to Hugging Face. 
+- This is a distributed project.
 - CSS changes go in the CSS constant in `src/report-html.js`, not in `docs/style.css` (which is gitignored generated output).
 
 ## Severity Taxonomy
 
 Use axe-core's four labels verbatim: Critical, Serious, Moderate, Minor.
-Never use High / Medium / Low — these are not axe terms.
+Don't use use High / Medium / Low — to describe accessibility issues.
 
 ## VITAL Default View
 
 VITAL errors shown by default = WCAG A/AA issues that are Critical or Serious (any page count),
 OR Moderate/Minor with ≥10 pages affected. Best Practice is hidden by default.
-"Show everything" toggle reveals all.
+"Show everything" toggle reveals all. There is legal risk to not meeting WCAG. 
 
 ## Branch Strategy
 
@@ -46,7 +50,7 @@ OR Moderate/Minor with ≥10 pages affected. Best Practice is hidden by default.
 ## Security Constraints
 
 - Never commit `.env` (contains `HF_TOKEN`).
-- VA data/state paths are gitignored — see `.gitignore`.
+- local and Hugging Face data/state paths are gitignored — see `.gitignore`.
 - `hf_only: true` targets are filtered out in `scan.yml` CI.
 
 ## Governance Activation
@@ -62,11 +66,13 @@ template_set: software-dev-default
 ## Policy Summary
 
 - Intent: Deliver predictable changes with clear reviewability.
-- Languages/Frameworks: Node.js ESM (>=20), Playwright, axe-core, Siteimprove Alfa.
+- Languages/Frameworks: Node.js ESM (>=24), Playwright, axe-core, Siteimprove Alfa.
 - Testing: `npm run test:unit && npm run test:e2e`
 - Quality Gates: All unit tests pass; no security regressions.
 - Review Policy: At least one focused reviewer approves before merge.
 - Deployment Constraints: Must run on macOS and Linux; GitHub Actions (ubuntu-latest).
+- The website anb reports need to be reviewed as part of a CI/CD pipeline to meet WCAG 2.2 AA.
+- Disclose what AI is used and how it is used.
 
 ## Project Directives
 
