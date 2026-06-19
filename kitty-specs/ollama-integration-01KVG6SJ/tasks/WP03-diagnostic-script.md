@@ -77,3 +77,4 @@ Exit code is always 0 — this is a diagnostic, not a CI gate.
 ## Activity Log
 
 - 2026-06-19T18:24:26Z – claude – shell_pid=9303 – Started implementation via action command
+- 2026-06-19T18:33:27Z – claude – shell_pid=9303 – WP03 implemented: scripts/check-ollama.js with --json flag; check:ollama npm script added. Committed eca74f9b.

@@ -1,7 +1,7 @@
 {
-  "event_count": 12,
-  "last_event_id": "01KVGJ12J07X96Y87VB0RMD3VS",
-  "materialized_at": "2026-06-19T18:24:26.688174+00:00",
+  "event_count": 13,
+  "last_event_id": "01KVGJHJ883NWX0EKANE0A7A24",
+  "materialized_at": "2026-06-19T18:33:27.048262+00:00",
   "mission_number": "",
   "mission_slug": "ollama-integration-01KVG6SJ",
   "mission_type": "software-dev",
@@ -11,8 +11,8 @@
     "canceled": 0,
     "claimed": 0,
     "done": 0,
-    "for_review": 2,
-    "in_progress": 1,
+    "for_review": 3,
+    "in_progress": 0,
     "in_review": 0,
     "planned": 1
   },
@@ -32,11 +32,11 @@
       "last_transition_at": "2026-06-19T18:18:27.704662+00:00"
     },
     "WP03": {
-      "actor": "claude",
+      "actor": "user",
       "force_count": 1,
-      "lane": "in_progress",
-      "last_event_id": "01KVGJ12J07X96Y87VB0RMD3VS",
-      "last_transition_at": "2026-06-19T18:24:26.688174+00:00"
+      "lane": "for_review",
+      "last_event_id": "01KVGJHJ883NWX0EKANE0A7A24",
+      "last_transition_at": "2026-06-19T18:33:27.048262+00:00"
     },
     "WP04": {
       "actor": "finalize-tasks",
