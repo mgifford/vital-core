@@ -24,6 +24,7 @@ work_packages:
       - T004
       - T005
       - T006
+    prompt_file: "tasks/WP01-api-writer-module.md"
 
   - id: WP02
     title: "Wire api-writer into aggregate.js"
@@ -41,6 +42,7 @@ work_packages:
       - T007
       - T008
       - T009
+    prompt_file: "tasks/WP02-wire-api-writer-into-aggregate.md"
 
   - id: WP03
     title: "Smoke test + CLAUDE.md docs"
@@ -54,3 +56,4 @@ work_packages:
     subtasks:
       - T010
       - T011
+    prompt_file: "tasks/WP03-smoke-test-claude-md-docs.md"
