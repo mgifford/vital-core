@@ -11,12 +11,16 @@ requirement_refs:
 planning_base_branch: public-interest-checks
 merge_target_branch: public-interest-checks
 branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-ollama-integration-01KVG6SJ
+base_commit: ce3ac958e15570249250ea0c3e7d203a99f7fab6
+created_at: '2026-06-19T17:40:49.514676+00:00'
 subtasks:
 - T001
 - T002
 - T003
 - T004
 - T005
+shell_pid: '4246'
 history: []
 authoritative_surface: src/lib/
 execution_mode: code_change
