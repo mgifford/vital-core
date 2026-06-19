@@ -2,7 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
-import { compareWeeks } from './lib/week.js';
+import { compareWeeks, weekToDateStamp } from './lib/week.js';
+const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
@@ -138,7 +139,7 @@ for (const target of config.targets) {
 
     // Flat bugs.csv: all findings in one spreadsheet-friendly file.
     // Written after affected_pages_csv is set on each bug so the links are included.
-    csvLinks.bugsAll = writeBugsCsv(repDir, bugs);
+    csvLinks.bugsAll = writeBugsCsv(repDir, target.domain, summary.week, bugs);
     // Broken-link ledger: track first/last-seen and weeks-broken per URL,
     // then annotate summary entries so the errors page can show history.
     if (summary.linkCheck?.broken?.length) {
@@ -152,7 +153,7 @@ for (const target of config.targets) {
     }
 
     // Broken links + error pages CSV.
-    csvLinks.errorsAll = writeErrorsCsv(repDir, summary);
+    csvLinks.errorsAll = writeErrorsCsv(repDir, target.domain, summary.week, summary);
 
     // Resource inventory: update the ledger, mark which are new this week,
     // and write a resources CSV.
@@ -161,15 +162,15 @@ for (const target of config.targets) {
       : [];
     if (summary.resources) {
       summary.resources.newThisWeek = newResources;
-      summary.resources.csv = writeResourceCsv(repDir, summary.resources, resLedger);
+      summary.resources.csv = writeResourceCsv(repDir, target.domain, summary.week, summary.resources, resLedger);
     }
 
     // Evidence CSVs: Lighthouse per-page, readability per-page, spelling.
-    const lhCsv = writeLighthouseCsv(repDir, summary.lighthouse);
+    const lhCsv = writeLighthouseCsv(repDir, target.domain, summary.week, summary.lighthouse);
     const lhJson = writeLighthouseJson(repDir, target.domain, summary.week, summary.generatedAt, summary.lighthouse);
-    const readabilityCsv = writeReadabilityCsv(repDir, summary.plainLanguage?.pageRows);
-    const spellingCsv = writeSpellingCsv(repDir, summary.plainLanguage?.topMisspellings);
-    const acronymsCsv = writeAcronymsCsv(repDir, summary.plainLanguage?.topUnexplainedAcronyms);
+    const readabilityCsv = writeReadabilityCsv(repDir, target.domain, summary.week, summary.plainLanguage?.pageRows);
+    const spellingCsv = writeSpellingCsv(repDir, target.domain, summary.week, summary.plainLanguage?.topMisspellings);
+    const acronymsCsv = writeAcronymsCsv(repDir, target.domain, summary.week, summary.plainLanguage?.topUnexplainedAcronyms);
     if (summary.lighthouse) {
       summary.lighthouse.csv = lhCsv;
       summary.lighthouse.json = lhJson;
@@ -188,15 +189,18 @@ for (const target of config.targets) {
       summary.plainLanguage.acronymsCsv = acronymsCsv;
       // JSON downloads for spelling + acronyms (word/acronym, pages, examples).
       const pl = summary.plainLanguage;
+      const pfx = filePfx(target.domain, summary.week);
       if (pl.topMisspellings?.length) {
-        fs.writeFileSync(path.join(repDir, 'spelling.json'),
+        const spellingJsonName = `${pfx}_spelling.json`;
+        fs.writeFileSync(path.join(repDir, spellingJsonName),
           JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, misspellings: pl.topMisspellings }, null, 1));
-        pl.spellingJson = 'spelling.json';
+        pl.spellingJson = spellingJsonName;
       }
       if (pl.topUnexplainedAcronyms?.length) {
-        fs.writeFileSync(path.join(repDir, 'acronyms.json'),
+        const acronymsJsonName = `${pfx}_acronyms.json`;
+        fs.writeFileSync(path.join(repDir, acronymsJsonName),
           JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, acronyms: pl.topUnexplainedAcronyms }, null, 1));
-        pl.acronymsJson = 'acronyms.json';
+        pl.acronymsJson = acronymsJsonName;
       }
     }
 
@@ -205,36 +209,47 @@ for (const target of config.targets) {
     // criterion with no data this week renders a clear empty-state page. CSV/
     // JSON downloads are still only written when there's data to put in them.
 
+    // Pre-compute prefixed filenames so HTML links are correct before the files are written.
+    const pfx2 = filePfx(target.domain, summary.week);
+    const bugsJsonName = `${pfx2}_bugs.json`;
+    const aiJsonName = `${pfx2}_ai-findings.json`;
+
     // Accessibility (always has content — shows "no findings" when clean).
     fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, {
       ...reporting, keyPages,
       priorityPagesCsv: priorityPages.csv,
       priorityPagesJson: priorityPages.json,
+      bugsJson: bugsJsonName,
+      aiJson: aiJsonName,
     }));
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
     fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv, lhJson));
     fs.writeFileSync(path.join(repDir, 'readability.html'), renderReadabilityPage(target, summary, readabilityCsv));
 
-    const techCsv = summary.tech?.length ? writeTechCsv(repDir, summary.tech) : null;
+    const techCsv = summary.tech?.length ? writeTechCsv(repDir, target.domain, summary.week, summary.tech) : null;
     if (summary.tech?.length) {
-      fs.writeFileSync(path.join(repDir, 'tech.json'),
+      const techJsonName = `${pfx2}_tech.json`;
+      fs.writeFileSync(path.join(repDir, techJsonName),
         JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, pagesScanned: summary.pagesScanned, technologies: summary.tech }, null, 1));
+      summary.techJson = techJsonName;
     }
     fs.writeFileSync(path.join(repDir, 'tech.html'), renderTechPage(target, summary, techCsv));
     fs.writeFileSync(path.join(repDir, 'tech-findings.html'), renderTechFindingsPage(target, summary));
 
-    const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, summary) : null;
+    const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, target.domain, summary.week, summary) : null;
     fs.writeFileSync(path.join(repDir, 'third-party.html'), renderThirdPartyPage(target, summary, tpCsv));
 
-    const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, summary) : null;
+    const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, target.domain, summary.week, summary) : null;
     // Deduplicated image inventory as JSON (src, alt, bytes, occurrences,
     // alt-text verdict, example pages).
     if (summary.images?.uniqueImageList?.length) {
+      const imagesJsonName = `${pfx2}_images.json`;
       fs.writeFileSync(
-        path.join(repDir, 'images.json'),
+        path.join(repDir, imagesJsonName),
         JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, images: summary.images.uniqueImageList }, null, 1)
       );
+      summary.imagesJson = imagesJsonName;
     }
     fs.writeFileSync(path.join(repDir, 'images.html'), renderImagesPage(target, summary, imagesCsv));
     // Archive page (all weeks). Written in each week folder so the subnav
@@ -249,7 +264,7 @@ for (const target of config.targets) {
     fs.writeFileSync(path.join(repDir, 'index.html'), html);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
     fs.writeFileSync(
-      path.join(repDir, 'bugs.json'),
+      path.join(repDir, bugsJsonName),
       JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, reports: bugs }, null, 1)
     );
 
@@ -260,7 +275,7 @@ for (const target of config.targets) {
     const aiDoc = buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
     if (aiDoc) {
       const aiJson = JSON.stringify(aiDoc, null, 1);
-      fs.writeFileSync(path.join(repDir, 'ai-findings.json'), aiJson);
+      fs.writeFileSync(path.join(repDir, aiJsonName), aiJson);
       // Warn in the build log if the file is large (context-limit concern for LLMs).
       const kbSize = Math.round(aiJson.length / 1024);
       if (kbSize > 500) console.warn(`  [ai-findings] ${target.key} ${summary.week}: ${kbSize}KB — may exceed LLM context limits`);

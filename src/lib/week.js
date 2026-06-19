@@ -22,6 +22,32 @@ export function compareWeeks(a, b) {
   return a.localeCompare(b);
 }
 
+const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+/**
+ * Convert an ISO week string (e.g. "2026-W25") to a compact date stamp
+ * anchored to the Monday of that week: "16JUN2026".
+ * Used in download filenames so saved files carry date context.
+ */
+export function weekToDateStamp(weekStr) {
+  // Parse year and week number.
+  const m = /^(\d{4})-W(\d{1,2})$/.exec(weekStr);
+  if (!m) return weekStr; // fall back to the raw string
+  const year = Number(m[1]);
+  const week = Number(m[2]);
+  // ISO week 1 is the week containing the first Thursday of the year.
+  // Monday of week W = Jan 4 of that year (always in W1) + (W-1)*7 days,
+  // adjusted back to Monday.
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const dayOfWeek = jan4.getUTCDay() || 7; // Mon=1 … Sun=7
+  const monday = new Date(jan4);
+  monday.setUTCDate(jan4.getUTCDate() - (dayOfWeek - 1) + (week - 1) * 7);
+  const dd = String(monday.getUTCDate()).padStart(2, '0');
+  const mon = MONTHS[monday.getUTCMonth()];
+  const yyyy = monday.getUTCFullYear();
+  return `${dd}${mon}${yyyy}`;
+}
+
 export function previousWeekOf(weekStr, weeks) {
   // Given a sorted list of known weeks, return the one immediately before weekStr.
   const sorted = [...weeks].sort(compareWeeks);

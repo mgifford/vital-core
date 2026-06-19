@@ -655,7 +655,7 @@ ${heading('h-bugs', `Bug reports`)}
 <p class="meta">${view.visibleCount} issue type(s) are shown by default out of ${ordered.length} total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.</p>
   <p class="meta">Overall severity mix: ${esc(sevSummary)}. By WCAG category: ${esc(catSummary)}. Ordered by severity, key-page impact, WCAG level, and prevalence. Following
 <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.
-Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON (full archive)</a> · <a href="ai-findings.json">JSON (AI diagnostic)</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">Priority pages CSV</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">Priority pages JSON</a>` : ''}.</p>
+Download: <a href="bugs.md">Markdown</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">JSON (full archive)</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">JSON (AI diagnostic)</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">Priority pages CSV</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">Priority pages JSON</a>` : ''}.</p>
 <p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
 ${priorityLine}
 ${dupLine}
@@ -1499,7 +1499,7 @@ export function renderImagesPage(target, summary, csvHref) {
   }
   const links = [
     csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '',
-    `<a href="images.json">JSON</a>`,
+    summary.imagesJson ? `<a href="${esc(summary.imagesJson)}">JSON</a>` : '',
   ].filter(Boolean).join(' · ');
   const dlLink = links ? ` Download: ${links}.` : '';
   const pct = (n) => img.totalImages ? `${Math.round((n / img.totalImages) * 100)}%` : '0%';

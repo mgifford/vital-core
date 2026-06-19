@@ -395,7 +395,7 @@ export function buildAiFindings(target, summary, bugs, ledger, series, invSummar
     scan_week: week,
     generated_at: new Date().toISOString(),
     source_files: [
-      `docs/reports/${target.key ?? domain}/${week}/bugs.json`,
+      `docs/reports/${target.key ?? domain}/${week}/`,
       `data/${target.key ?? domain}/findings.json`,
       `data/${target.key ?? domain}/${week}/summary.json`,
     ],
