@@ -310,6 +310,84 @@ function themeToggle() {
  * the table). No JavaScript. `points` is [{ week, value }]; lowerIsBetter
  * controls the caption wording only.
  */
+/**
+ * Multi-series chart: pages affected by axe severity (Critical / Serious /
+ * Moderate / Minor) over time. Four lines in one SVG, distinguished by both
+ * stroke dash pattern and label — not color alone, so it works in
+ * monochrome and for color-blind users.
+ */
+function severityTrendChart(series) {
+  const LEVELS = [
+    { key: 'critical', label: 'Critical', dash: 'none' },
+    { key: 'serious',  label: 'Serious',  dash: '6 3' },
+    { key: 'moderate', label: 'Moderate', dash: '3 3' },
+    { key: 'minor',    label: 'Minor',    dash: '1 4' },
+  ];
+
+  // Derive pages-affected per severity from axe.rules in each week's summary.
+  const pts = series.map((s) => {
+    const counts = { critical: 0, serious: 0, moderate: 0, minor: 0 };
+    for (const r of Object.values(s.axe?.rules ?? {})) {
+      const imp = r.impact?.toLowerCase();
+      if (imp in counts) counts[imp] += r.pages ?? 0;
+    }
+    return { week: s.week, ...counts };
+  });
+
+  if (pts.length < 2) return '';
+
+  // Skip levels that are zero in every week (keeps the chart clean when data
+  // is sparse).
+  const activeLevels = LEVELS.filter((l) => pts.some((p) => p[l.key] > 0));
+  if (activeLevels.length === 0) return '';
+
+  const W = 640, H = 200, padL = 44, padR = 90, padT = 16, padB = 28;
+  const allVals = activeLevels.flatMap((l) => pts.map((p) => p[l.key]));
+  const maxVal = Math.max(...allVals, 1);
+  const x = (i) => padL + (i / (pts.length - 1)) * (W - padL - padR);
+  const y = (v) => H - padB - (v / maxVal) * (H - padT - padB);
+  const xlabels = [0, Math.floor((pts.length - 1) / 2), pts.length - 1]
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .map((i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="axis">${esc(pts[i].week.slice(5))}</text>`)
+    .join('');
+  const ylabels = `<text x="4" y="${(y(maxVal) + 4).toFixed(1)}" class="axis">${maxVal}</text><text x="4" y="${(y(0) + 4).toFixed(1)}" class="axis">0</text>`;
+
+  const lines = activeLevels.map((l) => {
+    const poly = pts.map((p, i) => `${x(i).toFixed(1)},${y(p[l.key]).toFixed(1)}`).join(' ');
+    const dots = pts.map((p, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(p[l.key]).toFixed(1)}" r="2.5" fill="currentColor"/>`).join('');
+    // Inline legend label at the end of each line.
+    const lastPt = pts[pts.length - 1];
+    const labelY = y(lastPt[l.key]);
+    return `<g>
+  <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="${l.dash}"/>
+  ${dots}
+  <text x="${(x(pts.length - 1) + 6).toFixed(1)}" y="${(labelY + 4).toFixed(1)}" class="axis" text-anchor="start">${esc(l.label)}</text>
+</g>`;
+  }).join('\n');
+
+  // Data table for the no-JS / screen-reader baseline.
+  const tableRows = pts.map((p) =>
+    `<tr><th scope="row">${esc(p.week)}</th>${activeLevels.map((l) => `<td>${p[l.key]}</td>`).join('')}</tr>`
+  ).join('');
+  const table = `<table class="visually-hidden">
+<caption>Pages affected by axe severity, by week</caption>
+<thead><tr><th scope="col">Week</th>${activeLevels.map((l) => `<th scope="col">${esc(l.label)}</th>`).join('')}</tr></thead>
+<tbody>${tableRows}</tbody>
+</table>`;
+
+  const ariaLabel = `Axe violations by severity over ${pts.length} weeks. ` +
+    activeLevels.map((l) => `${l.label}: ${pts[0][l.key]} → ${pts[pts.length - 1][l.key]} pages`).join('; ') + '.';
+
+  return `<figure class="chart">
+<figcaption>Pages affected by axe severity over ${pts.length} weeks (lower is better)</figcaption>
+<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
+  ${lines}
+  ${xlabels}${ylabels}
+</svg>
+${table}
+</figure>`;
+}
+
 function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
   const pts = points.filter((p) => p.value != null);
   if (pts.length < 2) {
@@ -415,6 +493,11 @@ function paraChartLoader(base) {
 const figs = document.querySelectorAll('.chart[data-parachart]');
 if (figs.length) {
   import('${base}paracharts.js').then(() => {
+    // Remember what had focus before mounting any charts. Some para-chart
+    // implementations call .focus() during connectedCallback, which scrolls
+    // the page to the first chart on load. We restore focus afterward so the
+    // page opens at the top.
+    const priorFocus = document.activeElement;
     figs.forEach((fig) => {
       let manifest;
       try { manifest = fig.getAttribute('data-parachart'); } catch (e) { return; }
@@ -431,6 +514,11 @@ if (figs.length) {
       if (fallback) fallback.hidden = true;
       fig.insertBefore(chart, fig.firstChild ? fig.firstChild.nextSibling : null);
     });
+    // Restore focus to where it was (typically body) so the viewport
+    // stays at the top of the page rather than scrolling to the first chart.
+    if (priorFocus && typeof priorFocus.focus === 'function') {
+      priorFocus.focus({ preventScroll: true });
+    }
   }).catch(() => { /* keep the SVG + table fallback */ });
 }
 </script>`;
@@ -1454,9 +1542,7 @@ ${coverageTable(summary)}
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
 ${heading('h-trends', `Trends over time`)}
-${lineChart('Median axe violations per page', series.map((s) => ({ week: s.week, value: s.axe.medianViolations })), { lowerIsBetter: true })}
-${lineChart('Median Alfa failures per page', series.map((s) => ({ week: s.week, value: s.alfa.medianFailures })), { lowerIsBetter: true })}
-${series.some((s) => s.plainLanguage?.medianReadingEase != null) ? lineChart('Reading ease (median)', series.map((s) => ({ week: s.week, value: s.plainLanguage?.medianReadingEase ?? null })), { lowerIsBetter: false }) : ''}
+${severityTrendChart(series)}
 ${series.some((s) => s.sustainability) ? lineChart('Median page weight (KB)', series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
 </section>` : ''}
 
@@ -1719,7 +1805,7 @@ for how the scanner can be allowlisted.</p>
   // Overlay chart: every domain's median axe violations/page over time.
   const overlay = crossDomainChart(ranked);
   // Fleet sustainability trend: mean CO₂g/page across all domains by week.
-  const sustainTrend = fleetSustainabilityChart(ranked);
+  const sustainTrend = ''; // fleet sustainability trend removed — too early to tell a useful story
 
   // Fleet-wide worst offenders: highest-impact issues across all domains.
   const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
