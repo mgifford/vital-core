@@ -1,108 +1,82 @@
-# Implementation Plan: [FEATURE]
-*Path: [templates/plan-template.md](templates/plan-template.md)*
+# Implementation Plan: Ollama Local-LLM Integration
 
-
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/kitty-specs/[###-feature-name]/spec.md`
-
-**Note**: This template is filled in by the `/spec-kitty.plan` command. See `src/specify_cli/missions/software-dev/command-templates/plan.md` for the execution workflow.
-
-The planner will not begin until all planning questions have been answered—capture those answers in this document before progressing to later phases.
+**Branch**: `ollama-integration` (off `main` after PR #151 merges)  
+**Date**: 2026-06-19  
+**Spec**: [spec.md](spec.md)
 
 ## Summary
 
-[Extract from feature spec: primary requirement + technical approach from research]
+Add an optional thin client (`src/lib/ollama.js`) that calls a local Ollama
+instance via plain `fetch()`. Wire one consumer: `src/lib/ai-findings.js`
+calls it at aggregate time to prepend a natural-language summary to each
+domain's AI findings output. If Ollama is unreachable the code falls back
+silently — no change in output, no thrown errors.
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [Project-specific test approach or NEEDS CLARIFICATION]
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: Node.js ESM ≥20  
+**Primary Dependencies**: none new — `fetch` (built-in Node 18+)  
+**Storage**: N/A (no persistent state; result is written into ai-findings.json)  
+**Testing**: Node built-in test runner (`npm run test:unit`); mock `fetch` for unit tests  
+**Target Platform**: macOS + Linux (local dev + GitHub Actions)  
+**Performance Goals**: `isAvailable()` must resolve in ≤2 s (hard timeout)  
+**Constraints**: Zero new npm dependencies; Ollama calls happen only at
+`aggregate` time, never during scan jobs  
+**Scale/Scope**: One new module, one consumer, one diagnostic script
 
 ## Charter Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
-
-[Gates determined based on charter file]
+- ✓ No new npm dependencies
+- ✓ Graceful fallback — output unchanged when Ollama absent
+- ✓ Tests added alongside new code
+- ✓ CSS unchanged (no report layout changes)
+- ✓ No VA data touched
 
 ## Project Structure
 
-### Documentation (this feature)
-
 ```
-kitty-specs/[###-feature]/
-├── plan.md              # This file (/spec-kitty.plan command output)
-├── research.md          # Phase 0 output (/spec-kitty.plan command)
-├── data-model.md        # Phase 1 output (/spec-kitty.plan command)
-├── quickstart.md        # Phase 1 output (/spec-kitty.plan command)
-├── contracts/           # Phase 1 output (/spec-kitty.plan command)
-└── tasks.md             # Phase 2 output (/spec-kitty.tasks command - NOT created by /spec-kitty.plan)
+src/lib/ollama.js            ← new: thin Ollama client
+src/lib/ai-findings.js       ← modified: call ollama when available
+scripts/check-ollama.js      ← new: diagnostic CLI
+tests/unit/ollama.test.js    ← new: unit tests
 ```
 
-### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+## Work Packages
 
-```
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+### WP01 — `src/lib/ollama.js` client module
 
-tests/
-├── contract/
-├── integration/
-└── unit/
+Implement the thin client. No consumers yet — just the module itself and its tests.
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+**Deliverables**:
+- `src/lib/ollama.js` exports `isAvailable()`, `detectModel()`, `chat(prompt, model?)`
+- `isAvailable()`: `GET /api/tags` with 2 s `AbortController` timeout, returns `false` on any error
+- `detectModel()`: calls `/api/tags`, returns first model name or `'llama3'` as fallback
+- `chat(prompt, model?)`: `POST /api/generate` with `{ model, prompt, stream: false }`, returns `response` string or `null` on error
+- Config: `VITAL_OLLAMA_URL` (default `http://localhost:11434`), `VITAL_OLLAMA_MODEL`
+- `tests/unit/ollama.test.js`: mock `globalThis.fetch`; test `isAvailable()` up/down/timeout, `chat()` success/error
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
+### WP02 — Wire into `ai-findings.js`
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
+At aggregate time, if Ollama is available, generate a one-paragraph
+natural-language summary of the top accessibility issues and prepend it to
+the `ai_summary` field in the output JSON.
 
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
-```
+**Deliverables**:
+- `src/lib/ai-findings.js`: import `ollama.js`; call `isAvailable()` once; if true, call `chat(summaryPrompt)` and prepend result to the findings doc's `ai_summary` field
+- Prompt is compact: top-5 issues by severity + page count, ask for a 2-sentence plain-English summary
+- No change to output shape when Ollama is absent
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+### WP03 — `scripts/check-ollama.js` diagnostic
 
-## Complexity Tracking
+**Deliverables**:
+- `node scripts/check-ollama.js` prints: Ollama reachable (Y/N), available models, a test generation with a canned prompt
+- `--json` flag for machine-readable output
+- Exit 0 always (diagnostic, not CI gate)
+- `package.json`: `"check:ollama": "node scripts/check-ollama.js"`
 
-*Fill ONLY if Charter Check has violations that must be justified*
+### WP04 — Integration smoke test + docs
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+**Deliverables**:
+- Run `npm run check:ollama` against `http://192.168.50.171:11434` and confirm output
+- Run `npm run test:unit` — all tests pass (including new ollama tests)
+- Update `CLAUDE.md` with the `VITAL_OLLAMA_URL` env var note
