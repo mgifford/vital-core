@@ -1,0 +1,22 @@
+schema_version: 1.0.0
+mission: software-dev
+profile: minimal
+answers:
+  project_intent: Deliver predictable changes with clear reviewability.
+  languages_frameworks: Use only the languages, frameworks, and tools explicitly
+    declared by this project.
+  testing_requirements: Use the project's declared test approach. If none is 
+    declared, mark it as NEEDS CLARIFICATION.
+  quality_gates: Only require the quality gates explicitly declared by this 
+    project before merge.
+  review_policy: At least one focused reviewer approves before merge.
+  performance_targets: CLI operations should complete quickly (typically under 2
+    seconds).
+  deployment_constraints: Must run on macOS and Linux developer environments.
+selected_paradigms: []
+selected_directives: []
+available_tools:
+- git
+- spec-kitty
+agent_profile:
+agent_role:
