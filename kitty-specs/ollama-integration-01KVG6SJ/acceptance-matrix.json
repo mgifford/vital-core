@@ -1,0 +1,56 @@
+{
+  "mission_slug": "ollama-integration-01KVG6SJ",
+  "accepted_by": "mike.gifford@gmail.com",
+  "accepted_at": "2026-06-19",
+  "test_command": "npm run test:unit",
+  "criteria": [
+    {
+      "id": "FR-01",
+      "description": "src/lib/ollama.js exports isAvailable(), detectModel(), chat()",
+      "status": "pass",
+      "evidence": "src/lib/ollama.js created with all three exports"
+    },
+    {
+      "id": "FR-02",
+      "description": "isAvailable() uses a 2-second timeout; returns false on any error",
+      "status": "pass",
+      "evidence": "AbortSignal.timeout(2000) in ollamaFetch; try/catch returns false"
+    },
+    {
+      "id": "FR-03",
+      "description": "Config via VITAL_OLLAMA_URL and VITAL_OLLAMA_MODEL env vars",
+      "status": "pass",
+      "evidence": "Module reads env vars at load time; documented in .env.example"
+    },
+    {
+      "id": "FR-04",
+      "description": "ai-findings.js calls ollama.chat() when available; adds ollama_summary field",
+      "status": "pass",
+      "evidence": "buildAiFindings() is async; calls isAvailable()+chat(); spreads ollama_summary conditionally"
+    },
+    {
+      "id": "FR-05",
+      "description": "No change to output shape when Ollama is absent",
+      "status": "pass",
+      "evidence": "ollama_summary omitted via spread when null; all existing tests still pass"
+    },
+    {
+      "id": "FR-06",
+      "description": "scripts/check-ollama.js diagnostic; check:ollama npm script",
+      "status": "pass",
+      "evidence": "Script created; verified live against Ollama server; npm run check:ollama works"
+    },
+    {
+      "id": "NFR-01",
+      "description": "No new npm dependencies",
+      "status": "pass",
+      "evidence": "Uses only node:crypto and globalThis.fetch (Node 18+ built-in)"
+    },
+    {
+      "id": "NFR-02",
+      "description": "All 91 existing unit tests still pass; new ollama unit tests added",
+      "status": "pass",
+      "evidence": "npm run test:unit: 91 pass, 0 fail; 11 new ollama tests added"
+    }
+  ]
+}
