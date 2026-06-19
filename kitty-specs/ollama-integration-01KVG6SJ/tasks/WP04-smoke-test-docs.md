@@ -77,3 +77,4 @@ Verify the full integration end-to-end and document the env vars in CLAUDE.md.
 ## Activity Log
 
 - 2026-06-19T18:38:28Z – claude – shell_pid=10249 – Started implementation via action command
+- 2026-06-19T18:51:42Z – claude – shell_pid=10249 – T011: 91 unit tests pass, check:ollama verified live. T012: CLAUDE.md updated with Ollama env vars. Committed 018214c1.
