@@ -405,7 +405,7 @@ try {
   assert(/data\/localhost\/domain\.json/.test(report), 'report links the JSON download');
   // Dashboard: leaderboard score + trajectory + cross-domain chart.
   const dash = fs.readFileSync(path.join(SANDBOX, 'docs', 'index.html'), 'utf8');
-  assert(/<th scope="col">Score<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
+  assert(/<th\b[^>]*scope="col"[^>]*>\s*Score\s*<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
   assert(/class="traj traj-/.test(dash), 'dashboard shows trajectory arrows');
   assert(dash.includes('all domains') && dash.includes('linechart'), 'dashboard has cross-domain overlay chart');
   assert(/id="h-worst"/.test(dash), 'dashboard has fleet-wide worst-offenders section');
