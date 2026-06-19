@@ -13,6 +13,8 @@ subtasks:
 - T011
 - T012
 history: []
+agent: claude
+shell_pid: 0
 authoritative_surface: CLAUDE.md
 execution_mode: code_change
 owned_files:

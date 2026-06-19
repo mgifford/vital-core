@@ -12,6 +12,8 @@ subtasks:
 - T009
 - T010
 history: []
+agent: claude
+shell_pid: 0
 authoritative_surface: scripts/
 execution_mode: code_change
 owned_files:

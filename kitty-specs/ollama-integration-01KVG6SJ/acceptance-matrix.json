@@ -42,7 +42,9 @@
       "description": "scripts/check-ollama.js diagnostic; check:ollama npm script",
       "proof_type": "manual_qa",
       "pass_fail": "pass",
-      "evidence": "npm run check:ollama verified live against Ollama server; --json flag outputs valid JSON; exit 0 always"
+      "evidence": "npm run check:ollama verified live against Ollama server; --json flag outputs valid JSON; exit 0 always",
+      "verified_by": "mike.gifford@gmail.com",
+      "verified_at": "2026-06-19"
     },
     {
       "criterion_id": "NFR-01",

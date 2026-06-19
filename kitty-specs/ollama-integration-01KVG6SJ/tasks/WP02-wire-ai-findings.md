@@ -14,6 +14,8 @@ subtasks:
 - T007
 - T008
 history: []
+agent: claude
+shell_pid: 0
 authoritative_surface: src/lib/
 execution_mode: code_change
 owned_files:
