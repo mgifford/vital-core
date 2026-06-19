@@ -20,6 +20,7 @@ import { runResources } from './engines/resources.js';
 import { runImages, createImageCollector } from './engines/images.js';
 import { runStandards } from './engines/standards.js';
 import { runSecurity } from './engines/security.js';
+import { runPublicInterest } from './engines/public-interest.js';
 import { runTech } from './engines/tech.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
@@ -277,6 +278,7 @@ for (const item of batch) {
       // Security is per-origin (headers/TLD/security.txt), so check it only
       // when this page is in the sample; aggregate keeps the latest result.
       if (runs('security')) { record.security = await runSecurity(baseOrigin, target.user_agent, target.nav_timeout_ms); mark('security'); }
+      if (runs('public-interest')) { record.publicInterest = await runPublicInterest(baseOrigin, target.domain, target.user_agent); mark('public-interest'); }
       // Tech detection: identify CMS, frameworks, CDNs, analytics.
       // Runs on a small sample (default 10%) because the tech stack doesn't
       // change page-to-page; aggregate merges all detections for the week

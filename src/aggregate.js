@@ -430,6 +430,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const socialSeen = new Map(); // platform -> example href
   // Security (per-origin): keep the latest result seen this week.
   let securityLatest = null;
+  // Public-interest checks (per-origin): keep the latest result seen this week.
+  let publicInterestLatest = null;
   let pagesScanned = 0;
   let pagesWithAxeViolations = 0;
   let pagesWithAlfaFailures = 0;
@@ -556,6 +558,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
       }
     }
     if (rec.security) securityLatest = rec.security; // per-origin; latest wins
+    if (rec.publicInterest) publicInterestLatest = rec.publicInterest; // per-origin; latest wins
     if (rec.tech) {
       for (const d of rec.tech) {
         const existing = techDetections.get(d.name);
@@ -773,6 +776,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
     security: securityLatest
       ? { checks: securityLatest.checks, passed: securityLatest.passed, total: securityLatest.total }
       : null,
+    publicInterest: publicInterestLatest ?? null,
     plainLanguage: plPagesChecked
       ? {
           pagesChecked: plPagesChecked,

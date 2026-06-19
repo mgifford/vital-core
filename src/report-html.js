@@ -820,7 +820,8 @@ function checklist(items) {
 function standardsSecuritySection(summary) {
   const sec = summary.security;
   const std = summary.standards;
-  if (!sec && !std) return '';
+  const pi = summary.publicInterest ?? null;
+  if (!sec && !std && !pi) return '';
   const secBlock = sec ? `
 <h3>Security &amp; domain hygiene <span class="bug-meta">${sec.passed}/${sec.total} on the origin</span></h3>
 ${checklist(sec.checks)}` : '';
@@ -832,12 +833,86 @@ ${checklist(sec.checks)}` : '';
 <tbody>${std.checks.map((c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`).join('')}</tbody>
 </table>
 ${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}` : '';
+  const piBlock = publicInterestSection(pi);
   return `<section aria-labelledby="h-standards">
 ${heading('h-standards', `Standards & security`)}
 <p class="meta">Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.</p>
 ${secBlock}
 ${stdBlock}
+${piBlock}
 </section>`;
+}
+
+function publicInterestSection(pi) {
+  if (!pi) return '';
+
+  const badge = (result) => {
+    if (result === 'pass') return '<span class="pwa-badge pwa-pass" aria-label="pass">✓</span>';
+    if (result === 'fail') return '<span class="pwa-badge pwa-fail" aria-label="not found">✗</span>';
+    return '<span class="pwa-badge pwa-partial" aria-label="unknown">~</span>';
+  };
+
+  const urlCell = (url) => url ? `<a href="${esc(url)}">${esc(url.replace(/^https?:\/\//, ''))}</a>` : '—';
+
+  // Accessibility statement row.
+  const a = pi.a11yStatement ?? {};
+  const a11yConf = a.confidence ? ` <span class="bug-meta">(${esc(a.confidence)} confidence)</span>` : '';
+  const a11yRow = `<tr>
+  <th scope="row">Accessibility statement</th>
+  <td>${badge(a.result ?? 'unknown')} ${a.result === 'pass' ? 'Found' : a.result === 'fail' ? 'Not found' : 'Unknown'}${a11yConf}</td>
+  <td>${urlCell(a.url)}</td>
+  <td class="bug-meta">${a.checkedAt ? esc(a.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  // carbon.txt row.
+  const c = pi.carbonTxt ?? {};
+  const carbonValidity = c.result === 'pass' ? (c.valid ? ' · file appears valid' : ' · file may be malformed') : '';
+  const carbonFields = c.fields && Object.keys(c.fields).length
+    ? ` · fields: ${esc(Object.keys(c.fields).slice(0, 4).join(', '))}` : '';
+  const carbonRow = `<tr>
+  <th scope="row">carbon.txt</th>
+  <td>${badge(c.result ?? 'unknown')} ${c.result === 'pass' ? 'Found' : c.result === 'fail' ? 'Not found' : 'Unknown'}${esc(carbonValidity + carbonFields)}</td>
+  <td>${urlCell(c.url)}</td>
+  <td class="bug-meta">${c.checkedAt ? esc(c.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  // Green Web Foundation row.
+  const g = pi.greenWebFoundation ?? {};
+  const gwfDetail = g.hostedBy ? ` · hosted by ${esc(g.hostedBy)}` : '';
+  const gwfRow = `<tr>
+  <th scope="row">Renewable hosting <span class="bug-meta">(Green Web Foundation)</span></th>
+  <td>${badge(g.result ?? 'unknown')} ${g.result === 'pass' ? 'Green' : g.result === 'fail' ? 'Not green' : 'Unknown'}${esc(gwfDetail)}</td>
+  <td>${g.url ? `<a href="${esc(g.url)}">API response</a>` : '—'}</td>
+  <td class="bug-meta">${g.checkedAt ? esc(g.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  // Sitemap rows.
+  const s = pi.sitemaps ?? {};
+  const xmlRow = `<tr>
+  <th scope="row">XML sitemap</th>
+  <td>${badge(s.xml?.found ? 'pass' : 'fail')} ${s.xml?.found ? 'Found' : 'Not found'}</td>
+  <td>${urlCell(s.xml?.url)}</td>
+  <td class="bug-meta">${s.checkedAt ? esc(s.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+  const humanRow = `<tr>
+  <th scope="row">Human-readable sitemap</th>
+  <td>${badge(s.human?.found ? 'pass' : 'fail')} ${s.human?.found ? 'Found' : 'Not found'}</td>
+  <td>${urlCell(s.human?.url)}</td>
+  <td class="bug-meta">${s.checkedAt ? esc(s.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  return `<h3>Public interest &amp; sustainability signals <span class="bug-meta">origin-level checks</span></h3>
+<table>
+<caption>Checks run once per week against the domain origin. ✓ = found/green · ✗ = not found · ~ = uncertain.</caption>
+<thead><tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col">URL</th><th scope="col">Checked</th></tr></thead>
+<tbody>
+${a11yRow}
+${carbonRow}
+${gwfRow}
+${xmlRow}
+${humanRow}
+</tbody>
+</table>`;
 }
 
 function consensusSection(summary, bugs = []) {
