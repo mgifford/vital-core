@@ -16,6 +16,7 @@ work_packages:
       - T003
       - T004
       - T005
+    prompt_file: "tasks/WP01-ollama-client-module.md"
 
   - id: WP02
     title: "Wire Ollama into ai-findings.js"
@@ -31,6 +32,7 @@ work_packages:
       - T006
       - T007
       - T008
+    prompt_file: "tasks/WP02-wire-ai-findings.md"
 
   - id: WP03
     title: "Diagnostic script + package.json entry"
@@ -45,6 +47,7 @@ work_packages:
     subtasks:
       - T009
       - T010
+    prompt_file: "tasks/WP03-diagnostic-script.md"
 
   - id: WP04
     title: "Smoke test + CLAUDE.md update"
@@ -59,3 +62,4 @@ work_packages:
     subtasks:
       - T011
       - T012
+    prompt_file: "tasks/WP04-smoke-test-docs.md"
