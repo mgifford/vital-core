@@ -21,3 +21,14 @@ dist/
 
 *.log
 .DS_Store
+
+# HF-only targets — scanned on Hugging Face, not GitHub Actions.
+# Guard against accidental commit of their scan data to this repo.
+data/www.va.gov/
+data/volunteer.va.gov/
+data/news.va.gov/
+data/benefits.va.gov/
+state/www.va.gov/
+state/volunteer.va.gov/
+state/news.va.gov/
+state/benefits.va.gov/

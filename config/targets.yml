@@ -130,12 +130,17 @@ targets:
   - domain: hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
     importance: 1
 
-  # Department of Veterans Affairs (scanned via the "va" profile / HF appliance)
+  # Department of Veterans Affairs — scanned ONLY via the "va" profile on
+  # Hugging Face. hf_only: true prevents these from running in GitHub Actions.
   - domain: www.va.gov
     importance: 5
+    hf_only: true
   - domain: volunteer.va.gov
     importance: 3
+    hf_only: true
   - domain: news.va.gov
     importance: 3
+    hf_only: true
   - domain: benefits.va.gov
     importance: 3
+    hf_only: true

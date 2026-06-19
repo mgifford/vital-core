@@ -79,7 +79,8 @@ jobs:
           else
             node -e "
               import('./src/lib/config.js').then(({loadConfig}) => {
-                console.log('domains=' + JSON.stringify(loadConfig().targets.map(t => t.domain)));
+                const targets = loadConfig().targets.filter(t => !t.hf_only);
+                console.log('domains=' + JSON.stringify(targets.map(t => t.domain)));
               })" >> "$GITHUB_OUTPUT"
           fi
 
