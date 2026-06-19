@@ -17,6 +17,7 @@
  */
 
 import crypto from 'node:crypto';
+import { isAvailable, chat } from './ollama.js';
 
 const SCHEMA_VERSION = '0.1';
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB soft cap — warn, don't fail
@@ -177,7 +178,7 @@ function thirdPartyRisksFor(vendors) {
  * @param {string} repDir     - Report output directory (for source_files refs)
  * @returns {object} The AI findings document, or null if there's nothing to report
  */
-export function buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir) {
+export async function buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir) {
   const warnings = [];
 
   if (!summary) { warnings.push('No summary data — cannot generate AI findings.'); return { _warnings: warnings }; }
@@ -387,6 +388,25 @@ export function buildAiFindings(target, summary, bugs, ledger, series, invSummar
   const highPriority = findings.filter((f) => f.priority === 'p1' || f.priority === 'p2').length;
 
   // ---------------------------------------------------------------------------
+  // Optional Ollama summary (absent when Ollama is unreachable)
+  // ---------------------------------------------------------------------------
+  let ollamaSummary = null;
+  try {
+    if (await isAvailable()) {
+      const top = findings
+        .slice(0, 5)
+        .map((f, i) => `${i + 1}. [${f.severity}] ${f.rule_id}: ${f.frequency.pages_affected} pages`)
+        .join('\n');
+      const prompt =
+        `You are an accessibility engineer. Summarise these top issues from ${domain} ` +
+        `in 2 plain-English sentences for a non-technical audience:\n${top}`;
+      ollamaSummary = await chat(prompt);
+    }
+  } catch {
+    // Ollama must never break the report build
+  }
+
+  // ---------------------------------------------------------------------------
   // Assemble document
   // ---------------------------------------------------------------------------
   const doc = {
@@ -394,6 +414,7 @@ export function buildAiFindings(target, summary, bugs, ledger, series, invSummar
     site: domain,
     scan_week: week,
     generated_at: new Date().toISOString(),
+    ...(ollamaSummary ? { ollama_summary: ollamaSummary } : {}),
     source_files: [
       `docs/reports/${target.key ?? domain}/${week}/`,
       `data/${target.key ?? domain}/findings.json`,

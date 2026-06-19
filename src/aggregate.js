@@ -272,7 +272,7 @@ for (const target of config.targets) {
     // Intentionally excludes healthy pages; uses representative examples rather
     // than exhaustive lists. The existing bugs.json and domain.json are the
     // archival sources of truth and are not replaced.
-    const aiDoc = buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
+    const aiDoc = await buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
     if (aiDoc) {
       const aiJson = JSON.stringify(aiDoc, null, 1);
       fs.writeFileSync(path.join(repDir, aiJsonName), aiJson);
