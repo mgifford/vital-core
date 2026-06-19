@@ -37,13 +37,45 @@ export function writeLighthouseCsv(repDir, lighthouse) {
   if (!lighthouse?.pageDetail?.length) return null;
   const rows = lighthouse.pageDetail.map((p) => [
     p.url, p.scores.performance, p.scores.accessibility, p.scores.bestPractices,
-    p.scores.seo, p.scores.agentic, p.metrics.firstContentfulPaintMs,
-    p.metrics.largestContentfulPaintMs, p.metrics.speedIndexMs,
-    p.metrics.totalBlockingTimeMs, p.metrics.cumulativeLayoutShift,
+    p.scores.seo, p.scores.pwa ?? '', p.scores.agentic,
+    p.metrics.firstContentfulPaintMs, p.metrics.largestContentfulPaintMs,
+    p.metrics.speedIndexMs, p.metrics.totalBlockingTimeMs, p.metrics.cumulativeLayoutShift,
   ]);
   fs.writeFileSync(path.join(repDir, 'lighthouse.csv'),
-    toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
+    toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'pwa', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
   return 'lighthouse.csv';
+}
+
+/**
+ * Write Lighthouse results as JSON — per-page scores and recommendations.
+ * Designed for AI consumption: compact, self-describing, includes PWA signals.
+ */
+export function writeLighthouseJson(repDir, domain, week, generatedAt, lighthouse) {
+  if (!lighthouse?.pageDetail?.length) return null;
+  const doc = {
+    domain,
+    week,
+    generated_at: generatedAt,
+    summary: {
+      pages_sampled: lighthouse.pagesSampled,
+      median_performance: lighthouse.medianPerformance,
+      median_accessibility: lighthouse.medianAccessibility,
+      median_best_practices: lighthouse.medianBestPractices,
+      median_seo: lighthouse.medianSeo,
+      median_pwa: lighthouse.medianPwa ?? null,
+      median_agentic: lighthouse.medianAgentic ?? null,
+      core_web_vitals: lighthouse.metrics,
+    },
+    recommendations: lighthouse.recommendations ?? [],
+    pwa_signals: lighthouse.pwaSignals ?? [],
+    pages: lighthouse.pageDetail.map((p) => ({
+      url: p.url,
+      scores: p.scores,
+      core_web_vitals: p.metrics,
+    })),
+  };
+  fs.writeFileSync(path.join(repDir, 'lighthouse.json'), JSON.stringify(doc, null, 1));
+  return 'lighthouse.json';
 }
 
 /** Write per-page readability CSV (words, Flesch reading ease, grade). */
@@ -300,4 +332,128 @@ export function writeCsvs(repDir, summary) {
     }
   }
   return links;
+}
+
+/**
+ * Build a priority-pages view: for every URL that has been scanned by at
+ * least one engine, compute a composite score to rank the most problematic
+ * pages — factoring in accessibility bug severity, Lighthouse performance
+ * score, and page coverage across engines. Returns an array sorted by
+ * descending priority (worst pages first).
+ *
+ * Inputs:
+ *   bugs       — array of bug report objects (from buildBugReports)
+ *   lhDetail   — array of { url, scores, metrics } from lighthouse.pageDetail
+ *   total      — total pages scanned (for percentage calculations)
+ *
+ * Each output row has:
+ *   url, priority_score, a11y_critical_bugs, a11y_high_bugs,
+ *   a11y_medium_bugs, a11y_low_bugs, lh_performance, lh_accessibility,
+ *   lh_lcp_ms, lh_tbt_ms, top_a11y_issues (pipe-separated rule labels)
+ */
+export function buildPriorityPages(bugs, lhDetail, total) {
+  const byUrl = new Map(); // url -> accumulator
+
+  const get = (url) => {
+    if (!byUrl.has(url)) {
+      byUrl.set(url, {
+        url,
+        a11y_critical: 0, a11y_high: 0, a11y_medium: 0, a11y_low: 0,
+        a11y_issues: [], // { severity, label }
+        lh_performance: null, lh_accessibility: null,
+        lh_lcp_ms: null, lh_tbt_ms: null, lh_cls: null,
+      });
+    }
+    return byUrl.get(url);
+  };
+
+  // Tally accessibility bugs per affected page.
+  const sevKey = { Critical: 'a11y_critical', High: 'a11y_high', Medium: 'a11y_medium', Low: 'a11y_low' };
+  for (const bug of bugs ?? []) {
+    const affectedUrls = bug.affected_pages ?? bug.example_pages ?? (bug.url ? [bug.url] : []);
+    for (const url of affectedUrls) {
+      const row = get(url);
+      const k = sevKey[bug.severity];
+      if (k) row[k]++;
+      if (row.a11y_issues.length < 5) {
+        row.a11y_issues.push({ severity: bug.severity, label: bug.rule_label ?? bug.rule_id });
+      }
+    }
+  }
+
+  // Merge Lighthouse per-page data.
+  for (const p of lhDetail ?? []) {
+    const row = get(p.url);
+    row.lh_performance = p.scores?.performance ?? null;
+    row.lh_accessibility = p.scores?.accessibility ?? null;
+    row.lh_lcp_ms = p.metrics?.largestContentfulPaintMs ?? null;
+    row.lh_tbt_ms = p.metrics?.totalBlockingTimeMs ?? null;
+    row.lh_cls = p.metrics?.cumulativeLayoutShift ?? null;
+  }
+
+  // Compute composite priority score (higher = worse page, fix first):
+  //   Critical bugs: 40 pts each
+  //   High bugs: 20 pts each
+  //   Medium bugs: 8 pts each
+  //   Low bugs: 2 pts each
+  //   Lighthouse performance penalty: (100 - score) × 0.3, capped at 30
+  // Only pages with at least one a11y finding or a very low LH score are included.
+  const rows = [];
+  for (const [, row] of byUrl) {
+    const lhPenalty = row.lh_performance != null ? Math.min(30, (100 - row.lh_performance) * 0.3) : 0;
+    const a11yScore = row.a11y_critical * 40 + row.a11y_high * 20 + row.a11y_medium * 8 + row.a11y_low * 2;
+    const priority_score = Math.round(a11yScore + lhPenalty);
+    const hasA11y = a11yScore > 0;
+    const hasLhProblem = row.lh_performance != null && row.lh_performance < 50;
+    if (!hasA11y && !hasLhProblem) continue;
+    rows.push({
+      url: row.url,
+      priority_score,
+      a11y_critical_bugs: row.a11y_critical,
+      a11y_high_bugs: row.a11y_high,
+      a11y_medium_bugs: row.a11y_medium,
+      a11y_low_bugs: row.a11y_low,
+      lh_performance: row.lh_performance,
+      lh_accessibility: row.lh_accessibility,
+      lh_lcp_ms: row.lh_lcp_ms,
+      lh_tbt_ms: row.lh_tbt_ms,
+      lh_cls: row.lh_cls,
+      top_a11y_issues: row.a11y_issues.map((i) => `[${i.severity}] ${i.label}`).join(' | '),
+    });
+  }
+
+  return rows.sort((a, b) => b.priority_score - a.priority_score);
+}
+
+/**
+ * Write priority-pages.csv and priority-pages.json.
+ * Returns { csv, json } with relative paths or nulls.
+ */
+export function writePriorityPages(repDir, domain, week, generatedAt, bugs, lhDetail, total) {
+  const rows = buildPriorityPages(bugs, lhDetail, total);
+  if (!rows.length) return { csv: null, json: null };
+
+  // CSV: flat, spreadsheet-ready.
+  const headers = ['priority_score', 'url', 'a11y_critical_bugs', 'a11y_high_bugs', 'a11y_medium_bugs', 'a11y_low_bugs', 'lh_performance', 'lh_accessibility', 'lh_lcp_ms', 'lh_tbt_ms', 'lh_cls', 'top_a11y_issues'];
+  const csvRows = rows.map((r) => [
+    r.priority_score, r.url,
+    r.a11y_critical_bugs, r.a11y_high_bugs, r.a11y_medium_bugs, r.a11y_low_bugs,
+    r.lh_performance ?? '', r.lh_accessibility ?? '',
+    r.lh_lcp_ms ?? '', r.lh_tbt_ms ?? '', r.lh_cls ?? '',
+    r.top_a11y_issues,
+  ]);
+  fs.writeFileSync(path.join(repDir, 'priority-pages.csv'), toCsv(headers, csvRows));
+
+  // JSON: richer, AI-friendly.
+  const doc = {
+    domain,
+    week,
+    generated_at: generatedAt,
+    description: 'Pages ranked by composite accessibility + performance priority score. Critical a11y bugs = 40 pts, High = 20, Medium = 8, Low = 2. Lighthouse performance penalty up to 30 pts. Higher score = fix first.',
+    total_pages_scanned: total,
+    priority_pages: rows,
+  };
+  fs.writeFileSync(path.join(repDir, 'priority-pages.json'), JSON.stringify(doc, null, 1));
+
+  return { csv: 'priority-pages.csv', json: 'priority-pages.json' };
 }

@@ -7,7 +7,7 @@ import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, r
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { scoreFor } from './lib/score.js';
@@ -166,10 +166,22 @@ for (const target of config.targets) {
 
     // Evidence CSVs: Lighthouse per-page, readability per-page, spelling.
     const lhCsv = writeLighthouseCsv(repDir, summary.lighthouse);
+    const lhJson = writeLighthouseJson(repDir, target.domain, summary.week, summary.generatedAt, summary.lighthouse);
     const readabilityCsv = writeReadabilityCsv(repDir, summary.plainLanguage?.pageRows);
     const spellingCsv = writeSpellingCsv(repDir, summary.plainLanguage?.topMisspellings);
     const acronymsCsv = writeAcronymsCsv(repDir, summary.plainLanguage?.topUnexplainedAcronyms);
-    if (summary.lighthouse) summary.lighthouse.csv = lhCsv;
+    if (summary.lighthouse) {
+      summary.lighthouse.csv = lhCsv;
+      summary.lighthouse.json = lhJson;
+    }
+
+    // Priority pages: cross-engine view ranked by composite a11y+perf score.
+    const priorityPages = writePriorityPages(
+      repDir, target.domain, summary.week, summary.generatedAt,
+      bugs, summary.lighthouse?.pageDetail ?? [], summary.pagesScanned
+    );
+    if (priorityPages.csv) summary.priorityPagesCsv = priorityPages.csv;
+    if (priorityPages.json) summary.priorityPagesJson = priorityPages.json;
     if (summary.plainLanguage) {
       summary.plainLanguage.readabilityCsv = readabilityCsv;
       summary.plainLanguage.spellingCsv = spellingCsv;
@@ -194,10 +206,14 @@ for (const target of config.targets) {
     // JSON downloads are still only written when there's data to put in them.
 
     // Accessibility (always has content — shows "no findings" when clean).
-    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, { ...reporting, keyPages }));
+    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, {
+      ...reporting, keyPages,
+      priorityPagesCsv: priorityPages.csv,
+      priorityPagesJson: priorityPages.json,
+    }));
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
-    fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv));
+    fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv, lhJson));
     fs.writeFileSync(path.join(repDir, 'readability.html'), renderReadabilityPage(target, summary, readabilityCsv));
 
     const techCsv = summary.tech?.length ? writeTechCsv(repDir, summary.tech) : null;
@@ -447,11 +463,13 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const wordCounts = []; // per-page main-content word counts
   // Lighthouse: collect sampled scores + Core Web Vitals metrics for
   // medians, and keep per-sampled-page detail for the Lighthouse page.
-  const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
+  const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], pwa: [], agentic: [] };
   const lhMetrics = { firstContentfulPaintMs: [], largestContentfulPaintMs: [], speedIndexMs: [], totalBlockingTimeMs: [], cumulativeLayoutShift: [] };
   const lhPages = []; // { url, scores, metrics }
   // Lighthouse recommendations (non-a11y audits) rolled up across sampled pages.
   const lhReco = {}; // auditId -> { id, category, title, pages, examplePages[], savingsBytes, savingsMs }
+  // PWA/offline audit signals rolled up across sampled pages.
+  const lhPwa = {}; // auditId -> { id, title, pagesChecked, pagesPass, pagesNa }
   // Images: per-page flat list for CSV + aggregate alt-text metrics.
   const imageRows = []; // { pageUrl, src, alt, hasAlt, isDecorative, isMissingAlt, width, height, loading, bytes }
   let imagePagesScanned = 0;
@@ -658,6 +676,13 @@ function summarizeRecords(target, week, records, brokenLinks) {
         r.savingsBytes += a.savingsBytes ?? 0;
         r.savingsMs += a.savingsMs ?? 0;
       }
+      // Roll up PWA/offline signals: pass/fail counts per audit across sampled pages.
+      for (const a of rec.lighthouse.pwa ?? []) {
+        const r = (lhPwa[a.id] ??= { id: a.id, title: a.title, pagesChecked: 0, pagesPass: 0, pagesNa: 0 });
+        r.pagesChecked++;
+        if (a.notApplicable) r.pagesNa++;
+        else if (a.pass) r.pagesPass++;
+      }
     }
   }
 
@@ -777,6 +802,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
           medianAccessibility: lhScores.accessibility.length ? median(lhScores.accessibility) : null,
           medianBestPractices: lhScores.bestPractices.length ? median(lhScores.bestPractices) : null,
           medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
+          medianPwa: lhScores.pwa.length ? median(lhScores.pwa) : null,
           medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
           metrics: {
             firstContentfulPaintMs: lhMetrics.firstContentfulPaintMs.length ? median(lhMetrics.firstContentfulPaintMs) : null,
@@ -791,6 +817,9 @@ function summarizeRecords(target, week, records, brokenLinks) {
           recommendations: Object.values(lhReco).sort(
             (a, b) => b.pages - a.pages || (b.savingsBytes + b.savingsMs * 1000) - (a.savingsBytes + a.savingsMs * 1000)
           ),
+          // PWA/offline readiness: pass rates per audit across sampled pages.
+          // Stored in committed summary; not per-page detail.
+          pwaSignals: Object.values(lhPwa).sort((a, b) => a.pagesPass / a.pagesChecked - b.pagesPass / b.pagesChecked),
         }
       : null,
     linkCheck: brokenLinks.size

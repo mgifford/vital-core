@@ -102,34 +102,56 @@ function scFromAxeTag(tag) {
  * hand-curated mappings for any rule ids not present in that dataset.
  */
 const ALFA_SC_FALLBACK = {
-  'sia-r2': '1.1.1', // img has accessible name
-  'sia-r3': '4.1.1', // id attribute unique
-  'sia-r4': '3.1.1', // lang of page
-  'sia-r5': '3.1.1', // valid lang attribute
-  'sia-r8': '4.1.2', // form field has accessible name
-  'sia-r9': '2.2.1', // meta refresh no delay
-  'sia-r10': '1.3.5', // autocomplete valid
-  'sia-r11': '4.1.2', // link has accessible name
-  'sia-r12': '4.1.2', // button has accessible name
-  'sia-r13': '1.1.1', // iframe has accessible name
-  'sia-r14': '2.5.3', // visible label in accessible name
-  'sia-r15': '4.1.2', // iframes with same name same content
-  'sia-r16': '4.1.2', // role has required states/properties
-  'sia-r17': '1.3.1', // aria-hidden no focusable content
-  'sia-r18': '4.1.2', // aria states/properties allowed
-  'sia-r19': '4.1.2', // aria attribute has valid value
-  'sia-r20': '4.1.2', // aria attribute is defined
-  'sia-r21': '4.1.2', // role is valid
-  'sia-r28': '1.1.1', // image button has accessible name
-  'sia-r41': '4.1.2', // links with same name same purpose
-  'sia-r42': '1.3.1', // element required context role
-  'sia-r43': '1.1.1', // svg has accessible name
-  'sia-r48': '1.4.2', // audio no autoplay
-  'sia-r53': '1.3.1', // heading hierarchy
-  'sia-r62': '1.4.1', // links distinguishable from text
-  'sia-r66': '1.4.3', // text contrast (AAA variant in some)
-  'sia-r69': '1.4.3', // text has sufficient contrast
-  'sia-r111': '2.5.8', // target size
+  'sia-r2': '1.1.1',   // img has accessible name
+  'sia-r3': '4.1.1',   // id attribute unique
+  'sia-r4': '3.1.1',   // lang of page
+  'sia-r5': '3.1.1',   // valid lang attribute
+  'sia-r7': '3.1.2',   // element lang attribute has correct language
+  'sia-r8': '4.1.2',   // form field has accessible name
+  'sia-r9': '2.2.1',   // meta refresh no delay
+  'sia-r10': '1.3.5',  // autocomplete valid
+  'sia-r11': '4.1.2',  // link has accessible name
+  'sia-r12': '4.1.2',  // button has accessible name
+  'sia-r13': '1.1.1',  // iframe has accessible name
+  'sia-r14': '2.5.3',  // visible label in accessible name
+  'sia-r15': '4.1.2',  // iframes with same name same content
+  'sia-r16': '4.1.2',  // role has required states/properties
+  'sia-r17': '1.3.1',  // aria-hidden no focusable content
+  'sia-r18': '4.1.2',  // aria states/properties allowed
+  'sia-r19': '4.1.2',  // aria attribute has valid value
+  'sia-r20': '4.1.2',  // aria attribute is defined
+  'sia-r21': '4.1.2',  // role is valid
+  'sia-r28': '1.1.1',  // image button has accessible name
+  'sia-r40': '1.3.1',  // tables for tabular data (info and relationships)
+  'sia-r41': '4.1.2',  // links with same name same purpose
+  'sia-r42': '1.3.1',  // element required context role
+  'sia-r43': '1.1.1',  // svg has accessible name
+  'sia-r48': '1.4.2',  // audio no autoplay
+  'sia-r53': '1.3.1',  // heading hierarchy
+  'sia-r54': '2.4.6',  // heading is descriptive
+  'sia-r57': '2.1.1',  // scrolling content keyboard accessible
+  'sia-r59': '1.3.4',  // orientation not locked
+  'sia-r60': '1.3.5',  // input purpose can be determined
+  'sia-r61': '1.3.1',  // form field label is visible
+  'sia-r62': '1.4.1',  // links distinguishable from text
+  'sia-r66': '1.4.3',  // text contrast (AA)
+  'sia-r69': '1.4.3',  // text has sufficient contrast
+  'sia-r70': '2.4.4',  // link text is descriptive
+  'sia-r71': '4.1.2',  // iframe is not empty
+  'sia-r72': '1.3.1',  // element role consistent with landmark
+  'sia-r73': '1.4.3',  // text minimum contrast 4.5:1
+  'sia-r74': '1.4.1',  // link distinguishable without color
+  'sia-r75': '3.3.1',  // form field error identified and described
+  'sia-r77': '1.3.1',  // table cell has header
+  'sia-r78': '1.3.1',  // table header has scope
+  'sia-r79': '1.3.1',  // duplicate landmark labeled
+  'sia-r80': '2.1.1',  // scrollable element keyboard accessible
+  'sia-r85': '2.1.2',  // no keyboard trap
+  'sia-r86': '2.4.3',  // focus not lost after interaction
+  'sia-r87': '3.2.1',  // no unexpected context change on focus
+  'sia-r90': '3.2.4',  // components with same name same purpose
+  'sia-r111': '2.5.8', // target size minimum
+  'sia-r113': '2.5.8', // target size (WCAG 2.2)
 };
 
 let alfaRuleToSc = null;

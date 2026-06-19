@@ -532,7 +532,7 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
       const r = rules[id];
       const link = r.helpUrl ?? r.ruleUrl;
       const plain = rulePlainLabel(engineKey, id, { help: r.help });
-      const label = plain ? `${esc(plain)} <span class="bug-meta">(${esc(id)})</span>` : esc(id);
+      const label = plain ? `${esc(plain)} <span class="bug-meta">[${esc(id)}]</span>` : esc(id);
       const csv = csvLinks.byRule?.[`${engineKey}:${id}`];
       return `<tr>
   <th scope="row">${link ? `<a href="${esc(link)}">${label}</a>` : label}</th>
@@ -583,7 +583,7 @@ ${heading('h-bugs', `Bug reports`)}
         ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (Level ${esc(b.wcag_level)}, WCAG ${esc(b.wcag_version ?? '2.x')})`
         : b.wcag_category === 'Best Practice' ? 'Best Practice — not a WCAG requirement' : 'undetermined';
       const ruleLabel = b.rule_label && b.rule_label !== b.rule_id
-        ? `${esc(b.rule_label)} <span class="bug-meta">(${esc(b.rule_id)})</span>`
+        ? `${esc(b.rule_label)} <span class="bug-meta">[${esc(b.rule_id)}]</span>`
         : esc(b.rule_id);
       const ruleLink = b.rule_url
         ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${ruleLabel}</a>`
@@ -655,7 +655,7 @@ ${heading('h-bugs', `Bug reports`)}
 <p class="meta">${view.visibleCount} issue type(s) are shown by default out of ${ordered.length} total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.</p>
   <p class="meta">Overall severity mix: ${esc(sevSummary)}. By WCAG category: ${esc(catSummary)}. Ordered by severity, key-page impact, WCAG level, and prevalence. Following
 <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.
-Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON (full archive)</a> · <a href="ai-findings.json">JSON (AI diagnostic)</a>${csvLink}.</p>
+Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON (full archive)</a> · <a href="ai-findings.json">JSON (AI diagnostic)</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">Priority pages CSV</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">Priority pages JSON</a>` : ''}.</p>
 <p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
 ${priorityLine}
 ${dupLine}
@@ -975,7 +975,57 @@ ${gaps}
 </section>`;
 }
 
-export function renderLighthousePage(target, summary, csvHref) {
+function pwaSignalsSection(lh) {
+  const signals = lh.pwaSignals;
+  if (!signals?.length) return '';
+  const pagesChecked = lh.pagesSampled;
+
+  const PWA_DESCRIPTIONS = {
+    'service-worker': 'Service worker registered — enables offline access and background sync.',
+    'works-offline': 'Page responds when offline — shows a fallback instead of a browser error.',
+    'offline-start-url': 'App start URL responds while offline.',
+    'installable-manifest': 'Web app manifest meets criteria for "Add to Home Screen" / install prompt.',
+    'apple-touch-icon': 'Apple touch icon present — improves iOS bookmark appearance.',
+    'maskable-icon': 'Maskable icon in manifest — fills the full icon shape on Android.',
+    'splash-screen': 'Custom splash screen configured in manifest.',
+    'themed-omnibox': 'Browser address bar themed to match the site.',
+    'content-width': 'Viewport width matches device width.',
+    'viewport': 'Viewport meta tag present.',
+  };
+
+  const rows = signals.map((s) => {
+    const passRate = s.pagesChecked > 0 ? Math.round((s.pagesPass / s.pagesChecked) * 100) : 0;
+    const passing = passRate >= 80;
+    const badge = passing ? '✓' : passRate > 0 ? '~' : '✗';
+    const badgeClass = passing ? 'pwa-pass' : passRate > 0 ? 'pwa-partial' : 'pwa-fail';
+    const desc = PWA_DESCRIPTIONS[s.id] ?? '';
+    return `<tr>
+  <td><span class="pwa-badge ${esc(badgeClass)}">${badge}</span></td>
+  <th scope="row">${esc(s.title)}</th>
+  <td class="num">${s.pagesPass}/${s.pagesChecked}</td>
+  <td class="num">${passRate}%</td>
+  <td>${esc(desc)}</td>
+</tr>`;
+  }).join('\n');
+
+  const hasServiceWorker = signals.find((s) => s.id === 'service-worker' && s.pagesPass > 0);
+  const hasOffline = signals.find((s) => s.id === 'works-offline' && s.pagesPass > 0);
+  const interpretation = hasServiceWorker
+    ? `Service worker detected on ${signals.find((s) => s.id === 'service-worker').pagesPass} of ${pagesChecked} sampled page(s). ${hasOffline ? 'Offline fallback confirmed.' : 'No offline fallback detected.'}`
+    : `No service worker detected on any sampled page. This site does not provide offline access or PWA install capability.`;
+
+  return `<section aria-labelledby="h-lh-pwa">
+${heading('h-lh-pwa', `PWA / offline readiness`)}
+<p class="meta">${interpretation} Checks run on ${pagesChecked} sampled page(s). Service workers and offline access allow pages to load without a network connection, and enable "Add to Home Screen" install on mobile.</p>
+<table>
+<caption>PWA and offline readiness audit results from Lighthouse.</caption>
+<thead><tr><th scope="col"></th><th scope="col">Audit</th><th scope="col">Pages passing</th><th scope="col">Pass rate</th><th scope="col">What it checks</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</section>`;
+}
+
+export function renderLighthousePage(target, summary, csvHref, jsonHref) {
   const lh = summary.lighthouse;
   if (!lh || !lh.pageDetail?.length) {
     return emptyCriterionPage(target, summary, { active: 'lighthouse', label: 'Lighthouse', message: 'No Lighthouse audits ran on this week\'s sampled pages (Lighthouse is sampled at a low rate; some weeks have none).' });
@@ -986,7 +1036,8 @@ export function renderLighthousePage(target, summary, csvHref) {
   // Sortable per-page table: page name sorts alphabetically, metrics numerically.
   const cols = [
     { label: 'Page' }, { label: 'Perf', num: 1 }, { label: 'A11y', num: 1 },
-    { label: 'Best practices', num: 1 }, { label: 'SEO', num: 1 }, { label: 'Agentic', num: 1 },
+    { label: 'Best practices', num: 1 }, { label: 'SEO', num: 1 },
+    { label: 'PWA', num: 1 }, { label: 'Agentic', num: 1 },
     { label: 'FCP', num: 1 }, { label: 'LCP', num: 1 }, { label: 'Speed Index', num: 1 },
     { label: 'TBT', num: 1 }, { label: 'CLS', num: 1 },
   ];
@@ -997,7 +1048,7 @@ export function renderLighthousePage(target, summary, csvHref) {
       cell(`<a class="url" href="${esc(p.url)}" title="${esc(p.url)}">${esc(path)}</a>`, path),
       cell(sc(p.scores.performance), p.scores.performance), cell(sc(p.scores.accessibility), p.scores.accessibility),
       cell(sc(p.scores.bestPractices), p.scores.bestPractices), cell(sc(p.scores.seo), p.scores.seo),
-      cell(sc(p.scores.agentic), p.scores.agentic),
+      cell(sc(p.scores.pwa), p.scores.pwa), cell(sc(p.scores.agentic), p.scores.agentic),
       cell(ms(m.firstContentfulPaintMs), m.firstContentfulPaintMs), cell(ms(m.largestContentfulPaintMs), m.largestContentfulPaintMs),
       cell(ms(m.speedIndexMs), m.speedIndexMs), cell(ms(m.totalBlockingTimeMs), m.totalBlockingTimeMs),
       cell(p.metrics.cumulativeLayoutShift ?? 'n/a', p.metrics.cumulativeLayoutShift),
@@ -1007,10 +1058,17 @@ export function renderLighthousePage(target, summary, csvHref) {
   const weights = summary.sustainability?.bytesList ?? [];
   const impact = performanceImpact(lh.pageDetail, weights, target.page_loads_per_week ?? null);
 
+  const dlLinks = [
+    csvHref ? `<a href="${esc(csvHref)}">CSV (per-page scores)</a>` : '',
+    jsonHref ? `<a href="${esc(jsonHref)}">JSON (AI-ready, includes recommendations)</a>` : '',
+    summary.priorityPagesCsv ? `<a href="${esc(summary.priorityPagesCsv)}">Priority pages CSV</a>` : '',
+    summary.priorityPagesJson ? `<a href="${esc(summary.priorityPagesJson)}">Priority pages JSON</a>` : '',
+  ].filter(Boolean);
+
   const body = `
 <h1>${esc(target.domain)}: Lighthouse — week ${esc(summary.week)}</h1>
 ${subnav('lighthouse')}
-<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals. ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
+<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals.${dlLinks.length ? ` Download: ${dlLinks.join(' · ')}.` : ''}</p>
 ${impact ? perfImpactSection(impact) : ''}
 <section aria-labelledby="h-lh-medians">
 ${heading('h-lh-medians', `Medians across sampled pages`)}
@@ -1019,6 +1077,7 @@ ${heading('h-lh-medians', `Medians across sampled pages`)}
   <div><dt>Accessibility</dt><dd>${fmtScore(lh.medianAccessibility)}</dd></div>
   <div><dt>Best practices</dt><dd>${fmtScore(lh.medianBestPractices)}</dd></div>
   <div><dt>SEO</dt><dd>${fmtScore(lh.medianSeo)}</dd></div>
+  ${lh.medianPwa != null ? `<div><dt>PWA readiness</dt><dd>${fmtScore(lh.medianPwa)}</dd></div>` : ''}
   ${lh.medianAgentic != null ? `<div><dt>Agentic browsing</dt><dd>${fmtScore(lh.medianAgentic)}</dd></div>` : ''}
   <div><dt>Largest Contentful Paint</dt><dd>${ms(m.largestContentfulPaintMs)}</dd></div>
   <div><dt>First Contentful Paint</dt><dd>${ms(m.firstContentfulPaintMs)}</dd></div>
@@ -1027,11 +1086,12 @@ ${heading('h-lh-medians', `Medians across sampled pages`)}
   <div><dt>Cumulative Layout Shift</dt><dd>${m.cumulativeLayoutShift ?? 'n/a'}</dd></div>
 </dl>
 </section>
+${pwaSignalsSection(lh)}
 ${lighthouseRecommendations(lh.recommendations, lh.pageDetail.length)}
 ${agenticExplainer(lh)}
 <section aria-labelledby="h-lh-pages">
 ${heading('h-lh-pages', `Per-page results`)}
-${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}); Agentic = experimental agentic-browsing score.`, cols, rows)}
+${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}); PWA = offline/install readiness; Agentic = experimental agentic-browsing score.`, cols, rows)}
 </section>`;
   return layout({
     title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
@@ -2090,7 +2150,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug-filter-row { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; align-items: end; }
 .bug-filter label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; font-weight: 600; }
 .bug-filter-check { flex-direction: row; align-items: center; gap: .4rem; }
-.bug-filter select { font: inherit; padding: .25rem .4rem; }
+.bug-filter select { font: inherit; padding: .25rem .4rem; min-width: 12rem; }
 .bug-filter button { font: inherit; padding: .3rem .7rem; cursor: pointer; }
 .bug-filter-count { margin: .6rem 0 0; font-size: .85rem; color: var(--muted); }
 .bug-filter-empty { padding: .9rem; border: 1px dashed var(--rule); border-radius: 2px; color: var(--muted); }
