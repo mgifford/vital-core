@@ -1651,7 +1651,14 @@ ${table}
 </figure>`;
 }
 
-export function renderIndex(dashboard) {
+export function renderIndex(dashboard, { branding = {} } = {}) {
+  // Profile branding overrides the default headline/intro; absent (the
+  // GitHub Pages default) it falls back to the original copy unchanged.
+  const h1 = branding.title || 'Weekly quality ledger';
+  const intro = branding.intro
+    || 'Accessibility and sustainability, measured continuously with open source engines. '
+     + 'Thousands of pages per domain, scanned slowly and politely across each week.';
+  const pageTitle = branding.title ? `${branding.title} | vital-scans` : 'vital-scans | weekly quality ledger';
   // Separate targets whose latest week is blocked (e.g. a WAF returning
   // 403 to the scanner) so they don't read as zero-violation successes.
   const blocked = dashboard.filter(({ series }) => series[series.length - 1].blocked);
@@ -1830,9 +1837,8 @@ ${heading('h-lhfleet', `Common Lighthouse recommendations`)}
   }
 
   const body = `
-<h1>Weekly quality ledger</h1>
-<p class="meta">Accessibility and sustainability, measured continuously with open source engines.
-Thousands of pages per domain, scanned slowly and politely across each week.</p>
+<h1>${esc(h1)}</h1>
+<p class="meta">${esc(intro)}</p>
 ${active.length === 0
     ? (dashboard.length === 0
         ? '<p>No scan data yet. The first weekly report appears after the first scheduled scans complete.</p>'
@@ -1858,7 +1864,7 @@ accessible and lighter over time, using <a href="https://github.com/dequelabs/ax
 accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a>
 CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.</p>
 </section>`;
-  return layout({ title: 'vital-scans | weekly quality ledger', breadcrumb: '', body, depth: 0 });
+  return layout({ title: pageTitle, breadcrumb: '', body, depth: 0 });
 }
 
 export function writeAsset(docsDir) {
