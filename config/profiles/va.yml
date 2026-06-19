@@ -1,0 +1,27 @@
+# Profile: VA (Department of Veterans Affairs)
+#
+# Scope for the Hugging Face appliance deployment. As with every profile, the
+# targets listed here MUST also exist in config/targets.yml — that's where
+# their scan behavior (budgets, sampling, user-agent) is defined. This file
+# only selects and brands them. See config/profiles/README.md.
+#
+# All targets below are registered in config/targets.yml (required — the build
+# fails loudly on a profile target missing from the registry, by design).
+
+name: VA
+
+targets:
+  - www.va.gov
+  - volunteer.va.gov
+  - news.va.gov
+  - benefits.va.gov
+
+branding:
+  title: "VA Accessibility & Sustainability"
+  intro: >
+    Automated weekly accessibility and sustainability monitoring of
+    U.S. Department of Veterans Affairs web properties.
+
+# Deploy-specific; left relative for the HF static path. CSV absolute links
+# only — the HTML site uses relative links and is base-URL-agnostic.
+report_base_url: ""

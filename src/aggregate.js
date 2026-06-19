@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadConfig, DIRS } from './lib/config.js';
+import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
 import { compareWeeks } from './lib/week.js';
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
@@ -32,7 +32,13 @@ import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } fr
 const MAX_RULE_INSTANCES = 5; // representative failing instances kept per rule
 const MAX_AFFECTED_PAGES = 5000; // full affected-page list cap per rule (for CSV)
 
-const config = loadConfig();
+// VITAL_PROFILE (optional) scopes the build to one deployment profile —
+// a subset of targets + report branding (config/profiles/<name>.yml). Unset
+// means the full site with default branding: the GitHub Pages behavior,
+// unchanged. See config/profiles/README.md.
+const profile = loadProfile(process.env.VITAL_PROFILE);
+const config = applyProfile(loadConfig(), profile);
+if (profile) console.log(`Building profile "${profile.name}" (${config.targets.length} targets).`);
 setSustainabilityMetric(config.sustainabilityMetric);
 fs.mkdirSync(DIRS.docs, { recursive: true });
 
@@ -274,7 +280,7 @@ for (const target of config.targets) {
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 
-fs.writeFileSync(path.join(DIRS.docs, 'index.html'), renderIndex(dashboard));
+fs.writeFileSync(path.join(DIRS.docs, 'index.html'), renderIndex(dashboard, { branding: profile?.branding }));
 writeAsset(DIRS.docs);
 console.log('docs/ written');
 

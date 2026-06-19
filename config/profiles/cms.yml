@@ -1,0 +1,42 @@
+# Profile: CMS
+#
+# A *profile* is a named scope over the site registry in `config/targets.yml`,
+# plus the report-level metadata (title, intro, base URL) for one published
+# instance. It does NOT redefine per-site scan settings — those stay in
+# targets.yml, the single registry of every site we know how to scan. A
+# profile only says "these targets, branded this way".
+#
+# Profiles and deployment targets are independent dimensions. This profile
+# can be published to GitHub Pages OR Hugging Face (or both) without change;
+# the *where* is chosen at deploy time (see .github/workflows/deploy-*.yml),
+# not here.
+
+# Human-readable profile name. Shown in report branding and deploy logs.
+name: CMS
+
+# Which targets (by `domain` or filesystem `key` from targets.yml) are in
+# scope for this profile. Reference existing targets — never restate their
+# scan config here. A target not listed is simply absent from this profile's
+# reports; its data on disk is untouched.
+targets:
+  - www.cms.gov
+  - www.medicaid.gov
+  - www.medicare.gov
+  - data.cms.gov
+  - data.medicaid.gov
+  - openpaymentsdata.cms.gov
+
+# Report-level branding/metadata. These map to the report header/intro in
+# src/report-html.js; keep them short.
+branding:
+  title: "CMS Accessibility & Sustainability"
+  intro: >
+    Automated weekly accessibility and sustainability monitoring of
+    Centers for Medicare & Medicaid Services web properties.
+
+# Base URL for absolute links in CSV exports (clickable affected-page cells).
+# This is the ONLY base-URL the build cares about, and it is deploy-target
+# specific — so it is overridden per deploy, not fixed here. Leave empty to
+# keep CSV links relative (the safe default for a portable build). The HTML
+# site itself uses only relative links and is base-URL-agnostic.
+report_base_url: ""

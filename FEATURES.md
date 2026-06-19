@@ -46,6 +46,21 @@ axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-gui
 
 Bug reports include a short, plain-language "How to fix" tip per rule (`config/remediation-tips.json`, seeded for common axe and Alfa rules), shown alongside the engine's own reference URL. Add tips as you triage; unknown rules fall back to the reference link.
 
+### Accessibility bug prioritization
+
+`src/lib/accessibility-priority.js` sorts and tiers every bug report so the most important issues surface first without hiding the rest:
+
+- **Tier 0** — Critical or High severity: always shown first, regardless of count cap.
+- **Tier 1** — Medium/Low issues that both hit a **key page** (a `priority_urls` / `priority_urls_file` URL) and exceed the `moderate_issue_threshold_percent` prevalence threshold (default 5 % of scanned pages).
+- **Tier 2** — WCAG 2.x A or AA conformance failures not in the above tiers.
+- **Tier 3 / 4 / 5** — Best Practice, WCAG AAA, and everything else.
+
+Within each tier, issues are ranked by pages affected → WCAG severity → instance count → alphabetical description. After guaranteeing all Tier 0–1 issues are visible, the renderer fills up to `max_html_issues` (default 50) from the lower tiers; all bugs remain in the JSON with a `default_visible` flag so the HTML can show/hide without re-sorting.
+
+`src/lib/top-tasks.js` (`loadPriorityUrls`) resolves a target's key pages from an inline `priority_urls` list and/or a `priority_urls_file` (one URL per line, `#` comments ignored), normalising every URL to the target's canonical host. These are the pages whose accessibility issues are elevated to Tier 1.
+
+Both settings live under the target entry in `config/targets.yml`; reporting thresholds (`max_html_issues`, `moderate_issue_threshold_percent`, `include_key_page_issues`) are configured under a `reporting:` key in the same entry.
+
 ### Broken-link source tracking
 
 When the link-check engine finds a broken link, the report shows which scanned page(s) link to it ("Linked from: /a, /b +3 more"), so a 404 can be traced to the pages that need fixing, not just the dead URL.

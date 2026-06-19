@@ -129,3 +129,13 @@ targets:
     importance: 1
   - domain: hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
     importance: 1
+
+  # Department of Veterans Affairs (scanned via the "va" profile / HF appliance)
+  - domain: www.va.gov
+    importance: 5
+  - domain: volunteer.va.gov
+    importance: 3
+  - domain: news.va.gov
+    importance: 3
+  - domain: benefits.va.gov
+    importance: 3

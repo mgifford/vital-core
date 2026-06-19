@@ -5,6 +5,13 @@ ci_job_*.zip
 job-*-logs.zip
 tmp/
 
+# Local secrets (HF_TOKEN, etc.). Provided to CI via repository secrets,
+# never committed. Commit .env.example with key names only if you want a
+# template.
+.env
+.env.*
+!.env.example
+
 # Generated site. Built by aggregate in CI and deployed as a Pages
 # artifact; never committed. Summaries that must survive live in data/.
 docs/
