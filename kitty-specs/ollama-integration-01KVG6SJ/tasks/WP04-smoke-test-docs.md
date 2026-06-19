@@ -71,3 +71,7 @@ Verify the full integration end-to-end and document the env vars in CLAUDE.md.
 
 **Files**: `CLAUDE.md`
 **Validation**: `CLAUDE.md` mentions both env vars and `npm run check:ollama`
+
+## Activity Log
+
+- 2026-06-19T19:16:49Z – unknown – Moved to done
