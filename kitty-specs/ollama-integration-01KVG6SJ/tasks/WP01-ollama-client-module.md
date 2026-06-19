@@ -3,10 +3,11 @@ work_package_id: "WP01"
 title: "Ollama client module + unit tests"
 dependencies: []
 requirement_refs:
-  - "src/lib/ollama.js — isAvailable(), detectModel(), chat()"
-  - "isAvailable() 2-second timeout"
-  - "VITAL_OLLAMA_URL / VITAL_OLLAMA_MODEL env vars"
-  - "Unit tests — isAvailable up/down/timeout, chat success/error"
+  - FR-01
+  - FR-02
+  - FR-03
+  - NFR-01
+  - NFR-02
 subtasks:
   - T001
   - T002

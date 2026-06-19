@@ -4,9 +4,8 @@ title: "Wire Ollama into ai-findings.js"
 dependencies:
   - WP01
 requirement_refs:
-  - "ai-findings.js calls ollama.chat() when available"
-  - "ollama_summary field in output JSON"
-  - "No change to output when Ollama absent"
+  - FR-04
+  - FR-05
 subtasks:
   - T006
   - T007

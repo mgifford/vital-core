@@ -5,8 +5,7 @@ dependencies:
   - WP02
   - WP03
 requirement_refs:
-  - "All 91 existing unit tests still pass"
-  - "check-ollama.js verified against local Ollama"
+  - NFR-02
 subtasks:
   - T011
   - T012

@@ -4,8 +4,7 @@ title: "Diagnostic script + package.json entry"
 dependencies:
   - WP01
 requirement_refs:
-  - "scripts/check-ollama.js diagnostic"
-  - "check:ollama npm script"
+  - FR-06
 subtasks:
   - T009
   - T010
