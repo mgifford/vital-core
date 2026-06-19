@@ -6,10 +6,11 @@ work_packages:
       - "src/lib/ollama.js"
       - "tests/unit/ollama.test.js"
     requirement_refs:
-      - "src/lib/ollama.js — isAvailable(), detectModel(), chat()"
-      - "isAvailable() 2-second timeout"
-      - "VITAL_OLLAMA_URL / VITAL_OLLAMA_MODEL env vars"
-      - "Unit tests — isAvailable up/down/timeout, chat success/error"
+      - FR-01
+      - FR-02
+      - FR-03
+      - NFR-01
+      - NFR-02
     subtasks:
       - T001
       - T002
@@ -25,9 +26,8 @@ work_packages:
     owned_files:
       - "src/lib/ai-findings.js"
     requirement_refs:
-      - "ai-findings.js calls ollama.chat() when available"
-      - "ollama_summary field in output JSON"
-      - "No change to output when Ollama absent"
+      - FR-04
+      - FR-05
     subtasks:
       - T006
       - T007
@@ -42,8 +42,7 @@ work_packages:
       - "scripts/check-ollama.js"
       - "package.json"
     requirement_refs:
-      - "scripts/check-ollama.js diagnostic"
-      - "check:ollama npm script"
+      - FR-06
     subtasks:
       - T009
       - T010
@@ -57,8 +56,7 @@ work_packages:
     owned_files:
       - "CLAUDE.md"
     requirement_refs:
-      - "All 91 existing unit tests still pass"
-      - "check-ollama.js verified against local Ollama"
+      - NFR-02
     subtasks:
       - T011
       - T012

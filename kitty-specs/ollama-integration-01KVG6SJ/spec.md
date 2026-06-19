@@ -18,6 +18,19 @@ Allow vital-core to optionally use a local Ollama instance
 Ollama is always **optional**: if the endpoint is unreachable or not configured,
 the code falls back silently to the existing logic. No Ollama → no change in output.
 
+## Requirements
+
+| ID | Requirement |
+|---|---|
+| FR-01 | `src/lib/ollama.js` exports `isAvailable()`, `detectModel()`, `chat()` |
+| FR-02 | `isAvailable()` uses a 2-second timeout; returns `false` on any error |
+| FR-03 | Config via `VITAL_OLLAMA_URL` and `VITAL_OLLAMA_MODEL` env vars |
+| FR-04 | `ai-findings.js` calls `ollama.chat()` when available; adds `ollama_summary` field |
+| FR-05 | No change to output shape when Ollama is absent |
+| FR-06 | `scripts/check-ollama.js` diagnostic; `check:ollama` npm script |
+| NFR-01 | No new npm dependencies |
+| NFR-02 | All 91 existing unit tests still pass; new ollama unit tests added |
+
 ## Acceptance Criteria
 
 - [ ] `src/lib/ollama.js` — thin client: `chat(prompt, model?)`, `isAvailable()`,
