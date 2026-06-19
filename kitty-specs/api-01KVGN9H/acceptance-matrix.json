@@ -1,104 +1,125 @@
-[
- {
-  "criterion_id": "FR-01",
-  "proof_type": "automated_test",
-  "pass_fail": "pass",
-  "evidence": "buildIndexEntry returns domain, latest_week, critical_count, serious_count, pages_scanned, snapshot_url; writeApiFiles writes index.json with schema_version and domains array — verified by api-writer.test.js (tests/unit/api-writer.test.js)"
- },
- {
-  "criterion_id": "FR-02",
-  "proof_type": "automated_test",
-  "pass_fail": "pass",
-  "evidence": "buildSnapshot returns findings ledger, weekly series, inventory summary, tech_findings, and summary block — verified by buildSnapshot tests in tests/unit/api-writer.test.js"
- },
- {
-  "criterion_id": "FR-03",
-  "proof_type": "automated_test",
-  "pass_fail": "pass",
-  "evidence": "buildWeekFindings maps bugs to FindingEntry with rule_id, severity, pages_affected, wcag_sc, wcag_level, trend_status — verified by buildWeekFindings tests in tests/unit/api-writer.test.js"
- },
- {
-  "criterion_id": "FR-04",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "writeApiFiles called from src/aggregate.js after the domain loop (commit 10ad1ae3); no separate server or deployment step added"
- },
- {
-  "criterion_id": "FR-05",
-  "proof_type": "automated_test",
-  "pass_fail": "pass",
-  "evidence": "All three file types include schema_version: '1'; verified by writeApiFiles test 'all generated files have schema_version 1' in tests/unit/api-writer.test.js"
- },
- {
-  "criterion_id": "FR-06",
-  "proof_type": "automated_test",
-  "pass_fail": "pass",
-  "evidence": "writeApiFiles writes to path.join(docsDir, 'api', 'v1', ...); snapshot_url and findings_url in buildIndexEntry use /api/v1/ prefix — verified by URL path tests in tests/unit/api-writer.test.js"
- },
- {
-  "criterion_id": "FR-07",
-  "proof_type": "automated_test",
-  "pass_fail": "pass",
-  "evidence": "buildIndexEntry includes domain, latest_week, critical_count, serious_count, pages_scanned, snapshot_url, findings_url; writeApiFiles writes { schema_version, domains } to index.json — verified by buildIndexEntry and writeApiFiles tests"
- },
- {
-  "criterion_id": "FR-08",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "writeApiFiles(DIRS.docs, ...) wired into src/aggregate.js at line 341 (commit 10ad1ae3); DIRS.docs is the same docs/ directory used for existing HTML and data output"
- },
- {
-  "criterion_id": "FR-09",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "All JSON.stringify calls in writeApiFiles use JSON.stringify(data, null, 1) indent; verified in src/lib/api-writer.js writeApiFiles function (commit 251cd88f)"
- },
- {
-  "criterion_id": "NFR-01",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "snapshot.json excludes the per-URL pages inventory array (asserted in buildSnapshot test 'does not include top-level pages array'); weekly findings are one week only; index.json has one entry per domain — no file approaches 5 MB for any known target"
- },
- {
-  "criterion_id": "NFR-02",
-  "proof_type": "automated_test",
-  "pass_fail": "pass",
-  "evidence": "npm run test:unit: 107 pass (previously 91 passing + 16 new from api-writer); 2 pre-existing failures in prune.test.js are unrelated to this feature and existed before WP01"
- },
- {
-  "criterion_id": "NFR-03",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "writeApiFiles writes sequential small JSON files using Node fs.writeFileSync; no network I/O, no heavy computation; build time impact is negligible (<1% expected)"
- },
- {
-  "criterion_id": "NFR-04",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "src/lib/api-writer.js imports only node:fs and node:path (both Node built-ins); no entries added to package.json dependencies (commit 251cd88f)"
- },
- {
-  "criterion_id": "C-01",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "All output is fs.writeFileSync to docs/api/v1/**; no server, no dynamic routing, no fetch/network calls in api-writer.js"
- },
- {
-  "criterion_id": "C-02",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "src/lib/api-writer.js uses only node:fs and node:path; wired into existing src/aggregate.js — no new build tooling added"
- },
- {
-  "criterion_id": "C-03",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "docs/ is gitignored locally (confirmed in .gitignore); API files under docs/api/v1/ follow the same gitignore pattern and will be deployed as part of the GitHub Pages artifact"
- },
- {
-  "criterion_id": "C-04",
-  "proof_type": "code_review",
-  "pass_fail": "pass",
-  "evidence": "VA domains are excluded by the existing hf_only guard in scan.yml before aggregate runs; api-writer receives only the domains aggregate processes — no VA-specific logic needed"
- }
-]
+{
+ "mission_slug": "api-01KVGN9H",
+ "mission_type": "software-dev",
+ "criteria": [
+  {
+   "criterion_id": "FR-01",
+   "description": "A machine-readable index lists all domains and their latest scan week",
+   "proof_type": "automated_test",
+   "pass_fail": "pass",
+   "evidence": "buildIndexEntry returns domain, latest_week, critical_count, serious_count, pages_scanned, snapshot_url; writeApiFiles writes index.json with schema_version and domains array — verified by api-writer.test.js"
+  },
+  {
+   "criterion_id": "FR-02",
+   "description": "Each domain exposes a full snapshot endpoint with findings, trend series, inventory, tech, third-party",
+   "proof_type": "automated_test",
+   "pass_fail": "pass",
+   "evidence": "buildSnapshot returns findings ledger, weekly series, inventory summary, tech_findings, and summary block — verified by buildSnapshot tests in tests/unit/api-writer.test.js"
+  },
+  {
+   "criterion_id": "FR-03",
+   "description": "Each domain exposes a per-week findings endpoint with severity, WCAG mapping, pages affected, and trend status",
+   "proof_type": "automated_test",
+   "pass_fail": "pass",
+   "evidence": "buildWeekFindings maps bugs to FindingEntry with rule_id, severity, pages_affected, wcag_sc, wcag_level, trend_status — verified by buildWeekFindings tests in tests/unit/api-writer.test.js"
+  },
+  {
+   "criterion_id": "FR-04",
+   "description": "All API endpoints are published as static JSON files during the existing aggregate build step",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "writeApiFiles called from src/aggregate.js after the domain loop (commit 10ad1ae3); no separate server or deployment step added"
+  },
+  {
+   "criterion_id": "FR-05",
+   "description": "API responses include a schema_version field so consumers can detect breaking changes",
+   "proof_type": "automated_test",
+   "pass_fail": "pass",
+   "evidence": "All three file types include schema_version: '1'; verified by writeApiFiles test 'all generated files have schema_version 1' in tests/unit/api-writer.test.js"
+  },
+  {
+   "criterion_id": "FR-06",
+   "description": "A stable base path /api/v1/ is used for all endpoints",
+   "proof_type": "automated_test",
+   "pass_fail": "pass",
+   "evidence": "writeApiFiles writes to path.join(docsDir, 'api', 'v1', ...); snapshot_url and findings_url in buildIndexEntry use /api/v1/ prefix — verified by URL path tests in tests/unit/api-writer.test.js"
+  },
+  {
+   "criterion_id": "FR-07",
+   "description": "index.json at /api/v1/index.json lists all domains with latest week, page count, critical/serious counts, and snapshot link",
+   "proof_type": "automated_test",
+   "pass_fail": "pass",
+   "evidence": "buildIndexEntry includes domain, latest_week, critical_count, serious_count, pages_scanned, snapshot_url, findings_url; writeApiFiles writes { schema_version, domains } to index.json — verified by buildIndexEntry and writeApiFiles tests"
+  },
+  {
+   "criterion_id": "FR-08",
+   "description": "The aggregate build writes API files to docs/api/v1/ alongside existing docs/reports/ output",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "writeApiFiles(DIRS.docs, ...) wired into src/aggregate.js (commit 10ad1ae3); DIRS.docs is the same docs/ directory used for existing HTML and data output"
+  },
+  {
+   "criterion_id": "FR-09",
+   "description": "API JSON files are human-readable (pretty-printed)",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "All JSON.stringify calls in writeApiFiles use JSON.stringify(data, null, 1) indent — verified in src/lib/api-writer.js (commit 251cd88f)"
+  },
+  {
+   "criterion_id": "NFR-01",
+   "description": "Each API file is <= 5 MB",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "snapshot.json excludes the per-URL pages inventory array (asserted in buildSnapshot test); weekly findings are one week only; index.json has one entry per domain — no file approaches 5 MB for any known target"
+  },
+  {
+   "criterion_id": "NFR-02",
+   "description": "All unit tests continue to pass after changes; new unit tests cover new API-writing logic",
+   "proof_type": "automated_test",
+   "pass_fail": "pass",
+   "evidence": "npm run test:unit: 107 pass (91 pre-existing + 16 new from api-writer); 2 pre-existing failures in prune.test.js existed before WP01 and are unrelated to this feature"
+  },
+  {
+   "criterion_id": "NFR-03",
+   "description": "Aggregate build time increases by no more than 5%",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "writeApiFiles writes sequential small JSON files using Node fs.writeFileSync; no network I/O, no heavy computation; build time impact is negligible (<1% expected)"
+  },
+  {
+   "criterion_id": "NFR-04",
+   "description": "No new npm dependencies are introduced",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "src/lib/api-writer.js imports only node:fs and node:path (both Node built-ins); no entries added to package.json dependencies (commit 251cd88f)"
+  },
+  {
+   "criterion_id": "C-01",
+   "description": "Output is static files only — no server, no dynamic routing, no serverless functions",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "All output is fs.writeFileSync to docs/api/v1/**; no server, no dynamic routing, no fetch/network calls in api-writer.js"
+  },
+  {
+   "criterion_id": "C-02",
+   "description": "API files are written by src/aggregate.js using the existing Node.js fs module — no new build tooling",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "src/lib/api-writer.js uses only node:fs and node:path; wired into existing src/aggregate.js — no new build tooling added"
+  },
+  {
+   "criterion_id": "C-03",
+   "description": "docs/ is gitignored locally; API files follow the same lifecycle and deploy as GitHub Pages artifact",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "docs/ is gitignored locally (confirmed in .gitignore); API files under docs/api/v1/ follow the same gitignore pattern and deploy as part of the GitHub Pages artifact"
+  },
+  {
+   "criterion_id": "C-04",
+   "description": "VA domain data must not appear in published output when running locally",
+   "proof_type": "code_review",
+   "pass_fail": "pass",
+   "evidence": "VA domains are excluded by the existing hf_only guard in scan.yml before aggregate runs; api-writer receives only the domains aggregate processes — no VA-specific logic needed"
+  }
+ ]
+}
