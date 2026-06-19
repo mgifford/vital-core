@@ -32,12 +32,19 @@ orchestration layer. Every non-trivial feature goes through a mission.
 
 ### Session start
 
-At the start of any implementation session, run:
+At the start of any implementation session, run these two commands and
+include both outputs in your first message:
+
 ```bash
-spec-kitty context --mission <slug>
+# 1. Check current mission state (what step is next)
+spec-kitty next --mission <slug>
+
+# 2. Get the structured prompt for that step
+spec-kitty agent context resolve --action tasks --mission <slug>
 ```
-and include the output in your first message so you have full spec +
-plan context without relying on conversation history.
+
+For a mission that already has a plan and work packages, substitute
+`tasks` with `implement` and add `--wp-id WP01` (etc.).
 
 ### Workflow
 
