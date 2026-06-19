@@ -104,3 +104,4 @@ No existing field changes.
 ## Activity Log
 
 - 2026-06-19T18:04:55Z – claude – shell_pid=7658 – Started implementation via action command
+- 2026-06-19T18:18:27Z – claude – shell_pid=7658 – WP02 implemented: buildAiFindings() is now async; adds optional ollama_summary field when Ollama reachable. 21 ai-findings + ollama tests pass. Committed 69633ba7.
