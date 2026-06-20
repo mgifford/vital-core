@@ -1,1 +1,0 @@
-/Users/AlexUA_1/.agents/skills/spk-start-command-map/SKILL.md

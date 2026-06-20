@@ -1,1 +1,0 @@
-/Users/AlexUA_1/.agents/skills/spk-meta-skill-map/references/spk-skill-map.md

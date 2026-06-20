@@ -33,7 +33,7 @@ git branch --show-current
 
 **Expected for mission worktrees:**
 
-- Location: `C:\Users\...\project\.worktrees\001-mission-name`
+- Location: `<project>\.worktrees\001-mission-name`
 - Branch: `001-mission-name` (NOT `main`)
 
 ---

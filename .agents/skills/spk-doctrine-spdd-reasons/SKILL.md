@@ -1,1 +1,0 @@
-/Users/AlexUA_1/.agents/skills/spk-doctrine-spdd-reasons/SKILL.md
