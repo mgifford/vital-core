@@ -485,13 +485,11 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const wordCounts = []; // per-page main-content word counts
   // Lighthouse: collect sampled scores + Core Web Vitals metrics for
   // medians, and keep per-sampled-page detail for the Lighthouse page.
-  const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], pwa: [], agentic: [] };
+  const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
   const lhMetrics = { firstContentfulPaintMs: [], largestContentfulPaintMs: [], speedIndexMs: [], totalBlockingTimeMs: [], cumulativeLayoutShift: [] };
   const lhPages = []; // { url, scores, metrics }
   // Lighthouse recommendations (non-a11y audits) rolled up across sampled pages.
   const lhReco = {}; // auditId -> { id, category, title, pages, examplePages[], savingsBytes, savingsMs }
-  // PWA/offline audit signals rolled up across sampled pages.
-  const lhPwa = {}; // auditId -> { id, title, pagesChecked, pagesPass, pagesNa }
   // Images: per-page flat list for CSV + aggregate alt-text metrics.
   const imageRows = []; // { pageUrl, src, alt, hasAlt, isDecorative, isMissingAlt, width, height, loading, bytes }
   let imagePagesScanned = 0;
@@ -699,13 +697,6 @@ function summarizeRecords(target, week, records, brokenLinks) {
         r.savingsBytes += a.savingsBytes ?? 0;
         r.savingsMs += a.savingsMs ?? 0;
       }
-      // Roll up PWA/offline signals: pass/fail counts per audit across sampled pages.
-      for (const a of rec.lighthouse.pwa ?? []) {
-        const r = (lhPwa[a.id] ??= { id: a.id, title: a.title, pagesChecked: 0, pagesPass: 0, pagesNa: 0 });
-        r.pagesChecked++;
-        if (a.notApplicable) r.pagesNa++;
-        else if (a.pass) r.pagesPass++;
-      }
     }
   }
 
@@ -826,7 +817,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
           medianAccessibility: lhScores.accessibility.length ? median(lhScores.accessibility) : null,
           medianBestPractices: lhScores.bestPractices.length ? median(lhScores.bestPractices) : null,
           medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
-          medianPwa: lhScores.pwa.length ? median(lhScores.pwa) : null,
+          medianPwa: null,
           medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
           metrics: {
             firstContentfulPaintMs: lhMetrics.firstContentfulPaintMs.length ? median(lhMetrics.firstContentfulPaintMs) : null,
@@ -835,15 +826,13 @@ function summarizeRecords(target, week, records, brokenLinks) {
             totalBlockingTimeMs: lhMetrics.totalBlockingTimeMs.length ? median(lhMetrics.totalBlockingTimeMs) : null,
             cumulativeLayoutShift: lhMetrics.cumulativeLayoutShift.length ? median(lhMetrics.cumulativeLayoutShift) : null,
           },
+          pwaSignals: [],
           pageDetail: lhPages, // per-sampled-page detail for the Lighthouse page (omitted from committed summary.json)
           // Aggregated non-accessibility recommendations, ranked by reach then
           // impact. Stored in the committed summary (compact, like axe rules).
           recommendations: Object.values(lhReco).sort(
             (a, b) => b.pages - a.pages || (b.savingsBytes + b.savingsMs * 1000) - (a.savingsBytes + a.savingsMs * 1000)
           ),
-          // PWA/offline readiness: pass rates per audit across sampled pages.
-          // Stored in committed summary; not per-page detail.
-          pwaSignals: Object.values(lhPwa).sort((a, b) => a.pagesPass / a.pagesChecked - b.pagesPass / b.pagesChecked),
         }
       : null,
     linkCheck: brokenLinks.size
