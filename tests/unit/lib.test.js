@@ -949,6 +949,29 @@ test('buildAcrData: not-evaluated for SCs no engine covers', () => {
   assert.equal(sc125.adherence, 'not-evaluated');
 });
 
+test('buildAcrData: Alfa-only scan with >5% failure rate → does-not-support', () => {
+  // Regression guard: when axePages=0, failRate must still use alfaPages as
+  // denominator so high-page-count Alfa failures are not misclassified as
+  // partially-supports.
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 100,
+    axe: { pagesScanned: 0, rules: {} },
+    alfa: {
+      pagesScanned: 100,
+      rules: {
+        // sia-r12 → 4.1.2; 10/100 = 10% → should be does-not-support
+        'sia-r12': { pages: 10, tags: [], examplePages: ['https://x/a'] },
+      },
+    },
+  };
+  const { scMap } = buildAcrData(summary);
+  const sc412 = scMap.get('4.1.2');
+  assert.ok(sc412, '4.1.2 entry present');
+  assert.equal(sc412.adherence, 'does-not-support', 'Alfa-only 10% failure rate → does-not-support');
+  assert.ok(sc412.engines.includes('Alfa'));
+});
+
 test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
   const summary = {
     week: '2026-W25',
