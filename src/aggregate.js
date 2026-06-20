@@ -18,6 +18,7 @@ import { buildCooccurrence, rankAssociations } from './lib/tech-findings.js';
 import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
 import { buildAiFindings } from './lib/ai-findings.js';
+import { writeAcrYaml } from './lib/acr.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -214,6 +215,9 @@ for (const target of config.targets) {
     const bugsJsonName = `${pfx2}_bugs.json`;
     const aiJsonName = `${pfx2}_ai-findings.json`;
 
+    // OpenACR YAML — written before the accessibility page so the path is available for the download link.
+    const acrResult = writeAcrYaml(repDir, target, summary, summary.week);
+
     // Accessibility (always has content — shows "no findings" when clean).
     fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, {
       ...reporting, keyPages,
@@ -221,6 +225,7 @@ for (const target of config.targets) {
       priorityPagesJson: priorityPages.json,
       bugsJson: bugsJsonName,
       aiJson: aiJsonName,
+      acrYaml: acrResult.path,
     }));
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));

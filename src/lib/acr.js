@@ -1,15 +1,13 @@
 /**
  * Weekly Accessibility Conformance Report (ACR) generator.
  *
- * Produces two outputs from a week's summary data:
+ * Produces one output from a week's summary data:
  *
  *   acr.yaml  — OpenACR 0.1.0 YAML, machine-readable and editable.
  *               Compatible with https://github.com/GSA/openacr tooling.
  *               Can be committed to source control and updated manually to
  *               add context automated tools cannot provide (AT testing,
  *               user research, exception tracking).
- *
- *   acr.html  — Human-readable weekly ACR view, integrated into the report.
  *
  * Adherence level mapping (OpenACR vocabulary):
  *   does-not-support  — automated scan found failures for this SC on ≥1 page
@@ -165,7 +163,7 @@ export function buildAcrData(summary) {
       pagesAffected = fail.pages;
       engines = [...fail.engines];
       examples = [...fail.examples];
-      const failRate = axePages > 0 ? fail.pages / Math.max(axePages, alfaPages, 1) : 0;
+      const failRate = fail.pages / Math.max(axePages, alfaPages, 1);
       // Partially-supports when failures affect <5% of tested pages
       adherence = failRate < 0.05 ? 'partially-supports' : 'does-not-support';
     } else if (testedSCs.has(entry.sc)) {
@@ -207,7 +205,7 @@ product:
   description: ${yamlStr(`Public web pages at ${target.domain}, week ${weekLabel}. Automated scan by vital-scans using axe-core and Siteimprove Alfa.`)}
 report_date: ${reportDate}
 last_modified_date: ${reportDate}
-version: 1
+version: "1"
 catalog: 2.5-edition-wcag-2.2-en
 notes: ${yamlStr(
   `This ACR is generated automatically from weekly accessibility scans of ${target.domain} ` +
