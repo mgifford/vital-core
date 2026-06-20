@@ -15,22 +15,9 @@
  * only loads (and only requires Chrome) when actually enabled.
  */
 
-const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo', 'pwa', 'agentic-browsing'];
-
-// PWA audit IDs we extract from the full audit set.
-// Lighthouse reports these when the pwa category is enabled.
-const PWA_AUDIT_IDS = new Set([
-  'service-worker',      // service worker registered
-  'works-offline',       // offline fallback served
-  'offline-start-url',   // start URL responds while offline
-  'installable-manifest', // web app manifest meets install criteria
-  'apple-touch-icon',    // apple-touch-icon present
-  'maskable-icon',       // maskable icon in manifest
-  'splash-screen',       // custom splash screen configured
-  'themed-omnibox',      // browser address bar themed
-  'content-width',       // viewport content-width set
-  'viewport',            // viewport meta tag present
-]);
+// PWA category was removed in Lighthouse 12; it is no longer in CATEGORIES.
+// PWA / offline signals are now detected via Playwright in standards.js instead.
+const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'];
 
 /**
  * Create a runner that owns one shared Chrome for a batch of audits.
@@ -76,8 +63,7 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
             accessibility: score(cats.accessibility),
             bestPractices: score(cats['best-practices']),
             seo: score(cats.seo),
-            pwa: score(cats.pwa),
-            agentic: score(cats['agentic-browsing']), // null if not run
+            agentic: score(cats['agentic-browsing']),
           },
           metrics: {
             firstContentfulPaintMs: numeric(audits['first-contentful-paint']),
@@ -86,13 +72,9 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
             totalBlockingTimeMs: numeric(audits['total-blocking-time']),
             cumulativeLayoutShift: numericRaw(audits['cumulative-layout-shift']),
           },
-          // Failing/actionable audits across the non-accessibility categories,
-          // the substance Lighthouse produces beyond the headline scores.
+          // Failing/actionable audits across the non-accessibility categories.
           // Accessibility audits are excluded — they mostly duplicate axe.
           audits: extractAudits(cats, audits),
-          // PWA/offline readiness: key audit results for service workers,
-          // offline access, and PWA installability signals.
-          pwa: extractPwaAudits(audits),
         };
       } catch (err) {
         log(`lighthouse: audit failed for ${url}: ${String(err?.message || err).slice(0, 100)}`);
@@ -115,29 +97,8 @@ const RECO_CATEGORIES = {
   performance: 'Performance',
   seo: 'SEO',
   'best-practices': 'Best Practices',
-  pwa: 'PWA',
   'agentic-browsing': 'Agentic',
 };
-
-/**
- * Extract PWA/offline readiness signals from a Lighthouse audit set.
- * Returns a compact object with pass/fail for each key PWA audit,
- * so aggregate can roll up "does this site have a service worker?" across
- * sampled pages without storing the full audit payload.
- *
- * Each entry: { id, title, pass: boolean, notApplicable: boolean }
- */
-export function extractPwaAudits(audits) {
-  const out = [];
-  for (const id of PWA_AUDIT_IDS) {
-    const a = audits[id];
-    if (!a) continue;
-    const pass = a.score === 1 || a.scoreDisplayMode === 'notApplicable';
-    const notApplicable = a.scoreDisplayMode === 'notApplicable';
-    out.push({ id, title: a.title ?? id, pass, notApplicable });
-  }
-  return out;
-}
 
 /**
  * Pull the failing/actionable audits out of a Lighthouse result, tagged with

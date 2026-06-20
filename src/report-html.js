@@ -825,14 +825,33 @@ function standardsSecuritySection(summary) {
   const secBlock = sec ? `
 <h3>Security &amp; domain hygiene <span class="bug-meta">${sec.passed}/${sec.total} on the origin</span></h3>
 ${checklist(sec.checks)}` : '';
-  const stdBlock = std ? `
+  const stdBlock = std ? (() => {
+    const pwaChecks = std.checks.filter((c) => c.id.startsWith('pwa-'));
+    const metaChecks = std.checks.filter((c) => !c.id.startsWith('pwa-'));
+    const checkRow = (c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`;
+    const hasSW = pwaChecks.find((c) => c.id === 'pwa-service-worker');
+    const hasManifest = pwaChecks.find((c) => c.id === 'pwa-manifest');
+    const pwaInterpretation = hasSW?.pass > 0
+      ? `Service worker detected on ${hasSW.pass} of ${hasSW.total} checked page(s). ${hasManifest?.pass > 0 ? 'Web app manifest also present.' : 'No web app manifest found.'} Service workers enable offline access and "Add to Home Screen" install.`
+      : 'No service worker detected on any checked page — this site does not provide offline access or PWA install capability.';
+    const pwaBlock = pwaChecks.length ? `
+<h3>PWA &amp; offline readiness <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
+<p class="meta">${pwaInterpretation} These checks run on every crawled page via Playwright (not sampled). Lighthouse 12+ removed the dedicated PWA category score.</p>
+<table>
+<caption>PWA / offline readiness signals (lowest pass rate first).</caption>
+<thead><tr><th scope="col">Check</th><th scope="col" class="num">Pass rate</th><th scope="col" class="num">Pages</th></tr></thead>
+<tbody>${pwaChecks.map(checkRow).join('')}</tbody>
+</table>` : '';
+    return `
 <h3>Web standards &amp; metadata <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
 <table>
 <caption>Share of checked pages passing each standard (lowest first).</caption>
 <thead><tr><th scope="col">Standard</th><th scope="col" class="num">Pass rate</th><th scope="col" class="num">Pages</th></tr></thead>
-<tbody>${std.checks.map((c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`).join('')}</tbody>
+<tbody>${metaChecks.map(checkRow).join('')}</tbody>
 </table>
-${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}` : '';
+${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}
+${pwaBlock}`;
+  })() : '';
   const piBlock = publicInterestSection(pi);
   return `<section aria-labelledby="h-standards">
 ${heading('h-standards', `Standards & security`)}
@@ -1064,56 +1083,6 @@ ${gaps}
 </section>`;
 }
 
-function pwaSignalsSection(lh) {
-  const signals = lh.pwaSignals;
-  if (!signals?.length) return '';
-  const pagesChecked = lh.pagesSampled;
-
-  const PWA_DESCRIPTIONS = {
-    'service-worker': 'Service worker registered — enables offline access and background sync.',
-    'works-offline': 'Page responds when offline — shows a fallback instead of a browser error.',
-    'offline-start-url': 'App start URL responds while offline.',
-    'installable-manifest': 'Web app manifest meets criteria for "Add to Home Screen" / install prompt.',
-    'apple-touch-icon': 'Apple touch icon present — improves iOS bookmark appearance.',
-    'maskable-icon': 'Maskable icon in manifest — fills the full icon shape on Android.',
-    'splash-screen': 'Custom splash screen configured in manifest.',
-    'themed-omnibox': 'Browser address bar themed to match the site.',
-    'content-width': 'Viewport width matches device width.',
-    'viewport': 'Viewport meta tag present.',
-  };
-
-  const rows = signals.map((s) => {
-    const passRate = s.pagesChecked > 0 ? Math.round((s.pagesPass / s.pagesChecked) * 100) : 0;
-    const passing = passRate >= 80;
-    const badge = passing ? '✓' : passRate > 0 ? '~' : '✗';
-    const badgeClass = passing ? 'pwa-pass' : passRate > 0 ? 'pwa-partial' : 'pwa-fail';
-    const desc = PWA_DESCRIPTIONS[s.id] ?? '';
-    return `<tr>
-  <td><span class="pwa-badge ${esc(badgeClass)}">${badge}</span></td>
-  <th scope="row">${esc(s.title)}</th>
-  <td class="num">${s.pagesPass}/${s.pagesChecked}</td>
-  <td class="num">${passRate}%</td>
-  <td>${esc(desc)}</td>
-</tr>`;
-  }).join('\n');
-
-  const hasServiceWorker = signals.find((s) => s.id === 'service-worker' && s.pagesPass > 0);
-  const hasOffline = signals.find((s) => s.id === 'works-offline' && s.pagesPass > 0);
-  const interpretation = hasServiceWorker
-    ? `Service worker detected on ${signals.find((s) => s.id === 'service-worker').pagesPass} of ${pagesChecked} sampled page(s). ${hasOffline ? 'Offline fallback confirmed.' : 'No offline fallback detected.'}`
-    : `No service worker detected on any sampled page. This site does not provide offline access or PWA install capability.`;
-
-  return `<section aria-labelledby="h-lh-pwa">
-${heading('h-lh-pwa', `PWA / offline readiness`)}
-<p class="meta">${interpretation} Checks run on ${pagesChecked} sampled page(s). Service workers and offline access allow pages to load without a network connection, and enable "Add to Home Screen" install on mobile.</p>
-<table>
-<caption>PWA and offline readiness audit results from Lighthouse.</caption>
-<thead><tr><th scope="col"></th><th scope="col">Audit</th><th scope="col" class="num">Pages passing</th><th scope="col" class="num">Pass rate</th><th scope="col">What it checks</th></tr></thead>
-<tbody>${rows}</tbody>
-</table>
-</section>`;
-}
-
 export function renderLighthousePage(target, summary, csvHref, jsonHref) {
   const lh = summary.lighthouse;
   if (!lh || !lh.pageDetail?.length) {
@@ -1126,7 +1095,7 @@ export function renderLighthousePage(target, summary, csvHref, jsonHref) {
   const cols = [
     { label: 'Page' }, { label: 'Perf', num: 1 }, { label: 'A11y', num: 1 },
     { label: 'Best practices', num: 1 }, { label: 'SEO', num: 1 },
-    { label: 'PWA', num: 1 }, { label: 'Agentic', num: 1 },
+    { label: 'Agentic', num: 1 },
     { label: 'FCP', num: 1 }, { label: 'LCP', num: 1 }, { label: 'Speed Index', num: 1 },
     { label: 'TBT', num: 1 }, { label: 'CLS', num: 1 },
   ];
@@ -1137,7 +1106,7 @@ export function renderLighthousePage(target, summary, csvHref, jsonHref) {
       cell(`<a class="url" href="${esc(p.url)}" title="${esc(p.url)}">${esc(path)}</a>`, path),
       cell(sc(p.scores.performance), p.scores.performance), cell(sc(p.scores.accessibility), p.scores.accessibility),
       cell(sc(p.scores.bestPractices), p.scores.bestPractices), cell(sc(p.scores.seo), p.scores.seo),
-      cell(sc(p.scores.pwa), p.scores.pwa), cell(sc(p.scores.agentic), p.scores.agentic),
+      cell(sc(p.scores.agentic), p.scores.agentic),
       cell(ms(m.firstContentfulPaintMs), m.firstContentfulPaintMs), cell(ms(m.largestContentfulPaintMs), m.largestContentfulPaintMs),
       cell(ms(m.speedIndexMs), m.speedIndexMs), cell(ms(m.totalBlockingTimeMs), m.totalBlockingTimeMs),
       cell(p.metrics.cumulativeLayoutShift ?? 'n/a', p.metrics.cumulativeLayoutShift),
@@ -1166,7 +1135,6 @@ ${heading('h-lh-medians', `Medians across sampled pages`)}
   <div><dt>Accessibility</dt><dd>${fmtScore(lh.medianAccessibility)}</dd></div>
   <div><dt>Best practices</dt><dd>${fmtScore(lh.medianBestPractices)}</dd></div>
   <div><dt>SEO</dt><dd>${fmtScore(lh.medianSeo)}</dd></div>
-  ${lh.medianPwa != null ? `<div><dt>PWA readiness</dt><dd>${fmtScore(lh.medianPwa)}</dd></div>` : ''}
   ${lh.medianAgentic != null ? `<div><dt>Agentic browsing</dt><dd>${fmtScore(lh.medianAgentic)}</dd></div>` : ''}
   <div><dt>Largest Contentful Paint</dt><dd>${ms(m.largestContentfulPaintMs)}</dd></div>
   <div><dt>First Contentful Paint</dt><dd>${ms(m.firstContentfulPaintMs)}</dd></div>
@@ -1175,12 +1143,11 @@ ${heading('h-lh-medians', `Medians across sampled pages`)}
   <div><dt>Cumulative Layout Shift</dt><dd>${m.cumulativeLayoutShift ?? 'n/a'}</dd></div>
 </dl>
 </section>
-${pwaSignalsSection(lh)}
 ${lighthouseRecommendations(lh.recommendations, lh.pageDetail.length)}
 ${agenticExplainer(lh)}
 <section aria-labelledby="h-lh-pages">
 ${heading('h-lh-pages', `Per-page results`)}
-${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}); PWA = offline/install readiness; Agentic = experimental agentic-browsing score.`, cols, rows)}
+${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}). Agentic = experimental agentic-browsing score. PWA / offline readiness is tracked in the Standards tab (Lighthouse 12+ removed the PWA category).`, cols, rows)}
 </section>`;
   return layout({
     title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
