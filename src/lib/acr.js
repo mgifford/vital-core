@@ -1,13 +1,16 @@
 /**
  * Weekly Accessibility Conformance Report (ACR) generator.
  *
- * Produces one output from a week's summary data:
+ * Produces three outputs from a week's summary data:
  *
  *   acr.yaml  — OpenACR 0.1.0 YAML, machine-readable and editable.
  *               Compatible with https://github.com/GSA/openacr tooling.
  *               Can be committed to source control and updated manually to
  *               add context automated tools cannot provide (AT testing,
  *               user research, exception tracking).
+ *   acr.html  — Self-contained HTML view (inline CSS; no external deps).
+ *               VPAT-style Level A + Level AA tables with adherence labels.
+ *   acr.zip   — Bundle of the above two files for easy download.
  *
  * Adherence level mapping (OpenACR vocabulary):
  *   does-not-support  — automated scan found failures for this SC on ≥1 page
@@ -26,6 +29,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { resolveWcag } from './wcag.js';
 
 // All WCAG 2.2 Success Criteria in catalog order, with level and version.
@@ -279,12 +283,132 @@ ${renderCriteria(levelAA)}
 `;
 }
 
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function scUnderstandingSlug(name) {
+  return name.toLowerCase().replace(/[(),.]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+const ADHERENCE_LABEL = {
+  'does-not-support':   'Does Not Support',
+  'partially-supports': 'Partially Supports',
+  'supports':           'Supports',
+  'not-evaluated':      'Not Evaluated',
+};
+
 /**
- * Write acr.yaml to the report directory. Returns relative path or null.
+ * Generate a self-contained HTML Accessibility Conformance Report.
+ * No external CSS, JS, or design system required.
+ */
+export function renderAcrHtml(target, summary, week, acrData) {
+  const { scMap, pagesScanned, axePages, alfaPages } = acrData;
+  const reportDate = new Date().toISOString().slice(0, 10);
+  const weekLabel = week ?? summary.week;
+  const domain = escHtml(target.domain);
+  const tested = Math.max(axePages, alfaPages);
+
+  const renderRow = (e) => {
+    const d = scMap.get(e.sc);
+    if (!d) return '';
+    const slug = scUnderstandingSlug(e.name);
+    const scLink = `https://www.w3.org/WAI/WCAG22/Understanding/${slug}/`;
+    const label = ADHERENCE_LABEL[d.adherence] ?? d.adherence;
+    let notes;
+    if (d.pagesAffected > 0) {
+      notes = `Automated scan found failures on ${d.pagesAffected} of ${tested} tested pages (engines: ${escHtml(d.engines.join(', '))}).`;
+      if (d.examples.length > 0) notes += ` Example: <a href="${escHtml(d.examples[0])}">${escHtml(d.examples[0])}</a>`;
+    } else if (d.adherence === 'supports') {
+      notes = `No automated failures detected on ${tested} tested pages this week.`;
+    } else {
+      notes = 'Not evaluated by automated engines this week. Manual testing required.';
+    }
+    return `    <tr>
+      <td class="sc-num"><a href="${escHtml(scLink)}">${escHtml(e.sc)}</a> ${escHtml(e.name)}</td>
+      <td><span class="adherence ${escHtml(d.adherence)}">${escHtml(label)}</span></td>
+      <td>${notes}</td>
+    </tr>`;
+  };
+
+  const renderTable = (entries, heading) => {
+    const rows = entries.map(renderRow).filter(Boolean).join('\n');
+    return `<h2>${heading}</h2>
+<table>
+  <thead><tr><th>Criteria</th><th>Conformance Level</th><th>Remarks and Explanations</th></tr></thead>
+  <tbody>
+${rows}
+  </tbody>
+</table>`;
+  };
+
+  const levelA  = WCAG_CATALOG.filter((e) => e.level === 'A');
+  const levelAA = WCAG_CATALOG.filter((e) => e.level === 'AA');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${domain}: Accessibility Conformance Report — ${escHtml(weekLabel)}</title>
+  <style>
+    body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:1200px;color:#1b1b1b}
+    h1{color:#005ea2}
+    h2{border-bottom:2px solid #005ea2;padding-bottom:.25rem;margin-top:2rem}
+    p.note{background:#f0f4f9;border-left:4px solid #005ea2;padding:.75rem 1rem}
+    table{width:100%;border-collapse:collapse;margin-bottom:2rem}
+    thead th{background:#005ea2;color:#fff;padding:.5rem;text-align:left}
+    td{padding:.5rem;border:1px solid #ddd;vertical-align:top}
+    tr:nth-child(even) td{background:#f6f8fb}
+    .sc-num{white-space:nowrap}
+    .adherence{font-weight:700}
+    .does-not-support{color:#b50909}
+    .partially-supports{color:#8a5c00}
+    .supports{color:#1a7a3e}
+    .not-evaluated{color:#555}
+    .footer{font-size:.85em;color:#555;margin-top:3rem;border-top:1px solid #ddd;padding-top:1rem}
+    a{color:#005ea2}
+  </style>
+</head>
+<body>
+<h1>${domain}: Accessibility Conformance Report</h1>
+<p>Week: <strong>${escHtml(weekLabel)}</strong> &nbsp;&middot;&nbsp; Report date: <strong>${escHtml(reportDate)}</strong></p>
+<p>${escHtml(String(pagesScanned))} pages scanned; axe-core ran on ${escHtml(String(axePages))} pages, Siteimprove Alfa on ${escHtml(String(alfaPages))} pages.</p>
+<p class="note"><strong>Note:</strong> Automated tools find roughly a third of real barriers. This report must be supplemented with manual AT testing and user research before making conformance claims. &ldquo;Supports&rdquo; means no automated failure was detected this week, not that the criterion is fully met.</p>
+
+${renderTable(levelA,  'Level A Success Criteria')}
+
+${renderTable(levelAA, 'Level AA Success Criteria')}
+
+<div class="footer">
+  <p>Generated by <a href="https://github.com/mgifford/vital-core">vital-core</a> using axe-core and Siteimprove Alfa.
+  Catalog: WCAG 2.2 A+AA (2.5-edition-wcag-2.2-en).
+  <a href="acr.yaml">Download acr.yaml</a>.</p>
+</div>
+</body>
+</html>`;
+}
+
+/**
+ * Write acr.yaml and acr.html to the report directory, then zip them.
+ * Returns { path, acrData } where path is 'acr.zip' if zip succeeded, else 'acr.yaml'.
  */
 export function writeAcrYaml(repDir, target, summary, week) {
   const acrData = buildAcrData(summary);
+
   const yaml = buildAcrYaml(target, summary, week, acrData);
   fs.writeFileSync(path.join(repDir, 'acr.yaml'), yaml, 'utf8');
-  return { path: 'acr.yaml', acrData };
+
+  const html = renderAcrHtml(target, summary, week, acrData);
+  fs.writeFileSync(path.join(repDir, 'acr.html'), html, 'utf8');
+
+  let outputPath = 'acr.yaml';
+  try {
+    execFileSync('zip', ['-j', 'acr.zip', 'acr.yaml', 'acr.html'], { cwd: repDir, stdio: 'ignore' });
+    outputPath = 'acr.zip';
+  } catch {
+    // zip not available — yaml and html still written individually
+  }
+
+  return { path: outputPath, acrData };
 }

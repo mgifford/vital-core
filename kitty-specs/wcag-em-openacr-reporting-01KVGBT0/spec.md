@@ -1,6 +1,6 @@
 # Spec: Weekly WCAG-EM / OpenACR reporting
 
-**Status**: WP01 DONE / WP02 partially done (aggregate wire-up complete; smoke-check pending real data run)
+**Status**: WP01 DONE / WP02 partially done (aggregate + HTML/ZIP wire-up complete; smoke-check pending real data run)
 
 ## Goal
 
@@ -39,11 +39,16 @@ control and layer manual findings on top of.
       for every domain/week in the per-week loop, storing the returned
       `acrData` on `summary` so the accessibility page can use it.
 - [x] `src/report-html.js` `renderAccessibilityPage` accepts an `acrYaml`
-      option and, when present, renders a download link to `acr.yaml` with a
+      option and, when present, renders a download link (YAML + HTML zip) with a
       brief note explaining what it is.
-- [ ] Running `npm run aggregate` against real data/ produces an `acr.yaml`
-      in each domain's report directory (manual smoke-check).
-- [ ] The file validates against the OpenACR YAML schema
+- [x] `acr.js` `renderAcrHtml()` generates self-contained HTML (inline CSS, no
+      USWDS/CDN dependency) with VPAT-style Level A + Level AA tables, adherence
+      colour-coding, and links to WCAG Understanding docs.
+- [x] `writeAcrYaml` writes `acr.yaml`, `acr.html`, and `acr.zip`; returns
+      `{ path: 'acr.zip' }` when zip succeeds (falls back to `'acr.yaml'`).
+- [ ] Running `npm run aggregate` against real data/ produces `acr.yaml`,
+      `acr.html`, and `acr.zip` in each domain's report directory (manual smoke-check).
+- [ ] The YAML validates against the OpenACR YAML schema
       (catalog: `2.5-edition-wcag-2.2-en`) — confirmed by eyeballing the
       generated YAML for required fields: `title`, `product`, `report_date`,
       `catalog`, `chapters`.
