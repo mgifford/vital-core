@@ -1,6 +1,6 @@
 # Spec: Weekly WCAG-EM / OpenACR reporting
 
-**Status**: WP01 DONE / WP02 partially done (aggregate + HTML/ZIP wire-up complete; smoke-check pending real data run)
+**Status**: WP01 DONE / WP02 DONE
 
 ## Goal
 
@@ -46,13 +46,14 @@ control and layer manual findings on top of.
       colour-coding, and links to WCAG Understanding docs.
 - [x] `writeAcrYaml` writes `acr.yaml`, `acr.html`, and `acr.zip`; returns
       `{ path: 'acr.zip' }` when zip succeeds (falls back to `'acr.yaml'`).
-- [ ] Running `npm run aggregate` against real data/ produces `acr.yaml`,
-      `acr.html`, and `acr.zip` in each domain's report directory (manual smoke-check).
-- [ ] The YAML validates against the OpenACR YAML schema
-      (catalog: `2.5-edition-wcag-2.2-en`) — confirmed by eyeballing the
-      generated YAML for required fields: `title`, `product`, `report_date`,
-      `catalog`, `chapters`.
-- [x] All unit tests still pass (103 pass, 0 fail).
+- [x] Running `npm run aggregate` against real data/ produces `acr.yaml`,
+      `acr.html`, and `acr.zip` in each domain's report directory — confirmed
+      across all 13 domain/week combinations.
+- [x] The YAML validates against the OpenACR YAML schema
+      (catalog: `2.5-edition-wcag-2.2-en`) — required fields present:
+      `title`, `product`, `report_date`, `catalog`, `chapters`, all adherence
+      values valid.
+- [x] All unit tests still pass (105 pass, 0 fail).
 
 ## Out of scope
 
