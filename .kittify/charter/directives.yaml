@@ -3,18 +3,30 @@
 
 directives:
 - id: DIR-001
-  title: Keep specification, plan, tasks, implementation, a
+  title: Specification Artifact Consistency
   description: Keep specification, plan, tasks, implementation, and review artifacts consistent.
   severity: warn
 - id: DIR-002
-  title: 'Severity labels must use axe taxonomy: Critical / '
-  description: 'Severity labels must use axe taxonomy: Critical / Serious / Moderate / Minor.'
+  title: Required Test Gates
+  description: Run npm run test:unit before merge, and run npm run test:e2e for scanner or aggregation pipeline changes.
   severity: warn
 - id: DIR-003
-  title: Engine modules go in `src/engines/`; wire into `sr
-  description: Engine modules go in `src/engines/`; wire into `src/scan.js` and `src/aggregate.js`.
+  title: Secret And Local State Protection
+  description: Never commit .env files, authentication tokens, secrets, local data paths, or Hugging Face state paths.
   severity: warn
 - id: DIR-004
-  title: Report UI CSS changes go in `src/report-html.js` (
-  description: Report UI CSS changes go in `src/report-html.js` (the CSS string constant), never `docs/`.
+  title: Axe Severity Taxonomy
+  description: "Severity labels must use axe taxonomy: Critical / Serious / Moderate / Minor."
+  severity: warn
+- id: DIR-005
+  title: Engine Wiring Contract
+  description: Engine modules go in `src/engines/`; wire new engines into `src/scan.js`, `src/aggregate.js`, and target sampling config.
+  severity: warn
+- id: DIR-006
+  title: Report CSS Source Contract
+  description: Report UI CSS changes go in `src/report-html.js` (the CSS string constant), never generated files under `docs/`.
+  severity: warn
+- id: DIR-007
+  title: Default Reporting Policy
+  description: Default reports show Critical/Serious WCAG A and AA findings plus Moderate/Minor findings affecting 10 or more pages; Best Practice findings stay hidden until Show everything is selected.
   severity: warn

@@ -23,9 +23,9 @@ Each WP file **MUST** use YAML frontmatter:
 work_package_id: "WP01"
 title: "Work Package Title"
 dependencies: []
-planning_base_branch: "public-interest-checks"
-merge_target_branch: "public-interest-checks"
-branch_strategy: "Planning artifacts were generated on public-interest-checks; completed changes must merge back into public-interest-checks."
+planning_base_branch: "main"
+merge_target_branch: "main"
+branch_strategy: "Planning artifacts are generated on main; completed changes must merge back into main unless the human explicitly redirects the landing branch."
 subtasks:
   - "T001"
   - "T002"

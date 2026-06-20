@@ -1,5 +1,6 @@
 # Spec: Ollama Local-LLM Integration
 
+**Status**: SHIPPED (2026-W25, PR #152)
 **Feature slug**: ollama-integration  
 **Mission ID**: ollama-integration-01KVG6SJ
 
@@ -29,25 +30,25 @@ the code falls back silently to the existing logic. No Ollama → no change in o
 | FR-05 | No change to output shape when Ollama is absent |
 | FR-06 | `scripts/check-ollama.js` diagnostic; `check:ollama` npm script |
 | NFR-01 | No new npm dependencies |
-| NFR-02 | All 91 existing unit tests still pass; new ollama unit tests added |
+| NFR-02 | All existing unit tests still pass; new ollama unit tests added |
 
 ## Acceptance Criteria
 
-- [ ] `src/lib/ollama.js` — thin client: `chat(prompt, model?)`, `isAvailable()`,
+- [x] `src/lib/ollama.js` — thin client: `chat(prompt, model?)`, `isAvailable()`,
       `detectModel()`. Uses `fetch()` against the Ollama REST API (`/api/generate`
       or `/api/chat`). No new npm dependencies.
-- [ ] `isAvailable()` probes `GET /api/tags` with a 2-second timeout. Returns
+- [x] `isAvailable()` probes `GET /api/tags` with a 2-second timeout. Returns
       `false` on any error. Never throws.
-- [ ] Config: `VITAL_OLLAMA_URL` env var (default `http://localhost:11434`);
+- [x] Config: `VITAL_OLLAMA_URL` env var (default `http://localhost:11434`);
       `VITAL_OLLAMA_MODEL` (default `llama3` or first available model).
-- [ ] At least one consumer wired: `src/lib/ai-findings.js` calls
+- [x] At least one consumer wired: `src/lib/ai-findings.js` calls
       `ollama.chat(summaryPrompt)` when available, prepends result to
       `ai_summary` field in the output JSON.
-- [ ] Unit tests cover: `isAvailable()` when server is up and when it times out,
+- [x] Unit tests cover: `isAvailable()` when server is up and when it times out,
       `chat()` happy path and error path (mock `fetch`).
-- [ ] `scripts/check-ollama.js` — diagnostic: prints available models and a
+- [x] `scripts/check-ollama.js` — diagnostic: prints available models and a
       test generation. Usage: `node scripts/check-ollama.js`.
-- [ ] All 91 existing unit tests still pass.
+- [x] All existing unit tests still pass.
 
 ## Out of Scope
 
