@@ -19,6 +19,7 @@ import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
 import { buildAiFindings } from './lib/ai-findings.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
+import { writeAcrYaml } from './lib/acr.js';
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -222,6 +223,9 @@ for (const target of config.targets) {
     const bugsJsonName = `${pfx2}_bugs.json`;
     const aiJsonName = `${pfx2}_ai-findings.json`;
 
+    // OpenACR YAML — written before the accessibility page so the path is available for the download link.
+    const acrResult = writeAcrYaml(repDir, target, summary, summary.week);
+
     // Accessibility (always has content — shows "no findings" when clean).
     fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, {
       ...reporting, keyPages,
@@ -229,6 +233,7 @@ for (const target of config.targets) {
       priorityPagesJson: priorityPages.json,
       bugsJson: bugsJsonName,
       aiJson: aiJsonName,
+      acrYaml: acrResult.path,
     }));
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
@@ -280,7 +285,7 @@ for (const target of config.targets) {
     // Intentionally excludes healthy pages; uses representative examples rather
     // than exhaustive lists. The existing bugs.json and domain.json are the
     // archival sources of truth and are not replaced.
-    const aiDoc = buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
+    const aiDoc = await buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
     if (aiDoc) {
       const aiJson = JSON.stringify(aiDoc, null, 1);
       fs.writeFileSync(path.join(repDir, aiJsonName), aiJson);
@@ -494,13 +499,11 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const wordCounts = []; // per-page main-content word counts
   // Lighthouse: collect sampled scores + Core Web Vitals metrics for
   // medians, and keep per-sampled-page detail for the Lighthouse page.
-  const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], pwa: [], agentic: [] };
+  const lhScores = { performance: [], accessibility: [], bestPractices: [], seo: [], agentic: [] };
   const lhMetrics = { firstContentfulPaintMs: [], largestContentfulPaintMs: [], speedIndexMs: [], totalBlockingTimeMs: [], cumulativeLayoutShift: [] };
   const lhPages = []; // { url, scores, metrics }
   // Lighthouse recommendations (non-a11y audits) rolled up across sampled pages.
   const lhReco = {}; // auditId -> { id, category, title, pages, examplePages[], savingsBytes, savingsMs }
-  // PWA/offline audit signals rolled up across sampled pages.
-  const lhPwa = {}; // auditId -> { id, title, pagesChecked, pagesPass, pagesNa }
   // Images: per-page flat list for CSV + aggregate alt-text metrics.
   const imageRows = []; // { pageUrl, src, alt, hasAlt, isDecorative, isMissingAlt, width, height, loading, bytes }
   let imagePagesScanned = 0;
@@ -708,13 +711,6 @@ function summarizeRecords(target, week, records, brokenLinks) {
         r.savingsBytes += a.savingsBytes ?? 0;
         r.savingsMs += a.savingsMs ?? 0;
       }
-      // Roll up PWA/offline signals: pass/fail counts per audit across sampled pages.
-      for (const a of rec.lighthouse.pwa ?? []) {
-        const r = (lhPwa[a.id] ??= { id: a.id, title: a.title, pagesChecked: 0, pagesPass: 0, pagesNa: 0 });
-        r.pagesChecked++;
-        if (a.notApplicable) r.pagesNa++;
-        else if (a.pass) r.pagesPass++;
-      }
     }
   }
 
@@ -835,7 +831,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
           medianAccessibility: lhScores.accessibility.length ? median(lhScores.accessibility) : null,
           medianBestPractices: lhScores.bestPractices.length ? median(lhScores.bestPractices) : null,
           medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
-          medianPwa: lhScores.pwa.length ? median(lhScores.pwa) : null,
+          medianPwa: null,
           medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
           metrics: {
             firstContentfulPaintMs: lhMetrics.firstContentfulPaintMs.length ? median(lhMetrics.firstContentfulPaintMs) : null,
@@ -844,15 +840,13 @@ function summarizeRecords(target, week, records, brokenLinks) {
             totalBlockingTimeMs: lhMetrics.totalBlockingTimeMs.length ? median(lhMetrics.totalBlockingTimeMs) : null,
             cumulativeLayoutShift: lhMetrics.cumulativeLayoutShift.length ? median(lhMetrics.cumulativeLayoutShift) : null,
           },
+          pwaSignals: [],
           pageDetail: lhPages, // per-sampled-page detail for the Lighthouse page (omitted from committed summary.json)
           // Aggregated non-accessibility recommendations, ranked by reach then
           // impact. Stored in the committed summary (compact, like axe rules).
           recommendations: Object.values(lhReco).sort(
             (a, b) => b.pages - a.pages || (b.savingsBytes + b.savingsMs * 1000) - (a.savingsBytes + a.savingsMs * 1000)
           ),
-          // PWA/offline readiness: pass rates per audit across sampled pages.
-          // Stored in committed summary; not per-page detail.
-          pwaSignals: Object.values(lhPwa).sort((a, b) => a.pagesPass / a.pagesChecked - b.pagesPass / b.pagesChecked),
         }
       : null,
     linkCheck: brokenLinks.size

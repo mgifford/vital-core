@@ -1,0 +1,31 @@
+work_packages:
+  - id: WP01
+    title: "Priority tier contract and unit test"
+    dependencies: []
+    owned_files:
+      - "src/lib/accessibility-priority.js"
+      - "tests/unit/**/*.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - C-01
+      - NFR-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+    prompt_file: "tasks/WP01-priority-tier-contract-and-unit-test.md"
+
+  - id: WP02
+    title: "Report default filter and toggle"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/report-html.js"
+    requirement_refs:
+      - FR-03
+      - FR-04
+    subtasks:
+      - T004
+      - T005
+    prompt_file: "tasks/WP02-report-default-filter-and-toggle.md"

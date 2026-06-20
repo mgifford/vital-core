@@ -6,26 +6,26 @@ dependencies:
 requirement_refs:
 - FR-04
 - FR-05
-planning_base_branch: public-interest-checks
-merge_target_branch: public-interest-checks
-branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
+planning_base_branch: main
+merge_target_branch: main
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T006
 - T007
 - T008
 history: []
+agent: ""
+shell_pid: 0
 authoritative_surface: src/lib/
 execution_mode: code_change
 owned_files:
 - src/lib/ai-findings.js
 tags: []
-agent: "claude"
-shell_pid: "7658"
 ---
 
 # WP02: Wire Ollama into ai-findings.js
 
-**Implement with**: `spec-kitty agent action implement WP02 --agent claude --mission ollama-integration-01KVG6SJ`
+**Implement with**: `spec-kitty agent action implement WP02 --agent <agent> --mission ollama-integration-01KVG6SJ`
 
 **Prerequisite**: WP01 merged — `src/lib/ollama.js` exists and tests pass.
 
@@ -103,5 +103,4 @@ No existing field changes.
 
 ## Activity Log
 
-- 2026-06-19T18:04:55Z – claude – shell_pid=7658 – Started implementation via action command
-- 2026-06-19T18:18:27Z – claude – shell_pid=7658 – WP02 implemented: buildAiFindings() is now async; adds optional ollama_summary field when Ollama reachable. 21 ai-findings + ollama tests pass. Committed 69633ba7.
+- 2026-06-19T19:16:47Z – unknown – Moved to done

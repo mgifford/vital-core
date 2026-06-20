@@ -1,6 +1,15 @@
-import { test } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildAiFindings } from '../../src/lib/ai-findings.js';
+
+// Stub fetch so Ollama is always unreachable in these tests — keeps them
+// deterministic and fast without a running Ollama server.
+let _originalFetch;
+before(() => {
+  _originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('no server'); };
+});
+after(() => { globalThis.fetch = _originalFetch; });
 
 // Minimal fakes — enough to exercise the logic without real scan data.
 const FAKE_TARGET = {
@@ -76,35 +85,35 @@ const FAKE_INV = { totalKnownPages: 500, pagesWithKnownIssues: 120, scannedThisW
 
 // ---
 
-test('buildAiFindings returns null-safe result for empty bugs', () => {
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [], FAKE_LEDGER, [FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('buildAiFindings returns null-safe result for empty bugs', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [], FAKE_LEDGER, [FAKE_SUMMARY], FAKE_INV, '/tmp');
   assert.ok(doc, 'should return a document even with no bugs');
   assert.equal(doc.schema_version, '0.1');
   assert.equal(doc.findings.length, 0);
   assert.ok(doc.metadata.notes.some((n) => n.includes('No accessibility findings')), 'should note empty findings');
 });
 
-test('buildAiFindings returns null-safe result for null summary', () => {
-  const doc = buildAiFindings(FAKE_TARGET, null, [], FAKE_LEDGER, [], FAKE_INV, '/tmp');
+test('buildAiFindings returns null-safe result for null summary', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, null, [], FAKE_LEDGER, [], FAKE_INV, '/tmp');
   assert.ok(doc._warnings?.length > 0, 'should have warnings for null summary');
 });
 
-test('buildAiFindings populates all top-level keys', () => {
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('buildAiFindings populates all top-level keys', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   for (const key of ['schema_version', 'site', 'scan_week', 'generated_at', 'source_files', 'summary', 'top_risks', 'findings', 'clusters', 'technology_findings', 'third_party_findings', 'metadata']) {
     assert.ok(key in doc, `missing top-level key: ${key}`);
   }
 });
 
-test('buildAiFindings summary counts are accurate', () => {
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('buildAiFindings summary counts are accurate', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   assert.equal(doc.summary.pages_known, 500);
   assert.equal(doc.summary.pages_scanned_this_week, 100);
   assert.equal(doc.summary.findings, 1);
 });
 
-test('finding has stable fingerprint and required fields', () => {
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('finding has stable fingerprint and required fields', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   const f = doc.findings[0];
   assert.ok(f.finding_id, 'has finding_id');
   assert.ok(f.fingerprint, 'has fingerprint');
@@ -115,21 +124,21 @@ test('finding has stable fingerprint and required fields', () => {
   assert.ok(['high','medium','low'].includes(f.confidence), 'valid confidence');
 });
 
-test('fingerprint is stable across calls', () => {
-  const doc1 = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
-  const doc2 = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('fingerprint is stable across calls', async () => {
+  const doc1 = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+  const doc2 = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   assert.equal(doc1.findings[0].fingerprint, doc2.findings[0].fingerprint, 'fingerprint must be deterministic');
 });
 
-test('trend is worsening when pages increased', () => {
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('trend is worsening when pages increased', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   // previous=20, current=30 → worsening
   assert.equal(doc.findings[0].trend.status, 'worsening');
   assert.equal(doc.findings[0].trend.affected_pages_previous, 20);
   assert.equal(doc.findings[0].trend.affected_pages_current, 30);
 });
 
-test('html fragments are deduplicated and fingerprinted', () => {
+test('html fragments are deduplicated and fingerprinted', async () => {
   const bugWithDupFragments = {
     ...FAKE_BUG,
     examples: [
@@ -138,7 +147,7 @@ test('html fragments are deduplicated and fingerprinted', () => {
       { url: 'https://example.gov/b', xpath: 'p',  html_snippet: '<p class="foo">different</p>' },
     ],
   };
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [bugWithDupFragments], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [bugWithDupFragments], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   const frags = doc.findings[0].html_fragments;
   // Two distinct normalised fragments (span, p) — not three
   assert.equal(frags.length, 2, 'duplicate fragments should be deduplicated');
@@ -148,14 +157,14 @@ test('html fragments are deduplicated and fingerprinted', () => {
   }
 });
 
-test('on_key_page is true when affected URL matches priority_urls', () => {
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('on_key_page is true when affected URL matches priority_urls', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   // FAKE_BUG has 'https://example.gov/' in example_pages, FAKE_TARGET has it in priority_urls
   assert.equal(doc.findings[0].on_key_page, true);
 });
 
-test('clusters.by_wcag_criterion groups findings by WCAG SC', () => {
-  const doc = buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
+test('clusters.by_wcag_criterion groups findings by WCAG SC', async () => {
+  const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
   const wcag = doc.clusters.by_wcag_criterion;
   assert.ok(Array.isArray(wcag), 'by_wcag_criterion is an array');
   const cl = wcag.find((c) => c.wcag_sc === '1.4.3');

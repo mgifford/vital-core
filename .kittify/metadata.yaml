@@ -3,12 +3,140 @@
 # DO NOT EDIT MANUALLY
 
 spec_kitty:
-  version: 3.1.10
+  version: 3.2.1
   initialized_at: '2026-05-29T16:08:00.490644'
-  last_upgraded_at: '2026-06-06T07:05:41.056224'
+  last_upgraded_at: '2026-06-19T10:11:05.335100'
+  schema_version: 3
 environment:
   python_version: 3.14.5
   platform: darwin
   platform_version: macOS-26.5-arm64-arm-64bit-Mach-O
 migrations:
-  applied: []
+  applied:
+  - id: 3.2.0a4_normalize_mission_lifecycle
+    applied_at: '2026-06-19T10:11:04.609475'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0a4_safe_globalize_commands
+    applied_at: '2026-06-19T10:11:04.611643'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc28_github_diff_attributes
+    applied_at: '2026-06-19T10:11:04.612310'
+    result: success
+    notes: 'Added .gitattributes entry: kitty-specs/**/status.json linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/status.events.jsonl linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/lanes.json linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/mission-events.jsonl linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/snapshot-latest.json linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/acceptance-matrix.json linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/occurrence_map.yaml linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/tasks/** linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/research/evidence-log.csv linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/research/source-register.csv linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/test-transcripts/** linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/baseline/** linguist-generated=true;
+      Added .gitattributes entry: kitty-specs/**/canary-evidence/** linguist-generated=true;
+      Added .gitattributes entry: .kittify/workspaces/** linguist-generated=true;
+      Added .gitattributes entry: .kittify/workspaces/** -diff; Added .gitattributes
+      entry: .kittify/migrations/** linguist-generated=true; Added .gitattributes
+      entry: .kittify/migrations/** -diff'
+  - id: 3.2.0rc30_fix_runtime_next_result_default
+    applied_at: '2026-06-19T10:11:04.613217'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_activate_builtin_mission_types
+    applied_at: '2026-06-19T10:11:04.615820'
+    result: success
+    notes: 'Added mission_type_activations: [''software-dev'', ''documentation'',
+      ''research'', ''plan'']'
+  - id: 3.2.0rc35_charter_bundle_v2
+    applied_at: '2026-06-19T10:11:04.616853'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_charter_manifest_defaults_repair
+    applied_at: '2026-06-19T10:11:04.617877'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_codex_to_skills
+    applied_at: '2026-06-19T10:11:04.618953'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_default_charter_pack
+    applied_at: '2026-06-19T10:11:04.630452'
+    result: success
+    notes: activated_directives; activated_tactics; activated_styleguides; activated_toolguides;
+      activated_paradigms; activated_procedures; activated_agent_profiles; activated_mission_step_contracts;
+      activated_kinds
+  - id: 3.2.0rc35_fix_prompt_file_workaround
+    applied_at: '2026-06-19T10:11:04.631963'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_kittify_profile_handoff
+    applied_at: '2026-06-19T10:11:04.633425'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_pi_letta_agent_backfill
+    applied_at: '2026-06-19T10:11:04.639696'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_repository_root_checkout_terminology
+    applied_at: '2026-06-19T10:11:04.646061'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_spk_skill_pack
+    applied_at: '2026-06-19T10:11:04.716814'
+    result: success
+    notes: Installed 37 spk skill(s) for 1 agent(s) (71 managed files); Updated .kittify/skills-manifest.json
+      with spk skill entries
+  - id: 3.2.0rc35_strip_selection_config
+    applied_at: '2026-06-19T10:11:04.722745'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc35_kittify_runtime_git_hygiene
+    applied_at: '2026-06-19T10:11:04.835292'
+    result: success
+    notes: Added .kittify/sync-state.json to .gitignore
+  - id: 3.2.0rc35_unified_bundle
+    applied_at: '2026-06-19T10:11:04.851926'
+    result: success
+    notes: '{"applied": false, "bundle_validation": {"missing_derived": [], "missing_tracked":
+      [], "passed": true, "unexpected": []}, "charter_present": false, "chokepoint_refreshed":
+      false, "duration_ms": 14, "errors": [], "migration_id": "3.2.0rc35_unified_bundle",
+      "target_version": "3.2.0rc35"}'
+  - id: 3.2.0rc35_update_planning_templates
+    applied_at: '2026-06-19T10:11:04.859699'
+    result: skipped
+    notes: Not applicable
+  - id: 3_2_0rc39_refresh_orientation_block
+    applied_at: '2026-06-19T10:11:04.902595'
+    result: skipped
+    notes: Not applicable
+  - id: 3_3_0_session_presence_all_harnesses
+    applied_at: '2026-06-19T10:11:04.950899'
+    result: success
+    notes: 'Wrote session presence orientation for harness: copilot'
+  - id: 3_3_0_session_presence_claude_code
+    applied_at: '2026-06-19T10:11:04.959049'
+    result: skipped
+    notes: Not applicable
+  - id: 3_3_0_op_record_schema_v2
+    applied_at: '2026-06-19T10:11:04.961431'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc43_retire_profile_context_command
+    applied_at: '2026-06-19T10:11:04.968770'
+    result: skipped
+    notes: Not applicable
+  - id: 0_9_3_surface_repair_wiring
+    applied_at: '2026-06-19T10:11:05.322078'
+    result: success
+    notes: 'surface_repair_wiring: probed 108 tool surface(s)'
+  - id: 0_9_4_roo_deprecation
+    applied_at: '2026-06-19T10:11:05.329681'
+    result: skipped
+    notes: Not applicable
+  - id: 3.2.0rc45_retire_standalone_skill_surface
+    applied_at: '2026-06-19T10:11:05.332654'
+    result: skipped
+    notes: Not applicable

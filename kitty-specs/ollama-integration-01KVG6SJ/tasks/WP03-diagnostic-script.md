@@ -5,26 +5,26 @@ dependencies:
 - WP01
 requirement_refs:
 - FR-06
-planning_base_branch: public-interest-checks
-merge_target_branch: public-interest-checks
-branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
+planning_base_branch: main
+merge_target_branch: main
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T009
 - T010
 history: []
+agent: ""
+shell_pid: 0
 authoritative_surface: scripts/
 execution_mode: code_change
 owned_files:
 - scripts/check-ollama.js
 - package.json
 tags: []
-agent: "claude"
-shell_pid: "9303"
 ---
 
 # WP03: Diagnostic script + package.json entry
 
-**Implement with**: `spec-kitty agent action implement WP03 --agent claude --mission ollama-integration-01KVG6SJ`
+**Implement with**: `spec-kitty agent action implement WP03 --agent <agent> --mission ollama-integration-01KVG6SJ`
 
 **Prerequisite**: WP01 merged — `src/lib/ollama.js` exists.
 
@@ -76,5 +76,4 @@ Exit code is always 0 — this is a diagnostic, not a CI gate.
 
 ## Activity Log
 
-- 2026-06-19T18:24:26Z – claude – shell_pid=9303 – Started implementation via action command
-- 2026-06-19T18:33:27Z – claude – shell_pid=9303 – WP03 implemented: scripts/check-ollama.js with --json flag; check:ollama npm script added. Committed eca74f9b.
+- 2026-06-19T19:16:48Z – unknown – Moved to done
