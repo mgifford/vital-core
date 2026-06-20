@@ -14,7 +14,7 @@ import { normalizeRate, shouldRun } from '../../src/lib/sampling.js';
 import { updateFindings } from '../../src/lib/findings.js';
 import { findMisspellings } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
-import { toCsv, ruleSlug } from '../../src/lib/csv.js';
+import { toCsv, ruleSlug, writeLighthouseCsv, writeLighthouseJson } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
 import { buildAcrData, buildAcrYaml, renderAcrHtml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
@@ -1025,6 +1025,80 @@ test('renderAcrHtml: does-not-support class appears for high failure rate', () =
   const acrData = buildAcrData(summary);
   const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
   assert.match(html, /class="adherence does-not-support"/, 'does-not-support class present for 80% failure rate');
+});
+
+test('renderAcrHtml: uses summary generatedAt and pagesAudited when present', () => {
+  const summary = {
+    week: '2026-W25',
+    generatedAt: '2026-06-18T12:34:56.000Z',
+    pagesScanned: 20,
+    pagesAudited: 12,
+    axe: { pagesScanned: 8, version: '4.12.1', rules: {
+      'color-contrast': { pages: 3, tags: ['wcag1', 'wcag143', 'wcag2aa'], examplePages: ['https://example.gov/page1'] },
+    }},
+    alfa: { pagesScanned: 10, rules: {} },
+  };
+  const acrData = buildAcrData(summary);
+  const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
+  assert.match(html, /Report date: <strong>2026-06-18<\/strong>/, 'uses deterministic generatedAt date');
+  assert.match(html, /Automated scan found failures on 3 of 12 tested pages/, 'uses unique audited page count');
+});
+
+test('writeLighthouseCsv: keeps legacy pwa column with blank values', () => {
+  const repDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-lh-csv-'));
+  const name = writeLighthouseCsv(repDir, 'example.gov', '2026-W25', {
+    pageDetail: [{
+      url: 'https://example.gov/',
+      scores: { performance: 91, accessibility: 88, bestPractices: 93, seo: 90, pwa: null, agentic: 75 },
+      metrics: {
+        firstContentfulPaintMs: 1234,
+        largestContentfulPaintMs: 2345,
+        speedIndexMs: 2100,
+        totalBlockingTimeMs: 50,
+        cumulativeLayoutShift: 0.01,
+      },
+    }],
+  });
+  const csv = fs.readFileSync(path.join(repDir, name), 'utf8');
+  assert.match(csv, /^url,performance,accessibility,best_practices,seo,pwa,agentic,fcp_ms,lcp_ms,speed_index_ms,tbt_ms,cls$/m);
+  assert.match(csv, /^https:\/\/example\.gov\/,91,88,93,90,,75,1234,2345,2100,50,0\.01$/m);
+});
+
+test('writeLighthouseJson: keeps legacy pwa fields with null and empty array', () => {
+  const repDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-lh-json-'));
+  const name = writeLighthouseJson(repDir, 'example.gov', '2026-W25', '2026-06-18T12:34:56.000Z', {
+    pagesSampled: 1,
+    medianPerformance: 91,
+    medianAccessibility: 88,
+    medianBestPractices: 93,
+    medianSeo: 90,
+    medianPwa: null,
+    medianAgentic: 75,
+    metrics: {
+      firstContentfulPaintMs: 1234,
+      largestContentfulPaintMs: 2345,
+      speedIndexMs: 2100,
+      totalBlockingTimeMs: 50,
+      cumulativeLayoutShift: 0.01,
+    },
+    pwaSignals: [],
+    recommendations: [],
+    pageDetail: [{
+      url: 'https://example.gov/',
+      scores: { performance: 91, accessibility: 88, bestPractices: 93, seo: 90, pwa: null, agentic: 75 },
+      metrics: {
+        firstContentfulPaintMs: 1234,
+        largestContentfulPaintMs: 2345,
+        speedIndexMs: 2100,
+        totalBlockingTimeMs: 50,
+        cumulativeLayoutShift: 0.01,
+      },
+    }],
+  });
+  const json = JSON.parse(fs.readFileSync(path.join(repDir, name), 'utf8'));
+  assert.equal(json.summary.median_pwa, null);
+  assert.deepEqual(json.summary.pwa_signals, []);
+  assert.equal(json.pages[0].scores.pwa, null);
 });
 
 test('headersToWappalyzer: produces array-valued, lowercased object shape', () => {

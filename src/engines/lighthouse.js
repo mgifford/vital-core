@@ -63,6 +63,7 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
             accessibility: score(cats.accessibility),
             bestPractices: score(cats['best-practices']),
             seo: score(cats.seo),
+            pwa: null,
             agentic: score(cats['agentic-browsing']),
           },
           metrics: {

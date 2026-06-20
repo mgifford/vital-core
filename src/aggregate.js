@@ -817,6 +817,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
           medianAccessibility: lhScores.accessibility.length ? median(lhScores.accessibility) : null,
           medianBestPractices: lhScores.bestPractices.length ? median(lhScores.bestPractices) : null,
           medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
+          medianPwa: null,
           medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
           metrics: {
             firstContentfulPaintMs: lhMetrics.firstContentfulPaintMs.length ? median(lhMetrics.firstContentfulPaintMs) : null,
@@ -825,6 +826,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
             totalBlockingTimeMs: lhMetrics.totalBlockingTimeMs.length ? median(lhMetrics.totalBlockingTimeMs) : null,
             cumulativeLayoutShift: lhMetrics.cumulativeLayoutShift.length ? median(lhMetrics.cumulativeLayoutShift) : null,
           },
+          pwaSignals: [],
           pageDetail: lhPages, // per-sampled-page detail for the Lighthouse page (omitted from committed summary.json)
           // Aggregated non-accessibility recommendations, ranked by reach then
           // impact. Stored in the committed summary (compact, like axe rules).
