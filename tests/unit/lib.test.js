@@ -16,7 +16,7 @@ import { findMisspellings } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
 import { toCsv, ruleSlug } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
-import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
+import { buildAcrData, buildAcrYaml, renderAcrHtml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
 import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
@@ -987,6 +987,44 @@ test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
   assert.match(yaml, /success_criteria_level_a:/, 'has Level A section');
   assert.match(yaml, /success_criteria_level_aa:/, 'has Level AA section');
   assert.match(yaml, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence values');
+});
+
+test('renderAcrHtml: produces self-contained HTML with WCAG table structure', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 20,
+    axe: { pagesScanned: 20, version: '4.12.1', rules: {
+      'color-contrast': { pages: 15, tags: ['wcag1', 'wcag143', 'wcag2aa'], examplePages: ['https://example.gov/page1'] },
+    }},
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const acrData = buildAcrData(summary);
+  const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
+  assert.ok(html.startsWith('<!DOCTYPE html>'), 'starts with DOCTYPE');
+  assert.match(html, /<html lang="en">/, 'has lang attribute');
+  assert.ok(!html.includes('<link rel='), 'no external stylesheet link');
+  assert.ok(!html.includes('<script src='), 'no external script');
+  assert.match(html, /<style>/, 'has inline style block');
+  assert.match(html, /Level A Success Criteria/, 'has Level A heading');
+  assert.match(html, /Level AA Success Criteria/, 'has Level AA heading');
+  assert.match(html, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence classes');
+  assert.match(html, /WAI\/WCAG22\/Understanding\//, 'links to WCAG Understanding docs');
+  assert.match(html, /acr\.yaml/, 'links back to yaml');
+  assert.ok(!html.includes('uswds') && !html.includes('cdn.'), 'no design system or CDN dependency');
+});
+
+test('renderAcrHtml: does-not-support class appears for high failure rate', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 50,
+    axe: { pagesScanned: 50, version: '4.12.1', rules: {
+      'color-contrast': { pages: 40, tags: ['wcag1', 'wcag143', 'wcag2aa'], examplePages: ['https://example.gov/a'] },
+    }},
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const acrData = buildAcrData(summary);
+  const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
+  assert.match(html, /class="adherence does-not-support"/, 'does-not-support class present for 80% failure rate');
 });
 
 test('headersToWappalyzer: produces array-valued, lowercased object shape', () => {

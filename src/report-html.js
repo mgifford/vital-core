@@ -1721,7 +1721,7 @@ ${resourcesSection(summary)}
  */
 export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}) {
   const acrNote = reporting.acrYaml
-    ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR YAML) for this week: <a href="${esc(reporting.acrYaml)}">acr.yaml</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
+    ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR (YAML + HTML)</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
     : '';
   const body = `
 <h1>${esc(target.domain)}: Accessibility — week ${esc(summary.week)}</h1>
