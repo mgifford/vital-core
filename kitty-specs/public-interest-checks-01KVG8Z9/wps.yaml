@@ -1,0 +1,51 @@
+work_packages:
+  - id: WP01
+    title: "Origin-level public-interest engine"
+    dependencies: []
+    owned_files:
+      - "src/engines/public-interest.js"
+      - "tests/unit/public-interest.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - NFR-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+    prompt_file: "tasks/WP01-origin-level-public-interest-engine.md"
+
+  - id: WP02
+    title: "Scan, aggregate, and report wiring"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/scan.js"
+      - "src/aggregate.js"
+      - "src/report-html.js"
+      - "config/targets.yml"
+    requirement_refs:
+      - FR-03
+      - FR-04
+      - FR-05
+      - C-01
+    subtasks:
+      - T004
+      - T005
+      - T006
+    prompt_file: "tasks/WP02-scan-aggregate-and-report-wiring.md"
+
+  - id: WP03
+    title: "Diagnostic CLI"
+    dependencies:
+      - WP01
+    owned_files:
+      - "scripts/check-public-interest.js"
+      - "package.json"
+    requirement_refs:
+      - FR-06
+      - C-01
+    subtasks:
+      - T007
+      - T008
+    prompt_file: "tasks/WP03-diagnostic-cli.md"

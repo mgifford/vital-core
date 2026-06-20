@@ -55,10 +55,10 @@
     },
     {
       "criterion_id": "NFR-02",
-      "description": "All 91 existing unit tests still pass; new ollama unit tests added",
+      "description": "All existing unit tests still pass; new ollama unit tests added",
       "proof_type": "automated_test",
       "pass_fail": "pass",
-      "evidence": "npm run test:unit: 91 pass, 0 fail; 11 new ollama tests in tests/unit/ollama.test.js"
+      "evidence": "npm run test:unit: unit tests pass; 11 new ollama tests in tests/unit/ollama.test.js"
     }
   ]
 }

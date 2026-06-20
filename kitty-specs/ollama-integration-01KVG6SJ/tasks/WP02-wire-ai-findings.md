@@ -6,15 +6,15 @@ dependencies:
 requirement_refs:
 - FR-04
 - FR-05
-planning_base_branch: public-interest-checks
-merge_target_branch: public-interest-checks
-branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
+planning_base_branch: main
+merge_target_branch: main
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T006
 - T007
 - T008
 history: []
-agent: claude
+agent: ""
 shell_pid: 0
 authoritative_surface: src/lib/
 execution_mode: code_change
@@ -25,7 +25,7 @@ tags: []
 
 # WP02: Wire Ollama into ai-findings.js
 
-**Implement with**: `spec-kitty agent action implement WP02 --agent claude --mission ollama-integration-01KVG6SJ`
+**Implement with**: `spec-kitty agent action implement WP02 --agent <agent> --mission ollama-integration-01KVG6SJ`
 
 **Prerequisite**: WP01 merged — `src/lib/ollama.js` exists and tests pass.
 
