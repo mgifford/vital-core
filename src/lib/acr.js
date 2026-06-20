@@ -304,11 +304,10 @@ const ADHERENCE_LABEL = {
  */
 export function renderAcrHtml(target, summary, week, acrData) {
   const { scMap, pagesScanned, axePages, alfaPages } = acrData;
-  const reportDate = new Date().toISOString().slice(0, 10);
+  const reportDate = summary.generatedAt ? String(summary.generatedAt).slice(0, 10) : new Date().toISOString().slice(0, 10);
   const weekLabel = week ?? summary.week;
   const domain = escHtml(target.domain);
-  const tested = Math.max(axePages, alfaPages);
-
+  const tested = summary.pagesAudited ?? Math.max(axePages, alfaPages);
   const renderRow = (e) => {
     const d = scMap.get(e.sc);
     if (!d) return '';
