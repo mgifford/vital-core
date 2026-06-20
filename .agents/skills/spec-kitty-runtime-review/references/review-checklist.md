@@ -1,1 +1,0 @@
-/Users/AlexUA_1/.agents/skills/spec-kitty-runtime-review/references/review-checklist.md

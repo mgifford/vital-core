@@ -1,1 +1,0 @@
-/Users/AlexUA_1/.agents/skills/spk-run-next/SKILL.md
