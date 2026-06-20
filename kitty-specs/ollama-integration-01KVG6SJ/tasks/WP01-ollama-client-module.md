@@ -8,9 +8,9 @@ requirement_refs:
 - FR-03
 - NFR-01
 - NFR-02
-planning_base_branch: public-interest-checks
-merge_target_branch: public-interest-checks
-branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
+planning_base_branch: main
+merge_target_branch: main
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002
@@ -18,7 +18,7 @@ subtasks:
 - T004
 - T005
 history: []
-agent: claude
+agent: ""
 shell_pid: 0
 authoritative_surface: src/lib/
 execution_mode: code_change
@@ -30,7 +30,7 @@ tags: []
 
 # WP01: Ollama client module + unit tests
 
-**Implement with**: `spec-kitty agent action implement WP01 --agent claude --mission ollama-integration-01KVG6SJ`
+**Implement with**: `spec-kitty agent action implement WP01 --agent <agent> --mission ollama-integration-01KVG6SJ`
 
 Create `src/lib/ollama.js` — a thin, self-contained Ollama client — and its unit tests.
 No consumers are wired in this WP. No new npm dependencies.
@@ -150,7 +150,7 @@ that adds the timeout and handles JSON parsing.
 4. Keep each test's mock minimal — only stub `globalThis.fetch`.
 
 **Files**: `tests/unit/ollama.test.js` (new)
-**Validation**: `npm run test:unit` — all existing 91 tests plus new ollama tests pass; no tests skipped
+**Validation**: `npm run test:unit` — all existing tests plus new ollama tests pass; no tests skipped
 
 ## Activity Log
 

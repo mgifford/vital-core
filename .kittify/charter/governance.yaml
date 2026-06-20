@@ -21,7 +21,15 @@ branch_strategy:
   rules: []
 doctrine:
   selected_paradigms: []
-  selected_directives: []
+  selected_directives:
+  - DIR-001
+  - DIR-002
+  - DIR-003
+  - DIR-004
+  - DIR-005
+  - DIR-006
+  - DIR-007
+  selected_tactics: []
   available_tools:
   - git
   - spec-kitty

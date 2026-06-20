@@ -14,6 +14,17 @@ accessibility page:
    right-align to sit visually above their right-aligned `<td class="num">`
    cells throughout all report tables.
 
+## Requirements
+
+| ID | Type | Requirement |
+|---|---|---|
+| FR-01 | Functional | `consensusSection()` receives bug data and maps axe rule IDs to bug instance anchors. |
+| FR-02 | Functional | Consensus issue cells link to `accessibility.html#VS-<id>` when a matching bug exists. |
+| FR-03 | Functional | Numeric table cells and headers align right with tabular numerals. |
+| FR-04 | Functional | All numeric report headers carry `class="num"`, including sortable header buttons. |
+| C-01 | Constraint | Consensus deduplication logic in `src/lib/consensus.js` is unchanged. |
+| NFR-01 | Non-functional | Existing unit tests continue to pass. |
+
 ## Acceptance criteria
 
 - [x] `src/report-html.js` — `consensusSection()` receives the `bugs` array
@@ -27,7 +38,7 @@ accessibility page:
 - [x] All `<th scope="col">` headers for numeric columns carry `class="num"` across
       all report pages: Standards, Fix-first, dual-engine, rule tables, Coverage,
       Resources, Images, History, Fleet, Index, PWA, Lighthouse recommendations.
-- [x] All 91 unit tests pass.
+- [x] All unit tests pass.
 
 ## Out of scope
 

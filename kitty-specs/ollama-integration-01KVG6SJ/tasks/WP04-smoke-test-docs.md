@@ -6,14 +6,14 @@ dependencies:
 - WP03
 requirement_refs:
 - NFR-02
-planning_base_branch: public-interest-checks
-merge_target_branch: public-interest-checks
-branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
+planning_base_branch: main
+merge_target_branch: main
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T011
 - T012
 history: []
-agent: claude
+agent: ""
 shell_pid: 0
 authoritative_surface: CLAUDE.md
 execution_mode: code_change
@@ -24,7 +24,7 @@ tags: []
 
 # WP04: Smoke test + CLAUDE.md update
 
-**Implement with**: `spec-kitty agent action implement WP04 --agent claude --mission ollama-integration-01KVG6SJ`
+**Implement with**: `spec-kitty agent action implement WP04 --agent <agent> --mission ollama-integration-01KVG6SJ`
 
 **Prerequisite**: WP02 and WP03 merged.
 
