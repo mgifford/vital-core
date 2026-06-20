@@ -18,10 +18,17 @@ a GitHub Actions artifact).
 ```bash
 npm run scan          # crawl + audit one target (VITAL_DOMAIN=www.cms.gov)
 npm run aggregate     # build docs/ from data/
-npm run test:unit     # 91 unit tests (Node built-in runner)
+npm run test:unit     # unit tests (Node built-in runner)
 npm run test:e2e      # smoke test
 npm run check:public-interest www.cms.gov   # quick 4-check diagnostic
 ```
+
+**Optional — local Ollama LLM** (adds `ollama_summary` to ai-findings output):
+```bash
+# Set in .env (see .env.example); defaults to http://localhost:11434
+npm run check:ollama   # verify connectivity
+```
+Ollama is always optional — absent or unreachable = no change in report output.
 
 ---
 
@@ -29,6 +36,29 @@ npm run check:public-interest www.cms.gov   # quick 4-check diagnostic
 
 This project uses [Spec Kitty](https://spec-kitty.dev) as its AI-agent
 orchestration layer. Every non-trivial feature goes through a mission.
+Spec Kitty is not an Ollama-specific workflow; Ollama is only an optional
+runtime feature for `ai-findings` summaries.
+
+Configured agent surfaces:
+
+- `claude` — global Claude Code commands in `~/.claude/commands/spec-kitty.*.md`
+- `codex` — project skills in `.agents/skills/spec-kitty.*`
+- `copilot` — global GitHub Copilot prompts in `~/.github/prompts/`
+
+On a fresh machine, materialize missing global/project agent surfaces before
+trusting this list:
+
+```bash
+spec-kitty agent config sync --create-missing
+spec-kitty agent config status
+spec-kitty doctor skills --json
+npm run check:spec-kitty
+```
+
+Prefer the strongest available reasoning model for `specify`, `plan`, `tasks`,
+and `review`. Lower-capability local models can help with mechanical drafting,
+but they should not be the final authority for scope, compatibility, or
+acceptance gates.
 
 ### Session start
 
@@ -37,10 +67,10 @@ include both outputs in your first message:
 
 ```bash
 # 1. Check current mission state (what step is next)
-spec-kitty next --mission <slug>
+spec-kitty next --agent <claude|codex|copilot> --mission <slug>
 
 # 2. Get the structured prompt for that step
-spec-kitty agent context resolve --action tasks --mission <slug>
+spec-kitty agent context resolve --action tasks --agent <claude|codex|copilot> --mission <slug>
 ```
 
 For a mission that already has a plan and work packages, substitute
@@ -56,7 +86,7 @@ specify → fill spec.md → plan → implement (WP by WP) → accept → merge
 2. Edit `kitty-specs/<mission>/spec.md` with concrete acceptance criteria
    (the "what", not the "how")
 3. `spec-kitty plan --mission <slug>` — scaffolds ordered work packages
-4. Implement one work package per Claude session; commit when done
+4. Implement one work package per agent session; commit when done
 5. `spec-kitty accept --mission <slug>` — gate before opening a PR
 6. PR targets `main`; after merge the branch is deleted
 

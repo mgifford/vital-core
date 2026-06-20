@@ -19,6 +19,19 @@ command-line diagnostic runs the same checks without a full scan.
 | XML sitemap | `<origin>/sitemap.xml` (or `sitemap_index.xml` etc.) returns 200 |
 | Human-readable sitemap | An HTML page at a well-known path (e.g. `/sitemap`, `/site-map`) |
 
+## Requirements
+
+| ID | Type | Requirement |
+|---|---|---|
+| FR-01 | Functional | `runPublicInterest(origin, domain, userAgent)` returns accessibility statement, carbon.txt, Green Web Foundation, and sitemap results. |
+| FR-02 | Functional | Sub-checks run concurrently and convert individual failures to `result: unknown`. |
+| FR-03 | Functional | `src/scan.js` runs the public-interest engine once per origin per week through sampling config. |
+| FR-04 | Functional | `src/aggregate.js` writes the most recent result to `summary.publicInterest`. |
+| FR-05 | Functional | `src/report-html.js` renders a Standards-page badge table when public-interest data exists. |
+| FR-06 | Functional | `scripts/check-public-interest.js` runs the same checks from the CLI and supports JSON output. |
+| C-01 | Constraint | No CI gate, alerting, or priority score weighting is added. |
+| NFR-01 | Non-functional | Unit tests cover graceful failure and unreachable-origin no-throw behavior. |
+
 ## Acceptance criteria
 
 - [x] `src/engines/public-interest.js` — exports `runPublicInterest(origin, domain, userAgent)`.
@@ -38,7 +51,7 @@ command-line diagnostic runs the same checks without a full scan.
 - [x] `package.json` — `"check:public-interest": "node scripts/check-public-interest.js"`.
 - [x] `tests/unit/public-interest.test.js` — 2 tests: graceful-failure shape and
       no-throw on unreachable origin.
-- [x] All 91 unit tests pass.
+- [x] All unit tests pass.
 
 ## Out of scope
 

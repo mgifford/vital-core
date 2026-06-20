@@ -1,0 +1,51 @@
+name: spec-kitty-governance
+
+on:
+  pull_request:
+    paths:
+      - '.agents/**'
+      - '.github/workflows/spec-kitty-governance.yml'
+      - '.githooks/pre-commit'
+      - '.kittify/**'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'kitty-specs/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/check-spec-kitty-governance.js'
+  push:
+    branches:
+      - main
+    paths:
+      - '.agents/**'
+      - '.github/workflows/spec-kitty-governance.yml'
+      - '.githooks/pre-commit'
+      - '.kittify/**'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'kitty-specs/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/check-spec-kitty-governance.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --omit=optional --ignore-scripts
+
+      - name: Check Spec Kitty governance
+        run: npm run check:spec-kitty

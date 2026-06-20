@@ -8,32 +8,29 @@ requirement_refs:
 - FR-03
 - NFR-01
 - NFR-02
-planning_base_branch: public-interest-checks
-merge_target_branch: public-interest-checks
-branch_strategy: Planning artifacts for this feature were generated on public-interest-checks. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into public-interest-checks unless the human explicitly redirects the landing branch.
-base_branch: kitty/mission-ollama-integration-01KVG6SJ
-base_commit: ce3ac958e15570249250ea0c3e7d203a99f7fab6
-created_at: '2026-06-19T17:40:49.514676+00:00'
+planning_base_branch: main
+merge_target_branch: main
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002
 - T003
 - T004
 - T005
-shell_pid: "4246"
 history: []
+agent: ""
+shell_pid: 0
 authoritative_surface: src/lib/
 execution_mode: code_change
 owned_files:
 - src/lib/ollama.js
 - tests/unit/ollama.test.js
 tags: []
-agent: "claude"
 ---
 
 # WP01: Ollama client module + unit tests
 
-**Implement with**: `spec-kitty agent action implement WP01 --agent claude --mission ollama-integration-01KVG6SJ`
+**Implement with**: `spec-kitty agent action implement WP01 --agent <agent> --mission ollama-integration-01KVG6SJ`
 
 Create `src/lib/ollama.js` — a thin, self-contained Ollama client — and its unit tests.
 No consumers are wired in this WP. No new npm dependencies.
@@ -153,9 +150,8 @@ that adds the timeout and handles JSON parsing.
 4. Keep each test's mock minimal — only stub `globalThis.fetch`.
 
 **Files**: `tests/unit/ollama.test.js` (new)
-**Validation**: `npm run test:unit` — all existing 91 tests plus new ollama tests pass; no tests skipped
+**Validation**: `npm run test:unit` — all existing tests plus new ollama tests pass; no tests skipped
 
 ## Activity Log
 
-- 2026-06-19T17:40:50Z – claude – shell_pid=4246 – Assigned agent via action command
-- 2026-06-19T18:03:50Z – claude – shell_pid=4246 – WP01 implemented: src/lib/ollama.js and tests/unit/ollama.test.js. 11 new tests, all pass. Committed a256c7de.
+- 2026-06-19T19:05:44Z – unknown – Moved to done

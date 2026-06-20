@@ -1,0 +1,38 @@
+work_packages:
+  - id: WP01
+    title: "Core severity contract and ranking helpers"
+    dependencies: []
+    owned_files:
+      - "src/lib/wcag.js"
+      - "src/lib/accessibility-priority.js"
+      - "src/lib/bug-report.js"
+      - "src/lib/priority.js"
+      - "src/lib/ai-findings.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - C-01
+      - C-02
+    subtasks:
+      - T001
+      - T002
+      - T003
+    prompt_file: "tasks/WP01-core-severity-contract-and-ranking-helpers.md"
+
+  - id: WP02
+    title: "Report, export, and test updates"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/lib/csv.js"
+      - "src/report-html.js"
+      - "tests/unit/**/*.test.js"
+    requirement_refs:
+      - FR-03
+      - FR-04
+      - NFR-01
+    subtasks:
+      - T004
+      - T005
+      - T006
+    prompt_file: "tasks/WP02-report-export-and-test-updates.md"

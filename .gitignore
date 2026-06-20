@@ -24,8 +24,20 @@ dist/
 
 # Spec Kitty runtime state (transient, machine-specific)
 .kittify/runtime/
+.kittify/agent_profiles_manifest.json
 .kittify/charter/context-state.json
+.kittify/encoding-provenance/
+.kittify/events/
+.kittify/lint-report.json
+.kittify/skills-manifest.json
 .worktrees/
+
+# Legacy Spec Kitty managed symlink packs. Current repo-local Codex command
+# skills are real files named .agents/skills/spec-kitty.*.
+.agents/skills/ad-hoc-profile-load/
+.agents/skills/spec-kitty/
+.agents/skills/spec-kitty-*/
+.agents/skills/spk-*/
 
 # HF-only targets — scanned on Hugging Face, not GitHub Actions.
 # Guard against accidental commit of their scan data to this repo.
@@ -38,3 +50,4 @@ state/volunteer.va.gov/
 state/news.va.gov/
 state/benefits.va.gov/
 .kittify/workspaces/
+.kittify/sync-state.json

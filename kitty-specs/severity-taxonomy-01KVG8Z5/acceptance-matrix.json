@@ -1,0 +1,57 @@
+{
+  "mission_slug": "severity-taxonomy-01KVG8Z5",
+  "mission_type": "software-dev",
+  "reconstructed_from": "Shipped spec (#146) and repository implementation evidence",
+  "reconstructed_at": "2026-06-20T01:03:05Z",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "src/lib/wcag.js returns axe-core display labels",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion names src/lib/wcag.js and the shipped PR marked it complete."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "Priority/ranking helpers consume new labels",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec lists accessibility-priority, bug-report, priority, and ai-findings as updated."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "CSV and report UI expose new labels/classes",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec lists csv.js and report-html.js updates as shipped."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "Old High/Medium/Low severity values removed from src",
+      "proof_type": "static_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion requires no occurrence as severity values in src."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Raw axe impact strings are unchanged",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Out-of-scope section preserves raw axe input strings."
+    },
+    {
+      "criterion_id": "C-02",
+      "description": "Severity weights are unchanged",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Out-of-scope section preserves existing weights."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Unit tests pass",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec records unit tests passing; current setup pass also uses npm run test:unit as the gate."
+    }
+  ]
+}

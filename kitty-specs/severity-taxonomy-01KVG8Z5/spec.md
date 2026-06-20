@@ -10,6 +10,18 @@ Minor. Every file that maps, ranks, or displays severity must use the same
 four strings so the codebase is internally consistent and matches what
 axe-core itself reports.
 
+## Requirements
+
+| ID | Type | Requirement |
+|---|---|---|
+| FR-01 | Functional | `src/lib/wcag.js` maps axe impact values to `Critical`, `Serious`, `Moderate`, and `Minor` display labels. |
+| FR-02 | Functional | Priority and bug-ranking helpers consume the axe-core display labels consistently. |
+| FR-03 | Functional | CSV exports and report UI use the axe-core labels and matching CSS classes/field names. |
+| FR-04 | Functional | No `High`, `Medium`, or `Low` severity values remain in `src/` as display labels. |
+| C-01 | Constraint | Raw axe impact input strings remain `critical`, `serious`, `moderate`, and `minor`. |
+| C-02 | Constraint | Severity scoring weights remain Critical=40, Serious=20, Moderate=8, Minor=2. |
+| NFR-01 | Non-functional | Existing unit tests continue to pass after the taxonomy rename. |
+
 ## Acceptance criteria
 
 - [x] `src/lib/wcag.js` — `severityFor()` returns `'Critical' | 'Serious' | 'Moderate' | 'Minor'`; input mapping from axe impact strings updated.
@@ -19,7 +31,7 @@ axe-core itself reports.
 - [x] `src/lib/ai-findings.js` — `SEVERITY_RANK`, `PRIORITY_THRESHOLDS`, and `priorityFor()` updated.
 - [x] `src/lib/csv.js` — CSV headers and scoring constants use `a11y_serious_bugs`, `a11y_moderate_bugs`, `a11y_minor_bugs`.
 - [x] `src/report-html.js` — CSS classes (`sev-serious`, `sev-moderate`, `sev-minor`), badge colours, and severity order arrays updated.
-- [x] All unit tests updated to use new label casing; 91 tests pass.
+- [x] All unit tests updated to use new label casing; unit tests pass.
 - [x] No occurrence of `'High'`, `'Medium'`, or `'Low'` as a severity value anywhere in `src/`.
 
 ## Out of scope
