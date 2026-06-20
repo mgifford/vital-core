@@ -1,1 +1,0 @@
-/Users/AlexUA_1/.agents/skills/spec-kitty-implement-review/references/rejection-loop-checklist.md

@@ -19,6 +19,17 @@ site owners understand exactly what they're seeing.
 | Best Practice (any severity, any page count) | 5 | No |
 | Moderate or Minor + WCAG A/AA + <10 pages | 5 | No |
 
+## Requirements
+
+| ID | Type | Requirement |
+|---|---|---|
+| FR-01 | Functional | `priorityTier(bug, ...)` implements the VITAL-error table exactly. |
+| FR-02 | Functional | Default report visibility is `bugs.filter(b => b.priority_tier <= 2)` with no duplicate filter logic. |
+| FR-03 | Functional | Report UI includes a Show everything toggle that reveals all findings. |
+| FR-04 | Functional | Filter label explains the VITAL default view definition. |
+| C-01 | Constraint | No stored `data/` record shape changes are introduced. |
+| NFR-01 | Non-functional | Unit coverage proves the five-row fixture shows exactly three findings by default. |
+
 ## Acceptance criteria
 
 - [x] `src/lib/accessibility-priority.js` — `priorityTier(bug, …)` implements the table above; returns `0 | 1 | 2 | 5`.
@@ -26,7 +37,7 @@ site owners understand exactly what they're seeing.
 - [x] `src/report-html.js` — default filter shows only tier ≤2 bugs; "Show everything" toggle removes the filter.
 - [x] Filter bar label updated to reflect the new definition.
 - [x] Unit test: 5-bug fixture with one Critical/WCAG, one Serious/WCAG, one Moderate/WCAG/≥10 pages, one Best Practice, one Minor/WCAG/<10 pages → 3 visible by default.
-- [x] All 91 unit tests pass.
+- [x] All unit tests pass.
 
 ## Out of scope
 

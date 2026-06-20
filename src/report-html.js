@@ -1298,7 +1298,7 @@ export function renderTechPage(target, summary, csvHref) {
   const body = `
 <h1>${esc(target.domain)}: technology stack</h1>
 ${subnav('tech')}
-<p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, 'tech.json')}</p>
+<p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, summary.techJson ?? 'tech.json')}</p>
 <p class="note">Detection is additive across the week's sampled pages. Expand a technology to see example pages where it was found.</p>
 ${sections}`;
   return layout({

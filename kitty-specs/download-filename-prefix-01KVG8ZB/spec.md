@@ -17,6 +17,18 @@ Examples: `15JUN2026`, `02JAN2026`, `29DEC2025`.
 
 This format matches the convention used elsewhere in the project.
 
+## Requirements
+
+| ID | Type | Requirement |
+|---|---|---|
+| FR-01 | Functional | `weekToDateStamp(weekStr)` converts ISO week strings to `DDMONYYYY` date stamps. |
+| FR-02 | Functional | User-facing CSV/JSON writers prefix filenames with `<domain>_<DDMONYYYY>`. |
+| FR-03 | Functional | `src/aggregate.js` passes domain/week through updated writer signatures and stores returned JSON names. |
+| FR-04 | Functional | `src/report-html.js` download links use the stored generated filenames with legacy fallbacks. |
+| C-01 | Constraint | Per-rule files under `csv/` are not prefixed. |
+| NFR-01 | Non-functional | `weekToDateStamp()` falls back to the raw input string on parse failure. |
+| NFR-02 | Non-functional | Existing unit tests continue to pass. |
+
 ## Acceptance criteria
 
 - [x] `src/lib/week.js` — `weekToDateStamp(weekStr)` converts `'2026-W25'` →
@@ -38,7 +50,7 @@ This format matches the convention used elsewhere in the project.
 - [x] `src/report-html.js` — download links for bugs.json, ai-findings.json, and
       images.json updated to use `reporting.bugsJson`, `reporting.aiJson`,
       `summary.imagesJson` respectively, with fallback to the old name.
-- [x] All 91 unit tests pass.
+- [x] All unit tests pass.
 
 ## Out of scope
 
