@@ -43,19 +43,19 @@ export function writeLighthouseCsv(repDir, domain, week, lighthouse) {
   if (!lighthouse?.pageDetail?.length) return null;
   const rows = lighthouse.pageDetail.map((p) => [
     p.url, p.scores.performance, p.scores.accessibility, p.scores.bestPractices,
-    p.scores.seo, p.scores.pwa ?? '', p.scores.agentic,
+    p.scores.seo, p.scores.agentic,
     p.metrics.firstContentfulPaintMs, p.metrics.largestContentfulPaintMs,
     p.metrics.speedIndexMs, p.metrics.totalBlockingTimeMs, p.metrics.cumulativeLayoutShift,
   ]);
   const name = `${filePrefix(domain, week)}_lighthouse.csv`;
   fs.writeFileSync(path.join(repDir, name),
-    toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'pwa', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
+    toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
   return name;
 }
 
 /**
  * Write Lighthouse results as JSON — per-page scores and recommendations.
- * Designed for AI consumption: compact, self-describing, includes PWA signals.
+ * Designed for AI consumption: compact, self-describing.
  */
 export function writeLighthouseJson(repDir, domain, week, generatedAt, lighthouse) {
   if (!lighthouse?.pageDetail?.length) return null;
@@ -69,12 +69,10 @@ export function writeLighthouseJson(repDir, domain, week, generatedAt, lighthous
       median_accessibility: lighthouse.medianAccessibility,
       median_best_practices: lighthouse.medianBestPractices,
       median_seo: lighthouse.medianSeo,
-      median_pwa: lighthouse.medianPwa ?? null,
       median_agentic: lighthouse.medianAgentic ?? null,
       core_web_vitals: lighthouse.metrics,
     },
     recommendations: lighthouse.recommendations ?? [],
-    pwa_signals: lighthouse.pwaSignals ?? [],
     pages: lighthouse.pageDetail.map((p) => ({
       url: p.url,
       scores: p.scores,
