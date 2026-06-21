@@ -130,12 +130,117 @@ test('fingerprint is stable across calls', async () => {
   assert.equal(doc1.findings[0].fingerprint, doc2.findings[0].fingerprint, 'fingerprint must be deterministic');
 });
 
-test('trend is worsening when pages increased', async () => {
+test('trend is worsening when pages increased (no coverage data → raw-count fallback)', async () => {
   const doc = await buildAiFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER, [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp');
-  // previous=20, current=30 → worsening
+  // FAKE_PREV_SUMMARY and FAKE_SUMMARY lack axe.pagesScanned → rate fallback
+  // previous=20, current=30, rate unknown → raw-count comparison → worsening
   assert.equal(doc.findings[0].trend.status, 'worsening');
   assert.equal(doc.findings[0].trend.affected_pages_previous, 20);
   assert.equal(doc.findings[0].trend.affected_pages_current, 30);
+});
+
+// ---------------------------------------------------------------------------
+// Issue #159: coverage-expansion tests
+// ---------------------------------------------------------------------------
+
+// Reproduce the exact sia-r111 numbers from the issue: axe pages tripled
+// (2629 → 6753) while the affected count went from 1178 to 2811, but the
+// rate actually declined slightly (44.8% → 41.6%).  Old code calls this
+// "worsening"; with the rate fix it should be "improving".
+test('trend is not worsening when raw count grew but rate declined (issue #159 sia-r111)', async () => {
+  const summaryWithCoverage = {
+    ...FAKE_SUMMARY,
+    axe: { ...FAKE_SUMMARY.axe, pagesScanned: 6753, rules: { 'sia-r111': { pages: 2811 } } },
+  };
+  const prevWithCoverage = {
+    ...FAKE_PREV_SUMMARY,
+    axe: { ...FAKE_PREV_SUMMARY.axe, pagesScanned: 2629, rules: { 'sia-r111': { pages: 1178 } } },
+  };
+  const alfaBug = {
+    ...FAKE_BUG,
+    rule_id: 'sia-r111',
+    engine_key: 'axe-core',
+    frequency: { ...FAKE_BUG.frequency, pages_affected: 2811 },
+  };
+  const ledgerWithEntry = {
+    domain: 'example.gov',
+    findings: {
+      'VS-aabbccdd': { ...FAKE_LEDGER.findings['VS-aabbccdd'], ruleId: 'sia-r111', weeksSeen: 2 },
+    },
+  };
+  const doc = await buildAiFindings(
+    FAKE_TARGET, summaryWithCoverage, [alfaBug], ledgerWithEntry,
+    [prevWithCoverage, summaryWithCoverage], FAKE_INV, '/tmp'
+  );
+  const trend = doc.findings[0].trend;
+  assert.notEqual(trend.status, 'worsening', 'rate declined — must not be worsening');
+  // 44.8% → 41.6% is a ~3.2pp drop, outside the 2pp band → improving
+  assert.equal(trend.status, 'improving');
+});
+
+// A rule whose rate stayed flat (same proportion of pages) should be
+// "persistent" even when the raw count doubled because the sample doubled.
+test('trend is persistent when rate is stable despite raw count growing with larger sample', async () => {
+  const summaryWith = {
+    ...FAKE_SUMMARY,
+    axe: { ...FAKE_SUMMARY.axe, pagesScanned: 2000, rules: { 'color-contrast': { pages: 600 } } },
+  };
+  const prevWith = {
+    ...FAKE_PREV_SUMMARY,
+    axe: { ...FAKE_PREV_SUMMARY.axe, pagesScanned: 1000, rules: { 'color-contrast': { pages: 300 } } },
+  };
+  const bug = {
+    ...FAKE_BUG,
+    frequency: { ...FAKE_BUG.frequency, pages_affected: 600 },
+  };
+  const doc = await buildAiFindings(
+    FAKE_TARGET, summaryWith, [bug], FAKE_LEDGER,
+    [prevWith, summaryWith], FAKE_INV, '/tmp'
+  );
+  assert.equal(doc.findings[0].trend.status, 'persistent', 'same 30% rate — should be persistent');
+});
+
+// A finding that first appeared only on pages newly added to the sample
+// (no affected page was ever previously scanned) should not say "new".
+test('trend is persistent (not new) when finding is flagged as coverage-expansion', async () => {
+  const coverageNewLedger = {
+    domain: 'example.gov',
+    findings: {
+      'VS-aabbccdd': {
+        ...FAKE_LEDGER.findings['VS-aabbccdd'],
+        weeksSeen: 1,
+        _coverageNew: true,
+      },
+    },
+  };
+  const doc = await buildAiFindings(
+    FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], coverageNewLedger,
+    [FAKE_PREV_SUMMARY, FAKE_SUMMARY], FAKE_INV, '/tmp'
+  );
+  assert.equal(doc.findings[0].trend.status, 'persistent',
+    'coverage-expansion finding must not be reported as new');
+});
+
+// Confirm that a genuinely worsening rate still fires correctly.
+test('trend is worsening when rate genuinely increased with coverage data', async () => {
+  const summaryWith = {
+    ...FAKE_SUMMARY,
+    axe: { ...FAKE_SUMMARY.axe, pagesScanned: 1000, rules: { 'color-contrast': { pages: 400 } } },
+  };
+  const prevWith = {
+    ...FAKE_PREV_SUMMARY,
+    axe: { ...FAKE_PREV_SUMMARY.axe, pagesScanned: 1000, rules: { 'color-contrast': { pages: 250 } } },
+  };
+  const bug = {
+    ...FAKE_BUG,
+    frequency: { ...FAKE_BUG.frequency, pages_affected: 400 },
+  };
+  const doc = await buildAiFindings(
+    FAKE_TARGET, summaryWith, [bug], FAKE_LEDGER,
+    [prevWith, summaryWith], FAKE_INV, '/tmp'
+  );
+  // 25% → 40% = +15pp, well above the 2pp band
+  assert.equal(doc.findings[0].trend.status, 'worsening');
 });
 
 test('html fragments are deduplicated and fingerprinted', async () => {

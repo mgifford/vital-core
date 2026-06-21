@@ -122,9 +122,31 @@ for (const target of config.targets) {
     const summary = series[i];
     const prev = i > 0 ? series[i - 1] : null;
     const bugs = buildBugReports(target, summary);
+
+    // Build the set of page URLs covered by any engine in the PREVIOUS week.
+    // Used by updateFindings() to detect coverage-expansion false positives: a
+    // finding that only appears on pages not present in the previous sample is
+    // not genuinely new.  We use the union of all per-rule affectedPages arrays
+    // (pages with ≥1 violation) plus the in-memory pagesWithAxe/AlfaList (only
+    // available for non-pruned weeks).  This is a conservative subset of "all
+    // pages checked" — pages the engine ran on but found clean won't be here —
+    // so we only suppress "new" when we can positively confirm coverage expansion.
+    let prevCoveredUrls = null;
+    if (prev) {
+      const urlSet = new Set();
+      for (const rules of [prev.axe?.rules, prev.alfa?.rules]) {
+        for (const rule of Object.values(rules ?? {})) {
+          for (const p of rule.affectedPages ?? []) urlSet.add(p.url);
+        }
+      }
+      for (const url of prev.pagesWithAxeList ?? []) urlSet.add(url);
+      for (const url of prev.pagesWithAlfaList ?? []) urlSet.add(url);
+      if (urlSet.size > 0) prevCoveredUrls = urlSet;
+    }
+
     // Update the ledger for this week and annotate each bug with its
     // first/last-seen history.
-    const history = updateFindings(ledger, summary.week, bugs);
+    const history = updateFindings(ledger, summary.week, bugs, { prevCoveredUrls });
     for (const b of bugs) {
       const h = history[b.pattern_id];
       if (h) {
@@ -918,25 +940,65 @@ function summarizeRecords(target, week, records, brokenLinks) {
   };
 }
 
+// Fixed tolerance band (in percentage points) for rate-based diff comparisons.
+// Same value used by deriveTrend() in ai-findings.js so the two views agree.
+const DIFF_TOLERANCE_PP = 0.02;
+
 function diffWeeks(prev, curr) {
-  const diffEngine = (prevRules, currRules) => {
-    const appeared = Object.keys(currRules).filter((id) => !(id in prevRules));
+  const diffEngine = (prevRules, currRules, prevScanned, currScanned) => {
+    const useRates = prevScanned > 0 && currScanned > 0;
+
+    // A rule "appeared" if it's in curr but not in prev.  With rate awareness,
+    // we only report it as a genuine new rule when it would have shown up in
+    // the previous-sized sample — i.e., its rate × prevScanned ≥ 1 page.
+    // Rules that only appear because entirely new pages were added to the
+    // sample are suppressed (rate × prevScanned < 1 means prev sample was
+    // too small to catch even one occurrence).
+    const appeared = Object.keys(currRules).filter((id) => {
+      if (id in prevRules) return false;
+      if (useRates) {
+        const expectedInPrevSample = (currRules[id].pages / currScanned) * prevScanned;
+        return expectedInPrevSample >= 1;
+      }
+      return true;
+    });
+
     const resolved = Object.keys(prevRules).filter((id) => !(id in currRules));
+
+    // A rule "changed" only when its rate of occurrence shifted by more than
+    // the tolerance band.  Raw-count changes that merely reflect a larger
+    // sample (same rate, more pages) are treated as stable.
     const changed = Object.keys(currRules)
-      .filter((id) => id in prevRules && currRules[id].pages !== prevRules[id].pages)
-      .map((id) => ({ id, pagesBefore: prevRules[id].pages, pagesAfter: currRules[id].pages }));
+      .filter((id) => {
+        if (!(id in prevRules)) return false;
+        if (useRates) {
+          const currRate = currRules[id].pages / currScanned;
+          const prevRate = prevRules[id].pages / prevScanned;
+          return Math.abs(currRate - prevRate) > DIFF_TOLERANCE_PP;
+        }
+        return currRules[id].pages !== prevRules[id].pages;
+      })
+      .map((id) => ({
+        id,
+        pagesBefore: prevRules[id].pages,
+        pagesAfter: currRules[id].pages,
+        prevScanned: useRates ? prevScanned : undefined,
+        currScanned: useRates ? currScanned : undefined,
+      }));
+
     return { appeared, resolved, changed };
   };
+
   return {
     prevWeek: prev.week,
     pagesDelta: curr.pagesScanned - prev.pagesScanned,
     axe: {
       violationDelta: curr.axe.violationTotal - prev.axe.violationTotal,
-      ...diffEngine(prev.axe.rules, curr.axe.rules),
+      ...diffEngine(prev.axe.rules, curr.axe.rules, prev.axe.pagesScanned, curr.axe.pagesScanned),
     },
     alfa: {
       failedDelta: curr.alfa.failedTotal - prev.alfa.failedTotal,
-      ...diffEngine(prev.alfa.rules, curr.alfa.rules),
+      ...diffEngine(prev.alfa.rules, curr.alfa.rules, prev.alfa.pagesScanned, curr.alfa.pagesScanned),
     },
     sustainability:
       prev.sustainability && curr.sustainability

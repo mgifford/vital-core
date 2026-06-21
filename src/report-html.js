@@ -1769,7 +1769,12 @@ function changeList(engineName, d) {
   for (const id of d.resolved) items.push(`<li><strong>Resolved:</strong> ${esc(id)} no longer fails on any scanned page.</li>`);
   for (const c of d.changed) {
     const dir = c.pagesAfter > c.pagesBefore ? 'spread' : 'shrank';
-    items.push(`<li>${esc(c.id)} ${dir}: ${c.pagesBefore} → ${c.pagesAfter} pages affected.</li>`);
+    // Show rates alongside raw counts when coverage data is available so that
+    // a growing sample doesn't make a stable rule look like it's spreading.
+    const rateNote = (c.prevScanned > 0 && c.currScanned > 0)
+      ? ` (rate: ${Math.round(c.pagesBefore / c.prevScanned * 100)}% → ${Math.round(c.pagesAfter / c.currScanned * 100)}% of pages scanned)`
+      : '';
+    items.push(`<li>${esc(c.id)} ${dir}: ${c.pagesBefore} → ${c.pagesAfter} pages affected${rateNote}.</li>`);
   }
   if (items.length === 0) return `<h3>${esc(engineName)}</h3><p>No rule-level changes.</p>`;
   return `<h3>${esc(engineName)}</h3><ul>${items.join('\n')}</ul>`;

@@ -52,12 +52,28 @@ export function saveFindings(domainKey, ledger) {
  * Idempotent for a given week: re-running aggregate for the same week
  * does not double-count weeksSeen, because weeksSeen tracks distinct
  * weeks via a recorded set.
+ *
+ * options.prevCoveredUrls — optional Set of page URLs checked by any engine
+ * during the previous week.  When provided, a brand-new finding whose every
+ * affected page is absent from that set is marked _coverageNew:true in the
+ * ledger.  deriveTrend() uses this flag to suppress a false "new" signal when
+ * coverage expanded and the finding only appeared on freshly-sampled pages.
+ * Omitting prevCoveredUrls reproduces the original behavior exactly — no
+ * migration of committed findings.json files is required.
  */
-export function updateFindings(ledger, week, reports) {
+export function updateFindings(ledger, week, reports, { prevCoveredUrls } = {}) {
   for (const r of reports) {
     const id = r.pattern_id;
     const existing = ledger.findings[id];
     if (!existing) {
+      // Coverage-expansion check: if we know which pages were sampled last week
+      // and NONE of this finding's affected pages appear in that set, the finding
+      // exists only because previously-unsampled pages were added to the scan.
+      const affectedUrls = r.affected_pages ?? [];
+      const isCoverageNew = prevCoveredUrls != null
+        && affectedUrls.length > 0
+        && !affectedUrls.some((url) => prevCoveredUrls.has(url));
+
       ledger.findings[id] = {
         engine: r.tool,
         ruleId: r.rule_id,
@@ -69,6 +85,7 @@ export function updateFindings(ledger, week, reports) {
         _weeks: [week],
         weeksSeen: 1,
         lastPagesAffected: r.frequency.pages_affected,
+        ...(isCoverageNew ? { _coverageNew: true } : {}),
       };
     } else {
       // Track distinct weeks (idempotent re-runs of the same week).
@@ -77,6 +94,8 @@ export function updateFindings(ledger, week, reports) {
       existing._weeks = [...weeks].sort();
       existing.weeksSeen = existing._weeks.length;
       existing.firstSeen = existing._weeks[0];
+      // Once seen in a second week, the finding is confirmed real; clear the flag.
+      if (existing._coverageNew && existing._weeks.length > 1) delete existing._coverageNew;
       // lastSeen is the latest week we've ever recorded this finding in.
       if (compareWeek(week, existing.lastSeen) >= 0) {
         existing.lastSeen = week;

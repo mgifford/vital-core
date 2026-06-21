@@ -86,11 +86,44 @@ function urlPatternFingerprint(url) {
 // Trend / status derivation
 // ---------------------------------------------------------------------------
 
-function deriveTrend(ledgerEntry, currentPages, prevPages) {
+/**
+ * Derive the week-over-week trend status for a finding.
+ *
+ * When per-engine page counts (currentChecked, prevChecked) are supplied, the
+ * comparison uses rates (pages/checked) rather than raw counts so that a
+ * growing sample doesn't inflate "worsening" signals.  The tolerance band is
+ * a fixed number of percentage points (not a fraction of the sample size), so
+ * it stays stable as coverage expands.
+ *
+ * When coverage data is absent the function falls back to the raw-count
+ * comparison used before this fix, preserving backward compatibility.
+ *
+ * A finding whose ledger entry carries _coverageNew:true was first observed
+ * on pages that weren't previously sampled; we can't confirm it's genuinely
+ * new, so we report 'persistent' rather than 'new'.
+ */
+const TREND_TOLERANCE_PP = 0.02; // 2 percentage-point band — fixed, not proportional
+
+function deriveTrend(ledgerEntry, currentPages, prevPages, currentChecked, prevChecked) {
   if (!ledgerEntry) return 'new';
-  const { weeksSeen, firstSeen, lastSeen } = ledgerEntry;
-  if (weeksSeen <= 1) return 'new';
+  const { weeksSeen } = ledgerEntry;
+  if (weeksSeen <= 1) {
+    // Coverage-expansion case: first seen on pages that weren't sampled before.
+    if (ledgerEntry._coverageNew) return 'persistent';
+    return 'new';
+  }
   if (currentPages == null || prevPages == null) return 'persistent';
+
+  // Rate-based comparison when per-engine coverage counts are available.
+  if (currentChecked > 0 && prevChecked > 0) {
+    const currentRate = currentPages / currentChecked;
+    const prevRate = prevPages / prevChecked;
+    const deltaPP = currentRate - prevRate;
+    if (Math.abs(deltaPP) <= TREND_TOLERANCE_PP) return 'persistent';
+    return deltaPP > 0 ? 'worsening' : 'improving';
+  }
+
+  // Fallback: raw count comparison (no coverage data available).
   const delta = currentPages - prevPages;
   if (Math.abs(delta) <= Math.max(1, Math.round(currentPages * 0.05))) return 'persistent';
   return delta > 0 ? 'worsening' : 'improving';
@@ -211,7 +244,13 @@ export async function buildAiFindings(target, summary, bugs, ledger, series, inv
       ?? null;
     const currentPages = bug.frequency.pages_affected;
     const prevPages = prevRule?.pages ?? null;
-    const trend = deriveTrend(ledgerEntry, currentPages, prevPages);
+
+    // Per-engine coverage for rate-based trend: axe-core → axe, alfa → alfa, others → 0.
+    const engineSummaryKey = bug.engine_key === 'axe-core' ? 'axe' : bug.engine_key === 'alfa' ? 'alfa' : null;
+    const currentChecked = engineSummaryKey ? (summary[engineSummaryKey]?.pagesScanned ?? 0) : 0;
+    const prevChecked = engineSummaryKey ? (prev?.[engineSummaryKey]?.pagesScanned ?? 0) : 0;
+
+    const trend = deriveTrend(ledgerEntry, currentPages, prevPages, currentChecked, prevChecked);
     const isOnKeyPage = (bug.example_pages ?? []).some((u) => keyPageSet.has(u))
       || (bug.affected_pages ?? []).some((u) => keyPageSet.has(u));
     const priority = priorityFor(bug.severity, currentPages, isOnKeyPage, trend === 'persistent' || trend === 'worsening');
