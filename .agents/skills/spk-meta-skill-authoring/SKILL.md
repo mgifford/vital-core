@@ -1,0 +1,1 @@
+/Users/mike.gifford/.agents/skills/spk-meta-skill-authoring/SKILL.md

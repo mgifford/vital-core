@@ -1,0 +1,1 @@
+/Users/mike.gifford/.agents/skills/spk-admin-setup-doctor/SKILL.md

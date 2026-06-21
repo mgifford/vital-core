@@ -1,0 +1,1 @@
+/Users/mike.gifford/.agents/skills/spk-gate-merge/SKILL.md
