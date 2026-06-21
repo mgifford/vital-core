@@ -414,6 +414,7 @@ test('findings: ledger tracks first/last-seen and is idempotent per week', () =>
   assert.equal(ledger.findings['VS-aaa'].weeksSeen, 2, 're-run same week is idempotent');
 });
 
+
 test('spell: flags real misspellings, skips numbers/acronyms/allowlist/jargon', () => {
   const r = findMisspellings([
     'The', 'quick', 'accessibility', // correct dictionary words

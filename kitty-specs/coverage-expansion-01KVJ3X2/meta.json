@@ -1,0 +1,11 @@
+{
+  "created_at": "2026-06-21T00:00:00.000Z",
+  "friendly_name": "Coverage-expansion false positives in trend signals",
+  "mission_id": "01KVJ3X2000000000000000000",
+  "mission_number": null,
+  "mission_slug": "coverage-expansion-01KVJ3X2",
+  "mission_type": "software-dev",
+  "slug": "coverage-expansion-01KVJ3X2",
+  "source_description": "Fix #159: week-over-week trend signals conflate sampling expansion with real regressions. deriveTrend() and updateFindings() are not coverage-aware; diffWeeks() and changeList() use raw counts that inflate worsening/New signals when the axe/Alfa page sample grows.",
+  "target_branch": "main"
+}
