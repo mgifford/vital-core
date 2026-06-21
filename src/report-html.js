@@ -1613,7 +1613,8 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
 ${subnav('overview')}
 <p class="meta">This is the <strong>${esc(summary.week)}</strong> ISO-week report (<strong>${summary.pagesScanned}</strong> pages fetched, <strong>${summary.pagesAudited ?? summary.pagesScanned}</strong> unique pages audited by axe/Alfa). Generated ${esc(summary.generatedAt.slice(0, 10))}.
-${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.</p>
+${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.
+Machine-readable API: <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
 
 ${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
   <span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>
