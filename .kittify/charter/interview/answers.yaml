@@ -1,0 +1,24 @@
+schema_version: 1.0.0
+mission: software-dev
+profile: minimal
+answers:
+  project_intent: 'Busy accessibility professionals who need a clear overview of the
+    problems associated with their website and the steps they need totake to address
+    them. It is to provide the vital information needed fto ensure site quality. '
+  languages_frameworks: axe-core, alfa, google lighthosue, p
+  testing_requirements: Use the project's declared test approach. If none is 
+    declared, mark it as NEEDS CLARIFICATION.
+  quality_gates: 'Must meet WCAG 2.2 AA, must be performant '
+  review_policy: pwd
+  performance_targets: A
+  deployment_constraints: MacOS and GitHub
+selected_paradigms: []
+selected_directives: []
+selected_tactics: []
+available_tools:
+- spec-kitty
+- kit
+- axe
+- alfa
+agent_profile:
+agent_role:
