@@ -357,6 +357,19 @@ ${table}
 </figure>`;
 }
 
+function trendPoints(series, pick) {
+  return series.map((s) => ({ week: s.week, value: pick(s) }));
+}
+
+function chartGroup(id, title, level, charts) {
+  const content = charts.filter(Boolean).join('\n');
+  if (!content) return '';
+  return `<section aria-labelledby="${esc(id)}">
+${heading(id, title, level)}
+${content}
+</section>`;
+}
+
 function layout({ title, breadcrumb, body, depth, extraScript = '' }) {
   const base = '../'.repeat(depth);
   return `<!DOCTYPE html>
@@ -469,6 +482,7 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
  * JavaScript-free (native <details>). Prioritized so the most actionable
  * issues appear first. Downloadable as CSV, Markdown,
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
+ */
 function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}) {
   const view = prioritizeAccessibilityBugs(summary, bugs, { keyPages: reporting.keyPages ?? [], reporting });
   const ordered = view.bugs;
@@ -488,6 +502,15 @@ ${heading('h-bugs', `Bug reports`)}
   const catOrder = ['WCAG 2.0 A', 'WCAG 2.0 AA', 'WCAG 2.1 A', 'WCAG 2.1 AA', 'WCAG 2.2 A', 'WCAG 2.2 AA', 'WCAG 2.x AAA', 'Best Practice', 'Undetermined'];
   const catSummary = catOrder.filter((c) => catCounts[c]).map((c) => `${catCounts[c]} ${c}`).join(', ');
 
+  const engineShortLabel = (engineKey) => {
+    switch (engineKey) {
+      case 'axe-core': return 'axe';
+      case 'alfa': return 'alfa';
+      case 'deprecated-html': return 'html';
+      default: return engineKey;
+    }
+  };
+
   const blocks = ordered
     .map((b) => {
       const wcagDetail = b.wcag_sc
@@ -496,6 +519,8 @@ ${heading('h-bugs', `Bug reports`)}
       const ruleLabel = b.rule_label && b.rule_label !== b.rule_id
         ? `${esc(b.rule_label)} <span class="bug-meta">(${esc(b.rule_id)})</span>`
         : esc(b.rule_id);
+      const engineLabel = `<span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(engineShortLabel(b.engine_key))}</span>`;
+      const ruleBadge = `<span class="rule-badge">${esc(b.rule_id)}</span>`;
       const ruleLink = b.rule_url
         ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${ruleLabel}</a>`
         : `${esc(b.tool)} — ${ruleLabel}`;
@@ -503,7 +528,7 @@ ${heading('h-bugs', `Bug reports`)}
         ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
         : '';
       return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
-<summary><span class="sev-badge">${esc(b.severity)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
+<summary><span class="sev-badge">${esc(b.severity)}</span> ${engineLabel} ${ruleBadge} ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span></summary>
 <dl class="bug-fields">
   <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
@@ -1453,10 +1478,41 @@ ${coverageTable(summary)}
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
 ${heading('h-trends', `Trends over time`)}
-${lineChart('Median axe violations per page', series.map((s) => ({ week: s.week, value: s.axe.medianViolations })), { lowerIsBetter: true })}
-${lineChart('Median Alfa failures per page', series.map((s) => ({ week: s.week, value: s.alfa.medianFailures })), { lowerIsBetter: true })}
-${series.some((s) => s.plainLanguage?.medianReadingEase != null) ? lineChart('Reading ease (median)', series.map((s) => ({ week: s.week, value: s.plainLanguage?.medianReadingEase ?? null })), { lowerIsBetter: false }) : ''}
-${series.some((s) => s.sustainability) ? lineChart('Median page weight (KB)', series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
+${chartGroup('h-trends-accessibility', 'Accessibility trends', 3, [
+  lineChart('Median axe violations per page', trendPoints(series, (s) => s.axe.medianViolations), { lowerIsBetter: true }),
+  lineChart('Median Alfa failures per page', trendPoints(series, (s) => s.alfa.medianFailures), { lowerIsBetter: true }),
+])}
+${chartGroup('h-trends-content', 'Content trends', 3, [
+  series.some((s) => s.plainLanguage?.medianReadingEase != null)
+    ? lineChart('Reading ease (median)', trendPoints(series, (s) => s.plainLanguage?.medianReadingEase ?? null), { lowerIsBetter: false })
+    : '',
+])}
+${chartGroup('h-trends-performance', 'Performance trends', 3, [
+  series.some((s) => s.sustainability)
+    ? lineChart('Median page weight (KB)', trendPoints(series, (s) => s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null), { unit: ' KB', lowerIsBetter: true })
+    : '',
+  series.some((s) => s.sustainability)
+    ? lineChart('Median requests per page', trendPoints(series, (s) => s.sustainability?.medianRequests ?? null), { lowerIsBetter: true })
+    : '',
+  series.some((s) => s.lighthouse?.medianPerformance != null)
+    ? lineChart('Lighthouse performance (median)', trendPoints(series, (s) => s.lighthouse?.medianPerformance ?? null), { lowerIsBetter: false })
+    : '',
+  series.some((s) => s.lighthouse?.metrics?.firstContentfulPaintMs != null)
+    ? lineChart('First Contentful Paint (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.firstContentfulPaintMs ?? null), { unit: ' ms', lowerIsBetter: true })
+    : '',
+  series.some((s) => s.lighthouse?.metrics?.largestContentfulPaintMs != null)
+    ? lineChart('Largest Contentful Paint (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.largestContentfulPaintMs ?? null), { unit: ' ms', lowerIsBetter: true })
+    : '',
+  series.some((s) => s.lighthouse?.metrics?.speedIndexMs != null)
+    ? lineChart('Speed Index (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.speedIndexMs ?? null), { unit: ' ms', lowerIsBetter: true })
+    : '',
+  series.some((s) => s.lighthouse?.metrics?.totalBlockingTimeMs != null)
+    ? lineChart('Total Blocking Time (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.totalBlockingTimeMs ?? null), { unit: ' ms', lowerIsBetter: true })
+    : '',
+  series.some((s) => s.lighthouse?.metrics?.cumulativeLayoutShift != null)
+    ? lineChart('Cumulative Layout Shift (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.cumulativeLayoutShift ?? null), { lowerIsBetter: true })
+    : '',
+])}
 </section>` : ''}
 
 ${diff ? `
@@ -2022,6 +2078,12 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
 .wcag-badge[data-cat="best-practice"] { background: color-mix(in srgb, var(--muted) 12%, transparent);
   color: var(--muted); border-color: color-mix(in srgb, var(--muted) 35%, transparent); }
+.engine-badge, .rule-badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 0 .4rem;
+  border-radius: 2px; vertical-align: middle; margin-right: .35rem;
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  color: var(--ink); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.engine-badge[data-engine="axe-core"] { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+.engine-badge[data-engine="alfa"] { background: color-mix(in srgb, var(--better) 10%, transparent); color: var(--better); border-color: color-mix(in srgb, var(--better) 30%, transparent); }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }

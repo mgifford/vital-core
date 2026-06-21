@@ -1,0 +1,38 @@
+schema_version: 1.0.0
+project: vital-core
+mission: software-dev
+authority_paths:
+  - AGENTS.md
+  - ACCESSIBILITY.md
+  - README.md
+testing:
+  required_commands:
+    - spec-kitty upgrade --agent-check --json
+    - spec-kitty agent config sync --create-missing
+    - spec-kitty agent config status
+    - spec-kitty doctor skills --json
+    - spec-kitty charter preflight --json
+    - npm run check:spec-kitty
+    - npm run test:unit
+quality:
+  accessibility: WCAG 2.2 AA
+  report_format: semantic HTML with accessible chart alternatives
+  text_alternatives: required for meaningful charts, images, and other graphics
+performance:
+  reporting:
+    charts_should_tell_change_story: true
+    prefer_week_over_week_trends: true
+  scanning:
+    deterministic_sampling: true
+    preserve_weekly_history: true
+branching:
+  source_of_truth: GitHub
+  deployment_target: Hugging Face Spaces via the hf remote
+selected_directives:
+  - weekly-accessibility-tracking
+  - stable-page-identity
+  - historical-evidence-preservation
+  - accessible-reporting
+  - efficient-recurring-scans
+selected_tactics: []
+selected_styleguides: []

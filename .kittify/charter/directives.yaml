@@ -1,0 +1,33 @@
+schema_version: 1.0.0
+project: vital-core
+directives:
+  - id: weekly-accessibility-tracking
+    title: Prefer weekly trend reporting
+    severity: required
+    scope: reports
+    summary: Weekly and historical comparisons take precedence over isolated single-run output.
+    rationale: The project exists to track improvement and regression over time.
+  - id: stable-page-identity
+    title: Preserve stable page identity
+    severity: required
+    scope: data-model
+    summary: URL identity, page identity, and deduplication keys must remain stable across scans.
+    rationale: Stable identity is required for repeatable trend analysis.
+  - id: historical-evidence-preservation
+    title: Preserve historical evidence
+    severity: required
+    scope: retention
+    summary: Summary data is durable history; page-level detail may be pruned only after retention rules allow it.
+    rationale: Historical summaries prove when issues were introduced and resolved.
+  - id: accessible-reporting
+    title: Keep reports accessible
+    severity: required
+    scope: report-html
+    summary: Generated HTML must be semantic, keyboard-accessible, and provide text alternatives for charts and other visualizations.
+    rationale: Reports must be usable with assistive technology and without JavaScript.
+  - id: efficient-recurring-scans
+    title: Keep recurring scans efficient
+    severity: required
+    scope: scan-runtime
+    summary: Scans should be deterministic, rate-controlled, and proportionate to weekly budget and site value.
+    rationale: The system runs continuously on a recurring schedule and must remain efficient.

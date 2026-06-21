@@ -9,6 +9,7 @@
     "aggregate": "node src/aggregate.js",
     "comment": "node src/issue-comment.js",
     "prune": "node src/prune.js",
+    "check:spec-kitty": "node scripts/check-spec-kitty-governance.js",
     "sync:hosting": "bash scripts/publish-repos.sh",
     "test:unit": "node --test 'tests/unit/**/*.test.js'",
     "test:e2e": "node tests/e2e.mjs",
