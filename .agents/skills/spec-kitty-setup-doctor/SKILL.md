@@ -1,0 +1,1 @@
+/Users/mike.gifford/.agents/skills/spec-kitty-setup-doctor/SKILL.md
