@@ -310,6 +310,84 @@ function themeToggle() {
  * the table). No JavaScript. `points` is [{ week, value }]; lowerIsBetter
  * controls the caption wording only.
  */
+/**
+ * Multi-series chart: pages affected by axe severity (Critical / Serious /
+ * Moderate / Minor) over time. Four lines in one SVG, distinguished by both
+ * stroke dash pattern and label — not color alone, so it works in
+ * monochrome and for color-blind users.
+ */
+function severityTrendChart(series) {
+  const LEVELS = [
+    { key: 'critical', label: 'Critical', dash: 'none' },
+    { key: 'serious',  label: 'Serious',  dash: '6 3' },
+    { key: 'moderate', label: 'Moderate', dash: '3 3' },
+    { key: 'minor',    label: 'Minor',    dash: '1 4' },
+  ];
+
+  // Derive pages-affected per severity from axe.rules in each week's summary.
+  const pts = series.map((s) => {
+    const counts = { critical: 0, serious: 0, moderate: 0, minor: 0 };
+    for (const r of Object.values(s.axe?.rules ?? {})) {
+      const imp = r.impact?.toLowerCase();
+      if (imp in counts) counts[imp] += r.pages ?? 0;
+    }
+    return { week: s.week, ...counts };
+  });
+
+  if (pts.length < 2) return '';
+
+  // Skip levels that are zero in every week (keeps the chart clean when data
+  // is sparse).
+  const activeLevels = LEVELS.filter((l) => pts.some((p) => p[l.key] > 0));
+  if (activeLevels.length === 0) return '';
+
+  const W = 640, H = 200, padL = 44, padR = 90, padT = 16, padB = 28;
+  const allVals = activeLevels.flatMap((l) => pts.map((p) => p[l.key]));
+  const maxVal = Math.max(...allVals, 1);
+  const x = (i) => padL + (i / (pts.length - 1)) * (W - padL - padR);
+  const y = (v) => H - padB - (v / maxVal) * (H - padT - padB);
+  const xlabels = [0, Math.floor((pts.length - 1) / 2), pts.length - 1]
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .map((i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="axis">${esc(pts[i].week.slice(5))}</text>`)
+    .join('');
+  const ylabels = `<text x="4" y="${(y(maxVal) + 4).toFixed(1)}" class="axis">${maxVal}</text><text x="4" y="${(y(0) + 4).toFixed(1)}" class="axis">0</text>`;
+
+  const lines = activeLevels.map((l) => {
+    const poly = pts.map((p, i) => `${x(i).toFixed(1)},${y(p[l.key]).toFixed(1)}`).join(' ');
+    const dots = pts.map((p, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(p[l.key]).toFixed(1)}" r="2.5" fill="currentColor"/>`).join('');
+    // Inline legend label at the end of each line.
+    const lastPt = pts[pts.length - 1];
+    const labelY = y(lastPt[l.key]);
+    return `<g>
+  <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="${l.dash}"/>
+  ${dots}
+  <text x="${(x(pts.length - 1) + 6).toFixed(1)}" y="${(labelY + 4).toFixed(1)}" class="axis" text-anchor="start">${esc(l.label)}</text>
+</g>`;
+  }).join('\n');
+
+  // Data table for the no-JS / screen-reader baseline.
+  const tableRows = pts.map((p) =>
+    `<tr><th scope="row">${esc(p.week)}</th>${activeLevels.map((l) => `<td>${p[l.key]}</td>`).join('')}</tr>`
+  ).join('');
+  const table = `<table class="visually-hidden">
+<caption>Pages affected by axe severity, by week</caption>
+<thead><tr><th scope="col">Week</th>${activeLevels.map((l) => `<th scope="col">${esc(l.label)}</th>`).join('')}</tr></thead>
+<tbody>${tableRows}</tbody>
+</table>`;
+
+  const ariaLabel = `Axe violations by severity over ${pts.length} weeks. ` +
+    activeLevels.map((l) => `${l.label}: ${pts[0][l.key]} → ${pts[pts.length - 1][l.key]} pages`).join('; ') + '.';
+
+  return `<figure class="chart">
+<figcaption>Pages affected by axe severity over ${pts.length} weeks (lower is better)</figcaption>
+<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
+  ${lines}
+  ${xlabels}${ylabels}
+</svg>
+${table}
+</figure>`;
+}
+
 function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
   const pts = points.filter((p) => p.value != null);
   if (pts.length < 2) {
@@ -355,19 +433,6 @@ function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
 </svg>
 ${table}
 </figure>`;
-}
-
-function trendPoints(series, pick) {
-  return series.map((s) => ({ week: s.week, value: pick(s) }));
-}
-
-function chartGroup(id, title, level, charts) {
-  const content = charts.filter(Boolean).join('\n');
-  if (!content) return '';
-  return `<section aria-labelledby="${esc(id)}">
-${heading(id, title, level)}
-${content}
-</section>`;
 }
 
 function layout({ title, breadcrumb, body, depth, extraScript = '' }) {
@@ -428,6 +493,11 @@ function paraChartLoader(base) {
 const figs = document.querySelectorAll('.chart[data-parachart]');
 if (figs.length) {
   import('${base}paracharts.js').then(() => {
+    // Remember what had focus before mounting any charts. Some para-chart
+    // implementations call .focus() during connectedCallback, which scrolls
+    // the page to the first chart on load. We restore focus afterward so the
+    // page opens at the top.
+    const priorFocus = document.activeElement;
     figs.forEach((fig) => {
       let manifest;
       try { manifest = fig.getAttribute('data-parachart'); } catch (e) { return; }
@@ -444,6 +514,11 @@ if (figs.length) {
       if (fallback) fallback.hidden = true;
       fig.insertBefore(chart, fig.firstChild ? fig.firstChild.nextSibling : null);
     });
+    // Restore focus to where it was (typically body) so the viewport
+    // stays at the top of the page rather than scrolling to the first chart.
+    if (priorFocus && typeof priorFocus.focus === 'function') {
+      priorFocus.focus({ preventScroll: true });
+    }
   }).catch(() => { /* keep the SVG + table fallback */ });
 }
 </script>`;
@@ -457,7 +532,7 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
       const r = rules[id];
       const link = r.helpUrl ?? r.ruleUrl;
       const plain = rulePlainLabel(engineKey, id, { help: r.help });
-      const label = plain ? `${esc(plain)} <span class="bug-meta">(${esc(id)})</span>` : esc(id);
+      const label = plain ? `${esc(plain)} <span class="bug-meta">[${esc(id)}]</span>` : esc(id);
       const csv = csvLinks.byRule?.[`${engineKey}:${id}`];
       return `<tr>
   <th scope="row">${link ? `<a href="${esc(link)}">${label}</a>` : label}</th>
@@ -471,7 +546,7 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
     .join('\n');
   return `<table>
 <caption>${esc(caption)}</caption>
-<thead><tr><th scope="col">Rule</th><th scope="col">Impact</th><th scope="col">Pages affected</th><th scope="col">Instances</th><th scope="col">Example pages</th><th scope="col">All affected</th></tr></thead>
+<thead><tr><th scope="col">Rule</th><th scope="col">Impact</th><th scope="col" class="num">Pages affected</th><th scope="col" class="num">Instances</th><th scope="col">Example pages</th><th scope="col">All affected</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
 }
@@ -493,7 +568,7 @@ ${heading('h-bugs', `Bug reports`)}
 </section>`;
   }
   const sevCount = ordered.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
-  const sevSummary = ['Critical', 'High', 'Medium', 'Low']
+  const sevSummary = ['Critical', 'Serious', 'Moderate', 'Minor']
     .filter((s) => sevCount[s])
     .map((s) => `${sevCount[s]} ${s.toLowerCase()}`)
     .join(', ');
@@ -502,25 +577,14 @@ ${heading('h-bugs', `Bug reports`)}
   const catOrder = ['WCAG 2.0 A', 'WCAG 2.0 AA', 'WCAG 2.1 A', 'WCAG 2.1 AA', 'WCAG 2.2 A', 'WCAG 2.2 AA', 'WCAG 2.x AAA', 'Best Practice', 'Undetermined'];
   const catSummary = catOrder.filter((c) => catCounts[c]).map((c) => `${catCounts[c]} ${c}`).join(', ');
 
-  const engineShortLabel = (engineKey) => {
-    switch (engineKey) {
-      case 'axe-core': return 'axe';
-      case 'alfa': return 'alfa';
-      case 'deprecated-html': return 'html';
-      default: return engineKey;
-    }
-  };
-
   const blocks = ordered
     .map((b) => {
       const wcagDetail = b.wcag_sc
         ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (Level ${esc(b.wcag_level)}, WCAG ${esc(b.wcag_version ?? '2.x')})`
         : b.wcag_category === 'Best Practice' ? 'Best Practice — not a WCAG requirement' : 'undetermined';
       const ruleLabel = b.rule_label && b.rule_label !== b.rule_id
-        ? `${esc(b.rule_label)} <span class="bug-meta">(${esc(b.rule_id)})</span>`
+        ? `${esc(b.rule_label)} <span class="bug-meta">[${esc(b.rule_id)}]</span>`
         : esc(b.rule_id);
-      const engineLabel = `<span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(engineShortLabel(b.engine_key))}</span>`;
-      const ruleBadge = `<span class="rule-badge">${esc(b.rule_id)}</span>`;
       const ruleLink = b.rule_url
         ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${ruleLabel}</a>`
         : `${esc(b.tool)} — ${ruleLabel}`;
@@ -528,7 +592,7 @@ ${heading('h-bugs', `Bug reports`)}
         ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
         : '';
       return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
-<summary><span class="sev-badge">${esc(b.severity)}</span> ${engineLabel} ${ruleBadge} ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
+<summary><span class="sev-badge">${esc(b.severity)}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span></summary>
 <dl class="bug-fields">
   <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
@@ -562,7 +626,7 @@ ${affectedPagesBlock(b)}
   // Progressive-enhancement filter. Without JS every bug is visible; the
   // script below reveals the controls and filters the <details> blocks by
   // their data-severity / data-category attributes.
-  const sevPresent = ['Critical', 'High', 'Medium', 'Low'].filter((s) => sevCount[s]);
+  const sevPresent = ['Critical', 'Serious', 'Moderate', 'Minor'].filter((s) => sevCount[s]);
   const catPresent = catOrder.filter((c) => catCounts[c]);
   const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${esc(s)} (${sevCount[s]})</option>`).join('');
   const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${esc(c)} (${catCounts[c]})</option>`).join('');
@@ -591,7 +655,7 @@ ${heading('h-bugs', `Bug reports`)}
 <p class="meta">${view.visibleCount} issue type(s) are shown by default out of ${ordered.length} total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.</p>
   <p class="meta">Overall severity mix: ${esc(sevSummary)}. By WCAG category: ${esc(catSummary)}. Ordered by severity, key-page impact, WCAG level, and prevalence. Following
 <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.
-Download: <a href="bugs.md">Markdown</a> · <a href="bugs.json">JSON</a>${csvLink}.</p>
+Download: <a href="bugs.md">Markdown</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">JSON (full archive)</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">JSON (AI diagnostic)</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">Priority pages CSV</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">Priority pages JSON</a>` : ''}.</p>
 <p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
 ${priorityLine}
 ${dupLine}
@@ -666,7 +730,7 @@ function coverageTable(summary) {
 <summary>Scan coverage this week (${summary.pagesScanned} pages${attemptLine})</summary>
 <table>
 <caption>Pages each engine ran on, per the configured weekly sampling rates.</caption>
-<thead><tr><th scope="col">Engine</th><th scope="col">Pages</th><th scope="col">Coverage</th></tr></thead>
+<thead><tr><th scope="col">Engine</th><th scope="col" class="num">Pages</th><th scope="col" class="num">Coverage</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </details>`;
@@ -702,7 +766,7 @@ ${heading('h-resources', `Embedded & linked resources`)}
 ${newBlock}
 <table>
 <caption>${r.total} distinct resources, by type.</caption>
-<thead><tr><th scope="col">Type</th><th scope="col">Count</th></tr></thead>
+<thead><tr><th scope="col">Type</th><th scope="col" class="num">Count</th></tr></thead>
 <tbody>${typeRows}</tbody>
 </table>
 </section>`;
@@ -737,7 +801,7 @@ ${heading('h-fixfirst', `Fix these first`)}
 <p class="meta">Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessibility.html#h-bugs">Accessibility page</a>.</p>
 <table>
 <caption>Top ${top.length} issues to prioritize this week.</caption>
-<thead><tr><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col">Pages</th><th scope="col">Who it affects</th><th scope="col">How to fix</th><th scope="col">Evidence</th></tr></thead>
+<thead><tr><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col" class="num">Pages</th><th scope="col">Who it affects</th><th scope="col">How to fix</th><th scope="col">Evidence</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </section>`;
@@ -756,31 +820,134 @@ function checklist(items) {
 function standardsSecuritySection(summary) {
   const sec = summary.security;
   const std = summary.standards;
-  if (!sec && !std) return '';
+  const pi = summary.publicInterest ?? null;
+  if (!sec && !std && !pi) return '';
   const secBlock = sec ? `
 <h3>Security &amp; domain hygiene <span class="bug-meta">${sec.passed}/${sec.total} on the origin</span></h3>
 ${checklist(sec.checks)}` : '';
-  const stdBlock = std ? `
+  const stdBlock = std ? (() => {
+    const pwaChecks = std.checks.filter((c) => c.id.startsWith('pwa-'));
+    const metaChecks = std.checks.filter((c) => !c.id.startsWith('pwa-'));
+    const checkRow = (c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`;
+    const hasSW = pwaChecks.find((c) => c.id === 'pwa-service-worker');
+    const hasManifest = pwaChecks.find((c) => c.id === 'pwa-manifest');
+    const pwaInterpretation = hasSW?.pass > 0
+      ? `Service worker detected on ${hasSW.pass} of ${hasSW.total} checked page(s). ${hasManifest?.pass > 0 ? 'Web app manifest also present.' : 'No web app manifest found.'} Service workers enable offline access and "Add to Home Screen" install.`
+      : 'No service worker detected on any checked page — this site does not provide offline access or PWA install capability.';
+    const pwaBlock = pwaChecks.length ? `
+<h3>PWA &amp; offline readiness <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
+<p class="meta">${pwaInterpretation} These checks run on every crawled page via Playwright (not sampled). Lighthouse 12+ removed the dedicated PWA category score.</p>
+<table>
+<caption>PWA / offline readiness signals (lowest pass rate first).</caption>
+<thead><tr><th scope="col">Check</th><th scope="col" class="num">Pass rate</th><th scope="col" class="num">Pages</th></tr></thead>
+<tbody>${pwaChecks.map(checkRow).join('')}</tbody>
+</table>` : '';
+    return `
 <h3>Web standards &amp; metadata <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
 <table>
 <caption>Share of checked pages passing each standard (lowest first).</caption>
-<thead><tr><th scope="col">Standard</th><th scope="col">Pass rate</th><th scope="col">Pages</th></tr></thead>
-<tbody>${std.checks.map((c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`).join('')}</tbody>
+<thead><tr><th scope="col">Standard</th><th scope="col" class="num">Pass rate</th><th scope="col" class="num">Pages</th></tr></thead>
+<tbody>${metaChecks.map(checkRow).join('')}</tbody>
 </table>
-${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}` : '';
+${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}
+${pwaBlock}`;
+  })() : '';
+  const piBlock = publicInterestSection(pi);
   return `<section aria-labelledby="h-standards">
 ${heading('h-standards', `Standards & security`)}
 <p class="meta">Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.</p>
 ${secBlock}
 ${stdBlock}
+${piBlock}
 </section>`;
 }
 
-function consensusSection(summary) {
+function publicInterestSection(pi) {
+  if (!pi) return '';
+
+  const badge = (result) => {
+    if (result === 'pass') return '<span class="pwa-badge pwa-pass" aria-label="pass">✓</span>';
+    if (result === 'fail') return '<span class="pwa-badge pwa-fail" aria-label="not found">✗</span>';
+    return '<span class="pwa-badge pwa-partial" aria-label="unknown">~</span>';
+  };
+
+  const urlCell = (url) => url ? `<a href="${esc(url)}">${esc(url.replace(/^https?:\/\//, ''))}</a>` : '—';
+
+  // Accessibility statement row.
+  const a = pi.a11yStatement ?? {};
+  const a11yConf = a.confidence ? ` <span class="bug-meta">(${esc(a.confidence)} confidence)</span>` : '';
+  const a11yRow = `<tr>
+  <th scope="row">Accessibility statement</th>
+  <td>${badge(a.result ?? 'unknown')} ${a.result === 'pass' ? 'Found' : a.result === 'fail' ? 'Not found' : 'Unknown'}${a11yConf}</td>
+  <td>${urlCell(a.url)}</td>
+  <td class="bug-meta">${a.checkedAt ? esc(a.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  // carbon.txt row.
+  const c = pi.carbonTxt ?? {};
+  const carbonValidity = c.result === 'pass' ? (c.valid ? ' · file appears valid' : ' · file may be malformed') : '';
+  const carbonFields = c.fields && Object.keys(c.fields).length
+    ? ` · fields: ${esc(Object.keys(c.fields).slice(0, 4).join(', '))}` : '';
+  const carbonRow = `<tr>
+  <th scope="row">carbon.txt</th>
+  <td>${badge(c.result ?? 'unknown')} ${c.result === 'pass' ? 'Found' : c.result === 'fail' ? 'Not found' : 'Unknown'}${esc(carbonValidity + carbonFields)}</td>
+  <td>${urlCell(c.url)}</td>
+  <td class="bug-meta">${c.checkedAt ? esc(c.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  // Green Web Foundation row.
+  const g = pi.greenWebFoundation ?? {};
+  const gwfDetail = g.hostedBy ? ` · hosted by ${esc(g.hostedBy)}` : '';
+  const gwfRow = `<tr>
+  <th scope="row">Renewable hosting <span class="bug-meta">(Green Web Foundation)</span></th>
+  <td>${badge(g.result ?? 'unknown')} ${g.result === 'pass' ? 'Green' : g.result === 'fail' ? 'Not green' : 'Unknown'}${esc(gwfDetail)}</td>
+  <td>${g.url ? `<a href="${esc(g.url)}">API response</a>` : '—'}</td>
+  <td class="bug-meta">${g.checkedAt ? esc(g.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  // Sitemap rows.
+  const s = pi.sitemaps ?? {};
+  const xmlRow = `<tr>
+  <th scope="row">XML sitemap</th>
+  <td>${badge(s.xml?.found ? 'pass' : 'fail')} ${s.xml?.found ? 'Found' : 'Not found'}</td>
+  <td>${urlCell(s.xml?.url)}</td>
+  <td class="bug-meta">${s.checkedAt ? esc(s.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+  const humanRow = `<tr>
+  <th scope="row">Human-readable sitemap</th>
+  <td>${badge(s.human?.found ? 'pass' : 'fail')} ${s.human?.found ? 'Found' : 'Not found'}</td>
+  <td>${urlCell(s.human?.url)}</td>
+  <td class="bug-meta">${s.checkedAt ? esc(s.checkedAt.slice(0, 10)) : '—'}</td>
+</tr>`;
+
+  return `<h3>Public interest &amp; sustainability signals <span class="bug-meta">origin-level checks</span></h3>
+<table>
+<caption>Checks run once per week against the domain origin. ✓ = found/green · ✗ = not found · ~ = uncertain.</caption>
+<thead><tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col">URL</th><th scope="col">Checked</th></tr></thead>
+<tbody>
+${a11yRow}
+${carbonRow}
+${gwfRow}
+${xmlRow}
+${humanRow}
+</tbody>
+</table>`;
+}
+
+function consensusSection(summary, bugs = []) {
   const c = summary.consensus;
   if (!c || c.uniqueIssues === 0) return '';
   const naive = c.rawAxe + c.rawAlfa;
   const saved = naive - c.uniqueIssues;
+
+  // Build a lookup from axe rule_id → bug instance_id so we can link to
+  // the full bug detail on the accessibility page.
+  const bugByAxeRule = new Map();
+  for (const b of bugs) {
+    if (b.engine_key === 'axe-core' && b.rule_id && b.instance_id) {
+      bugByAxeRule.set(b.rule_id, b.instance_id);
+    }
+  }
 
   // Rules flagged by BOTH engines — the highest-confidence findings, since two
   // independent implementations of the same ACT rule agree. List them with
@@ -805,7 +972,12 @@ function consensusSection(summary) {
         alfaUrl ? `<a href="${esc(alfaUrl)}">Alfa ${esc(alfaId)}</a>` : (alfaId ? `Alfa ${esc(alfaId)}` : ''),
         actUrl ? `<a href="${esc(actUrl)}">ACT ${esc(g.actRuleId)}</a>` : '',
       ].filter(Boolean).join(' · ');
-      return `<tr><th scope="row">${esc(help)}</th><td class="num">${g.pages}</td><td class="bug-meta">${links}</td></tr>`;
+      // Link to the axe bug detail on the accessibility page if available.
+      const bugAnchor = axeId ? bugByAxeRule.get(axeId) : null;
+      const issueCell = bugAnchor
+        ? `<a href="accessibility.html#${esc(bugAnchor)}">${esc(help)}</a>`
+        : esc(help);
+      return `<tr><th scope="row">${issueCell}</th><td class="num">${g.pages}</td><td class="bug-meta">${links}</td></tr>`;
     })
     .join('\n');
   const bothTable = both.length
@@ -814,7 +986,7 @@ function consensusSection(summary) {
 <p class="meta">Two independent ACT-rule implementations (Deque axe-core and Siteimprove Alfa) flagged the same issue on the same pages. Agreement between separate engines is strong evidence the barrier is real, not a single-tool false positive — the best place to start.</p>
 <table>
 <caption>Rules flagged by both axe-core and Alfa in ${esc(summary.week)}, by pages affected.</caption>
-<thead><tr><th scope="col">Issue</th><th scope="col">Pages</th><th scope="col">Rule references</th></tr></thead>
+<thead><tr><th scope="col">Issue</th><th scope="col" class="num">Pages</th><th scope="col">Rule references</th></tr></thead>
 <tbody>${bothRows}</tbody>
 </table>
 </details>`
@@ -881,7 +1053,7 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
       return `<h3>${esc(LH_CATEGORY_LABELS[cat] ?? cat)}</h3>
 <table>
 <caption>${esc(LH_CATEGORY_LABELS[cat] ?? cat)} recommendations from Lighthouse, by sampled pages affected.</caption>
-<thead><tr><th scope="col">Recommendation</th><th scope="col">Pages</th><th scope="col">Est. saving</th></tr></thead>
+<thead><tr><th scope="col">Recommendation</th><th scope="col" class="num">Pages</th><th scope="col">Est. saving</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
     })
@@ -911,7 +1083,7 @@ ${gaps}
 </section>`;
 }
 
-export function renderLighthousePage(target, summary, csvHref, jsonHref = null) {
+export function renderLighthousePage(target, summary, csvHref, jsonHref) {
   const lh = summary.lighthouse;
   if (!lh || !lh.pageDetail?.length) {
     return emptyCriterionPage(target, summary, { active: 'lighthouse', label: 'Lighthouse', message: 'No Lighthouse audits ran on this week\'s sampled pages (Lighthouse is sampled at a low rate; some weeks have none).' });
@@ -922,7 +1094,8 @@ export function renderLighthousePage(target, summary, csvHref, jsonHref = null) 
   // Sortable per-page table: page name sorts alphabetically, metrics numerically.
   const cols = [
     { label: 'Page' }, { label: 'Perf', num: 1 }, { label: 'A11y', num: 1 },
-    { label: 'Best practices', num: 1 }, { label: 'SEO', num: 1 }, { label: 'Agentic', num: 1 },
+    { label: 'Best practices', num: 1 }, { label: 'SEO', num: 1 },
+    { label: 'Agentic', num: 1 },
     { label: 'FCP', num: 1 }, { label: 'LCP', num: 1 }, { label: 'Speed Index', num: 1 },
     { label: 'TBT', num: 1 }, { label: 'CLS', num: 1 },
   ];
@@ -943,10 +1116,17 @@ export function renderLighthousePage(target, summary, csvHref, jsonHref = null) 
   const weights = summary.sustainability?.bytesList ?? [];
   const impact = performanceImpact(lh.pageDetail, weights, target.page_loads_per_week ?? null);
 
+  const dlLinks = [
+    csvHref ? `<a href="${esc(csvHref)}">CSV (per-page scores)</a>` : '',
+    jsonHref ? `<a href="${esc(jsonHref)}">JSON (AI-ready, includes recommendations)</a>` : '',
+    summary.priorityPagesCsv ? `<a href="${esc(summary.priorityPagesCsv)}">Priority pages CSV</a>` : '',
+    summary.priorityPagesJson ? `<a href="${esc(summary.priorityPagesJson)}">Priority pages JSON</a>` : '',
+  ].filter(Boolean);
+
   const body = `
 <h1>${esc(target.domain)}: Lighthouse — week ${esc(summary.week)}</h1>
 ${subnav('lighthouse')}
-<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals. ${csvHref || jsonHref ? `Download raw dataset: ${[csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '', jsonHref ? `<a href="${esc(jsonHref)}">JSON</a>` : ''].filter(Boolean).join(' · ')}.` : ''}</p>
+<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals.${dlLinks.length ? ` Download: ${dlLinks.join(' · ')}.` : ''}</p>
 ${impact ? perfImpactSection(impact) : ''}
 <section aria-labelledby="h-lh-medians">
 ${heading('h-lh-medians', `Medians across sampled pages`)}
@@ -967,7 +1147,7 @@ ${lighthouseRecommendations(lh.recommendations, lh.pageDetail.length)}
 ${agenticExplainer(lh)}
 <section aria-labelledby="h-lh-pages">
 ${heading('h-lh-pages', `Per-page results`)}
-${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}); Agentic = experimental agentic-browsing score.`, cols, rows)}
+${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}). Agentic = experimental agentic-browsing score. PWA / offline readiness is tracked in the Standards tab (Lighthouse 12+ removed the PWA category).`, cols, rows)}
 </section>`;
   return layout({
     title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
@@ -1118,7 +1298,7 @@ export function renderTechPage(target, summary, csvHref) {
   const body = `
 <h1>${esc(target.domain)}: technology stack</h1>
 ${subnav('tech')}
-<p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, 'tech.json')}</p>
+<p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, summary.techJson ?? 'tech.json')}</p>
 <p class="note">Detection is additive across the week's sampled pages. Expand a technology to see example pages where it was found.</p>
 ${sections}`;
   return layout({
@@ -1286,14 +1466,14 @@ export function renderImagesPage(target, summary, csvHref) {
   }
   const links = [
     csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '',
-    `<a href="images.json">JSON</a>`,
+    summary.imagesJson ? `<a href="${esc(summary.imagesJson)}">JSON</a>` : '',
   ].filter(Boolean).join(' · ');
   const dlLink = links ? ` Download: ${links}.` : '';
   const pct = (n) => img.totalImages ? `${Math.round((n / img.totalImages) * 100)}%` : '0%';
 
   const statsTable = `<table class="stats-table">
 <caption>Image alt-text coverage across ${img.pagesScanned} page(s) scanned in ${esc(summary.week)}.</caption>
-<thead><tr><th scope="col">Category</th><th scope="col">Count</th><th scope="col">Share</th></tr></thead>
+<thead><tr><th scope="col">Category</th><th scope="col" class="num">Count</th><th scope="col" class="num">Share</th></tr></thead>
 <tbody>
 <tr><th scope="row">Total image occurrences</th><td class="num">${img.totalImages}</td><td class="num">—</td></tr>
 <tr><th scope="row">Unique images</th><td class="num">${img.uniqueImages ?? '—'}</td><td class="num">—</td></tr>
@@ -1412,7 +1592,7 @@ ${subnav('archive')}
 <p class="meta">Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.</p>
 <table>
 <caption>Weekly reports for ${esc(target.domain)} (${series.length} weeks).</caption>
-<thead><tr><th scope="col">Week</th><th scope="col">Score</th><th scope="col">Pages audited</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th></tr></thead>
+<thead><tr><th scope="col">Week</th><th scope="col" class="num">Score</th><th scope="col" class="num">Pages audited</th><th scope="col" class="num">Median axe / page</th><th scope="col" class="num">Median Alfa / page</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
   return layout({
@@ -1433,7 +1613,8 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
 <h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
 ${subnav('overview')}
 <p class="meta">This is the <strong>${esc(summary.week)}</strong> ISO-week report (<strong>${summary.pagesScanned}</strong> pages fetched, <strong>${summary.pagesAudited ?? summary.pagesScanned}</strong> unique pages audited by axe/Alfa). Generated ${esc(summary.generatedAt.slice(0, 10))}.
-${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.</p>
+${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.
+Machine-readable API: <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
 
 ${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
   <span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>
@@ -1478,41 +1659,12 @@ ${coverageTable(summary)}
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
 ${heading('h-trends', `Trends over time`)}
-${chartGroup('h-trends-accessibility', 'Accessibility trends', 3, [
-  lineChart('Median axe violations per page', trendPoints(series, (s) => s.axe.medianViolations), { lowerIsBetter: true }),
-  lineChart('Median Alfa failures per page', trendPoints(series, (s) => s.alfa.medianFailures), { lowerIsBetter: true }),
-])}
-${chartGroup('h-trends-content', 'Content trends', 3, [
-  series.some((s) => s.plainLanguage?.medianReadingEase != null)
-    ? lineChart('Reading ease (median)', trendPoints(series, (s) => s.plainLanguage?.medianReadingEase ?? null), { lowerIsBetter: false })
-    : '',
-])}
-${chartGroup('h-trends-performance', 'Performance trends', 3, [
-  series.some((s) => s.sustainability)
-    ? lineChart('Median page weight (KB)', trendPoints(series, (s) => s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null), { unit: ' KB', lowerIsBetter: true })
-    : '',
-  series.some((s) => s.sustainability)
-    ? lineChart('Median requests per page', trendPoints(series, (s) => s.sustainability?.medianRequests ?? null), { lowerIsBetter: true })
-    : '',
-  series.some((s) => s.lighthouse?.medianPerformance != null)
-    ? lineChart('Lighthouse performance (median)', trendPoints(series, (s) => s.lighthouse?.medianPerformance ?? null), { lowerIsBetter: false })
-    : '',
-  series.some((s) => s.lighthouse?.metrics?.firstContentfulPaintMs != null)
-    ? lineChart('First Contentful Paint (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.firstContentfulPaintMs ?? null), { unit: ' ms', lowerIsBetter: true })
-    : '',
-  series.some((s) => s.lighthouse?.metrics?.largestContentfulPaintMs != null)
-    ? lineChart('Largest Contentful Paint (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.largestContentfulPaintMs ?? null), { unit: ' ms', lowerIsBetter: true })
-    : '',
-  series.some((s) => s.lighthouse?.metrics?.speedIndexMs != null)
-    ? lineChart('Speed Index (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.speedIndexMs ?? null), { unit: ' ms', lowerIsBetter: true })
-    : '',
-  series.some((s) => s.lighthouse?.metrics?.totalBlockingTimeMs != null)
-    ? lineChart('Total Blocking Time (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.totalBlockingTimeMs ?? null), { unit: ' ms', lowerIsBetter: true })
-    : '',
-  series.some((s) => s.lighthouse?.metrics?.cumulativeLayoutShift != null)
-    ? lineChart('Cumulative Layout Shift (median)', trendPoints(series, (s) => s.lighthouse?.metrics?.cumulativeLayoutShift ?? null), { lowerIsBetter: true })
-    : '',
-])}
+<h3>Accessibility trends</h3>
+${severityTrendChart(series)}
+${series.some((s) => s.lighthouse) ? `<h3>Performance trends</h3>
+${lineChart('Lighthouse performance (median)', series.map((s) => ({ week: s.week, value: s.lighthouse?.medianPerformance ?? null })), { unit: '/100' })}
+${lineChart('Largest Contentful Paint (median)', series.map((s) => ({ week: s.week, value: s.lighthouse?.metrics?.largestContentfulPaintMs ?? null })), { unit: ' ms', lowerIsBetter: true })}` : ''}
+${series.some((s) => s.sustainability) ? lineChart('Median page weight (KB)', series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
 </section>` : ''}
 
 ${diff ? `
@@ -1540,9 +1692,13 @@ ${resourcesSection(summary)}
  * Linked from the overview and from "Fix these first" deep links.
  */
 export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}) {
+  const acrNote = reporting.acrYaml
+    ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
+    : '';
   const body = `
 <h1>${esc(target.domain)}: Accessibility — week ${esc(summary.week)}</h1>
 ${subnav('accessibility')}
+${acrNote}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting)}
 <section aria-labelledby="h-axe">
 ${heading('h-axe', `Deque axe-core findings`)}
@@ -1560,7 +1716,7 @@ ${heading('h-alfa', `Siteimprove Alfa findings`)}
 ${ruleTable(`Alfa rules failing in ${summary.week}, by pages affected`, summary.alfa.rules, 'Alfa', 'alfa', csvLinks)}
 </details>
 </section>
-${consensusSection(summary)}
+${consensusSection(summary, bugs)}
 `;
   return layout({
     title: `${target.domain} Accessibility ${summary.week} | vital-scans`,
@@ -1618,7 +1774,12 @@ function changeList(engineName, d) {
   for (const id of d.resolved) items.push(`<li><strong>Resolved:</strong> ${esc(id)} no longer fails on any scanned page.</li>`);
   for (const c of d.changed) {
     const dir = c.pagesAfter > c.pagesBefore ? 'spread' : 'shrank';
-    items.push(`<li>${esc(c.id)} ${dir}: ${c.pagesBefore} → ${c.pagesAfter} pages affected.</li>`);
+    // Show rates alongside raw counts when coverage data is available so that
+    // a growing sample doesn't make a stable rule look like it's spreading.
+    const rateNote = (c.prevScanned > 0 && c.currScanned > 0)
+      ? ` (rate: ${Math.round(c.pagesBefore / c.prevScanned * 100)}% → ${Math.round(c.pagesAfter / c.currScanned * 100)}% of pages scanned)`
+      : '';
+    items.push(`<li>${esc(c.id)} ${dir}: ${c.pagesBefore} → ${c.pagesAfter} pages affected${rateNote}.</li>`);
   }
   if (items.length === 0) return `<h3>${esc(engineName)}</h3><p>No rule-level changes.</p>`;
   return `<h3>${esc(engineName)}</h3><ul>${items.join('\n')}</ul>`;
@@ -1706,7 +1867,14 @@ ${table}
 </figure>`;
 }
 
-export function renderIndex(dashboard) {
+export function renderIndex(dashboard, { branding = {} } = {}) {
+  // Profile branding overrides the default headline/intro; absent (the
+  // GitHub Pages default) it falls back to the original copy unchanged.
+  const h1 = branding.title || 'Weekly quality ledger';
+  const intro = branding.intro
+    || 'Accessibility and sustainability, measured continuously with open source engines. '
+     + 'Thousands of pages per domain, scanned slowly and politely across each week.';
+  const pageTitle = branding.title ? `${branding.title} | vital-scans` : 'vital-scans | weekly quality ledger';
   // Separate targets whose latest week is blocked (e.g. a WAF returning
   // 403 to the scanner) so they don't read as zero-violation successes.
   const blocked = dashboard.filter(({ series }) => series[series.length - 1].blocked);
@@ -1767,7 +1935,7 @@ for how the scanner can be allowlisted.</p>
   // Overlay chart: every domain's median axe violations/page over time.
   const overlay = crossDomainChart(ranked);
   // Fleet sustainability trend: mean CO₂g/page across all domains by week.
-  const sustainTrend = fleetSustainabilityChart(ranked);
+  const sustainTrend = ''; // fleet sustainability trend removed — too early to tell a useful story
 
   // Fleet-wide worst offenders: highest-impact issues across all domains.
   const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
@@ -1777,7 +1945,7 @@ ${heading('h-worst', `Worst offenders across all domains`)}
 <p class="meta">Highest-impact issues fleet-wide, ranked by pages affected × severity × people reached — where to focus effort first.</p>
 <table>
 <caption>Top ${worst.length} issues across all active domains.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col">Pages</th></tr></thead>
+<thead><tr><th scope="col">Domain</th><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col" class="num">Pages</th></tr></thead>
 <tbody>${worst
     .map((b) => `<tr>
   <th scope="row"><a href="reports/${esc(b.key)}/${esc(b._week)}/index.html">${esc(b.domain)}</a></th>
@@ -1885,9 +2053,8 @@ ${heading('h-lhfleet', `Common Lighthouse recommendations`)}
   }
 
   const body = `
-<h1>Weekly quality ledger</h1>
-<p class="meta">Accessibility and sustainability, measured continuously with open source engines.
-Thousands of pages per domain, scanned slowly and politely across each week.</p>
+<h1>${esc(h1)}</h1>
+<p class="meta">${esc(intro)}</p>
 ${active.length === 0
     ? (dashboard.length === 0
         ? '<p>No scan data yet. The first weekly report appears after the first scheduled scans complete.</p>'
@@ -1895,7 +2062,7 @@ ${active.length === 0
     : `
 <table>
 <caption>Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Score</th><th scope="col">Trajectory</th><th scope="col">Pages audited (7d)</th><th scope="col">Median axe / page</th><th scope="col">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
+<thead><tr><th scope="col">Domain</th><th scope="col" class="num">Score</th><th scope="col">Trajectory</th><th scope="col" class="num">Pages audited (7d)</th><th scope="col" class="num">Median axe / page</th><th scope="col" class="num">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 <p class="score-caveat">Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
@@ -1905,6 +2072,12 @@ ${worstSection}
 ${techFindingsSection}
 ${lighthouseFleetSection}
 ${blockedCallout}`}
+<section aria-labelledby="h-tools">
+${heading('h-tools', 'Tools')}
+<ul>
+  <li><a href="url-lookup.html"><strong>URL error lookup</strong></a> — paste a URL or URL fragment and export all accessibility findings for that page as JSON, CSV, or JIRA-ready Markdown.</li>
+</ul>
+</section>
 <section aria-labelledby="h-why">
 ${heading('h-why', `Why this exists`)}
 <p>Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more
@@ -1913,7 +2086,328 @@ accessible and lighter over time, using <a href="https://github.com/dequelabs/ax
 accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a>
 CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.</p>
 </section>`;
-  return layout({ title: 'vital-scans | weekly quality ledger', breadcrumb: '', body, depth: 0 });
+  return layout({ title: pageTitle, breadcrumb: '', body, depth: 0 });
+}
+
+/**
+ * Standalone URL error lookup page — lets a user paste a URL (or URL
+ * fragment) and see every accessibility finding on matching pages, plus
+ * download the results as JSON, CSV, or JIRA-ready Markdown.
+ *
+ * domains: [{key, domain, week}] — the domains that have url-index.json files
+ */
+export function renderUrlLookup(domains) {
+  const domainsJson = JSON.stringify(domains);
+  const body = `
+<h1>URL error lookup</h1>
+<p class="meta">Search scanned pages by URL or URL fragment. Results come from the most recently scanned week for each domain. Includes axe-core, Alfa, and deprecated-HTML findings.</p>
+
+<form id="lookup-form" class="lookup-form" autocomplete="off">
+  <div class="lookup-row">
+    <label for="url-input" class="lookup-label">URL or fragment</label>
+    <input type="search" id="url-input" name="url"
+      class="lookup-input" placeholder="e.g. /medicare or cms.gov/provider"
+      spellcheck="false" required>
+    <button type="submit" class="lookup-btn">Search</button>
+  </div>
+  <details class="domain-picker" id="domain-picker">
+    <summary>Domains to search <span id="domain-count"></span></summary>
+    <div class="domain-checks" id="domain-checks" role="group" aria-label="Select domains to search"></div>
+  </details>
+</form>
+
+<div id="status-msg" role="status" aria-live="polite" class="status-msg"></div>
+
+<section id="results-section" hidden>
+  <div class="results-header">
+    <p id="results-count" class="meta"></p>
+    <div class="export-controls">
+      <button id="export-json" type="button">Download JSON</button>
+      <button id="export-csv" type="button">Download CSV</button>
+      <button id="export-jira" type="button">Copy for JIRA</button>
+      <span id="copy-msg" aria-live="polite" class="copy-msg"></span>
+    </div>
+  </div>
+  <div id="results-list"></div>
+</section>
+
+<noscript><p class="note">This tool requires JavaScript to load and filter scan data.</p></noscript>
+
+<script>
+(function () {
+  'use strict';
+  const DOMAINS = ${domainsJson};
+  const API_BASE = 'api/v1/';
+  const cache = new Map();
+
+  // ── DOM refs ──────────────────────────────────────────────────────
+  const form       = document.getElementById('lookup-form');
+  const input      = document.getElementById('url-input');
+  const statusEl   = document.getElementById('status-msg');
+  const resultsEl  = document.getElementById('results-section');
+  const countEl    = document.getElementById('results-count');
+  const listEl     = document.getElementById('results-list');
+  const checksEl   = document.getElementById('domain-checks');
+  const domainCount= document.getElementById('domain-count');
+  const copyMsg    = document.getElementById('copy-msg');
+
+  // ── Build domain checkboxes ───────────────────────────────────────
+  DOMAINS.forEach(function (d) {
+    var label = document.createElement('label');
+    label.className = 'domain-check-label';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.name = 'domain';
+    cb.value = d.key;
+    cb.checked = true;
+    cb.addEventListener('change', updateDomainCount);
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(' ' + d.domain));
+    checksEl.appendChild(label);
+  });
+  updateDomainCount();
+
+  function updateDomainCount() {
+    var checked = checksEl.querySelectorAll('input:checked').length;
+    domainCount.textContent = '(' + checked + '/' + DOMAINS.length + ')';
+  }
+
+  function selectedKeys() {
+    return Array.from(checksEl.querySelectorAll('input:checked')).map(function (cb) { return cb.value; });
+  }
+
+  // ── Fetch & cache ─────────────────────────────────────────────────
+  function loadIndex(key) {
+    if (cache.has(key)) return Promise.resolve(cache.get(key));
+    return fetch(API_BASE + key + '/url-index.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        cache.set(key, data);
+        return data;
+      })
+      .catch(function (e) {
+        console.warn('Failed to load', key, e);
+        return null;
+      });
+  }
+
+  // ── Search ────────────────────────────────────────────────────────
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value.toLowerCase().trim();
+    if (!q) return;
+
+    var keys = selectedKeys();
+    if (keys.length === 0) {
+      statusEl.textContent = 'Select at least one domain.';
+      return;
+    }
+
+    statusEl.textContent = 'Searching…';
+    resultsEl.hidden = true;
+
+    Promise.all(keys.map(function (k) { return loadIndex(k); }))
+      .then(function (indexes) {
+        var results = [];
+        indexes.forEach(function (idx) {
+          if (!idx) return;
+          idx.pages.forEach(function (p) {
+            if (p.url.toLowerCase().includes(q)) {
+              results.push(Object.assign({}, p, { domain: idx.domain, week: idx.week }));
+            }
+          });
+        });
+        showResults(results, q);
+      });
+  });
+
+  // ── Render results ────────────────────────────────────────────────
+  var lastResults = [];
+
+  function showResults(results, q) {
+    lastResults = results;
+    statusEl.textContent = '';
+
+    if (results.length === 0) {
+      countEl.textContent = 'No pages found matching “' + q + '”.';
+      listEl.innerHTML = '';
+      resultsEl.hidden = false;
+      return;
+    }
+
+    var total = results.reduce(function (n, p) { return n + p.violations.length; }, 0);
+    countEl.textContent = results.length + ' page' + (results.length === 1 ? '' : 's') +
+      ', ' + total + ' violation' + (total === 1 ? '' : 's') + ' found.';
+
+    listEl.innerHTML = results.map(renderPage).join('');
+    resultsEl.hidden = false;
+  }
+
+  function severityClass(sev) {
+    if (!sev) return '';
+    return 'sev-' + sev.toLowerCase();
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderPage(p) {
+    var violationCount = p.violations.length;
+    var summaryText = esc(p.domain) + ' · ' + esc(p.week) +
+      ' · ' + p.status + ' · ' +
+      violationCount + ' violation' + (violationCount === 1 ? '' : 's');
+
+    var violationsHtml = '';
+    if (violationCount === 0) {
+      violationsHtml = '<p class="meta">No violations found on this page.</p>';
+    } else {
+      violationsHtml = p.violations.map(renderViolation).join('');
+    }
+
+    return '<details class="bug" open>' +
+      '<summary class="page-result-summary">' +
+        '<a href="' + esc(p.url) + '" class="url" title="' + esc(p.url) + '">' + esc(p.url) + '</a>' +
+        ' <span class="bug-meta">' + summaryText + '</span>' +
+      '</summary>' +
+      violationsHtml +
+      '</details>';
+  }
+
+  function renderViolation(v) {
+    var sevClass = severityClass(v.severity);
+    var badge = v.severity ? '<span class="sev-badge">' + esc(v.severity) + '</span>' : '';
+    var title = v.help || v.rule_id;
+    var engineLine = '<span class="bug-meta">' + esc(v.engine) + ' · ' +
+      '<code>' + esc(v.rule_id) + '</code>' +
+      (v.wcag.length ? ' · WCAG ' + v.wcag.map(esc).join(', ') : '') +
+      ' · ' + v.count + ' instance' + (v.count === 1 ? '' : 's') +
+      (v.help_url ? ' · <a href="' + esc(v.help_url) + '">rule docs</a>' : '') +
+      '</span>';
+
+    var examplesHtml = '';
+    v.examples.forEach(function (ex) {
+      if (ex.html || ex.target) {
+        examplesHtml += '<pre>' + esc(ex.html || ex.target) + '</pre>';
+      }
+    });
+
+    return '<div class="violation-item ' + sevClass + '">' +
+      badge + ' <strong>' + esc(title) + '</strong>' +
+      '<br>' + engineLine +
+      examplesHtml +
+      '</div>';
+  }
+
+  // ── CSV helper ────────────────────────────────────────────────────
+  function csvField(s) {
+    var v = String(s ?? '');
+    return /[",\\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  function rowToCsv(row) {
+    return row.map(csvField).join(',');
+  }
+
+  // ── Export: JSON ──────────────────────────────────────────────────
+  document.getElementById('export-json').addEventListener('click', function () {
+    if (!lastResults.length) return;
+    var blob = new Blob([JSON.stringify(lastResults, null, 2)], { type: 'application/json' });
+    downloadBlob(blob, 'vital-url-lookup.json');
+  });
+
+  // ── Export: CSV ───────────────────────────────────────────────────
+  document.getElementById('export-csv').addEventListener('click', function () {
+    if (!lastResults.length) return;
+    var headers = ['url','domain','week','http_status','engine','rule_id','severity','wcag','instances','help','help_url','example_target','example_html'];
+    var rows = [headers];
+    lastResults.forEach(function (p) {
+      if (p.violations.length === 0) {
+        rows.push([p.url, p.domain, p.week, p.status, '', '', '', '', '', '', '', '', '']);
+        return;
+      }
+      p.violations.forEach(function (v) {
+        var ex = v.examples[0] || { target: '', html: '' };
+        rows.push([p.url, p.domain, p.week, p.status,
+          v.engine, v.rule_id, v.severity || '', v.wcag.join(' | '), v.count,
+          v.help || '', v.help_url || '', ex.target, ex.html]);
+      });
+    });
+    var csv = rows.map(rowToCsv).join('\\n') + '\\n';
+    downloadBlob(new Blob([csv], { type: 'text/csv' }), 'vital-url-lookup.csv');
+  });
+
+  // ── Export: JIRA Markdown ─────────────────────────────────────────
+  document.getElementById('export-jira').addEventListener('click', function () {
+    if (!lastResults.length) return;
+    var lines = [];
+    lastResults.forEach(function (p) {
+      lines.push('# Accessibility issues: ' + p.url);
+      lines.push('**Scanned:** ' + p.week + ' | **Domain:** ' + p.domain + ' | **HTTP status:** ' + p.status);
+      lines.push('');
+      if (p.violations.length === 0) {
+        lines.push('_No violations found on this page._');
+      } else {
+        p.violations.forEach(function (v) {
+          var sev = v.severity ? '[' + v.severity + '] ' : '';
+          lines.push('## ' + sev + (v.help || v.rule_id));
+          lines.push('- **Engine:** ' + v.engine + ' | **Rule ID:** \`' + v.rule_id + '\`');
+          if (v.wcag.length) lines.push('- **WCAG:** ' + v.wcag.join(', '));
+          if (v.help_url) lines.push('- **Rule docs:** ' + v.help_url);
+          lines.push('- **Instances on page:** ' + v.count);
+          var shownExample = false;
+          v.examples.forEach(function (ex) {
+            if (!shownExample && (ex.html || ex.target)) {
+              lines.push('');
+              lines.push('**Failing element:**');
+              lines.push('');
+              lines.push('\`\`\`html');
+              lines.push(ex.html || ex.target);
+              lines.push('\`\`\`');
+              shownExample = true;
+            }
+          });
+          lines.push('');
+        });
+      }
+      lines.push('---');
+      lines.push('');
+    });
+    lines.push('_Generated by [VITAL](https://github.com/mgifford/vital-core)_');
+    var text = lines.join('\\n');
+    navigator.clipboard.writeText(text).then(function () {
+      copyMsg.textContent = 'Copied!';
+      setTimeout(function () { copyMsg.textContent = ''; }, 2000);
+    }).catch(function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      copyMsg.textContent = 'Copied!';
+      setTimeout(function () { copyMsg.textContent = ''; }, 2000);
+    });
+  });
+
+  // ── Blob download helper ──────────────────────────────────────────
+  function downloadBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+})();
+</script>`;
+  return layout({ title: 'URL error lookup — vital-scans', breadcrumb: '', body, depth: 0 });
 }
 
 export function writeAsset(docsDir) {
@@ -2017,7 +2511,8 @@ th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(-
   vertical-align: top; }
 thead th { border-bottom: 2px solid var(--ink); font-size: .8rem; text-transform: uppercase;
   letter-spacing: .05em; }
-td.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+th.num button { width: 100%; text-align: right; }
 tbody th[scope="row"] { font-weight: 600; }
 .spark { color: var(--accent); vertical-align: middle; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -2053,7 +2548,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug-filter-row { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; align-items: end; }
 .bug-filter label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; font-weight: 600; }
 .bug-filter-check { flex-direction: row; align-items: center; gap: .4rem; }
-.bug-filter select { font: inherit; padding: .25rem .4rem; }
+.bug-filter select { font: inherit; padding: .25rem .4rem; min-width: 12rem; }
 .bug-filter button { font: inherit; padding: .3rem .7rem; cursor: pointer; }
 .bug-filter-count { margin: .6rem 0 0; font-size: .85rem; color: var(--muted); }
 .bug-filter-empty { padding: .9rem; border: 1px dashed var(--rule); border-radius: 2px; color: var(--muted); }
@@ -2063,27 +2558,21 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
 .engine-findings > summary { cursor: pointer; font-weight: 600; padding: .4rem 0; }
 .bug.sev-critical { border-left-color: var(--worse); }
-.bug.sev-high { border-left-color: var(--worse); }
-.bug.sev-medium { border-left-color: var(--accent); }
-.bug.sev-low { border-left-color: var(--muted); }
+.bug.sev-serious { border-left-color: var(--worse); }
+.bug.sev-moderate { border-left-color: var(--accent); }
+.bug.sev-minor { border-left-color: var(--muted); }
 .sev-badge { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: .05em; padding: 0 .4rem; border: 1px solid currentColor; border-radius: 2px;
   vertical-align: middle; margin-right: .4rem; }
-.sev-critical .sev-badge, .sev-high .sev-badge { color: var(--worse); }
-.sev-medium .sev-badge { color: var(--accent); }
-.sev-low .sev-badge { color: var(--muted); }
+.sev-critical .sev-badge, .sev-serious .sev-badge { color: var(--worse); }
+.sev-moderate .sev-badge { color: var(--accent); }
+.sev-minor .sev-badge { color: var(--muted); }
 .wcag-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: 0 .4rem;
   border-radius: 2px; vertical-align: middle; margin-right: .35rem;
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
 .wcag-badge[data-cat="best-practice"] { background: color-mix(in srgb, var(--muted) 12%, transparent);
   color: var(--muted); border-color: color-mix(in srgb, var(--muted) 35%, transparent); }
-.engine-badge, .rule-badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 0 .4rem;
-  border-radius: 2px; vertical-align: middle; margin-right: .35rem;
-  background: color-mix(in srgb, var(--ink) 7%, transparent);
-  color: var(--ink); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
-.engine-badge[data-engine="axe-core"] { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
-.engine-badge[data-engine="alfa"] { background: color-mix(in srgb, var(--better) 10%, transparent); color: var(--better); border-color: color-mix(in srgb, var(--better) 30%, transparent); }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }
@@ -2095,4 +2584,30 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug pre { background: color-mix(in srgb, var(--ink) 6%, transparent); padding: .6rem .8rem;
   border-radius: 2px; overflow-x: auto; font-size: .85rem; }
 .error { color: var(--worse); font-weight: 600; }
+.lookup-form { margin: 1.25rem 0; }
+.lookup-row { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-end; margin-bottom: .75rem; }
+.lookup-label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: .25rem; width: 100%; }
+.lookup-input { flex: 1 1 20rem; font: inherit; padding: .45rem .6rem; border: 1px solid var(--rule);
+  border-radius: 2px; background: var(--paper); color: var(--ink); min-width: 0; }
+.lookup-input:focus { outline: 3px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+.lookup-btn { font: inherit; padding: .45rem 1rem; cursor: pointer; border: 1px solid var(--accent);
+  border-radius: 2px; background: var(--accent); color: var(--paper); white-space: nowrap; }
+.lookup-btn:hover { filter: brightness(1.1); }
+.lookup-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.domain-picker { border: 1px solid var(--rule); border-radius: 2px; padding: .4rem .75rem; margin-top: .5rem; }
+.domain-picker > summary { cursor: pointer; font-size: .9rem; font-weight: 600; list-style: none; padding: .2rem 0; }
+.domain-picker > summary::-webkit-details-marker { display: none; }
+.domain-checks { display: flex; flex-wrap: wrap; gap: .35rem .9rem; padding: .5rem 0; }
+.domain-check-label { display: flex; align-items: center; gap: .3rem; font-size: .85rem; cursor: pointer; }
+.status-msg { color: var(--muted); font-size: .9rem; margin: .5rem 0; min-height: 1.2em; }
+.results-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.5rem; margin: 1rem 0 .5rem; }
+.export-controls { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.export-controls button { font: inherit; font-size: .85rem; padding: .3rem .7rem; cursor: pointer;
+  border: 1px solid var(--rule); border-radius: 2px; background: var(--paper); color: var(--ink); }
+.export-controls button:hover { border-color: var(--accent); color: var(--accent); }
+.export-controls button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.copy-msg { font-size: .85rem; color: var(--better); }
+.page-result-summary { cursor: pointer; padding: .6rem 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .6rem; }
+.violation-item { border-top: 1px solid var(--rule); padding: .5rem 0; }
+.violation-item + .violation-item { padding-top: .5rem; }
 `;

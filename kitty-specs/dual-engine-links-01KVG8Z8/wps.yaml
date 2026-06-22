@@ -1,0 +1,20 @@
+work_packages:
+  - id: WP01
+    title: "Consensus links and numeric alignment"
+    dependencies: []
+    owned_files:
+      - "src/report-html.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - FR-03
+      - FR-04
+      - C-01
+      - NFR-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+      - T005
+    prompt_file: "tasks/WP01-consensus-links-and-numeric-alignment.md"

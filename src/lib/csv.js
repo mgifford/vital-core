@@ -1,5 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { weekToDateStamp } from './week.js';
+
+/** Build the download filename prefix: "www.cms.gov_16JUN2026". */
+function filePrefix(domain, week) {
+  return `${domain}_${weekToDateStamp(week)}`;
+}
 
 /**
  * CSV exports of the pages affected by each finding, so a developer can
@@ -33,66 +39,75 @@ export function ruleSlug(engine, ruleId) {
  * relative path "resources.csv".
  */
 /** Write the per-page Lighthouse CSV (scores + Core Web Vitals). */
-export function writeLighthouseCsv(repDir, lighthouse) {
+export function writeLighthouseCsv(repDir, domain, week, lighthouse) {
   if (!lighthouse?.pageDetail?.length) return null;
-  const pages = sortLighthousePages(lighthouse.pageDetail);
-  const rows = pages.map((p) => [
+  const rows = lighthouse.pageDetail.map((p) => [
     p.url, p.scores.performance, p.scores.accessibility, p.scores.bestPractices,
-    p.scores.seo, p.scores.agentic, p.metrics.firstContentfulPaintMs,
-    p.metrics.largestContentfulPaintMs, p.metrics.speedIndexMs,
-    p.metrics.totalBlockingTimeMs, p.metrics.cumulativeLayoutShift,
+    p.scores.seo, p.scores.pwa, p.scores.agentic,
+    p.metrics.firstContentfulPaintMs, p.metrics.largestContentfulPaintMs,
+    p.metrics.speedIndexMs, p.metrics.totalBlockingTimeMs, p.metrics.cumulativeLayoutShift,
   ]);
-  fs.writeFileSync(path.join(repDir, 'lighthouse.csv'),
-    toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
-  return 'lighthouse.csv';
+  const name = `${filePrefix(domain, week)}_lighthouse.csv`;
+  fs.writeFileSync(path.join(repDir, name),
+    toCsv(['url', 'performance', 'accessibility', 'best_practices', 'seo', 'pwa', 'agentic', 'fcp_ms', 'lcp_ms', 'speed_index_ms', 'tbt_ms', 'cls'], rows));
+  return name;
 }
 
-/** Write the raw per-page Lighthouse JSON dataset, sorted by Performance ASC. */
-export function writeLighthouseJson(repDir, lighthouse, meta = {}) {
+/**
+ * Write Lighthouse results as JSON — per-page scores and recommendations.
+ * Designed for AI consumption: compact, self-describing.
+ */
+export function writeLighthouseJson(repDir, domain, week, generatedAt, lighthouse) {
   if (!lighthouse?.pageDetail?.length) return null;
-  const pages = sortLighthousePages(lighthouse.pageDetail);
-  fs.writeFileSync(
-    path.join(repDir, 'lighthouse.json'),
-    JSON.stringify(
-      {
-        ...meta,
-        pages,
-      },
-      null,
-      1
-    )
-  );
-  return 'lighthouse.json';
-}
-
-function sortLighthousePages(pageDetail) {
-  return [...pageDetail].sort(
-    (a, b) =>
-      (a.scores.performance ?? Number.POSITIVE_INFINITY) - (b.scores.performance ?? Number.POSITIVE_INFINITY) ||
-      String(a.url ?? '').localeCompare(String(b.url ?? ''))
-  );
+  const doc = {
+    domain,
+    week,
+    generated_at: generatedAt,
+    summary: {
+      pages_sampled: lighthouse.pagesSampled,
+      median_performance: lighthouse.medianPerformance,
+      median_accessibility: lighthouse.medianAccessibility,
+      median_best_practices: lighthouse.medianBestPractices,
+      median_seo: lighthouse.medianSeo,
+      median_pwa: lighthouse.medianPwa ?? null,
+      median_agentic: lighthouse.medianAgentic ?? null,
+      core_web_vitals: lighthouse.metrics,
+      pwa_signals: lighthouse.pwaSignals ?? [],
+    },
+    recommendations: lighthouse.recommendations ?? [],
+    pages: lighthouse.pageDetail.map((p) => ({
+      url: p.url,
+      scores: p.scores,
+      core_web_vitals: p.metrics,
+    })),
+  };
+  const name = `${filePrefix(domain, week)}_lighthouse.json`;
+  fs.writeFileSync(path.join(repDir, name), JSON.stringify(doc, null, 1));
+  return name;
 }
 
 /** Write per-page readability CSV (words, Flesch reading ease, grade). */
-export function writeReadabilityCsv(repDir, plRows) {
+export function writeReadabilityCsv(repDir, domain, week, plRows) {
   if (!plRows?.length) return null;
   const rows = plRows.map((r) => [r.url, r.wordCount, r.fleschReadingEase, r.fleschKincaidGrade, r.scored]);
-  fs.writeFileSync(path.join(repDir, 'readability.csv'),
+  const name = `${filePrefix(domain, week)}_readability.csv`;
+  fs.writeFileSync(path.join(repDir, name),
     toCsv(['url', 'words', 'reading_ease', 'grade', 'scored'], rows));
-  return 'readability.csv';
+  return name;
 }
 
 /** Write spelling CSV (misspelled word, pages affected, example URLs). */
-export function writeSpellingCsv(repDir, spellRows) {
+export function writeSpellingCsv(repDir, domain, week, spellRows) {
   if (!spellRows?.length) return null;
   const rows = spellRows.map((s) => [s.word, s.pages, (s.examplePages ?? []).join(' ')]);
-  fs.writeFileSync(path.join(repDir, 'spelling.csv'),
+  const name = `${filePrefix(domain, week)}_spelling.csv`;
+  fs.writeFileSync(path.join(repDir, name),
     toCsv(['word', 'pages_affected', 'example_pages'], rows));
-  return 'spelling.csv';
+  return name;
 }
 
 /** Write tech CSV (technology, category, confidence, pages, example URLs). */
-export function writeTechCsv(repDir, tech) {
+export function writeTechCsv(repDir, domain, week, tech) {
   if (!tech?.length) return null;
   const headers = ['technology', 'category', 'all_categories', 'confidence', 'version', 'pages_confirmed', 'website', 'example_pages'];
   const rows = tech.map((d) => [
@@ -105,26 +120,29 @@ export function writeTechCsv(repDir, tech) {
     d.website ?? '',
     (d.examplePages ?? []).join(' '),
   ]);
-  fs.writeFileSync(path.join(repDir, 'tech.csv'), toCsv(headers, rows));
-  return 'tech.csv';
+  const name = `${filePrefix(domain, week)}_tech.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(headers, rows));
+  return name;
 }
 
 /** Write acronyms CSV (unexplained acronym, pages affected, example URLs). */
-export function writeAcronymsCsv(repDir, acronymRows) {
+export function writeAcronymsCsv(repDir, domain, week, acronymRows) {
   if (!acronymRows?.length) return null;
   const rows = acronymRows.map((a) => [a.acronym, a.pages, (a.examplePages ?? []).join(' ')]);
-  fs.writeFileSync(path.join(repDir, 'acronyms.csv'),
+  const name = `${filePrefix(domain, week)}_acronyms.csv`;
+  fs.writeFileSync(path.join(repDir, name),
     toCsv(['acronym', 'pages_affected', 'example_pages'], rows));
-  return 'acronyms.csv';
+  return name;
 }
 
-export function writeResourceCsv(repDir, resources, ledger) {
+export function writeResourceCsv(repDir, domain, week, resources, ledger) {
   const rows = resources.list.map((r) => {
     const led = ledger.resources[r.url];
     return [r.url, r.type, r.pages, led?.firstSeen ?? '', led?.lastSeen ?? ''];
   });
-  fs.writeFileSync(path.join(repDir, 'resources.csv'), toCsv(['url', 'type', 'pages', 'first_seen', 'last_seen'], rows));
-  return 'resources.csv';
+  const name = `${filePrefix(domain, week)}_resources.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(['url', 'type', 'pages', 'first_seen', 'last_seen'], rows));
+  return name;
 }
 
 /**
@@ -146,7 +164,7 @@ export function writeResourceCsv(repDir, resources, ledger) {
  *
  * Returns the relative path "bugs.csv" (from index.html) or null.
  */
-export function writeBugsCsv(repDir, bugs) {
+export function writeBugsCsv(repDir, domain, week, bugs) {
   if (!bugs?.length) return null;
   const headers = [
     'bug_id', 'pattern_id', 'combined_id',
@@ -200,15 +218,16 @@ export function writeBugsCsv(repDir, bugs) {
       b.affected_pages_csv ?? '',
     ];
   });
-  fs.writeFileSync(path.join(repDir, 'bugs.csv'), toCsv(headers, rows));
-  return 'bugs.csv';
+  const name = `${filePrefix(domain, week)}_bugs.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(headers, rows));
+  return name;
 }
 
 /**
  * Write a flat images.csv — one row per image found across scanned pages.
  * Returns the relative path "images.csv" or null if there's nothing to write.
  */
-export function writeImagesCsv(repDir, summary) {
+export function writeImagesCsv(repDir, domain, week, summary) {
   const rows = summary.images?.imageRows;
   if (!rows?.length) return null;
   const headers = ['page_url', 'src', 'alt', 'alt_verdict', 'alt_reason', 'has_alt', 'is_decorative', 'is_missing_alt', 'width', 'height', 'natural_width', 'natural_height', 'loading', 'decoding', 'bytes'];
@@ -229,8 +248,9 @@ export function writeImagesCsv(repDir, summary) {
     img.decoding ?? '',
     img.bytes ?? '',
   ]);
-  fs.writeFileSync(path.join(repDir, 'images.csv'), toCsv(headers, data));
-  return 'images.csv';
+  const name = `${filePrefix(domain, week)}_images.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(headers, data));
+  return name;
 }
 
 /**
@@ -238,7 +258,7 @@ export function writeImagesCsv(repDir, summary) {
  * domain) with its load cost and finding co-occurrence. Returns the relative
  * path "third-party.csv" or null if there's nothing to write.
  */
-export function writeThirdPartyCsv(repDir, summary) {
+export function writeThirdPartyCsv(repDir, domain, week, summary) {
   const vendors = summary.thirdParty?.vendors;
   if (!vendors?.length) return null;
   const headers = ['origin', 'is_script_vendor', 'pages', 'pages_with_scripts', 'median_bytes', 'median_requests', 'median_duration_ms', 'pages_with_finding', 'first_seen', 'last_seen', 'weeks_seen', 'example_pages'];
@@ -256,15 +276,16 @@ export function writeThirdPartyCsv(repDir, summary) {
     v.weeksSeen ?? '',
     Array.isArray(v.examplePages) ? v.examplePages.join(' | ') : '',
   ]);
-  fs.writeFileSync(path.join(repDir, 'third-party.csv'), toCsv(headers, data));
-  return 'third-party.csv';
+  const name = `${filePrefix(domain, week)}_third-party.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(headers, data));
+  return name;
 }
 
 /**
  * Write a flat errors.csv for broken links and non-404 error pages.
  * Returns the relative path "errors.csv" or null if there's nothing to write.
  */
-export function writeErrorsCsv(repDir, summary) {
+export function writeErrorsCsv(repDir, domain, week, summary) {
   const broken = summary.linkCheck?.broken ?? [];
   const errors = (summary.errorPages ?? []).filter((e) => Number(e.status) !== 404);
   if (!broken.length && !errors.length) return null;
@@ -284,8 +305,9 @@ export function writeErrorsCsv(repDir, summary) {
       '',
     ]),
   ];
-  fs.writeFileSync(path.join(repDir, 'errors.csv'), toCsv(headers, rows));
-  return 'errors.csv';
+  const name = `${filePrefix(domain, week)}_errors.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(headers, rows));
+  return name;
 }
 
 /**
@@ -327,4 +349,131 @@ export function writeCsvs(repDir, summary) {
     }
   }
   return links;
+}
+
+/**
+ * Build a priority-pages view: for every URL that has been scanned by at
+ * least one engine, compute a composite score to rank the most problematic
+ * pages — factoring in accessibility bug severity, Lighthouse performance
+ * score, and page coverage across engines. Returns an array sorted by
+ * descending priority (worst pages first).
+ *
+ * Inputs:
+ *   bugs       — array of bug report objects (from buildBugReports)
+ *   lhDetail   — array of { url, scores, metrics } from lighthouse.pageDetail
+ *   total      — total pages scanned (for percentage calculations)
+ *
+ * Each output row has:
+ *   url, priority_score, a11y_critical_bugs, a11y_high_bugs,
+ *   a11y_medium_bugs, a11y_low_bugs, lh_performance, lh_accessibility,
+ *   lh_lcp_ms, lh_tbt_ms, top_a11y_issues (pipe-separated rule labels)
+ */
+export function buildPriorityPages(bugs, lhDetail, total) {
+  const byUrl = new Map(); // url -> accumulator
+
+  const get = (url) => {
+    if (!byUrl.has(url)) {
+      byUrl.set(url, {
+        url,
+        a11y_critical: 0, a11y_serious: 0, a11y_moderate: 0, a11y_minor: 0,
+        a11y_issues: [], // { severity, label }
+        lh_performance: null, lh_accessibility: null,
+        lh_lcp_ms: null, lh_tbt_ms: null, lh_cls: null,
+      });
+    }
+    return byUrl.get(url);
+  };
+
+  // Tally accessibility bugs per affected page.
+  const sevKey = { Critical: 'a11y_critical', Serious: 'a11y_serious', Moderate: 'a11y_moderate', Minor: 'a11y_minor' };
+  for (const bug of bugs ?? []) {
+    const affectedUrls = bug.affected_pages ?? bug.example_pages ?? (bug.url ? [bug.url] : []);
+    for (const url of affectedUrls) {
+      const row = get(url);
+      const k = sevKey[bug.severity];
+      if (k) row[k]++;
+      if (row.a11y_issues.length < 5) {
+        row.a11y_issues.push({ severity: bug.severity, label: bug.rule_label ?? bug.rule_id });
+      }
+    }
+  }
+
+  // Merge Lighthouse per-page data.
+  for (const p of lhDetail ?? []) {
+    const row = get(p.url);
+    row.lh_performance = p.scores?.performance ?? null;
+    row.lh_accessibility = p.scores?.accessibility ?? null;
+    row.lh_lcp_ms = p.metrics?.largestContentfulPaintMs ?? null;
+    row.lh_tbt_ms = p.metrics?.totalBlockingTimeMs ?? null;
+    row.lh_cls = p.metrics?.cumulativeLayoutShift ?? null;
+  }
+
+  // Compute composite priority score (higher = worse page, fix first):
+  //   Critical bugs: 40 pts each
+  //   Serious bugs: 20 pts each
+  //   Moderate bugs: 8 pts each
+  //   Minor bugs: 2 pts each
+  //   Lighthouse performance penalty: (100 - score) × 0.3, capped at 30
+  // Only pages with at least one a11y finding or a very low LH score are included.
+  const rows = [];
+  for (const [, row] of byUrl) {
+    const lhPenalty = row.lh_performance != null ? Math.min(30, (100 - row.lh_performance) * 0.3) : 0;
+    const a11yScore = row.a11y_critical * 40 + row.a11y_serious * 20 + row.a11y_moderate * 8 + row.a11y_minor * 2;
+    const priority_score = Math.round(a11yScore + lhPenalty);
+    const hasA11y = a11yScore > 0;
+    const hasLhProblem = row.lh_performance != null && row.lh_performance < 50;
+    if (!hasA11y && !hasLhProblem) continue;
+    rows.push({
+      url: row.url,
+      priority_score,
+      a11y_critical_bugs: row.a11y_critical,
+      a11y_serious_bugs: row.a11y_serious,
+      a11y_moderate_bugs: row.a11y_moderate,
+      a11y_minor_bugs: row.a11y_minor,
+      lh_performance: row.lh_performance,
+      lh_accessibility: row.lh_accessibility,
+      lh_lcp_ms: row.lh_lcp_ms,
+      lh_tbt_ms: row.lh_tbt_ms,
+      lh_cls: row.lh_cls,
+      top_a11y_issues: row.a11y_issues.map((i) => `[${i.severity}] ${i.label}`).join(' | '),
+    });
+  }
+
+  return rows.sort((a, b) => b.priority_score - a.priority_score);
+}
+
+/**
+ * Write priority-pages.csv and priority-pages.json.
+ * Returns { csv, json } with relative paths or nulls.
+ */
+export function writePriorityPages(repDir, domain, week, generatedAt, bugs, lhDetail, total) {
+  const rows = buildPriorityPages(bugs, lhDetail, total);
+  if (!rows.length) return { csv: null, json: null };
+
+  // CSV: flat, spreadsheet-ready.
+  const headers = ['priority_score', 'url', 'a11y_critical_bugs', 'a11y_serious_bugs', 'a11y_moderate_bugs', 'a11y_minor_bugs', 'lh_performance', 'lh_accessibility', 'lh_lcp_ms', 'lh_tbt_ms', 'lh_cls', 'top_a11y_issues'];
+  const csvRows = rows.map((r) => [
+    r.priority_score, r.url,
+    r.a11y_critical_bugs, r.a11y_serious_bugs, r.a11y_moderate_bugs, r.a11y_minor_bugs,
+    r.lh_performance ?? '', r.lh_accessibility ?? '',
+    r.lh_lcp_ms ?? '', r.lh_tbt_ms ?? '', r.lh_cls ?? '',
+    r.top_a11y_issues,
+  ]);
+  const pfx = filePrefix(domain, week);
+  const csvName = `${pfx}_priority-pages.csv`;
+  const jsonName = `${pfx}_priority-pages.json`;
+  fs.writeFileSync(path.join(repDir, csvName), toCsv(headers, csvRows));
+
+  // JSON: richer, AI-friendly.
+  const doc = {
+    domain,
+    week,
+    generated_at: generatedAt,
+    description: 'Pages ranked by composite accessibility + performance priority score. Critical a11y bugs = 40 pts, Serious = 20, Moderate = 8, Minor = 2. Lighthouse performance penalty up to 30 pts. Higher score = fix first.',
+    total_pages_scanned: total,
+    priority_pages: rows,
+  };
+  fs.writeFileSync(path.join(repDir, jsonName), JSON.stringify(doc, null, 1));
+
+  return { csv: csvName, json: jsonName };
 }

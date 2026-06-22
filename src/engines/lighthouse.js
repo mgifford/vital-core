@@ -15,6 +15,8 @@
  * only loads (and only requires Chrome) when actually enabled.
  */
 
+// PWA category was removed in Lighthouse 12; it is no longer in CATEGORIES.
+// PWA / offline signals are now detected via Playwright in standards.js instead.
 const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'];
 
 /**
@@ -61,7 +63,8 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
             accessibility: score(cats.accessibility),
             bestPractices: score(cats['best-practices']),
             seo: score(cats.seo),
-            agentic: score(cats['agentic-browsing']), // null if not run
+            pwa: null,
+            agentic: score(cats['agentic-browsing']),
           },
           metrics: {
             firstContentfulPaintMs: numeric(audits['first-contentful-paint']),
@@ -70,8 +73,7 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
             totalBlockingTimeMs: numeric(audits['total-blocking-time']),
             cumulativeLayoutShift: numericRaw(audits['cumulative-layout-shift']),
           },
-          // Failing/actionable audits across the non-accessibility categories,
-          // the substance Lighthouse produces beyond the headline scores.
+          // Failing/actionable audits across the non-accessibility categories.
           // Accessibility audits are excluded — they mostly duplicate axe.
           audits: extractAudits(cats, audits),
         };

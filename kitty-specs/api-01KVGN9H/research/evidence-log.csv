@@ -1,0 +1,10 @@
+decision_id,finding,source,date
+D-01,aggregate.js already writes domain.json and weekly.json as public JSON under docs/,src/aggregate.js:290-316,2026-06-19
+D-01,docs/ is gitignored locally and deployed as GitHub Pages artifact,CLAUDE.md + .gitignore,2026-06-19
+D-02,No versioning in existing domain.json/weekly.json URLs causes consumer coupling,code review,2026-06-19
+D-03,src/aggregate.js is 330+ lines — extracting API logic keeps it readable,src/aggregate.js line count,2026-06-19
+D-03,Pattern of extracting to src/lib/ established by csv.js and ai-findings.js,src/lib/ directory listing,2026-06-19
+D-04,target.key used as directory name under docs/reports/ and docs/data/,src/aggregate.js:95,2026-06-19
+D-05,domain.json shape contains all required fields for snapshot,src/aggregate.js:296-315,2026-06-19
+D-06,bugs array already computed in aggregate loop before HTML rendering,src/aggregate.js:119,2026-06-19
+D-07,dashboard array accumulated per-domain then written once at end,src/aggregate.js:324-328,2026-06-19

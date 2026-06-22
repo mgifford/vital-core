@@ -1,0 +1,24 @@
+#!/bin/sh
+# Block accidental commits of data/ or state/ from a local machine.
+# GitHub Actions sets GITHUB_ACTIONS=true; that's the only context
+# where scan data should be committed.
+if [ "${GITHUB_ACTIONS}" = "true" ]; then
+  exit 0
+fi
+
+STAGED=$(git diff --cached --name-only)
+BLOCKED=$(printf '%s\n' "$STAGED" | grep -E '^(data|state)/')
+if [ -n "$BLOCKED" ]; then
+  echo "ERROR: Attempt to commit scan data from a local machine."
+  echo "These paths should only be committed by GitHub Actions:"
+  echo "$BLOCKED" | sed 's/^/  /'
+  echo ""
+  echo "Run: git reset HEAD data/ state/"
+  exit 1
+fi
+
+GOVERNANCE=$(printf '%s\n' "$STAGED" | grep -E '^(\.agents/|\.github/workflows/spec-kitty-governance\.yml|\.githooks/pre-commit|\.kittify/|kitty-specs/|AGENTS\.md|CLAUDE\.md|package(-lock)?\.json|scripts/check-spec-kitty-governance\.js)$|^(\.agents/|\.kittify/|kitty-specs/)')
+if [ -n "$GOVERNANCE" ]; then
+  echo "Checking Spec Kitty governance..."
+  npm run check:spec-kitty || exit 1
+fi
