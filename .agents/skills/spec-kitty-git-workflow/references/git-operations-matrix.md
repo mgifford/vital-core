@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spec-kitty-git-workflow/references/git-operations-matrix.md

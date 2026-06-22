@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spec-kitty-mission-system/references/mission-comparison-matrix.md

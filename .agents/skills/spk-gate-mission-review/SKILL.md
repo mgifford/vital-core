@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spk-gate-mission-review/SKILL.md

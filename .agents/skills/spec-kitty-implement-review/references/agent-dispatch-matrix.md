@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spec-kitty-implement-review/references/agent-dispatch-matrix.md
