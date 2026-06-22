@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spk-mission-documentation/SKILL.md

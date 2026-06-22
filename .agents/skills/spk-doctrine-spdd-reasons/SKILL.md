@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spk-doctrine-spdd-reasons/SKILL.md

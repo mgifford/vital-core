@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spk-admin-agent-config/SKILL.md

@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spk-start-agent-surface/SKILL.md
