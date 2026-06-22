@@ -117,7 +117,9 @@ targets:
   - domain: data.healthcare.gov
     importance: 3                  # open-data site; pages are template-similar
   - domain: openpaymentsdata.cms.gov
-    importance: 3                  # open-data site
+    importance: 3                  # open-data site; lighthouse disabled (perf:6-55 → audits take 2-5 min each)
+    sampling:
+      lighthouse: 0
   - domain: www.cdc.gov
     importance: 1
   - domain: data.cms.gov
