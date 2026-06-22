@@ -2068,6 +2068,12 @@ ${worstSection}
 ${techFindingsSection}
 ${lighthouseFleetSection}
 ${blockedCallout}`}
+<section aria-labelledby="h-tools">
+${heading('h-tools', 'Tools')}
+<ul>
+  <li><a href="url-lookup.html"><strong>URL error lookup</strong></a> — paste a URL or URL fragment and export all accessibility findings for that page as JSON, CSV, or JIRA-ready Markdown.</li>
+</ul>
+</section>
 <section aria-labelledby="h-why">
 ${heading('h-why', `Why this exists`)}
 <p>Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more
@@ -2077,6 +2083,327 @@ accessibility, and page weight with <a href="https://sustainablewebdesign.org/">
 CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.</p>
 </section>`;
   return layout({ title: pageTitle, breadcrumb: '', body, depth: 0 });
+}
+
+/**
+ * Standalone URL error lookup page — lets a user paste a URL (or URL
+ * fragment) and see every accessibility finding on matching pages, plus
+ * download the results as JSON, CSV, or JIRA-ready Markdown.
+ *
+ * domains: [{key, domain, week}] — the domains that have url-index.json files
+ */
+export function renderUrlLookup(domains) {
+  const domainsJson = JSON.stringify(domains);
+  const body = `
+<h1>URL error lookup</h1>
+<p class="meta">Search scanned pages by URL or URL fragment. Results come from the most recently scanned week for each domain. Includes axe-core, Alfa, and deprecated-HTML findings.</p>
+
+<form id="lookup-form" class="lookup-form" autocomplete="off">
+  <div class="lookup-row">
+    <label for="url-input" class="lookup-label">URL or fragment</label>
+    <input type="search" id="url-input" name="url"
+      class="lookup-input" placeholder="e.g. /medicare or cms.gov/provider"
+      spellcheck="false" required>
+    <button type="submit" class="lookup-btn">Search</button>
+  </div>
+  <details class="domain-picker" id="domain-picker">
+    <summary>Domains to search <span id="domain-count"></span></summary>
+    <div class="domain-checks" id="domain-checks" role="group" aria-label="Select domains to search"></div>
+  </details>
+</form>
+
+<div id="status-msg" role="status" aria-live="polite" class="status-msg"></div>
+
+<section id="results-section" hidden>
+  <div class="results-header">
+    <p id="results-count" class="meta"></p>
+    <div class="export-controls">
+      <button id="export-json" type="button">Download JSON</button>
+      <button id="export-csv" type="button">Download CSV</button>
+      <button id="export-jira" type="button">Copy for JIRA</button>
+      <span id="copy-msg" aria-live="polite" class="copy-msg"></span>
+    </div>
+  </div>
+  <div id="results-list"></div>
+</section>
+
+<noscript><p class="note">This tool requires JavaScript to load and filter scan data.</p></noscript>
+
+<script>
+(function () {
+  'use strict';
+  const DOMAINS = ${domainsJson};
+  const API_BASE = 'api/v1/';
+  const cache = new Map();
+
+  // ── DOM refs ──────────────────────────────────────────────────────
+  const form       = document.getElementById('lookup-form');
+  const input      = document.getElementById('url-input');
+  const statusEl   = document.getElementById('status-msg');
+  const resultsEl  = document.getElementById('results-section');
+  const countEl    = document.getElementById('results-count');
+  const listEl     = document.getElementById('results-list');
+  const checksEl   = document.getElementById('domain-checks');
+  const domainCount= document.getElementById('domain-count');
+  const copyMsg    = document.getElementById('copy-msg');
+
+  // ── Build domain checkboxes ───────────────────────────────────────
+  DOMAINS.forEach(function (d) {
+    var label = document.createElement('label');
+    label.className = 'domain-check-label';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.name = 'domain';
+    cb.value = d.key;
+    cb.checked = true;
+    cb.addEventListener('change', updateDomainCount);
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(' ' + d.domain));
+    checksEl.appendChild(label);
+  });
+  updateDomainCount();
+
+  function updateDomainCount() {
+    var checked = checksEl.querySelectorAll('input:checked').length;
+    domainCount.textContent = '(' + checked + '/' + DOMAINS.length + ')';
+  }
+
+  function selectedKeys() {
+    return Array.from(checksEl.querySelectorAll('input:checked')).map(function (cb) { return cb.value; });
+  }
+
+  // ── Fetch & cache ─────────────────────────────────────────────────
+  function loadIndex(key) {
+    if (cache.has(key)) return Promise.resolve(cache.get(key));
+    return fetch(API_BASE + key + '/url-index.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        cache.set(key, data);
+        return data;
+      })
+      .catch(function (e) {
+        console.warn('Failed to load', key, e);
+        return null;
+      });
+  }
+
+  // ── Search ────────────────────────────────────────────────────────
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value.toLowerCase().trim();
+    if (!q) return;
+
+    var keys = selectedKeys();
+    if (keys.length === 0) {
+      statusEl.textContent = 'Select at least one domain.';
+      return;
+    }
+
+    statusEl.textContent = 'Searching…';
+    resultsEl.hidden = true;
+
+    Promise.all(keys.map(function (k) { return loadIndex(k); }))
+      .then(function (indexes) {
+        var results = [];
+        indexes.forEach(function (idx) {
+          if (!idx) return;
+          idx.pages.forEach(function (p) {
+            if (p.url.toLowerCase().includes(q)) {
+              results.push(Object.assign({}, p, { domain: idx.domain, week: idx.week }));
+            }
+          });
+        });
+        showResults(results, q);
+      });
+  });
+
+  // ── Render results ────────────────────────────────────────────────
+  var lastResults = [];
+
+  function showResults(results, q) {
+    lastResults = results;
+    statusEl.textContent = '';
+
+    if (results.length === 0) {
+      countEl.textContent = 'No pages found matching “' + q + '”.';
+      listEl.innerHTML = '';
+      resultsEl.hidden = false;
+      return;
+    }
+
+    var total = results.reduce(function (n, p) { return n + p.violations.length; }, 0);
+    countEl.textContent = results.length + ' page' + (results.length === 1 ? '' : 's') +
+      ', ' + total + ' violation' + (total === 1 ? '' : 's') + ' found.';
+
+    listEl.innerHTML = results.map(renderPage).join('');
+    resultsEl.hidden = false;
+  }
+
+  function severityClass(sev) {
+    if (!sev) return '';
+    return 'sev-' + sev.toLowerCase();
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderPage(p) {
+    var violationCount = p.violations.length;
+    var summaryText = esc(p.domain) + ' · ' + esc(p.week) +
+      ' · ' + p.status + ' · ' +
+      violationCount + ' violation' + (violationCount === 1 ? '' : 's');
+
+    var violationsHtml = '';
+    if (violationCount === 0) {
+      violationsHtml = '<p class="meta">No violations found on this page.</p>';
+    } else {
+      violationsHtml = p.violations.map(renderViolation).join('');
+    }
+
+    return '<details class="bug" open>' +
+      '<summary class="page-result-summary">' +
+        '<a href="' + esc(p.url) + '" class="url" title="' + esc(p.url) + '">' + esc(p.url) + '</a>' +
+        ' <span class="bug-meta">' + summaryText + '</span>' +
+      '</summary>' +
+      violationsHtml +
+      '</details>';
+  }
+
+  function renderViolation(v) {
+    var sevClass = severityClass(v.severity);
+    var badge = v.severity ? '<span class="sev-badge">' + esc(v.severity) + '</span>' : '';
+    var title = v.help || v.rule_id;
+    var engineLine = '<span class="bug-meta">' + esc(v.engine) + ' · ' +
+      '<code>' + esc(v.rule_id) + '</code>' +
+      (v.wcag.length ? ' · WCAG ' + v.wcag.map(esc).join(', ') : '') +
+      ' · ' + v.count + ' instance' + (v.count === 1 ? '' : 's') +
+      (v.help_url ? ' · <a href="' + esc(v.help_url) + '">rule docs</a>' : '') +
+      '</span>';
+
+    var examplesHtml = '';
+    v.examples.forEach(function (ex) {
+      if (ex.html || ex.target) {
+        examplesHtml += '<pre>' + esc(ex.html || ex.target) + '</pre>';
+      }
+    });
+
+    return '<div class="violation-item ' + sevClass + '">' +
+      badge + ' <strong>' + esc(title) + '</strong>' +
+      '<br>' + engineLine +
+      examplesHtml +
+      '</div>';
+  }
+
+  // ── CSV helper ────────────────────────────────────────────────────
+  function csvField(s) {
+    var v = String(s ?? '');
+    return /[",\\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  function rowToCsv(row) {
+    return row.map(csvField).join(',');
+  }
+
+  // ── Export: JSON ──────────────────────────────────────────────────
+  document.getElementById('export-json').addEventListener('click', function () {
+    if (!lastResults.length) return;
+    var blob = new Blob([JSON.stringify(lastResults, null, 2)], { type: 'application/json' });
+    downloadBlob(blob, 'vital-url-lookup.json');
+  });
+
+  // ── Export: CSV ───────────────────────────────────────────────────
+  document.getElementById('export-csv').addEventListener('click', function () {
+    if (!lastResults.length) return;
+    var headers = ['url','domain','week','http_status','engine','rule_id','severity','wcag','instances','help','help_url','example_target','example_html'];
+    var rows = [headers];
+    lastResults.forEach(function (p) {
+      if (p.violations.length === 0) {
+        rows.push([p.url, p.domain, p.week, p.status, '', '', '', '', '', '', '', '', '']);
+        return;
+      }
+      p.violations.forEach(function (v) {
+        var ex = v.examples[0] || { target: '', html: '' };
+        rows.push([p.url, p.domain, p.week, p.status,
+          v.engine, v.rule_id, v.severity || '', v.wcag.join(' | '), v.count,
+          v.help || '', v.help_url || '', ex.target, ex.html]);
+      });
+    });
+    var csv = rows.map(rowToCsv).join('\\n') + '\\n';
+    downloadBlob(new Blob([csv], { type: 'text/csv' }), 'vital-url-lookup.csv');
+  });
+
+  // ── Export: JIRA Markdown ─────────────────────────────────────────
+  document.getElementById('export-jira').addEventListener('click', function () {
+    if (!lastResults.length) return;
+    var lines = [];
+    lastResults.forEach(function (p) {
+      lines.push('# Accessibility issues: ' + p.url);
+      lines.push('**Scanned:** ' + p.week + ' | **Domain:** ' + p.domain + ' | **HTTP status:** ' + p.status);
+      lines.push('');
+      if (p.violations.length === 0) {
+        lines.push('_No violations found on this page._');
+      } else {
+        p.violations.forEach(function (v) {
+          var sev = v.severity ? '[' + v.severity + '] ' : '';
+          lines.push('## ' + sev + (v.help || v.rule_id));
+          lines.push('- **Engine:** ' + v.engine + ' | **Rule ID:** `' + v.rule_id + '`');
+          if (v.wcag.length) lines.push('- **WCAG:** ' + v.wcag.join(', '));
+          if (v.help_url) lines.push('- **Rule docs:** ' + v.help_url);
+          lines.push('- **Instances on page:** ' + v.count);
+          var shownExample = false;
+          v.examples.forEach(function (ex) {
+            if (!shownExample && (ex.html || ex.target)) {
+              lines.push('');
+              lines.push('**Failing element:**');
+              lines.push('');
+              lines.push('```html');
+              lines.push(ex.html || ex.target);
+              lines.push('```');
+              shownExample = true;
+            }
+          });
+          lines.push('');
+        });
+      }
+      lines.push('---');
+      lines.push('');
+    });
+    lines.push('_Generated by [VITAL](https://github.com/mgifford/vital-core)_');
+    var text = lines.join('\\n');
+    navigator.clipboard.writeText(text).then(function () {
+      copyMsg.textContent = 'Copied!';
+      setTimeout(function () { copyMsg.textContent = ''; }, 2000);
+    }).catch(function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      copyMsg.textContent = 'Copied!';
+      setTimeout(function () { copyMsg.textContent = ''; }, 2000);
+    });
+  });
+
+  // ── Blob download helper ──────────────────────────────────────────
+  function downloadBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+})();
+</script>`;
+  return layout({ title: 'URL error lookup — vital-scans', breadcrumb: '', body, depth: 0 });
 }
 
 export function writeAsset(docsDir) {
@@ -2253,4 +2580,30 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug pre { background: color-mix(in srgb, var(--ink) 6%, transparent); padding: .6rem .8rem;
   border-radius: 2px; overflow-x: auto; font-size: .85rem; }
 .error { color: var(--worse); font-weight: 600; }
+.lookup-form { margin: 1.25rem 0; }
+.lookup-row { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-end; margin-bottom: .75rem; }
+.lookup-label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: .25rem; width: 100%; }
+.lookup-input { flex: 1 1 20rem; font: inherit; padding: .45rem .6rem; border: 1px solid var(--rule);
+  border-radius: 2px; background: var(--paper); color: var(--ink); min-width: 0; }
+.lookup-input:focus { outline: 3px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+.lookup-btn { font: inherit; padding: .45rem 1rem; cursor: pointer; border: 1px solid var(--accent);
+  border-radius: 2px; background: var(--accent); color: var(--paper); white-space: nowrap; }
+.lookup-btn:hover { filter: brightness(1.1); }
+.lookup-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.domain-picker { border: 1px solid var(--rule); border-radius: 2px; padding: .4rem .75rem; margin-top: .5rem; }
+.domain-picker > summary { cursor: pointer; font-size: .9rem; font-weight: 600; list-style: none; padding: .2rem 0; }
+.domain-picker > summary::-webkit-details-marker { display: none; }
+.domain-checks { display: flex; flex-wrap: wrap; gap: .35rem .9rem; padding: .5rem 0; }
+.domain-check-label { display: flex; align-items: center; gap: .3rem; font-size: .85rem; cursor: pointer; }
+.status-msg { color: var(--muted); font-size: .9rem; margin: .5rem 0; min-height: 1.2em; }
+.results-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.5rem; margin: 1rem 0 .5rem; }
+.export-controls { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.export-controls button { font: inherit; font-size: .85rem; padding: .3rem .7rem; cursor: pointer;
+  border: 1px solid var(--rule); border-radius: 2px; background: var(--paper); color: var(--ink); }
+.export-controls button:hover { border-color: var(--accent); color: var(--accent); }
+.export-controls button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.copy-msg { font-size: .85rem; color: var(--better); }
+.page-result-summary { cursor: pointer; padding: .6rem 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .6rem; }
+.violation-item { border-top: 1px solid var(--rule); padding: .5rem 0; }
+.violation-item + .violation-item { padding-top: .5rem; }
 `;

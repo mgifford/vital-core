@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
 import { compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
@@ -19,6 +19,7 @@ import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
 import { buildAiFindings } from './lib/ai-findings.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
+import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { writeAcrYaml } from './lib/acr.js';
 
 /**
@@ -50,6 +51,7 @@ const dashboard = [];
 const apiIndexEntries = [];
 const apiSnapshots = [];
 const apiWeekFindings = [];
+const urlLookupDomains = [];
 
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
@@ -327,6 +329,12 @@ for (const target of config.targets) {
   apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
   apiSnapshots.push({ key: target.key, data: buildSnapshot(target, series, diffs, ledger, invSummary, latestBugsOnly) });
 
+  const urlIdx = buildUrlIndex(domainDir, target.domain, latestSummary.week);
+  if (urlIdx) {
+    writeUrlIndex(path.join(DIRS.docs, 'api', 'v1'), target.key, urlIdx);
+    urlLookupDomains.push({ key: target.key, domain: target.domain, week: latestSummary.week });
+  }
+
   // Single downloadable snapshot of everything known about the domain:
   // every scanned URL's latest status, current known findings (with
   // first/last-seen), the weekly trend series, and the latest score.
@@ -368,6 +376,9 @@ for (const target of config.targets) {
 fs.writeFileSync(path.join(DIRS.docs, 'index.html'), renderIndex(dashboard, { branding: profile?.branding }));
 writeAsset(DIRS.docs);
 writeApiFiles(DIRS.docs, apiIndexEntries, apiSnapshots, apiWeekFindings);
+if (urlLookupDomains.length) {
+  fs.writeFileSync(path.join(DIRS.docs, 'url-lookup.html'), renderUrlLookup(urlLookupDomains));
+}
 console.log('docs/ written');
 
 // ---------------------------------------------------------------------
