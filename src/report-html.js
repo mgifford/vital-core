@@ -592,7 +592,7 @@ ${heading('h-bugs', `Bug reports`)}
         ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
         : '';
       return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
-<summary><span class="sev-badge">${esc(b.severity)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
+<summary><span class="sev-badge">${esc(b.severity)}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span></summary>
 <dl class="bug-fields">
   <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
@@ -1659,7 +1659,11 @@ ${coverageTable(summary)}
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
 ${heading('h-trends', `Trends over time`)}
+<h3>Accessibility trends</h3>
 ${severityTrendChart(series)}
+${series.some((s) => s.lighthouse) ? `<h3>Performance trends</h3>
+${lineChart('Lighthouse performance (median)', series.map((s) => ({ week: s.week, value: s.lighthouse?.medianPerformance ?? null })), { unit: '/100' })}
+${lineChart('Largest Contentful Paint (median)', series.map((s) => ({ week: s.week, value: s.lighthouse?.metrics?.largestContentfulPaintMs ?? null })), { unit: ' ms', lowerIsBetter: true })}` : ''}
 ${series.some((s) => s.sustainability) ? lineChart('Median page weight (KB)', series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
 </section>` : ''}
 

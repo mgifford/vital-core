@@ -1,39 +1,38 @@
-# Auto-generated from charter.md — do not edit directly.
-# Run 'spec-kitty charter sync' to regenerate.
-
+schema_version: 1.0.0
+project: vital-core
+mission: software-dev
+authority_paths:
+  - AGENTS.md
+  - ACCESSIBILITY.md
+  - README.md
 testing:
-  min_coverage: 0
-  tdd_required: false
-  framework: ''
-  type_checking: ''
+  required_commands:
+    - spec-kitty upgrade --agent-check --json
+    - spec-kitty agent config sync --create-missing
+    - spec-kitty agent config status
+    - spec-kitty doctor skills --json
+    - spec-kitty charter preflight --json
+    - npm run check:spec-kitty
+    - npm run test:unit
 quality:
-  linting: ''
-  pr_approvals: 1
-  pre_commit_hooks: false
-commits:
-  convention:
+  accessibility: WCAG 2.2 AA
+  report_format: semantic HTML with accessible chart alternatives
+  text_alternatives: required for meaningful charts, images, and other graphics
 performance:
-  cli_timeout_seconds: 2.0
-  dashboard_max_wps: 100
-branch_strategy:
-  main_branch: main
-  dev_branch:
-  rules: []
-doctrine:
-  selected_paradigms: []
-  selected_directives:
-  - DIR-001
-  - DIR-002
-  - DIR-003
-  - DIR-004
-  - DIR-005
-  - DIR-006
-  - DIR-007
-  selected_tactics: []
-  available_tools:
-  - git
-  - spec-kitty
-  - node
-  - npm
-  template_set: software-dev-default
-enforcement: {}
+  reporting:
+    charts_should_tell_change_story: true
+    prefer_week_over_week_trends: true
+  scanning:
+    deterministic_sampling: true
+    preserve_weekly_history: true
+branching:
+  source_of_truth: GitHub
+  deployment_target: Hugging Face Spaces via the hf remote
+selected_directives:
+  - weekly-accessibility-tracking
+  - stable-page-identity
+  - historical-evidence-preservation
+  - accessible-reporting
+  - efficient-recurring-scans
+selected_tactics: []
+selected_styleguides: []

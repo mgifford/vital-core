@@ -1,0 +1,60 @@
+{
+  "cli_version": "3.2.1",
+  "command_args": [
+    "upgrade"
+  ],
+  "generated_ids": [
+    "0VFCH81ZY4WQA2B7BCEQ8G3F9G",
+    "6baa71b4f1aebdc3"
+  ],
+  "manifest_path": ".kittify/migrations/mission-state/6baa71b4f1aebdc3.json",
+  "missions": [
+    {
+      "file_changes": [
+        {
+          "new_sha256": "0725dd98dff1e5ddf50e22e69bf08c7fd5dcfef7343a3f278f83a82ebb0f4335",
+          "new_size": 438,
+          "old_sha256": null,
+          "old_size": null,
+          "path": "kitty-specs/build-a-replacement-for-siteimprove-for-the-us-government-01KSTNMM/meta.json"
+        }
+      ],
+      "mission_id": "0VFCH81ZY4WQA2B7BCEQ8G3F9G",
+      "mission_slug": "build-a-replacement-for-siteimprove-for-the-us-government-01KSTNMM",
+      "quarantined_rows": 0,
+      "row_transformations": [],
+      "status": "updated",
+      "validation_errors": []
+    }
+  ],
+  "policy": {
+    "ignored": [
+      "*.pyc",
+      ".git/",
+      ".worktrees/",
+      "__pycache__/"
+    ],
+    "optional": [
+      "kitty-specs/*/status.json"
+    ],
+    "tracked": [
+      ".kittify/migrations/mission-state/*.json",
+      "kitty-specs/*/meta.json",
+      "kitty-specs/*/status.events.jsonl",
+      "kitty-specs/*/status.json"
+    ]
+  },
+  "repo_head": "e0202041fae80766276fa8d8cf20cc54c4883ae9",
+  "run_id": "6baa71b4f1aebdc3",
+  "schema_version": "1.0.0",
+  "summary": {
+    "missions_error": 0,
+    "missions_total": 1,
+    "missions_unchanged": 0,
+    "missions_updated": 1,
+    "quarantined_rows": 0
+  },
+  "target_missions": [
+    "build-a-replacement-for-siteimprove-for-the-us-government-01KSTNMM"
+  ]
+}

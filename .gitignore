@@ -5,13 +5,6 @@ ci_job_*.zip
 job-*-logs.zip
 tmp/
 
-# Local secrets (HF_TOKEN, etc.). Provided to CI via repository secrets,
-# never committed. Commit .env.example with key names only if you want a
-# template.
-.env
-.env.*
-!.env.example
-
 # Generated site. Built by aggregate in CI and deployed as a Pages
 # artifact; never committed. Summaries that must survive live in data/.
 docs/
@@ -22,22 +15,12 @@ dist/
 *.log
 .DS_Store
 
-# Spec Kitty runtime state (transient, machine-specific)
-.kittify/runtime/
-.kittify/agent_profiles_manifest.json
-.kittify/charter/context-state.json
-.kittify/encoding-provenance/
-.kittify/events/
-.kittify/lint-report.json
-.kittify/skills-manifest.json
-.worktrees/
-
-# Legacy Spec Kitty managed symlink packs. Current repo-local Codex command
-# skills are real files named .agents/skills/spec-kitty.*.
-.agents/skills/ad-hoc-profile-load/
-.agents/skills/spec-kitty/
-.agents/skills/spec-kitty-*/
-.agents/skills/spk-*/
+# Local secrets (HF_TOKEN, etc.). Provided to CI via repository secrets,
+# never committed. Commit .env.example with key names only if you want a
+# template.
+.env
+.env.*
+!.env.example
 
 # HF-only targets — scanned on Hugging Face, not GitHub Actions.
 # Guard against accidental commit of their scan data to this repo.
@@ -49,5 +32,6 @@ state/www.va.gov/
 state/volunteer.va.gov/
 state/news.va.gov/
 state/benefits.va.gov/
-.kittify/workspaces/
+
+# Added by Spec Kitty CLI (auto-managed)
 .kittify/sync-state.json

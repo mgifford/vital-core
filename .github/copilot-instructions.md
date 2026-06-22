@@ -1,5 +1,6 @@
 <!-- spec-kitty:orientation -->
-**Spec Kitty v3.2.1** — project: unknown (healthy)
+**Spec Kitty v3.2.1** — project: unknown (migration-required)
+⚠ Project migration required — run `spec-kitty upgrade` before using missions.
 
 Two usage patterns:
 - **Full mission** (spec → plan → tasks → implement → review → merge):

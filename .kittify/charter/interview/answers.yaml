@@ -2,28 +2,28 @@ schema_version: 1.0.0
 mission: software-dev
 profile: minimal
 answers:
-  project_intent: Deliver predictable changes with clear reviewability.
-  languages_frameworks: Use only the languages, frameworks, and tools explicitly
-    declared by this project.
+  project_intent: 'Busy accessibility professionals who need a clear overview of the
+    problems associated with their website and the steps they need totake to address
+    them. It is to provide the vital information needed fto ensure site quality. '
+  languages_frameworks: axe-core, alfa, google lighthosue, p
   testing_requirements: Use the project's declared test approach. If none is 
     declared, mark it as NEEDS CLARIFICATION.
-  quality_gates: Only require the quality gates explicitly declared by this 
-    project before merge.
-  review_policy: At least one focused reviewer approves before merge.
-  performance_targets: CLI operations should complete quickly (typically under 2
-    seconds).
-  deployment_constraints: Must run on macOS and Linux developer environments.
+  quality_gates: 'Must meet WCAG 2.2 AA, must be performant '
+  review_policy: pwd
+  performance_targets: A
+  deployment_constraints: MacOS and GitHub
 selected_paradigms: []
 selected_directives:
-- DIR-001
-- DIR-002
-- DIR-003
-- DIR-004
-- DIR-005
-- DIR-006
-- DIR-007
+  - weekly-accessibility-tracking
+  - stable-page-identity
+  - historical-evidence-preservation
+  - accessible-reporting
+  - efficient-recurring-scans
+selected_tactics: []
 available_tools:
-- git
 - spec-kitty
+- kit
+- axe
+- alfa
 agent_profile:
 agent_role:
