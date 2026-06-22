@@ -55,6 +55,12 @@ const target = getTarget(config, args.domain);
 const week = isoWeek();
 const runId = `${new Date().toISOString().replace(/[:.]/g, '-')}-${crypto.randomBytes(3).toString('hex')}`;
 const budget = args.budget ? parseInt(args.budget, 10) : target.pages_per_run;
+// If VITAL_SCAN_TIME_BUDGET_MINUTES is set, stop scanning new pages after
+// that many minutes so the script can exit cleanly (link-check, state save,
+// browser close) before the CI job's hard timeout fires.
+const scanDeadlineMs = process.env.VITAL_SCAN_TIME_BUDGET_MINUTES
+  ? Date.now() + parseInt(process.env.VITAL_SCAN_TIME_BUDGET_MINUTES, 10) * 60_000
+  : null;
 const baseOrigin = args['base-url'] ?? `https://${target.domain}`;
 const host = new URL(baseOrigin).hostname;
 const settleDelay = parseInt(process.env.VITAL_A11Y_SETTLE_DELAY_MS ?? target.settle_delay_ms, 10);
@@ -162,6 +168,11 @@ const STATE_SAVE_EVERY = 25;
 let sincePersist = 0;
 
 for (const item of batch) {
+  if (scanDeadlineMs && Date.now() >= scanDeadlineMs) {
+    log('time budget reached; stopping scan early for clean exit');
+    break;
+  }
+
   const urlPath = new URL(item.url).pathname;
 
   // URL filter: skip pages that don't match url_include / url_exclude, unless

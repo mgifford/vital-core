@@ -138,6 +138,9 @@ jobs:
       - name: Scan
         env:
           NODE_OPTIONS: --max-old-space-size=8192
+          # Leave ~15 min for link-check flush, browser close, state save,
+          # and the commit step. Must be less than timeout-minutes: 110.
+          VITAL_SCAN_TIME_BUDGET_MINUTES: 95
         run: |
           BUDGET_FLAG=""
           if [ -n "${{ github.event.inputs.budget }}" ]; then
@@ -146,6 +149,7 @@ jobs:
           node src/scan.js --domain "${{ matrix.domain }}" $BUDGET_FLAG
 
       - name: Commit state and data
+        if: always()
         run: |
           git config user.name "vital-scans[bot]"
           git config user.email "vital-scans@users.noreply.github.com"
