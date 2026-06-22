@@ -2350,7 +2350,7 @@ export function renderUrlLookup(domains) {
         p.violations.forEach(function (v) {
           var sev = v.severity ? '[' + v.severity + '] ' : '';
           lines.push('## ' + sev + (v.help || v.rule_id));
-          lines.push('- **Engine:** ' + v.engine + ' | **Rule ID:** `' + v.rule_id + '`');
+          lines.push('- **Engine:** ' + v.engine + ' | **Rule ID:** \`' + v.rule_id + '\`');
           if (v.wcag.length) lines.push('- **WCAG:** ' + v.wcag.join(', '));
           if (v.help_url) lines.push('- **Rule docs:** ' + v.help_url);
           lines.push('- **Instances on page:** ' + v.count);
@@ -2360,9 +2360,9 @@ export function renderUrlLookup(domains) {
               lines.push('');
               lines.push('**Failing element:**');
               lines.push('');
-              lines.push('```html');
+              lines.push('\`\`\`html');
               lines.push(ex.html || ex.target);
-              lines.push('```');
+              lines.push('\`\`\`');
               shownExample = true;
             }
           });
