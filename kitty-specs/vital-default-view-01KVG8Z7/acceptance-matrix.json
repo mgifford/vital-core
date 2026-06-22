@@ -1,0 +1,50 @@
+{
+  "mission_slug": "vital-default-view-01KVG8Z7",
+  "mission_type": "software-dev",
+  "reconstructed_from": "Shipped spec (#146) and repository implementation evidence",
+  "reconstructed_at": "2026-06-20T01:03:05Z",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "priorityTier implements VITAL table",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec requires the exact five-condition table and a unit fixture."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "Default filter uses priority_tier <= 2",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion pins the visible-set expression."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Show everything toggle removes filter",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion marks the report toggle shipped."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "Filter label updated",
+      "proof_type": "manual_review",
+      "pass_fail": "pass",
+      "evidence": "Spec marks label update shipped."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Display-only; data unchanged",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Out-of-scope section explicitly forbids stored data changes."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Unit test fixture covers default visibility",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion requires the 5-bug/3-visible fixture."
+    }
+  ]
+}

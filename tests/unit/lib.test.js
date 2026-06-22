@@ -14,16 +14,14 @@ import { normalizeRate, shouldRun } from '../../src/lib/sampling.js';
 import { updateFindings } from '../../src/lib/findings.js';
 import { findMisspellings } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
-import { toCsv, ruleSlug } from '../../src/lib/csv.js';
-import { writeLighthouseCsv, writeLighthouseJson } from '../../src/lib/csv.js';
+import { toCsv, ruleSlug, writeLighthouseCsv, writeLighthouseJson } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
-import { buildAcrData, buildAcrYaml } from '../../src/lib/acr.js';
+import { buildAcrData, buildAcrYaml, renderAcrHtml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
 import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
 import { extractAudits } from '../../src/engines/lighthouse.js';
-import { renderLighthousePage } from '../../src/report-html.js';
 import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
 import { loadPriorityUrls } from '../../src/lib/top-tasks.js';
 import { prioritizeAccessibilityBugs } from '../../src/lib/accessibility-priority.js';
@@ -237,10 +235,10 @@ test('resolveWcag: axe tags and alfa rule ids map to criteria', () => {
 
 test('severityFor: axe impact maps, frequency amplifies', () => {
   assert.equal(severityFor('critical', 1, 50), 'Critical');
-  assert.equal(severityFor('minor', 1, 50), 'Low', 'rare minor stays low');
-  assert.equal(severityFor('minor', 30, 50), 'Medium', 'site-wide minor escalates one level');
+  assert.equal(severityFor('minor', 1, 50), 'Minor', 'rare minor stays minor');
+  assert.equal(severityFor('minor', 30, 50), 'Moderate', 'site-wide minor escalates one level');
   assert.equal(severityFor('serious', 40, 50), 'Critical', 'site-wide serious escalates to critical');
-  assert.equal(severityFor(null, 1, 50), 'Medium', 'no impact (alfa) defaults medium');
+  assert.equal(severityFor(null, 1, 50), 'Moderate', 'no impact (alfa) defaults moderate');
 });
 
 test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
@@ -296,9 +294,9 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').instance_id, axeReport.instance_id);
   assert.equal(again.find((r) => r.rule_id === 'color-contrast').pattern_id, axeReport.pattern_id);
 
-  // Alfa report: no impact -> Medium (default), mapped SC, WCAG category.
+  // Alfa report: no impact -> Moderate (default), mapped SC, WCAG category.
   const alfa = reports.find((r) => r.rule_id === 'sia-r12');
-  assert.equal(alfa.severity, 'Medium');
+  assert.equal(alfa.severity, 'Moderate');
   assert.equal(alfa.wcag_sc, '4.1.2');
   assert.equal(alfa.wcag_version, '2.0');
   assert.equal(alfa.wcag_category, 'WCAG 2.0 A');
@@ -308,51 +306,6 @@ test('buildBugReports: shape, ids stable, sorted, placeholders present', () => {
   assert.match(md, /\*\*Severity:\*\* Critical/);
   assert.match(md, /### Steps to reproduce/);
   assert.match(md, /\*\*WCAG SC:\*\* 1\.4\.3/);
-});
-
-test('lighthouse exports and page link the raw dataset', () => {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'lighthouse-'));
-  const summary = {
-    domain: 'example.gov',
-    week: '2026-W25',
-    generatedAt: '2026-06-18T00:00:00.000Z',
-    lighthouse: {
-      pageDetail: [
-        {
-          url: 'https://example.gov/high',
-          scores: { performance: 90, accessibility: 91, bestPractices: 92, seo: 93, agentic: 94 },
-          metrics: { firstContentfulPaintMs: 100, largestContentfulPaintMs: 200, speedIndexMs: 300, totalBlockingTimeMs: 400, cumulativeLayoutShift: 0.01 },
-        },
-        {
-          url: 'https://example.gov/low',
-          scores: { performance: 30, accessibility: 31, bestPractices: 32, seo: 33, agentic: 34 },
-          metrics: { firstContentfulPaintMs: 500, largestContentfulPaintMs: 600, speedIndexMs: 700, totalBlockingTimeMs: 800, cumulativeLayoutShift: 0.2 },
-        },
-      ],
-      medianPerformance: 60,
-      medianAccessibility: 61,
-      medianBestPractices: 62,
-      medianSeo: 63,
-      medianAgentic: 64,
-      metrics: {},
-      recommendations: [],
-    },
-  };
-
-  const csvHref = writeLighthouseCsv(tmpDir, summary.lighthouse);
-  const jsonHref = writeLighthouseJson(tmpDir, summary.lighthouse, { domain: summary.domain, week: summary.week, generatedAt: summary.generatedAt });
-
-  assert.equal(csvHref, 'lighthouse.csv');
-  assert.equal(jsonHref, 'lighthouse.json');
-
-  const rawJson = JSON.parse(fs.readFileSync(path.join(tmpDir, 'lighthouse.json'), 'utf8'));
-  assert.equal(rawJson.pages[0].url, 'https://example.gov/low', 'raw JSON is sorted by lowest performance first');
-  assert.equal(rawJson.pages[1].url, 'https://example.gov/high');
-
-  const html = renderLighthousePage({ domain: 'example.gov', page_loads_per_week: null }, summary, csvHref, jsonHref);
-  assert.match(html, /Download raw dataset:/);
-  assert.match(html, /href="lighthouse\.csv"/);
-  assert.match(html, /href="lighthouse\.json"/);
 });
 
 test('plain-language: sentence splitting and syllable estimation', () => {
@@ -460,6 +413,7 @@ test('findings: ledger tracks first/last-seen and is idempotent per week', () =>
   updateFindings(ledger, '2026-W24', [reportA]);
   assert.equal(ledger.findings['VS-aaa'].weeksSeen, 2, 're-run same week is idempotent');
 });
+
 
 test('spell: flags real misspellings, skips numbers/acronyms/allowlist/jargon', () => {
   const r = findMisspellings([
@@ -639,12 +593,12 @@ test('score: density-based, spreads across a curve so F is rare and meaningful',
 test('priority: ranks by pages x severity x reach; fleet flattens across domains', async () => {
   const { priorityScore, rankBugs, fleetWorstOffenders } = await import('../../src/lib/priority.js');
   const bug = (sev, pages, prev) => ({ severity: sev, frequency: { pages_affected: pages }, impact: { groups: prev != null ? [{ prevalence: prev }] : [] }, summary: `${sev}/${pages}` });
-  const widespreadCritical = bug('critical', 50, 0.1);
-  const rareLow = bug('minor', 1, 0.01);
+  const widespreadCritical = bug('Critical', 50, 0.1);
+  const rareLow = bug('Minor', 1, 0.01);
   assert.ok(priorityScore(widespreadCritical) > priorityScore(rareLow), 'widespread critical outranks rare minor');
 
   const ranked = rankBugs([rareLow, widespreadCritical], 5);
-  assert.equal(ranked[0].summary, 'critical/50', 'highest priority first');
+  assert.equal(ranked[0].summary, 'Critical/50', 'highest priority first');
 
   const fleet = fleetWorstOffenders([
     { target: { domain: 'a.gov', key: 'a' }, bugs: [rareLow] },
@@ -887,7 +841,7 @@ test('buildBugReports: WCAG sort order across version groups', () => {
   assert.ok(i20 < iBP, 'WCAG 2.0 before Best Practice');
 });
 
-test('prioritizeAccessibilityBugs: keeps critical, key-page widespread, and top prevalence before the cap', () => {
+test('prioritizeAccessibilityBugs: VITAL default view — Critical/Serious always; Moderate/Minor WCAG A/AA ≥10 pages; Best Practice hidden', () => {
   const summary = {
     pagesScanned: 100,
     axe: { rules: { 'color-contrast': { affectedPages: [{ url: 'https://example.gov/top' }], pages: 6 } } },
@@ -896,20 +850,26 @@ test('prioritizeAccessibilityBugs: keeps critical, key-page widespread, and top 
   };
   const bugs = [
     { instance_id: 'a', severity: 'Critical', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 1, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'x', summary: 'a' },
-    { instance_id: 'b', severity: 'Low', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 12, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'color-contrast', summary: 'b' },
-    { instance_id: 'c', severity: 'Low', wcag_category: 'WCAG 2.0 A', frequency: { pages_affected: 20, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'y', summary: 'c' },
-    { instance_id: 'd', severity: 'Low', wcag_category: 'Best Practice', frequency: { pages_affected: 30, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'z', summary: 'd' },
+    // Minor on WCAG AA, 12 pages ≥ 10 threshold → visible
+    { instance_id: 'b', severity: 'Minor', wcag_category: 'WCAG 2.0 AA', frequency: { pages_affected: 12, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'color-contrast', summary: 'b' },
+    // Minor on WCAG A, 20 pages ≥ 10 threshold → visible
+    { instance_id: 'c', severity: 'Minor', wcag_category: 'WCAG 2.0 A', frequency: { pages_affected: 20, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'y', summary: 'c' },
+    // Minor on Best Practice, any page count → hidden by default
+    { instance_id: 'd', severity: 'Minor', wcag_category: 'Best Practice', frequency: { pages_affected: 30, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'z', summary: 'd' },
+    // Minor on WCAG A, 5 pages < 10 threshold → hidden by default
+    { instance_id: 'e', severity: 'Minor', wcag_category: 'WCAG 2.0 A', frequency: { pages_affected: 5, total_pages_scanned: 100, instances: 1 }, engine_key: 'axe-core', rule_id: 'w', summary: 'e' },
   ];
   const keyPages = ['https://example.gov/top'];
   const view = prioritizeAccessibilityBugs(summary, bugs, {
     keyPages,
-    reporting: { max_html_issues: 3, moderate_issue_threshold_percent: 5, include_key_page_issues: true },
+    reporting: { max_html_issues: 50, moderate_issue_threshold_percent: 5, include_key_page_issues: true },
   });
-  assert.equal(view.visibleCount, 3, 'critical + key-page widespread + one expansion item shown before the cap');
-  assert.equal(view.bugs.find((b) => b.instance_id === 'a').default_visible, true);
-  assert.equal(view.bugs.find((b) => b.instance_id === 'b').default_visible, true);
-  assert.equal(view.bugs.find((b) => b.instance_id === 'c').default_visible, true, 'first expansion item is included when room remains');
-  assert.equal(view.bugs.find((b) => b.instance_id === 'd').default_visible, false);
+  assert.equal(view.visibleCount, 3, 'critical + two WCAG minor-but-widespread issues shown; best-practice and low-page-count hidden');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'a').default_visible, true, 'Critical always shown');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'b').default_visible, true, 'Minor WCAG AA ≥10 pages shown');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'c').default_visible, true, 'Minor WCAG A ≥10 pages shown');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'd').default_visible, false, 'Best Practice hidden by default');
+  assert.equal(view.bugs.find((b) => b.instance_id === 'e').default_visible, false, 'Minor WCAG A <10 pages hidden by default');
 });
 
 test('buildAcrData: does-not-support when failures span ≥5% of pages', () => {
@@ -990,6 +950,29 @@ test('buildAcrData: not-evaluated for SCs no engine covers', () => {
   assert.equal(sc125.adherence, 'not-evaluated');
 });
 
+test('buildAcrData: Alfa-only scan with >5% failure rate → does-not-support', () => {
+  // Regression guard: when axePages=0, failRate must still use alfaPages as
+  // denominator so high-page-count Alfa failures are not misclassified as
+  // partially-supports.
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 100,
+    axe: { pagesScanned: 0, rules: {} },
+    alfa: {
+      pagesScanned: 100,
+      rules: {
+        // sia-r12 → 4.1.2; 10/100 = 10% → should be does-not-support
+        'sia-r12': { pages: 10, tags: [], examplePages: ['https://x/a'] },
+      },
+    },
+  };
+  const { scMap } = buildAcrData(summary);
+  const sc412 = scMap.get('4.1.2');
+  assert.ok(sc412, '4.1.2 entry present');
+  assert.equal(sc412.adherence, 'does-not-support', 'Alfa-only 10% failure rate → does-not-support');
+  assert.ok(sc412.engines.includes('Alfa'));
+});
+
 test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
   const summary = {
     week: '2026-W25',
@@ -1005,6 +988,118 @@ test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
   assert.match(yaml, /success_criteria_level_a:/, 'has Level A section');
   assert.match(yaml, /success_criteria_level_aa:/, 'has Level AA section');
   assert.match(yaml, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence values');
+});
+
+test('renderAcrHtml: produces self-contained HTML with WCAG table structure', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 20,
+    axe: { pagesScanned: 20, version: '4.12.1', rules: {
+      'color-contrast': { pages: 15, tags: ['wcag1', 'wcag143', 'wcag2aa'], examplePages: ['https://example.gov/page1'] },
+    }},
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const acrData = buildAcrData(summary);
+  const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
+  assert.ok(html.startsWith('<!DOCTYPE html>'), 'starts with DOCTYPE');
+  assert.match(html, /<html lang="en">/, 'has lang attribute');
+  assert.ok(!html.includes('<link rel='), 'no external stylesheet link');
+  assert.ok(!html.includes('<script src='), 'no external script');
+  assert.match(html, /<style>/, 'has inline style block');
+  assert.match(html, /Level A Success Criteria/, 'has Level A heading');
+  assert.match(html, /Level AA Success Criteria/, 'has Level AA heading');
+  assert.match(html, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence classes');
+  assert.match(html, /WAI\/WCAG22\/Understanding\//, 'links to WCAG Understanding docs');
+  assert.match(html, /acr\.yaml/, 'links back to yaml');
+  assert.ok(!html.includes('uswds') && !html.includes('cdn.'), 'no design system or CDN dependency');
+});
+
+test('renderAcrHtml: does-not-support class appears for high failure rate', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 50,
+    axe: { pagesScanned: 50, version: '4.12.1', rules: {
+      'color-contrast': { pages: 40, tags: ['wcag1', 'wcag143', 'wcag2aa'], examplePages: ['https://example.gov/a'] },
+    }},
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const acrData = buildAcrData(summary);
+  const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
+  assert.match(html, /class="adherence does-not-support"/, 'does-not-support class present for 80% failure rate');
+});
+
+test('renderAcrHtml: uses summary generatedAt and pagesAudited when present', () => {
+  const summary = {
+    week: '2026-W25',
+    generatedAt: '2026-06-18T12:34:56.000Z',
+    pagesScanned: 20,
+    pagesAudited: 12,
+    axe: { pagesScanned: 8, version: '4.12.1', rules: {
+      'color-contrast': { pages: 3, tags: ['wcag1', 'wcag143', 'wcag2aa'], examplePages: ['https://example.gov/page1'] },
+    }},
+    alfa: { pagesScanned: 10, rules: {} },
+  };
+  const acrData = buildAcrData(summary);
+  const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
+  assert.match(html, /Report date: <strong>2026-06-18<\/strong>/, 'uses deterministic generatedAt date');
+  assert.match(html, /Automated scan found failures on 3 of 12 tested pages/, 'uses unique audited page count');
+});
+
+test('writeLighthouseCsv: keeps legacy pwa column with blank values', () => {
+  const repDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-lh-csv-'));
+  const name = writeLighthouseCsv(repDir, 'example.gov', '2026-W25', {
+    pageDetail: [{
+      url: 'https://example.gov/',
+      scores: { performance: 91, accessibility: 88, bestPractices: 93, seo: 90, pwa: null, agentic: 75 },
+      metrics: {
+        firstContentfulPaintMs: 1234,
+        largestContentfulPaintMs: 2345,
+        speedIndexMs: 2100,
+        totalBlockingTimeMs: 50,
+        cumulativeLayoutShift: 0.01,
+      },
+    }],
+  });
+  const csv = fs.readFileSync(path.join(repDir, name), 'utf8');
+  assert.match(csv, /^url,performance,accessibility,best_practices,seo,pwa,agentic,fcp_ms,lcp_ms,speed_index_ms,tbt_ms,cls$/m);
+  assert.match(csv, /^https:\/\/example\.gov\/,91,88,93,90,,75,1234,2345,2100,50,0\.01$/m);
+});
+
+test('writeLighthouseJson: keeps legacy pwa fields with null and empty array', () => {
+  const repDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-lh-json-'));
+  const name = writeLighthouseJson(repDir, 'example.gov', '2026-W25', '2026-06-18T12:34:56.000Z', {
+    pagesSampled: 1,
+    medianPerformance: 91,
+    medianAccessibility: 88,
+    medianBestPractices: 93,
+    medianSeo: 90,
+    medianPwa: null,
+    medianAgentic: 75,
+    metrics: {
+      firstContentfulPaintMs: 1234,
+      largestContentfulPaintMs: 2345,
+      speedIndexMs: 2100,
+      totalBlockingTimeMs: 50,
+      cumulativeLayoutShift: 0.01,
+    },
+    pwaSignals: [],
+    recommendations: [],
+    pageDetail: [{
+      url: 'https://example.gov/',
+      scores: { performance: 91, accessibility: 88, bestPractices: 93, seo: 90, pwa: null, agentic: 75 },
+      metrics: {
+        firstContentfulPaintMs: 1234,
+        largestContentfulPaintMs: 2345,
+        speedIndexMs: 2100,
+        totalBlockingTimeMs: 50,
+        cumulativeLayoutShift: 0.01,
+      },
+    }],
+  });
+  const json = JSON.parse(fs.readFileSync(path.join(repDir, name), 'utf8'));
+  assert.equal(json.summary.median_pwa, null);
+  assert.deepEqual(json.summary.pwa_signals, []);
+  assert.equal(json.pages[0].scores.pwa, null);
 });
 
 test('headersToWappalyzer: produces array-valued, lowercased object shape', () => {

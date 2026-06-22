@@ -139,11 +139,39 @@ rigorous blocked-load comparison is a planned heavier mode, not yet built.
 | `VITAL_WEEK` | Pin the ISO week (e.g. `2026-W23`). Used by the e2e test for determinism; normally derived from the run date. |
 | `VITAL_A11Y_SETTLE_DELAY_MS` | Override `settle_delay_ms` — the wait after page load before auditing, which lets client-side hydration finish and removes transient false positives. |
 | `VITAL_LINK_CHECK_CAP` | Override the per-run broken-link probe cap (default 500). |
+| `VITAL_OLLAMA_URL` | Optional Ollama base URL for local AI summaries in `ai-findings` output. Defaults to `http://localhost:11434`. |
+| `VITAL_OLLAMA_MODEL` | Optional Ollama model override. Defaults to the first available model, then `llama3`. |
 
 Most behavior is configured per target in `config/targets.yml`
 (`pages_per_run`, `max_pages_per_week`, `delay_ms`, `nav_timeout_ms`,
 `settle_delay_ms`, `retention_weeks`, `engines`, `user_agent`), not via
 environment variables.
+
+## Spec Kitty Agent Surfaces
+
+Spec Kitty is the workflow and governance layer for non-trivial work in this
+repository. It is configured for `codex`, `claude`, and `copilot`; do not treat
+the Ollama integration as the agent workflow. Ollama is only an optional runtime
+enhancement for `ai-findings` output.
+
+Before starting or resuming Spec Kitty work, run:
+
+```bash
+spec-kitty upgrade --agent-check --json
+spec-kitty agent config sync --create-missing
+spec-kitty agent config status
+spec-kitty doctor skills --json
+spec-kitty charter preflight --json
+npm run check:spec-kitty
+```
+
+For new missions, fill `kitty-specs/<mission>/spec.md` from repo evidence before
+planning. Use the strongest available reasoning model for `specify`, `plan`,
+`tasks`, and `review`; local or weaker models may assist with mechanical
+drafting, but should not be final authority for data compatibility, architecture,
+or acceptance gates.
+
+The durable surface guide is `kitty-specs/AGENT_SURFACES.md`.
 
 ## Repository Rules for Agents
 

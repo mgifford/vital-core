@@ -1,13 +1,13 @@
 {
  "domain": "www.cms.gov",
- "updatedAt": "2026-06-18T10:19:48.303Z",
+ "updatedAt": "2026-06-21T13:18:28.896Z",
  "findings": {
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r111",
-   "summary": "sia-r111 (WCAG 2.5.8)",
+   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.5.8)",
    "wcag": "2.5.8",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -15,14 +15,29 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 1643
+   "lastPagesAffected": 2811
+  },
+  "VS-179ad9b3": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r113",
+   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.2) (WCAG 2.5.8)",
+   "wcag": "2.5.8",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 659
   },
   "VS-f7dba940": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r14",
-   "summary": "sia-r14 (WCAG 2.5.3)",
+   "summary": "Accessible name of link or button matches visible label (WCAG 2.5.3)",
    "wcag": "2.5.3",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -30,7 +45,7 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 628
+   "lastPagesAffected": 1179
   },
   "VS-9074b4dd": {
    "engine": "axe-core",
@@ -45,14 +60,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 185
+   "lastPagesAffected": 273
   },
   "VS-a24eaa8c": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r2",
-   "summary": "sia-r2 (WCAG 1.1.1)",
+   "summary": "Image has accessible name (WCAG 1.1.1)",
    "wcag": "1.1.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -60,14 +75,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 56
+   "lastPagesAffected": 96
   },
   "VS-a0bdbdf6": {
    "engine": "axe-core",
    "ruleId": "list",
-   "summary": "<ul> and <ol> must only directly contain <li>, <script> or < (WCAG 1.3.1)",
+   "summary": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -75,14 +90,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 307
+   "lastPagesAffected": 519
   },
   "VS-6175596b": {
    "engine": "axe-core",
    "ruleId": "listitem",
    "summary": "<li> elements must be contained in a <ul> or <ol> (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -90,14 +105,29 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 8
+   "lastPagesAffected": 18
+  },
+  "VS-7118fead": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r61",
+   "summary": "Form field label is visible (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 2715
   },
   "VS-f054f4a4": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r53",
-   "summary": "sia-r53 (WCAG 1.3.1)",
+   "summary": "Headings are structured hierarchically (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -105,28 +135,74 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 585
+   "lastPagesAffected": 1116
   },
-  "VS-f6cf30ff": {
+  "VS-2cd767ca": {
    "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r17",
-   "summary": "sia-r17 (WCAG 1.3.1)",
+   "ruleId": "sia-r78",
+   "summary": "Table header has scope (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W25",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W25"
    ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 1
+   "weeksSeen": 2,
+   "lastPagesAffected": 653
+  },
+  "VS-d6097011": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r68",
+   "summary": "Presentational children of an element are not focusable (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 166
+  },
+  "VS-3c632d31": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r64",
+   "summary": "Element has required owned roles (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 102
+  },
+  "VS-f2542d87": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r79",
+   "summary": "Duplicate role landmark is labeled (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 25
   },
   "VS-0ddc2ac6": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r42",
-   "summary": "sia-r42 (WCAG 1.3.1)",
+   "summary": "Element in required WAI-ARIA context role (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W24",
    "_weeks": [
@@ -134,13 +210,28 @@
    ],
    "weeksSeen": 1,
    "lastPagesAffected": 1
+  },
+  "VS-3f067795": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r77",
+   "summary": "Table cell has header (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 11
   },
   "VS-8ade3360": {
    "engine": "axe-core",
    "ruleId": "link-in-text-block",
    "summary": "Links must be distinguishable without relying on color (WCAG 1.4.1)",
    "wcag": "1.4.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -148,14 +239,29 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 337
+   "lastPagesAffected": 503
+  },
+  "VS-fbf54eba": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r74",
+   "summary": "Link is distinguishable without relying on color (WCAG 1.4.1)",
+   "wcag": "1.4.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 1181
   },
   "VS-efd91fdd": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r62",
-   "summary": "sia-r62 (WCAG 1.4.1)",
+   "summary": "Link in text block is visually distinguishable without color (WCAG 1.4.1)",
    "wcag": "1.4.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -163,14 +269,29 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 1
+   "lastPagesAffected": 2
+  },
+  "VS-c18be945": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r57",
+   "summary": "Scrolling content can be accessed by keyboard (WCAG 2.1.1)",
+   "wcag": "2.1.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 1011
   },
   "VS-e9fe47ac": {
    "engine": "axe-core",
    "ruleId": "link-name",
    "summary": "Links must have discernible text (WCAG 2.4.4)",
    "wcag": "2.4.4",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -178,14 +299,29 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 4
+   "lastPagesAffected": 10
+  },
+  "VS-28ebd979": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r11",
+   "summary": "Link has accessible name (WCAG 2.4.4)",
+   "wcag": "2.4.4",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 2
   },
   "VS-c126b6a6": {
    "engine": "axe-core",
    "ruleId": "html-has-lang",
    "summary": "<html> element must have a lang attribute (WCAG 3.1.1)",
    "wcag": "3.1.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -193,14 +329,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 185
+   "lastPagesAffected": 273
   },
   "VS-7a0e5645": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r4",
-   "summary": "sia-r4 (WCAG 3.1.1)",
+   "summary": "Document has a valid lang attribute (WCAG 3.1.1)",
    "wcag": "3.1.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -208,28 +344,28 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 56
+   "lastPagesAffected": 96
   },
-  "VS-28ebd979": {
+  "VS-f6cf30ff": {
    "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r11",
-   "summary": "sia-r11 (WCAG 4.1.2)",
+   "ruleId": "sia-r17",
+   "summary": "aria-hidden element does not contain focusable elements (WCAG 4.1.2)",
    "wcag": "4.1.2",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W24",
    "_weeks": [
     "2026-W24"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 7
+   "lastPagesAffected": 1
   },
   "VS-be8d563e": {
    "engine": "axe-core",
    "ruleId": "color-contrast",
    "summary": "Elements must meet minimum color contrast ratio thresholds (WCAG 1.4.3)",
    "wcag": "1.4.3",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -237,14 +373,29 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 62
+   "lastPagesAffected": 107
+  },
+  "VS-2208081b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r73",
+   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG 1.4.3)",
+   "wcag": "1.4.3",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 2802
   },
   "VS-646b1e0b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r66",
-   "summary": "sia-r66 (WCAG 1.4.3)",
+   "summary": "Text has sufficient color contrast (WCAG 1.4.3)",
    "wcag": "1.4.3",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -252,14 +403,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 631
+   "lastPagesAffected": 1184
   },
   "VS-f7e99f4b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r69",
-   "summary": "sia-r69 (WCAG 1.4.3)",
+   "summary": "Text has sufficient color contrast (Enhanced) (WCAG 1.4.3)",
    "wcag": "1.4.3",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -267,14 +418,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 9
+   "lastPagesAffected": 15
   },
   "VS-6c86a43a": {
    "engine": "axe-core",
    "ruleId": "meta-viewport",
    "summary": "Zooming and scaling must not be disabled (WCAG 1.4.4)",
    "wcag": "1.4.4",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -289,7 +440,7 @@
    "ruleId": "valid-lang",
    "summary": "lang attribute must have a valid value (WCAG 3.1.2)",
    "wcag": "3.1.2",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -304,7 +455,7 @@
    "ruleId": "heading-order",
    "summary": "Heading levels should only increase by one (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -312,14 +463,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 250
+   "lastPagesAffected": 365
   },
   "VS-fa44f293": {
    "engine": "axe-core",
    "ruleId": "page-has-heading-one",
    "summary": "Page should contain a level-one heading (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -327,14 +478,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 13
+   "lastPagesAffected": 21
   },
   "VS-d5d82446": {
    "engine": "axe-core",
    "ruleId": "landmark-one-main",
    "summary": "Document should have one main landmark (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -342,14 +493,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 185
+   "lastPagesAffected": 274
   },
   "VS-f18df681": {
    "engine": "axe-core",
    "ruleId": "region",
    "summary": "All page content should be contained by landmarks (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -357,14 +508,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 186
+   "lastPagesAffected": 275
   },
   "VS-0ba8ce9d": {
    "engine": "axe-core",
    "ruleId": "scope-attr-valid",
    "summary": "scope attribute should be used correctly (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -372,14 +523,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 31
+   "lastPagesAffected": 54
   },
   "VS-30db094d": {
    "engine": "axe-core",
    "ruleId": "landmark-banner-is-top-level",
    "summary": "Banner landmark should not be contained in another landmark (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W24",
    "_weeks": [
@@ -393,7 +544,7 @@
    "ruleId": "empty-heading",
    "summary": "Headings should not be empty (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Low",
+   "severity": "Minor",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -401,14 +552,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 195
+   "lastPagesAffected": 286
   },
   "VS-d69fc059": {
    "engine": "axe-core",
    "ruleId": "empty-table-header",
    "summary": "Table header text should not be empty (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Low",
+   "severity": "Minor",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -416,14 +567,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 14
+   "lastPagesAffected": 22
   },
   "VS-4fac2f41": {
    "engine": "axe-core",
    "ruleId": "aria-allowed-role",
    "summary": "ARIA role should be appropriate for the element (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Low",
+   "severity": "Minor",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -433,87 +584,12 @@
    "weeksSeen": 2,
    "lastPagesAffected": 1
   },
-  "VS-2208081b": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r73",
-   "summary": "sia-r73 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 1640
-  },
-  "VS-7118fead": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r61",
-   "summary": "sia-r61 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 1586
-  },
-  "VS-c18be945": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r57",
-   "summary": "sia-r57 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 645
-  },
-  "VS-2cd767ca": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r78",
-   "summary": "sia-r78 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 339
-  },
-  "VS-fbf54eba": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r74",
-   "summary": "sia-r74 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 630
-  },
   "VS-04a9d28c": {
    "engine": "deprecated-html",
    "ruleId": "presentational-attr",
    "summary": "Presentational attribute (use CSS) (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -521,89 +597,14 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 96
-  },
-  "VS-d6097011": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r68",
-   "summary": "sia-r68 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 101
-  },
-  "VS-179ad9b3": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r113",
-   "summary": "sia-r113 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 334
-  },
-  "VS-3c632d31": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r64",
-   "summary": "sia-r64 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 59
-  },
-  "VS-f2542d87": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r79",
-   "summary": "sia-r79 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 14
-  },
-  "VS-3f067795": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r77",
-   "summary": "sia-r77 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 6
+   "lastPagesAffected": 115
   },
   "VS-91d2294a": {
    "engine": "deprecated-html",
    "ruleId": "font-element",
    "summary": "Obsolete <font> element (use CSS) (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -611,14 +612,28 @@
     "2026-W25"
    ],
    "weeksSeen": 2,
-   "lastPagesAffected": 9
+   "lastPagesAffected": 10
+  },
+  "VS-07ba3b17": {
+   "engine": "axe-core",
+   "ruleId": "td-headers-attr",
+   "summary": "Table cell headers attributes must refer to other <th> elements in the same tabl (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Serious",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 3
   },
   "VS-4bcaa7bf": {
    "engine": "axe-core",
    "ruleId": "definition-list",
-   "summary": "<dl> elements must only directly contain properly-ordered <d (WCAG 1.3.1)",
+   "summary": "<dl> elements must only directly contain properly-ordered <dt> and <dd> groups,  (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -627,12 +642,40 @@
    "weeksSeen": 1,
    "lastPagesAffected": 1
   },
-  "VS-07ba3b17": {
-   "engine": "axe-core",
-   "ruleId": "td-headers-attr",
-   "summary": "Table cell headers attributes must refer to other <th> eleme (WCAG 1.3.1)",
+  "VS-4408605e": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r46",
+   "summary": "Element has required aria-owns (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 189
+  },
+  "VS-f155eeec": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r110",
+   "summary": "Element has required parent role (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
+  },
+  "VS-33b49e3b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r76",
+   "summary": "Info and Relationships (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -646,14 +689,70 @@
    "ruleId": "scrollable-region-focusable",
    "summary": "Scrollable region must have keyboard access (WCAG 2.1.1)",
    "wcag": "2.1.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
     "2026-W25"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 2
+   "lastPagesAffected": 3
+  },
+  "VS-388b5438": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r80",
+   "summary": "Scrollable element is keyboard accessible (WCAG 2.1.1)",
+   "wcag": "2.1.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 84
+  },
+  "VS-4c341c77": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r85",
+   "summary": "Keyboard trap does not exist (WCAG 2.1.2)",
+   "wcag": "2.1.2",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 8
+  },
+  "VS-3d033717": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r70",
+   "summary": "Link text is descriptive (WCAG 2.4.4)",
+   "wcag": "2.4.4",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 20
+  },
+  "VS-aa242c2d": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r87",
+   "summary": "First focusable element is link to main content (WCAG 3.2.1)",
+   "wcag": "3.2.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
   },
   "VS-1467ea8a": {
    "engine": "axe-core",
@@ -667,14 +766,70 @@
     "2026-W25"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 2
+   "lastPagesAffected": 3
+  },
+  "VS-48291402": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r71",
+   "summary": "iframe element is not empty (WCAG 4.1.2)",
+   "wcag": "4.1.2",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 50
+  },
+  "VS-29f9f921": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r12",
+   "summary": "Button has accessible name (WCAG 4.1.2)",
+   "wcag": "4.1.2",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
+  },
+  "VS-e05344b9": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r18",
+   "summary": "aria attribute is permitted for element role (WCAG 4.1.2)",
+   "wcag": "4.1.2",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
+  },
+  "VS-66d5b8b4": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r21",
+   "summary": "Element has valid WAI-ARIA role (WCAG 4.1.2)",
+   "wcag": "4.1.2",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
   },
   "VS-a48e6078": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r8",
-   "summary": "sia-r8 (WCAG 4.1.2)",
+   "summary": "Form field has accessible name (WCAG 4.1.2)",
    "wcag": "4.1.2",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -688,21 +843,21 @@
    "ruleId": "accesskeys",
    "summary": "accesskey attribute value should be unique (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
     "2026-W25"
    ],
    "weeksSeen": 1,
-   "lastPagesAffected": 93
+   "lastPagesAffected": 119
   },
   "VS-8806389c": {
    "engine": "axe-core",
    "ruleId": "landmark-unique",
-   "summary": "Landmarks should have a unique role or role/label/title (i.e (WCAG criterion undetermined)",
+   "summary": "Landmarks should have a unique role or role/label/title (i.e. accessible name) c (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -716,7 +871,7 @@
    "ruleId": "landmark-main-is-top-level",
    "summary": "Main landmark should not be contained in another landmark (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -730,7 +885,7 @@
    "ruleId": "landmark-no-duplicate-main",
    "summary": "Document should not have more than one main landmark (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -738,76 +893,6 @@
    ],
    "weeksSeen": 1,
    "lastPagesAffected": 1
-  },
-  "VS-4408605e": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r46",
-   "summary": "sia-r46 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 88
-  },
-  "VS-388b5438": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r80",
-   "summary": "sia-r80 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 38
-  },
-  "VS-48291402": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r71",
-   "summary": "sia-r71 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 21
-  },
-  "VS-3d033717": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r70",
-   "summary": "sia-r70 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 11
-  },
-  "VS-4c341c77": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r85",
-   "summary": "sia-r85 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 8
   }
  }
 }

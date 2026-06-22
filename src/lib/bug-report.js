@@ -145,7 +145,7 @@ export function buildBugReports(target, summary) {
     'Best Practice': 7,
     'Undetermined': 8,
   };
-  const sevRank = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+  const sevRank = { Critical: 0, Serious: 1, Moderate: 2, Minor: 3 };
   reports.sort(
     (a, b) =>
       (catRank[a.wcag_category ?? 'Undetermined'] ?? 8) - (catRank[b.wcag_category ?? 'Undetermined'] ?? 8) ||

@@ -1,13 +1,13 @@
 {
  "domain": "data.medicaid.gov",
- "updatedAt": "2026-06-18T10:19:52.588Z",
+ "updatedAt": "2026-06-21T13:18:34.057Z",
  "findings": {
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r111",
-   "summary": "sia-r111 (WCAG 2.5.8)",
+   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.5.8)",
    "wcag": "2.5.8",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -20,9 +20,9 @@
   "VS-f7dba940": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r14",
-   "summary": "sia-r14 (WCAG 2.5.3)",
+   "summary": "Accessible name of link or button matches visible label (WCAG 2.5.3)",
    "wcag": "2.5.3",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -37,7 +37,7 @@
    "ruleId": "svg-img-alt",
    "summary": "<svg> elements with an img role must have alternative text (WCAG 1.1.1)",
    "wcag": "1.1.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -50,9 +50,9 @@
   "VS-784b5009": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r43",
-   "summary": "sia-r43 (WCAG 1.1.1)",
+   "summary": "SVG image element has accessible name (WCAG 1.1.1)",
    "wcag": "1.1.1",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -65,9 +65,9 @@
   "VS-a0bdbdf6": {
    "engine": "axe-core",
    "ruleId": "list",
-   "summary": "<ul> and <ol> must only directly contain <li>, <script> or < (WCAG 1.3.1)",
+   "summary": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -77,12 +77,57 @@
    "weeksSeen": 2,
    "lastPagesAffected": 8
   },
+  "VS-7118fead": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r61",
+   "summary": "Form field label is visible (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 34
+  },
+  "VS-2cd767ca": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r78",
+   "summary": "Table header has scope (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 1
+  },
+  "VS-d6097011": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r68",
+   "summary": "Presentational children of an element are not focusable (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 1
+  },
   "VS-f6cf30ff": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r17",
-   "summary": "sia-r17 (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Medium",
+   "summary": "aria-hidden element does not contain focusable elements (WCAG 4.1.2)",
+   "wcag": "4.1.2",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -92,12 +137,27 @@
    "weeksSeen": 2,
    "lastPagesAffected": 648
   },
+  "VS-2208081b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r73",
+   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG 1.4.3)",
+   "wcag": "1.4.3",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 745
+  },
   "VS-8806389c": {
    "engine": "axe-core",
    "ruleId": "landmark-unique",
-   "summary": "Landmarks should have a unique role or role/label/title (i.e (WCAG criterion undetermined)",
+   "summary": "Landmarks should have a unique role or role/label/title (i.e. accessible name) c (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -112,7 +172,7 @@
    "ruleId": "page-has-heading-one",
    "summary": "Page should contain a level-one heading (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -121,66 +181,6 @@
    ],
    "weeksSeen": 2,
    "lastPagesAffected": 82
-  },
-  "VS-2208081b": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r73",
-   "summary": "sia-r73 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 745
-  },
-  "VS-7118fead": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r61",
-   "summary": "sia-r61 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 34
-  },
-  "VS-2cd767ca": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r78",
-   "summary": "sia-r78 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 1
-  },
-  "VS-d6097011": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r68",
-   "summary": "sia-r68 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 1
   }
  }
 }

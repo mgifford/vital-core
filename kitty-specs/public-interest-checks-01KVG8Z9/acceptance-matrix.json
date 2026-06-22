@@ -1,0 +1,64 @@
+{
+  "mission_slug": "public-interest-checks-01KVG8Z9",
+  "mission_type": "software-dev",
+  "reconstructed_from": "Shipped spec (#150) and repository implementation evidence",
+  "reconstructed_at": "2026-06-20T01:03:05Z",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "Public-interest engine returns required shape",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion marks engine shape complete."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "Concurrent graceful sub-checks",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec requires Promise.all and caught unknown results."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Scan origin-week sampling wired",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion names scan.js and config/targets.yml sampling."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "Aggregate writes summary.publicInterest",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion marks aggregate rollup complete."
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "Standards report badge table renders",
+      "proof_type": "manual_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion marks publicInterestSection(pi) shipped."
+    },
+    {
+      "criterion_id": "FR-06",
+      "description": "Diagnostic CLI exists",
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion pins usage and exit-code behavior."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "No scoring/gating/alerting added",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Out-of-scope section preserves non-gating behavior."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Graceful failure tests exist",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec requires two public-interest unit tests."
+    }
+  ]
+}

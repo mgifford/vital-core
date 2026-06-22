@@ -4,12 +4,23 @@ import YAML from 'yaml';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 
+// Mutable state (crawl progress, scan data, the built site) can be redirected
+// to a persistent volume via VITAL_DATA_ROOT. This exists for the Hugging Face
+// Docker deployment, whose container filesystem is wiped on every restart —
+// pointing these at a mounted persistent disk (e.g. /data) keeps the crawl
+// history append-only across restarts. Unset (GitHub Actions, local) keeps
+// everything in the repo root exactly as before. `config` is always read from
+// the repo (it is source, not state).
+const DATA_ROOT = process.env.VITAL_DATA_ROOT
+  ? path.resolve(process.env.VITAL_DATA_ROOT)
+  : ROOT;
+
 export const DIRS = {
   root: ROOT,
   config: path.join(ROOT, 'config'),
-  state: path.join(ROOT, 'state'),
-  data: path.join(ROOT, 'data'),
-  docs: path.join(ROOT, 'docs'),
+  state: path.join(DATA_ROOT, 'state'),
+  data: path.join(DATA_ROOT, 'data'),
+  docs: path.join(DATA_ROOT, 'docs'),
 };
 
 export function loadConfig() {
@@ -41,4 +52,42 @@ export function getTarget(config, domainOrKey) {
   const t = config.targets.find((t) => t.key === k || t.domain === domainOrKey);
   if (!t) throw new Error(`No target configured for "${domainOrKey}". Add it to config/targets.yml.`);
   return t;
+}
+
+/**
+ * Load a deployment profile from `config/profiles/<name>.yml`. A profile is a
+ * *selection* over the targets registry plus report branding — it never
+ * restates scan settings (see config/profiles/README.md). Returns `null` for
+ * an unset/empty name, so callers can treat "no profile" as "full site,
+ * default branding" (the GitHub Pages behavior, unchanged).
+ */
+export function loadProfile(name) {
+  if (!name) return null;
+  const file = path.join(DIRS.config, 'profiles', `${name}.yml`);
+  if (!fs.existsSync(file)) {
+    throw new Error(`No profile config/profiles/${name}.yml. See config/profiles/README.md.`);
+  }
+  const p = YAML.parse(fs.readFileSync(file, 'utf8')) ?? {};
+  const keys = new Set((p.targets ?? []).map((t) => domainKey(t)));
+  return {
+    name: p.name ?? name,
+    targetKeys: keys,
+    branding: p.branding ?? {},
+    reportBaseUrl: p.report_base_url || '',
+  };
+}
+
+/**
+ * Restrict a loaded config to a profile's selected targets. Returns the config
+ * unchanged when `profile` is null. Never mutates input. A profile naming a
+ * target absent from targets.yml is a config error worth failing loudly on.
+ */
+export function applyProfile(config, profile) {
+  if (!profile) return config;
+  const selected = config.targets.filter((t) => profile.targetKeys.has(t.key));
+  const missing = [...profile.targetKeys].filter((k) => !config.targets.some((t) => t.key === k));
+  if (missing.length) {
+    throw new Error(`Profile "${profile.name}" names targets not in targets.yml: ${missing.join(', ')}`);
+  }
+  return { ...config, targets: selected, profile };
 }

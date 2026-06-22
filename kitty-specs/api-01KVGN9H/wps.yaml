@@ -1,0 +1,60 @@
+work_packages:
+  - id: WP01
+    title: "api-writer module + unit tests"
+    dependencies: []
+    owned_files:
+      - "src/lib/api-writer.js"
+      - "tests/unit/api-writer.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - FR-03
+      - FR-05
+      - FR-06
+      - FR-07
+      - FR-08
+      - FR-09
+      - NFR-01
+      - NFR-02
+      - NFR-04
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+      - T005
+      - T006
+    prompt_file: "tasks/WP01-api-writer-module.md"
+
+  - id: WP02
+    title: "Wire api-writer into aggregate.js"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/aggregate.js"
+    requirement_refs:
+      - FR-04
+      - FR-08
+      - C-01
+      - C-02
+      - C-03
+      - C-04
+    subtasks:
+      - T007
+      - T008
+      - T009
+    prompt_file: "tasks/WP02-wire-api-writer-into-aggregate.md"
+
+  - id: WP03
+    title: "Smoke test + CLAUDE.md docs"
+    dependencies:
+      - WP02
+    owned_files:
+      - "CLAUDE.md"
+    requirement_refs:
+      - NFR-02
+      - NFR-03
+    subtasks:
+      - T010
+      - T011
+    prompt_file: "tasks/WP03-smoke-test-claude-md-docs.md"

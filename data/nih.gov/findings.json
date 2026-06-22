@@ -1,13 +1,27 @@
 {
  "domain": "nih.gov",
- "updatedAt": "2026-06-18T10:19:52.912Z",
+ "updatedAt": "2026-06-21T13:18:34.355Z",
  "findings": {
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r111",
-   "summary": "sia-r111 (WCAG 2.5.8)",
+   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.5.8)",
    "wcag": "2.5.8",
-   "severity": "Medium",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 2
+  },
+  "VS-7118fead": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r61",
+   "summary": "Form field label is visible (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -19,9 +33,23 @@
   "VS-f054f4a4": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r53",
-   "summary": "sia-r53 (WCAG 1.3.1)",
+   "summary": "Headings are structured hierarchically (WCAG 1.3.1)",
    "wcag": "1.3.1",
-   "severity": "Medium",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
+  },
+  "VS-3c632d31": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r64",
+   "summary": "Element has required owned roles (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -35,7 +63,7 @@
    "ruleId": "link-in-text-block",
    "summary": "Links must be distinguishable without relying on color (WCAG 1.4.1)",
    "wcag": "1.4.1",
-   "severity": "High",
+   "severity": "Serious",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -47,9 +75,23 @@
   "VS-efd91fdd": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r62",
-   "summary": "sia-r62 (WCAG 1.4.1)",
+   "summary": "Link in text block is visually distinguishable without color (WCAG 1.4.1)",
    "wcag": "1.4.1",
-   "severity": "Medium",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 2
+  },
+  "VS-c18be945": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r57",
+   "summary": "Scrolling content can be accessed by keyboard (WCAG 2.1.1)",
+   "wcag": "2.1.1",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -61,9 +103,9 @@
   "VS-e05344b9": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r18",
-   "summary": "sia-r18 (WCAG 4.1.2)",
+   "summary": "aria attribute is permitted for element role (WCAG 4.1.2)",
    "wcag": "4.1.2",
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -75,9 +117,23 @@
   "VS-646b1e0b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r66",
-   "summary": "sia-r66 (WCAG 1.4.3)",
+   "summary": "Text has sufficient color contrast (WCAG 1.4.3)",
    "wcag": "1.4.3",
-   "severity": "Medium",
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 2
+  },
+  "VS-2208081b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r73",
+   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG 1.4.3)",
+   "wcag": "1.4.3",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -91,7 +147,7 @@
    "ruleId": "region",
    "summary": "All page content should be contained by landmarks (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -105,7 +161,7 @@
    "ruleId": "heading-order",
    "summary": "Heading levels should only increase by one (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -119,7 +175,7 @@
    "ruleId": "page-has-heading-one",
    "summary": "Page should contain a level-one heading (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Medium",
+   "severity": "Moderate",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
@@ -133,63 +189,7 @@
    "ruleId": "empty-heading",
    "summary": "Headings should not be empty (WCAG criterion undetermined)",
    "wcag": null,
-   "severity": "Low",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 1
-  },
-  "VS-2208081b": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r73",
-   "summary": "sia-r73 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 2
-  },
-  "VS-7118fead": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r61",
-   "summary": "sia-r61 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 2
-  },
-  "VS-c18be945": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r57",
-   "summary": "sia-r57 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 2
-  },
-  "VS-3c632d31": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r64",
-   "summary": "sia-r64 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
+   "severity": "Minor",
    "firstSeen": "2026-W25",
    "lastSeen": "2026-W25",
    "_weeks": [
