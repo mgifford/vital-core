@@ -953,7 +953,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
 
 // Fixed tolerance band (in percentage points) for rate-based diff comparisons.
 // Same value used by deriveTrend() in ai-findings.js so the two views agree.
-var DIFF_TOLERANCE_PP = 0.02;
+const DIFF_TOLERANCE_PP = 0.02;
 
 function diffWeeks(prev, curr) {
   const diffEngine = (prevRules, currRules, prevScanned, currScanned) => {
