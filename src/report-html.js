@@ -493,10 +493,11 @@ function paraChartLoader(base) {
 const figs = document.querySelectorAll('.chart[data-parachart]');
 if (figs.length) {
   import('${base}paracharts.js').then(() => {
-    // Remember what had focus before mounting any charts. Some para-chart
-    // implementations call .focus() during connectedCallback, which scrolls
-    // the page to the first chart on load. We restore focus afterward so the
-    // page opens at the top.
+    // Save scroll position and focus before mounting charts. Some para-chart
+    // implementations call .focus() during connectedCallback, scrolling the
+    // viewport to each chart in turn (ending at the last one). We restore
+    // both scroll and focus afterward so the page opens where the user was.
+    const priorScroll = { x: window.scrollX, y: window.scrollY };
     const priorFocus = document.activeElement;
     figs.forEach((fig) => {
       let manifest;
@@ -514,11 +515,12 @@ if (figs.length) {
       if (fallback) fallback.hidden = true;
       fig.insertBefore(chart, fig.firstChild ? fig.firstChild.nextSibling : null);
     });
-    // Restore focus to where it was (typically body) so the viewport
-    // stays at the top of the page rather than scrolling to the first chart.
     if (priorFocus && typeof priorFocus.focus === 'function') {
       priorFocus.focus({ preventScroll: true });
     }
+    // Undo any scroll the chart mounts caused — restores to top on fresh load,
+    // or to the user's scroll position if they navigated before charts loaded.
+    window.scrollTo(priorScroll.x, priorScroll.y);
   }).catch(() => { /* keep the SVG + table fallback */ });
 }
 </script>`;
