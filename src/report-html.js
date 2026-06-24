@@ -1316,7 +1316,9 @@ ${sections}`;
 function findingLabel(key) {
   const [engine, ...rest] = String(key).split(':');
   const id = rest.join(':');
-  return `${id} (${engine})`;
+  const engineKey = engine === 'axe' ? 'axe-core' : engine;
+  const label = rulePlainLabel(engineKey, id) ?? id;
+  return `${label} (${engine})`;
 }
 
 /**
