@@ -22,6 +22,10 @@ import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { writeAcrYaml } from './lib/acr.js';
 
+// Fixed tolerance band (in percentage points) for rate-based diff comparisons.
+// Same value used by deriveTrend() in ai-findings.js so the two views agree.
+const DIFF_TOLERANCE_PP = 0.02;
+
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
  * times as you like, the output is the same. No database, no cache,
@@ -950,10 +954,6 @@ function summarizeRecords(target, week, records, brokenLinks) {
     thirdParty: thirdPartyPages.length ? rollupThirdParty(thirdPartyPages) : null,
   };
 }
-
-// Fixed tolerance band (in percentage points) for rate-based diff comparisons.
-// Same value used by deriveTrend() in ai-findings.js so the two views agree.
-const DIFF_TOLERANCE_PP = 0.02;
 
 function diffWeeks(prev, curr) {
   const diffEngine = (prevRules, currRules, prevScanned, currScanned) => {
