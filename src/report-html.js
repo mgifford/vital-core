@@ -493,12 +493,22 @@ function paraChartLoader(base) {
 const figs = document.querySelectorAll('.chart[data-parachart]');
 if (figs.length) {
   import('${base}paracharts.js').then(() => {
-    // Save scroll position and focus before mounting charts. Some para-chart
-    // implementations call .focus() during connectedCallback, scrolling the
-    // viewport to each chart in turn (ending at the last one). We restore
-    // both scroll and focus afterward so the page opens where the user was.
     const priorScroll = { x: window.scrollX, y: window.scrollY };
     const priorFocus = document.activeElement;
+
+    // para-chart (Lit-based) calls .focus() asynchronously during its render
+    // cycle (e.g. _sparkBrailleRef.focus()), which scrolls the viewport to
+    // whichever chart rendered last. Intercept every focusin that fires inside
+    // a para-chart shadow host for a short window after mount and suppress the
+    // resulting scroll. This is capture-phase so it fires before the scroll.
+    const restoreScroll = () => window.scrollTo(priorScroll.x, priorScroll.y);
+    const focusGuard = (e) => {
+      if (e.target && e.target.tagName && e.target.tagName.toLowerCase() === 'para-chart') {
+        restoreScroll();
+      }
+    };
+    document.addEventListener('focusin', focusGuard, true);
+
     figs.forEach((fig) => {
       let manifest;
       try { manifest = fig.getAttribute('data-parachart'); } catch (e) { return; }
@@ -515,12 +525,18 @@ if (figs.length) {
       if (fallback) fallback.hidden = true;
       fig.insertBefore(chart, fig.firstChild ? fig.firstChild.nextSibling : null);
     });
+
     if (priorFocus && typeof priorFocus.focus === 'function') {
       priorFocus.focus({ preventScroll: true });
     }
-    // Undo any scroll the chart mounts caused — restores to top on fresh load,
-    // or to the user's scroll position if they navigated before charts loaded.
-    window.scrollTo(priorScroll.x, priorScroll.y);
+    restoreScroll();
+    // Belt-and-suspenders: re-restore after Lit's async render settles.
+    requestAnimationFrame(() => {
+      restoreScroll();
+      requestAnimationFrame(restoreScroll);
+    });
+    // Remove guard after charts have had time to finish their initial render.
+    setTimeout(() => document.removeEventListener('focusin', focusGuard, true), 3000);
   }).catch(() => { /* keep the SVG + table fallback */ });
 }
 </script>`;
