@@ -1,0 +1,114 @@
+work_packages:
+  - id: WP01
+    title: "Configurable score display"
+    dependencies: []
+    owned_files:
+      - "config/targets.yml"
+      - "src/aggregate.js"
+      - "src/report-html.js"
+      - "tests/unit/score-display.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - C-04
+      - NFR-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+    prompt_file: "tasks/WP01-configurable-score-display.md"
+
+  - id: WP02
+    title: "Template vs content source heuristic"
+    dependencies: []
+    owned_files:
+      - "config/targets.yml"
+      - "src/lib/bug-report.js"
+      - "src/report-html.js"
+      - "tests/unit/source-heuristic.test.js"
+    requirement_refs:
+      - FR-03
+      - FR-04
+      - FR-05
+      - C-01
+      - NFR-01
+    subtasks:
+      - T004
+      - T005
+      - T006
+    prompt_file: "tasks/WP02-source-heuristic.md"
+
+  - id: WP03
+    title: "Training priorities section"
+    dependencies: []
+    owned_files:
+      - "src/lib/training-priorities.js"
+      - "src/aggregate.js"
+      - "src/report-html.js"
+      - "tests/unit/training-priorities.test.js"
+    requirement_refs:
+      - FR-06
+      - FR-07
+      - FR-08
+      - C-01
+      - NFR-01
+    subtasks:
+      - T007
+      - T008
+      - T009
+      - T010
+    prompt_file: "tasks/WP03-training-priorities.md"
+
+  - id: WP04
+    title: "Tech-aware remediation prompts"
+    dependencies:
+      - WP02
+    owned_files:
+      - "src/lib/remediation-prompts.js"
+      - "src/lib/bug-report.js"
+      - "src/report-html.js"
+    requirement_refs:
+      - FR-09
+      - FR-10
+      - FR-11
+      - C-01
+      - C-05
+    subtasks:
+      - T011
+      - T012
+      - T013
+    prompt_file: "tasks/WP04-tech-aware-remediation.md"
+
+  - id: WP05
+    title: "Browser-side triage (status + notes + badges)"
+    dependencies:
+      - WP02
+      - WP04
+    owned_files:
+      - "src/report-html.js"
+    requirement_refs:
+      - FR-12
+      - FR-13
+      - FR-14
+      - C-02
+      - C-03
+    subtasks:
+      - T014
+      - T015
+      - T016
+    prompt_file: "tasks/WP05-browser-triage.md"
+
+  - id: WP06
+    title: "Triage export/import"
+    dependencies:
+      - WP05
+    owned_files:
+      - "src/report-html.js"
+    requirement_refs:
+      - FR-15
+      - FR-16
+      - C-02
+    subtasks:
+      - T017
+      - T018
+    prompt_file: "tasks/WP06-triage-export-import.md"
