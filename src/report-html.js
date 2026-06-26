@@ -38,6 +38,14 @@ function sustainabilityHeadline(s) {
 }
 const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
 const fmtMedian = (n) => (n == null ? 'n/a' : String(n));
+// Formats an accessibility score for compact table cells (archive, leaderboard).
+// fmt mirrors targets.yml display.score_format: 'letter' | 'percent' | 'both' | 'none'.
+const fmtA11yGrade = (sc, fmt = 'both') => {
+  if (!sc || fmt === 'none') return 'n/a';
+  const g = fmt !== 'percent' ? `<span class="grade grade-${esc(sc.grade)}">${esc(sc.grade)}</span>` : '';
+  const n = fmt !== 'letter' ? String(sc.score) : '';
+  return [g, n].filter(Boolean).join(' ');
+};
 /**
  * Affected-page display for a bug: list URLs inline when there are 25 or
  * fewer (more useful than a CSV link for a handful); above that, list the
@@ -1590,6 +1598,7 @@ ${detailTable}
  */
 export function renderArchivePage(target, series, latestWeek) {
   if (!series || series.length === 0) return null;
+  const scoreFormat = target.display?.score_format ?? 'both';
   const ordered = [...series].reverse(); // newest first
   const rows = ordered
     .map((s, i) => {
@@ -1599,7 +1608,7 @@ export function renderArchivePage(target, series, latestWeek) {
       const d = newer ? med - (newer.axe.medianViolations ?? 0) : null;
       return `<tr>
   <th scope="row"><a href="../${esc(s.week)}/index.html">${esc(s.week)}</a></th>
-  <td class="num">${sc ? `<span class="grade grade-${esc(sc.grade)}">${esc(sc.grade)}</span> ${sc.score}` : 'n/a'}</td>
+  <td class="num">${fmtA11yGrade(sc, scoreFormat)}</td>
   <td class="num">${s.pagesAudited ?? s.pagesScanned}</td>
   <td class="num">${fmtMedian(s.axe.medianViolations)}${d != null && d !== 0 ? ` ${delta(d)}` : ''}</td>
   <td class="num">${fmtMedian(s.alfa.medianFailures)}</td>
@@ -1625,6 +1634,7 @@ ${subnav('archive')}
 
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null) {
   const score = scoreFor(summary);
+  const scoreFormat = target.display?.score_format ?? 'both';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${text}</a>` : '');
@@ -1636,9 +1646,9 @@ ${subnav('overview')}
 ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.
 Machine-readable API: <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
 
-${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
-  <span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>
-  <span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>
+${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Accessibility scorecard">
+  ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
+  ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(traj.direction)}</strong> (${traj.delta >= 0 ? '+' : ''}${traj.delta} pts since ${esc(traj.fromWeek)}).` : ''}
   ${resolvedCount > 0 ? `<strong>${resolvedCount} issue type(s) resolved</strong> since last week.` : ''}</span>
@@ -1942,7 +1952,7 @@ for how the scanner can be allowlisted.</p>
       const trend = series.map(medAxe);
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a></th>
-  <td class="num">${score ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span> ${score.score}` : 'n/a'}</td>
+  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'both')}</td>
   <td>${arrow(traj)}</td>
   <td class="num">${win.pagesAudited ?? win.pagesScanned}</td>
   <td class="num">${fmtMedian(win.axe.medianViolations)}</td>
