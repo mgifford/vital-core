@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { resolveWcag, classifyFinding, severityFor } from './wcag.js';
 import { impactFor, estimateExcluded, pct } from './fpc.js';
 import { remediationTip } from './remediation.js';
+import { techRemediationTip } from './remediation-prompts.js';
 import { rulePlainLabel } from './rule-label.js';
 
 /**
@@ -71,6 +72,8 @@ export function buildBugReports(target, summary) {
         }
       : { groups: [], summary: PLACEHOLDER };
 
+    const techTip = techRemediationTip(summary.tech, ruleId);
+
     return {
       instance_id: instanceId,
       pattern_id: patternId,
@@ -119,6 +122,8 @@ export function buildBugReports(target, summary) {
         `Confirm the ${toolName} finding for rule ${ruleId}${wcag ? ` against ${scLabel} ${wcag.name}` : ''}.`,
       ],
       remediation_tip: remediationTip(engine, ruleId),
+      tech_name: techTip?.tech ?? null,
+      tech_remediation_tip: techTip?.tip ?? null,
       suggested_fix: rule.helpUrl ?? rule.ruleUrl
         ? `See remediation guidance: ${rule.helpUrl ?? rule.ruleUrl}`
         : PLACEHOLDER,

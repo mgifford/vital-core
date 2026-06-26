@@ -644,7 +644,7 @@ ${b.impact?.groups?.length
 <p class="bug-label">Affected pages</p>
 ${affectedPagesBlock(b)}
 <p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
-<p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
+<p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}${b.tech_remediation_tip ? `<p class="tech-tip"><strong>${esc(b.tech_name)} tip:</strong> ${esc(b.tech_remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
 </details>`;
     })
     .join('\n');
@@ -2653,6 +2653,8 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   border: 1px solid color-mix(in srgb, var(--warn, #b45309) 30%, transparent); border-radius: 2px; padding: 0 .35rem; }
 .tp-advice { background: color-mix(in srgb, var(--accent) 6%, transparent); border-left: 3px solid var(--accent);
   padding: .6rem .9rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin-bottom: .75rem; }
+.tech-tip { background: color-mix(in srgb, var(--accent) 5%, transparent); border-left: 3px solid color-mix(in srgb, var(--accent) 50%, var(--muted));
+  padding: .45rem .75rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin: .4rem 0; }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }
