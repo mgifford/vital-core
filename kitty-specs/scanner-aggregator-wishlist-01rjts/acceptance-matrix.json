@@ -1,0 +1,160 @@
+{
+  "mission_slug": "scanner-aggregator-wishlist-01rjts",
+  "mission_type": "software-dev",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "targets.yml accepts display.score_format",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "Report renders score per config; none suppresses section",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "likely_source computed correctly at boundary conditions",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "template_page_threshold configurable in targets.yml",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "Source badge renders on collapsed finding header",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-06",
+      "description": "Training Priorities section with top 5 SCs",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-07",
+      "description": "Component inconsistency flag fires correctly",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-08",
+      "description": "Ollama training summary falls back cleanly when absent",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-09",
+      "description": "remediation-prompts.js with Drupal + WordPress templates for 5+ rules",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-10",
+      "description": "Tech-aware tip renders when stack matches",
+      "proof_type": "manual_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-11",
+      "description": "Generic tip renders as fallback when no match",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-12",
+      "description": "Triage panel renders with status dropdown + notes textarea",
+      "proof_type": "manual_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-13",
+      "description": "Triage state persists in localStorage across reload",
+      "proof_type": "manual_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-14",
+      "description": "Status badge visible on collapsed finding header",
+      "proof_type": "manual_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-15",
+      "description": "Export downloads correctly named triage.json",
+      "proof_type": "manual_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-16",
+      "description": "Import restores state and re-applies badges without reload",
+      "proof_type": "manual_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "No committed data/ schema change",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-02",
+      "description": "Triage state browser-local only",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-03",
+      "description": "All report content readable without JS",
+      "proof_type": "manual_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-04",
+      "description": "Score algorithm unchanged",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-05",
+      "description": "No new npm runtime dependencies",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Unit tests cover all new logic paths",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    }
+  ]
+}
