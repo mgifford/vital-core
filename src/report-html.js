@@ -619,7 +619,7 @@ ${heading('h-bugs', `Bug reports`)}
         : '';
       return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
 <summary><span class="sev-badge">${esc(b.severity)}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
-<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span></summary>
+<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">Likely ${b.likely_source}</span>` : ''}</summary>
 <dl class="bug-fields">
   <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   <div><dt>Pattern ID</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
@@ -2603,6 +2603,14 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
 .wcag-badge[data-cat="best-practice"] { background: color-mix(in srgb, var(--muted) 12%, transparent);
   color: var(--muted); border-color: color-mix(in srgb, var(--muted) 35%, transparent); }
+.source-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: 0 .4rem;
+  border-radius: 2px; vertical-align: middle; margin-left: .35rem; border: 1px solid; }
+.source-badge.source-template { color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.source-badge.source-content { color: var(--muted);
+  border-color: color-mix(in srgb, var(--muted) 35%, transparent);
+  background: color-mix(in srgb, var(--muted) 8%, transparent); }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }

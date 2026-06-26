@@ -93,6 +93,9 @@ export function buildBugReports(target, summary) {
         pages_affected: rule.pages,
         total_pages_scanned: total,
       },
+      likely_source: rule.pages >= (target.reporting?.template_page_threshold ?? 10)
+        ? 'template'
+        : rule.pages <= 2 ? 'content' : 'unknown',
       summary: `${component} (${scLabel})`,
       description: `${component}. Detected by ${toolName} rule ${ruleId} on ${rule.pages} of ${total} scanned pages (${rule.count} instances).`,
       // Capped representative instances with real DOM context.
