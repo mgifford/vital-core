@@ -1716,12 +1716,43 @@ ${resourcesSection(summary)}
   });
 }
 
+function renderTrainingPriorities(priorities, advice) {
+  if (!priorities || priorities.length === 0) return '';
+  const rows = priorities.map((p) => {
+    const inconsistencyCell = p.component_inconsistency
+      ? '<span class="tp-inconsistency" title="3+ distinct rules on this SC, each on ≥5 pages — may indicate inconsistent component implementations">Component inconsistency</span>'
+      : '';
+    return `<tr>
+<td><strong>${esc(p.wcag_sc)}</strong></td>
+<td>${esc(p.label)}</td>
+<td class="num">${p.total_pages}</td>
+<td class="num">${p.rule_count}</td>
+<td>${inconsistencyCell}</td>
+</tr>`;
+  }).join('\n');
+  const adviceHtml = advice
+    ? `<div class="tp-advice"><strong>Training recommendation:</strong> ${esc(advice)}</div>`
+    : '';
+  return `<section class="training-priorities" aria-labelledby="h-training">
+<h2 id="h-training">Training priorities</h2>
+<p class="meta">Top WCAG success criteria by pages affected this week. Use these to focus team training on the highest-impact issues.</p>
+${adviceHtml}
+<table class="tp-table">
+<thead><tr><th>SC</th><th>Criterion</th><th class="num">Pages</th><th class="num">Rules</th><th>Notes</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</section>`;
+}
+
 /**
  * Standalone accessibility page: bug reports (with anchored <details> per bug),
  * axe-core and Alfa rule tables, and the consensus deduplication summary.
  * Linked from the overview and from "Fix these first" deep links.
  */
 export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}) {
+  const { trainingPriorities = [], trainingAdvice = null } = reporting;
   const acrNote = reporting.acrYaml
     ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
     : '';
@@ -1729,6 +1760,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
 <h1>${esc(target.domain)}: Accessibility — week ${esc(summary.week)}</h1>
 ${subnav('accessibility')}
 ${acrNote}
+${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting)}
 <section aria-labelledby="h-axe">
 ${heading('h-axe', `Deque axe-core findings`)}
@@ -2611,6 +2643,16 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .source-badge.source-content { color: var(--muted);
   border-color: color-mix(in srgb, var(--muted) 35%, transparent);
   background: color-mix(in srgb, var(--muted) 8%, transparent); }
+.training-priorities { border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1.25rem; margin: 1.25rem 0; }
+.training-priorities h2 { font-size: 1.1rem; margin: 0 0 .5rem; }
+.tp-table { border-collapse: collapse; width: 100%; font-size: .9rem; margin-top: .75rem; }
+.tp-table th, .tp-table td { padding: .3rem .6rem; border-bottom: 1px solid var(--rule); text-align: left; }
+.tp-table th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.tp-table th.num, .tp-table td.num { text-align: right; }
+.tp-inconsistency { font-size: .78rem; color: var(--warn, #b45309); background: color-mix(in srgb, var(--warn, #b45309) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warn, #b45309) 30%, transparent); border-radius: 2px; padding: 0 .35rem; }
+.tp-advice { background: color-mix(in srgb, var(--accent) 6%, transparent); border-left: 3px solid var(--accent);
+  padding: .6rem .9rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin-bottom: .75rem; }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }

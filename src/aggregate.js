@@ -21,6 +21,8 @@ import { buildAiFindings } from './lib/ai-findings.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { writeAcrYaml } from './lib/acr.js';
+import { computeTrainingPriorities } from './lib/training-priorities.js';
+import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
 
 // Fixed tolerance band (in percentage points) for rate-based diff comparisons.
 // Same value used by deriveTrend() in ai-findings.js so the two views agree.
@@ -254,6 +256,20 @@ for (const target of config.targets) {
     // OpenACR YAML — written before the accessibility page so the path is available for the download link.
     const acrResult = writeAcrYaml(repDir, target, summary, summary.week);
 
+    // Training priorities: top WCAG SCs by pages affected, with optional Ollama advice.
+    const trainingPriorities = computeTrainingPriorities(bugs);
+    let trainingAdvice = null;
+    if (trainingPriorities.length > 0 && await ollamaAvailable()) {
+      const model = await ollamaDetectModel();
+      const topList = trainingPriorities.map((p, i) =>
+        `${i + 1}. ${p.label} (SC ${p.wcag_sc})${p.component_inconsistency ? ' — component inconsistency across multiple elements' : ''}`
+      ).join('\n');
+      trainingAdvice = await ollamaChat(
+        `You are helping an accessibility trainer at a government agency. The top WCAG issues found on the site are:\n${topList}\n\nWrite a short (3–5 sentence) training recommendation for the web team, focusing on practical steps for the most impactful issue. Plain English, no jargon.`,
+        model
+      );
+    }
+
     // Accessibility (always has content — shows "no findings" when clean).
     fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, {
       ...reporting, keyPages,
@@ -262,6 +278,8 @@ for (const target of config.targets) {
       bugsJson: bugsJsonName,
       aiJson: aiJsonName,
       acrYaml: acrResult.path,
+      trainingPriorities,
+      trainingAdvice,
     }));
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
