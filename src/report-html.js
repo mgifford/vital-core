@@ -617,7 +617,7 @@ ${heading('h-bugs', `Bug reports`)}
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
         : '';
-      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
+      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="">
 <summary><span class="sev-badge">${esc(b.severity)}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">Likely ${b.likely_source}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
@@ -665,6 +665,7 @@ ${affectedPagesBlock(b)}
 <label class="bug-filter-check"><input type="checkbox" id="filter-all"> Show everything</label>
 <label>Severity <select id="filter-sev"><option value="">All severities</option>${sevOpts}</select></label>
 <label>WCAG category <select id="filter-cat"><option value="">All categories</option>${catOpts}</select></label>
+<label>Triage <select id="filter-triage"><option value="">All statuses</option><option value="__none__">Not reviewed</option><option value="valid">Valid</option><option value="false-positive">False positive</option><option value="duplicate">Duplicate</option><option value="wont-fix">Won&apos;t fix</option><option value="deferred">Deferred</option></select></label>
 <label class="bug-filter-check"><input type="checkbox" id="filter-dup"> Hide possible duplicates</label>
 <button type="button" id="filter-reset">Reset</button>
 </div>
@@ -731,13 +732,23 @@ const TRIAGE_SCRIPT = `<script>
       badge.hidden = true;
     }
   }
+  function updateBugTriage(id, status) {
+    var bug = document.getElementById(id);
+    if (bug) bug.setAttribute('data-triage', status || '');
+  }
   // Restore saved triage state on page load.
   document.querySelectorAll('.triage-status').forEach(function (sel) {
     var id = sel.getAttribute('data-triage-id');
     var d = load(id);
-    if (d.status) { sel.value = d.status; updateBadge(id, d.status); }
-    sel.addEventListener('change', function () { var cur = load(id); cur.status = sel.value; save(id, cur); updateBadge(id, sel.value); });
+    if (d.status) { sel.value = d.status; updateBadge(id, d.status); updateBugTriage(id, d.status); }
+    sel.addEventListener('change', function () {
+      var cur = load(id); cur.status = sel.value; save(id, cur);
+      updateBadge(id, sel.value); updateBugTriage(id, sel.value);
+      if (window.__vitalApplyFilter) window.__vitalApplyFilter();
+    });
   });
+  // After all state is restored, reapply the filter so any active triage filter reflects restored state.
+  if (window.__vitalApplyFilter) window.__vitalApplyFilter();
   document.querySelectorAll('.triage-notes').forEach(function (ta) {
     var id = ta.getAttribute('data-triage-id');
     var d = load(id);
@@ -794,11 +805,12 @@ const TRIAGE_SCRIPT = `<script>
           if (!entry || typeof entry !== 'object') continue;
           save(id, entry);
           var sel = document.querySelector('.triage-status[data-triage-id="' + id + '"]');
-          if (sel) { if (entry.status) sel.value = entry.status; updateBadge(id, entry.status || ''); }
+          if (sel) { if (entry.status) sel.value = entry.status; updateBadge(id, entry.status || ''); updateBugTriage(id, entry.status || ''); }
           var ta = document.querySelector('.triage-notes[data-triage-id="' + id + '"]');
           if (ta && entry.notes != null) ta.value = entry.notes;
           count++;
         }
+        if (window.__vitalApplyFilter) window.__vitalApplyFilter();
         setStatus('Imported ' + count + ' decision(s).');
       } catch (err) { setStatus('Import failed: ' + err.message); }
       e.target.value = ''; // allow re-importing the same file
@@ -819,6 +831,7 @@ const BUG_FILTER_SCRIPT = `<script>
   var showAll = document.getElementById('filter-all');
   var sev = document.getElementById('filter-sev');
   var cat = document.getElementById('filter-cat');
+  var triage = document.getElementById('filter-triage');
   var dup = document.getElementById('filter-dup');
   var count = document.getElementById('filter-count');
   var empty = document.querySelector('.bug-filter-empty');
@@ -826,29 +839,37 @@ const BUG_FILTER_SCRIPT = `<script>
   var total = bugs.length;
   var prioritized = Number(form.getAttribute('data-prioritized') || '0');
   function apply() {
-    var s = sev.value, c = cat.value, hideDup = dup.checked, showEverything = showAll.checked, shown = 0;
+    var s = sev.value, c = cat.value, t = triage ? triage.value : '', hideDup = dup.checked, showEverything = showAll.checked, shown = 0;
+    // Triage filter implicitly expands to all priority tiers so you can find triaged items that are normally hidden.
+    var effectiveShowAll = showEverything || !!t;
     bugs.forEach(function (b) {
-      var ok = (showEverything || b.getAttribute('data-default-visible') === '1')
+      var bugTriage = b.getAttribute('data-triage') || '';
+      var triageOk = !t || (t === '__none__' ? !bugTriage : bugTriage === t);
+      var ok = (effectiveShowAll || b.getAttribute('data-default-visible') === '1')
         && (!s || b.getAttribute('data-severity') === s)
         && (!c || b.getAttribute('data-category') === c)
-        && (!hideDup || b.getAttribute('data-duplicate') !== '1');
+        && (!hideDup || b.getAttribute('data-duplicate') !== '1')
+        && triageOk;
       b.hidden = !ok;
       if (ok) shown++;
     });
-    var filtered = showEverything || s || c || hideDup;
+    var filtered = showEverything || s || c || t || hideDup;
     count.textContent = filtered
-      ? (showEverything ? 'Showing all ' + shown + ' issue type(s).' : 'Showing ' + shown + ' of ' + total + ' issue type(s).')
+      ? (showEverything && !t ? 'Showing all ' + shown + ' issue type(s).' : 'Showing ' + shown + ' of ' + total + ' issue type(s).')
       : 'Showing ' + prioritized + ' prioritized issue type(s) out of ' + total + '.';
     if (empty) empty.hidden = shown !== 0;
   }
-  function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; dup.checked = false; apply(); }
+  function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; if (triage) triage.value = ''; dup.checked = false; apply(); }
   showAll.addEventListener('change', apply);
   sev.addEventListener('change', apply);
   cat.addEventListener('change', apply);
+  if (triage) triage.addEventListener('change', apply);
   dup.addEventListener('change', apply);
   document.getElementById('filter-reset').addEventListener('click', reset);
   var r2 = document.getElementById('filter-reset-2');
   if (r2) r2.addEventListener('click', reset);
+  // Expose apply() so TRIAGE_SCRIPT can refresh the filter when triage state is restored or changed.
+  window.__vitalApplyFilter = apply;
   apply();
 })();
 </script>`;
@@ -2772,8 +2793,10 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .tech-tip { background: color-mix(in srgb, var(--accent) 5%, transparent); border-left: 3px solid color-mix(in srgb, var(--accent) 50%, var(--muted));
   padding: .45rem .75rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin: .4rem 0; }
 /* Triage block at the bottom of each expanded bug */
-.triage-block { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; padding: .75rem 0 .3rem;
-  border-top: 1px dashed var(--rule); margin-top: .75rem; }
+.triage-block { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; padding: .6rem .9rem .6rem .85rem;
+  border: 1px solid color-mix(in srgb, #6d28d9 25%, var(--rule));
+  border-left: 4px solid #6d28d9; border-radius: 0 4px 4px 0;
+  background: color-mix(in srgb, #6d28d9 4%, var(--bg)); margin-top: .85rem; }
 .triage-label { display: flex; flex-direction: column; gap: .25rem; font-size: .78rem;
   color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
 .triage-notes-label { flex: 1; min-width: 18rem; }
