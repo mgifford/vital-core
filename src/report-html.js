@@ -619,7 +619,7 @@ ${heading('h-bugs', `Bug reports`)}
         : '';
       return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
 <summary><span class="sev-badge">${esc(b.severity)}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
-<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">Likely ${b.likely_source}</span>` : ''}</summary>
+<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">Likely ${b.likely_source}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   <div><dt>Pattern ID</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
@@ -645,6 +645,10 @@ ${b.impact?.groups?.length
 ${affectedPagesBlock(b)}
 <p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
 <p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}${b.tech_remediation_tip ? `<p class="tech-tip"><strong>${esc(b.tech_name)} tip:</strong> ${esc(b.tech_remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
+<div class="triage-block">
+<label class="triage-label">Triage status<select class="triage-status" data-triage-id="${esc(b.instance_id)}"><option value="">— not reviewed —</option><option value="valid">Valid</option><option value="false-positive">False positive</option><option value="duplicate">Duplicate</option><option value="wont-fix">Won&apos;t fix</option><option value="deferred">Deferred</option></select></label>
+<label class="triage-label triage-notes-label">Notes<textarea class="triage-notes" rows="2" placeholder="Add notes…" data-triage-id="${esc(b.instance_id)}"></textarea></label>
+</div>
 </details>`;
     })
     .join('\n');
@@ -689,8 +693,51 @@ ${filterBar}
 <div class="bug-list">${blocks}</div>
 <p class="bug-filter-empty" hidden>No issues match the current filters. <button type="button" id="filter-reset-2">Clear filters</button></p>
 ${BUG_FILTER_SCRIPT}
+${TRIAGE_SCRIPT}
 </section>`;
 }
+
+// Progressive-enhancement triage UI. Adds a status dropdown and notes field
+// to each bug, persisted in localStorage by instance_id. No-JS: fields still
+// render but values are not saved between page loads.
+const TRIAGE_SCRIPT = `<script>
+(function () {
+  'use strict';
+  var KEY = 'vital-triage:';
+  var LABELS = { valid: 'Valid', 'false-positive': 'False positive', duplicate: 'Duplicate', 'wont-fix': "Won't fix", deferred: 'Deferred' };
+  function load(id) {
+    try { var r = localStorage.getItem(KEY + id); return r ? JSON.parse(r) : {}; } catch (e) { return {}; }
+  }
+  function save(id, d) {
+    try { localStorage.setItem(KEY + id, JSON.stringify(d)); } catch (e) {}
+  }
+  function updateBadge(id, status) {
+    var badge = document.querySelector('.triage-badge[data-triage-id="' + id + '"]');
+    if (!badge) return;
+    if (status && LABELS[status]) {
+      badge.textContent = LABELS[status];
+      badge.setAttribute('data-status', status);
+      badge.hidden = false;
+    } else {
+      badge.textContent = '';
+      badge.removeAttribute('data-status');
+      badge.hidden = true;
+    }
+  }
+  document.querySelectorAll('.triage-status').forEach(function (sel) {
+    var id = sel.getAttribute('data-triage-id');
+    var d = load(id);
+    if (d.status) { sel.value = d.status; updateBadge(id, d.status); }
+    sel.addEventListener('change', function () { var cur = load(id); cur.status = sel.value; save(id, cur); updateBadge(id, sel.value); });
+  });
+  document.querySelectorAll('.triage-notes').forEach(function (ta) {
+    var id = ta.getAttribute('data-triage-id');
+    var d = load(id);
+    if (d.notes) ta.value = d.notes;
+    ta.addEventListener('input', function () { var cur = load(id); cur.notes = ta.value; save(id, cur); });
+  });
+})();
+<\/script>`;
 
 // Progressive-enhancement filtering for the bug-report list. Reveals the
 // filter form (hidden by default so no-JS users see every bug) and toggles
@@ -2655,6 +2702,25 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   padding: .6rem .9rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin-bottom: .75rem; }
 .tech-tip { background: color-mix(in srgb, var(--accent) 5%, transparent); border-left: 3px solid color-mix(in srgb, var(--accent) 50%, var(--muted));
   padding: .45rem .75rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin: .4rem 0; }
+/* Triage block at the bottom of each expanded bug */
+.triage-block { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; padding: .75rem 0 .3rem;
+  border-top: 1px dashed var(--rule); margin-top: .75rem; }
+.triage-label { display: flex; flex-direction: column; gap: .25rem; font-size: .78rem;
+  color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.triage-notes-label { flex: 1; min-width: 18rem; }
+.triage-status { font-size: .9rem; font-weight: 400; border: 1px solid var(--rule);
+  border-radius: 3px; padding: .2rem .4rem; background: var(--bg); color: var(--fg); cursor: pointer; }
+.triage-notes { font-size: .9rem; font-weight: 400; border: 1px solid var(--rule); border-radius: 3px;
+  padding: .3rem .5rem; background: var(--bg); color: var(--fg); width: 100%; resize: vertical; }
+/* Status badge shown in collapsed summary */
+.triage-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 0 .4rem;
+  border-radius: 2px; vertical-align: middle; margin-left: .35rem; border: 1px solid; }
+.triage-badge[data-status="valid"]          { color: #166534; background: #dcfce7; border-color: #86efac; }
+.triage-badge[data-status="false-positive"] { color: #92400e; background: #fef3c7; border-color: #fcd34d; }
+.triage-badge[data-status="duplicate"]      { color: #1e40af; background: #dbeafe; border-color: #93c5fd; }
+.triage-badge[data-status="wont-fix"]       { color: var(--muted); background: color-mix(in srgb, var(--muted) 10%, transparent);
+  border-color: color-mix(in srgb, var(--muted) 30%, transparent); }
+.triage-badge[data-status="deferred"]       { color: #6d28d9; background: #ede9fe; border-color: #c4b5fd; }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }
