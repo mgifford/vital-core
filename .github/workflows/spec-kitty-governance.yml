@@ -46,7 +46,7 @@ jobs:
 
       - name: Parse workflow YAML
         run: |
-          ruby -e "require 'yaml'; Dir['.github/workflows/*.yml'].sort.each { |f| YAML.load_file(f); puts \"parsed #{f}\" }"
+          ruby -e "require 'yaml'; Dir['.github/workflows/*.yml'].sort.each { |f| YAML.safe_load_file(f, permitted_classes: []); puts \"parsed #{f}\" }"
 
       - name: Check Spec Kitty governance
         run: npm run check:spec-kitty
