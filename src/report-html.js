@@ -689,6 +689,12 @@ Download: <a href="bugs.md">Markdown</a> · <a href="${esc(reporting.bugsJson ??
 <p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
 ${priorityLine}
 ${dupLine}
+<div class="triage-io" hidden id="triage-io">
+<span class="triage-io-label">Triage decisions:</span>
+<button type="button" id="triage-export" class="triage-btn">Export (.json)</button>
+<label class="triage-btn triage-import-label"><input type="file" id="triage-import" accept=".json" style="display:none">Import (.json)</label>
+<span id="triage-io-status" class="triage-io-status" aria-live="polite"></span>
+</div>
 ${filterBar}
 <div class="bug-list">${blocks}</div>
 <p class="bug-filter-empty" hidden>No issues match the current filters. <button type="button" id="filter-reset-2">Clear filters</button></p>
@@ -698,8 +704,9 @@ ${TRIAGE_SCRIPT}
 }
 
 // Progressive-enhancement triage UI. Adds a status dropdown and notes field
-// to each bug, persisted in localStorage by instance_id. No-JS: fields still
-// render but values are not saved between page loads.
+// to each bug (persisted in localStorage by instance_id) plus an export/import
+// toolbar so triage decisions can be shared between team members.
+// No-JS: fields render but don't persist; toolbar stays hidden.
 const TRIAGE_SCRIPT = `<script>
 (function () {
   'use strict';
@@ -724,6 +731,7 @@ const TRIAGE_SCRIPT = `<script>
       badge.hidden = true;
     }
   }
+  // Restore saved triage state on page load.
   document.querySelectorAll('.triage-status').forEach(function (sel) {
     var id = sel.getAttribute('data-triage-id');
     var d = load(id);
@@ -735,6 +743,67 @@ const TRIAGE_SCRIPT = `<script>
     var d = load(id);
     if (d.notes) ta.value = d.notes;
     ta.addEventListener('input', function () { var cur = load(id); cur.notes = ta.value; save(id, cur); });
+  });
+  // Export / Import toolbar — reveal only when JS is available.
+  var ioBar = document.getElementById('triage-io');
+  if (ioBar) ioBar.hidden = false;
+  function setStatus(msg) {
+    var el = document.getElementById('triage-io-status');
+    if (!el) return;
+    el.textContent = msg;
+    setTimeout(function () { el.textContent = ''; }, 5000);
+  }
+  // Export: collect all vital-triage:* entries from localStorage → download JSON.
+  var exportBtn = document.getElementById('triage-export');
+  if (exportBtn) exportBtn.addEventListener('click', function () {
+    var entries = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.startsWith(KEY)) {
+        try { entries[k.slice(KEY.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {}
+      }
+    }
+    var count = Object.keys(entries).length;
+    if (!count) { setStatus('No triage decisions to export.'); return; }
+    var payload = JSON.stringify({ version: 1, exported: new Date().toISOString(), entries: entries }, null, 2);
+    var blob = new Blob([payload], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'vital-triage-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setStatus('Exported ' + count + ' decision(s).');
+  });
+  // Import: read a previously exported JSON file and merge into localStorage,
+  // then refresh any visible triage controls on this page.
+  var importInput = document.getElementById('triage-import');
+  if (importInput) importInput.addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (!data.entries || typeof data.entries !== 'object') throw new Error('invalid format — missing entries object');
+        var count = 0;
+        for (var id in data.entries) {
+          var entry = data.entries[id];
+          if (!entry || typeof entry !== 'object') continue;
+          save(id, entry);
+          var sel = document.querySelector('.triage-status[data-triage-id="' + id + '"]');
+          if (sel) { if (entry.status) sel.value = entry.status; updateBadge(id, entry.status || ''); }
+          var ta = document.querySelector('.triage-notes[data-triage-id="' + id + '"]');
+          if (ta && entry.notes != null) ta.value = entry.notes;
+          count++;
+        }
+        setStatus('Imported ' + count + ' decision(s).');
+      } catch (err) { setStatus('Import failed: ' + err.message); }
+      e.target.value = ''; // allow re-importing the same file
+    };
+    reader.readAsText(file);
   });
 })();
 <\/script>`;
@@ -2721,6 +2790,16 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .triage-badge[data-status="wont-fix"]       { color: var(--muted); background: color-mix(in srgb, var(--muted) 10%, transparent);
   border-color: color-mix(in srgb, var(--muted) 30%, transparent); }
 .triage-badge[data-status="deferred"]       { color: #6d28d9; background: #ede9fe; border-color: #c4b5fd; }
+/* Triage export/import toolbar */
+.triage-io { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem .75rem;
+  padding: .45rem .6rem; margin-bottom: .6rem; background: color-mix(in srgb, var(--muted) 6%, transparent);
+  border: 1px solid var(--rule); border-radius: 4px; font-size: .85rem; }
+.triage-io-label { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+.triage-btn { display: inline-block; cursor: pointer; border: 1px solid var(--rule); border-radius: 3px;
+  background: var(--bg); color: var(--fg); padding: .2rem .6rem; font-size: .85rem;
+  font-family: inherit; line-height: 1.4; }
+.triage-btn:hover { border-color: var(--accent); color: var(--accent); }
+.triage-io-status { font-size: .82rem; color: var(--muted); font-style: italic; }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }
