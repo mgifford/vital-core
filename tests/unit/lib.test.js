@@ -475,6 +475,23 @@ test('csv: escapes fields and slugs rule ids', () => {
   assert.equal(ruleSlug('x', 'weird/id:1'), 'x__weird-id-1', 'unsafe chars slugged');
 });
 
+test('csv: prefixes formula-injection starters to prevent spreadsheet execution', () => {
+  const csv = toCsv(['title', 'count'], [
+    ['=IMPORTRANGE("x","y")', 1],
+    ['+cmd|" /C calc"!A0', 2],
+    ['-2+3', 3],
+    ['@SUM(1)', 4],
+    ['normal value', 5],
+    ['https://example.gov/', 6],
+  ]);
+  assert.match(csv, /'=IMPORTRANGE/, '= prefixed with single quote');
+  assert.match(csv, /'\+cmd/, '+ prefixed with single quote');
+  assert.match(csv, /'-2\+3/, '- prefixed with single quote');
+  assert.match(csv, /'@SUM/, '@ prefixed with single quote');
+  assert.match(csv, /normal value/, 'safe value unchanged');
+  assert.match(csv, /https:\/\/example\.gov\//, 'URL unchanged');
+});
+
 test('buildBugReports: page-load estimate appears when target sets page_loads_per_week', () => {
   const target = { domain: 'x', key: 'x', page_loads_per_week: 1_000_000 };
   const summary = {

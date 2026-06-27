@@ -55,8 +55,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
   issues: write
 
 jobs:
@@ -72,10 +70,22 @@ jobs:
           node-version: 24
 
       - id: list
+        env:
+          DISPATCH_DOMAIN: ${{ github.event.inputs.domain }}
         run: |
           npm ci --omit=optional --ignore-scripts
-          if [ -n "${{ github.event.inputs.domain }}" ]; then
-            echo "domains=[\"${{ github.event.inputs.domain }}\"]" >> "$GITHUB_OUTPUT"
+          if [ -n "$DISPATCH_DOMAIN" ]; then
+            if ! printf '%s' "$DISPATCH_DOMAIN" | grep -qE '^[a-z0-9][a-z0-9._-]*\.[a-z]{2,}$'; then
+              echo "::error::domain must be a valid hostname (e.g. www.cms.gov)"
+              exit 1
+            fi
+            node -e "
+              import('./src/lib/config.js').then(({loadConfig}) => {
+                const d = process.env.DISPATCH_DOMAIN;
+                const known = loadConfig().targets.filter(t => !t.hf_only).map(t => t.domain);
+                if (!known.includes(d)) { console.error('Unknown or restricted domain: ' + d); process.exit(1); }
+                console.log('domains=' + JSON.stringify([d]));
+              }).catch(e => { console.error(String(e)); process.exit(1); })" >> "$GITHUB_OUTPUT"
           else
             node -e "
               import('./src/lib/config.js').then(({loadConfig}) => {
@@ -141,10 +151,15 @@ jobs:
           # Leave ~15 min for link-check flush, browser close, state save,
           # and the commit step. Must be less than timeout-minutes: 110.
           VITAL_SCAN_TIME_BUDGET_MINUTES: 95
+          DISPATCH_BUDGET: ${{ github.event.inputs.budget }}
         run: |
           BUDGET_FLAG=""
-          if [ -n "${{ github.event.inputs.budget }}" ]; then
-            BUDGET_FLAG="--budget ${{ github.event.inputs.budget }}"
+          if [ -n "$DISPATCH_BUDGET" ]; then
+            if ! printf '%s' "$DISPATCH_BUDGET" | grep -qE '^[0-9]+$'; then
+              echo "::error::budget must be a positive integer"
+              exit 1
+            fi
+            BUDGET_FLAG="--budget $DISPATCH_BUDGET"
           fi
           node src/scan.js --domain "${{ matrix.domain }}" $BUDGET_FLAG
 
