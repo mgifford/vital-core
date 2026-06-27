@@ -23,6 +23,17 @@ defaults:
     max_html_issues: 50
     moderate_issue_threshold_percent: 5
     include_key_page_issues: true
+    # Heuristic threshold: findings on this many or more pages are flagged
+    # "Likely template" (shared component). Findings on 1–2 pages are flagged
+    # "Likely content". Between the two = "unknown".
+    template_page_threshold: 10
+  display:
+    # How the accessibility score appears in per-domain reports and the archive.
+    # letter  — letter grade only (A/B/C/D/F)
+    # percent — numeric score only (e.g. "78")
+    # both    — letter grade and numeric score (default)
+    # none    — suppress the score section entirely
+    score_format: both
 
 # Which sustainability figure the reports headline: "co2" (grams CO2 per
 # page) or "energy" (watt-hours per page). Both are always recorded in the

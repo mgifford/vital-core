@@ -38,6 +38,14 @@ function sustainabilityHeadline(s) {
 }
 const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
 const fmtMedian = (n) => (n == null ? 'n/a' : String(n));
+// Formats an accessibility score for compact table cells (archive, leaderboard).
+// fmt mirrors targets.yml display.score_format: 'letter' | 'percent' | 'both' | 'none'.
+const fmtA11yGrade = (sc, fmt = 'both') => {
+  if (!sc || fmt === 'none') return 'n/a';
+  const g = fmt !== 'percent' ? `<span class="grade grade-${esc(sc.grade)}">${esc(sc.grade)}</span>` : '';
+  const n = fmt !== 'letter' ? String(sc.score) : '';
+  return [g, n].filter(Boolean).join(' ');
+};
 /**
  * Affected-page display for a bug: list URLs inline when there are 25 or
  * fewer (more useful than a CSV link for a handful); above that, list the
@@ -611,7 +619,7 @@ ${heading('h-bugs', `Bug reports`)}
         : '';
       return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}>
 <summary><span class="sev-badge">${esc(b.severity)}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
-<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span></summary>
+<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">Likely ${b.likely_source}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   <div><dt>Pattern ID</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
@@ -636,7 +644,11 @@ ${b.impact?.groups?.length
 <p class="bug-label">Affected pages</p>
 ${affectedPagesBlock(b)}
 <p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
-<p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
+<p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}${b.tech_remediation_tip ? `<p class="tech-tip"><strong>${esc(b.tech_name)} tip:</strong> ${esc(b.tech_remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
+<div class="triage-block">
+<label class="triage-label">Triage status<select class="triage-status" data-triage-id="${esc(b.instance_id)}"><option value="">— not reviewed —</option><option value="valid">Valid</option><option value="false-positive">False positive</option><option value="duplicate">Duplicate</option><option value="wont-fix">Won&apos;t fix</option><option value="deferred">Deferred</option></select></label>
+<label class="triage-label triage-notes-label">Notes<textarea class="triage-notes" rows="2" placeholder="Add notes…" data-triage-id="${esc(b.instance_id)}"></textarea></label>
+</div>
 </details>`;
     })
     .join('\n');
@@ -677,12 +689,124 @@ Download: <a href="bugs.md">Markdown</a> · <a href="${esc(reporting.bugsJson ??
 <p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
 ${priorityLine}
 ${dupLine}
+<div class="triage-io" hidden id="triage-io">
+<span class="triage-io-label">Triage decisions:</span>
+<button type="button" id="triage-export" class="triage-btn">Export (.json)</button>
+<label class="triage-btn triage-import-label"><input type="file" id="triage-import" accept=".json" style="display:none">Import (.json)</label>
+<span id="triage-io-status" class="triage-io-status" aria-live="polite"></span>
+</div>
 ${filterBar}
 <div class="bug-list">${blocks}</div>
 <p class="bug-filter-empty" hidden>No issues match the current filters. <button type="button" id="filter-reset-2">Clear filters</button></p>
 ${BUG_FILTER_SCRIPT}
+${TRIAGE_SCRIPT}
 </section>`;
 }
+
+// Progressive-enhancement triage UI. Adds a status dropdown and notes field
+// to each bug (persisted in localStorage by instance_id) plus an export/import
+// toolbar so triage decisions can be shared between team members.
+// No-JS: fields render but don't persist; toolbar stays hidden.
+const TRIAGE_SCRIPT = `<script>
+(function () {
+  'use strict';
+  var KEY = 'vital-triage:';
+  var LABELS = { valid: 'Valid', 'false-positive': 'False positive', duplicate: 'Duplicate', 'wont-fix': "Won't fix", deferred: 'Deferred' };
+  function load(id) {
+    try { var r = localStorage.getItem(KEY + id); return r ? JSON.parse(r) : {}; } catch (e) { return {}; }
+  }
+  function save(id, d) {
+    try { localStorage.setItem(KEY + id, JSON.stringify(d)); } catch (e) {}
+  }
+  function updateBadge(id, status) {
+    var badge = document.querySelector('.triage-badge[data-triage-id="' + id + '"]');
+    if (!badge) return;
+    if (status && LABELS[status]) {
+      badge.textContent = LABELS[status];
+      badge.setAttribute('data-status', status);
+      badge.hidden = false;
+    } else {
+      badge.textContent = '';
+      badge.removeAttribute('data-status');
+      badge.hidden = true;
+    }
+  }
+  // Restore saved triage state on page load.
+  document.querySelectorAll('.triage-status').forEach(function (sel) {
+    var id = sel.getAttribute('data-triage-id');
+    var d = load(id);
+    if (d.status) { sel.value = d.status; updateBadge(id, d.status); }
+    sel.addEventListener('change', function () { var cur = load(id); cur.status = sel.value; save(id, cur); updateBadge(id, sel.value); });
+  });
+  document.querySelectorAll('.triage-notes').forEach(function (ta) {
+    var id = ta.getAttribute('data-triage-id');
+    var d = load(id);
+    if (d.notes) ta.value = d.notes;
+    ta.addEventListener('input', function () { var cur = load(id); cur.notes = ta.value; save(id, cur); });
+  });
+  // Export / Import toolbar — reveal only when JS is available.
+  var ioBar = document.getElementById('triage-io');
+  if (ioBar) ioBar.hidden = false;
+  function setStatus(msg) {
+    var el = document.getElementById('triage-io-status');
+    if (!el) return;
+    el.textContent = msg;
+    setTimeout(function () { el.textContent = ''; }, 5000);
+  }
+  // Export: collect all vital-triage:* entries from localStorage → download JSON.
+  var exportBtn = document.getElementById('triage-export');
+  if (exportBtn) exportBtn.addEventListener('click', function () {
+    var entries = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.startsWith(KEY)) {
+        try { entries[k.slice(KEY.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {}
+      }
+    }
+    var count = Object.keys(entries).length;
+    if (!count) { setStatus('No triage decisions to export.'); return; }
+    var payload = JSON.stringify({ version: 1, exported: new Date().toISOString(), entries: entries }, null, 2);
+    var blob = new Blob([payload], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'vital-triage-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setStatus('Exported ' + count + ' decision(s).');
+  });
+  // Import: read a previously exported JSON file and merge into localStorage,
+  // then refresh any visible triage controls on this page.
+  var importInput = document.getElementById('triage-import');
+  if (importInput) importInput.addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (!data.entries || typeof data.entries !== 'object') throw new Error('invalid format — missing entries object');
+        var count = 0;
+        for (var id in data.entries) {
+          var entry = data.entries[id];
+          if (!entry || typeof entry !== 'object') continue;
+          save(id, entry);
+          var sel = document.querySelector('.triage-status[data-triage-id="' + id + '"]');
+          if (sel) { if (entry.status) sel.value = entry.status; updateBadge(id, entry.status || ''); }
+          var ta = document.querySelector('.triage-notes[data-triage-id="' + id + '"]');
+          if (ta && entry.notes != null) ta.value = entry.notes;
+          count++;
+        }
+        setStatus('Imported ' + count + ' decision(s).');
+      } catch (err) { setStatus('Import failed: ' + err.message); }
+      e.target.value = ''; // allow re-importing the same file
+    };
+    reader.readAsText(file);
+  });
+})();
+<\/script>`;
 
 // Progressive-enhancement filtering for the bug-report list. Reveals the
 // filter form (hidden by default so no-JS users see every bug) and toggles
@@ -1590,6 +1714,7 @@ ${detailTable}
  */
 export function renderArchivePage(target, series, latestWeek) {
   if (!series || series.length === 0) return null;
+  const scoreFormat = target.display?.score_format ?? 'both';
   const ordered = [...series].reverse(); // newest first
   const rows = ordered
     .map((s, i) => {
@@ -1599,7 +1724,7 @@ export function renderArchivePage(target, series, latestWeek) {
       const d = newer ? med - (newer.axe.medianViolations ?? 0) : null;
       return `<tr>
   <th scope="row"><a href="../${esc(s.week)}/index.html">${esc(s.week)}</a></th>
-  <td class="num">${sc ? `<span class="grade grade-${esc(sc.grade)}">${esc(sc.grade)}</span> ${sc.score}` : 'n/a'}</td>
+  <td class="num">${fmtA11yGrade(sc, scoreFormat)}</td>
   <td class="num">${s.pagesAudited ?? s.pagesScanned}</td>
   <td class="num">${fmtMedian(s.axe.medianViolations)}${d != null && d !== 0 ? ` ${delta(d)}` : ''}</td>
   <td class="num">${fmtMedian(s.alfa.medianFailures)}</td>
@@ -1625,6 +1750,7 @@ ${subnav('archive')}
 
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null) {
   const score = scoreFor(summary);
+  const scoreFormat = target.display?.score_format ?? 'both';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${text}</a>` : '');
@@ -1636,9 +1762,9 @@ ${subnav('overview')}
 ${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.
 Machine-readable API: <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
 
-${score ? `<aside class="scorecard" aria-label="Accessibility scorecard">
-  <span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>
-  <span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>
+${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Accessibility scorecard">
+  ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
+  ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(traj.direction)}</strong> (${traj.delta >= 0 ? '+' : ''}${traj.delta} pts since ${esc(traj.fromWeek)}).` : ''}
   ${resolvedCount > 0 ? `<strong>${resolvedCount} issue type(s) resolved</strong> since last week.` : ''}</span>
@@ -1706,12 +1832,43 @@ ${resourcesSection(summary)}
   });
 }
 
+function renderTrainingPriorities(priorities, advice) {
+  if (!priorities || priorities.length === 0) return '';
+  const rows = priorities.map((p) => {
+    const inconsistencyCell = p.component_inconsistency
+      ? '<span class="tp-inconsistency" title="3+ distinct rules on this SC, each on ≥5 pages — may indicate inconsistent component implementations">Component inconsistency</span>'
+      : '';
+    return `<tr>
+<td><strong>${esc(p.wcag_sc)}</strong></td>
+<td>${esc(p.label)}</td>
+<td class="num">${p.total_pages}</td>
+<td class="num">${p.rule_count}</td>
+<td>${inconsistencyCell}</td>
+</tr>`;
+  }).join('\n');
+  const adviceHtml = advice
+    ? `<div class="tp-advice"><strong>Training recommendation:</strong> ${esc(advice)}</div>`
+    : '';
+  return `<section class="training-priorities" aria-labelledby="h-training">
+<h2 id="h-training">Training priorities</h2>
+<p class="meta">Top WCAG success criteria by pages affected this week. Use these to focus team training on the highest-impact issues.</p>
+${adviceHtml}
+<table class="tp-table">
+<thead><tr><th>SC</th><th>Criterion</th><th class="num">Pages</th><th class="num">Rules</th><th>Notes</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</section>`;
+}
+
 /**
  * Standalone accessibility page: bug reports (with anchored <details> per bug),
  * axe-core and Alfa rule tables, and the consensus deduplication summary.
  * Linked from the overview and from "Fix these first" deep links.
  */
 export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}) {
+  const { trainingPriorities = [], trainingAdvice = null } = reporting;
   const acrNote = reporting.acrYaml
     ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
     : '';
@@ -1719,6 +1876,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
 <h1>${esc(target.domain)}: Accessibility — week ${esc(summary.week)}</h1>
 ${subnav('accessibility')}
 ${acrNote}
+${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting)}
 <section aria-labelledby="h-axe">
 ${heading('h-axe', `Deque axe-core findings`)}
@@ -1942,7 +2100,7 @@ for how the scanner can be allowlisted.</p>
       const trend = series.map(medAxe);
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a></th>
-  <td class="num">${score ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span> ${score.score}` : 'n/a'}</td>
+  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'both')}</td>
   <td>${arrow(traj)}</td>
   <td class="num">${win.pagesAudited ?? win.pagesScanned}</td>
   <td class="num">${fmtMedian(win.axe.medianViolations)}</td>
@@ -2593,6 +2751,55 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
 .wcag-badge[data-cat="best-practice"] { background: color-mix(in srgb, var(--muted) 12%, transparent);
   color: var(--muted); border-color: color-mix(in srgb, var(--muted) 35%, transparent); }
+.source-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: 0 .4rem;
+  border-radius: 2px; vertical-align: middle; margin-left: .35rem; border: 1px solid; }
+.source-badge.source-template { color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.source-badge.source-content { color: var(--muted);
+  border-color: color-mix(in srgb, var(--muted) 35%, transparent);
+  background: color-mix(in srgb, var(--muted) 8%, transparent); }
+.training-priorities { border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1.25rem; margin: 1.25rem 0; }
+.training-priorities h2 { font-size: 1.1rem; margin: 0 0 .5rem; }
+.tp-table { border-collapse: collapse; width: 100%; font-size: .9rem; margin-top: .75rem; }
+.tp-table th, .tp-table td { padding: .3rem .6rem; border-bottom: 1px solid var(--rule); text-align: left; }
+.tp-table th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.tp-table th.num, .tp-table td.num { text-align: right; }
+.tp-inconsistency { font-size: .78rem; color: var(--warn, #b45309); background: color-mix(in srgb, var(--warn, #b45309) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warn, #b45309) 30%, transparent); border-radius: 2px; padding: 0 .35rem; }
+.tp-advice { background: color-mix(in srgb, var(--accent) 6%, transparent); border-left: 3px solid var(--accent);
+  padding: .6rem .9rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin-bottom: .75rem; }
+.tech-tip { background: color-mix(in srgb, var(--accent) 5%, transparent); border-left: 3px solid color-mix(in srgb, var(--accent) 50%, var(--muted));
+  padding: .45rem .75rem; font-size: .9rem; border-radius: 0 3px 3px 0; margin: .4rem 0; }
+/* Triage block at the bottom of each expanded bug */
+.triage-block { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; padding: .75rem 0 .3rem;
+  border-top: 1px dashed var(--rule); margin-top: .75rem; }
+.triage-label { display: flex; flex-direction: column; gap: .25rem; font-size: .78rem;
+  color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.triage-notes-label { flex: 1; min-width: 18rem; }
+.triage-status { font-size: .9rem; font-weight: 400; border: 1px solid var(--rule);
+  border-radius: 3px; padding: .2rem .4rem; background: var(--bg); color: var(--fg); cursor: pointer; }
+.triage-notes { font-size: .9rem; font-weight: 400; border: 1px solid var(--rule); border-radius: 3px;
+  padding: .3rem .5rem; background: var(--bg); color: var(--fg); width: 100%; resize: vertical; }
+/* Status badge shown in collapsed summary */
+.triage-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 0 .4rem;
+  border-radius: 2px; vertical-align: middle; margin-left: .35rem; border: 1px solid; }
+.triage-badge[data-status="valid"]          { color: #166534; background: #dcfce7; border-color: #86efac; }
+.triage-badge[data-status="false-positive"] { color: #92400e; background: #fef3c7; border-color: #fcd34d; }
+.triage-badge[data-status="duplicate"]      { color: #1e40af; background: #dbeafe; border-color: #93c5fd; }
+.triage-badge[data-status="wont-fix"]       { color: var(--muted); background: color-mix(in srgb, var(--muted) 10%, transparent);
+  border-color: color-mix(in srgb, var(--muted) 30%, transparent); }
+.triage-badge[data-status="deferred"]       { color: #6d28d9; background: #ede9fe; border-color: #c4b5fd; }
+/* Triage export/import toolbar */
+.triage-io { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem .75rem;
+  padding: .45rem .6rem; margin-bottom: .6rem; background: color-mix(in srgb, var(--muted) 6%, transparent);
+  border: 1px solid var(--rule); border-radius: 4px; font-size: .85rem; }
+.triage-io-label { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+.triage-btn { display: inline-block; cursor: pointer; border: 1px solid var(--rule); border-radius: 3px;
+  background: var(--bg); color: var(--fg); padding: .2rem .6rem; font-size: .85rem;
+  font-family: inherit; line-height: 1.4; }
+.triage-btn:hover { border-color: var(--accent); color: var(--accent); }
+.triage-io-status { font-size: .82rem; color: var(--muted); font-style: italic; }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }
