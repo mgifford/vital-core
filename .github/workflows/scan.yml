@@ -56,6 +56,11 @@ on:
 permissions:
   contents: write
   issues: write
+  # Required for the optional-report job which calls report.yml via workflow_call.
+  # GitHub grants the intersection of caller + callee permissions, so these must
+  # be declared here even though the scan jobs themselves do not deploy to Pages.
+  pages: write
+  id-token: write
 
 jobs:
   matrix:
