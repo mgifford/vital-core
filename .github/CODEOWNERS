@@ -1,0 +1,21 @@
+# Require review from the maintainer for security-sensitive paths.
+# Covers: CI workflows, agent skill prompts, spec-kitty governance,
+# VA domain config, and core scan/aggregate source.
+
+# Workflows and secrets surface
+.github/workflows/           @mgifford
+.github/CODEOWNERS           @mgifford
+
+# Agent skill files (prompt-injection surface)
+.agents/                     @mgifford
+
+# Spec Kitty governance bundle
+.kittify/                    @mgifford
+kitty-specs/                 @mgifford
+scripts/check-spec-kitty-governance.js @mgifford
+
+# Target config (controls VA hf_only guard and scan scope)
+config/targets.yml           @mgifford
+
+# Core scan and report source
+src/                         @mgifford
