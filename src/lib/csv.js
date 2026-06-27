@@ -18,7 +18,9 @@ function filePrefix(domain, week) {
 
 const csvField = (s) => {
   const v = String(s ?? '');
-  return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  // Prefix formula-injection starters so spreadsheet tools don't execute them.
+  const safe = /^[=+\-@]/.test(v) ? `'${v}` : v;
+  return /[",\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
 };
 
 export function toCsv(headers, rows) {
