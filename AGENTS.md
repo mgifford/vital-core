@@ -183,6 +183,7 @@ The durable surface guide is `kitty-specs/AGENT_SURFACES.md`.
 5. Prefer host-scoped, HTML-focused discovery by default.
 6. Include tests for behavior changes in discovery, scanning, or aggregation.
 7. Avoid broad refactors unless requested.
+8. **Clean up branches after merging.** When a PR is merged, immediately delete the feature branch — do not leave it in the remote. Use `git push origin --delete <branch>` or the GitHub UI. Stale branches accumulate and obscure active work. The only branches that should exist at any time are `main`, any branch with an open PR, and branches actively being worked on in the current session.
 
 ## Testing
 
