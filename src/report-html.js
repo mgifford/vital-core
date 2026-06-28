@@ -7,6 +7,9 @@ import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
 import { buildLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
+import { t, nf, getLocale, setLocale } from './lib/i18n.js';
+
+export { setLocale };
 
 /**
  * Report design constraints, in priority order:
@@ -21,7 +24,7 @@ import { rulePlainLabel } from './lib/rule-label.js';
  */
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const kb = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB');
+const kb = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' ' + t('MB') : Math.round(b / 1024) + ' ' + t('KB'));
 
 // Report-wide display preference for the sustainability figure, set once
 // by aggregate via setSustainabilityMetric(). 'co2' or 'energy'.
@@ -33,8 +36,8 @@ export function setSustainabilityMetric(metric) {
 function sustainabilityHeadline(s) {
   if (!s) return null;
   return SUSTAINABILITY_METRIC === 'energy'
-    ? { label: 'Estimated energy per page (mean)', value: `${s.meanEnergyWh ?? 'n/a'} Wh` }
-    : { label: 'Estimated CO₂ per page (mean)', value: `${s.meanCo2g} g` };
+    ? { label: t('Estimated energy per page (mean)'), value: `${s.meanEnergyWh ?? t('n/a')} ${t('Wh')}` }
+    : { label: t('Estimated CO₂ per page (mean)'), value: `${s.meanCo2g} ${t('g')}` };
 }
 const fmtScore = (s) => (s == null ? 'n/a' : `${s}/100`);
 const fmtMedian = (n) => (n == null ? 'n/a' : String(n));
@@ -64,20 +67,20 @@ function affectedPagesBlock(b) {
     return `<ul class="affected">${urls.map(li).join('')}</ul>`;
   }
   const more = b.affected_pages_csv
-    ? `<a href="${esc(b.affected_pages_csv)}">all ${total} pages (CSV)</a>`
-    : `${total} pages total`;
-  return `<ul class="affected">${urls.slice(0, 25).map(li).join('')}</ul><p>…and more — ${more}.</p>`;
+    ? `<a href="${esc(b.affected_pages_csv)}">${t('all @total pages (CSV)', { '@total': total })}</a>`
+    : t('@total pages total', { '@total': total });
+  return `<ul class="affected">${urls.slice(0, 25).map(li).join('')}</ul><p>${t('…and more — @more.', { '@more': more })}</p>`;
 }
 /** Render the pages that link to a broken URL, capped with a "+N more". */
 function linkedFrom(sources) {
   const list = Array.isArray(sources) ? sources : sources ? [sources] : [];
-  if (list.length === 0) return 'n/a';
+  if (list.length === 0) return t('n/a');
   const shown = list.slice(0, 3).map((u) => {
     let label = u;
     try { label = new URL(u).pathname || u; } catch { /* keep raw */ }
     return `<a href="${esc(u)}">${esc(label)}</a>`;
   });
-  const more = list.length > 3 ? ` +${list.length - 3} more` : '';
+  const more = list.length > 3 ? t(' +@n more', { '@n': list.length - 3 }) : '';
   return shown.join('<br>') + more;
 }
 
@@ -88,7 +91,7 @@ function linkedFrom(sources) {
  * heading text (the CSS uses ::before so the glyph isn't in the DOM text).
  */
 function heading(id, text, level = 2) {
-  return `<h${level} id="${esc(id)}"><a class="anchor" href="#${esc(id)}" aria-label="Link to this section"></a>${esc(text)}</h${level}>`;
+  return `<h${level} id="${esc(id)}"><a class="anchor" href="#${esc(id)}" aria-label="${esc(t('Link to this section'))}"></a>${esc(text)}</h${level}>`;
 }
 
 /** " Download: CSV · JSON." from optional relative hrefs; '' if none. */
@@ -97,7 +100,7 @@ function downloadLinks(csvHref, jsonHref) {
     csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '',
     jsonHref ? `<a href="${esc(jsonHref)}">JSON</a>` : '',
   ].filter(Boolean);
-  return parts.length ? ` Download: ${parts.join(' · ')}.` : '';
+  return parts.length ? ` ${t('Download:')} ${parts.join(' · ')}.` : '';
 }
 
 /** A long URL: shown truncated (CSS ellipsis) with the full URL on
@@ -128,10 +131,10 @@ const SUBNAV_ITEMS = [
   ['archive.html', 'Archive', 'archive'],
 ];
 function subnav(active) {
-  return `<nav class="subnav" aria-label="Domain report pages"><ul>${SUBNAV_ITEMS
+  return `<nav class="subnav" aria-label="${esc(t('Domain report pages'))}"><ul>${SUBNAV_ITEMS
     .map(([href, label, key]) => key === active
-      ? `<li aria-current="page">${esc(label)}</li>`
-      : `<li><a href="${esc(href)}">${esc(label)}</a></li>`)
+      ? `<li aria-current="page">${esc(t(label))}</li>`
+      : `<li><a href="${esc(href)}">${esc(t(label))}</a></li>`)
     .join('')}</ul></nav>`;
 }
 
@@ -141,14 +144,15 @@ function subnav(active) {
  * "we evaluate this, there just wasn't data this week" rather than 404.
  */
 function emptyCriterionPage(target, summary, { active, label, message }) {
+  const L = t(label);
   const body = `
-<h1>${esc(target.domain)}: ${esc(label)} — week ${esc(summary.week)}</h1>
+<h1>${esc(target.domain)}: ${esc(L)} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav(active)}
-<p class="meta">${esc(message)}</p>
-<p class="note">This criterion is evaluated for every domain, but a given week's sample may not include pages with data for it. Check the <a href="archive.html">archive</a> for other weeks, or the <a href="index.html">overview</a>.</p>`;
+<p class="meta">${esc(t(message))}</p>
+<p class="note">${t('This criterion is evaluated for every domain, but a given week\'s sample may not include pages with data for it. Check the <a href="archive.html">archive</a> for other weeks, or the <a href="index.html">overview</a>.')}</p>`;
   return layout({
-    title: `${target.domain} ${label} ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${esc(label)}</li>`,
+    title: `${target.domain} ${L} ${summary.week} | vital-scans`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${esc(L)}</li>`,
     body,
     depth: 3,
   });
@@ -172,7 +176,7 @@ function sortableTable(caption, cols, rows) {
         : `<td data-sort="${esc(String(cell.sort))}">${cell.html}</td>`))).join('')}</tr>`)
     .join('\n');
   return `<table class="sortable">
-<caption>${esc(caption)} <span class="bug-meta">— click a column heading to sort</span></caption>
+<caption>${esc(caption)} <span class="bug-meta">${t('— click a column heading to sort')}</span></caption>
 <thead><tr>${thead}</tr></thead>
 <tbody>${body}</tbody>
 </table>`;
@@ -220,22 +224,22 @@ function linksAndErrorsSection(summary, csvHref = null) {
   const brokenRows = broken
     .map((b) => {
       const history = b.weeksBroken > 1
-        ? ` <span class="bug-meta">(broken for ${b.weeksBroken} weeks, first seen ${esc(b.firstSeen)})</span>`
-        : (b.firstSeen ? ` <span class="bug-meta">(first seen ${esc(b.firstSeen)})</span>` : '');
-      return `<tr><th scope="row">${urlCell(b.url)}${history}</th><td>${esc(b.status || b.reason)}</td><td>broken link</td><td>${linkedFrom(b.foundOn)}</td></tr>`;
+        ? ` <span class="bug-meta">(${t('broken for @n weeks, first seen @date', { '@n': b.weeksBroken, '@date': esc(b.firstSeen) })})</span>`
+        : (b.firstSeen ? ` <span class="bug-meta">(${t('first seen @date', { '@date': esc(b.firstSeen) })})</span>` : '');
+      return `<tr><th scope="row">${urlCell(b.url)}${history}</th><td>${esc(b.status || b.reason)}</td><td>${t('broken link')}</td><td>${linkedFrom(b.foundOn)}</td></tr>`;
     })
     .join('\n');
   const errorRows = errors
-    .map((e) => `<tr><th scope="row">${urlCell(e.url)}</th><td>${esc(e.status)}</td><td>page error</td><td>n/a</td></tr>`)
+    .map((e) => `<tr><th scope="row">${urlCell(e.url)}</th><td>${esc(e.status)}</td><td>${t('page error')}</td><td>${t('n/a')}</td></tr>`)
     .join('\n');
-  const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">Download CSV</a>` : '';
+  const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">${t('Download CSV')}</a>` : '';
 
   return `<section aria-labelledby="h-links">
-${heading('h-links', 'Broken links & errors')}
-<p class="meta">Broken links found on scanned pages, plus scanned pages that themselves returned a non-404 error (e.g. 403 or 5xx — 404s are already captured as broken links).${dlLink}</p>
+${heading('h-links', t('Broken links & errors'))}
+<p class="meta">${t('Broken links found on scanned pages, plus scanned pages that themselves returned a non-404 error (e.g. 403 or 5xx — 404s are already captured as broken links).')}${dlLink}</p>
 <table>
-<caption>${broken.length} broken link(s) and ${errors.length} page error(s) in ${esc(summary.week)}.</caption>
-<thead><tr><th scope="col">URL</th><th scope="col">Status</th><th scope="col">Type</th><th scope="col">Linked from</th></tr></thead>
+<caption>${t('@broken broken link(s) and @errors page error(s) in @week.', { '@broken': broken.length, '@errors': errors.length, '@week': esc(summary.week) })}</caption>
+<thead><tr><th scope="col">${t('URL')}</th><th scope="col">${t('Status')}</th><th scope="col">${t('Type')}</th><th scope="col">${t('Linked from')}</th></tr></thead>
 <tbody>${brokenRows}${errorRows}</tbody>
 </table>
 </section>`;
@@ -243,10 +247,10 @@ ${heading('h-links', 'Broken links & errors')}
 
 /** Delta rendered as text first; symbol is reinforcement, not the meaning. */
 function delta(n, { goodWhenDown = true, unit = '' } = {}) {
-  if (n === 0) return '<span class="delta same">no change</span>';
+  if (n === 0) return `<span class="delta same">${t('no change')}</span>`;
   const worse = goodWhenDown ? n > 0 : n < 0;
   const cls = worse ? 'worse' : 'better';
-  const word = worse ? 'worse' : 'better';
+  const word = worse ? t('worse') : t('better');
   const sign = n > 0 ? '+' : '';
   return `<span class="delta ${cls}">${sign}${esc(n)}${unit} ${word}</span>`;
 }
@@ -273,7 +277,7 @@ function sparkline(values, width = 220, height = 36) {
  * off, prefers-color-scheme still applies (progressive enhancement).
  */
 function themeToggle() {
-  return `<button id="theme-toggle" type="button" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false" hidden>
+  return `<button id="theme-toggle" type="button" class="theme-toggle" aria-label="${esc(t('Switch to dark mode'))}" aria-pressed="false" hidden>
   <svg class="icon-sun" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20">
     <circle cx="12" cy="12" r="5" fill="currentColor"/>
     <path stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"
@@ -282,7 +286,7 @@ function themeToggle() {
   <svg class="icon-moon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20">
     <path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
   </svg>
-  <span class="theme-label">Theme</span>
+  <span class="theme-label">${t('Theme')}</span>
 </button>
 <script>
   (function () {
@@ -297,7 +301,7 @@ function themeToggle() {
     function sync() {
       var dark = current() === 'dark';
       // Label/pressed describe the action and state for screen readers.
-      btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      btn.setAttribute('aria-label', dark ? ${JSON.stringify(t('Switch to light mode'))} : ${JSON.stringify(t('Switch to dark mode'))});
       btn.setAttribute('aria-pressed', String(dark));
     }
     sync();
@@ -326,10 +330,10 @@ function themeToggle() {
  */
 function severityTrendChart(series) {
   const LEVELS = [
-    { key: 'critical', label: 'Critical', dash: 'none' },
-    { key: 'serious',  label: 'Serious',  dash: '6 3' },
-    { key: 'moderate', label: 'Moderate', dash: '3 3' },
-    { key: 'minor',    label: 'Minor',    dash: '1 4' },
+    { key: 'critical', label: t('Critical'), dash: 'none' },
+    { key: 'serious',  label: t('Serious'),  dash: '6 3' },
+    { key: 'moderate', label: t('Moderate'), dash: '3 3' },
+    { key: 'minor',    label: t('Minor'),    dash: '1 4' },
   ];
 
   // Derive pages-affected per severity from axe.rules in each week's summary.
@@ -378,16 +382,16 @@ function severityTrendChart(series) {
     `<tr><th scope="row">${esc(p.week)}</th>${activeLevels.map((l) => `<td>${p[l.key]}</td>`).join('')}</tr>`
   ).join('');
   const table = `<table class="visually-hidden">
-<caption>Pages affected by axe severity, by week</caption>
-<thead><tr><th scope="col">Week</th>${activeLevels.map((l) => `<th scope="col">${esc(l.label)}</th>`).join('')}</tr></thead>
+<caption>${t('Pages affected by axe severity, by week')}</caption>
+<thead><tr><th scope="col">${t('Week')}</th>${activeLevels.map((l) => `<th scope="col">${esc(l.label)}</th>`).join('')}</tr></thead>
 <tbody>${tableRows}</tbody>
 </table>`;
 
-  const ariaLabel = `Axe violations by severity over ${pts.length} weeks. ` +
-    activeLevels.map((l) => `${l.label}: ${pts[0][l.key]} → ${pts[pts.length - 1][l.key]} pages`).join('; ') + '.';
+  const ariaLabel = t('Axe violations by severity over @n weeks.', { '@n': pts.length }) + ' ' +
+    activeLevels.map((l) => t('@label: @from → @to pages', { '@label': l.label, '@from': pts[0][l.key], '@to': pts[pts.length - 1][l.key] })).join('; ') + '.';
 
   return `<figure class="chart">
-<figcaption>Pages affected by axe severity over ${pts.length} weeks (lower is better)</figcaption>
+<figcaption>${t('Pages affected by axe severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
   ${xlabels}${ylabels}
@@ -399,7 +403,7 @@ ${table}
 function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
   const pts = points.filter((p) => p.value != null);
   if (pts.length < 2) {
-    return `<p class="meta">${esc(title)}: not enough weeks yet for a trend.</p>`;
+    return `<p class="meta">${t('@title: not enough weeks yet for a trend.', { '@title': esc(title) })}</p>`;
   }
   const W = 640, H = 180, padL = 40, padR = 12, padT = 16, padB = 28;
   const vals = pts.map((p) => p.value);
@@ -419,10 +423,10 @@ function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
   const first = pts[0].value, last = pts[pts.length - 1].value;
   const change = last - first;
   const better = lowerIsBetter ? change < 0 : change > 0;
-  const trend = change === 0 ? 'unchanged' : `${better ? 'better' : 'worse'} (${first}${unit} → ${last}${unit})`;
+  const trend = change === 0 ? t('unchanged') : `${better ? t('better') : t('worse')} (${first}${unit} → ${last}${unit})`;
 
-  const table = `<table class="visually-hidden"><caption>${esc(title)} by week</caption>
-<thead><tr><th scope="col">Week</th><th scope="col">${esc(title)}</th></tr></thead>
+  const table = `<table class="visually-hidden"><caption>${t('@title by week', { '@title': esc(title) })}</caption>
+<thead><tr><th scope="col">${t('Week')}</th><th scope="col">${esc(title)}</th></tr></thead>
 <tbody>${pts.map((p) => `<tr><th scope="row">${esc(p.week)}</th><td>${p.value}${esc(unit)}</td></tr>`).join('')}</tbody></table>`;
 
   // Progressive enhancement: the SVG + table below are the no-JS baseline. The
@@ -434,8 +438,8 @@ function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
   const dataAttr = esc(JSON.stringify(manifest));
 
   return `<figure class="chart" data-parachart="${dataAttr}">
-<figcaption>${esc(title)} over ${pts.length} weeks — ${esc(trend)}</figcaption>
-<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(title)} trend: ${esc(trend)}" preserveAspectRatio="xMidYMid meet">
+<figcaption>${t('@title over @n weeks — @trend', { '@title': esc(title), '@n': pts.length, '@trend': esc(trend) })}</figcaption>
+<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${t('@title trend: @trend', { '@title': esc(title), '@trend': esc(trend) })}" preserveAspectRatio="xMidYMid meet">
   <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2"/>
   ${dots}${xlabels}${ylabels}
 </svg>
@@ -446,7 +450,7 @@ ${table}
 function layout({ title, breadcrumb, body, depth, extraScript = '' }) {
   const base = '../'.repeat(depth);
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${esc(getLocale())}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -463,24 +467,19 @@ function layout({ title, breadcrumb, body, depth, extraScript = '' }) {
 </script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main">${t('Skip to content')}</a>
 <header>
-  <p class="brand"><a href="${base}index.html">vital-scans</a> <span class="tag">open quality ledger</span></p>
-  ${breadcrumb ? `<nav aria-label="Breadcrumb"><ol class="crumbs">${breadcrumb}</ol></nav>` : ''}
+  <p class="brand"><a href="${base}index.html">vital-scans</a> <span class="tag">${t('open quality ledger')}</span></p>
+  ${breadcrumb ? `<nav aria-label="${esc(t('Breadcrumb'))}"><ol class="crumbs">${breadcrumb}</ol></nav>` : ''}
   ${themeToggle()}
 </header>
 <main id="main">
 ${body}
 </main>
 <footer>
-  <p>Built in the open with <a href="https://github.com/dequelabs/axe-core">axe-core</a> and
-  <a href="https://github.com/Siteimprove/alfa">Siteimprove Alfa</a>; emissions estimated with
-  <a href="https://github.com/thegreenwebfoundation/co2.js">co2.js</a> (SWD v4 model).</p>
-  <p>This project follows public commitments to
-  <a href="https://mgifford.github.io/ACCESSIBILITY.md/">accessibility</a> and
-  <a href="https://mgifford.github.io/SUSTAINABILITY.md/">sustainability</a>, and the
-  <a href="https://w3c.github.io/sustainableweb-wsg/">W3C Web Sustainability Guidelines</a>.</p>
-  <p>Automated checks find roughly a third of accessibility barriers. A clean report is a floor, not a finish line.</p>
+  <p>${t('Built in the open with <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Siteimprove Alfa</a>; emissions estimated with <a href="https://github.com/thegreenwebfoundation/co2.js">co2.js</a> (SWD v4 model).')}</p>
+  <p>${t('This project follows public commitments to <a href="https://mgifford.github.io/ACCESSIBILITY.md/">accessibility</a> and <a href="https://mgifford.github.io/SUSTAINABILITY.md/">sustainability</a>, and the <a href="https://w3c.github.io/sustainableweb-wsg/">W3C Web Sustainability Guidelines</a>.')}</p>
+  <p>${t('Automated checks find roughly a third of accessibility barriers. A clean report is a floor, not a finish line.')}</p>
 </footer>
 ${paraChartLoader(base)}
 ${extraScript}
@@ -552,7 +551,7 @@ if (figs.length) {
 
 function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
   const ids = Object.keys(rules).sort((a, b) => rules[b].pages - rules[a].pages || rules[b].count - rules[a].count);
-  if (ids.length === 0) return `<p>No ${esc(kind)} findings this week.</p>`;
+  if (ids.length === 0) return `<p>${t('No @kind findings this week.', { '@kind': esc(kind) })}</p>`;
   const rows = ids
     .map((id) => {
       const r = rules[id];
@@ -562,17 +561,17 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
       const csv = csvLinks.byRule?.[`${engineKey}:${id}`];
       return `<tr>
   <th scope="row">${link ? `<a href="${esc(link)}">${label}</a>` : label}</th>
-  <td>${r.impact ? esc(r.impact) : 'n/a'}</td>
+  <td>${r.impact ? esc(r.impact) : t('n/a')}</td>
   <td class="num">${r.pages}</td>
   <td class="num">${r.count}</td>
   <td>${(r.examplePages ?? []).map((u) => `<a href="${esc(u)}">${esc(new URL(u).pathname)}</a>`).join('<br>')}</td>
-  <td>${csv ? `<a href="${esc(csv)}">all ${r.pages} pages (CSV)</a>` : '—'}</td>
+  <td>${csv ? `<a href="${esc(csv)}">${t('all @n pages (CSV)', { '@n': r.pages })}</a>` : '—'}</td>
 </tr>`;
     })
     .join('\n');
   return `<table>
 <caption>${esc(caption)}</caption>
-<thead><tr><th scope="col">Rule</th><th scope="col">Impact</th><th scope="col" class="num">Pages affected</th><th scope="col" class="num">Instances</th><th scope="col">Example pages</th><th scope="col">All affected</th></tr></thead>
+<thead><tr><th scope="col">${t('Rule')}</th><th scope="col">${t('Impact')}</th><th scope="col" class="num">${t('Pages affected')}</th><th scope="col" class="num">${t('Instances')}</th><th scope="col">${t('Example pages')}</th><th scope="col">${t('All affected')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
 }
@@ -589,25 +588,26 @@ function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting 
   const ordered = view.bugs;
   if (!ordered || ordered.length === 0) {
     return `<section aria-labelledby="h-bugs">
-${heading('h-bugs', `Bug reports`)}
-<p>No accessibility findings to report this week.</p>
+${heading('h-bugs', t('Bug reports'))}
+<p>${t('No accessibility findings to report this week.')}</p>
 </section>`;
   }
   const sevCount = ordered.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
+  const SEV_LABEL = { Critical: t('critical'), Serious: t('serious'), Moderate: t('moderate'), Minor: t('minor') };
   const sevSummary = ['Critical', 'Serious', 'Moderate', 'Minor']
     .filter((s) => sevCount[s])
-    .map((s) => `${sevCount[s]} ${s.toLowerCase()}`)
+    .map((s) => `${sevCount[s]} ${SEV_LABEL[s]}`)
     .join(', ');
   const dupCount = ordered.filter((b) => b.possible_duplicate_of).length;
   const catCounts = ordered.reduce((m, b) => ((m[b.wcag_category ?? 'Undetermined'] = (m[b.wcag_category ?? 'Undetermined'] ?? 0) + 1), m), {});
   const catOrder = ['WCAG 2.0 A', 'WCAG 2.0 AA', 'WCAG 2.1 A', 'WCAG 2.1 AA', 'WCAG 2.2 A', 'WCAG 2.2 AA', 'WCAG 2.x AAA', 'Best Practice', 'Undetermined'];
-  const catSummary = catOrder.filter((c) => catCounts[c]).map((c) => `${catCounts[c]} ${c}`).join(', ');
+  const catSummary = catOrder.filter((c) => catCounts[c]).map((c) => `${catCounts[c]} ${t(c)}`).join(', ');
 
   const blocks = ordered
     .map((b) => {
       const wcagDetail = b.wcag_sc
-        ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (Level ${esc(b.wcag_level)}, WCAG ${esc(b.wcag_version ?? '2.x')})`
-        : b.wcag_category === 'Best Practice' ? 'Best Practice — not a WCAG requirement' : 'undetermined';
+        ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (${t('Level @level, WCAG @version', { '@level': esc(b.wcag_level), '@version': esc(b.wcag_version ?? '2.x') })})`
+        : b.wcag_category === 'Best Practice' ? t('Best Practice — not a WCAG requirement') : t('undetermined');
       const ruleLabel = b.rule_label && b.rule_label !== b.rule_id
         ? `${esc(b.rule_label)} <span class="bug-meta">[${esc(b.rule_id)}]</span>`
         : esc(b.rule_id);
@@ -615,39 +615,39 @@ ${heading('h-bugs', `Bug reports`)}
         ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${ruleLabel}</a>`
         : `${esc(b.tool)} — ${ruleLabel}`;
       const dupNote = b.possible_duplicate_of
-        ? `<div><dt>Possible duplicate</dt><dd>Same WCAG SC covered by axe report <code>${esc(b.possible_duplicate_of)}</code> (pattern <code>${esc(b.possible_duplicate_pattern)}</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.</dd></div>`
+        ? `<div><dt>${t('Possible duplicate')}</dt><dd>${t('Same WCAG SC covered by axe report <code>@id</code> (pattern <code>@pattern</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.', { '@id': esc(b.possible_duplicate_of), '@pattern': esc(b.possible_duplicate_pattern) })}</dd></div>`
         : '';
       return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="">
-<summary><span class="sev-badge">${esc(b.severity)}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(b.wcag_category)}</span> ` : ''}${esc(b.summary)}
-<span class="bug-meta">${b.frequency.pages_affected}/${b.frequency.total_pages_scanned} pages · ${b.frequency.instances} instances${b.possible_duplicate_of ? ' · possible duplicate' : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">Likely ${b.likely_source}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
+<summary><span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
+<span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
-  <div><dt>Bug ID</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
-  <div><dt>Pattern ID</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
-  <div><dt>Combined ID</dt><dd><code>${esc(b.instance_id)}</code> (pattern <code>${esc(b.pattern_id)}</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern</dd></div>
-  <div><dt>WCAG category</dt><dd>${esc(b.wcag_category ?? 'Undetermined')}</dd></div>
-  <div><dt>WCAG SC</dt><dd>${wcagDetail}</dd></div>
-  <div><dt>Rule</dt><dd>${ruleLink}</dd></div>
-  <div><dt>Example URL</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
-  ${b.xpath ? `<div><dt>XPath / selector</dt><dd><code>${esc(b.xpath)}</code></dd></div>` : ''}
-  ${b.first_seen ? `<div><dt>History</dt><dd>first seen ${esc(b.first_seen)}, last seen ${esc(b.last_seen)} (${b.weeks_seen} wk)</dd></div>` : ''}
+  <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
+  <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
+  <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
+  <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
+  <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
+  <div><dt>${t('Rule')}</dt><dd>${ruleLink}</dd></div>
+  <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
+  ${b.xpath ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(b.xpath)}</code></dd></div>` : ''}
+  ${b.first_seen ? `<div><dt>${t('History')}</dt><dd>${t('first seen @first, last seen @last (@n wk)', { '@first': esc(b.first_seen), '@last': esc(b.last_seen), '@n': b.weeks_seen })}</dd></div>` : ''}
   ${dupNote}
 </dl>
-${b.html_snippet ? `<p class="bug-label">HTML snippet — use this to validate the finding without re-running the tool</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
-<p class="bug-label">Description</p><p>${esc(b.description)}</p>
-<p class="bug-label">Steps to reproduce</p><ol>${b.steps_to_reproduce.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
-<p class="bug-label">Impact</p>
+${b.html_snippet ? `<p class="bug-label">${t('HTML snippet — use this to validate the finding without re-running the tool')}</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
+<p class="bug-label">${t('Description')}</p><p>${esc(b.description)}</p>
+<p class="bug-label">${t('Steps to reproduce')}</p><ol>${b.steps_to_reproduce.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
+<p class="bug-label">${t('Impact')}</p>
 ${b.impact?.groups?.length
         ? `<p>${esc(b.impact.summary)}</p><ul class="impact-groups">${b.impact.groups
-            .map((g) => `<li><strong>${esc(g.group)}</strong> — ${esc(g.percent)} of population${g.estimatedExcluded != null ? ` (~${g.estimatedExcluded.toLocaleString()} people/week potentially excluded)` : ''}</li>`)
+            .map((g) => `<li><strong>${esc(g.group)}</strong> — ${t('@percent of population', { '@percent': esc(g.percent) })}${g.estimatedExcluded != null ? ` ${t('(~@n people/week potentially excluded)', { '@n': nf(g.estimatedExcluded) })}` : ''}</li>`)
             .join('')}</ul>`
-        : `<p class="bug-placeholder">${esc(b.impact?.summary ?? 'Requires manual testing.')}</p>`}
-<p class="bug-label">Affected pages</p>
+        : `<p class="bug-placeholder">${esc(b.impact?.summary ?? t('Requires manual testing.'))}</p>`}
+<p class="bug-label">${t('Affected pages')}</p>
 ${affectedPagesBlock(b)}
-<p class="bug-label">Testing environment</p><p>${esc(b.testing_environment)}</p>
-<p class="bug-label">Suggested fix</p>${b.remediation_tip ? `<p><strong>How to fix:</strong> ${esc(b.remediation_tip)}</p>` : ''}${b.tech_remediation_tip ? `<p class="tech-tip"><strong>${esc(b.tech_name)} tip:</strong> ${esc(b.tech_remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
+<p class="bug-label">${t('Testing environment')}</p><p>${esc(b.testing_environment)}</p>
+<p class="bug-label">${t('Suggested fix')}</p>${b.remediation_tip ? `<p><strong>${t('How to fix:')}</strong> ${esc(b.remediation_tip)}</p>` : ''}${b.tech_remediation_tip ? `<p class="tech-tip"><strong>${t('@tech tip:', { '@tech': esc(b.tech_name) })}</strong> ${esc(b.tech_remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
 <div class="triage-block">
-<label class="triage-label">Triage status<select class="triage-status" data-triage-id="${esc(b.instance_id)}"><option value="">— not reviewed —</option><option value="valid">Valid</option><option value="false-positive">False positive</option><option value="duplicate">Duplicate</option><option value="wont-fix">Won&apos;t fix</option><option value="deferred">Deferred</option></select></label>
-<label class="triage-label triage-notes-label">Notes<textarea class="triage-notes" rows="2" placeholder="Add notes…" data-triage-id="${esc(b.instance_id)}"></textarea></label>
+<label class="triage-label">${t('Triage status')}<select class="triage-status" data-triage-id="${esc(b.instance_id)}"><option value="">${t('— not reviewed —')}</option><option value="valid">${t('Valid')}</option><option value="false-positive">${t('False positive')}</option><option value="duplicate">${t('Duplicate')}</option><option value="wont-fix">${t("Won't fix")}</option><option value="deferred">${t('Deferred')}</option></select></label>
+<label class="triage-label triage-notes-label">${t('Notes')}<textarea class="triage-notes" rows="2" placeholder="${esc(t('Add notes…'))}" data-triage-id="${esc(b.instance_id)}"></textarea></label>
 </div>
 </details>`;
     })
@@ -658,49 +658,48 @@ ${affectedPagesBlock(b)}
   // their data-severity / data-category attributes.
   const sevPresent = ['Critical', 'Serious', 'Moderate', 'Minor'].filter((s) => sevCount[s]);
   const catPresent = catOrder.filter((c) => catCounts[c]);
-  const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${esc(s)} (${sevCount[s]})</option>`).join('');
-  const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${esc(c)} (${catCounts[c]})</option>`).join('');
-  const filterBar = `<form class="bug-filter" hidden aria-label="Filter bug reports" data-total="${ordered.length}" data-prioritized="${view.visibleCount}">
+  const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${t(s)} (${sevCount[s]})</option>`).join('');
+  const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${t(c)} (${catCounts[c]})</option>`).join('');
+  const filterBar = `<form class="bug-filter" hidden aria-label="${esc(t('Filter bug reports'))}" data-total="${ordered.length}" data-prioritized="${view.visibleCount}">
 <div class="bug-filter-row">
-<label class="bug-filter-check"><input type="checkbox" id="filter-all"> Show everything</label>
-<label>Severity <select id="filter-sev"><option value="">All severities</option>${sevOpts}</select></label>
-<label>WCAG category <select id="filter-cat"><option value="">All categories</option>${catOpts}</select></label>
-<label>Triage <select id="filter-triage"><option value="">All statuses</option><option value="__none__">Not reviewed</option><option value="valid">Valid</option><option value="false-positive">False positive</option><option value="duplicate">Duplicate</option><option value="wont-fix">Won&apos;t fix</option><option value="deferred">Deferred</option></select></label>
-<label class="bug-filter-check"><input type="checkbox" id="filter-dup"> Hide possible duplicates</label>
-<button type="button" id="filter-reset">Reset</button>
+<label class="bug-filter-check"><input type="checkbox" id="filter-all"> ${t('Show everything')}</label>
+<label>${t('Severity')} <select id="filter-sev"><option value="">${t('All severities')}</option>${sevOpts}</select></label>
+<label>${t('WCAG category')} <select id="filter-cat"><option value="">${t('All categories')}</option>${catOpts}</select></label>
+<label>${t('Triage')} <select id="filter-triage"><option value="">${t('All statuses')}</option><option value="__none__">${t('Not reviewed')}</option><option value="valid">${t('Valid')}</option><option value="false-positive">${t('False positive')}</option><option value="duplicate">${t('Duplicate')}</option><option value="wont-fix">${t("Won't fix")}</option><option value="deferred">${t('Deferred')}</option></select></label>
+<label class="bug-filter-check"><input type="checkbox" id="filter-dup"> ${t('Hide possible duplicates')}</label>
+<button type="button" id="filter-reset">${t('Reset')}</button>
 </div>
-<p class="bug-filter-count" aria-live="polite" id="filter-count">Showing ${view.visibleCount} prioritized issue type(s) out of ${ordered.length}.</p>
+<p class="bug-filter-count" aria-live="polite" id="filter-count">${t('Showing @count prioritized issue type(s) out of @total.', { '@count': view.visibleCount, '@total': ordered.length })}</p>
 </form>`;
 
-  const csvLink = csvBugsHref ? ` · <a href="${esc(csvBugsHref)}">CSV (all findings)</a>` : '';
+  const csvLink = csvBugsHref ? ` · <a href="${esc(csvBugsHref)}">${t('CSV (all findings)')}</a>` : '';
   const hiddenCount = ordered.length - view.visibleCount;
   const priorityLine = hiddenCount > 0
-    ? `<p class="note">Default view shows ${view.visibleCount} prioritized issue type(s); ${hiddenCount} more are available if you switch to "Show everything".</p>`
-    : `<p class="note">All findings fit within the prioritized view this week.</p>`;
+    ? `<p class="note">${t('Default view shows @count prioritized issue type(s); @hidden more are available if you switch to "Show everything".', { '@count': view.visibleCount, '@hidden': hiddenCount })}</p>`
+    : `<p class="note">${t('All findings fit within the prioritized view this week.')}</p>`;
   const dupLine = dupCount > 0
-    ? `<p class="note">${dupCount} finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.</p>`
+    ? `<p class="note">${t('@n finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.', { '@n': dupCount })}</p>`
     : '';
 
   return `<section aria-labelledby="h-bugs">
-${heading('h-bugs', `Bug reports`)}
-<p class="meta">${view.visibleCount} issue type(s) are shown by default out of ${ordered.length} total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.</p>
-  <p class="meta">Overall severity mix: ${esc(sevSummary)}. By WCAG category: ${esc(catSummary)}. Ordered by severity, key-page impact, WCAG level, and prevalence. Following
-<a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.
-Download: <a href="bugs.md">Markdown</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">JSON (full archive)</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">JSON (AI diagnostic)</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">Priority pages CSV</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">Priority pages JSON</a>` : ''}.</p>
-<p class="note">Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.</p>
+${heading('h-bugs', t('Bug reports'))}
+<p class="meta">${t('@count issue type(s) are shown by default out of @total total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.', { '@count': view.visibleCount, '@total': ordered.length })}</p>
+  <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
+${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
+<p class="note">${t('Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.')}</p>
 ${priorityLine}
 ${dupLine}
 <div class="triage-io" hidden id="triage-io">
-<span class="triage-io-label">Triage decisions:</span>
-<button type="button" id="triage-export" class="triage-btn">Export (.json)</button>
-<label class="triage-btn triage-import-label"><input type="file" id="triage-import" accept=".json" style="display:none">Import (.json)</label>
+<span class="triage-io-label">${t('Triage decisions:')}</span>
+<button type="button" id="triage-export" class="triage-btn">${t('Export (.json)')}</button>
+<label class="triage-btn triage-import-label"><input type="file" id="triage-import" accept=".json" style="display:none">${t('Import (.json)')}</label>
 <span id="triage-io-status" class="triage-io-status" aria-live="polite"></span>
 </div>
 ${filterBar}
 <div class="bug-list">${blocks}</div>
-<p class="bug-filter-empty" hidden>No issues match the current filters. <button type="button" id="filter-reset-2">Clear filters</button></p>
-${BUG_FILTER_SCRIPT}
-${TRIAGE_SCRIPT}
+<p class="bug-filter-empty" hidden>${t('No issues match the current filters.')} <button type="button" id="filter-reset-2">${t('Clear filters')}</button></p>
+${bugFilterScript()}
+${triageScript()}
 </section>`;
 }
 
@@ -708,11 +707,12 @@ ${TRIAGE_SCRIPT}
 // to each bug (persisted in localStorage by instance_id) plus an export/import
 // toolbar so triage decisions can be shared between team members.
 // No-JS: fields render but don't persist; toolbar stays hidden.
-const TRIAGE_SCRIPT = `<script>
+function triageScript() {
+  return `<script>
 (function () {
   'use strict';
   var KEY = 'vital-triage:';
-  var LABELS = { valid: 'Valid', 'false-positive': 'False positive', duplicate: 'Duplicate', 'wont-fix': "Won't fix", deferred: 'Deferred' };
+  var LABELS = { valid: ${JSON.stringify(t('Valid'))}, 'false-positive': ${JSON.stringify(t('False positive'))}, duplicate: ${JSON.stringify(t('Duplicate'))}, 'wont-fix': ${JSON.stringify(t("Won't fix"))}, deferred: ${JSON.stringify(t('Deferred'))} };
   function load(id) {
     try { var r = localStorage.getItem(KEY + id); return r ? JSON.parse(r) : {}; } catch (e) { return {}; }
   }
@@ -775,7 +775,7 @@ const TRIAGE_SCRIPT = `<script>
       }
     }
     var count = Object.keys(entries).length;
-    if (!count) { setStatus('No triage decisions to export.'); return; }
+    if (!count) { setStatus(${JSON.stringify(t('No triage decisions to export.'))}); return; }
     var payload = JSON.stringify({ version: 1, exported: new Date().toISOString(), entries: entries }, null, 2);
     var blob = new Blob([payload], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
@@ -786,7 +786,7 @@ const TRIAGE_SCRIPT = `<script>
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    setStatus('Exported ' + count + ' decision(s).');
+    setStatus(${JSON.stringify(t('Exported @count decision(s).'))}.replace('@count', count));
   });
   // Import: read a previously exported JSON file and merge into localStorage,
   // then refresh any visible triage controls on this page.
@@ -798,7 +798,7 @@ const TRIAGE_SCRIPT = `<script>
     reader.onload = function (ev) {
       try {
         var data = JSON.parse(ev.target.result);
-        if (!data.entries || typeof data.entries !== 'object') throw new Error('invalid format — missing entries object');
+        if (!data.entries || typeof data.entries !== 'object') throw new Error(${JSON.stringify(t('invalid format — missing entries object'))});
         var count = 0;
         for (var id in data.entries) {
           var entry = data.entries[id];
@@ -811,19 +811,21 @@ const TRIAGE_SCRIPT = `<script>
           count++;
         }
         if (window.__vitalApplyFilter) window.__vitalApplyFilter();
-        setStatus('Imported ' + count + ' decision(s).');
-      } catch (err) { setStatus('Import failed: ' + err.message); }
+        setStatus(${JSON.stringify(t('Imported @count decision(s).'))}.replace('@count', count));
+      } catch (err) { setStatus(${JSON.stringify(t('Import failed: @msg'))}.replace('@msg', err.message)); }
       e.target.value = ''; // allow re-importing the same file
     };
     reader.readAsText(file);
   });
 })();
 <\/script>`;
+}
 
 // Progressive-enhancement filtering for the bug-report list. Reveals the
 // filter form (hidden by default so no-JS users see every bug) and toggles
 // each .bug <details> by its data-severity / data-category attributes.
-const BUG_FILTER_SCRIPT = `<script>
+function bugFilterScript() {
+  return `<script>
 (function () {
   var form = document.querySelector('.bug-filter');
   if (!form) return;
@@ -855,8 +857,10 @@ const BUG_FILTER_SCRIPT = `<script>
     });
     var filtered = showEverything || s || c || t || hideDup;
     count.textContent = filtered
-      ? (showEverything && !t ? 'Showing all ' + shown + ' issue type(s).' : 'Showing ' + shown + ' of ' + total + ' issue type(s).')
-      : 'Showing ' + prioritized + ' prioritized issue type(s) out of ' + total + '.';
+      ? (showEverything && !t
+          ? ${JSON.stringify(t('Showing all @count issue type(s).'))}.replace('@count', shown)
+          : ${JSON.stringify(t('Showing @count of @total issue type(s).'))}.replace('@count', shown).replace('@total', total))
+      : ${JSON.stringify(t('Showing @count prioritized issue type(s) out of @total.'))}.replace('@count', prioritized).replace('@total', total);
     if (empty) empty.hidden = shown !== 0;
   }
   function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; if (triage) triage.value = ''; dup.checked = false; apply(); }
@@ -868,11 +872,12 @@ const BUG_FILTER_SCRIPT = `<script>
   document.getElementById('filter-reset').addEventListener('click', reset);
   var r2 = document.getElementById('filter-reset-2');
   if (r2) r2.addEventListener('click', reset);
-  // Expose apply() so TRIAGE_SCRIPT can refresh the filter when triage state is restored or changed.
+  // Expose apply() so the triage script can refresh the filter when triage state is restored or changed.
   window.__vitalApplyFilter = apply;
   apply();
 })();
 </script>`;
+}
 
 /**
  * Per-engine coverage: how many of the week's pages each engine ran on,
@@ -887,13 +892,13 @@ function coverageTable(summary) {
     .map(([engine, n]) => `<tr><th scope="row">${esc(engine)}</th><td class="num">${n}</td><td class="num">${Math.round((100 * n) / total)}%</td></tr>`)
     .join('\n');
   const attemptLine = (summary.pagesAttempted != null)
-    ? ` · ${summary.pagesSucceeded ?? '?'} succeeded of ${summary.pagesAttempted} attempted`
+    ? ` · ${t('@ok succeeded of @n attempted', { '@ok': summary.pagesSucceeded ?? '?', '@n': summary.pagesAttempted })}`
     : '';
   return `<details class="coverage">
-<summary>Scan coverage this week (${summary.pagesScanned} pages${attemptLine})</summary>
+<summary>${t('Scan coverage this week (@n pages@attempt)', { '@n': summary.pagesScanned, '@attempt': attemptLine })}</summary>
 <table>
-<caption>Pages each engine ran on, per the configured weekly sampling rates.</caption>
-<thead><tr><th scope="col">Engine</th><th scope="col" class="num">Pages</th><th scope="col" class="num">Coverage</th></tr></thead>
+<caption>${t('Pages each engine ran on, per the configured weekly sampling rates.')}</caption>
+<thead><tr><th scope="col">${t('Engine')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Coverage')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </details>`;
@@ -916,20 +921,20 @@ function resourcesSection(summary) {
   if (!r) return '';
   const typeRows = Object.entries(r.byType)
     .sort((a, b) => b[1] - a[1])
-    .map(([type, n]) => `<tr><th scope="row">${esc(RESOURCE_LABELS[type] ?? type)}</th><td class="num">${n}</td></tr>`)
+    .map(([type, n]) => `<tr><th scope="row">${esc(t(RESOURCE_LABELS[type] ?? type))}</th><td class="num">${n}</td></tr>`)
     .join('\n');
   const newList = (r.newThisWeek ?? []);
   const newBlock = newList.length
-    ? `<h3>New this week (${newList.length})</h3>
-<ul>${newList.slice(0, 100).map((n) => `<li><span class="bug-meta">${esc(RESOURCE_LABELS[n.type] ?? n.type)}:</span> <a href="${esc(n.url)}">${esc(n.url)}</a></li>`).join('')}</ul>`
-    : `<p>No new resources first seen this week.</p>`;
+    ? `<h3>${t('New this week (@n)', { '@n': newList.length })}</h3>
+<ul>${newList.slice(0, 100).map((n) => `<li><span class="bug-meta">${esc(t(RESOURCE_LABELS[n.type] ?? n.type))}:</span> <a href="${esc(n.url)}">${esc(n.url)}</a></li>`).join('')}</ul>`
+    : `<p>${t('No new resources first seen this week.')}</p>`;
   return `<section aria-labelledby="h-resources">
-${heading('h-resources', `Embedded & linked resources`)}
-<p class="meta">Non-HTML resources this site links to or embeds — PDFs, Office documents, iframes, and media. The site owner is responsible for their accessibility too. ${r.csv ? `Full inventory with first-seen dates: <a href="${esc(r.csv)}">CSV</a>.` : ''}</p>
+${heading('h-resources', t('Embedded & linked resources'))}
+<p class="meta">${t('Non-HTML resources this site links to or embeds — PDFs, Office documents, iframes, and media. The site owner is responsible for their accessibility too.')} ${r.csv ? t('Full inventory with first-seen dates: <a href="@csv">CSV</a>.', { '@csv': esc(r.csv) }) : ''}</p>
 ${newBlock}
 <table>
-<caption>${r.total} distinct resources, by type.</caption>
-<thead><tr><th scope="col">Type</th><th scope="col" class="num">Count</th></tr></thead>
+<caption>${t('@n distinct resources, by type.', { '@n': r.total })}</caption>
+<thead><tr><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Count')}</th></tr></thead>
 <tbody>${typeRows}</tbody>
 </table>
 </section>`;
@@ -951,20 +956,20 @@ function fixFirstSection(bugs) {
   if (top.length === 0) return '';
   const rows = top
     .map((b) => `<tr>
-  <th scope="row"><a href="accessibility.html#${esc(b.instance_id)}">${esc(b.summary)}</a>${b.rule_url ? ` <a href="${esc(b.rule_url)}" class="bug-meta">(rule↗)</a>` : ''}</th>
-  <td><span class="sev-badge">${esc(b.severity)}</span></td>
+  <th scope="row"><a href="accessibility.html#${esc(b.instance_id)}">${esc(b.summary)}</a>${b.rule_url ? ` <a href="${esc(b.rule_url)}" class="bug-meta">${t('(rule↗)')}</a>` : ''}</th>
+  <td><span class="sev-badge">${esc(t(b.severity))}</span></td>
   <td class="num">${b.frequency.pages_affected}</td>
   <td>${b.impact?.groups?.length ? esc(b.impact.groups.map((g) => g.group).slice(0, 2).join(', ')) : '—'}</td>
   <td>${b.remediation_tip ? esc(b.remediation_tip) : (b.suggested_fix ? esc(b.suggested_fix) : '—')}</td>
-  <td>${b.affected_pages_csv ? `<a href="${esc(b.affected_pages_csv)}">pages (CSV)</a>` : '—'}</td>
+  <td>${b.affected_pages_csv ? `<a href="${esc(b.affected_pages_csv)}">${t('pages (CSV)')}</a>` : '—'}</td>
 </tr>`)
     .join('\n');
   return `<section aria-labelledby="h-fixfirst">
-${heading('h-fixfirst', `Fix these first`)}
-<p class="meta">Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessibility.html#h-bugs">Accessibility page</a>.</p>
+${heading('h-fixfirst', t('Fix these first'))}
+<p class="meta">${t('Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessibility.html#h-bugs">Accessibility page</a>.')}</p>
 <table>
-<caption>Top ${top.length} issues to prioritize this week.</caption>
-<thead><tr><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col" class="num">Pages</th><th scope="col">Who it affects</th><th scope="col">How to fix</th><th scope="col">Evidence</th></tr></thead>
+<caption>${t('Top @n issues to prioritize this week.', { '@n': top.length })}</caption>
+<thead><tr><th scope="col">${t('Issue')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Who it affects')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
 </section>`;
@@ -977,7 +982,7 @@ ${heading('h-fixfirst', `Fix these first`)}
  */
 function checklist(items) {
   return `<ul class="checklist">${items
-    .map((c) => `<li class="${c.pass ? 'pass' : 'fail'}"><span class="check" aria-hidden="true">${c.pass ? '✓' : '✗'}</span> ${esc(c.label)}${c.detail ? ` <span class="bug-meta">${esc(String(c.detail))}</span>` : ''}<span class="visually-hidden">: ${c.pass ? 'pass' : 'fail'}</span></li>`)
+    .map((c) => `<li class="${c.pass ? 'pass' : 'fail'}"><span class="check" aria-hidden="true">${c.pass ? '✓' : '✗'}</span> ${esc(c.label)}${c.detail ? ` <span class="bug-meta">${esc(String(c.detail))}</span>` : ''}<span class="visually-hidden">: ${c.pass ? t('pass') : t('fail')}</span></li>`)
     .join('')}</ul>`;
 }
 function standardsSecuritySection(summary) {
@@ -986,7 +991,7 @@ function standardsSecuritySection(summary) {
   const pi = summary.publicInterest ?? null;
   if (!sec && !std && !pi) return '';
   const secBlock = sec ? `
-<h3>Security &amp; domain hygiene <span class="bug-meta">${sec.passed}/${sec.total} on the origin</span></h3>
+<h3>${t('Security & domain hygiene')} <span class="bug-meta">${t('@passed/@total on the origin', { '@passed': sec.passed, '@total': sec.total })}</span></h3>
 ${checklist(sec.checks)}` : '';
   const stdBlock = std ? (() => {
     const pwaChecks = std.checks.filter((c) => c.id.startsWith('pwa-'));
@@ -995,30 +1000,30 @@ ${checklist(sec.checks)}` : '';
     const hasSW = pwaChecks.find((c) => c.id === 'pwa-service-worker');
     const hasManifest = pwaChecks.find((c) => c.id === 'pwa-manifest');
     const pwaInterpretation = hasSW?.pass > 0
-      ? `Service worker detected on ${hasSW.pass} of ${hasSW.total} checked page(s). ${hasManifest?.pass > 0 ? 'Web app manifest also present.' : 'No web app manifest found.'} Service workers enable offline access and "Add to Home Screen" install.`
-      : 'No service worker detected on any checked page — this site does not provide offline access or PWA install capability.';
+      ? t('Service worker detected on @n of @total checked page(s).', { '@n': hasSW.pass, '@total': hasSW.total }) + ' ' + (hasManifest?.pass > 0 ? t('Web app manifest also present.') : t('No web app manifest found.')) + ' ' + t('Service workers enable offline access and "Add to Home Screen" install.')
+      : t('No service worker detected on any checked page — this site does not provide offline access or PWA install capability.');
     const pwaBlock = pwaChecks.length ? `
-<h3>PWA &amp; offline readiness <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
-<p class="meta">${pwaInterpretation} These checks run on every crawled page via Playwright (not sampled). Lighthouse 12+ removed the dedicated PWA category score.</p>
+<h3>${t('PWA & offline readiness')} <span class="bug-meta">${t('across @n page(s)', { '@n': std.pagesChecked })}</span></h3>
+<p class="meta">${pwaInterpretation} ${t('These checks run on every crawled page via Playwright (not sampled). Lighthouse 12+ removed the dedicated PWA category score.')}</p>
 <table>
-<caption>PWA / offline readiness signals (lowest pass rate first).</caption>
-<thead><tr><th scope="col">Check</th><th scope="col" class="num">Pass rate</th><th scope="col" class="num">Pages</th></tr></thead>
+<caption>${t('PWA / offline readiness signals (lowest pass rate first).')}</caption>
+<thead><tr><th scope="col">${t('Check')}</th><th scope="col" class="num">${t('Pass rate')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${pwaChecks.map(checkRow).join('')}</tbody>
 </table>` : '';
     return `
-<h3>Web standards &amp; metadata <span class="bug-meta">across ${std.pagesChecked} page(s)</span></h3>
+<h3>${t('Web standards & metadata')} <span class="bug-meta">${t('across @n page(s)', { '@n': std.pagesChecked })}</span></h3>
 <table>
-<caption>Share of checked pages passing each standard (lowest first).</caption>
-<thead><tr><th scope="col">Standard</th><th scope="col" class="num">Pass rate</th><th scope="col" class="num">Pages</th></tr></thead>
+<caption>${t('Share of checked pages passing each standard (lowest first).')}</caption>
+<thead><tr><th scope="col">${t('Standard')}</th><th scope="col" class="num">${t('Pass rate')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${metaChecks.map(checkRow).join('')}</tbody>
 </table>
-${std.social?.length ? `<p class="meta">Open social presence found: ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : '<p class="meta">No Mastodon/Bluesky links detected on checked pages.</p>'}
+${std.social?.length ? `<p class="meta">${t('Open social presence found:')} ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : `<p class="meta">${t('No Mastodon/Bluesky links detected on checked pages.')}</p>`}
 ${pwaBlock}`;
   })() : '';
   const piBlock = publicInterestSection(pi);
   return `<section aria-labelledby="h-standards">
-${heading('h-standards', `Standards & security`)}
-<p class="meta">Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.</p>
+${heading('h-standards', t('Standards & security'))}
+<p class="meta">${t('Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.')}</p>
 ${secBlock}
 ${stdBlock}
 ${piBlock}
@@ -1029,9 +1034,9 @@ function publicInterestSection(pi) {
   if (!pi) return '';
 
   const badge = (result) => {
-    if (result === 'pass') return '<span class="pwa-badge pwa-pass" aria-label="pass">✓</span>';
-    if (result === 'fail') return '<span class="pwa-badge pwa-fail" aria-label="not found">✗</span>';
-    return '<span class="pwa-badge pwa-partial" aria-label="unknown">~</span>';
+    if (result === 'pass') return `<span class="pwa-badge pwa-pass" aria-label="${esc(t('pass'))}">✓</span>`;
+    if (result === 'fail') return `<span class="pwa-badge pwa-fail" aria-label="${esc(t('not found'))}">✗</span>`;
+    return `<span class="pwa-badge pwa-partial" aria-label="${esc(t('unknown'))}">~</span>`;
   };
 
   const urlCell = (url) => url ? `<a href="${esc(url)}">${esc(url.replace(/^https?:\/\//, ''))}</a>` : '—';
@@ -1039,9 +1044,10 @@ function publicInterestSection(pi) {
   // Accessibility statement row.
   const a = pi.a11yStatement ?? {};
   const a11yConf = a.confidence ? ` <span class="bug-meta">(${esc(a.confidence)} confidence)</span>` : '';
+  const found3 = (r) => r === 'pass' ? t('Found') : r === 'fail' ? t('Not found') : t('Unknown');
   const a11yRow = `<tr>
-  <th scope="row">Accessibility statement</th>
-  <td>${badge(a.result ?? 'unknown')} ${a.result === 'pass' ? 'Found' : a.result === 'fail' ? 'Not found' : 'Unknown'}${a11yConf}</td>
+  <th scope="row">${t('Accessibility statement')}</th>
+  <td>${badge(a.result ?? 'unknown')} ${found3(a.result)}${a11yConf}</td>
   <td>${urlCell(a.url)}</td>
   <td class="bug-meta">${a.checkedAt ? esc(a.checkedAt.slice(0, 10)) : '—'}</td>
 </tr>`;
@@ -1053,7 +1059,7 @@ function publicInterestSection(pi) {
     ? ` · fields: ${esc(Object.keys(c.fields).slice(0, 4).join(', '))}` : '';
   const carbonRow = `<tr>
   <th scope="row">carbon.txt</th>
-  <td>${badge(c.result ?? 'unknown')} ${c.result === 'pass' ? 'Found' : c.result === 'fail' ? 'Not found' : 'Unknown'}${esc(carbonValidity + carbonFields)}</td>
+  <td>${badge(c.result ?? 'unknown')} ${found3(c.result)}${esc(carbonValidity + carbonFields)}</td>
   <td>${urlCell(c.url)}</td>
   <td class="bug-meta">${c.checkedAt ? esc(c.checkedAt.slice(0, 10)) : '—'}</td>
 </tr>`;
@@ -1062,31 +1068,31 @@ function publicInterestSection(pi) {
   const g = pi.greenWebFoundation ?? {};
   const gwfDetail = g.hostedBy ? ` · hosted by ${esc(g.hostedBy)}` : '';
   const gwfRow = `<tr>
-  <th scope="row">Renewable hosting <span class="bug-meta">(Green Web Foundation)</span></th>
-  <td>${badge(g.result ?? 'unknown')} ${g.result === 'pass' ? 'Green' : g.result === 'fail' ? 'Not green' : 'Unknown'}${esc(gwfDetail)}</td>
-  <td>${g.url ? `<a href="${esc(g.url)}">API response</a>` : '—'}</td>
+  <th scope="row">${t('Renewable hosting')} <span class="bug-meta">(Green Web Foundation)</span></th>
+  <td>${badge(g.result ?? 'unknown')} ${g.result === 'pass' ? t('Green') : g.result === 'fail' ? t('Not green') : t('Unknown')}${esc(gwfDetail)}</td>
+  <td>${g.url ? `<a href="${esc(g.url)}">${t('API response')}</a>` : '—'}</td>
   <td class="bug-meta">${g.checkedAt ? esc(g.checkedAt.slice(0, 10)) : '—'}</td>
 </tr>`;
 
   // Sitemap rows.
   const s = pi.sitemaps ?? {};
   const xmlRow = `<tr>
-  <th scope="row">XML sitemap</th>
-  <td>${badge(s.xml?.found ? 'pass' : 'fail')} ${s.xml?.found ? 'Found' : 'Not found'}</td>
+  <th scope="row">${t('XML sitemap')}</th>
+  <td>${badge(s.xml?.found ? 'pass' : 'fail')} ${s.xml?.found ? t('Found') : t('Not found')}</td>
   <td>${urlCell(s.xml?.url)}</td>
   <td class="bug-meta">${s.checkedAt ? esc(s.checkedAt.slice(0, 10)) : '—'}</td>
 </tr>`;
   const humanRow = `<tr>
-  <th scope="row">Human-readable sitemap</th>
-  <td>${badge(s.human?.found ? 'pass' : 'fail')} ${s.human?.found ? 'Found' : 'Not found'}</td>
+  <th scope="row">${t('Human-readable sitemap')}</th>
+  <td>${badge(s.human?.found ? 'pass' : 'fail')} ${s.human?.found ? t('Found') : t('Not found')}</td>
   <td>${urlCell(s.human?.url)}</td>
   <td class="bug-meta">${s.checkedAt ? esc(s.checkedAt.slice(0, 10)) : '—'}</td>
 </tr>`;
 
-  return `<h3>Public interest &amp; sustainability signals <span class="bug-meta">origin-level checks</span></h3>
+  return `<h3>${t('Public interest & sustainability signals')} <span class="bug-meta">${t('origin-level checks')}</span></h3>
 <table>
-<caption>Checks run once per week against the domain origin. ✓ = found/green · ✗ = not found · ~ = uncertain.</caption>
-<thead><tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col">URL</th><th scope="col">Checked</th></tr></thead>
+<caption>${t('Checks run once per week against the domain origin. ✓ = found/green · ✗ = not found · ~ = uncertain.')}</caption>
+<thead><tr><th scope="col">${t('Check')}</th><th scope="col">${t('Result')}</th><th scope="col">${t('URL')}</th><th scope="col">${t('Checked')}</th></tr></thead>
 <tbody>
 ${a11yRow}
 ${carbonRow}
@@ -1145,24 +1151,24 @@ function consensusSection(summary, bugs = []) {
     .join('\n');
   const bothTable = both.length
     ? `<details class="engine-findings" open>
-<summary>${both.length} rule type(s) caught by both engines — highest confidence</summary>
-<p class="meta">Two independent ACT-rule implementations (Deque axe-core and Siteimprove Alfa) flagged the same issue on the same pages. Agreement between separate engines is strong evidence the barrier is real, not a single-tool false positive — the best place to start.</p>
+<summary>${t('@n rule type(s) caught by both engines — highest confidence', { '@n': both.length })}</summary>
+<p class="meta">${t('Two independent ACT-rule implementations (Deque axe-core and Siteimprove Alfa) flagged the same issue on the same pages. Agreement between separate engines is strong evidence the barrier is real, not a single-tool false positive — the best place to start.')}</p>
 <table>
-<caption>Rules flagged by both axe-core and Alfa in ${esc(summary.week)}, by pages affected.</caption>
-<thead><tr><th scope="col">Issue</th><th scope="col" class="num">Pages</th><th scope="col">Rule references</th></tr></thead>
+<caption>${t('Rules flagged by both axe-core and Alfa in @week, by pages affected.', { '@week': esc(summary.week) })}</caption>
+<thead><tr><th scope="col">${t('Issue')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Rule references')}</th></tr></thead>
 <tbody>${bothRows}</tbody>
 </table>
 </details>`
-    : '<p class="meta">No issues were flagged by both engines on the same pages this week.</p>';
+    : `<p class="meta">${t('No issues were flagged by both engines on the same pages this week.')}</p>`;
 
   return `<section aria-labelledby="h-consensus">
-${heading('h-consensus', `Unique accessibility issues (axe + Alfa consolidated)`)}
-<p class="meta">axe and Alfa both implement W3C ACT rules, so the same issue is often caught by both. These are deduplicated by ACT rule and page, so a shared finding counts once${saved > 0 ? ` (${naive} raw engine findings → ${c.uniqueIssues} unique)` : ''}.</p>
+${heading('h-consensus', t('Unique accessibility issues (axe + Alfa consolidated)'))}
+<p class="meta">${t('axe and Alfa both implement W3C ACT rules, so the same issue is often caught by both. These are deduplicated by ACT rule and page, so a shared finding counts once')}${saved > 0 ? ` ${t('(@naive raw engine findings → @unique unique)', { '@naive': naive, '@unique': c.uniqueIssues })}` : ''}.</p>
 <dl class="ledger">
-  <div><dt>Unique issues (rule × page)</dt><dd>${c.uniqueIssues}</dd></div>
-  <div><dt>Caught by both engines</dt><dd>${c.consensus}<span class="bug-meta"> highest confidence</span></dd></div>
-  <div><dt>axe only</dt><dd>${c.axeOnly}</dd></div>
-  <div><dt>Alfa only</dt><dd>${c.alfaOnly}</dd></div>
+  <div><dt>${t('Unique issues (rule × page)')}</dt><dd>${c.uniqueIssues}</dd></div>
+  <div><dt>${t('Caught by both engines')}</dt><dd>${c.consensus}<span class="bug-meta"> ${t('highest confidence')}</span></dd></div>
+  <div><dt>${t('axe only')}</dt><dd>${c.axeOnly}</dd></div>
+  <div><dt>${t('Alfa only')}</dt><dd>${c.alfaOnly}</dd></div>
 </dl>
 ${bothTable}
 </section>`;
@@ -1213,17 +1219,17 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
 </tr>`;
         })
         .join('\n');
-      return `<h3>${esc(LH_CATEGORY_LABELS[cat] ?? cat)}</h3>
+      return `<h3>${esc(t(LH_CATEGORY_LABELS[cat] ?? cat))}</h3>
 <table>
-<caption>${esc(LH_CATEGORY_LABELS[cat] ?? cat)} recommendations from Lighthouse, by sampled pages affected.</caption>
-<thead><tr><th scope="col">Recommendation</th><th scope="col" class="num">Pages</th><th scope="col">Est. saving</th></tr></thead>
+<caption>${t('@cat recommendations from Lighthouse, by sampled pages affected.', { '@cat': esc(t(LH_CATEGORY_LABELS[cat] ?? cat)) })}</caption>
+<thead><tr><th scope="col">${t('Recommendation')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Est. saving')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
     })
     .join('\n');
   return `<section aria-labelledby="h-lh-reco">
-${heading('h-lh-reco', `Recommendations`)}
-<p class="meta">Issues Lighthouse flagged across the ${pagesSampled} sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Estimated savings (transfer bytes or load time) are Lighthouse's own estimates where available. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessibility.html">Accessibility page</a>.</p>
+${heading('h-lh-reco', t('Recommendations'))}
+<p class="meta">${t('Issues Lighthouse flagged across the @n sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Estimated savings (transfer bytes or load time) are Lighthouse\'s own estimates where available. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessibility.html">Accessibility page</a>.', { '@n': pagesSampled })}</p>
 ${sections}
 </section>`;
 }
@@ -1236,12 +1242,12 @@ function agenticExplainer(lh) {
   if (lh.medianAgentic == null) return '';
   const agenticRecos = (lh.recommendations ?? []).filter((r) => r.category === 'agentic-browsing');
   const gaps = agenticRecos.length
-    ? `<p class="meta">Gaps found on the sampled pages: ${agenticRecos.map((r) => `${esc(r.title)} (${r.pages})`).join(', ')}.</p>`
+    ? `<p class="meta">${t('Gaps found on the sampled pages:')} ${agenticRecos.map((r) => `${esc(r.title)} (${r.pages})`).join(', ')}.</p>`
     : '';
   return `<section aria-labelledby="h-lh-agentic">
-${heading('h-lh-agentic', `What the Agentic score means`)}
-<p>The <strong>Agentic (AI-readiness)</strong> score is new in Google Lighthouse (13.4+). It measures how well a page works for <strong>AI agents and assistants</strong> — the tools that increasingly mediate how people find and use government services. It checks for things like an <code>llms.txt</code> file (a machine-readable guide for language models), valid <a href="https://schema.org/">structured data</a>, a well-formed accessibility tree that agents can parse, and <a href="https://github.com/webmachinelearning/webmcp">WebMCP</a> tool/form descriptions. A higher score means an AI assistant is more likely to understand the page and complete tasks on a citizen's behalf correctly.</p>
-<p class="meta">It is experimental and evolving; treat it as a forward-looking signal, not a compliance requirement. Median across sampled pages: <strong>${fmtScore(lh.medianAgentic)}</strong>.</p>
+${heading('h-lh-agentic', t('What the Agentic score means'))}
+<p>${t('The <strong>Agentic (AI-readiness)</strong> score is new in Google Lighthouse (13.4+). It measures how well a page works for <strong>AI agents and assistants</strong> — the tools that increasingly mediate how people find and use government services. It checks for things like an <code>llms.txt</code> file (a machine-readable guide for language models), valid <a href="https://schema.org/">structured data</a>, a well-formed accessibility tree that agents can parse, and <a href="https://github.com/webmachinelearning/webmcp">WebMCP</a> tool/form descriptions. A higher score means an AI assistant is more likely to understand the page and complete tasks on a citizen\'s behalf correctly.')}</p>
+<p class="meta">${t('It is experimental and evolving; treat it as a forward-looking signal, not a compliance requirement.')} ${t('Median across sampled pages:')} <strong>${fmtScore(lh.medianAgentic)}</strong>.</p>
 ${gaps}
 </section>`;
 }
@@ -1287,7 +1293,7 @@ export function renderLighthousePage(target, summary, csvHref, jsonHref) {
   ].filter(Boolean);
 
   const body = `
-<h1>${esc(target.domain)}: Lighthouse — week ${esc(summary.week)}</h1>
+<h1>${esc(target.domain)}: ${t("Lighthouse")} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('lighthouse')}
 <p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals.${dlLinks.length ? ` Download: ${dlLinks.join(' · ')}.` : ''}</p>
 ${impact ? perfImpactSection(impact) : ''}
@@ -1314,7 +1320,7 @@ ${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summa
 </section>`;
   return layout({
     title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Lighthouse</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Lighthouse")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1370,7 +1376,7 @@ export function renderReadabilityPage(target, summary, csvHref) {
   const acronyms = summary.plainLanguage?.topUnexplainedAcronyms ?? [];
   const misspellings = summary.plainLanguage?.topMisspellings ?? [];
   const body = `
-<h1>${esc(target.domain)}: Readability — week ${esc(summary.week)}</h1>
+<h1>${esc(target.domain)}: ${t("Readability")} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('readability')}
 <p class="meta">Plain-language metrics for the main content of each scanned page (navigation, header, and footer excluded). ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
 <section aria-labelledby="h-read-about">
@@ -1399,7 +1405,7 @@ ${heading('h-spelling', `Possible misspellings`)}
 </section>` : ''}`;
   return layout({
     title: `${target.domain} Readability ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Readability</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Readability")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1459,14 +1465,14 @@ export function renderTechPage(target, summary, csvHref) {
 
   const ranNote = techRan ? ` The technology engine ran on <strong>${techRan}</strong> of ${summary.pagesScanned} pages scanned this week; coverage below is the share of those ${techRan} pages where each technology was found.` : '';
   const body = `
-<h1>${esc(target.domain)}: technology stack</h1>
+<h1>${esc(target.domain)}: ${t('technology stack')}</h1>
 ${subnav('tech')}
 <p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, summary.techJson ?? 'tech.json')}</p>
 <p class="note">Detection is additive across the week's sampled pages. Expand a technology to see example pages where it was found.</p>
 ${sections}`;
   return layout({
     title: `${target.domain} Tech Stack ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Tech stack</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Tech stack")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1532,14 +1538,14 @@ export function renderTechFindingsPage(target, summary) {
     .join('\n');
 
   const body = `
-<h1>${esc(target.domain)}: technology ↔ issues</h1>
+<h1>${esc(target.domain)}: ${t('technology ↔ issues')}</h1>
 ${subnav('tech-findings')}
 <p class="meta">Accessibility findings that appear disproportionately on pages running a given technology, across the ${model.pages} page(s) in <strong>${esc(summary.week)}</strong> where both technology detection and an accessibility engine ran. <strong>Lift</strong> is how many times more likely a finding is on pages with the technology than on pages overall — a value of 2× means twice the baseline rate.</p>
 <p class="note">This is an <em>association</em>, not proof of cause. Technologies that are detected on the same set of pages (e.g. a CMS, its host, and its language) will share identical lift values; the listing groups by technology but cannot tell which one in a co-located stack is responsible. Treat high-lift pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page's content.</p>
 ${sections}`;
   return layout({
     title: `${target.domain} Tech ↔ Issues ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Tech ↔ issues</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Tech ↔ issues")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1582,7 +1588,7 @@ export function renderThirdPartyPage(target, summary, csvHref) {
 
   const scriptVendors = tp.vendors.filter((v) => v.isScriptVendor).length;
   const body = `
-<h1>${esc(target.domain)}: third parties</h1>
+<h1>${esc(target.domain)}: ${t('third parties')}</h1>
 ${subnav('third-party')}
 <p class="meta">Third-party origins serving resources to <strong>${esc(target.domain)}</strong> across the ${tp.pagesScanned} page(s) measured in <strong>${esc(summary.week)}</strong>. <strong>${tp.vendors.length}</strong> distinct third-party domains, <strong>${scriptVendors}</strong> of them serving JavaScript (<span class="wcag-badge">JS</span>). Costs are medians per page the vendor appears on.${dlLink}</p>
 <p class="note">Third-party JavaScript is easy to add and often reduces accessibility and performance — it injects DOM the site owner never reviewed and adds load time. "Pages w/ finding" is the share of pages carrying this vendor that also had an accessibility finding: an <em>association</em> to investigate, not proof the vendor caused it. Third parties vary per page, so a vendor on few pages may simply not have been sampled elsewhere.</p>
@@ -1600,7 +1606,7 @@ ${subnav('third-party')}
 </table>`;
   return layout({
     title: `${target.domain} Third Parties ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Third parties</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Third parties")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1709,7 +1715,7 @@ ${heading('h-images-quality', 'Alt-text quality')}
   );
 
   const body = `
-<h1>${esc(target.domain)}: image inventory</h1>
+<h1>${esc(target.domain)}: ${t('image inventory')}</h1>
 ${subnav('images')}
 <p class="meta">Unique images encountered on scanned pages in <strong>${esc(summary.week)}</strong>, deduplicated by URL and Alt — the same image reused across pages with the same explanation is one row. Images with alternate captions are split into separate rows. ${dlLink}</p>
 ${statsTable}
@@ -1720,7 +1726,7 @@ ${detailTable}
 </section>`;
   return layout({
     title: `${target.domain} Images ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Images</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Images")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1753,7 +1759,7 @@ export function renderArchivePage(target, series, latestWeek) {
     })
     .join('\n');
   const body = `
-<h1>${esc(target.domain)}: report archive</h1>
+<h1>${esc(target.domain)}: ${t('report archive')}</h1>
 ${subnav('archive')}
 <p class="meta">Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.</p>
 <table>
@@ -1763,7 +1769,7 @@ ${subnav('archive')}
 </table>`;
   return layout({
     title: `${target.domain} archive | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">Archive</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">Archive</li>`,
     body,
     depth: 3,
   });
@@ -1774,69 +1780,69 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const scoreFormat = target.display?.score_format ?? 'both';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
-  const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${text}</a>` : '');
+  const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
   const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
   const body = `
-<h1>${esc(target.domain)}: week ${esc(summary.week)}</h1>
+<h1>${esc(target.domain)}: ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('overview')}
-<p class="meta">This is the <strong>${esc(summary.week)}</strong> ISO-week report (<strong>${summary.pagesScanned}</strong> pages fetched, <strong>${summary.pagesAudited ?? summary.pagesScanned}</strong> unique pages audited by axe/Alfa). Generated ${esc(summary.generatedAt.slice(0, 10))}.
-${prev ? `Compared against ${esc(prev.week)} (${prev.pagesScanned} fetched).` : 'First recorded week; no comparison yet.'} The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.
-Machine-readable API: <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
+<p class="meta">${t('This is the <strong>@week</strong> ISO-week report (<strong>@fetched</strong> pages fetched, <strong>@audited</strong> unique pages audited by axe/Alfa). Generated @date.', { '@week': esc(summary.week), '@fetched': summary.pagesScanned, '@audited': summary.pagesAudited ?? summary.pagesScanned, '@date': esc(summary.generatedAt.slice(0, 10)) })}
+${prev ? t('Compared against @week (@n fetched).', { '@week': esc(prev.week), '@n': prev.pagesScanned }) : t('First recorded week; no comparison yet.')} ${t('The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.')}
+${t('Machine-readable API:')} <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
 
 ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Accessibility scorecard">
   ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
   ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
-  ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(traj.direction)}</strong> (${traj.delta >= 0 ? '+' : ''}${traj.delta} pts since ${esc(traj.fromWeek)}).` : ''}
-  ${resolvedCount > 0 ? `<strong>${resolvedCount} issue type(s) resolved</strong> since last week.` : ''}</span>
-  <span class="score-caveat">Score reflects the typical page's issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.</span>
+  ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}
+  ${resolvedCount > 0 ? t('<strong>@n issue type(s) resolved</strong> since last week.', { '@n': resolvedCount }) : ''}</span>
+  <span class="score-caveat">${t('Score reflects the typical page\'s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.')}</span>
 </aside>` : ''}
-${invSummary ? `<p class="meta">Over the whole history of this site, <strong>${invSummary.totalKnownPages}</strong> unique pages have been scanned at least once; <strong>${invSummary.pagesWithKnownIssues}</strong> have known accessibility issues. <strong>${invSummary.scannedThisWeek}</strong> of them were re-checked this ISO week. <a href="../../../data/${esc(target.key)}/domain.json">Download full data (JSON)</a>.</p>` : ''}
+${invSummary ? `<p class="meta">${t('Over the whole history of this site, <strong>@known</strong> unique pages have been scanned at least once; <strong>@withIssues</strong> have known accessibility issues. <strong>@thisWeek</strong> of them were re-checked this ISO week.', { '@known': invSummary.totalKnownPages, '@withIssues': invSummary.pagesWithKnownIssues, '@thisWeek': invSummary.scannedThisWeek })} <a href="../../../data/${esc(target.key)}/domain.json">${t('Download full data (JSON)')}</a>.</p>` : ''}
 
 <section aria-labelledby="h-summary">
-${heading('h-summary', `This week at a glance`)}
+${heading('h-summary', t('This week at a glance'))}
 <dl class="ledger">
-  <div><dt>Median axe violations / page</dt><dd>${fmtMedian(summary.axe.medianViolations)} ${sparkline(trendViol)}</dd></div>
-  <div><dt>Pages with axe violations</dt><dd>${summary.axe.pagesWithViolations} of ${summary.axe.pagesScanned ?? summary.pagesScanned}${csvLink(csvLinks.axeAll, 'CSV')}</dd></div>
-  <div><dt>Median Alfa failures / page</dt><dd>${fmtMedian(summary.alfa.medianFailures)}</dd></div>
-  <div><dt>Pages with Alfa failures</dt><dd>${summary.alfa.pagesWithFailures} of ${summary.alfa.pagesScanned ?? summary.pagesScanned}${csvLink(csvLinks.alfaAll, 'CSV')}</dd></div>
-  <div><dt>Unique pages audited</dt><dd>${summary.pagesAudited ?? summary.pagesScanned}</dd></div>
+  <div><dt>${t('Median axe violations / page')}</dt><dd>${fmtMedian(summary.axe.medianViolations)} ${sparkline(trendViol)}</dd></div>
+  <div><dt>${t('Pages with axe violations')}</dt><dd>${t('@n of @total', { '@n': summary.axe.pagesWithViolations, '@total': summary.axe.pagesScanned ?? summary.pagesScanned })}${csvLink(csvLinks.axeAll, 'CSV')}</dd></div>
+  <div><dt>${t('Median Alfa failures / page')}</dt><dd>${fmtMedian(summary.alfa.medianFailures)}</dd></div>
+  <div><dt>${t('Pages with Alfa failures')}</dt><dd>${t('@n of @total', { '@n': summary.alfa.pagesWithFailures, '@total': summary.alfa.pagesScanned ?? summary.pagesScanned })}${csvLink(csvLinks.alfaAll, 'CSV')}</dd></div>
+  <div><dt>${t('Unique pages audited')}</dt><dd>${summary.pagesAudited ?? summary.pagesScanned}</dd></div>
   ${summary.lighthouse ? `
-  <div><dt>Lighthouse performance (median)</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${summary.lighthouse.pagesSampled} sampled</span> ${csvLink('lighthouse.html', 'details')}</dd></div>
-  <div><dt>Lighthouse SEO (median)</dt><dd>${fmtScore(summary.lighthouse.medianSeo)}</dd></div>
-  <div><dt>Lighthouse best practices (median)</dt><dd>${fmtScore(summary.lighthouse.medianBestPractices)}</dd></div>
-  ${summary.lighthouse.medianAgentic != null ? `<div><dt>Lighthouse agentic (median)</dt><dd>${fmtScore(summary.lighthouse.medianAgentic)}</dd></div>` : ''}` : ''}
+  <div><dt>${t('Lighthouse performance (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${t('@n sampled', { '@n': summary.lighthouse.pagesSampled })}</span> ${csvLink('lighthouse.html', 'details')}</dd></div>
+  <div><dt>${t('Lighthouse SEO (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianSeo)}</dd></div>
+  <div><dt>${t('Lighthouse best practices (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianBestPractices)}</dd></div>
+  ${summary.lighthouse.medianAgentic != null ? `<div><dt>${t('Lighthouse agentic (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianAgentic)}</dd></div>` : ''}` : ''}
   ${summary.plainLanguage ? `
-  <div><dt>Words per page (median)</dt><dd>${summary.plainLanguage.medianWordsPerPage ?? 'n/a'}<span class="bug-meta"> main content, nav excluded</span></dd></div>
-  ${summary.plainLanguage.medianReadingEase != null ? `<div><dt>Reading ease (median)</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${summary.plainLanguage.pagesScored} prose pages</span>${csvLink(summary.plainLanguage.readabilityCsv, 'details')}</dd></div>` : ''}
-  ${summary.plainLanguage.medianGrade != null ? `<div><dt>Reading grade (median)</dt><dd>${summary.plainLanguage.medianGrade}</dd></div>` : ''}
-  ${summary.plainLanguage.topMisspellings?.length ? `<div><dt>Misspellings</dt><dd>${summary.plainLanguage.topMisspellings.length}+ distinct${csvLink('readability.html#h-spelling', 'details')}</dd></div>` : ''}` : ''}
+  <div><dt>${t('Words per page (median)')}</dt><dd>${summary.plainLanguage.medianWordsPerPage ?? t('n/a')}<span class="bug-meta"> ${t('main content, nav excluded')}</span></dd></div>
+  ${summary.plainLanguage.medianReadingEase != null ? `<div><dt>${t('Reading ease (median)')}</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${t('@n prose pages', { '@n': summary.plainLanguage.pagesScored })}</span>${csvLink(summary.plainLanguage.readabilityCsv, 'details')}</dd></div>` : ''}
+  ${summary.plainLanguage.medianGrade != null ? `<div><dt>${t('Reading grade (median)')}</dt><dd>${summary.plainLanguage.medianGrade}</dd></div>` : ''}
+  ${summary.plainLanguage.topMisspellings?.length ? `<div><dt>${t('Misspellings')}</dt><dd>${t('@n+ distinct', { '@n': summary.plainLanguage.topMisspellings.length })}${csvLink('readability.html#h-spelling', 'details')}</dd></div>` : ''}` : ''}
   ${summary.linkCheck ? `
-  <div><dt>Broken links</dt><dd>${summary.linkCheck.brokenCount}${summary.linkCheck.brokenCount > 0 ? ` <a href="errors.html" class="csv-link">details</a>` : ''}</dd></div>` : ''}
+  <div><dt>${t('Broken links')}</dt><dd>${summary.linkCheck.brokenCount}${summary.linkCheck.brokenCount > 0 ? ` <a href="errors.html" class="csv-link">${t('details')}</a>` : ''}</dd></div>` : ''}
   ${summary.sustainability ? `
-  <div><dt>Median page weight</dt><dd>${kb(summary.sustainability.medianBytes)}
+  <div><dt>${t('Median page weight')}</dt><dd>${kb(summary.sustainability.medianBytes)}
     ${diff?.sustainability ? delta(Math.round(diff.sustainability.medianBytesDelta / 1024), { unit: ' KB' }) : ''}</dd></div>
-  <div><dt>Median requests per page</dt><dd>${summary.sustainability.medianRequests}</dd></div>
+  <div><dt>${t('Median requests per page')}</dt><dd>${summary.sustainability.medianRequests}</dd></div>
   <div><dt>${sustainabilityHeadline(summary.sustainability).label}</dt><dd>${sustainabilityHeadline(summary.sustainability).value}</dd></div>` : ''}
 </dl>
-${prev && summary.pagesScanned !== prev.pagesScanned ? `<p class="note">Note: page counts differ between weeks (${prev.pagesScanned} → ${summary.pagesScanned}). Prefer the "pages affected" columns over raw instance counts when comparing.</p>` : ''}
+${prev && summary.pagesScanned !== prev.pagesScanned ? `<p class="note">${t('Note: page counts differ between weeks (@prev → @cur). Prefer the "pages affected" columns over raw instance counts when comparing.', { '@prev': prev.pagesScanned, '@cur': summary.pagesScanned })}</p>` : ''}
 ${coverageTable(summary)}
 </section>
 
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
-${heading('h-trends', `Trends over time`)}
-<h3>Accessibility trends</h3>
+${heading('h-trends', t('Trends over time'))}
+<h3>${t('Accessibility trends')}</h3>
 ${severityTrendChart(series)}
-${series.some((s) => s.lighthouse) ? `<h3>Performance trends</h3>
-${lineChart('Lighthouse performance (median)', series.map((s) => ({ week: s.week, value: s.lighthouse?.medianPerformance ?? null })), { unit: '/100' })}
-${lineChart('Largest Contentful Paint (median)', series.map((s) => ({ week: s.week, value: s.lighthouse?.metrics?.largestContentfulPaintMs ?? null })), { unit: ' ms', lowerIsBetter: true })}` : ''}
-${series.some((s) => s.sustainability) ? lineChart('Median page weight (KB)', series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
+${series.some((s) => s.lighthouse) ? `<h3>${t('Performance trends')}</h3>
+${lineChart(t('Lighthouse performance (median)'), series.map((s) => ({ week: s.week, value: s.lighthouse?.medianPerformance ?? null })), { unit: '/100' })}
+${lineChart(t('Largest Contentful Paint (median)'), series.map((s) => ({ week: s.week, value: s.lighthouse?.metrics?.largestContentfulPaintMs ?? null })), { unit: ' ms', lowerIsBetter: true })}` : ''}
+${series.some((s) => s.sustainability) ? lineChart(t('Median page weight (KB)'), series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
 </section>` : ''}
 
 ${diff ? `
 <section aria-labelledby="h-wow">
-${heading('h-wow', `Changes since ${diff.prevWeek}`)}
+${heading('h-wow', t('Changes since @week', { '@week': diff.prevWeek }))}
 ${changeList('axe-core', diff.axe)}
 ${changeList('Alfa', diff.alfa)}
 </section>` : ''}
@@ -1847,7 +1853,7 @@ ${resourcesSection(summary)}
 `;
   return layout({
     title: `${target.domain} ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li aria-current="page">${esc(target.domain)} ${esc(summary.week)}</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li aria-current="page">${esc(target.domain)} ${esc(summary.week)}</li>`,
     body,
     depth: 3,
   });
@@ -1894,7 +1900,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
     ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
     : '';
   const body = `
-<h1>${esc(target.domain)}: Accessibility — week ${esc(summary.week)}</h1>
+<h1>${esc(target.domain)}: ${t('Accessibility')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('accessibility')}
 ${acrNote}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
@@ -1919,7 +1925,7 @@ ${consensusSection(summary, bugs)}
 `;
   return layout({
     title: `${target.domain} Accessibility ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Accessibility</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Accessibility</li>`,
     body,
     depth: 3,
   });
@@ -1934,13 +1940,13 @@ export function renderStandardsPage(target, summary) {
     return emptyCriterionPage(target, summary, { active: 'standards', label: 'Standards & Security', message: 'No web-standards or security checks ran on this week\'s sampled pages.' });
   }
   const body = `
-<h1>${esc(target.domain)}: Standards &amp; Security — week ${esc(summary.week)}</h1>
+<h1>${esc(target.domain)}: ${t('Standards & Security')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('standards')}
 ${content}
 `;
   return layout({
     title: `${target.domain} Standards ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Standards</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Standards")}</li>`,
     body,
     depth: 3,
   });
@@ -1955,13 +1961,13 @@ export function renderErrorsPage(target, summary, csvHref = null) {
     return emptyCriterionPage(target, summary, { active: 'errors', label: 'Broken Links & Errors', message: 'No broken links or error pages were found on this week\'s sampled pages — clean week.' });
   }
   const body = `
-<h1>${esc(target.domain)}: Broken Links &amp; Errors — week ${esc(summary.week)}</h1>
+<h1>${esc(target.domain)}: ${t('Broken Links & Errors')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('errors')}
 ${content}
 `;
   return layout({
     title: `${target.domain} Errors ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">All domains</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Errors</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Errors</li>`,
     body,
     depth: 3,
   });
@@ -2069,10 +2075,9 @@ ${table}
 export function renderIndex(dashboard, { branding = {} } = {}) {
   // Profile branding overrides the default headline/intro; absent (the
   // GitHub Pages default) it falls back to the original copy unchanged.
-  const h1 = branding.title || 'Weekly quality ledger';
+  const h1 = branding.title || t('Weekly quality ledger');
   const intro = branding.intro
-    || 'Accessibility and sustainability, measured continuously with open source engines. '
-     + 'Thousands of pages per domain, scanned slowly and politely across each week.';
+    || t('Accessibility and sustainability, measured continuously with open source engines. Thousands of pages per domain, scanned slowly and politely across each week.');
   const pageTitle = branding.title ? `${branding.title} | vital-scans` : 'vital-scans | weekly quality ledger';
   // Separate targets whose latest week is blocked (e.g. a WAF returning
   // 403 to the scanner) so they don't read as zero-violation successes.
@@ -2084,16 +2089,12 @@ export function renderIndex(dashboard, { branding = {} } = {}) {
   const blockedCallout = blocked.length === 0 ? '' : `
 <section aria-labelledby="h-blocked">
 <details class="blocked-accordion">
-<summary><span id="h-blocked">Blocked targets (${blocked.length})</span></summary>
-<p>These sites returned only access-denied responses to the scanner, so no
-accessibility or sustainability data could be collected. This is typically a
-WAF or bot manager blocking automated traffic, not a scan failure. See
-<a href="https://github.com/mgifford/vital-core/blob/main/WAF-ALLOWLIST.md">WAF-ALLOWLIST.md</a>
-for how the scanner can be allowlisted.</p>
+<summary><span id="h-blocked">${t('Blocked targets (@n)', { '@n': blocked.length })}</span></summary>
+<p>${t('These sites returned only access-denied responses to the scanner, so no accessibility or sustainability data could be collected. This is typically a WAF or bot manager blocking automated traffic, not a scan failure. See <a href="https://github.com/mgifford/vital-core/blob/main/WAF-ALLOWLIST.md">WAF-ALLOWLIST.md</a> for how the scanner can be allowlisted.')}</p>
 <ul>${blocked
     .map(({ target, series }) => {
       const latest = series[series.length - 1];
-      return `<li><strong>${esc(target.domain)}</strong> — HTTP ${latest.blocked.status} (${esc(latest.week)})</li>`;
+      return `<li><strong>${esc(target.domain)}</strong> — ${t('HTTP @status (@week)', { '@status': latest.blocked.status, '@week': esc(latest.week) })}</li>`;
     })
     .join('\n')}</ul>
 </details>
@@ -2110,10 +2111,10 @@ for how the scanner can be allowlisted.</p>
     })
     .sort((a, b) => (b.score?.score ?? -1) - (a.score?.score ?? -1));
 
-  const arrow = (t) => {
-    if (!t) return '<span class="traj traj-stable">— new</span>';
-    const sym = t.direction === 'improving' ? '▲' : t.direction === 'worsening' ? '▼' : '▬';
-    return `<span class="traj traj-${esc(t.direction)}">${sym} ${esc(t.direction)} ${t.delta >= 0 ? '+' : ''}${t.delta}</span>`;
+  const arrow = (tr) => {
+    if (!tr) return `<span class="traj traj-stable">${t('— new')}</span>`;
+    const sym = tr.direction === 'improving' ? '▲' : tr.direction === 'worsening' ? '▼' : '▬';
+    return `<span class="traj traj-${esc(tr.direction)}">${sym} ${esc(t(tr.direction))} ${tr.delta >= 0 ? '+' : ''}${tr.delta}</span>`;
   };
   const rows = ranked
     .map((d) => {
@@ -2140,16 +2141,16 @@ for how the scanner can be allowlisted.</p>
   const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
   const worstSection = worst.length === 0 ? '' : `
 <section aria-labelledby="h-worst">
-${heading('h-worst', `Worst offenders across all domains`)}
-<p class="meta">Highest-impact issues fleet-wide, ranked by pages affected × severity × people reached — where to focus effort first.</p>
+${heading('h-worst', t('Worst offenders across all domains'))}
+<p class="meta">${t('Highest-impact issues fleet-wide, ranked by pages affected × severity × people reached — where to focus effort first.')}</p>
 <table>
-<caption>Top ${worst.length} issues across all active domains.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col" class="num">Pages</th></tr></thead>
+<caption>${t('Top @n issues across all active domains.', { '@n': worst.length })}</caption>
+<thead><tr><th scope="col">${t('Domain')}</th><th scope="col">${t('Issue')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${worst
     .map((b) => `<tr>
   <th scope="row"><a href="reports/${esc(b.key)}/${esc(b._week)}/index.html">${esc(b.domain)}</a></th>
   <td>${esc(b.summary)}</td>
-  <td><span class="sev-badge">${esc(b.severity)}</span></td>
+  <td><span class="sev-badge">${esc(t(b.severity))}</span></td>
   <td class="num">${b.frequency.pages_affected}</td>
 </tr>`)
     .join('\n')}</tbody>
@@ -2173,16 +2174,16 @@ ${heading('h-worst', `Worst offenders across all domains`)}
     if (fleetPairs.length) {
       techFindingsSection = `
 <section aria-labelledby="h-techfindings">
-${heading('h-techfindings', `Cross-technology issues`)}
-<p class="meta">Accessibility findings that recur with the same technology across multiple sites — the strongest signal that a barrier lives in a shared CMS, theme, or widget rather than in one site's content. Ranked by lift × number of sites affected. Association, not proof of cause: confirm before attributing.</p>
+${heading('h-techfindings', t('Cross-technology issues'))}
+<p class="meta">${t('Accessibility findings that recur with the same technology across multiple sites — the strongest signal that a barrier lives in a shared CMS, theme, or widget rather than in one site\'s content. Ranked by lift × number of sites affected. Association, not proof of cause: confirm before attributing.')}</p>
 <table class="sortable">
-<caption>Top ${fleetPairs.length} technology ↔ finding associations spanning ≥2 sites.</caption>
+<caption>${t('Top @n technology ↔ finding associations spanning ≥2 sites.', { '@n': fleetPairs.length })}</caption>
 <thead><tr>
-  <th scope="col">Technology</th>
-  <th scope="col">Finding</th>
-  <th scope="col" class="num">Lift</th>
-  <th scope="col" class="num">Sites</th>
-  <th scope="col" class="num">Pages</th>
+  <th scope="col">${t('Technology')}</th>
+  <th scope="col">${t('Finding')}</th>
+  <th scope="col" class="num">${t('Lift')}</th>
+  <th scope="col" class="num">${t('Sites')}</th>
+  <th scope="col" class="num">${t('Pages')}</th>
 </tr></thead>
 <tbody>${fleetPairs
         .map((p) => `<tr>
@@ -2220,19 +2221,19 @@ ${heading('h-techfindings', `Cross-technology issues`)}
     .slice(0, 25);
   let lighthouseFleetSection = '';
   if (lhFleet.length) {
-    const catLabel = (c) => LH_CATEGORY_LABELS[c] ?? c;
+    const catLabel = (c) => t(LH_CATEGORY_LABELS[c] ?? c);
     lighthouseFleetSection = `
 <section aria-labelledby="h-lhfleet">
-${heading('h-lhfleet', `Common Lighthouse recommendations`)}
-<p class="meta">Non-accessibility issues Google Lighthouse flagged on multiple sites' sampled pages — performance, best-practices, SEO, and AI-readiness. Recurring across independent government sites usually points at a shared platform, theme, or CDN, where one coordinated fix helps everyone. Ranked by number of sites affected. Accessibility audits are omitted (they overlap with axe-core).</p>
+${heading('h-lhfleet', t('Common Lighthouse recommendations'))}
+<p class="meta">${t('Non-accessibility issues Google Lighthouse flagged on multiple sites\' sampled pages — performance, best-practices, SEO, and AI-readiness. Recurring across independent government sites usually points at a shared platform, theme, or CDN, where one coordinated fix helps everyone. Ranked by number of sites affected. Accessibility audits are omitted (they overlap with axe-core).')}</p>
 <table class="sortable">
-<caption>Top ${lhFleet.length} Lighthouse recommendations spanning ≥2 sites.</caption>
+<caption>${t('Top @n Lighthouse recommendations spanning ≥2 sites.', { '@n': lhFleet.length })}</caption>
 <thead><tr>
-  <th scope="col">Recommendation</th>
-  <th scope="col">Category</th>
-  <th scope="col" class="num">Sites</th>
-  <th scope="col" class="num">Pages</th>
-  <th scope="col" class="num">Est. saving</th>
+  <th scope="col">${t('Recommendation')}</th>
+  <th scope="col">${t('Category')}</th>
+  <th scope="col" class="num">${t('Sites')}</th>
+  <th scope="col" class="num">${t('Pages')}</th>
+  <th scope="col" class="num">${t('Est. saving')}</th>
 </tr></thead>
 <tbody>${lhFleet
         .map((e) => {
@@ -2256,15 +2257,15 @@ ${heading('h-lhfleet', `Common Lighthouse recommendations`)}
 <p class="meta">${esc(intro)}</p>
 ${active.length === 0
     ? (dashboard.length === 0
-        ? '<p>No scan data yet. The first weekly report appears after the first scheduled scans complete.</p>'
-        : '<p>No accessibility or sustainability data could be collected yet — every target is currently blocked (see the bottom of this page).</p>')
+        ? `<p>${t('No scan data yet. The first weekly report appears after the first scheduled scans complete.')}</p>`
+        : `<p>${t('No accessibility or sustainability data could be collected yet — every target is currently blocked (see the bottom of this page).')}</p>`)
     : `
 <table>
-<caption>Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.</caption>
-<thead><tr><th scope="col">Domain</th><th scope="col" class="num">Score</th><th scope="col">Trajectory</th><th scope="col" class="num">Pages audited (7d)</th><th scope="col" class="num">Median axe / page</th><th scope="col" class="num">Median Alfa / page</th><th scope="col">Trend</th></tr></thead>
+<caption>${t('Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.')}</caption>
+<thead><tr><th scope="col">${t('Domain')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col">${t('Trajectory')}</th><th scope="col" class="num">${t('Pages audited (7d)')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th><th scope="col">${t('Trend')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
-<p class="score-caveat">Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.</p>
+<p class="score-caveat">${t('Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.')}</p>
 ${overlay}
 ${sustainTrend}
 ${worstSection}
@@ -2272,18 +2273,14 @@ ${techFindingsSection}
 ${lighthouseFleetSection}
 ${blockedCallout}`}
 <section aria-labelledby="h-tools">
-${heading('h-tools', 'Tools')}
+${heading('h-tools', t('Tools'))}
 <ul>
-  <li><a href="url-lookup.html"><strong>URL error lookup</strong></a> — paste a URL or URL fragment and export all accessibility findings for that page as JSON, CSV, or JIRA-ready Markdown.</li>
+  <li><a href="url-lookup.html"><strong>${t('URL error lookup')}</strong></a> — ${t('paste a URL or URL fragment and export all accessibility findings for that page as JSON, CSV, or JIRA-ready Markdown.')}</li>
 </ul>
 </section>
 <section aria-labelledby="h-why">
-${heading('h-why', `Why this exists`)}
-<p>Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more
-accessible and lighter over time, using <a href="https://github.com/dequelabs/axe-core">axe-core</a> and
-<a href="https://github.com/Siteimprove/alfa">Alfa</a> (the open source engine behind Siteimprove) for
-accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a>
-CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.</p>
+${heading('h-why', t('Why this exists'))}
+<p>${t('Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more accessible and lighter over time, using <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (the open source engine behind Siteimprove) for accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.')}</p>
 </section>`;
   return layout({ title: pageTitle, breadcrumb: '', body, depth: 0 });
 }
@@ -2298,7 +2295,7 @@ CO₂ estimates for sustainability. Everything here is open: the scanner, the da
 export function renderUrlLookup(domains) {
   const domainsJson = JSON.stringify(domains);
   const body = `
-<h1>URL error lookup</h1>
+<h1>${t('URL error lookup')}</h1>
 <p class="meta">Search scanned pages by URL or URL fragment. Results come from the most recently scanned week for each domain. Includes axe-core, Alfa, and deprecated-HTML findings.</p>
 
 <form id="lookup-form" class="lookup-form" autocomplete="off">
