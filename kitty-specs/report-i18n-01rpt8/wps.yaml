@@ -1,0 +1,133 @@
+work_packages:
+  - id: WP01
+    title: "i18n foundation"
+    dependencies: []
+    owned_files:
+      - "src/lib/i18n.js"
+      - "src/lib/config.js"
+      - "config/targets.yml"
+      - "scripts/i18n-extract.js"
+      - "tests/unit/i18n.test.js"
+      - "tests/unit/config.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - FR-12
+      - FR-13
+      - FR-15
+      - NFR-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+    prompt_file: "tasks/WP01-i18n-foundation.md"
+
+  - id: WP02
+    title: "Wrap high-traffic report chrome"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/report-html.js"
+    requirement_refs:
+      - FR-03
+      - FR-04
+      - FR-07
+      - C-01
+      - C-02
+    subtasks:
+      - T004
+      - T005
+      - T006
+    prompt_file: "tasks/WP02-wrap-chrome.md"
+
+  - id: WP03
+    title: "Multi-language output + language switcher"
+    dependencies:
+      - WP02
+    owned_files:
+      - "src/report-html.js"
+      - "src/aggregate.js"
+      - "tests/unit/i18n-render.test.js"
+    requirement_refs:
+      - FR-06
+      - FR-08
+      - C-05
+    subtasks:
+      - T007
+      - T008
+    prompt_file: "tasks/WP03-multi-language-output.md"
+
+  - id: WP04
+    title: "Catalogs fr/ja/nl"
+    dependencies:
+      - WP01
+      - WP02
+    owned_files:
+      - "src/locales/fr.json"
+      - "src/locales/ja.json"
+      - "src/locales/nl.json"
+      - "src/locales/dynamic-strings.json"
+      - "src/locales/template.json"
+      - "config/targets.yml"
+    requirement_refs:
+      - FR-14
+      - FR-16
+    subtasks:
+      - T009
+      - T010
+    prompt_file: "tasks/WP04-catalogs.md"
+
+  - id: WP05
+    title: "Docs + tooling scripts"
+    dependencies:
+      - WP01
+    owned_files:
+      - "CLAUDE.md"
+      - "README.md"
+      - "package.json"
+    requirement_refs:
+      - FR-15
+    subtasks:
+      - T011
+    prompt_file: "tasks/WP05-docs.md"
+
+  - id: WP06
+    title: "Runtime language selection (?lang / localStorage)"
+    dependencies:
+      - WP03
+    owned_files:
+      - "src/report-html.js"
+      - "tests/unit/i18n-render.test.js"
+      - "CLAUDE.md"
+    requirement_refs:
+      - FR-09
+      - FR-10
+      - FR-11
+    subtasks:
+      - T012
+      - T013
+    prompt_file: "tasks/WP06-runtime-selection.md"
+
+  - id: WP07
+    title: "Secondary pages + url-lookup coverage"
+    dependencies:
+      - WP03
+      - WP04
+    owned_files:
+      - "src/report-html.js"
+      - "src/locales/dynamic-strings.json"
+      - "src/locales/fr.json"
+      - "src/locales/ja.json"
+      - "src/locales/nl.json"
+      - "src/locales/template.json"
+      - "tests/unit/i18n-render.test.js"
+    requirement_refs:
+      - FR-03
+      - FR-04
+      - FR-05
+      - FR-14
+    subtasks:
+      - T014
+      - T015
+      - T016
+    prompt_file: "tasks/WP07-secondary-pages.md"

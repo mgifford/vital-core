@@ -38,9 +38,15 @@ export function setSustainabilityMetric(metric) {
 // The default language writes <page>.html; every other writes <page>-<loc>.html.
 let REPORT_LANGUAGES = ['en'];
 let REPORT_DEFAULT_LOCALE = 'en';
-export function setReportLanguages(languages, defaultLocale) {
+// Whether to render the visible header language switcher. The `?lang=` /
+// localStorage runtime selection and the per-language builds are independent of
+// this, so a deployment can make every language reachable by URL while keeping
+// the default pages visually unchanged (no switcher chip).
+let SHOW_LANGUAGE_SWITCHER = true;
+export function setReportLanguages(languages, defaultLocale, showSwitcher = true) {
   REPORT_LANGUAGES = Array.isArray(languages) && languages.length ? languages : ['en'];
   REPORT_DEFAULT_LOCALE = defaultLocale || REPORT_LANGUAGES[0];
+  SHOW_LANGUAGE_SWITCHER = showSwitcher !== false;
 }
 /** '' for the default language, '-<loc>' otherwise. Drives sibling filenames. */
 export function localeSuffix(loc = getLocale()) {
@@ -52,10 +58,11 @@ const LANGUAGE_ENDONYMS = { en: 'English', fr: 'Français', ja: '日本語', nl:
  * Header language switcher: links the current page to its sibling in each
  * configured language. Pure links (no JS), so it works in the no-JS baseline.
  * `page` is the unsuffixed basename, e.g. 'accessibility' or 'index'. Renders
- * nothing when only one language is configured.
+ * nothing when only one language is configured or when the switcher is hidden
+ * by config (languages still reachable via ?lang= / localStorage).
  */
 function languageSwitcher(page) {
-  if (!page || REPORT_LANGUAGES.length < 2) return '';
+  if (!page || REPORT_LANGUAGES.length < 2 || !SHOW_LANGUAGE_SWITCHER) return '';
   const cur = getLocale();
   const items = REPORT_LANGUAGES.map((loc) => {
     const label = LANGUAGE_ENDONYMS[loc] ?? loc;
@@ -250,7 +257,7 @@ ${subnav(active)}
  */
 function sortableTable(caption, cols, rows) {
   const thead = cols
-    .map((c, i) => `<th scope="col"${c.num ? ' class="num"' : ''}><button type="button" class="sort-btn" data-col="${i}">${esc(c.label)}<span class="sort-ind" aria-hidden="true"></span></button></th>`)
+    .map((c, i) => `<th scope="col"${c.num ? ' class="num"' : ''}><button type="button" class="sort-btn" data-col="${i}">${esc(t(c.label))}<span class="sort-ind" aria-hidden="true"></span></button></th>`)
     .join('');
   const body = rows
     .map((r) => `<tr>${r.map((cell, i) => (i === 0
@@ -1372,37 +1379,37 @@ export function renderLighthousePage(target, summary, csvHref, jsonHref) {
   const impact = performanceImpact(lh.pageDetail, weights, target.page_loads_per_week ?? null);
 
   const dlLinks = [
-    csvHref ? `<a href="${esc(csvHref)}">CSV (per-page scores)</a>` : '',
-    jsonHref ? `<a href="${esc(jsonHref)}">JSON (AI-ready, includes recommendations)</a>` : '',
-    summary.priorityPagesCsv ? `<a href="${esc(summary.priorityPagesCsv)}">Priority pages CSV</a>` : '',
-    summary.priorityPagesJson ? `<a href="${esc(summary.priorityPagesJson)}">Priority pages JSON</a>` : '',
+    csvHref ? `<a href="${esc(csvHref)}">${t('CSV (per-page scores)')}</a>` : '',
+    jsonHref ? `<a href="${esc(jsonHref)}">${t('JSON (AI-ready, includes recommendations)')}</a>` : '',
+    summary.priorityPagesCsv ? `<a href="${esc(summary.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : '',
+    summary.priorityPagesJson ? `<a href="${esc(summary.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : '',
   ].filter(Boolean);
 
   const body = `
 <h1>${esc(target.domain)}: ${t("Lighthouse")} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('lighthouse')}
-<p class="meta">${lh.pageDetail.length} pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals.${dlLinks.length ? ` Download: ${dlLinks.join(' · ')}.` : ''}</p>
+<p class="meta">${t('@n pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals.', { '@n': lh.pageDetail.length })}${dlLinks.length ? ` ${t('Download:')} ${dlLinks.join(' · ')}.` : ''}</p>
 ${impact ? perfImpactSection(impact) : ''}
 <section aria-labelledby="h-lh-medians">
-${heading('h-lh-medians', `Medians across sampled pages`)}
+${heading('h-lh-medians', t('Medians across sampled pages'))}
 <dl class="ledger">
-  <div><dt>Performance</dt><dd>${fmtScore(lh.medianPerformance)}</dd></div>
-  <div><dt>Accessibility</dt><dd>${fmtScore(lh.medianAccessibility)}</dd></div>
-  <div><dt>Best practices</dt><dd>${fmtScore(lh.medianBestPractices)}</dd></div>
-  <div><dt>SEO</dt><dd>${fmtScore(lh.medianSeo)}</dd></div>
-  ${lh.medianAgentic != null ? `<div><dt>Agentic browsing</dt><dd>${fmtScore(lh.medianAgentic)}</dd></div>` : ''}
-  <div><dt>Largest Contentful Paint</dt><dd>${ms(m.largestContentfulPaintMs)}</dd></div>
-  <div><dt>First Contentful Paint</dt><dd>${ms(m.firstContentfulPaintMs)}</dd></div>
-  <div><dt>Speed Index</dt><dd>${ms(m.speedIndexMs)}</dd></div>
-  <div><dt>Total Blocking Time</dt><dd>${ms(m.totalBlockingTimeMs)}</dd></div>
-  <div><dt>Cumulative Layout Shift</dt><dd>${m.cumulativeLayoutShift ?? 'n/a'}</dd></div>
+  <div><dt>${t('Performance')}</dt><dd>${fmtScore(lh.medianPerformance)}</dd></div>
+  <div><dt>${t('Accessibility')}</dt><dd>${fmtScore(lh.medianAccessibility)}</dd></div>
+  <div><dt>${t('Best practices')}</dt><dd>${fmtScore(lh.medianBestPractices)}</dd></div>
+  <div><dt>${t('SEO')}</dt><dd>${fmtScore(lh.medianSeo)}</dd></div>
+  ${lh.medianAgentic != null ? `<div><dt>${t('Agentic browsing')}</dt><dd>${fmtScore(lh.medianAgentic)}</dd></div>` : ''}
+  <div><dt>${t('Largest Contentful Paint')}</dt><dd>${ms(m.largestContentfulPaintMs)}</dd></div>
+  <div><dt>${t('First Contentful Paint')}</dt><dd>${ms(m.firstContentfulPaintMs)}</dd></div>
+  <div><dt>${t('Speed Index')}</dt><dd>${ms(m.speedIndexMs)}</dd></div>
+  <div><dt>${t('Total Blocking Time')}</dt><dd>${ms(m.totalBlockingTimeMs)}</dd></div>
+  <div><dt>${t('Cumulative Layout Shift')}</dt><dd>${m.cumulativeLayoutShift ?? t('n/a')}</dd></div>
 </dl>
 </section>
 ${lighthouseRecommendations(lh.recommendations, lh.pageDetail.length)}
 ${agenticExplainer(lh)}
 <section aria-labelledby="h-lh-pages">
-${heading('h-lh-pages', `Per-page results`)}
-${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summary.week}). Agentic = experimental agentic-browsing score. PWA / offline readiness is tracked in the Standards tab (Lighthouse 12+ removed the PWA category).`, cols, rows)}
+${heading('h-lh-pages', t('Per-page results'))}
+${sortableTable(t('Lighthouse scores and Core Web Vitals per sampled page (@week). Agentic = experimental agentic-browsing score. PWA / offline readiness is tracked in the Standards tab (Lighthouse 12+ removed the PWA category).', { '@week': summary.week }), cols, rows)}
 </section>`;
   return layout({
     title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
@@ -1455,9 +1462,9 @@ export function renderReadabilityPage(target, summary, csvHref) {
     return [
       cell(`<a class="url" href="${esc(r.url)}" title="${esc(r.url)}">${esc(path)}</a>`, path),
       cell(String(r.wordCount), r.wordCount),
-      cell(r.fleschReadingEase === '' ? 'n/a' : String(r.fleschReadingEase), r.fleschReadingEase),
-      cell(r.fleschKincaidGrade === '' ? 'n/a' : String(r.fleschKincaidGrade), r.fleschKincaidGrade),
-      cell(r.scored ? 'yes' : 'too little prose', r.scored ? 1 : 0),
+      cell(r.fleschReadingEase === '' ? t('n/a') : String(r.fleschReadingEase), r.fleschReadingEase),
+      cell(r.fleschKincaidGrade === '' ? t('n/a') : String(r.fleschKincaidGrade), r.fleschKincaidGrade),
+      cell(r.scored ? t('yes') : t('too little prose'), r.scored ? 1 : 0),
     ];
   });
   const acronyms = summary.plainLanguage?.topUnexplainedAcronyms ?? [];
@@ -1465,30 +1472,30 @@ export function renderReadabilityPage(target, summary, csvHref) {
   const body = `
 <h1>${esc(target.domain)}: ${t("Readability")} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('readability')}
-<p class="meta">Plain-language metrics for the main content of each scanned page (navigation, header, and footer excluded). ${csvHref ? `<a href="${esc(csvHref)}">Download CSV</a>.` : ''}</p>
+<p class="meta">${t('Plain-language metrics for the main content of each scanned page (navigation, header, and footer excluded).')} ${csvHref ? `<a href="${esc(csvHref)}">${t('Download CSV')}</a>.` : ''}</p>
 <section aria-labelledby="h-read-about">
-${heading('h-read-about', `What these mean`)}
+${heading('h-read-about', t('What these mean'))}
 <dl class="ledger">
-  <div><dt>Words per page</dt><dd>Main-content word count.<span class="bug-meta"> Median ${pl.medianWordsPerPage ?? 'n/a'}</span></dd></div>
-  <div><dt>Reading ease (Flesch)</dt><dd>0–100; higher is easier. ~60+ is plain language; below ~30 is very hard.<span class="bug-meta"> Median ${pl.medianReadingEase ?? 'n/a'}</span></dd></div>
-  <div><dt>Grade level (Flesch-Kincaid)</dt><dd>US school grade needed to read it; aim for ~8 or lower for the public.<span class="bug-meta"> Median ${pl.medianGrade ?? 'n/a'}</span></dd></div>
-  <div><dt>Scored</dt><dd>Pages with too little prose (mostly links/cards) are not scored — those numbers would be misleading.<span class="bug-meta"> ${pl.pagesScored} of ${pl.pagesChecked} scored</span></dd></div>
+  <div><dt>${t('Words per page')}</dt><dd>${t('Main-content word count.')}<span class="bug-meta"> ${t('Median @n', { '@n': pl.medianWordsPerPage ?? t('n/a') })}</span></dd></div>
+  <div><dt>${t('Reading ease (Flesch)')}</dt><dd>${t('0–100; higher is easier. ~60+ is plain language; below ~30 is very hard.')}<span class="bug-meta"> ${t('Median @n', { '@n': pl.medianReadingEase ?? t('n/a') })}</span></dd></div>
+  <div><dt>${t('Grade level (Flesch-Kincaid)')}</dt><dd>${t('US school grade needed to read it; aim for ~8 or lower for the public.')}<span class="bug-meta"> ${t('Median @n', { '@n': pl.medianGrade ?? t('n/a') })}</span></dd></div>
+  <div><dt>${t('Scored')}</dt><dd>${t('Pages with too little prose (mostly links/cards) are not scored — those numbers would be misleading.')}<span class="bug-meta"> ${t('@scored of @checked scored', { '@scored': pl.pagesScored, '@checked': pl.pagesChecked })}</span></dd></div>
 </dl>
-<p class="meta">Heuristics for triage and trends, not authoritative linguistics. They flag pages worth a human plain-language review.</p>
+<p class="meta">${t('Heuristics for triage and trends, not authoritative linguistics. They flag pages worth a human plain-language review.')}</p>
 </section>
 <section aria-labelledby="h-read-pages">
-${heading('h-read-pages', `Per-page readability`)}
-${sortableTable(`Readability per scanned page (${summary.week}).`, cols, rows)}
+${heading('h-read-pages', t('Per-page readability'))}
+${sortableTable(t('Readability per scanned page (@week).', { '@week': summary.week }), cols, rows)}
 </section>
 ${acronyms.length ? `<section aria-labelledby="h-acronyms">
-${heading('h-acronyms', `Unexplained acronyms`)}
-<p class="meta">Acronyms used without an on-page expansion (e.g. "Centers for Medicare &amp; Medicaid Services (CMS)"), by pages affected.${downloadLinks(summary.plainLanguage?.acronymsCsv, summary.plainLanguage?.acronymsJson)}</p>
-<ul>${acronyms.map((a) => `<li><code>${esc(a.acronym)}</code> — ${a.pages} page(s)</li>`).join('')}</ul>
+${heading('h-acronyms', t('Unexplained acronyms'))}
+<p class="meta">${t('Acronyms used without an on-page expansion (e.g. "Centers for Medicare &amp; Medicaid Services (CMS)"), by pages affected.')}${downloadLinks(summary.plainLanguage?.acronymsCsv, summary.plainLanguage?.acronymsJson)}</p>
+<ul>${acronyms.map((a) => `<li><code>${esc(a.acronym)}</code> — ${t('@n page(s)', { '@n': a.pages })}</li>`).join('')}</ul>
 </section>` : ''}
 ${misspellings.length ? `<section aria-labelledby="h-spelling">
-${heading('h-spelling', `Possible misspellings`)}
-<p class="meta">Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.${downloadLinks(summary.plainLanguage?.spellingCsv, summary.plainLanguage?.spellingJson)}</p>
-<ul>${misspellings.map((m) => `<li><code>${esc(m.word)}</code> — ${m.pages} page(s)</li>`).join('')}</ul>
+${heading('h-spelling', t('Possible misspellings'))}
+<p class="meta">${t('Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.')}${downloadLinks(summary.plainLanguage?.spellingCsv, summary.plainLanguage?.spellingJson)}</p>
+<ul>${misspellings.map((m) => `<li><code>${esc(m.word)}</code> — ${t('@n page(s)', { '@n': m.pages })}</li>`).join('')}</ul>
 </section>` : ''}`;
   return layout({
     title: `${target.domain} Readability ${summary.week} | vital-scans`,
@@ -1532,7 +1539,7 @@ export function renderTechPage(target, summary, csvHref) {
             ? `<a href="${esc(d.website)}">${esc(d.name)}</a>`
             : esc(d.name);
           const examples = (d.examplePages ?? []).length
-            ? `<details><summary class="bug-meta">${d.examplePages.length} example page(s)</summary><ul>${d.examplePages.map((u) => `<li>${urlCell(u)}</li>`).join('')}</ul></details>`
+            ? `<details><summary class="bug-meta">${t('@n example page(s)', { '@n': d.examplePages.length })}</summary><ul>${d.examplePages.map((u) => `<li>${urlCell(u)}</li>`).join('')}</ul></details>`
             : '';
           return `<tr>
   <th scope="row">${nameCell}${d.version ? ` <span class="bug-meta">v${esc(d.version)}</span>` : ''}${examples}</th>
@@ -1544,19 +1551,19 @@ export function renderTechPage(target, summary, csvHref) {
         .join('\n');
       return `<h3>${esc(cat)}</h3>
 <table class="sortable">
-<caption>${esc(cat)} technologies detected on ${esc(target.domain)}, ${esc(summary.week)}.</caption>
-<thead><tr><th scope="col">Technology</th><th scope="col">Confidence</th><th scope="col">Coverage</th><th scope="col">All categories</th></tr></thead>
+<caption>${t('@cat technologies detected on @domain, @week.', { '@cat': esc(cat), '@domain': esc(target.domain), '@week': esc(summary.week) })}</caption>
+<thead><tr><th scope="col">${t('Technology')}</th><th scope="col">${t('Confidence')}</th><th scope="col">${t('Coverage')}</th><th scope="col">${t('All categories')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
     })
     .join('\n');
 
-  const ranNote = techRan ? ` The technology engine ran on <strong>${techRan}</strong> of ${summary.pagesScanned} pages scanned this week; coverage below is the share of those ${techRan} pages where each technology was found.` : '';
+  const ranNote = techRan ? ` ${t('The technology engine ran on <strong>@ran</strong> of @scanned pages scanned this week; coverage below is the share of those @ran pages where each technology was found.', { '@ran': techRan, '@scanned': summary.pagesScanned })}` : '';
   const body = `
 <h1>${esc(target.domain)}: ${t('technology stack')}</h1>
 ${subnav('tech')}
-<p class="meta"><strong>${summary.tech.length}</strong> technologies detected in <strong>${esc(summary.week)}</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.${ranNote}${downloadLinks(csvHref, summary.techJson ?? 'tech.json')}</p>
-<p class="note">Detection is additive across the week's sampled pages. Expand a technology to see example pages where it was found.</p>
+<p class="meta">${t('<strong>@n</strong> technologies detected in <strong>@week</strong>, using response headers, HTML meta tags, JavaScript globals, and script/link src patterns. Confidence reflects how specifically the signal identifies the technology. This is automated heuristic detection — verify before relying on results for procurement or compliance decisions.', { '@n': summary.tech.length, '@week': esc(summary.week) })}${ranNote}${downloadLinks(csvHref, summary.techJson ?? 'tech.json')}</p>
+<p class="note">${t('Detection is additive across the week\'s sampled pages. Expand a technology to see example pages where it was found.')}</p>
 ${sections}`;
   return layout({
     title: `${target.domain} Tech Stack ${summary.week} | vital-scans`,
@@ -1612,14 +1619,14 @@ export function renderTechFindingsPage(target, summary) {
   <td class="num">${a.findingPages}</td>
 </tr>`)
         .join('\n');
-      return `<h3>${esc(tech)} <span class="bug-meta">${model.tech[tech]} pages</span></h3>
+      return `<h3>${esc(tech)} <span class="bug-meta">${t('@n pages', { '@n': model.tech[tech] })}</span></h3>
 <table class="sortable">
-<caption>Findings over-represented on pages running ${esc(tech)} (lift ≥ 1, ≥5 pages support).</caption>
+<caption>${t('Findings over-represented on pages running @tech (lift ≥ 1, ≥5 pages support).', { '@tech': esc(tech) })}</caption>
 <thead><tr>
-  <th scope="col">Finding</th>
-  <th scope="col" class="num">Lift</th>
-  <th scope="col" class="num">On tech pages</th>
-  <th scope="col" class="num">On all pages</th>
+  <th scope="col">${t('Finding')}</th>
+  <th scope="col" class="num">${t('Lift')}</th>
+  <th scope="col" class="num">${t('On tech pages')}</th>
+  <th scope="col" class="num">${t('On all pages')}</th>
 </tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
@@ -1629,8 +1636,8 @@ export function renderTechFindingsPage(target, summary) {
   const body = `
 <h1>${esc(target.domain)}: ${t('technology ↔ issues')}</h1>
 ${subnav('tech-findings')}
-<p class="meta">Accessibility findings that appear disproportionately on pages running a given technology, across the ${model.pages} page(s) in <strong>${esc(summary.week)}</strong> where both technology detection and an accessibility engine ran. <strong>Lift</strong> is how many times more likely a finding is on pages with the technology than on pages overall — a value of 2× means twice the baseline rate.</p>
-<p class="note">This is an <em>association</em>, not proof of cause. Technologies that are detected on the same set of pages (e.g. a CMS, its host, and its language) will share identical lift values; the listing groups by technology but cannot tell which one in a co-located stack is responsible. Treat high-lift pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page's content.</p>
+<p class="meta">${t('Accessibility findings that appear disproportionately on pages running a given technology, across the @pages page(s) in <strong>@week</strong> where both technology detection and an accessibility engine ran. <strong>Lift</strong> is how many times more likely a finding is on pages with the technology than on pages overall — a value of 2× means twice the baseline rate.', { '@pages': model.pages, '@week': esc(summary.week) })}</p>
+<p class="note">${t('This is an <em>association</em>, not proof of cause. Technologies that are detected on the same set of pages (e.g. a CMS, its host, and its language) will share identical lift values; the listing groups by technology but cannot tell which one in a co-located stack is responsible. Treat high-lift pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page\'s content.')}</p>
 ${sections}`;
   return layout({
     title: `${target.domain} Tech ↔ Issues ${summary.week} | vital-scans`,
@@ -1659,18 +1666,18 @@ export function renderThirdPartyPage(target, summary, csvHref) {
   if (!tp || !tp.vendors?.length) {
     return emptyCriterionPage(target, summary, { active: 'third-party', label: 'Third parties', message: 'No third-party origins were recorded on this week\'s sampled pages (the third-party engine is sampled; some weeks have none).' });
   }
-  const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">Download CSV</a>` : '';
+  const dlLink = csvHref ? ` · <a href="${esc(csvHref)}">${t('Download CSV')}</a>` : '';
 
   const rows = tp.vendors
     .map((v) => {
       const isNew = v.firstSeen && v.firstSeen === summary.week;
       const findingShare = v.pages ? Math.round((100 * v.pagesWithFindings) / v.pages) : 0;
       return `<tr>
-  <th scope="row">${esc(v.origin)}${isNew ? ' <span class="bug-meta">new</span>' : ''}${v.isScriptVendor ? ' <span class="wcag-badge">JS</span>' : ''}</th>
+  <th scope="row">${esc(v.origin)}${isNew ? ` <span class="bug-meta">${t('new')}</span>` : ''}${v.isScriptVendor ? ' <span class="wcag-badge">JS</span>' : ''}</th>
   <td class="num" data-sort="${v.pages}">${v.pages}</td>
   <td class="num" data-sort="${v.medianBytes}">${kb(v.medianBytes)}</td>
   <td class="num" data-sort="${v.medianRequests}">${v.medianRequests}</td>
-  <td class="num" data-sort="${v.medianDurationMs}">${v.medianDurationMs} ms</td>
+  <td class="num" data-sort="${v.medianDurationMs}">${v.medianDurationMs} ${t('ms')}</td>
   <td class="num" data-sort="${findingShare}">${findingShare}%</td>
 </tr>`;
     })
@@ -1680,17 +1687,17 @@ export function renderThirdPartyPage(target, summary, csvHref) {
   const body = `
 <h1>${esc(target.domain)}: ${t('third parties')}</h1>
 ${subnav('third-party')}
-<p class="meta">Third-party origins serving resources to <strong>${esc(target.domain)}</strong> across the ${tp.pagesScanned} page(s) measured in <strong>${esc(summary.week)}</strong>. <strong>${tp.vendors.length}</strong> distinct third-party domains, <strong>${scriptVendors}</strong> of them serving JavaScript (<span class="wcag-badge">JS</span>). Costs are medians per page the vendor appears on.${dlLink}</p>
-<p class="note">Third-party JavaScript is easy to add and often reduces accessibility and performance — it injects DOM the site owner never reviewed and adds load time. "Pages w/ finding" is the share of pages carrying this vendor that also had an accessibility finding: an <em>association</em> to investigate, not proof the vendor caused it. Third parties vary per page, so a vendor on few pages may simply not have been sampled elsewhere.</p>
+<p class="meta">${t('Third-party origins serving resources to <strong>@domain</strong> across the @pages page(s) measured in <strong>@week</strong>. <strong>@vendors</strong> distinct third-party domains, <strong>@scripts</strong> of them serving JavaScript (<span class="wcag-badge">JS</span>). Costs are medians per page the vendor appears on.', { '@domain': esc(target.domain), '@pages': tp.pagesScanned, '@week': esc(summary.week), '@vendors': tp.vendors.length, '@scripts': scriptVendors })}${dlLink}</p>
+<p class="note">${t('Third-party JavaScript is easy to add and often reduces accessibility and performance — it injects DOM the site owner never reviewed and adds load time. "Pages w/ finding" is the share of pages carrying this vendor that also had an accessibility finding: an <em>association</em> to investigate, not proof the vendor caused it. Third parties vary per page, so a vendor on few pages may simply not have been sampled elsewhere.')}</p>
 <table class="sortable">
-<caption>Third-party vendors on ${esc(target.domain)}, ${esc(summary.week)} — sortable.</caption>
+<caption>${t('Third-party vendors on @domain, @week — sortable.', { '@domain': esc(target.domain), '@week': esc(summary.week) })}</caption>
 <thead><tr>
-  <th scope="col">Vendor (registrable domain)</th>
-  <th scope="col" class="num">Pages</th>
-  <th scope="col" class="num">Median bytes</th>
-  <th scope="col" class="num">Median requests</th>
-  <th scope="col" class="num">Median load</th>
-  <th scope="col" class="num">Pages w/ finding</th>
+  <th scope="col">${t('Vendor (registrable domain)')}</th>
+  <th scope="col" class="num">${t('Pages')}</th>
+  <th scope="col" class="num">${t('Median bytes')}</th>
+  <th scope="col" class="num">${t('Median requests')}</th>
+  <th scope="col" class="num">${t('Median load')}</th>
+  <th scope="col" class="num">${t('Pages w/ finding')}</th>
 </tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
@@ -1730,18 +1737,18 @@ export function renderImagesPage(target, summary, csvHref) {
     csvHref ? `<a href="${esc(csvHref)}">CSV</a>` : '',
     summary.imagesJson ? `<a href="${esc(summary.imagesJson)}">JSON</a>` : '',
   ].filter(Boolean).join(' · ');
-  const dlLink = links ? ` Download: ${links}.` : '';
+  const dlLink = links ? ` ${t('Download:')} ${links}.` : '';
   const pct = (n) => img.totalImages ? `${Math.round((n / img.totalImages) * 100)}%` : '0%';
 
   const statsTable = `<table class="stats-table">
-<caption>Image alt-text coverage across ${img.pagesScanned} page(s) scanned in ${esc(summary.week)}.</caption>
-<thead><tr><th scope="col">Category</th><th scope="col" class="num">Count</th><th scope="col" class="num">Share</th></tr></thead>
+<caption>${t('Image alt-text coverage across @n page(s) scanned in @week.', { '@n': img.pagesScanned, '@week': esc(summary.week) })}</caption>
+<thead><tr><th scope="col">${t('Category')}</th><th scope="col" class="num">${t('Count')}</th><th scope="col" class="num">${t('Share')}</th></tr></thead>
 <tbody>
-<tr><th scope="row">Total image occurrences</th><td class="num">${img.totalImages}</td><td class="num">—</td></tr>
-<tr><th scope="row">Unique images</th><td class="num">${img.uniqueImages ?? '—'}</td><td class="num">—</td></tr>
-<tr><th scope="row">Has alt text</th><td class="num">${img.withAlt}</td><td class="num">${pct(img.withAlt)}</td></tr>
-<tr><th scope="row">Decorative (alt="")</th><td class="num">${img.decorative}</td><td class="num">${pct(img.decorative)}</td></tr>
-<tr><th scope="row">Missing alt attribute</th><td class="num">${img.missingAlt}</td><td class="num">${pct(img.missingAlt)}</td></tr>
+<tr><th scope="row">${t('Total image occurrences')}</th><td class="num">${img.totalImages}</td><td class="num">—</td></tr>
+<tr><th scope="row">${t('Unique images')}</th><td class="num">${img.uniqueImages ?? '—'}</td><td class="num">—</td></tr>
+<tr><th scope="row">${t('Has alt text')}</th><td class="num">${img.withAlt}</td><td class="num">${pct(img.withAlt)}</td></tr>
+<tr><th scope="row">${t('Decorative (alt="")')}</th><td class="num">${img.decorative}</td><td class="num">${pct(img.decorative)}</td></tr>
+<tr><th scope="row">${t('Missing alt attribute')}</th><td class="num">${img.missingAlt}</td><td class="num">${pct(img.missingAlt)}</td></tr>
 </tbody>
 </table>`;
 
@@ -1753,15 +1760,15 @@ export function renderImagesPage(target, summary, csvHref) {
     .map((v) => {
       const [label, expl] = ALT_VERDICT_INFO[v];
       const cls = (v === 'GOOD' || v === 'DECORATIVE') ? '' : ' class="error"';
-      return `<tr><th scope="row"${cls}>${esc(label)}</th><td class="num">${verdicts[v]}</td><td class="num">${Math.round((100 * verdicts[v]) / totalUnique)}%</td><td>${esc(expl)}</td></tr>`;
+      return `<tr><th scope="row"${cls}>${esc(t(label))}</th><td class="num">${verdicts[v]}</td><td class="num">${Math.round((100 * verdicts[v]) / totalUnique)}%</td><td>${esc(t(expl))}</td></tr>`;
     })
     .join('\n');
   const qualitySection = qualityRows ? `<section aria-labelledby="h-images-quality">
-${heading('h-images-quality', 'Alt-text quality')}
-<p class="meta">Beyond present-vs-missing, each unique image's alt text is classified for quality. Filenames, redundant phrasing ("image of…"), and too-short or too-long values are technically present but unhelpful — the cases a human should rewrite. Decorative and "looks good" are not problems.</p>
+${heading('h-images-quality', t('Alt-text quality'))}
+<p class="meta">${t('Beyond present-vs-missing, each unique image\'s alt text is classified for quality. Filenames, redundant phrasing ("image of…"), and too-short or too-long values are technically present but unhelpful — the cases a human should rewrite. Decorative and "looks good" are not problems.')}</p>
 <table>
-<caption>Alt-text quality across ${img.uniqueImages} unique image(s).</caption>
-<thead><tr><th scope="col">Verdict</th><th scope="col">Images</th><th scope="col">Share</th><th scope="col">What it means</th></tr></thead>
+<caption>${t('Alt-text quality across @n unique image(s).', { '@n': img.uniqueImages })}</caption>
+<thead><tr><th scope="col">${t('Verdict')}</th><th scope="col">${t('Images')}</th><th scope="col">${t('Share')}</th><th scope="col">${t('What it means')}</th></tr></thead>
 <tbody>${qualityRows}</tbody>
 </table>
 </section>` : '';
@@ -1779,19 +1786,19 @@ ${heading('h-images-quality', 'Alt-text quality')}
 
   const tableRows = (img.uniqueImageList ?? []).slice(0, 500).map((u) => {
     const altCell = u.altVerdict === 'MISSING'
-      ? '<span class="error">missing</span>'
+      ? `<span class="error">${t('missing')}</span>`
       : u.altVerdict === 'DECORATIVE'
-        ? '<em>decorative</em>'
+        ? `<em>${t('decorative')}</em>`
         : esc(u.alt ?? '');
     const [vlabel] = ALT_VERDICT_INFO[u.altVerdict] ?? [u.altVerdict];
     const vCls = (u.altVerdict === 'GOOD' || u.altVerdict === 'DECORATIVE') ? 'bug-meta' : 'error';
-    const inconsistent = (u.altCount ?? 1) > 1 ? ` <span class="bug-meta">${u.altCount} alt variants</span>` : '';
+    const inconsistent = (u.altCount ?? 1) > 1 ? ` <span class="bug-meta">${t('@n alt variants', { '@n': u.altCount })}</span>` : '';
     const loadingVal = u.loading ?? '—';
 
     return [
       { html: urlCell(u.src), sort: u.src },
       { html: altCell + inconsistent, sort: u.alt ?? '' },
-      { html: `<span class="${vCls}">${esc(vlabel)}</span>`, sort: u.altVerdict },
+      { html: `<span class="${vCls}">${esc(t(vlabel))}</span>`, sort: u.altVerdict },
       { html: esc(loadingVal), sort: loadingVal },
       { html: u.bytes != null ? kb(u.bytes) : '—', sort: u.bytes ?? 0 },
       { html: String(u.pages ?? 1), sort: u.pages ?? 1 },
@@ -1800,7 +1807,7 @@ ${heading('h-images-quality', 'Alt-text quality')}
   });
 
   const detailTable = sortableTable(
-    `Up to 500 unique image occurrences from ${img.pagesScanned} page(s) scanned, most-reused first.`,
+    t('Up to 500 unique image occurrences from @n page(s) scanned, most-reused first.', { '@n': img.pagesScanned }),
     tableCols,
     tableRows
   );
@@ -1808,11 +1815,11 @@ ${heading('h-images-quality', 'Alt-text quality')}
   const body = `
 <h1>${esc(target.domain)}: ${t('image inventory')}</h1>
 ${subnav('images')}
-<p class="meta">Unique images encountered on scanned pages in <strong>${esc(summary.week)}</strong>, deduplicated by URL and Alt — the same image reused across pages with the same explanation is one row. Images with alternate captions are split into separate rows. ${dlLink}</p>
+<p class="meta">${t('Unique images encountered on scanned pages in <strong>@week</strong>, deduplicated by URL and Alt — the same image reused across pages with the same explanation is one row. Images with alternate captions are split into separate rows.', { '@week': esc(summary.week) })} ${dlLink}</p>
 ${statsTable}
 ${qualitySection}
 <section aria-labelledby="h-images-detail">
-${heading('h-images-detail', 'Image detail')}
+${heading('h-images-detail', t('Image detail'))}
 ${detailTable}
 </section>`;
   return layout({
@@ -1853,16 +1860,16 @@ export function renderArchivePage(target, series, latestWeek) {
   const body = `
 <h1>${esc(target.domain)}: ${t('report archive')}</h1>
 ${subnav('archive')}
-<p class="meta">Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.</p>
+<p class="meta">${t('Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.')}</p>
 <table>
-<caption>Weekly reports for ${esc(target.domain)} (${series.length} weeks).</caption>
-<thead><tr><th scope="col">Week</th><th scope="col" class="num">Score</th><th scope="col" class="num">Pages audited</th><th scope="col" class="num">Median axe / page</th><th scope="col" class="num">Median Alfa / page</th></tr></thead>
+<caption>${t('Weekly reports for @domain (@n weeks).', { '@domain': esc(target.domain), '@n': series.length })}</caption>
+<thead><tr><th scope="col">${t('Week')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col" class="num">${t('Pages audited')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
   return layout({
     title: `${target.domain} archive | vital-scans`,
     page: "archive",
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">Archive</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">${t('Archive')}</li>`,
     body,
     depth: 3,
   });
@@ -2393,19 +2400,19 @@ export function renderUrlLookup(domains) {
   const domainsJson = JSON.stringify(domains);
   const body = `
 <h1>${t('URL error lookup')}</h1>
-<p class="meta">Search scanned pages by URL or URL fragment. Results come from the most recently scanned week for each domain. Includes axe-core, Alfa, and deprecated-HTML findings.</p>
+<p class="meta">${t('Search scanned pages by URL or URL fragment. Results come from the most recently scanned week for each domain. Includes axe-core, Alfa, and deprecated-HTML findings.')}</p>
 
 <form id="lookup-form" class="lookup-form" autocomplete="off">
   <div class="lookup-row">
-    <label for="url-input" class="lookup-label">URL or fragment</label>
+    <label for="url-input" class="lookup-label">${t('URL or fragment')}</label>
     <input type="search" id="url-input" name="url"
-      class="lookup-input" placeholder="e.g. /medicare or cms.gov/provider"
+      class="lookup-input" placeholder="${esc(t('e.g. /medicare or cms.gov/provider'))}"
       spellcheck="false" required>
-    <button type="submit" class="lookup-btn">Search</button>
+    <button type="submit" class="lookup-btn">${t('Search')}</button>
   </div>
   <details class="domain-picker" id="domain-picker">
-    <summary>Domains to search <span id="domain-count"></span></summary>
-    <div class="domain-checks" id="domain-checks" role="group" aria-label="Select domains to search"></div>
+    <summary>${t('Domains to search')} <span id="domain-count"></span></summary>
+    <div class="domain-checks" id="domain-checks" role="group" aria-label="${esc(t('Select domains to search'))}"></div>
   </details>
 </form>
 
@@ -2415,16 +2422,16 @@ export function renderUrlLookup(domains) {
   <div class="results-header">
     <p id="results-count" class="meta"></p>
     <div class="export-controls">
-      <button id="export-json" type="button">Download JSON</button>
-      <button id="export-csv" type="button">Download CSV</button>
-      <button id="export-jira" type="button">Copy for JIRA</button>
+      <button id="export-json" type="button">${t('Download JSON')}</button>
+      <button id="export-csv" type="button">${t('Download CSV')}</button>
+      <button id="export-jira" type="button">${t('Copy for JIRA')}</button>
       <span id="copy-msg" aria-live="polite" class="copy-msg"></span>
     </div>
   </div>
   <div id="results-list"></div>
 </section>
 
-<noscript><p class="note">This tool requires JavaScript to load and filter scan data.</p></noscript>
+<noscript><p class="note">${t('This tool requires JavaScript to load and filter scan data.')}</p></noscript>
 
 <script>
 (function () {
@@ -2432,6 +2439,28 @@ export function renderUrlLookup(domains) {
   const DOMAINS = ${domainsJson};
   const API_BASE = 'api/v1/';
   const cache = new Map();
+
+  // Server-side translated message templates; the script substitutes @tokens.
+  var L = {
+    selectDomain: ${JSON.stringify(t('Select at least one domain.'))},
+    searching: ${JSON.stringify(t('Searching…'))},
+    noMatch: ${JSON.stringify(t('No pages found matching “@q”.'))},
+    resultsCount: ${JSON.stringify(t('@pages page(s), @violations violation(s) found.'))},
+    noViolations: ${JSON.stringify(t('No violations found on this page.'))},
+    nViolations: ${JSON.stringify(t('@n violation(s)'))},
+    nInstances: ${JSON.stringify(t('@n instance(s)'))},
+    ruleDocs: ${JSON.stringify(t('rule docs'))},
+    copied: ${JSON.stringify(t('Copied!'))},
+    jiraIssues: ${JSON.stringify(t('Accessibility issues:'))},
+    jiraMeta: ${JSON.stringify(t('**Scanned:** @week | **Domain:** @domain | **HTTP status:** @status'))},
+    jiraNoViol: ${JSON.stringify(t('_No violations found on this page._'))},
+    jiraEngineRule: ${JSON.stringify(t('- **Engine:** @engine | **Rule ID:**'))},
+    jiraWcag: ${JSON.stringify(t('- **WCAG:** @wcag'))},
+    jiraRuleDocs: ${JSON.stringify(t('- **Rule docs:** @url'))},
+    jiraInstances: ${JSON.stringify(t('- **Instances on page:** @n'))},
+    jiraFailing: ${JSON.stringify(t('**Failing element:**'))},
+    jiraGenerated: ${JSON.stringify(t('_Generated by [VITAL](https://github.com/mgifford/vital-core)_'))}
+  };
 
   // ── DOM refs ──────────────────────────────────────────────────────
   const form       = document.getElementById('lookup-form');
@@ -2495,11 +2524,11 @@ export function renderUrlLookup(domains) {
 
     var keys = selectedKeys();
     if (keys.length === 0) {
-      statusEl.textContent = 'Select at least one domain.';
+      statusEl.textContent = L.selectDomain;
       return;
     }
 
-    statusEl.textContent = 'Searching…';
+    statusEl.textContent = L.searching;
     resultsEl.hidden = true;
 
     Promise.all(keys.map(function (k) { return loadIndex(k); }))
@@ -2520,22 +2549,36 @@ export function renderUrlLookup(domains) {
   // ── Render results ────────────────────────────────────────────────
   var lastResults = [];
 
+  // Results are built with DOM APIs (createElement/textContent), not innerHTML,
+  // so scan-derived strings (URLs, rule ids, HTML snippets) can never be parsed
+  // as markup — defence-in-depth beyond escaping.
+  function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+  function elem(tag, opts) {
+    var n = document.createElement(tag);
+    if (opts) {
+      if (opts.cls) n.className = opts.cls;
+      if (opts.text != null) n.textContent = opts.text;
+      if (opts.href != null) n.setAttribute('href', opts.href);
+      if (opts.title != null) n.setAttribute('title', opts.title);
+    }
+    return n;
+  }
+
   function showResults(results, q) {
     lastResults = results;
     statusEl.textContent = '';
+    clear(listEl);
 
     if (results.length === 0) {
-      countEl.textContent = 'No pages found matching “' + q + '”.';
-      listEl.innerHTML = '';
+      countEl.textContent = L.noMatch.replace('@q', q);
       resultsEl.hidden = false;
       return;
     }
 
     var total = results.reduce(function (n, p) { return n + p.violations.length; }, 0);
-    countEl.textContent = results.length + ' page' + (results.length === 1 ? '' : 's') +
-      ', ' + total + ' violation' + (total === 1 ? '' : 's') + ' found.';
+    countEl.textContent = L.resultsCount.replace('@pages', results.length).replace('@violations', total);
 
-    listEl.innerHTML = results.map(renderPage).join('');
+    results.forEach(function (p) { listEl.appendChild(renderPage(p)); });
     resultsEl.hidden = false;
   }
 
@@ -2544,55 +2587,48 @@ export function renderUrlLookup(domains) {
     return 'sev-' + sev.toLowerCase();
   }
 
-  function esc(s) {
-    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
   function renderPage(p) {
     var violationCount = p.violations.length;
-    var summaryText = esc(p.domain) + ' · ' + esc(p.week) +
-      ' · ' + p.status + ' · ' +
-      violationCount + ' violation' + (violationCount === 1 ? '' : 's');
+    var details = elem('details', { cls: 'bug' });
+    details.open = true;
 
-    var violationsHtml = '';
+    var summary = elem('summary', { cls: 'page-result-summary' });
+    summary.appendChild(elem('a', { cls: 'url', href: p.url, title: p.url, text: p.url }));
+    summary.appendChild(document.createTextNode(' '));
+    summary.appendChild(elem('span', { cls: 'bug-meta',
+      text: p.domain + ' · ' + p.week + ' · ' + p.status + ' · ' + L.nViolations.replace('@n', violationCount) }));
+    details.appendChild(summary);
+
     if (violationCount === 0) {
-      violationsHtml = '<p class="meta">No violations found on this page.</p>';
+      details.appendChild(elem('p', { cls: 'meta', text: L.noViolations }));
     } else {
-      violationsHtml = p.violations.map(renderViolation).join('');
+      p.violations.forEach(function (v) { details.appendChild(renderViolation(v)); });
     }
-
-    return '<details class="bug" open>' +
-      '<summary class="page-result-summary">' +
-        '<a href="' + esc(p.url) + '" class="url" title="' + esc(p.url) + '">' + esc(p.url) + '</a>' +
-        ' <span class="bug-meta">' + summaryText + '</span>' +
-      '</summary>' +
-      violationsHtml +
-      '</details>';
+    return details;
   }
 
   function renderViolation(v) {
-    var sevClass = severityClass(v.severity);
-    var badge = v.severity ? '<span class="sev-badge">' + esc(v.severity) + '</span>' : '';
-    var title = v.help || v.rule_id;
-    var engineLine = '<span class="bug-meta">' + esc(v.engine) + ' · ' +
-      '<code>' + esc(v.rule_id) + '</code>' +
-      (v.wcag.length ? ' · WCAG ' + v.wcag.map(esc).join(', ') : '') +
-      ' · ' + v.count + ' instance' + (v.count === 1 ? '' : 's') +
-      (v.help_url ? ' · <a href="' + esc(v.help_url) + '">rule docs</a>' : '') +
-      '</span>';
+    var wrap = elem('div', { cls: ('violation-item ' + severityClass(v.severity)).trim() });
+    if (v.severity) wrap.appendChild(elem('span', { cls: 'sev-badge', text: v.severity }));
+    wrap.appendChild(document.createTextNode(' '));
+    wrap.appendChild(elem('strong', { text: v.help || v.rule_id }));
+    wrap.appendChild(elem('br'));
 
-    var examplesHtml = '';
+    var meta = elem('span', { cls: 'bug-meta' });
+    meta.appendChild(document.createTextNode(v.engine + ' · '));
+    meta.appendChild(elem('code', { text: v.rule_id }));
+    if (v.wcag.length) meta.appendChild(document.createTextNode(' · WCAG ' + v.wcag.join(', ')));
+    meta.appendChild(document.createTextNode(' · ' + L.nInstances.replace('@n', v.count)));
+    if (v.help_url) {
+      meta.appendChild(document.createTextNode(' · '));
+      meta.appendChild(elem('a', { href: v.help_url, text: L.ruleDocs }));
+    }
+    wrap.appendChild(meta);
+
     v.examples.forEach(function (ex) {
-      if (ex.html || ex.target) {
-        examplesHtml += '<pre>' + esc(ex.html || ex.target) + '</pre>';
-      }
+      if (ex.html || ex.target) wrap.appendChild(elem('pre', { text: ex.html || ex.target }));
     });
-
-    return '<div class="violation-item ' + sevClass + '">' +
-      badge + ' <strong>' + esc(title) + '</strong>' +
-      '<br>' + engineLine +
-      examplesHtml +
-      '</div>';
+    return wrap;
   }
 
   // ── CSV helper ────────────────────────────────────────────────────
@@ -2638,24 +2674,24 @@ export function renderUrlLookup(domains) {
     if (!lastResults.length) return;
     var lines = [];
     lastResults.forEach(function (p) {
-      lines.push('# Accessibility issues: ' + p.url);
-      lines.push('**Scanned:** ' + p.week + ' | **Domain:** ' + p.domain + ' | **HTTP status:** ' + p.status);
+      lines.push('# ' + L.jiraIssues + ' ' + p.url);
+      lines.push(L.jiraMeta.replace('@week', p.week).replace('@domain', p.domain).replace('@status', p.status));
       lines.push('');
       if (p.violations.length === 0) {
-        lines.push('_No violations found on this page._');
+        lines.push(L.jiraNoViol);
       } else {
         p.violations.forEach(function (v) {
           var sev = v.severity ? '[' + v.severity + '] ' : '';
           lines.push('## ' + sev + (v.help || v.rule_id));
-          lines.push('- **Engine:** ' + v.engine + ' | **Rule ID:** \`' + v.rule_id + '\`');
-          if (v.wcag.length) lines.push('- **WCAG:** ' + v.wcag.join(', '));
-          if (v.help_url) lines.push('- **Rule docs:** ' + v.help_url);
-          lines.push('- **Instances on page:** ' + v.count);
+          lines.push(L.jiraEngineRule.replace('@engine', v.engine) + ' \`' + v.rule_id + '\`');
+          if (v.wcag.length) lines.push(L.jiraWcag.replace('@wcag', v.wcag.join(', ')));
+          if (v.help_url) lines.push(L.jiraRuleDocs.replace('@url', v.help_url));
+          lines.push(L.jiraInstances.replace('@n', v.count));
           var shownExample = false;
           v.examples.forEach(function (ex) {
             if (!shownExample && (ex.html || ex.target)) {
               lines.push('');
-              lines.push('**Failing element:**');
+              lines.push(L.jiraFailing);
               lines.push('');
               lines.push('\`\`\`html');
               lines.push(ex.html || ex.target);
@@ -2669,10 +2705,10 @@ export function renderUrlLookup(domains) {
       lines.push('---');
       lines.push('');
     });
-    lines.push('_Generated by [VITAL](https://github.com/mgifford/vital-core)_');
+    lines.push(L.jiraGenerated);
     var text = lines.join('\\n');
     navigator.clipboard.writeText(text).then(function () {
-      copyMsg.textContent = 'Copied!';
+      copyMsg.textContent = L.copied;
       setTimeout(function () { copyMsg.textContent = ''; }, 2000);
     }).catch(function () {
       var ta = document.createElement('textarea');
@@ -2682,7 +2718,7 @@ export function renderUrlLookup(domains) {
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      copyMsg.textContent = 'Copied!';
+      copyMsg.textContent = L.copied;
       setTimeout(function () { copyMsg.textContent = ''; }, 2000);
     });
   });

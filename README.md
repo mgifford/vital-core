@@ -114,7 +114,10 @@ Reports can be published in multiple languages. Set `languages` (and optionally
 `default_language`) in `config/targets.yml` — globally or per target, e.g.
 `languages: [en, fr]` for a Canadian site. The default language keeps the usual
 file paths; every other language is published alongside as `<page>-<lang>.html`,
-cross-linked by a header language switcher that works without JavaScript.
+cross-linked by a header language switcher that works without JavaScript. A
+reader's choice is remembered in `localStorage` and can be forced from a link
+with `?lang=<code>` (e.g. `?lang=fr`); both are progressive enhancement and are
+only active when more than one language is configured.
 
 Translation uses a Drupal/gettext-style `t()` where the English phrase is the
 key, so untranslated strings fall back to English and partial catalogs are safe.

@@ -214,6 +214,10 @@ style**: the English source string is the key and the default.
   validates them. The `default_language` owns the canonical (unsuffixed) report
   paths; every other language is written as `<page>-<loc>.html` with a header
   language switcher (`languageSwitcher()` in `src/report-html.js`).
+- **`language_switcher` flag** (global or per target, default `true`): when
+  `false`, the visible header switcher is suppressed but the `?lang=` /
+  localStorage runtime and the per-language builds still happen — so every
+  language stays reachable by URL with no visible change to the default pages.
 - **Runtime selection** (`languageRuntime()` in `src/report-html.js`): a pre-paint
   script — emitted **only when more than one language is configured** — picks the
   language from `?lang=<loc>` (works from any page, persisted to
