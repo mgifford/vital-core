@@ -91,3 +91,24 @@ test('i18n-render: redirect config carries the current locale on a suffixed page
   setReportLanguages(['en'], 'en');
   setLocale('en');
 });
+
+test('i18n-render: sortableTable column headers localize via t()', async () => {
+  const { renderArchivePage } = await import('../../src/report-html.js');
+  const week = '2026-W25';
+  const summary = {
+    week, pagesScanned: 20, pagesAudited: 20, generatedAt: '2026-06-23T00:00:00.000Z',
+    axe: { medianViolations: 4, pagesScanned: 20, pagesWithViolations: 12, rules: {} },
+    alfa: { medianFailures: 8, pagesScanned: 10, pagesWithFailures: 6 }, coverage: {},
+  };
+  const t = { key: 'www.example.gov', domain: 'www.example.gov', display: { score_format: 'both' } };
+
+  setLocale('fr'); // fr.json ships "Pages audited" -> "Pages auditées"
+  const fr = renderArchivePage(t, [summary], week);
+  assert.match(fr, /Pages auditées/);
+  assert.doesNotMatch(fr, />Pages audited</);
+
+  setLocale('en'); // English path unchanged
+  const en = renderArchivePage(t, [summary], week);
+  assert.match(en, />Pages audited</);
+  assert.doesNotMatch(en, /Pages auditées/);
+});
