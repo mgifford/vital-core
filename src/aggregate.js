@@ -301,7 +301,7 @@ for (const target of config.targets) {
     // cross-linked by the header language switcher.
     for (const locale of target.languages) {
       setLocale(locale);
-      setReportLanguages(target.languages, target.defaultLanguage);
+      setReportLanguages(target.languages, target.defaultLanguage, target.showLanguageSwitcher);
       const sfx = locale === target.defaultLanguage ? '' : `-${locale}`;
       // Accessibility (always has content — shows "no findings" when clean).
       fs.writeFileSync(path.join(repDir, `accessibility${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {
@@ -408,7 +408,7 @@ for (const target of config.targets) {
 // global languages (default -> canonical path, others suffixed).
 for (const locale of config.languages) {
   setLocale(locale);
-  setReportLanguages(config.languages, config.defaultLanguage);
+  setReportLanguages(config.languages, config.defaultLanguage, config.showLanguageSwitcher);
   const sfx = locale === config.defaultLanguage ? '' : `-${locale}`;
   fs.writeFileSync(path.join(DIRS.docs, `index${sfx}.html`), renderIndex(dashboard, { branding: profile?.branding }));
   if (urlLookupDomains.length) {

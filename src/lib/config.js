@@ -38,6 +38,10 @@ export function loadConfig() {
   // gets the canonical (unsuffixed) file paths. Global default here; per-target
   // `languages` / `default_language` keys override.
   const globalLangs = resolveLanguages(cfg.languages, cfg.default_language, 'global config');
+  // Whether the visible header language switcher is shown. The ?lang= /
+  // localStorage runtime selection and per-language builds are independent of
+  // this, so languages can be reachable by URL with no visible UI change.
+  const globalShowSwitcher = cfg.language_switcher !== false;
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
@@ -46,6 +50,7 @@ export function loadConfig() {
     const langs = resolveLanguages(t.languages, t.default_language, `target ${t.domain}`, globalLangs);
     t.languages = langs.languages;
     t.defaultLanguage = langs.defaultLanguage;
+    t.showLanguageSwitcher = (t.language_switcher ?? cfg.language_switcher) !== false;
   }
   return {
     defaults,
@@ -53,6 +58,7 @@ export function loadConfig() {
     sustainabilityMetric,
     languages: globalLangs.languages,
     defaultLanguage: globalLangs.defaultLanguage,
+    showLanguageSwitcher: globalShowSwitcher,
     targets,
   };
 }

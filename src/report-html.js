@@ -38,9 +38,15 @@ export function setSustainabilityMetric(metric) {
 // The default language writes <page>.html; every other writes <page>-<loc>.html.
 let REPORT_LANGUAGES = ['en'];
 let REPORT_DEFAULT_LOCALE = 'en';
-export function setReportLanguages(languages, defaultLocale) {
+// Whether to render the visible header language switcher. The `?lang=` /
+// localStorage runtime selection and the per-language builds are independent of
+// this, so a deployment can make every language reachable by URL while keeping
+// the default pages visually unchanged (no switcher chip).
+let SHOW_LANGUAGE_SWITCHER = true;
+export function setReportLanguages(languages, defaultLocale, showSwitcher = true) {
   REPORT_LANGUAGES = Array.isArray(languages) && languages.length ? languages : ['en'];
   REPORT_DEFAULT_LOCALE = defaultLocale || REPORT_LANGUAGES[0];
+  SHOW_LANGUAGE_SWITCHER = showSwitcher !== false;
 }
 /** '' for the default language, '-<loc>' otherwise. Drives sibling filenames. */
 export function localeSuffix(loc = getLocale()) {
@@ -52,10 +58,11 @@ const LANGUAGE_ENDONYMS = { en: 'English', fr: 'Français', ja: '日本語', nl:
  * Header language switcher: links the current page to its sibling in each
  * configured language. Pure links (no JS), so it works in the no-JS baseline.
  * `page` is the unsuffixed basename, e.g. 'accessibility' or 'index'. Renders
- * nothing when only one language is configured.
+ * nothing when only one language is configured or when the switcher is hidden
+ * by config (languages still reachable via ?lang= / localStorage).
  */
 function languageSwitcher(page) {
-  if (!page || REPORT_LANGUAGES.length < 2) return '';
+  if (!page || REPORT_LANGUAGES.length < 2 || !SHOW_LANGUAGE_SWITCHER) return '';
   const cur = getLocale();
   const items = REPORT_LANGUAGES.map((loc) => {
     const label = LANGUAGE_ENDONYMS[loc] ?? loc;

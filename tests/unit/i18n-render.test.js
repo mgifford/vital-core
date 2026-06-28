@@ -92,6 +92,19 @@ test('i18n-render: redirect config carries the current locale on a suffixed page
   setLocale('en');
 });
 
+test('i18n-render: switcher can be hidden while ?lang/runtime stays active', () => {
+  // languages reachable by URL, but no visible switcher (no UI change).
+  setReportLanguages(['en', 'fr', 'ja', 'nl'], 'en', false);
+  setLocale('en');
+  const html = render();
+  assert.doesNotMatch(html, /class="lang-switch"/);          // no visible switcher
+  assert.match(html, /URLSearchParams\(location\.search\)\.get\('lang'\)/); // runtime present
+  assert.match(html, /"langs":\["en","fr","ja","nl"\]/);     // all langs reachable
+  assert.match(html, /<link rel="alternate" hreflang="ja" href="index-ja\.html">/); // SEO alternates
+  setReportLanguages(['en'], 'en');
+  setLocale('en');
+});
+
 test('i18n-render: sortableTable column headers localize via t()', async () => {
   const { renderArchivePage } = await import('../../src/report-html.js');
   const week = '2026-W25';
