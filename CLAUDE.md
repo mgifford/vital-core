@@ -214,6 +214,14 @@ style**: the English source string is the key and the default.
   validates them. The `default_language` owns the canonical (unsuffixed) report
   paths; every other language is written as `<page>-<loc>.html` with a header
   language switcher (`languageSwitcher()` in `src/report-html.js`).
+- **Runtime selection** (`languageRuntime()` in `src/report-html.js`): a pre-paint
+  script — emitted **only when more than one language is configured** — picks the
+  language from `?lang=<loc>` (works from any page, persisted to
+  `localStorage['vital-lang']`) or, on the default-language pages only, from a
+  stored preference, and redirects to the sibling file. A click on the switcher
+  persists the choice. `<link rel="alternate" hreflang>` tags are emitted for SEO.
+  An explicitly-shared `<page>-<loc>.html` URL is never redirected away from. With
+  a single configured language, none of this is emitted (no switcher, no script).
 - **Scope is UI chrome only.** Engine-sourced text — axe-core/Alfa/WCAG rule
   descriptions, technology names, domain names — stays English by design.
   Internal severity keys stay `critical/serious/moderate/minor`; only the

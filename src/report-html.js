@@ -65,6 +65,55 @@ function languageSwitcher(page) {
   }).join('');
   return `<nav class="lang-switch" aria-label="${esc(t('Language'))}"><ul>${items}</ul></nav>`;
 }
+/**
+ * Runtime language selection for the static per-language pages, emitted in
+ * <head> only when more than one language is configured (so an English-only
+ * build ships zero language JS). Two parts:
+ *  - <link rel="alternate" hreflang> for each language (+ x-default) for SEO.
+ *  - A pre-paint script (mirrors the theme pre-paint script) that picks the
+ *    language from `?lang=` or localStorage['vital-lang'] and redirects to the
+ *    sibling file. `?lang=` works from any page and is persisted; a stored
+ *    preference only redirects away from the DEFAULT-language (canonical) pages,
+ *    so an explicitly-shared `-<loc>.html` URL is always honoured. A click
+ *    handler on the switcher persists the chosen language. No-JS users keep the
+ *    plain switcher links.
+ */
+function languageRuntime(page) {
+  if (!page || REPORT_LANGUAGES.length < 2) return '';
+  const fileFor = (loc) => `${page}${localeSuffix(loc)}.html`;
+  const alternates = REPORT_LANGUAGES
+    .map((loc) => `<link rel="alternate" hreflang="${esc(loc)}" href="${esc(fileFor(loc))}">`)
+    .join('\n') + `\n<link rel="alternate" hreflang="x-default" href="${esc(fileFor(REPORT_DEFAULT_LOCALE))}">`;
+  const cfg = { langs: REPORT_LANGUAGES, def: REPORT_DEFAULT_LOCALE, cur: getLocale(), page };
+  const script = `<script>
+(function () {
+  var C = ${JSON.stringify(cfg)};
+  function fileFor(loc) { return C.page + (loc === C.def ? '' : '-' + loc) + '.html'; }
+  try {
+    var qs = new URLSearchParams(location.search).get('lang');
+    var want = null;
+    if (qs && C.langs.indexOf(qs) !== -1) {
+      want = qs;
+      try { localStorage.setItem('vital-lang', qs); } catch (e) {}
+    } else if (!qs && C.cur === C.def) {
+      var stored = null;
+      try { stored = localStorage.getItem('vital-lang'); } catch (e) {}
+      if (stored && C.langs.indexOf(stored) !== -1) want = stored;
+    }
+    if (want && want !== C.cur) { location.replace(fileFor(want) + location.hash); return; }
+  } catch (e) {}
+  document.addEventListener('DOMContentLoaded', function () {
+    var sw = document.querySelector('.lang-switch');
+    if (!sw) return;
+    sw.addEventListener('click', function (ev) {
+      var a = ev.target.closest && ev.target.closest('a[hreflang]');
+      if (a) { try { localStorage.setItem('vital-lang', a.getAttribute('hreflang')); } catch (e) {} }
+    });
+  });
+})();
+<\/script>`;
+  return alternates + '\n' + script;
+}
 /** The headline sustainability stat for a page, per the configured metric. */
 function sustainabilityHeadline(s) {
   if (!s) return null;
@@ -500,6 +549,7 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '' })
     if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
+${languageRuntime(page)}
 </head>
 <body>
 <a class="skip" href="#main">${t('Skip to content')}</a>

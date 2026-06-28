@@ -54,3 +54,40 @@ test('i18n-render: switcher is pure links (works with JS disabled)', () => {
   setReportLanguages(['en'], 'en');
   setLocale('en');
 });
+
+test('i18n-render: single-language build emits no language runtime (config gate)', () => {
+  setReportLanguages(['en'], 'en');
+  setLocale('en');
+  const html = render();
+  assert.doesNotMatch(html, /vital-lang/);          // no redirect/persist script
+  assert.doesNotMatch(html, /rel="alternate"/);     // no hreflang alternates
+  assert.doesNotMatch(html, /class="lang-switch"/); // no switcher
+});
+
+test('i18n-render: multi-language build emits the redirect script and hreflang alternates', () => {
+  setReportLanguages(['en', 'fr'], 'en');
+  setLocale('en');
+  const html = render();
+  // Pre-paint script reads ?lang and localStorage['vital-lang'].
+  assert.match(html, /URLSearchParams\(location\.search\)\.get\('lang'\)/);
+  assert.match(html, /localStorage\.(get|set)Item\('vital-lang'/);
+  // Config baked in: current locale, default, page, and only configured langs.
+  assert.match(html, /"cur":"en"/);
+  assert.match(html, /"def":"en"/);
+  assert.match(html, /"page":"index"/);
+  assert.match(html, /"langs":\["en","fr"\]/);
+  // SEO alternates (siblings + x-default).
+  assert.match(html, /<link rel="alternate" hreflang="fr" href="index-fr\.html">/);
+  assert.match(html, /<link rel="alternate" hreflang="x-default" href="index\.html">/);
+  setReportLanguages(['en'], 'en');
+  setLocale('en');
+});
+
+test('i18n-render: redirect config carries the current locale on a suffixed page', () => {
+  setReportLanguages(['en', 'fr'], 'en');
+  setLocale('fr');
+  const html = render();
+  assert.match(html, /"cur":"fr"/); // script can tell it is already on a non-default page
+  setReportLanguages(['en'], 'en');
+  setLocale('en');
+});
