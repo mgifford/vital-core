@@ -2542,13 +2542,28 @@ export function renderUrlLookup(domains) {
   // ── Render results ────────────────────────────────────────────────
   var lastResults = [];
 
+  // Results are built with DOM APIs (createElement/textContent), not innerHTML,
+  // so scan-derived strings (URLs, rule ids, HTML snippets) can never be parsed
+  // as markup — defence-in-depth beyond escaping.
+  function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+  function elem(tag, opts) {
+    var n = document.createElement(tag);
+    if (opts) {
+      if (opts.cls) n.className = opts.cls;
+      if (opts.text != null) n.textContent = opts.text;
+      if (opts.href != null) n.setAttribute('href', opts.href);
+      if (opts.title != null) n.setAttribute('title', opts.title);
+    }
+    return n;
+  }
+
   function showResults(results, q) {
     lastResults = results;
     statusEl.textContent = '';
+    clear(listEl);
 
     if (results.length === 0) {
       countEl.textContent = L.noMatch.replace('@q', q);
-      listEl.innerHTML = '';
       resultsEl.hidden = false;
       return;
     }
@@ -2556,7 +2571,7 @@ export function renderUrlLookup(domains) {
     var total = results.reduce(function (n, p) { return n + p.violations.length; }, 0);
     countEl.textContent = L.resultsCount.replace('@pages', results.length).replace('@violations', total);
 
-    listEl.innerHTML = results.map(renderPage).join('');
+    results.forEach(function (p) { listEl.appendChild(renderPage(p)); });
     resultsEl.hidden = false;
   }
 
@@ -2565,55 +2580,48 @@ export function renderUrlLookup(domains) {
     return 'sev-' + sev.toLowerCase();
   }
 
-  function esc(s) {
-    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
   function renderPage(p) {
     var violationCount = p.violations.length;
-    var summaryText = esc(p.domain) + ' · ' + esc(p.week) +
-      ' · ' + p.status + ' · ' +
-      L.nViolations.replace('@n', violationCount);
+    var details = elem('details', { cls: 'bug' });
+    details.open = true;
 
-    var violationsHtml = '';
+    var summary = elem('summary', { cls: 'page-result-summary' });
+    summary.appendChild(elem('a', { cls: 'url', href: p.url, title: p.url, text: p.url }));
+    summary.appendChild(document.createTextNode(' '));
+    summary.appendChild(elem('span', { cls: 'bug-meta',
+      text: p.domain + ' · ' + p.week + ' · ' + p.status + ' · ' + L.nViolations.replace('@n', violationCount) }));
+    details.appendChild(summary);
+
     if (violationCount === 0) {
-      violationsHtml = '<p class="meta">' + L.noViolations + '</p>';
+      details.appendChild(elem('p', { cls: 'meta', text: L.noViolations }));
     } else {
-      violationsHtml = p.violations.map(renderViolation).join('');
+      p.violations.forEach(function (v) { details.appendChild(renderViolation(v)); });
     }
-
-    return '<details class="bug" open>' +
-      '<summary class="page-result-summary">' +
-        '<a href="' + esc(p.url) + '" class="url" title="' + esc(p.url) + '">' + esc(p.url) + '</a>' +
-        ' <span class="bug-meta">' + summaryText + '</span>' +
-      '</summary>' +
-      violationsHtml +
-      '</details>';
+    return details;
   }
 
   function renderViolation(v) {
-    var sevClass = severityClass(v.severity);
-    var badge = v.severity ? '<span class="sev-badge">' + esc(v.severity) + '</span>' : '';
-    var title = v.help || v.rule_id;
-    var engineLine = '<span class="bug-meta">' + esc(v.engine) + ' · ' +
-      '<code>' + esc(v.rule_id) + '</code>' +
-      (v.wcag.length ? ' · WCAG ' + v.wcag.map(esc).join(', ') : '') +
-      ' · ' + L.nInstances.replace('@n', v.count) +
-      (v.help_url ? ' · <a href="' + esc(v.help_url) + '">' + L.ruleDocs + '</a>' : '') +
-      '</span>';
+    var wrap = elem('div', { cls: ('violation-item ' + severityClass(v.severity)).trim() });
+    if (v.severity) wrap.appendChild(elem('span', { cls: 'sev-badge', text: v.severity }));
+    wrap.appendChild(document.createTextNode(' '));
+    wrap.appendChild(elem('strong', { text: v.help || v.rule_id }));
+    wrap.appendChild(elem('br'));
 
-    var examplesHtml = '';
+    var meta = elem('span', { cls: 'bug-meta' });
+    meta.appendChild(document.createTextNode(v.engine + ' · '));
+    meta.appendChild(elem('code', { text: v.rule_id }));
+    if (v.wcag.length) meta.appendChild(document.createTextNode(' · WCAG ' + v.wcag.join(', ')));
+    meta.appendChild(document.createTextNode(' · ' + L.nInstances.replace('@n', v.count)));
+    if (v.help_url) {
+      meta.appendChild(document.createTextNode(' · '));
+      meta.appendChild(elem('a', { href: v.help_url, text: L.ruleDocs }));
+    }
+    wrap.appendChild(meta);
+
     v.examples.forEach(function (ex) {
-      if (ex.html || ex.target) {
-        examplesHtml += '<pre>' + esc(ex.html || ex.target) + '</pre>';
-      }
+      if (ex.html || ex.target) wrap.appendChild(elem('pre', { text: ex.html || ex.target }));
     });
-
-    return '<div class="violation-item ' + sevClass + '">' +
-      badge + ' <strong>' + esc(title) + '</strong>' +
-      '<br>' + engineLine +
-      examplesHtml +
-      '</div>';
+    return wrap;
   }
 
   // ── CSV helper ────────────────────────────────────────────────────
