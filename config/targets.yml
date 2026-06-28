@@ -100,6 +100,15 @@ targets:
   #     scanned more than once per ISO week.
   #   priority_urls: [ ... ] inline list, for a handful of must-cover URLs.
   #
+  #   languages: [ ... ] / default_language: override the global report
+  #     languages for this one target. The default_language keeps the canonical
+  #     (unsuffixed) report paths; each other language is published alongside as
+  #     <page>-<lang>.html with a header language switcher. Examples:
+  #       languages: [en, fr]            # Canada — English + French
+  #       languages: [en, ja]            # Japan — English + Japanese
+  #       languages: [en, nl]            # Netherlands — English + Dutch
+  #       default_language: fr           # make French the canonical default
+  #
   #   url_include: [ ... ] optional list of substrings. When set, ONLY URLs
   #     whose full normalized URL contains at least one substring are crawled
   #     and scanned. Useful for focusing a scan on a subtree or topic area.

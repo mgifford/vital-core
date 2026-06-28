@@ -53,6 +53,13 @@ function jsFiles(dir) {
   return out;
 }
 
+// Strings translated indirectly — passed to t() through a variable or label
+// table (e.g. subnav labels via t(label), WCAG categories via t(c), the
+// RESOURCE_LABELS / LH_CATEGORY_LABELS maps) — so the literal never appears in
+// a t('…') call the regex can see. Registered here so they show up in the
+// template and the catalog-key lint accepts them.
+const DYNAMIC_FILE = path.join(SRC, 'locales', 'dynamic-strings.json');
+
 export function extractSources() {
   const sources = new Set();
   for (const file of jsFiles(SRC)) {
@@ -61,6 +68,9 @@ export function extractSources() {
       const raw = m[1] ?? m[2];
       if (raw != null) sources.add(unescape(raw));
     }
+  }
+  if (fs.existsSync(DYNAMIC_FILE)) {
+    for (const s of JSON.parse(fs.readFileSync(DYNAMIC_FILE, 'utf8'))) sources.add(s);
   }
   return [...sources].sort((a, b) => a.localeCompare(b, 'en'));
 }
