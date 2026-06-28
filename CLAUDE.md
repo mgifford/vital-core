@@ -188,3 +188,48 @@ breaking change; add the new path under `api/v2/` and keep `v1/` until consumers
 
 **No server required** — these are pre-built static files. The `src/lib/api-writer.js`
 module builds them; `src/aggregate.js` calls `writeApiFiles()` once at the end of each run.
+
+---
+
+## Internationalization (i18n)
+
+Reports can be published in multiple languages. The model is **Drupal/gettext
+style**: the English source string is the key and the default.
+
+- `src/lib/i18n.js` exposes `t(source, args)`, `setLocale()`, `getLocale()`,
+  `setReportLanguages()` and locale-aware `nf()`. `t('Accessibility')` returns
+  the English source unless the active locale's catalog has a translation. A
+  missing **or empty** translation falls back to English, so partial catalogs
+  are always safe. English has no catalog — it is the literal in the code.
+- **Placeholders** use Drupal-style `@tokens`: `t('Showing @count of @total
+  issue type(s).', { '@count': n, '@total': m })`. Inline `<script>` blocks are
+  rendered per-locale server-side, so translated message *templates* are injected
+  via `JSON.stringify(t('…'))` and the script only substitutes the number.
+- **Supported locales**: `en`, `fr`, `ja`, `nl` (`SUPPORTED_LOCALES` in
+  `src/lib/i18n.js`). Catalogs live in `src/locales/<locale>.json` as flat
+  `{ "English source": "translation" }`. They are **human-reviewed**; the seeded
+  files cover common UI chrome and the rest falls back to English.
+- **Config**: global `languages` / `default_language` in `config/targets.yml`,
+  overridable per target (e.g. Canada `languages: [en, fr]`). `src/lib/config.js`
+  validates them. The `default_language` owns the canonical (unsuffixed) report
+  paths; every other language is written as `<page>-<loc>.html` with a header
+  language switcher (`languageSwitcher()` in `src/report-html.js`).
+- **Scope is UI chrome only.** Engine-sourced text — axe-core/Alfa/WCAG rule
+  descriptions, technology names, domain names — stays English by design.
+  Internal severity keys stay `critical/serious/moderate/minor`; only the
+  *display* labels localize (the taxonomy above is unchanged).
+
+### Adding or updating a translation
+
+1. `npm run i18n:extract` regenerates `src/locales/template.json` — a sorted
+   `{ "source": "" }` checklist of every translatable string. `npm run i18n:check`
+   fails if it is stale (use it in CI).
+2. Copy needed entries into `src/locales/<locale>.json` and fill in the values.
+   Preserve any `@tokens` and inline HTML (`<a href="…">`) verbatim.
+3. Strings translated indirectly (via `t(variable)` or a label table — subnav
+   labels, WCAG categories, `RESOURCE_LABELS`, etc.) are listed in
+   `src/locales/dynamic-strings.json` so they appear in the template.
+4. `npm run test:unit` runs the catalog-key lint (every catalog key must exist
+   in the template) plus `t()` fallback/interpolation and render tests.
+5. To add a brand-new locale, add it to `SUPPORTED_LOCALES`, its endonym to
+   `LANGUAGE_ENDONYMS` in `src/report-html.js`, and create the catalog file.

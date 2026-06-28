@@ -13,6 +13,8 @@
     "check:spec-kitty": "node scripts/check-spec-kitty-governance.js",
     "check:public-interest": "node scripts/check-public-interest.js",
     "check:ollama": "node scripts/check-ollama.js",
+    "i18n:extract": "node scripts/i18n-extract.js",
+    "i18n:check": "node scripts/i18n-extract.js --check",
     "sync:hosting": "bash scripts/sync-hosting-branches.sh",
     "test:unit": "node --test 'tests/unit/**/*.test.js'",
     "test:e2e": "node tests/e2e.mjs",

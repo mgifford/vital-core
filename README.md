@@ -108,6 +108,21 @@ npm run test:unit   # URL identity, ISO weeks, robots.txt, batch picking
 npm run test:e2e    # full pipeline over a local fixture site simulating two weeks
 ```
 
+## Languages
+
+Reports can be published in multiple languages. Set `languages` (and optionally
+`default_language`) in `config/targets.yml` — globally or per target, e.g.
+`languages: [en, fr]` for a Canadian site. The default language keeps the usual
+file paths; every other language is published alongside as `<page>-<lang>.html`,
+cross-linked by a header language switcher that works without JavaScript.
+
+Translation uses a Drupal/gettext-style `t()` where the English phrase is the
+key, so untranslated strings fall back to English and partial catalogs are safe.
+Catalogs are human-reviewed JSON in `src/locales/<lang>.json` (`en`, `fr`, `ja`,
+`nl` supported). Run `npm run i18n:extract` to refresh the translator checklist
+(`src/locales/template.json`). Only the UI chrome is translated — engine-sourced
+WCAG/rule descriptions stay English. See CLAUDE.md for details.
+
 ## Politeness
 
 The crawler honors `robots.txt` (Disallow/Allow/Crawl-delay),
