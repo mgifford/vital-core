@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
 import { compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
@@ -270,22 +270,8 @@ for (const target of config.targets) {
       );
     }
 
-    // Accessibility (always has content — shows "no findings" when clean).
-    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, {
-      ...reporting, keyPages,
-      priorityPagesCsv: priorityPages.csv,
-      priorityPagesJson: priorityPages.json,
-      bugsJson: bugsJsonName,
-      aiJson: aiJsonName,
-      acrYaml: acrResult.path,
-      trainingPriorities,
-      trainingAdvice,
-    }));
-    fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
-    fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
-    fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv, lhJson));
-    fs.writeFileSync(path.join(repDir, 'readability.html'), renderReadabilityPage(target, summary, readabilityCsv));
-
+    // Locale-independent artifacts (CSVs, side JSON) — computed once, then the
+    // HTML pages below are rendered per configured language.
     const techCsv = summary.tech?.length ? writeTechCsv(repDir, target.domain, summary.week, summary.tech) : null;
     if (summary.tech?.length) {
       const techJsonName = `${pfx2}_tech.json`;
@@ -293,12 +279,7 @@ for (const target of config.targets) {
         JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, pagesScanned: summary.pagesScanned, technologies: summary.tech }, null, 1));
       summary.techJson = techJsonName;
     }
-    fs.writeFileSync(path.join(repDir, 'tech.html'), renderTechPage(target, summary, techCsv));
-    fs.writeFileSync(path.join(repDir, 'tech-findings.html'), renderTechFindingsPage(target, summary));
-
     const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, target.domain, summary.week, summary) : null;
-    fs.writeFileSync(path.join(repDir, 'third-party.html'), renderThirdPartyPage(target, summary, tpCsv));
-
     const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, target.domain, summary.week, summary) : null;
     // Deduplicated image inventory as JSON (src, alt, bytes, occurrences,
     // alt-text verdict, example pages).
@@ -310,17 +291,45 @@ for (const target of config.targets) {
       );
       summary.imagesJson = imagesJsonName;
     }
-    fs.writeFileSync(path.join(repDir, 'images.html'), renderImagesPage(target, summary, imagesCsv));
-    // Archive page (all weeks). Written in each week folder so the subnav
-    // "Archive" link resolves from any week's report.
-    const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
-    if (archiveHtml) fs.writeFileSync(path.join(repDir, 'archive.html'), archiveHtml);
 
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
     if (isLatest) latestBugs = bugs.map((b) => ({ ...b, _week: summary.week }));
-    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null);
-    fs.writeFileSync(path.join(repDir, 'index.html'), html);
+
+    // Render every configured language. The default language owns the canonical
+    // (unsuffixed) paths; every other language is written as <page>-<loc>.html,
+    // cross-linked by the header language switcher.
+    for (const locale of target.languages) {
+      setLocale(locale);
+      setReportLanguages(target.languages, target.defaultLanguage);
+      const sfx = locale === target.defaultLanguage ? '' : `-${locale}`;
+      // Accessibility (always has content — shows "no findings" when clean).
+      fs.writeFileSync(path.join(repDir, `accessibility${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {
+        ...reporting, keyPages,
+        priorityPagesCsv: priorityPages.csv,
+        priorityPagesJson: priorityPages.json,
+        bugsJson: bugsJsonName,
+        aiJson: aiJsonName,
+        acrYaml: acrResult.path,
+        trainingPriorities,
+        trainingAdvice,
+      }));
+      fs.writeFileSync(path.join(repDir, `standards${sfx}.html`), renderStandardsPage(target, summary));
+      fs.writeFileSync(path.join(repDir, `errors${sfx}.html`), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
+      fs.writeFileSync(path.join(repDir, `lighthouse${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson));
+      fs.writeFileSync(path.join(repDir, `readability${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));
+      fs.writeFileSync(path.join(repDir, `tech${sfx}.html`), renderTechPage(target, summary, techCsv));
+      fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary));
+      fs.writeFileSync(path.join(repDir, `third-party${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
+      fs.writeFileSync(path.join(repDir, `images${sfx}.html`), renderImagesPage(target, summary, imagesCsv));
+      // Archive page (all weeks). Written in each week folder so the subnav
+      // "Archive" link resolves from any week's report.
+      const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
+      if (archiveHtml) fs.writeFileSync(path.join(repDir, `archive${sfx}.html`), archiveHtml);
+      fs.writeFileSync(path.join(repDir, `index${sfx}.html`),
+        renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null));
+    }
+    setLocale(target.defaultLanguage);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
     fs.writeFileSync(
       path.join(repDir, bugsJsonName),
@@ -395,12 +404,20 @@ for (const target of config.targets) {
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 
-fs.writeFileSync(path.join(DIRS.docs, 'index.html'), renderIndex(dashboard, { branding: profile?.branding }));
+// The fleet dashboard and URL-lookup tool are site-wide, so they render in the
+// global languages (default -> canonical path, others suffixed).
+for (const locale of config.languages) {
+  setLocale(locale);
+  setReportLanguages(config.languages, config.defaultLanguage);
+  const sfx = locale === config.defaultLanguage ? '' : `-${locale}`;
+  fs.writeFileSync(path.join(DIRS.docs, `index${sfx}.html`), renderIndex(dashboard, { branding: profile?.branding }));
+  if (urlLookupDomains.length) {
+    fs.writeFileSync(path.join(DIRS.docs, `url-lookup${sfx}.html`), renderUrlLookup(urlLookupDomains));
+  }
+}
+setLocale(config.defaultLanguage);
 writeAsset(DIRS.docs);
 writeApiFiles(DIRS.docs, apiIndexEntries, apiSnapshots, apiWeekFindings);
-if (urlLookupDomains.length) {
-  fs.writeFileSync(path.join(DIRS.docs, 'url-lookup.html'), renderUrlLookup(urlLookupDomains));
-}
 console.log('docs/ written');
 
 // ---------------------------------------------------------------------

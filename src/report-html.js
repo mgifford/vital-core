@@ -32,6 +32,39 @@ let SUSTAINABILITY_METRIC = 'co2';
 export function setSustainabilityMetric(metric) {
   SUSTAINABILITY_METRIC = metric === 'energy' ? 'energy' : 'co2';
 }
+
+// Which languages this report set is built in, and which one owns the canonical
+// (unsuffixed) file paths. Set per render pass by aggregate, alongside setLocale.
+// The default language writes <page>.html; every other writes <page>-<loc>.html.
+let REPORT_LANGUAGES = ['en'];
+let REPORT_DEFAULT_LOCALE = 'en';
+export function setReportLanguages(languages, defaultLocale) {
+  REPORT_LANGUAGES = Array.isArray(languages) && languages.length ? languages : ['en'];
+  REPORT_DEFAULT_LOCALE = defaultLocale || REPORT_LANGUAGES[0];
+}
+/** '' for the default language, '-<loc>' otherwise. Drives sibling filenames. */
+export function localeSuffix(loc = getLocale()) {
+  return loc === REPORT_DEFAULT_LOCALE ? '' : `-${loc}`;
+}
+/** Native language names for the switcher (endonyms). */
+const LANGUAGE_ENDONYMS = { en: 'English', fr: 'Français', ja: '日本語', nl: 'Nederlands' };
+/**
+ * Header language switcher: links the current page to its sibling in each
+ * configured language. Pure links (no JS), so it works in the no-JS baseline.
+ * `page` is the unsuffixed basename, e.g. 'accessibility' or 'index'. Renders
+ * nothing when only one language is configured.
+ */
+function languageSwitcher(page) {
+  if (!page || REPORT_LANGUAGES.length < 2) return '';
+  const cur = getLocale();
+  const items = REPORT_LANGUAGES.map((loc) => {
+    const label = LANGUAGE_ENDONYMS[loc] ?? loc;
+    if (loc === cur) return `<li><span aria-current="true" class="lang-current">${esc(label)}</span></li>`;
+    const href = `${page}${localeSuffix(loc)}.html`;
+    return `<li><a href="${esc(href)}" lang="${esc(loc)}" hreflang="${esc(loc)}">${esc(label)}</a></li>`;
+  }).join('');
+  return `<nav class="lang-switch" aria-label="${esc(t('Language'))}"><ul>${items}</ul></nav>`;
+}
 /** The headline sustainability stat for a page, per the configured metric. */
 function sustainabilityHeadline(s) {
   if (!s) return null;
@@ -131,10 +164,11 @@ const SUBNAV_ITEMS = [
   ['archive.html', 'Archive', 'archive'],
 ];
 function subnav(active) {
+  const sfx = localeSuffix();
   return `<nav class="subnav" aria-label="${esc(t('Domain report pages'))}"><ul>${SUBNAV_ITEMS
     .map(([href, label, key]) => key === active
       ? `<li aria-current="page">${esc(t(label))}</li>`
-      : `<li><a href="${esc(href)}">${esc(t(label))}</a></li>`)
+      : `<li><a href="${esc(href.replace('.html', `${sfx}.html`))}">${esc(t(label))}</a></li>`)
     .join('')}</ul></nav>`;
 }
 
@@ -152,9 +186,10 @@ ${subnav(active)}
 <p class="note">${t('This criterion is evaluated for every domain, but a given week\'s sample may not include pages with data for it. Check the <a href="archive.html">archive</a> for other weeks, or the <a href="index.html">overview</a>.')}</p>`;
   return layout({
     title: `${target.domain} ${L} ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${esc(L)}</li>`,
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${esc(L)}</li>`,
     body,
     depth: 3,
+    page: active,
   });
 }
 
@@ -447,7 +482,7 @@ ${table}
 </figure>`;
 }
 
-function layout({ title, breadcrumb, body, depth, extraScript = '' }) {
+function layout({ title, breadcrumb, body, depth, extraScript = '', page = '' }) {
   const base = '../'.repeat(depth);
   return `<!DOCTYPE html>
 <html lang="${esc(getLocale())}">
@@ -469,8 +504,9 @@ function layout({ title, breadcrumb, body, depth, extraScript = '' }) {
 <body>
 <a class="skip" href="#main">${t('Skip to content')}</a>
 <header>
-  <p class="brand"><a href="${base}index.html">vital-scans</a> <span class="tag">${t('open quality ledger')}</span></p>
+  <p class="brand"><a href="${base}index${localeSuffix()}.html">vital-scans</a> <span class="tag">${t('open quality ledger')}</span></p>
   ${breadcrumb ? `<nav aria-label="${esc(t('Breadcrumb'))}"><ol class="crumbs">${breadcrumb}</ol></nav>` : ''}
+  ${languageSwitcher(page)}
   ${themeToggle()}
 </header>
 <main id="main">
@@ -1320,7 +1356,8 @@ ${sortableTable(`Lighthouse scores and Core Web Vitals per sampled page (${summa
 </section>`;
   return layout({
     title: `${target.domain} Lighthouse ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Lighthouse")}</li>`,
+    page: "lighthouse",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Lighthouse")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1405,7 +1442,8 @@ ${heading('h-spelling', `Possible misspellings`)}
 </section>` : ''}`;
   return layout({
     title: `${target.domain} Readability ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Readability")}</li>`,
+    page: "readability",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Readability")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1472,7 +1510,8 @@ ${subnav('tech')}
 ${sections}`;
   return layout({
     title: `${target.domain} Tech Stack ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Tech stack")}</li>`,
+    page: "tech",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Tech stack")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1545,7 +1584,8 @@ ${subnav('tech-findings')}
 ${sections}`;
   return layout({
     title: `${target.domain} Tech ↔ Issues ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Tech ↔ issues")}</li>`,
+    page: "tech-findings",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Tech ↔ issues")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1606,7 +1646,8 @@ ${subnav('third-party')}
 </table>`;
   return layout({
     title: `${target.domain} Third Parties ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Third parties")}</li>`,
+    page: "third-party",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Third parties")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1726,7 +1767,8 @@ ${detailTable}
 </section>`;
   return layout({
     title: `${target.domain} Images ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Images")}</li>`,
+    page: "images",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Images")}</li>`,
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
@@ -1769,6 +1811,7 @@ ${subnav('archive')}
 </table>`;
   return layout({
     title: `${target.domain} archive | vital-scans`,
+    page: "archive",
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">Archive</li>`,
     body,
     depth: 3,
@@ -1853,6 +1896,7 @@ ${resourcesSection(summary)}
 `;
   return layout({
     title: `${target.domain} ${summary.week} | vital-scans`,
+    page: "index",
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li aria-current="page">${esc(target.domain)} ${esc(summary.week)}</li>`,
     body,
     depth: 3,
@@ -1925,7 +1969,8 @@ ${consensusSection(summary, bugs)}
 `;
   return layout({
     title: `${target.domain} Accessibility ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Accessibility</li>`,
+    page: "accessibility",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Accessibility</li>`,
     body,
     depth: 3,
   });
@@ -1946,7 +1991,8 @@ ${content}
 `;
   return layout({
     title: `${target.domain} Standards ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Standards")}</li>`,
+    page: "standards",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Standards")}</li>`,
     body,
     depth: 3,
   });
@@ -1967,7 +2013,8 @@ ${content}
 `;
   return layout({
     title: `${target.domain} Errors ${summary.week} | vital-scans`,
-    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Errors</li>`,
+    page: "errors",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Errors</li>`,
     body,
     depth: 3,
   });
@@ -2282,7 +2329,7 @@ ${heading('h-tools', t('Tools'))}
 ${heading('h-why', t('Why this exists'))}
 <p>${t('Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more accessible and lighter over time, using <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (the open source engine behind Siteimprove) for accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.')}</p>
 </section>`;
-  return layout({ title: pageTitle, breadcrumb: '', body, depth: 0 });
+  return layout({ title: pageTitle, breadcrumb: '', body, depth: 0, page: 'index' });
 }
 
 /**
@@ -2603,7 +2650,7 @@ export function renderUrlLookup(domains) {
   }
 })();
 </script>`;
-  return layout({ title: 'URL error lookup — vital-scans', breadcrumb: '', body, depth: 0 });
+  return layout({ title: `${t('URL error lookup')} — vital-scans`, breadcrumb: '', body, depth: 0, page: 'url-lookup' });
 }
 
 export function writeAsset(docsDir) {
@@ -2679,6 +2726,11 @@ h2:hover .anchor, h2:focus-within .anchor, .anchor:focus { opacity: 1; color: va
 td .url, th .url { max-width: 22rem; }
 .subnav ul { list-style: none; display: flex; flex-wrap: wrap; gap: .25rem 1rem; padding: 0; margin: .25rem 0 1rem; font-size: .95rem; }
 .subnav li[aria-current="page"] { font-weight: 700; }
+.lang-switch { margin-top: .4rem; font-size: .9rem; }
+.lang-switch ul { list-style: none; display: flex; flex-wrap: wrap; gap: .15rem .6rem; padding: 0; margin: 0; }
+.lang-switch li { display: inline; }
+.lang-switch li + li { border-left: 1px solid var(--rule); padding-left: .6rem; }
+.lang-current { font-weight: 700; }
 .sort-btn { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit;
   text-transform: inherit; letter-spacing: inherit; cursor: pointer; }
 .sort-btn:hover, .sort-btn:focus-visible { color: var(--accent); }
