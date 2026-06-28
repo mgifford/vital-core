@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
+import { SUPPORTED_LOCALES } from './i18n.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 
@@ -33,13 +34,49 @@ export function loadConfig() {
   const sampling = cfg.sampling ?? {};
   // Report display preference: 'co2' (default) or 'energy'.
   const sustainabilityMetric = cfg.sustainability_metric === 'energy' ? 'energy' : 'co2';
+  // Localization: which languages each report is rendered in, and which one
+  // gets the canonical (unsuffixed) file paths. Global default here; per-target
+  // `languages` / `default_language` keys override.
+  const globalLangs = resolveLanguages(cfg.languages, cfg.default_language, 'global config');
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
     t.reporting = { ...(defaults.reporting ?? {}), ...(t.reporting ?? {}) };
     t.key = domainKey(t.domain);
+    const langs = resolveLanguages(t.languages, t.default_language, `target ${t.domain}`, globalLangs);
+    t.languages = langs.languages;
+    t.defaultLanguage = langs.defaultLanguage;
   }
-  return { defaults, sampling, sustainabilityMetric, targets };
+  return {
+    defaults,
+    sampling,
+    sustainabilityMetric,
+    languages: globalLangs.languages,
+    defaultLanguage: globalLangs.defaultLanguage,
+    targets,
+  };
+}
+
+/**
+ * Normalize and validate a languages list + default language, with a fallback
+ * (used so per-target settings inherit the global default when unset). Every
+ * locale must be supported, the list is de-duplicated, and the default must be
+ * one of the listed languages. Returns { languages, defaultLanguage }.
+ */
+export function resolveLanguages(langsRaw, defaultRaw, where, fallback) {
+  if (langsRaw == null && defaultRaw == null && fallback) return fallback;
+  const languages = [...new Set(langsRaw ?? fallback?.languages ?? ['en'])];
+  if (languages.length === 0) languages.push('en');
+  for (const l of languages) {
+    if (!SUPPORTED_LOCALES.includes(l)) {
+      throw new Error(`Unsupported language "${l}" in ${where}. Supported: ${SUPPORTED_LOCALES.join(', ')}.`);
+    }
+  }
+  const defaultLanguage = defaultRaw ?? fallback?.defaultLanguage ?? languages[0];
+  if (!languages.includes(defaultLanguage)) {
+    throw new Error(`default_language "${defaultLanguage}" in ${where} is not in its languages list [${languages.join(', ')}].`);
+  }
+  return { languages, defaultLanguage };
 }
 
 /** Filesystem-safe identifier for a domain. Stable across runs. */

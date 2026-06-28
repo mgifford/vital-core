@@ -47,6 +47,18 @@ sustainability_metric: energy
 # Trailing slash is optional. Leave empty to keep CSV links relative.
 report_base_url: "https://mgifford.github.io/vital-core"
 
+# Report languages. Each report is rendered once per listed language; the
+# `default_language` keeps the canonical (unsuffixed) file paths — e.g.
+# accessibility.html — and every other language gets a locale suffix —
+# accessibility-fr.html. A header language switcher cross-links them.
+# Only UI chrome is translated (nav, labels, buttons, headings); engine-sourced
+# text such as WCAG/axe rule descriptions stays English. Supported: en, fr, ja, nl.
+# Translations are human-reviewed catalogs in src/locales/<lang>.json; any
+# missing string falls back to English, so partial catalogs are safe.
+# A target may override either key (e.g. Canada: languages: [en, fr]).
+languages: [en]
+default_language: en
+
 # Per-engine weekly coverage rates. Each value is the share of the week's
 # unique pages an engine runs on, as a fraction (0.3) or percent (30).
 # 0 (or omitted) disables an engine. Selection is deterministic per page
