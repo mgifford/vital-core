@@ -50,14 +50,23 @@ report_base_url: "https://mgifford.github.io/vital-core"
 # Report languages. Each report is rendered once per listed language; the
 # `default_language` keeps the canonical (unsuffixed) file paths — e.g.
 # accessibility.html — and every other language gets a locale suffix —
-# accessibility-fr.html. A header language switcher cross-links them.
-# Only UI chrome is translated (nav, labels, buttons, headings); engine-sourced
-# text such as WCAG/axe rule descriptions stays English. Supported: en, fr, ja, nl.
-# Translations are human-reviewed catalogs in src/locales/<lang>.json; any
-# missing string falls back to English, so partial catalogs are safe.
-# A target may override either key (e.g. Canada: languages: [en, fr]).
-languages: [en]
+# accessibility-fr.html. Readers reach a language via the URL: ?lang=ja loads
+# the Japanese sibling and remembers the choice (localStorage); a stored choice
+# only redirects from the default-language pages, so a shared English URL stays
+# English. Only UI chrome is translated (nav, labels, buttons, headings);
+# engine-sourced text such as WCAG/axe rule descriptions stays English.
+# Supported: en, fr, ja, nl. Translations are human-reviewed catalogs in
+# src/locales/<lang>.json; any missing string falls back to English, so partial
+# catalogs are safe. A target may override either key (e.g. Canada: [en, fr]).
+languages: [en, fr, ja, nl]
 default_language: en
+
+# Show the visible header language switcher. The ?lang= / localStorage runtime
+# selection above works regardless of this flag, so `false` makes every language
+# reachable by URL while leaving the default English pages visually unchanged
+# (no switcher chip). Flip to `true` to surface the switcher for discoverability.
+# Overridable per target.
+language_switcher: false
 
 # Per-engine weekly coverage rates. Each value is the share of the week's
 # unique pages an engine runs on, as a fraction (0.3) or percent (30).
