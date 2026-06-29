@@ -225,6 +225,10 @@ style**: the English source string is the key and the default.
   validates them. The `default_language` owns the canonical (unsuffixed) report
   paths; every other language is written as `<page>-<loc>.html` with a header
   language switcher (`languageSwitcher()` in `src/report-html.js`).
+- **Latest-week only** (sustainability): `aggregate.js` builds non-default
+  languages for the **latest** week per domain only; older weeks stay English at
+  the canonical paths (graceful fallback). The fleet dashboard and url-lookup are
+  built in every configured language, so `?lang=` at the site root still works.
 - **`language_switcher` flag** (global or per target, default `true`): when
   `false`, the visible header switcher is suppressed but the `?lang=` /
   localStorage runtime and the per-language builds still happen — so every
