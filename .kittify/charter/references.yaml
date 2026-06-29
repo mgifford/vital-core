@@ -16,3 +16,13 @@ references:
     development
   source_path: builtin:doctrine/missions/software-dev/mission.yaml
   local_path: _LIBRARY/template-set-software-dev-default.md
+- id: STANDARD:W3C_WSG
+  kind: external_standard
+  title: W3C Web Sustainability Guidelines
+  summary: Guidelines for reducing the environmental impact of websites (data transfer, client computation, hosting, process). Basis for the sustainable-web-output directive.
+  source_path: https://w3c.github.io/sustainableweb-wsg/
+- id: STANDARD:SUSTAINABILITY_MD
+  kind: project_commitment
+  title: Project sustainability commitments
+  summary: The project's own sustainability principles — no-JS baseline, ~2 KB CSS, no web fonts, static SVG, SWD CO2 model.
+  source_path: https://mgifford.github.io/SUSTAINABILITY.md/

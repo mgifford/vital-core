@@ -18,6 +18,12 @@ quality:
   accessibility: WCAG 2.2 AA
   report_format: semantic HTML with accessible chart alternatives
   text_alternatives: required for meaningful charts, images, and other graphics
+  sustainability:
+    standard: W3C Web Sustainability Guidelines + SUSTAINABILITY.md
+    no_web_fonts: true
+    javascript: progressive enhancement only; pages must work without it
+    prefer_build_time_over_client_computation: true
+    minimize_data_transfer: avoid shipping unused bytes; leverage caching
 performance:
   reporting:
     charts_should_tell_change_story: true
@@ -34,5 +40,6 @@ selected_directives:
   - historical-evidence-preservation
   - accessible-reporting
   - efficient-recurring-scans
+  - sustainable-web-output
 selected_tactics: []
 selected_styleguides: []

@@ -98,6 +98,17 @@ specify → fill spec.md → plan → implement (WP by WP) → accept → merge
 - Before opening a PR, run `spec-kitty upgrade --dry-run` to catch drift.
 - Never put implementation plans in `spec.md` — those belong in `plan.md`.
 
+### Sustainability gate
+
+The `sustainable-web-output` charter directive (`.kittify/charter/`) binds every
+mission to the [W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/)
+and [SUSTAINABILITY.md](https://mgifford.github.io/SUSTAINABILITY.md/). Each
+mission's `spec.md` should carry a sustainability acceptance criterion — does the
+change add client-side JavaScript or data transfer, and is it justified and
+progressively enhanced? Is work done at build time rather than per request? Stays
+within the no-web-fonts / static-SVG / ~2 KB-CSS budget? Treat it like the
+severity taxonomy and accessibility rules: a standing gate, not an afterthought.
+
 ---
 
 ## Security rules (non-negotiable)
@@ -214,6 +225,10 @@ style**: the English source string is the key and the default.
   validates them. The `default_language` owns the canonical (unsuffixed) report
   paths; every other language is written as `<page>-<loc>.html` with a header
   language switcher (`languageSwitcher()` in `src/report-html.js`).
+- **Latest-week only** (sustainability): `aggregate.js` builds non-default
+  languages for the **latest** week per domain only; older weeks stay English at
+  the canonical paths (graceful fallback). The fleet dashboard and url-lookup are
+  built in every configured language, so `?lang=` at the site root still works.
 - **`language_switcher` flag** (global or per target, default `true`): when
   `false`, the visible header switcher is suppressed but the `?lang=` /
   localStorage runtime and the per-language builds still happen — so every

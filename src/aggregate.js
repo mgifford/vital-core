@@ -296,12 +296,19 @@ for (const target of config.targets) {
     const isLatest = i === series.length - 1;
     if (isLatest) latestBugs = bugs.map((b) => ({ ...b, _week: summary.week }));
 
-    // Render every configured language. The default language owns the canonical
-    // (unsuffixed) paths; every other language is written as <page>-<loc>.html,
-    // cross-linked by the header language switcher.
-    for (const locale of target.languages) {
+    // Render the configured languages. Sustainability (sustainable-web-output):
+    // non-default languages are built only for the LATEST week — the most-viewed
+    // one — so archived weeks aren't multiplied N× on disk and in the Pages
+    // artifact for pages almost nobody revisits. Older weeks stay English at the
+    // canonical paths; a non-English reader who navigates back simply sees
+    // English there (graceful fallback, and — being single-language — those
+    // pages emit no ?lang/hreflang runtime, so nothing redirects to a missing
+    // sibling). The default language owns the unsuffixed paths; others are
+    // <page>-<loc>.html.
+    const weekLanguages = isLatest ? target.languages : [target.defaultLanguage];
+    for (const locale of weekLanguages) {
       setLocale(locale);
-      setReportLanguages(target.languages, target.defaultLanguage, target.showLanguageSwitcher);
+      setReportLanguages(weekLanguages, target.defaultLanguage, target.showLanguageSwitcher);
       const sfx = locale === target.defaultLanguage ? '' : `-${locale}`;
       // Accessibility (always has content — shows "no findings" when clean).
       fs.writeFileSync(path.join(repDir, `accessibility${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {

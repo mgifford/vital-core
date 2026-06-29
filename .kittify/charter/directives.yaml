@@ -31,3 +31,9 @@ directives:
     scope: scan-runtime
     summary: Scans should be deterministic, rate-controlled, and proportionate to weekly budget and site value.
     rationale: The system runs continuously on a recurring schedule and must remain efficient.
+  - id: sustainable-web-output
+    title: Keep web output sustainable
+    severity: required
+    scope: report-html
+    summary: Minimize data transfer and client computation. Prefer build-time over per-request work, no web fonts, static SVG, and JavaScript only as progressive enhancement. Leverage caching and avoid shipping unused bytes.
+    rationale: The project follows the W3C Web Sustainability Guidelines and its own SUSTAINABILITY.md; the reports' own energy/CO2 figures are part of the argument they make, so the output must practice what it measures.
