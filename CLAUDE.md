@@ -98,6 +98,17 @@ specify → fill spec.md → plan → implement (WP by WP) → accept → merge
 - Before opening a PR, run `spec-kitty upgrade --dry-run` to catch drift.
 - Never put implementation plans in `spec.md` — those belong in `plan.md`.
 
+### Sustainability gate
+
+The `sustainable-web-output` charter directive (`.kittify/charter/`) binds every
+mission to the [W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/)
+and [SUSTAINABILITY.md](https://mgifford.github.io/SUSTAINABILITY.md/). Each
+mission's `spec.md` should carry a sustainability acceptance criterion — does the
+change add client-side JavaScript or data transfer, and is it justified and
+progressively enhanced? Is work done at build time rather than per request? Stays
+within the no-web-fonts / static-SVG / ~2 KB-CSS budget? Treat it like the
+severity taxonomy and accessibility rules: a standing gate, not an afterthought.
+
 ---
 
 ## Security rules (non-negotiable)
