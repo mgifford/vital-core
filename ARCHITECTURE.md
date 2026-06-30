@@ -7,19 +7,28 @@ conventions, [AGENTS.md](AGENTS.md).
 
 ## The one big idea
 
-**There is no server and no database.** Everything runs on scheduled GitHub Actions.
+**There is no server and no database.** Everything runs on scheduled
+GitHub Actions, and **files are the only persistent state**:
 
-The architecture is built around five core principles:
+- Raw scan data is committed to the repo under `data/`.
+- Crawl progress is committed under `state/`.
+- The published website is a **pure function** of `data/` — regenerated
+  from scratch each run, never hand-edited, never committed (it ships
+  straight to GitHub Pages as a build artifact).
 
-* Files are the only persistent state.
-* Data is append-only.
-* Reports are pure functions of collected evidence.
-* Collect once, use many times.
-* Every quality signal has exactly one canonical producer.
+The second rule is: **collect once, use many times**.
 
-Evidence is collected once, stored in a canonical form, and then reused by reports, APIs, dashboards, AI summaries, exports, and historical analysis. Reports may summarize or correlate evidence, but they should never duplicate its collection.
+Scanning is expensive; analysis is cheap. VITAL-Core collects each quality
+signal once, stores it as canonical evidence, and reuses that evidence in
+reports, APIs, CSV exports, dashboards, AI summaries, and historical
+analysis.
 
-This means anyone can clone the repo and reproduce every number, and the whole history of every site is preserved in git.
+Every quality signal should have exactly one canonical producer. Reports
+may summarize, correlate, visualize, or aggregate evidence, but they
+should not independently collect the same evidence again.
+
+This means anyone can clone the repo and reproduce every number, and the
+whole history of every site is in git.
 
 ## How crawling works
 
