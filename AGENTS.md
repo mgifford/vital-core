@@ -17,120 +17,16 @@ historical remediation** across US government sites.
 4. **Actionable Remediation**: Provide practical developer guidance that helps teams clear their weekly backlog.
 5. **Efficient Scanning**: Optimize scanning of high-value pages to support recurring, automated weekly schedules without bloated resource consumption.
 
-## Core Architecture Principles
+## Core Architectural Rule
 
-### Collect once, use many times
+Follow the architecture documented in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-Collect each piece of evidence exactly once and reuse it throughout the system.
+In particular:
 
-Every quality signal must have a single canonical producer. Reports, APIs, AI summaries, exports, dashboards, and future analyses should consume shared evidence rather than performing duplicate scans or calculations.
-
-When introducing a new capability:
-
-1. Determine whether the evidence already exists.
-2. Reuse existing evidence whenever possible.
-3. If new evidence is required, define a single canonical producer.
-4. Store the evidence in the canonical data model.
-5. Allow downstream reports and APIs to consume that shared evidence.
-
-Reports should summarize, correlate, visualize, or aggregate evidence, but they should never independently reproduce its collection.
-
-Examples:
-
-| Evidence | Canonical producer |
-|----------|--------------------|
-| WCAG violations | Accessibility scan (axe-core / Alfa) |
-| Lighthouse metrics | Lighthouse scan |
-| Readability metrics | Readability scan |
-| Image inventory | Images scan |
-| Technology detection | Technology scan |
-| Third-party inventory | Third-party scan |
-| Progressive Web Resilience | Standards scan |
-
-This principle minimizes crawl time, avoids inconsistent results, reduces maintenance, and keeps every quality signal authoritative.
-
-## Architecture
-
-The system runs on GitHub Actions with no server and no database.
-
-The core architectural principles are:
-
-* Files are the only persistent state.
-* Data is append-only.
-* Reports are pure functions of the collected evidence.
 * Collect once, use many times.
 * Every quality signal has exactly one canonical producer.
-
-Collect each piece of evidence exactly once and reuse it throughout the system.
-
-Reports, APIs, AI summaries, exports, dashboards, and future analyses should consume shared evidence rather than performing duplicate scans or calculations. Reports may summarize, correlate, visualize, or aggregate evidence, but they should never independently reproduce its collection.
-
-When introducing a new capability:
-
-1. Determine whether the required evidence already exists.
-2. Reuse existing evidence whenever possible.
-3. If new evidence is required, define a single canonical producer.
-4. Store the evidence in the canonical data model.
-5. Make the resulting evidence available to downstream consumers.
-
-Examples of canonical ownership include:
-
-| Evidence | Canonical producer |
-|----------|--------------------|
-| WCAG findings | Accessibility engine (axe-core / Alfa) |
-| Lighthouse metrics | Lighthouse engine |
-| Readability metrics | Plain language engine |
-| Image inventory | Images engine |
-| Technology inventory | Technology engine |
-| Third-party inventory | Third-party engine |
-| Progressive Web Resilience | Standards engine |
-| Technology ↔ finding associations | Aggregation pipeline |
-| Historical trends | Aggregation pipeline |
-
-The primary pipeline is:
-
-* `src/scan.js` — one scan run for one domain. Loads state, picks a batch of pages not yet scanned this ISO week, runs the configured engines, writes one JSON record per page under `data/<domain>/<week>/pages/`, and discovers same-host links into `state/<domain>/crawl.json`.
-* `src/aggregate.js` — pure function of `data/`. Computes weekly summaries, writes `data/<domain>/<week>/summary.json` (committed), builds historical ledgers, and generates the static reports under `docs/` (published via GitHub Pages).
-* `src/prune.js` — removes page-level detail older than `retention_weeks`; summaries and historical ledgers remain.
-* `src/issue-comment.js` — posts the weekly Markdown summary to the tracking issue.
-* `src/lib/` — shared, stable contracts including URL identity (`urls.js`), ISO weeks (`week.js`), crawl state (`state.js`), robots (`robots.js`), sitemap discovery (`sitemap.js`), configuration (`config.js`), and other reusable infrastructure.
-
-## Canonical Ownership of Quality Signals
-
-Every measurable quality signal in VITAL-Core must have **exactly one canonical producer**.
-
-A scan should collect each piece of evidence only once.
-
-Other reports may:
-
-* summarize it
-* aggregate it
-* correlate it
-* visualize it
-* provide links back to it
-
-but should **never independently reproduce the same measurement**.
-
-For example:
-
-| Signal | Canonical producer |
-|---------|--------------------|
-| WCAG violations | Accessibility scan (axe-core / Alfa) |
-| Lighthouse scores | Lighthouse scan |
-| Readability metrics | Readability scan |
-| Image metadata | Image inventory |
-| Third-party resources | Third-party scan |
-| Technology detection | Technology detection |
-| Public-interest signals | Standards & Security |
-
-When introducing a new feature:
-
-1. Determine whether the information already exists elsewhere.
-2. If it does, reuse the existing data.
-3. If it does not, define a single canonical producer.
-4. Avoid duplicate crawls, duplicate parsing, and duplicate reporting.
-
-Reports should reference the canonical source rather than generating competing versions of the same measurement.
+* Reuse existing evidence before introducing new scans.
+* Reports, APIs, AI summaries, exports, and dashboards consume shared evidence rather than generating it.
 
 ## Scan Engine Inventory
 
