@@ -7,17 +7,19 @@ conventions, [AGENTS.md](AGENTS.md).
 
 ## The one big idea
 
-**There is no server and no database.** Everything runs on scheduled
-GitHub Actions, and **files are the only state**:
+**There is no server and no database.** Everything runs on scheduled GitHub Actions.
 
-- Raw scan data is committed to the repo under `data/`.
-- Crawl progress is committed under `state/`.
-- The published website is a **pure function** of `data/` — regenerated
-  from scratch each run, never hand-edited, never committed (it ships
-  straight to GitHub Pages as a build artifact).
+The architecture is built around five core principles:
 
-This means anyone can clone the repo and reproduce every number, and the
-whole history of every site is in git.
+* Files are the only persistent state.
+* Data is append-only.
+* Reports are pure functions of collected evidence.
+* Collect once, use many times.
+* Every quality signal has exactly one canonical producer.
+
+Evidence is collected once, stored in a canonical form, and then reused by reports, APIs, dashboards, AI summaries, exports, and historical analysis. Reports may summarize or correlate evidence, but they should never duplicate its collection.
+
+This means anyone can clone the repo and reproduce every number, and the whole history of every site is preserved in git.
 
 ## How crawling works
 
@@ -114,6 +116,25 @@ page-detail pruning and answer "when did this first appear?".
 `retention_weeks` (default 8) by `src/prune.js`; the weekly summaries and
 ledgers are kept indefinitely.
 
+
+Crawler
+↓
+Evidence producers
+↓
+Canonical evidence
+↓
+Aggregation
+↓
+Consumers
+• Reports
+• API
+• CSV
+• AI summaries
+• History
+• URL lookup
+
+
+
 ## Per-domain configuration (institutional tuning)
 
 Every site is configured in **one file**, `config/targets.yml`. There's a
@@ -183,6 +204,12 @@ report.yml    (after the night's scans complete)
   └─ deploy docs/ to GitHub Pages
 ```
 
+The scan pipeline is responsible for **collecting evidence**.
+
+The aggregation pipeline is responsible for **transforming evidence into reusable products**.
+
+No report should perform its own scanning or independent measurements. Reports consume aggregated evidence rather than generating it.
+
 - **`scan.yml`** runs on a staggered set of off-hours cron schedules,
   one parallel job per domain. Each job scans its budget and commits
   only its own `data/<domain>/` and `state/<domain>/` files, so parallel
@@ -202,8 +229,10 @@ report.yml    (after the night's scans complete)
   scheduling, and weekly caps. A site sees a few hundred slow page loads
   spread across a week.
 - **"Can I reproduce the reports?"** Yes — `node src/aggregate.js`
-  regenerates all of `docs/` from `data/`. Reports are a pure function
-  of committed data.
+  regenerates all of `docs/` from `data/`. Reports are a pure function of 
+  collected evidence. Reports never perform their own scans. They consume
+  the committed evidence collected during the scan pipeline, ensuring every
+  quality signal has a single canonical source.
 - **"What if a scheduled run is skipped or a job times out?"** The next
   run picks up where the frontier left off; data is append-only and
   regenerable, so nothing is lost.
