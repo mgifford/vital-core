@@ -39,6 +39,43 @@ are pure functions of the data directory.**
   weeks (`week.js`), crawl state (`state.js`), robots (`robots.js`),
   sitemap discovery (`sitemap.js`), config (`config.js`).
 
+## Canonical Ownership of Quality Signals
+
+Every measurable quality signal in VITAL-Core must have **exactly one canonical producer**.
+
+A scan should collect each piece of evidence only once.
+
+Other reports may:
+
+* summarize it
+* aggregate it
+* correlate it
+* visualize it
+* provide links back to it
+
+but should **never independently reproduce the same measurement**.
+
+For example:
+
+| Signal | Canonical producer |
+|---------|--------------------|
+| WCAG violations | Accessibility scan (axe-core / Alfa) |
+| Lighthouse scores | Lighthouse scan |
+| Readability metrics | Readability scan |
+| Image metadata | Image inventory |
+| Third-party resources | Third-party scan |
+| Technology detection | Technology detection |
+| Public-interest signals | Standards & Security |
+
+When introducing a new feature:
+
+1. Determine whether the information already exists elsewhere.
+2. If it does, reuse the existing data.
+3. If it does not, define a single canonical producer.
+4. Avoid duplicate crawls, duplicate parsing, and duplicate reporting.
+
+Reports should reference the canonical source rather than generating competing versions of the same measurement.
+
 ## Scan Engine Inventory
 
 Every URL in the batch is processed by the engines listed in the
