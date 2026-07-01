@@ -62,8 +62,9 @@ const LANGUAGE_ENDONYMS = { en: 'English', fr: 'Français', ja: '日本語', nl:
  * by config (languages still reachable via ?lang= / localStorage).
  */
 function languageSwitcher(page) {
-  if (!page || REPORT_LANGUAGES.length < 2 || !SHOW_LANGUAGE_SWITCHER) return '';
+  if (!page || REPORT_LANGUAGES.length < 2) return '';
   const cur = getLocale();
+  if (!SHOW_LANGUAGE_SWITCHER && cur === REPORT_DEFAULT_LOCALE) return '';
   const items = REPORT_LANGUAGES.map((loc) => {
     const label = LANGUAGE_ENDONYMS[loc] ?? loc;
     if (loc === cur) return `<li><span aria-current="true" class="lang-current">${esc(label)}</span></li>`;
