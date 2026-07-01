@@ -105,6 +105,15 @@ test('i18n-render: switcher can be hidden while ?lang/runtime stays active', () 
   setLocale('en');
 });
 
+test('i18n-render: switcher is still shown on non-default pages even when configured to be hidden', () => {
+  setReportLanguages(['en', 'fr'], 'en', false);
+  setLocale('fr');
+  const html = render();
+  assert.match(html, /class="lang-switch"/); // visible switcher on non-default page
+  setReportLanguages(['en'], 'en');
+  setLocale('en');
+});
+
 test('i18n-render: sortableTable column headers localize via t()', async () => {
   const { renderArchivePage } = await import('../../src/report-html.js');
   const week = '2026-W25';
