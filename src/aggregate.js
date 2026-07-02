@@ -195,7 +195,8 @@ for (const target of config.targets) {
     // JSON downloads are still only written when there's data to put in them.
 
     // Accessibility (always has content — shows "no findings" when clean).
-    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, { ...reporting, keyPages }));
+    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, { ...reporting, keyPages }, target.url_exclude_patterns ?? []));
+
     fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
     fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
     fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv, lhJson));
