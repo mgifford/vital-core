@@ -592,6 +592,19 @@ ${table}
 </figure>`;
 }
 
+function trendPoints(series, pick) {
+  return series.map((s) => ({ week: s.week, value: pick(s) }));
+}
+
+function chartGroup(id, title, level, charts) {
+  const content = charts.filter(Boolean).join('\n');
+  if (!content) return '';
+  return `<section aria-labelledby="${esc(id)}">
+${heading(id, title, level)}
+${content}
+</section>`;
+}
+
 function layout({ title, breadcrumb, body, depth, extraScript = '', page = '' }) {
   const base = '../'.repeat(depth);
   return `<!DOCTYPE html>
@@ -1937,8 +1950,8 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const scoreFormat = target.display?.score_format ?? 'both';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
-  const trendAccessibilityScore = trendPoints(series, (s) => scoreFor(s)?.score ?? null);
-  const trendLighthouseScore = trendPoints(series, (s) => s.lighthouse?.medianPerformance ?? null);
+  const trendAccessibilityScore = series.map((s) => ({ week: s.week, value: scoreFor(s)?.score ?? null }));
+  const trendLighthouseScore = series.map((s) => ({ week: s.week, value: s.lighthouse?.medianPerformance ?? null }));
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
   const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
   const body = `
