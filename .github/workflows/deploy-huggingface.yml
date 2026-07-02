@@ -26,7 +26,7 @@ on:
       profile:
         description: "Profile to deploy (config/profiles/<profile>.yml)"
         required: true
-        default: cms
+        default: va
       space:
         description: "Target HF Space, as owner/name"
         required: true
@@ -46,7 +46,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      PROFILE: ${{ github.event.inputs.profile || 'cms' }}
+      PROFILE: ${{ github.event.inputs.profile || 'va' }}
       SPACE: ${{ github.event.inputs.space || 'mgifford/vital-core' }}
     steps:
       - name: Check out vital-core (source of truth)
