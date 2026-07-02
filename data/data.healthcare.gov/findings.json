@@ -1,11 +1,11 @@
 {
  "domain": "data.healthcare.gov",
- "updatedAt": "2026-06-18T10:19:50.845Z",
+ "updatedAt": "2026-07-02T19:27:55.705Z",
  "findings": {
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r111",
-   "summary": "sia-r111 (WCAG 2.5.8)",
+   "summary": "Target Size (Minimum) (WCAG 2.5.8)",
    "wcag": "2.5.8",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -17,10 +17,24 @@
    "weeksSeen": 2,
    "lastPagesAffected": 377
   },
+  "VS-179ad9b3": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r113",
+   "summary": "Target Size (Minimum) (WCAG 2.5.8)",
+   "wcag": "2.5.8",
+   "severity": "Medium",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1
+  },
   "VS-f7dba940": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r14",
-   "summary": "sia-r14 (WCAG 2.5.3)",
+   "summary": "Label in Name (WCAG 2.5.3)",
    "wcag": "2.5.3",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -35,7 +49,7 @@
   "VS-a0bdbdf6": {
    "engine": "axe-core",
    "ruleId": "list",
-   "summary": "<ul> and <ol> must only directly contain <li>, <script> or < (WCAG 1.3.1)",
+   "summary": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements (WCAG 1.3.1)",
    "wcag": "1.3.1",
    "severity": "High",
    "firstSeen": "2026-W24",
@@ -47,25 +61,10 @@
    "weeksSeen": 2,
    "lastPagesAffected": 2
   },
-  "VS-f6cf30ff": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r17",
-   "summary": "sia-r17 (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 340
-  },
   "VS-f054f4a4": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r53",
-   "summary": "sia-r53 (WCAG 1.3.1)",
+   "summary": "Use headings in a logical, non-skipping order. (WCAG 1.3.1)",
    "wcag": "1.3.1",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -76,6 +75,20 @@
    ],
    "weeksSeen": 2,
    "lastPagesAffected": 1
+  },
+  "VS-d6097011": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r68",
+   "summary": "Info and Relationships (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Medium",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W24",
+   "_weeks": [
+    "2026-W24"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 2
   },
   "VS-0841abc2": {
    "engine": "axe-core",
@@ -92,10 +105,25 @@
    "weeksSeen": 2,
    "lastPagesAffected": 1
   },
+  "VS-f6cf30ff": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r17",
+   "summary": "Name, Role, Value (WCAG 4.1.2)",
+   "wcag": "4.1.2",
+   "severity": "Medium",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 340
+  },
   "VS-e05344b9": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r18",
-   "summary": "sia-r18 (WCAG 4.1.2)",
+   "summary": "Only use ARIA states/properties that are allowed on this element/role. (WCAG 4.1.2)",
    "wcag": "4.1.2",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -109,7 +137,7 @@
   "VS-a48e6078": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r8",
-   "summary": "sia-r8 (WCAG 4.1.2)",
+   "summary": "Associate the form field with a label. (WCAG 4.1.2)",
    "wcag": "4.1.2",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -138,7 +166,7 @@
   "VS-646b1e0b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r66",
-   "summary": "sia-r66 (WCAG 1.4.3)",
+   "summary": "Increase text contrast to meet WCAG AAA (7:1). (WCAG 1.4.3)",
    "wcag": "1.4.3",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -153,7 +181,7 @@
   "VS-8806389c": {
    "engine": "axe-core",
    "ruleId": "landmark-unique",
-   "summary": "Landmarks should have a unique role or role/label/title (i.e (WCAG criterion undetermined)",
+   "summary": "Landmarks should have a unique role or role/label/title (i.e. accessible name) c (WCAG criterion undetermined)",
    "wcag": null,
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -240,38 +268,10 @@
    "weeksSeen": 2,
    "lastPagesAffected": 1
   },
-  "VS-d6097011": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r68",
-   "summary": "sia-r68 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
-   "_weeks": [
-    "2026-W24"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 2
-  },
   "VS-f2542d87": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r79",
    "summary": "sia-r79 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
-   "_weeks": [
-    "2026-W24"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 1
-  },
-  "VS-179ad9b3": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r113",
-   "summary": "sia-r113 (WCAG criterion undetermined)",
    "wcag": null,
    "severity": "Medium",
    "firstSeen": "2026-W24",

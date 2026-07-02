@@ -1,11 +1,11 @@
 {
  "domain": "data.medicaid.gov",
- "updatedAt": "2026-06-18T10:19:52.588Z",
+ "updatedAt": "2026-07-02T19:27:57.859Z",
  "findings": {
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r111",
-   "summary": "sia-r111 (WCAG 2.5.8)",
+   "summary": "Target Size (Minimum) (WCAG 2.5.8)",
    "wcag": "2.5.8",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -20,7 +20,7 @@
   "VS-f7dba940": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r14",
-   "summary": "sia-r14 (WCAG 2.5.3)",
+   "summary": "Label in Name (WCAG 2.5.3)",
    "wcag": "2.5.3",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -50,7 +50,7 @@
   "VS-784b5009": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r43",
-   "summary": "sia-r43 (WCAG 1.1.1)",
+   "summary": "Non-text Content (WCAG 1.1.1)",
    "wcag": "1.1.1",
    "severity": "Medium",
    "firstSeen": "2026-W24",
@@ -65,7 +65,7 @@
   "VS-a0bdbdf6": {
    "engine": "axe-core",
    "ruleId": "list",
-   "summary": "<ul> and <ol> must only directly contain <li>, <script> or < (WCAG 1.3.1)",
+   "summary": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements (WCAG 1.3.1)",
    "wcag": "1.3.1",
    "severity": "High",
    "firstSeen": "2026-W24",
@@ -77,11 +77,26 @@
    "weeksSeen": 2,
    "lastPagesAffected": 8
   },
+  "VS-d6097011": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r68",
+   "summary": "Info and Relationships (WCAG 1.3.1)",
+   "wcag": "1.3.1",
+   "severity": "Medium",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 1
+  },
   "VS-f6cf30ff": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r17",
-   "summary": "sia-r17 (WCAG 1.3.1)",
-   "wcag": "1.3.1",
+   "summary": "Name, Role, Value (WCAG 4.1.2)",
+   "wcag": "4.1.2",
    "severity": "Medium",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W25",
@@ -95,7 +110,7 @@
   "VS-8806389c": {
    "engine": "axe-core",
    "ruleId": "landmark-unique",
-   "summary": "Landmarks should have a unique role or role/label/title (i.e (WCAG criterion undetermined)",
+   "summary": "Landmarks should have a unique role or role/label/title (i.e. accessible name) c (WCAG criterion undetermined)",
    "wcag": null,
    "severity": "High",
    "firstSeen": "2026-W24",
@@ -156,21 +171,6 @@
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r78",
    "summary": "sia-r78 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Medium",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 1
-  },
-  "VS-d6097011": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r68",
-   "summary": "sia-r68 (WCAG criterion undetermined)",
    "wcag": null,
    "severity": "Medium",
    "firstSeen": "2026-W24",
