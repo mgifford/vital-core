@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderAccessibilityPage, renderDomainReport } from '../../src/report-html.js';
 
-test('renderDomainReport adds Lighthouse performance and Core Web Vitals trend charts', () => {
+test('renderDomainReport shows two score trend charts for accessibility and Lighthouse', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const series = [
     {
@@ -60,11 +60,11 @@ test('renderDomainReport adds Lighthouse performance and Core Web Vitals trend c
     null
   );
 
-  assert.match(html, /Accessibility trends/);
-  assert.match(html, /Performance trends/);
-  assert.match(html, /Lighthouse performance \(median\)/);
-  assert.match(html, /Largest Contentful Paint \(median\)/);
-  assert.match(html, /Median page weight \(KB\)/);
+  assert.match(html, /Score trends/);
+  assert.match(html, /Accessibility score \(0-100\)/);
+  assert.match(html, /Google Lighthouse score \(median\)/);
+  assert.doesNotMatch(html, /Largest Contentful Paint \(median\)/);
+  assert.doesNotMatch(html, /Median page weight \(KB\)/);
 });
 
 test('renderAccessibilityPage shows engine and rule id in bug summaries', () => {

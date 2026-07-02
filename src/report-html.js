@@ -26,6 +26,59 @@ export { setLocale };
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const kb = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' ' + t('MB') : Math.round(b / 1024) + ' ' + t('KB'));
 
+/**
+ * Check if a URL matches any of the exclusion patterns (substrings).
+ * Patterns are case-insensitive and matched against the full URL.
+ */
+function matchesExclusionPattern(url, patterns) {
+  if (!patterns || patterns.length === 0) return false;
+  const urlLower = String(url).toLowerCase();
+  return patterns.some((pattern) => urlLower.includes(String(pattern).toLowerCase()));
+}
+
+/**
+ * Filter bugs based on URL exclusion patterns. Removes affected pages that match
+ * the patterns. If all affected pages are excluded, the bug is removed entirely.
+ * Recalculates frequency counts based on the filtered pages.
+ */
+function filterBugsByExclusion(bugs, patterns) {
+  if (!patterns || patterns.length === 0 || !bugs || bugs.length === 0) return bugs;
+  return bugs
+    .map((b) => {
+      const filtered = { ...b };
+      const excluded_pages = (b.affected_pages ?? []).filter((u) => matchesExclusionPattern(u, patterns));
+      const remaining_pages = (b.affected_pages ?? []).filter((u) => !matchesExclusionPattern(u, patterns));
+      if (remaining_pages.length === 0) return null; // Bug fully excluded
+      if (excluded_pages.length === 0) return b; // No exclusion needed
+      // Some pages excluded: filter the affected_pages list and update counts
+      filtered.affected_pages = remaining_pages;
+      // Adjust the frequency counts proportionally
+      if (filtered.frequency) {
+        const oldCount = b.affected_pages?.length ?? 0;
+        const newCount = remaining_pages.length;
+        if (oldCount > 0) {
+          const ratio = newCount / oldCount;
+          filtered.frequency = { ...b.frequency };
+          filtered.frequency.pages_affected = newCount;
+          if (filtered.frequency.instances) {
+            filtered.frequency.instances = Math.round(filtered.frequency.instances * ratio);
+          }
+        }
+      }
+      return filtered;
+    })
+    .filter(Boolean);
+}
+
+/**
+ * Format exclusion patterns for display in a banner.
+ */
+function formatExclusionBanner(patterns) {
+  if (!patterns || patterns.length === 0) return '';
+  const formatted = patterns.map((p) => `<code>${esc(p)}</code>`).join(', ');
+  return `<div class="exclusion-banner" role="status" aria-label="URL exclusion filter active"><p><strong>⊘ Excluding URLs matching:</strong> ${formatted}. <a href="?">View all pages</a></p></div>`;
+}
+
 // Report-wide display preference for the sustainability figure, set once
 // by aggregate via setSustainabilityMetric(). 'co2' or 'energy'.
 let SUSTAINABILITY_METRIC = 'co2';
@@ -677,8 +730,9 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
  * issues appear first. Downloadable as CSV, Markdown,
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
  */
-function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}) {
-  const view = prioritizeAccessibilityBugs(summary, bugs, { keyPages: reporting.keyPages ?? [], reporting });
+function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}, excludePatterns = []) {
+  const filteredBugs = filterBugsByExclusion(bugs, excludePatterns);
+  const view = prioritizeAccessibilityBugs(summary, filteredBugs, { keyPages: reporting.keyPages ?? [], reporting });
   const ordered = view.bugs;
   if (!ordered || ordered.length === 0) {
     return `<section aria-labelledby="h-bugs">
@@ -774,9 +828,11 @@ ${affectedPagesBlock(b)}
   const dupLine = dupCount > 0
     ? `<p class="note">${t('@n finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.', { '@n': dupCount })}</p>`
     : '';
+  const exclusionBanner = formatExclusionBanner(excludePatterns);
 
   return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', t('Bug reports'))}
+${exclusionBanner}
 <p class="meta">${t('@count issue type(s) are shown by default out of @total total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.', { '@count': view.visibleCount, '@total': ordered.length })}</p>
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
 ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
@@ -1881,6 +1937,8 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const scoreFormat = target.display?.score_format ?? 'both';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
+  const trendAccessibilityScore = trendPoints(series, (s) => scoreFor(s)?.score ?? null);
+  const trendLighthouseScore = trendPoints(series, (s) => s.lighthouse?.medianPerformance ?? null);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
   const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
   const body = `
@@ -1932,13 +1990,12 @@ ${coverageTable(summary)}
 
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
-${heading('h-trends', t('Trends over time'))}
-<h3>${t('Accessibility trends')}</h3>
-${severityTrendChart(series)}
-${series.some((s) => s.lighthouse) ? `<h3>${t('Performance trends')}</h3>
-${lineChart(t('Lighthouse performance (median)'), series.map((s) => ({ week: s.week, value: s.lighthouse?.medianPerformance ?? null })), { unit: '/100' })}
-${lineChart(t('Largest Contentful Paint (median)'), series.map((s) => ({ week: s.week, value: s.lighthouse?.metrics?.largestContentfulPaintMs ?? null })), { unit: ' ms', lowerIsBetter: true })}` : ''}
-${series.some((s) => s.sustainability) ? lineChart(t('Median page weight (KB)'), series.map((s) => ({ week: s.week, value: s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null })), { unit: ' KB', lowerIsBetter: true }) : ''}
+${heading('h-trends', `Trends over time`)}
+${chartGroup('h-trends-scores', 'Score trends', 3, [
+  lineChart('Accessibility score (0-100)', trendAccessibilityScore, { lowerIsBetter: false }),
+  lineChart('Google Lighthouse score (median)', trendLighthouseScore, { lowerIsBetter: false }),
+])}
+<p class="note">Lighthouse trend points are based on sampled pages and can vary more week-to-week than full-coverage accessibility scoring.</p>
 </section>` : ''}
 
 ${diff ? `
@@ -1995,8 +2052,11 @@ ${rows}
  * Standalone accessibility page: bug reports (with anchored <details> per bug),
  * axe-core and Alfa rule tables, and the consensus deduplication summary.
  * Linked from the overview and from "Fix these first" deep links.
+ *
+ * excludePatterns: optional array of URL substrings to exclude from the report
+ * (from config or query params). Filters bug counts and affected pages.
  */
-export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}) {
+export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}, excludePatterns = []) {
   const { trainingPriorities = [], trainingAdvice = null } = reporting;
   const acrNote = reporting.acrYaml
     ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
@@ -2006,7 +2066,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
 ${subnav('accessibility')}
 ${acrNote}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
-${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting)}
+${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting, excludePatterns)}
 <section aria-labelledby="h-axe">
 ${heading('h-axe', `Deque axe-core findings`)}
 <details class="engine-findings">
@@ -2887,6 +2947,12 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug-filter button { font: inherit; padding: .3rem .7rem; cursor: pointer; }
 .bug-filter-count { margin: .6rem 0 0; font-size: .85rem; color: var(--muted); }
 .bug-filter-empty { padding: .9rem; border: 1px dashed var(--rule); border-radius: 2px; color: var(--muted); }
+.exclusion-banner { margin: 1rem 0 1.25rem; padding: .75rem .9rem; border: 2px solid var(--accent);
+  border-radius: 2px; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.exclusion-banner p { margin: 0; font-size: .95rem; }
+.exclusion-banner code { background: color-mix(in srgb, var(--ink) 12%, transparent); padding: .2rem .35rem;
+  border-radius: 2px; font-family: monospace; font-size: .9em; }
+.exclusion-banner a { font-weight: 600; }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
   margin: .6rem 0; padding: 0 .9rem; }
 .bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }

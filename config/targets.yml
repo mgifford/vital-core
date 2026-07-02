@@ -144,6 +144,15 @@ targets:
   #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
   #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
   #
+  #   url_exclude_patterns: [ ... ] optional list of substrings to exclude from
+  #     REPORT output only (not from the scan). Useful when some teams own certain
+  #     URL patterns and aren't responsible for fixing them. Affects bug counts,
+  #     affected-page lists, and prioritization on the accessibility page.
+  #     Scanning still includes everything — this only filters the report display.
+  #     Examples:
+  #       url_exclude_patterns: [".aspx"]          # hide legacy ASP.NET pages
+  #       url_exclude_patterns: ["/api/", "/admin/"]  # hide API and admin endpoints
+  #
   # WAF-blocked: hhs.gov and nih.gov return 403 "Access Denied" to
   # automated browsers and record as blocked with no audit data until the
   # scanner's user-agent is allowlisted. Kept in to track once access is
@@ -151,6 +160,7 @@ targets:
   - domain: www.cms.gov
     importance: 5
     priority_urls_file: profiles/www.cms.gov-top-tasks.txt
+    url_exclude_patterns: [".aspx"]
   - domain: www.medicare.gov
     importance: 5
   - domain: www.medicaid.gov
