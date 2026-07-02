@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { resolveWcag, classifyFinding, severityFor } from './wcag.js';
 import { impactFor, estimateExcluded, pct } from './fpc.js';
 import { remediationTip } from './remediation.js';
+import { techRemediationTip } from './remediation-prompts.js';
 import { rulePlainLabel } from './rule-label.js';
 
 /**
@@ -71,6 +72,8 @@ export function buildBugReports(target, summary) {
         }
       : { groups: [], summary: PLACEHOLDER };
 
+    const techTip = techRemediationTip(summary.tech, ruleId);
+
     return {
       instance_id: instanceId,
       pattern_id: patternId,
@@ -93,6 +96,9 @@ export function buildBugReports(target, summary) {
         pages_affected: rule.pages,
         total_pages_scanned: total,
       },
+      likely_source: rule.pages >= (target.reporting?.template_page_threshold ?? 10)
+        ? 'template'
+        : rule.pages <= 2 ? 'content' : 'unknown',
       summary: `${component} (${scLabel})`,
       description: `${component}. Detected by ${toolName} rule ${ruleId} on ${rule.pages} of ${total} scanned pages (${rule.count} instances).`,
       // Capped representative instances with real DOM context.
@@ -116,6 +122,8 @@ export function buildBugReports(target, summary) {
         `Confirm the ${toolName} finding for rule ${ruleId}${wcag ? ` against ${scLabel} ${wcag.name}` : ''}.`,
       ],
       remediation_tip: remediationTip(engine, ruleId),
+      tech_name: techTip?.tech ?? null,
+      tech_remediation_tip: techTip?.tip ?? null,
       suggested_fix: rule.helpUrl ?? rule.ruleUrl
         ? `See remediation guidance: ${rule.helpUrl ?? rule.ruleUrl}`
         : PLACEHOLDER,
@@ -145,7 +153,7 @@ export function buildBugReports(target, summary) {
     'Best Practice': 7,
     'Undetermined': 8,
   };
-  const sevRank = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+  const sevRank = { Critical: 0, Serious: 1, Moderate: 2, Minor: 3 };
   reports.sort(
     (a, b) =>
       (catRank[a.wcag_category ?? 'Undetermined'] ?? 8) - (catRank[b.wcag_category ?? 'Undetermined'] ?? 8) ||

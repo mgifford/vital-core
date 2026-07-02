@@ -9,10 +9,17 @@
  * Includes social-presence detection (Mastodon / Bluesky) — open social
  * platforms governments increasingly use — via rel="me" links and known
  * hosts. Returns { checks: [{id,label,pass,detail}], social: [...] }.
+ *
+ * PWA / offline-readiness signals are detected here via Playwright because
+ * Lighthouse 12+ removed the PWA category score. Service-worker detection
+ * uses navigator.serviceWorker.getRegistration() inside page.evaluate.
  */
 
 export async function runStandards(page) {
-  const data = await page.evaluate(() => {
+  const pageUrl = page.url();
+  const isHttps = pageUrl.startsWith('https://');
+
+  const data = await page.evaluate(async () => {
     const head = document.head;
     const meta = (sel) => head?.querySelector(sel)?.getAttribute('content') || null;
     const has = (sel) => !!document.querySelector(sel);
@@ -34,6 +41,21 @@ export async function runStandards(page) {
       if (/bsky\.app|\.bsky\.social/i.test(href)) social.push({ platform: 'bluesky', href });
     }
 
+    // PWA / offline-readiness signals.
+    const manifestHref = head?.querySelector('link[rel="manifest"]')?.getAttribute('href') || null;
+    const themeColor = meta('meta[name="theme-color"]');
+    const appleTouchIcon = has('link[rel="apple-touch-icon"]');
+
+    // Best-effort: check if a service worker is registered for this scope.
+    // getRegistration() resolves even if the SW hasn't activated yet.
+    let hasServiceWorker = false;
+    if ('serviceWorker' in navigator) {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        hasServiceWorker = !!reg;
+      } catch { /* permission error or not supported */ }
+    }
+
     return {
       title: (document.title || '').trim(),
       description: meta('meta[name="description"]'),
@@ -53,6 +75,10 @@ export async function runStandards(page) {
       },
       twitter: meta('meta[name="twitter:card"]'),
       social,
+      manifestHref,
+      themeColor,
+      appleTouchIcon,
+      hasServiceWorker,
     };
   });
 
@@ -82,6 +108,13 @@ export async function runStandards(page) {
   // Open social presence (Mastodon / Bluesky).
   const platforms = [...new Set(data.social.map((s) => s.platform))];
   add('open-social', 'Open social presence (Mastodon/Bluesky) linked', platforms.length > 0, platforms.join(', '));
+
+  // PWA / offline-readiness (Lighthouse 12+ removed the PWA score; we detect here instead).
+  add('pwa-https',             'HTTPS (required for service workers)',      isHttps);
+  add('pwa-manifest',          'Web app manifest declared',                 !!data.manifestHref);
+  add('pwa-service-worker',    'Service worker registered',                 data.hasServiceWorker);
+  add('pwa-theme-color',       'Theme color declared',                      !!data.themeColor, data.themeColor || '');
+  add('pwa-apple-touch-icon',  'Apple touch icon (iOS/bookmark icon)',      data.appleTouchIcon);
 
   const passed = checks.filter((c) => c.pass).length;
   return {

@@ -1,0 +1,62 @@
+{
+  "mission_slug": "coverage-expansion-01KVJ3X2",
+  "mission_type": "software-dev",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "deriveTrend() uses rate comparison with fixed pp tolerance band",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/lib/ai-findings.js: deriveTrend() now accepts currentChecked/prevChecked; compares rates with TREND_TOLERANCE_PP=0.02; falls back to raw-count when coverage absent."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "updateFindings() marks coverage-expansion findings with _coverageNew",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/lib/findings.js: optional prevCoveredUrls; sets _coverageNew when no affected page in prev set; clears on second observation."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "buildAiFindings() passes engine pagesScanned to deriveTrend()",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/lib/ai-findings.js: engineSummaryKey derived from bug.engine_key; currentChecked/prevChecked extracted from summary/prev and passed to deriveTrend()."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "diffWeeks() filters appeared/changed by rate rather than raw counts",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/aggregate.js: diffEngine() receives prevScanned/currScanned; appeared filtered by expectedInPrevSample >= 1; changed filtered by |rate delta| > DIFF_TOLERANCE_PP."
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "changeList() shows rates alongside raw counts in HTML",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/report-html.js: changeList() appends (rate: N% -> M% of pages scanned) when prevScanned and currScanned are available."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Omitting prevCoveredUrls preserves original behavior",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/findings.test.js: 'no _coverageNew when prevCoveredUrls is absent' passes."
+    },
+    {
+      "criterion_id": "C-02",
+      "description": "deriveTrend() falls back to raw-count when coverage absent",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/ai-findings.test.js: 'trend is worsening when pages increased (no coverage data → raw-count fallback)' passes."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "All unit tests pass",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "npm run test:unit: 136/136 pass."
+    }
+  ]
+}

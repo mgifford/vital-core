@@ -1,17 +1,19 @@
 {
  "domain": "www.medicare.gov",
- "updatedAt": "2026-06-18T10:19:48.992Z",
+ "updatedAt": "2026-07-02T05:01:10.157Z",
  "links": {
   "https://www.cms.gov/medicare-coverage-database/search.aspx": {
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
     "2026-W24",
-    "2026-W25"
+    "2026-W25",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 4,
    "foundOn": [
     "https://www.medicare.gov/coverage"
    ]
@@ -20,22 +22,16 @@
    "status": 415,
    "reason": "HTTP 415",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 3,
    "foundOn": [
-    "h",
-    "t",
-    "p",
-    "s",
-    ":",
-    "/",
-    "m",
-    "e",
-    "d",
-    "i"
+    "https://medicare.gov/coverage/mental-health-substance-use-disorder",
+    "https://www.medicare.gov/coverage/mental-health-care-partial-hospitalization"
    ]
   },
   "http://healthfinder.gov/": {
@@ -64,13 +60,16 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
     "2026-W24",
-    "2026-W25"
+    "2026-W25",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 4,
    "foundOn": [
+    "https://medicare.gov/coverage/cognitive-assessment-care-plan-services",
     "https://www.medicare.gov/coverage/cognitive-assessment-care-plan-services"
    ]
   },
@@ -78,13 +77,16 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
     "2026-W24",
-    "2026-W25"
+    "2026-W25",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 4,
    "foundOn": [
+    "https://medicare.gov/coverage/cognitive-assessment-care-plan-services",
     "https://www.medicare.gov/coverage/cognitive-assessment-care-plan-services"
    ]
   },
@@ -92,12 +94,15 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 3,
    "foundOn": [
+    "https://www.medicare.gov/coverage/counseling-to-prevent-tobacco-use-tobacco-caused-disease",
     "https://medicare.gov/coverage/counseling-to-prevent-tobacco-use-tobacco-caused-disease"
    ]
   },
@@ -235,11 +240,12 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
     "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
    ]
@@ -248,26 +254,31 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+    "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
+    "https://www.medicare.gov/sso/authorize?client_id=mct&lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
    ]
   },
   "https://www.medicare.gov/sso/authorize?client_id=mct&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&lang=en-us&relay=eyJsYW5nIjoiZW4ifQ%3D%3D": {
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 3,
    "foundOn": [
-    "https://www.medicare.gov/medigap-supplemental-insurance-plans"
+    "https://www.medicare.gov/medigap-supplemental-insurance-plans",
+    "https://www.medicare.gov/plan-compare"
    ]
   },
   "https://aspr.hhs.gov/legal/PHE/Pages/default.aspx": {
@@ -287,11 +298,12 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
     "https://www.medicare.gov/basics/get-started-with-medicare/whats-next"
    ]
@@ -300,12 +312,15 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 3,
    "foundOn": [
+    "https://www.medicare.gov/coverage/hearing-balance-exams",
     "https://medicare.gov/coverage/hearing-balance-exams"
    ]
   },
@@ -313,12 +328,15 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 3,
    "foundOn": [
+    "https://www.medicare.gov/coverage/hearing-balance-exams",
     "https://medicare.gov/coverage/hearing-balance-exams"
    ]
   },
@@ -326,11 +344,12 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W26",
    "_weeks": [
-    "2026-W25"
+    "2026-W25",
+    "2026-W26"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
     "https://www.medicare.gov/coverage/monoclonal-antibodies-for-the-treatment-of-early-alzheimers-disease"
    ]
@@ -346,6 +365,330 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://medicare.gov/coverage/mental-health-care-outpatient"
+   ]
+  },
+  "https://www.aaneel.com/application-terms-of-service": {
+   "status": 503,
+   "reason": "HTTP 503",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
+   ]
+  },
+  "https://www.cms.gov/About-CMS/Agency-Information/Aboutwebsite/InformationQualityGuidelines.html": {
+   "status": 0,
+   "reason": "timeout",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://medicare.gov/medical-equipment-suppliers/about"
+   ]
+  },
+  "http://www.nof.org/": {
+   "status": 522,
+   "reason": "HTTP 522",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/coverage/bone-mass-measurements"
+   ]
+  },
+  "https://qioprogram.org/contact": {
+   "status": 0,
+   "reason": "EAI_AGAIN",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W26",
+    "2026-W27"
+   ],
+   "weeksBroken": 2,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/information-for-providers"
+   ]
+  },
+  "https://www.dol.gov/agencies/owcp/dcmwc": {
+   "status": 0,
+   "reason": "timeout",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://medicare.gov/health-drug-plans/coordination/who-pays-first"
+   ]
+  },
+  "https://www.medicare.gov/coverage/nebulizers-nebulizer-medications": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W26",
+    "2026-W27"
+   ],
+   "weeksBroken": 2,
+   "foundOn": [
+    "https://www.medicare.gov/coverage/popular-topics"
+   ]
+  },
+  "https://www.cdc.gov/chronicdisease/index.htm": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/coverage/cardiovascular-disease-screenings"
+   ]
+  },
+  "http://www.cdc.gov/chronicdisease/index.htm": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/coverage/cardiovascular-behavioral-therapy",
+    "https://medicare.gov/coverage/cardiovascular-behavioral-therapy"
+   ]
+  },
+  "https://www.cms.gov/Medicare/Provider-Enrollment-and-Certification/CertificationandComplianc/Hospitals.html": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.medicare.gov/care-compare/resources/assets/resources/nursing-home/Nursing_Home_Complaint_Form.pdf": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.cdph.ca.gov/": {
+   "status": 0,
+   "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.cdph.ca.gov/Programs/CHCQ/LCP/Pages/FileAComplaint.aspx": {
+   "status": 0,
+   "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://theconsumervoice.org/uploads/files/long-term-care-recipient/1._Choosing_a_Nursing_Home.pdf": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.medicare.gov/care-compare/resources/assets/resources/home-health/Home_Health_Agency_Checklist_2.pdf": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.medicare.gov/care-compare/resources/assets/resources/hospice/HospiceChecklist-Final-Clean.pdf": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.medicare.gov/care-compare/resources/assets/resources/dialysis-facility/DFC_checklist_11-26-19_508.pdf": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.transplantliving.org/": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.medicare.gov/sso/authorize?client_id=mct&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D&Lang=en-us": {
+   "status": 503,
+   "reason": "HTTP 503",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+   ]
+  },
+  "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D": {
+   "status": 503,
+   "reason": "HTTP 503",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+   ]
+  },
+  "https://www.medicare.gov/sso/authorize?client_id=mct&lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D": {
+   "status": 503,
+   "reason": "HTTP 503",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/sso/authorize?client_id=mct&lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+   ]
+  },
+  "https://oig.hhs.gov/": {
+   "status": 0,
+   "reason": "UND_ERR_CONNECT_TIMEOUT",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/basics/forms-publications-mailings/mailings/costs/ESRD-coverage-ending-letter",
+    "https://www.medicare.gov/coverage/hearing-aids",
+    "https://www.medicare.gov/publication-ordering/12207-S",
+    "https://www.medicare.gov/health-drug-plans/medigap/basics/coverage",
+    "https://www.medicare.gov/coverage/opioid-use-disorder-treatment-services",
+    "https://www.medicare.gov/publication-ordering/11575",
+    "https://medicare.gov/account/login/help",
+    "https://www.medicare.gov/publication-ordering/11173-S",
+    "https://medicare.gov/publication-ordering/10050-LE",
+    "https://medicare.gov/basics/get-started-with-medicare/medicare-basics"
+   ]
+  },
+  "https://help.snapchat.com/hc/en-us/articles/7012345515796": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/privacy-policy/third-party-privacy-policies"
+   ]
+  },
+  "https://choice.microsoft.com/en-us/opt-out": {
+   "status": 0,
+   "reason": "timeout",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/privacy-policy/third-party-privacy-policies"
+   ]
+  },
+  "https://www.medicare.gov/mental-health-substance-use-disorder": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/coverage/mental-health-care-outpatient"
    ]
   }
  }

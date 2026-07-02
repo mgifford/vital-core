@@ -20,6 +20,7 @@ remediation work on government sites.
 | historical-evidence-preservation | Treat summaries as durable history; prune only page-level detail after retention rules allow it. |
 | accessible-reporting | Generated HTML must be semantic, keyboard-usable, and provide text alternatives for charts and other visualizations. |
 | efficient-recurring-scans | Keep scans deterministic, rate-controlled, and proportionate to the site's value and weekly budget. |
+| sustainable-web-output | Minimize data transfer and client computation: no web fonts, static SVG, JS only as progressive enhancement, build-time over per-request work, and caching over re-shipping bytes. |
 
 ## Testing and Quality
 
@@ -29,6 +30,11 @@ remediation work on government sites.
   `git diff --check`, and `npm run test:unit`.
 - Reports must stay accessible without JavaScript and remain readable in
   light and dark themes.
+- Output must align with the [W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/)
+  and [SUSTAINABILITY.md](https://mgifford.github.io/SUSTAINABILITY.md/): minimize
+  page weight and data transfer, do work at build time rather than per request,
+  and treat any client-side computation as progressive enhancement. Every mission
+  should carry a sustainability acceptance criterion.
 - Automated scan results are a floor, not a release gate by themselves; manual
   review remains necessary for real accessibility confidence.
 

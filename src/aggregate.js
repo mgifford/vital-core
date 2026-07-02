@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadConfig, DIRS } from './lib/config.js';
-import { compareWeeks } from './lib/week.js';
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage } from './report-html.js';
+import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
+import { compareWeeks, weekToDateStamp } from './lib/week.js';
+const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { scoreFor } from './lib/score.js';
@@ -16,6 +17,16 @@ import { loadLinkLedger, saveLinkLedger, updateLinkLedger } from './lib/link-led
 import { buildCooccurrence, rankAssociations } from './lib/tech-findings.js';
 import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
+import { buildAiFindings } from './lib/ai-findings.js';
+import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
+import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
+import { writeAcrYaml } from './lib/acr.js';
+import { computeTrainingPriorities } from './lib/training-priorities.js';
+import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
+
+// Fixed tolerance band (in percentage points) for rate-based diff comparisons.
+// Same value used by deriveTrend() in ai-findings.js so the two views agree.
+const DIFF_TOLERANCE_PP = 0.02;
 
 /**
  * Pure function of the data/ directory. Idempotent: run it as many
@@ -32,11 +43,21 @@ import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } fr
 const MAX_RULE_INSTANCES = 5; // representative failing instances kept per rule
 const MAX_AFFECTED_PAGES = 5000; // full affected-page list cap per rule (for CSV)
 
-const config = loadConfig();
+// VITAL_PROFILE (optional) scopes the build to one deployment profile —
+// a subset of targets + report branding (config/profiles/<name>.yml). Unset
+// means the full site with default branding: the GitHub Pages behavior,
+// unchanged. See config/profiles/README.md.
+const profile = loadProfile(process.env.VITAL_PROFILE);
+const config = applyProfile(loadConfig(), profile);
+if (profile) console.log(`Building profile "${profile.name}" (${config.targets.length} targets).`);
 setSustainabilityMetric(config.sustainabilityMetric);
 fs.mkdirSync(DIRS.docs, { recursive: true });
 
 const dashboard = [];
+const apiIndexEntries = [];
+const apiSnapshots = [];
+const apiWeekFindings = [];
+const urlLookupDomains = [];
 
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
@@ -109,9 +130,31 @@ for (const target of config.targets) {
     const summary = series[i];
     const prev = i > 0 ? series[i - 1] : null;
     const bugs = buildBugReports(target, summary);
+
+    // Build the set of page URLs covered by any engine in the PREVIOUS week.
+    // Used by updateFindings() to detect coverage-expansion false positives: a
+    // finding that only appears on pages not present in the previous sample is
+    // not genuinely new.  We use the union of all per-rule affectedPages arrays
+    // (pages with ≥1 violation) plus the in-memory pagesWithAxe/AlfaList (only
+    // available for non-pruned weeks).  This is a conservative subset of "all
+    // pages checked" — pages the engine ran on but found clean won't be here —
+    // so we only suppress "new" when we can positively confirm coverage expansion.
+    let prevCoveredUrls = null;
+    if (prev) {
+      const urlSet = new Set();
+      for (const rules of [prev.axe?.rules, prev.alfa?.rules]) {
+        for (const rule of Object.values(rules ?? {})) {
+          for (const p of rule.affectedPages ?? []) urlSet.add(p.url);
+        }
+      }
+      for (const url of prev.pagesWithAxeList ?? []) urlSet.add(url);
+      for (const url of prev.pagesWithAlfaList ?? []) urlSet.add(url);
+      if (urlSet.size > 0) prevCoveredUrls = urlSet;
+    }
+
     // Update the ledger for this week and annotate each bug with its
     // first/last-seen history.
-    const history = updateFindings(ledger, summary.week, bugs);
+    const history = updateFindings(ledger, summary.week, bugs, { prevCoveredUrls });
     for (const b of bugs) {
       const h = history[b.pattern_id];
       if (h) {
@@ -120,6 +163,10 @@ for (const target of config.targets) {
         b.weeks_seen = h.weeksSeen;
       }
     }
+    if (bugs.length) {
+      apiWeekFindings.push({ key: target.key, week: summary.week, data: buildWeekFindings(target, summary, bugs, ledger.findings) });
+    }
+
     const repDir = path.join(DIRS.docs, 'reports', target.key, summary.week);
     fs.mkdirSync(repDir, { recursive: true });
 
@@ -131,7 +178,7 @@ for (const target of config.targets) {
 
     // Flat bugs.csv: all findings in one spreadsheet-friendly file.
     // Written after affected_pages_csv is set on each bug so the links are included.
-    csvLinks.bugsAll = writeBugsCsv(repDir, bugs);
+    csvLinks.bugsAll = writeBugsCsv(repDir, target.domain, summary.week, bugs);
     // Broken-link ledger: track first/last-seen and weeks-broken per URL,
     // then annotate summary entries so the errors page can show history.
     if (summary.linkCheck?.broken?.length) {
@@ -145,7 +192,7 @@ for (const target of config.targets) {
     }
 
     // Broken links + error pages CSV.
-    csvLinks.errorsAll = writeErrorsCsv(repDir, summary);
+    csvLinks.errorsAll = writeErrorsCsv(repDir, target.domain, summary.week, summary);
 
     // Resource inventory: update the ledger, mark which are new this week,
     // and write a resources CSV.
@@ -154,38 +201,45 @@ for (const target of config.targets) {
       : [];
     if (summary.resources) {
       summary.resources.newThisWeek = newResources;
-      summary.resources.csv = writeResourceCsv(repDir, summary.resources, resLedger);
+      summary.resources.csv = writeResourceCsv(repDir, target.domain, summary.week, summary.resources, resLedger);
     }
 
     // Evidence CSVs: Lighthouse per-page, readability per-page, spelling.
-    const lhCsv = writeLighthouseCsv(repDir, summary.lighthouse);
-    const lhJson = writeLighthouseJson(repDir, summary.lighthouse, {
-      domain: target.domain,
-      week: summary.week,
-      generatedAt: summary.generatedAt,
-    });
-    const readabilityCsv = writeReadabilityCsv(repDir, summary.plainLanguage?.pageRows);
-    const spellingCsv = writeSpellingCsv(repDir, summary.plainLanguage?.topMisspellings);
-    const acronymsCsv = writeAcronymsCsv(repDir, summary.plainLanguage?.topUnexplainedAcronyms);
+    const lhCsv = writeLighthouseCsv(repDir, target.domain, summary.week, summary.lighthouse);
+    const lhJson = writeLighthouseJson(repDir, target.domain, summary.week, summary.generatedAt, summary.lighthouse);
+    const readabilityCsv = writeReadabilityCsv(repDir, target.domain, summary.week, summary.plainLanguage?.pageRows);
+    const spellingCsv = writeSpellingCsv(repDir, target.domain, summary.week, summary.plainLanguage?.topMisspellings);
+    const acronymsCsv = writeAcronymsCsv(repDir, target.domain, summary.week, summary.plainLanguage?.topUnexplainedAcronyms);
     if (summary.lighthouse) {
       summary.lighthouse.csv = lhCsv;
       summary.lighthouse.json = lhJson;
     }
+
+    // Priority pages: cross-engine view ranked by composite a11y+perf score.
+    const priorityPages = writePriorityPages(
+      repDir, target.domain, summary.week, summary.generatedAt,
+      bugs, summary.lighthouse?.pageDetail ?? [], summary.pagesScanned
+    );
+    if (priorityPages.csv) summary.priorityPagesCsv = priorityPages.csv;
+    if (priorityPages.json) summary.priorityPagesJson = priorityPages.json;
     if (summary.plainLanguage) {
       summary.plainLanguage.readabilityCsv = readabilityCsv;
       summary.plainLanguage.spellingCsv = spellingCsv;
       summary.plainLanguage.acronymsCsv = acronymsCsv;
       // JSON downloads for spelling + acronyms (word/acronym, pages, examples).
       const pl = summary.plainLanguage;
+      const pfx = filePfx(target.domain, summary.week);
       if (pl.topMisspellings?.length) {
-        fs.writeFileSync(path.join(repDir, 'spelling.json'),
+        const spellingJsonName = `${pfx}_spelling.json`;
+        fs.writeFileSync(path.join(repDir, spellingJsonName),
           JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, misspellings: pl.topMisspellings }, null, 1));
-        pl.spellingJson = 'spelling.json';
+        pl.spellingJson = spellingJsonName;
       }
       if (pl.topUnexplainedAcronyms?.length) {
-        fs.writeFileSync(path.join(repDir, 'acronyms.json'),
+        const acronymsJsonName = `${pfx}_acronyms.json`;
+        fs.writeFileSync(path.join(repDir, acronymsJsonName),
           JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, acronyms: pl.topUnexplainedAcronyms }, null, 1));
-        pl.acronymsJson = 'acronyms.json';
+        pl.acronymsJson = acronymsJsonName;
       }
     }
 
@@ -194,56 +248,130 @@ for (const target of config.targets) {
     // criterion with no data this week renders a clear empty-state page. CSV/
     // JSON downloads are still only written when there's data to put in them.
 
-    // Accessibility (always has content — shows "no findings" when clean).
-    fs.writeFileSync(path.join(repDir, 'accessibility.html'), renderAccessibilityPage(target, summary, bugs, csvLinks, { ...reporting, keyPages }, target.url_exclude_patterns ?? []));
+    // Pre-compute prefixed filenames so HTML links are correct before the files are written.
+    const pfx2 = filePfx(target.domain, summary.week);
+    const bugsJsonName = `${pfx2}_bugs.json`;
+    const aiJsonName = `${pfx2}_ai-findings.json`;
 
-    fs.writeFileSync(path.join(repDir, 'standards.html'), renderStandardsPage(target, summary));
-    fs.writeFileSync(path.join(repDir, 'errors.html'), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
-    fs.writeFileSync(path.join(repDir, 'lighthouse.html'), renderLighthousePage(target, summary, lhCsv, lhJson));
-    fs.writeFileSync(path.join(repDir, 'readability.html'), renderReadabilityPage(target, summary, readabilityCsv));
+    // OpenACR YAML — written before the accessibility page so the path is available for the download link.
+    const acrResult = writeAcrYaml(repDir, target, summary, summary.week);
 
-    const techCsv = summary.tech?.length ? writeTechCsv(repDir, summary.tech) : null;
-    if (summary.tech?.length) {
-      fs.writeFileSync(path.join(repDir, 'tech.json'),
-        JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, pagesScanned: summary.pagesScanned, technologies: summary.tech }, null, 1));
+    // Training priorities: top WCAG SCs by pages affected, with optional Ollama advice.
+    const trainingPriorities = computeTrainingPriorities(bugs);
+    let trainingAdvice = null;
+    if (trainingPriorities.length > 0 && await ollamaAvailable()) {
+      const model = await ollamaDetectModel();
+      const topList = trainingPriorities.map((p, i) =>
+        `${i + 1}. ${p.label} (SC ${p.wcag_sc})${p.component_inconsistency ? ' — component inconsistency across multiple elements' : ''}`
+      ).join('\n');
+      trainingAdvice = await ollamaChat(
+        `You are helping an accessibility trainer at a government agency. The top WCAG issues found on the site are:\n${topList}\n\nWrite a short (3–5 sentence) training recommendation for the web team, focusing on practical steps for the most impactful issue. Plain English, no jargon.`,
+        model
+      );
     }
-    fs.writeFileSync(path.join(repDir, 'tech.html'), renderTechPage(target, summary, techCsv));
-    fs.writeFileSync(path.join(repDir, 'tech-findings.html'), renderTechFindingsPage(target, summary));
 
-    const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, summary) : null;
-    fs.writeFileSync(path.join(repDir, 'third-party.html'), renderThirdPartyPage(target, summary, tpCsv));
-
-    const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, summary) : null;
+    // Locale-independent artifacts (CSVs, side JSON) — computed once, then the
+    // HTML pages below are rendered per configured language.
+    const techCsv = summary.tech?.length ? writeTechCsv(repDir, target.domain, summary.week, summary.tech) : null;
+    if (summary.tech?.length) {
+      const techJsonName = `${pfx2}_tech.json`;
+      fs.writeFileSync(path.join(repDir, techJsonName),
+        JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, pagesScanned: summary.pagesScanned, technologies: summary.tech }, null, 1));
+      summary.techJson = techJsonName;
+    }
+    const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, target.domain, summary.week, summary) : null;
+    const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, target.domain, summary.week, summary) : null;
     // Deduplicated image inventory as JSON (src, alt, bytes, occurrences,
     // alt-text verdict, example pages).
     if (summary.images?.uniqueImageList?.length) {
+      const imagesJsonName = `${pfx2}_images.json`;
       fs.writeFileSync(
-        path.join(repDir, 'images.json'),
+        path.join(repDir, imagesJsonName),
         JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, images: summary.images.uniqueImageList }, null, 1)
       );
+      summary.imagesJson = imagesJsonName;
     }
-    fs.writeFileSync(path.join(repDir, 'images.html'), renderImagesPage(target, summary, imagesCsv));
-    // Archive page (all weeks). Written in each week folder so the subnav
-    // "Archive" link resolves from any week's report.
-    const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
-    if (archiveHtml) fs.writeFileSync(path.join(repDir, 'archive.html'), archiveHtml);
 
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
     if (isLatest) latestBugs = bugs.map((b) => ({ ...b, _week: summary.week }));
-    const html = renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null);
-    fs.writeFileSync(path.join(repDir, 'index.html'), html);
+
+    // Render the configured languages. Sustainability (sustainable-web-output):
+    // non-default languages are built only for the LATEST week — the most-viewed
+    // one — so archived weeks aren't multiplied N× on disk and in the Pages
+    // artifact for pages almost nobody revisits. Older weeks stay English at the
+    // canonical paths; a non-English reader who navigates back simply sees
+    // English there (graceful fallback, and — being single-language — those
+    // pages emit no ?lang/hreflang runtime, so nothing redirects to a missing
+    // sibling). The default language owns the unsuffixed paths; others are
+    // <page>-<loc>.html.
+    const weekLanguages = isLatest ? target.languages : [target.defaultLanguage];
+    for (const locale of weekLanguages) {
+      setLocale(locale);
+      setReportLanguages(weekLanguages, target.defaultLanguage, target.showLanguageSwitcher);
+      const sfx = locale === target.defaultLanguage ? '' : `-${locale}`;
+      // Accessibility (always has content — shows "no findings" when clean).
+      fs.writeFileSync(path.join(repDir, `accessibility${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {
+        ...reporting, keyPages,
+        priorityPagesCsv: priorityPages.csv,
+        priorityPagesJson: priorityPages.json,
+        bugsJson: bugsJsonName,
+        aiJson: aiJsonName,
+        acrYaml: acrResult.path,
+        trainingPriorities,
+        trainingAdvice,
+      }));
+      fs.writeFileSync(path.join(repDir, `standards${sfx}.html`), renderStandardsPage(target, summary));
+      fs.writeFileSync(path.join(repDir, `errors${sfx}.html`), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
+      fs.writeFileSync(path.join(repDir, `lighthouse${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson));
+      fs.writeFileSync(path.join(repDir, `readability${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));
+      fs.writeFileSync(path.join(repDir, `tech${sfx}.html`), renderTechPage(target, summary, techCsv));
+      fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary));
+      fs.writeFileSync(path.join(repDir, `third-party${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
+      fs.writeFileSync(path.join(repDir, `images${sfx}.html`), renderImagesPage(target, summary, imagesCsv));
+      // Archive page (all weeks). Written in each week folder so the subnav
+      // "Archive" link resolves from any week's report.
+      const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
+      if (archiveHtml) fs.writeFileSync(path.join(repDir, `archive${sfx}.html`), archiveHtml);
+      fs.writeFileSync(path.join(repDir, `index${sfx}.html`),
+        renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null));
+    }
+    setLocale(target.defaultLanguage);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
     fs.writeFileSync(
-      path.join(repDir, 'bugs.json'),
+      path.join(repDir, bugsJsonName),
       JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, reports: bugs }, null, 1)
     );
+
+    // AI-oriented findings summary: compact, problem-focused, LLM-ready.
+    // Intentionally excludes healthy pages; uses representative examples rather
+    // than exhaustive lists. The existing bugs.json and domain.json are the
+    // archival sources of truth and are not replaced.
+    const aiDoc = await buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
+    if (aiDoc) {
+      const aiJson = JSON.stringify(aiDoc, null, 1);
+      fs.writeFileSync(path.join(repDir, aiJsonName), aiJson);
+      // Warn in the build log if the file is large (context-limit concern for LLMs).
+      const kbSize = Math.round(aiJson.length / 1024);
+      if (kbSize > 500) console.warn(`  [ai-findings] ${target.key} ${summary.week}: ${kbSize}KB — may exceed LLM context limits`);
+    }
   }
 
   saveFindings(target.key, ledger);
   saveResourceLedger(target.key, resLedger);
   saveLinkLedger(target.key, linkLedger);
   saveThirdPartyLedger(target.key, tpLedger);
+
+  const latestSummary = series[series.length - 1];
+  const latestBugsOnly = latestBugs.map(({ _week, ...b }) => b);
+  apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
+  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, series, diffs, ledger, invSummary, latestBugsOnly) });
+
+  const urlIdx = buildUrlIndex(domainDir, target.domain, latestSummary.week);
+  if (urlIdx) {
+    writeUrlIndex(path.join(DIRS.docs, 'api', 'v1'), target.key, urlIdx);
+    urlLookupDomains.push({ key: target.key, domain: target.domain, week: latestSummary.week });
+  }
 
   // Single downloadable snapshot of everything known about the domain:
   // every scanned URL's latest status, current known findings (with
@@ -283,8 +411,20 @@ for (const target of config.targets) {
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 
-fs.writeFileSync(path.join(DIRS.docs, 'index.html'), renderIndex(dashboard));
+// The fleet dashboard and URL-lookup tool are site-wide, so they render in the
+// global languages (default -> canonical path, others suffixed).
+for (const locale of config.languages) {
+  setLocale(locale);
+  setReportLanguages(config.languages, config.defaultLanguage, config.showLanguageSwitcher);
+  const sfx = locale === config.defaultLanguage ? '' : `-${locale}`;
+  fs.writeFileSync(path.join(DIRS.docs, `index${sfx}.html`), renderIndex(dashboard, { branding: profile?.branding }));
+  if (urlLookupDomains.length) {
+    fs.writeFileSync(path.join(DIRS.docs, `url-lookup${sfx}.html`), renderUrlLookup(urlLookupDomains));
+  }
+}
+setLocale(config.defaultLanguage);
 writeAsset(DIRS.docs);
+writeApiFiles(DIRS.docs, apiIndexEntries, apiSnapshots, apiWeekFindings);
 console.log('docs/ written');
 
 // ---------------------------------------------------------------------
@@ -403,6 +543,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const socialSeen = new Map(); // platform -> example href
   // Security (per-origin): keep the latest result seen this week.
   let securityLatest = null;
+  // Public-interest checks (per-origin): keep the latest result seen this week.
+  let publicInterestLatest = null;
   let pagesScanned = 0;
   let pagesWithAxeViolations = 0;
   let pagesWithAlfaFailures = 0;
@@ -527,6 +669,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
       }
     }
     if (rec.security) securityLatest = rec.security; // per-origin; latest wins
+    if (rec.publicInterest) publicInterestLatest = rec.publicInterest; // per-origin; latest wins
     if (rec.tech) {
       for (const d of rec.tech) {
         const existing = techDetections.get(d.name);
@@ -737,6 +880,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
     security: securityLatest
       ? { checks: securityLatest.checks, passed: securityLatest.passed, total: securityLatest.total }
       : null,
+    publicInterest: publicInterestLatest ?? null,
     plainLanguage: plPagesChecked
       ? {
           pagesChecked: plPagesChecked,
@@ -766,6 +910,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
           medianAccessibility: lhScores.accessibility.length ? median(lhScores.accessibility) : null,
           medianBestPractices: lhScores.bestPractices.length ? median(lhScores.bestPractices) : null,
           medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
+          medianPwa: null,
           medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
           metrics: {
             firstContentfulPaintMs: lhMetrics.firstContentfulPaintMs.length ? median(lhMetrics.firstContentfulPaintMs) : null,
@@ -774,6 +919,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
             totalBlockingTimeMs: lhMetrics.totalBlockingTimeMs.length ? median(lhMetrics.totalBlockingTimeMs) : null,
             cumulativeLayoutShift: lhMetrics.cumulativeLayoutShift.length ? median(lhMetrics.cumulativeLayoutShift) : null,
           },
+          pwaSignals: [],
           pageDetail: lhPages, // per-sampled-page detail for the Lighthouse page (omitted from committed summary.json)
           // Aggregated non-accessibility recommendations, ranked by reach then
           // impact. Stored in the committed summary (compact, like axe rules).
@@ -852,24 +998,60 @@ function summarizeRecords(target, week, records, brokenLinks) {
 }
 
 function diffWeeks(prev, curr) {
-  const diffEngine = (prevRules, currRules) => {
-    const appeared = Object.keys(currRules).filter((id) => !(id in prevRules));
+  const diffEngine = (prevRules, currRules, prevScanned, currScanned) => {
+    const useRates = prevScanned > 0 && currScanned > 0;
+
+    // A rule "appeared" if it's in curr but not in prev.  With rate awareness,
+    // we only report it as a genuine new rule when it would have shown up in
+    // the previous-sized sample — i.e., its rate × prevScanned ≥ 1 page.
+    // Rules that only appear because entirely new pages were added to the
+    // sample are suppressed (rate × prevScanned < 1 means prev sample was
+    // too small to catch even one occurrence).
+    const appeared = Object.keys(currRules).filter((id) => {
+      if (id in prevRules) return false;
+      if (useRates) {
+        const expectedInPrevSample = (currRules[id].pages / currScanned) * prevScanned;
+        return expectedInPrevSample >= 1;
+      }
+      return true;
+    });
+
     const resolved = Object.keys(prevRules).filter((id) => !(id in currRules));
+
+    // A rule "changed" only when its rate of occurrence shifted by more than
+    // the tolerance band.  Raw-count changes that merely reflect a larger
+    // sample (same rate, more pages) are treated as stable.
     const changed = Object.keys(currRules)
-      .filter((id) => id in prevRules && currRules[id].pages !== prevRules[id].pages)
-      .map((id) => ({ id, pagesBefore: prevRules[id].pages, pagesAfter: currRules[id].pages }));
+      .filter((id) => {
+        if (!(id in prevRules)) return false;
+        if (useRates) {
+          const currRate = currRules[id].pages / currScanned;
+          const prevRate = prevRules[id].pages / prevScanned;
+          return Math.abs(currRate - prevRate) > DIFF_TOLERANCE_PP;
+        }
+        return currRules[id].pages !== prevRules[id].pages;
+      })
+      .map((id) => ({
+        id,
+        pagesBefore: prevRules[id].pages,
+        pagesAfter: currRules[id].pages,
+        prevScanned: useRates ? prevScanned : undefined,
+        currScanned: useRates ? currScanned : undefined,
+      }));
+
     return { appeared, resolved, changed };
   };
+
   return {
     prevWeek: prev.week,
     pagesDelta: curr.pagesScanned - prev.pagesScanned,
     axe: {
       violationDelta: curr.axe.violationTotal - prev.axe.violationTotal,
-      ...diffEngine(prev.axe.rules, curr.axe.rules),
+      ...diffEngine(prev.axe.rules, curr.axe.rules, prev.axe.pagesScanned, curr.axe.pagesScanned),
     },
     alfa: {
       failedDelta: curr.alfa.failedTotal - prev.alfa.failedTotal,
-      ...diffEngine(prev.alfa.rules, curr.alfa.rules),
+      ...diffEngine(prev.alfa.rules, curr.alfa.rules, prev.alfa.pagesScanned, curr.alfa.pagesScanned),
     },
     sustainability:
       prev.sustainability && curr.sustainability

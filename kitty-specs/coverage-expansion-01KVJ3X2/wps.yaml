@@ -1,0 +1,28 @@
+work_packages:
+  - id: WP01
+    title: "Coverage-aware trend signals"
+    dependencies: []
+    owned_files:
+      - "src/lib/ai-findings.js"
+      - "src/lib/findings.js"
+      - "src/aggregate.js"
+      - "src/report-html.js"
+      - "tests/unit/ai-findings.test.js"
+      - "tests/unit/findings.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - FR-03
+      - FR-04
+      - FR-05
+      - C-01
+      - C-02
+      - NFR-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+      - T005
+      - T006
+    prompt_file: "tasks/WP01-coverage-aware-trend-signals.md"

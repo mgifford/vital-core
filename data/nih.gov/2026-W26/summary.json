@@ -1,0 +1,646 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W26",
+ "generatedAt": "2026-07-02T05:01:22.349Z",
+ "pagesScanned": 103,
+ "pagesAudited": 1,
+ "coverage": {
+  "sustainability": 11,
+  "axe": 1,
+  "alfa": 1,
+  "plain-language": 1,
+  "resources": 1,
+  "standards": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 3,
+  "pagesWithViolations": 1,
+  "pagesScanned": 1,
+  "medianViolations": 3,
+  "rules": {
+   "link-in-text-block": {
+    "count": 2,
+    "pages": 1,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.hhs.gov/request-for-comment-form/index.html?Agency=NIH\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Request For "
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 61,
+  "pagesWithFailures": 1,
+  "pagesScanned": 1,
+  "medianFailures": 61,
+  "rules": {
+   "sia-r66": {
+    "count": 33,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 33
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "text: \"Health Information\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "text: \"Grants & Funding\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "text: \"News & Events\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 3,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 3
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r62": {
+    "count": 2,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<a href=\"https://www.hhs.gov/request-for-comment-form/index.html?Agency=NIH\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 2,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "text: \"Breadcrumb\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 19,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "instances": 19
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<a href=\"/virtual-tour\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<a href=\"https://salud.nih.gov/\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/media-inquiries",
+      "target": "<a href=\"/\" class=\"usa-breadcrumb__link\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "consensus": {
+  "uniqueIssues": 9,
+  "consensus": 0,
+  "axeOnly": 2,
+  "alfaOnly": 7,
+  "rawAxe": 2,
+  "rawAlfa": 7,
+  "byKey": {
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "alfa:sia-r66": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r66"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r73": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r73"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r62": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r62"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "act:5c01ea": {
+    "actRuleId": "5c01ea",
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r18"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r61": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r61"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r57": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r57"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r111": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r111"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 11,
+  "medianBytes": 66247,
+  "meanBytes": 66247,
+  "medianRequests": 7,
+  "totalCo2g": 0.11,
+  "meanCo2g": 0.0098,
+  "totalEnergyWh": 0.22,
+  "meanEnergyWh": 0.0199
+ },
+ "deprecatedHtml": null,
+ "resources": null,
+ "standards": {
+  "pagesChecked": 1,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "pwa-manifest",
+    "label": "Web app manifest declared",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "pwa-service-worker",
+    "label": "Service worker registered",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "pwa-theme-color",
+    "label": "Theme color declared",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "pwa-apple-touch-icon",
+    "label": "Apple touch icon (iOS/bookmark icon)",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (5/6)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "pwa-https",
+    "label": "HTTPS (required for service workers)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "security": null,
+ "publicInterest": null,
+ "plainLanguage": {
+  "pagesChecked": 1,
+  "pagesScored": 0,
+  "medianWordsPerPage": 23,
+  "medianReadingEase": null,
+  "medianGrade": null,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ]
+   },
+   {
+    "acronym": "HHS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/media-inquiries"
+    ]
+   }
+  ],
+  "topMisspellings": []
+ },
+ "lighthouse": null,
+ "linkCheck": null,
+ "errorPages": [
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/lasker-awards",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/organization",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/who-we-are/nih-director",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/deputy-directors",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/nih-launches-new-office-advance-human-based-research-reduce-animal-use",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/research-training/research-resources",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/bernadine-healy-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/budget",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/lewis-ryers-thompson-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/department-health-human-services-secretaries",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-director/congressional-testimonies",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/research-training",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/get-involved-nih",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/press-room",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/ruth-kirschstein-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/photo-galleries",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/list-institutes-centers",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director",
+   "status": 403
+  }
+ ],
+ "tech": null,
+ "images": {
+  "pagesScanned": 1,
+  "totalImages": 13,
+  "uniqueImages": 13,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 13,
+  "altVerdicts": {
+   "GOOD": 10,
+   "SUSPICIOUS": 1,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": null,
+ "thirdParty": null,
+ "pagesAttempted": 206,
+ "pagesSucceeded": 2
+}

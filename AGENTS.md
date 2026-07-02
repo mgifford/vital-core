@@ -17,27 +17,16 @@ historical remediation** across US government sites.
 4. **Actionable Remediation**: Provide practical developer guidance that helps teams clear their weekly backlog.
 5. **Efficient Scanning**: Optimize scanning of high-value pages to support recurring, automated weekly schedules without bloated resource consumption.
 
-## Architecture
+## Core Architectural Rule
 
-The system runs on GitHub Actions with no server and no database. The
-core rule: **files are the only state, data is append-only, and reports
-are pure functions of the data directory.**
+Follow the architecture documented in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-- `src/scan.js` — one scan run for one domain. Loads state, picks a
-  batch of pages not yet scanned this ISO week, runs the engines, writes
-  one JSON record per page under `data/<domain>/<week>/pages/`, and
-  discovers same-host links into `state/<domain>/crawl.json`.
-- `src/aggregate.js` — pure function of `data/`. Computes weekly
-  summaries, writes `data/<domain>/<week>/summary.json` (committed) and
-  the generated site under `docs/` (never committed; shipped as a Pages
-  artifact).
-- `src/prune.js` — removes page-level detail older than
-  `retention_weeks`; summaries survive.
-- `src/issue-comment.js` — posts the weekly Markdown summary to a
-  tracking issue.
-- `src/lib/` — shared, frozen contracts: URL identity (`urls.js`), ISO
-  weeks (`week.js`), crawl state (`state.js`), robots (`robots.js`),
-  sitemap discovery (`sitemap.js`), config (`config.js`).
+In particular:
+
+* Collect once, use many times.
+* Every quality signal has exactly one canonical producer.
+* Reuse existing evidence before introducing new scans.
+* Reports, APIs, AI summaries, exports, and dashboards consume shared evidence rather than generating it.
 
 ## Scan Engine Inventory
 
@@ -139,11 +128,39 @@ rigorous blocked-load comparison is a planned heavier mode, not yet built.
 | `VITAL_WEEK` | Pin the ISO week (e.g. `2026-W23`). Used by the e2e test for determinism; normally derived from the run date. |
 | `VITAL_A11Y_SETTLE_DELAY_MS` | Override `settle_delay_ms` — the wait after page load before auditing, which lets client-side hydration finish and removes transient false positives. |
 | `VITAL_LINK_CHECK_CAP` | Override the per-run broken-link probe cap (default 500). |
+| `VITAL_OLLAMA_URL` | Optional Ollama base URL for local AI summaries in `ai-findings` output. Defaults to `http://localhost:11434`. |
+| `VITAL_OLLAMA_MODEL` | Optional Ollama model override. Defaults to the first available model, then `llama3`. |
 
 Most behavior is configured per target in `config/targets.yml`
 (`pages_per_run`, `max_pages_per_week`, `delay_ms`, `nav_timeout_ms`,
 `settle_delay_ms`, `retention_weeks`, `engines`, `user_agent`), not via
 environment variables.
+
+## Spec Kitty Agent Surfaces
+
+Spec Kitty is the workflow and governance layer for non-trivial work in this
+repository. It is configured for `codex`, `claude`, and `copilot`; do not treat
+the Ollama integration as the agent workflow. Ollama is only an optional runtime
+enhancement for `ai-findings` output.
+
+Before starting or resuming Spec Kitty work, run:
+
+```bash
+spec-kitty upgrade --agent-check --json
+spec-kitty agent config sync --create-missing
+spec-kitty agent config status
+spec-kitty doctor skills --json
+spec-kitty charter preflight --json
+npm run check:spec-kitty
+```
+
+For new missions, fill `kitty-specs/<mission>/spec.md` from repo evidence before
+planning. Use the strongest available reasoning model for `specify`, `plan`,
+`tasks`, and `review`; local or weaker models may assist with mechanical
+drafting, but should not be final authority for data compatibility, architecture,
+or acceptance gates.
+
+The durable surface guide is `kitty-specs/AGENT_SURFACES.md`.
 
 ## Repository Rules for Agents
 
@@ -155,6 +172,7 @@ environment variables.
 5. Prefer host-scoped, HTML-focused discovery by default.
 6. Include tests for behavior changes in discovery, scanning, or aggregation.
 7. Avoid broad refactors unless requested.
+8. **Clean up branches after merging.** When a PR is merged, immediately delete the feature branch — do not leave it in the remote. Use `git push origin --delete <branch>` or the GitHub UI. Stale branches accumulate and obscure active work. The only branches that should exist at any time are `main`, any branch with an open PR, and branches actively being worked on in the current session.
 
 ## Testing
 

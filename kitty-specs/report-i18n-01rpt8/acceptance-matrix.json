@@ -1,0 +1,160 @@
+{
+  "mission_slug": "report-i18n-01rpt8",
+  "mission_type": "software-dev",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "t() returns English source when untranslated; missing/empty falls back to English",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n.test.js (fallback cases); src/lib/i18n.js"
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "@token placeholders interpolate in server strings and inline-script templates",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n.test.js (interpolation case)"
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Every UI-chrome string renders via t() (incl. secondary pages and inline scripts)",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/report-html.js; src/locales/template.json (497 strings)"
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "Inline scripts receive translated message templates via JSON.stringify(t(...))",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "bugFilterScript()/triageScript()/renderUrlLookup L-object in src/report-html.js"
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "sortableTable column headers localize via t(); acronyms pass through",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n-render.test.js (archive headers localize in fr)"
+    },
+    {
+      "criterion_id": "FR-06",
+      "description": "default_language keeps canonical paths; other languages written as <page>-<loc>.html",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n-render.test.js; verified by full aggregate build (11 en + 11 fr pages/week)"
+    },
+    {
+      "criterion_id": "FR-07",
+      "description": "<html lang> reflects locale; counts use Intl for that locale",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n.test.js (nf); tests/unit/i18n-render.test.js (html lang)"
+    },
+    {
+      "criterion_id": "FR-08",
+      "description": "No-JS header switcher cross-links siblings; subnav stays in-language",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n-render.test.js (switcher pure links; suffixed subnav)"
+    },
+    {
+      "criterion_id": "FR-09",
+      "description": "Pre-paint script selects language from ?lang or localStorage and redirects to sibling",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n-render.test.js (redirect script content); languageRuntime()"
+    },
+    {
+      "criterion_id": "FR-10",
+      "description": "Explicit -<loc>.html never redirected away; switcher click persists; hreflang emitted",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "languageRuntime() in src/report-html.js (default-locale-only stored redirect; hreflang + x-default)"
+    },
+    {
+      "criterion_id": "FR-11",
+      "description": "Switcher/runtime/hreflang emitted only when >1 language configured",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n-render.test.js (single-language build emits none)"
+    },
+    {
+      "criterion_id": "FR-12",
+      "description": "targets.yml accepts global + per-target languages / default_language",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "config/targets.yml; src/lib/config.js resolveLanguages()"
+    },
+    {
+      "criterion_id": "FR-13",
+      "description": "config.js validates locales, de-dupes, ensures default in languages",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/config.test.js"
+    },
+    {
+      "criterion_id": "FR-14",
+      "description": "Human-reviewed catalogs fr/ja/nl; partial catalogs safe",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "src/locales/{fr,ja,nl}.json (197 keys each)"
+    },
+    {
+      "criterion_id": "FR-15",
+      "description": "i18n-extract.js emits template.json from t() calls + dynamic-strings registry; i18n:check guards drift",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "scripts/i18n-extract.js; npm run i18n:check"
+    },
+    {
+      "criterion_id": "FR-16",
+      "description": "Catalog-key lint asserts every catalog key exists in the template",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/i18n.test.js (catalog-key lint)"
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "English-as-key; only-en build unchanged, existing URLs preserved",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "no en.json; default language keeps unsuffixed paths"
+    },
+    {
+      "criterion_id": "C-02",
+      "description": "Severity keys unchanged; only display labels localize",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "data-severity stays English; t(b.severity) display only"
+    },
+    {
+      "criterion_id": "C-03",
+      "description": "Engine-sourced text (WCAG/rule descriptions, tech, domains) stays English",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "only UI chrome wrapped; rule/tech/domain values rendered raw"
+    },
+    {
+      "criterion_id": "C-04",
+      "description": "No new npm runtime dependencies",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "package.json dependencies unchanged; Intl from Node ICU"
+    },
+    {
+      "criterion_id": "C-05",
+      "description": "Static/progressive enhancement; no server, no build; no-JS still navigates",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "switcher is links; runtime selection/persistence are enhancement"
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Unit tests cover fallback/interpolation, nf, config validation, catalog-key lint, switcher/gating",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/{i18n,config,i18n-render}.test.js; npm run test:unit (207 pass)"
+    }
+  ]
+}

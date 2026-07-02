@@ -20,6 +20,7 @@ import { runResources } from './engines/resources.js';
 import { runImages, createImageCollector } from './engines/images.js';
 import { runStandards } from './engines/standards.js';
 import { runSecurity } from './engines/security.js';
+import { runPublicInterest } from './engines/public-interest.js';
 import { runTech } from './engines/tech.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
@@ -54,6 +55,12 @@ const target = getTarget(config, args.domain);
 const week = isoWeek();
 const runId = `${new Date().toISOString().replace(/[:.]/g, '-')}-${crypto.randomBytes(3).toString('hex')}`;
 const budget = args.budget ? parseInt(args.budget, 10) : target.pages_per_run;
+// If VITAL_SCAN_TIME_BUDGET_MINUTES is set, stop scanning new pages after
+// that many minutes so the script can exit cleanly (link-check, state save,
+// browser close) before the CI job's hard timeout fires.
+const scanDeadlineMs = process.env.VITAL_SCAN_TIME_BUDGET_MINUTES
+  ? Date.now() + parseInt(process.env.VITAL_SCAN_TIME_BUDGET_MINUTES, 10) * 60_000
+  : null;
 const baseOrigin = args['base-url'] ?? `https://${target.domain}`;
 const host = new URL(baseOrigin).hostname;
 const settleDelay = parseInt(process.env.VITAL_A11Y_SETTLE_DELAY_MS ?? target.settle_delay_ms, 10);
@@ -161,6 +168,11 @@ const STATE_SAVE_EVERY = 25;
 let sincePersist = 0;
 
 for (const item of batch) {
+  if (scanDeadlineMs && Date.now() >= scanDeadlineMs) {
+    log('time budget reached; stopping scan early for clean exit');
+    break;
+  }
+
   const urlPath = new URL(item.url).pathname;
 
   // URL filter: skip pages that don't match url_include / url_exclude, unless
@@ -277,6 +289,7 @@ for (const item of batch) {
       // Security is per-origin (headers/TLD/security.txt), so check it only
       // when this page is in the sample; aggregate keeps the latest result.
       if (runs('security')) { record.security = await runSecurity(baseOrigin, target.user_agent, target.nav_timeout_ms); mark('security'); }
+      if (runs('public-interest')) { record.publicInterest = await runPublicInterest(baseOrigin, target.domain, target.user_agent); mark('public-interest'); }
       // Tech detection: identify CMS, frameworks, CDNs, analytics.
       // Runs on a small sample (default 10%) because the tech stack doesn't
       // change page-to-page; aggregate merges all detections for the week

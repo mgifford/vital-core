@@ -1,43 +1,289 @@
 {
  "domain": "www.healthcare.gov",
- "updatedAt": "2026-06-18T10:19:52.872Z",
+ "updatedAt": "2026-07-02T05:01:22.235Z",
  "links": {
   "https://portal.cms.gov/wps/portal/unauthportal/home/": {
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W27",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W26",
+    "2026-W27"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 3,
    "foundOn": [
-    "h",
-    "t",
-    "p",
-    "s",
-    ":",
-    "/",
-    "w",
-    ".",
-    "e",
-    "a"
+    "https://www.healthcare.gov/small-businesses/get-answers"
    ]
   },
   "https://portal.cms.gov/": {
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W25",
+   "lastSeen": "2026-W26",
    "_weeks": [
     "2026-W24",
-    "2026-W25"
+    "2026-W25",
+    "2026-W26"
+   ],
+   "weeksBroken": 3,
+   "foundOn": [
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers/register-for-the-shop-marketplace",
+    "https://www.healthcare.gov/agent-broker-quick-start",
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers/sell-health-insurance-through-shop",
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers"
+   ]
+  },
+  "https://www.agentbrokerfaq.cms.gov/s/topic/0TOt0000000TUeNGAW/small-business-health-options-program/": {
+   "status": 0,
+   "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W26",
+    "2026-W27"
    ],
    "weeksBroken": 2,
    "foundOn": [
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers",
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers/register-for-the-shop-marketplace",
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers/sell-health-insurance-through-shop"
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers/guides-tools-resources-for-agents-and-brokers"
+   ]
+  },
+  "https://health.gov/myhealthfinder/pregnancy/doctor-and-midwife-visits/breastfeed-your-baby": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/healthy-living/sexual-health/choose-right-birth-control": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/doctor-visits/talking-doctor/gestational-diabetes-screening-questions-doctor": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/health-conditions/hiv-and-other-stds/testing-syphilis-questions-doctor": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women",
+    "https://www.healthcare.gov/preventive-care-adults"
+   ]
+  },
+  "https://health.gov/myhealthfinder/doctor-visits/talking-doctor/preventing-preeclampsia-questions-doctor": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/doctor-visits/screening-tests/get-bone-density-test": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/health-conditions/cancer/get-screened-breast-cancer": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/health-conditions/cancer/talk-doctor-if-breast-or-ovarian-cancer-runs-your-family": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/healthy-living/mental-health-and-relationships/watch-warning-signs-relationship-violence": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/health-conditions/hiv-and-other-stds/get-tested-hiv": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women",
+    "https://www.healthcare.gov/preventive-care-adults",
+    "https://www.healthcare.gov/preventive-care-children"
+   ]
+  },
+  "https://health.gov/myhealthfinder/healthy-living/sexual-health/get-your-well-woman-visit-every-year": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W26",
+   "_weeks": [
+    "2026-W26"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-women"
+   ]
+  },
+  "https://health.gov/myhealthfinder/health-conditions/heart-health/talk-your-doctor-about-taking-aspirin-prevent-disease": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-adults"
+   ]
+  },
+  "https://health.gov/myhealthfinder/healthy-living/nutrition": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-adults"
+   ]
+  },
+  "https://health.gov/myhealthfinder/doctor-visits/talking-doctor/hepatitis-c-screening-questions-doctor": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-adults"
+   ]
+  },
+  "https://health.gov/myhealthfinder/doctor-visits/talking-doctor/lung-cancer-screening-questions-doctor": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-adults"
+   ]
+  },
+  "https://health.gov/myhealthfinder/doctor-visits/talking-doctor/medicines-prevent-heart-attack-and-stroke-questions-doctor": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-adults"
+   ]
+  },
+  "https://health.gov/myhealthfinder/health-conditions/hiv-and-other-stis": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-adults"
+   ]
+  },
+  "https://health.gov/myhealthfinder/health-conditions/diabetes/quit-smoking": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W27"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/preventive-care-adults"
    ]
   }
  }

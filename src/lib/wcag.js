@@ -28,6 +28,9 @@ const WCAG_CRITERIA = {
   '1.1.1': ['Non-text Content', 'A', '2.0'],
   '1.2.1': ['Audio-only and Video-only (Prerecorded)', 'A', '2.0'],
   '1.2.2': ['Captions (Prerecorded)', 'A', '2.0'],
+  '1.2.3': ['Audio Description or Media Alternative (Prerecorded)', 'A', '2.0'],
+  '1.2.4': ['Captions (Live)', 'AA', '2.0'],
+  '1.2.5': ['Audio Description (Prerecorded)', 'AA', '2.0'],
   '1.3.1': ['Info and Relationships', 'A', '2.0'],
   '1.3.2': ['Meaningful Sequence', 'A', '2.0'],
   '1.3.3': ['Sensory Characteristics', 'A', '2.0'],
@@ -52,13 +55,15 @@ const WCAG_CRITERIA = {
   '3.1.2': ['Language of Parts', 'AA', '2.0'],
   '3.2.1': ['On Focus', 'A', '2.0'],
   '3.2.2': ['On Input', 'A', '2.0'],
+  '3.2.3': ['Consistent Navigation', 'AA', '2.0'],
+  '3.2.4': ['Consistent Identification', 'AA', '2.0'],
   '3.3.1': ['Error Identification', 'A', '2.0'],
   '3.3.2': ['Labels or Instructions', 'A', '2.0'],
   '3.3.3': ['Error Suggestion', 'AA', '2.0'],
   '3.3.4': ['Error Prevention (Legal, Financial, Data)', 'AA', '2.0'],
   '4.1.1': ['Parsing', 'A', '2.0'],  // deprecated in WCAG 2.2 but engines may still report it
   '4.1.2': ['Name, Role, Value', 'A', '2.0'],
-  '4.1.3': ['Status Messages', 'AA', '2.0'],
+  '4.1.3': ['Status Messages', 'AA', '2.1'],
   // --- WCAG 2.1 additions ---
   '1.3.4': ['Orientation', 'AA', '2.1'],
   '1.3.5': ['Identify Input Purpose', 'AA', '2.1'],
@@ -102,34 +107,56 @@ function scFromAxeTag(tag) {
  * hand-curated mappings for any rule ids not present in that dataset.
  */
 const ALFA_SC_FALLBACK = {
-  'sia-r2': '1.1.1', // img has accessible name
-  'sia-r3': '4.1.1', // id attribute unique
-  'sia-r4': '3.1.1', // lang of page
-  'sia-r5': '3.1.1', // valid lang attribute
-  'sia-r8': '4.1.2', // form field has accessible name
-  'sia-r9': '2.2.1', // meta refresh no delay
-  'sia-r10': '1.3.5', // autocomplete valid
-  'sia-r11': '4.1.2', // link has accessible name
-  'sia-r12': '4.1.2', // button has accessible name
-  'sia-r13': '1.1.1', // iframe has accessible name
-  'sia-r14': '2.5.3', // visible label in accessible name
-  'sia-r15': '4.1.2', // iframes with same name same content
-  'sia-r16': '4.1.2', // role has required states/properties
-  'sia-r17': '1.3.1', // aria-hidden no focusable content
-  'sia-r18': '4.1.2', // aria states/properties allowed
-  'sia-r19': '4.1.2', // aria attribute has valid value
-  'sia-r20': '4.1.2', // aria attribute is defined
-  'sia-r21': '4.1.2', // role is valid
-  'sia-r28': '1.1.1', // image button has accessible name
-  'sia-r41': '4.1.2', // links with same name same purpose
-  'sia-r42': '1.3.1', // element required context role
-  'sia-r43': '1.1.1', // svg has accessible name
-  'sia-r48': '1.4.2', // audio no autoplay
-  'sia-r53': '1.3.1', // heading hierarchy
-  'sia-r62': '1.4.1', // links distinguishable from text
-  'sia-r66': '1.4.3', // text contrast (AAA variant in some)
-  'sia-r69': '1.4.3', // text has sufficient contrast
-  'sia-r111': '2.5.8', // target size
+  'sia-r2': '1.1.1',   // img has accessible name
+  'sia-r3': '4.1.1',   // id attribute unique
+  'sia-r4': '3.1.1',   // lang of page
+  'sia-r5': '3.1.1',   // valid lang attribute
+  'sia-r7': '3.1.2',   // element lang attribute has correct language
+  'sia-r8': '4.1.2',   // form field has accessible name
+  'sia-r9': '2.2.1',   // meta refresh no delay
+  'sia-r10': '1.3.5',  // autocomplete valid
+  'sia-r11': '4.1.2',  // link has accessible name
+  'sia-r12': '4.1.2',  // button has accessible name
+  'sia-r13': '1.1.1',  // iframe has accessible name
+  'sia-r14': '2.5.3',  // visible label in accessible name
+  'sia-r15': '4.1.2',  // iframes with same name same content
+  'sia-r16': '4.1.2',  // role has required states/properties
+  'sia-r17': '1.3.1',  // aria-hidden no focusable content
+  'sia-r18': '4.1.2',  // aria states/properties allowed
+  'sia-r19': '4.1.2',  // aria attribute has valid value
+  'sia-r20': '4.1.2',  // aria attribute is defined
+  'sia-r21': '4.1.2',  // role is valid
+  'sia-r28': '1.1.1',  // image button has accessible name
+  'sia-r40': '1.3.1',  // tables for tabular data (info and relationships)
+  'sia-r41': '4.1.2',  // links with same name same purpose
+  'sia-r42': '1.3.1',  // element required context role
+  'sia-r43': '1.1.1',  // svg has accessible name
+  'sia-r48': '1.4.2',  // audio no autoplay
+  'sia-r53': '1.3.1',  // heading hierarchy
+  'sia-r54': '2.4.6',  // heading is descriptive
+  'sia-r57': '2.1.1',  // scrolling content keyboard accessible
+  'sia-r59': '1.3.4',  // orientation not locked
+  'sia-r60': '1.3.5',  // input purpose can be determined
+  'sia-r61': '1.3.1',  // form field label is visible
+  'sia-r62': '1.4.1',  // links distinguishable from text
+  'sia-r66': '1.4.3',  // text contrast (AA)
+  'sia-r69': '1.4.3',  // text has sufficient contrast
+  'sia-r70': '2.4.4',  // link text is descriptive
+  'sia-r71': '4.1.2',  // iframe is not empty
+  'sia-r72': '1.3.1',  // element role consistent with landmark
+  'sia-r73': '1.4.3',  // text minimum contrast 4.5:1
+  'sia-r74': '1.4.1',  // link distinguishable without color
+  'sia-r75': '3.3.1',  // form field error identified and described
+  'sia-r77': '1.3.1',  // table cell has header
+  'sia-r78': '1.3.1',  // table header has scope
+  'sia-r79': '1.3.1',  // duplicate landmark labeled
+  'sia-r80': '2.1.1',  // scrollable element keyboard accessible
+  'sia-r85': '2.1.2',  // no keyboard trap
+  'sia-r86': '2.4.3',  // focus not lost after interaction
+  'sia-r87': '3.2.1',  // no unexpected context change on focus
+  'sia-r90': '3.2.4',  // components with same name same purpose
+  'sia-r111': '2.5.8', // target size minimum
+  'sia-r113': '2.5.8', // target size (WCAG 2.2)
 };
 
 let alfaRuleToSc = null;
@@ -255,14 +282,14 @@ export function classifyFinding(engine, { tags = [], ruleId } = {}, resolvedWcag
  *   totalPages:       pages scanned this week
  */
 export function severityFor(impact, pagesAffected, totalPages) {
-  const order = ['Low', 'Medium', 'High', 'Critical'];
-  // axe impact -> guide severity baseline.
+  const order = ['Minor', 'Moderate', 'Serious', 'Critical'];
+  // axe impact -> axe severity label (kept verbatim for engineer familiarity).
   const base = {
     critical: 'Critical',
-    serious: 'High',
-    moderate: 'Medium',
-    minor: 'Low',
-  }[impact] ?? 'Medium'; // Alfa has no impact; default to Medium.
+    serious: 'Serious',
+    moderate: 'Moderate',
+    minor: 'Minor',
+  }[impact] ?? 'Moderate'; // Alfa has no impact; default to Moderate.
 
   let idx = order.indexOf(base);
   // Frequency amplification: appears on a majority of scanned pages.

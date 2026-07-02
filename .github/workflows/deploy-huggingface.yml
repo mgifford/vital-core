@@ -1,0 +1,129 @@
+# Deploy a built profile to a Hugging Face Space (static hosting).
+#
+# Source of truth is THIS GitHub repo. Hugging Face is a generated mirror of
+# the built site only — never a source repo, never hand-edited. This workflow:
+#
+#   1. checks out vital-core (code + committed data/)
+#   2. builds the static site with `node src/aggregate.js`
+#   3. wraps docs/ with the HF Space front matter (sdk: static)
+#   4. pushes the built site to the Space's git repo
+#
+# It deliberately does NOT run on push. Hugging Face deploys are explicit:
+# manual via workflow_dispatch, or an optional nightly schedule. The existing
+# GitHub Pages path (report.yml) is untouched by this file.
+#
+# Required repository secret:
+#   HF_TOKEN  — a Hugging Face write token with access to the target Space.
+#               (Locally this lives in .env, which is gitignored; in CI it
+#               must be set as an Actions secret — secrets are not read from
+#               .env.)
+
+name: deploy-huggingface
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Profile to deploy (config/profiles/<profile>.yml)"
+        required: true
+        default: cms
+      space:
+        description: "Target HF Space, as owner/name"
+        required: true
+        default: mgifford/vital-core
+  # Optional nightly. Commented out by default so HF only deploys on demand;
+  # uncomment to publish the default profile/space each night.
+  # schedule:
+  #   - cron: '17 13 * * *'
+
+concurrency:
+  # One deploy per Space at a time; serialize rather than cancel so a push
+  # is never interrupted mid-way.
+  group: deploy-hf-${{ github.event.inputs.space || 'mgifford/vital-core' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROFILE: ${{ github.event.inputs.profile || 'cms' }}
+      SPACE: ${{ github.event.inputs.space || 'mgifford/vital-core' }}
+    steps:
+      - name: Check out vital-core (source of truth)
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --omit=optional --ignore-scripts
+
+      - name: Verify profile exists
+        run: |
+          if [ ! -f "config/profiles/${PROFILE}.yml" ]; then
+            echo "::error::No profile config/profiles/${PROFILE}.yml. See config/profiles/README.md."
+            exit 1
+          fi
+          echo "Deploying profile '${PROFILE}' to Space '${SPACE}'."
+
+      - name: Build static site
+        # Same builder as GitHub Pages — only the scope/branding differ, via
+        # the profile. The site uses relative internal links, so it is
+        # portable to the HF base path with no URL rewriting.
+        #
+        # NOTE for implementer: aggregate.js must learn to honor VITAL_PROFILE
+        # (limit targets + apply branding from the named profile). Until then
+        # this builds the full site; the profile file is the contract it reads.
+        env:
+          VITAL_PROFILE: ${{ env.PROFILE }}
+        run: node src/aggregate.js
+
+      - name: Add Hugging Face Space front matter
+        # A static HF Space is identified by README front matter with
+        # `sdk: static` and an `app_file` of index.html. We generate the
+        # Space README into the build output; it is never committed back to
+        # vital-core (docs/ is gitignored here).
+        run: |
+          {
+            echo "---"
+            echo "title: vital-core (${PROFILE})"
+            echo "emoji: 'A11y'"
+            echo "colorFrom: blue"
+            echo "colorTo: green"
+            echo "sdk: static"
+            echo "app_file: index.html"
+            echo "pinned: false"
+            echo "---"
+            echo
+            echo "Generated automatically from https://github.com/mgifford/vital-core"
+            echo "(profile: ${PROFILE}). Do not edit this Space directly — changes"
+            echo "are overwritten on the next deploy. Source of truth is GitHub."
+          } > docs/README.md
+
+      - name: Push built site to the Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "${HF_TOKEN}" ]; then
+            echo "::error::HF_TOKEN secret is not set. Add it under repo Settings > Secrets."
+            exit 1
+          fi
+
+          # Publish the built docs/ as the entire contents of the Space repo.
+          # We init a throwaway repo in docs/ and force-push it, so the Space
+          # is always exactly the latest build (a pure mirror, no history to
+          # drift). This never touches vital-core's own git history.
+          cd docs
+          git init -q
+          git checkout -q -b main
+          git config user.name "vital-scans[bot]"
+          git config user.email "vital-scans@users.noreply.github.com"
+          git add -A
+          git commit -q -m "deploy: ${PROFILE} $(date -u +%Y-%m-%dT%H:%MZ)"
+
+          REMOTE="https://vital-scans:${HF_TOKEN}@huggingface.co/spaces/${SPACE}.git"
+          git push -q --force "${REMOTE}" main
+
+          echo "Deployed profile '${PROFILE}' to https://huggingface.co/spaces/${SPACE}"

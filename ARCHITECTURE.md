@@ -8,13 +8,24 @@ conventions, [AGENTS.md](AGENTS.md).
 ## The one big idea
 
 **There is no server and no database.** Everything runs on scheduled
-GitHub Actions, and **files are the only state**:
+GitHub Actions, and **files are the only persistent state**:
 
 - Raw scan data is committed to the repo under `data/`.
 - Crawl progress is committed under `state/`.
 - The published website is a **pure function** of `data/` — regenerated
   from scratch each run, never hand-edited, never committed (it ships
   straight to GitHub Pages as a build artifact).
+
+The second rule is: **collect once, use many times**.
+
+Scanning is expensive; analysis is cheap. VITAL-Core collects each quality
+signal once, stores it as canonical evidence, and reuses that evidence in
+reports, APIs, CSV exports, dashboards, AI summaries, and historical
+analysis.
+
+Every quality signal should have exactly one canonical producer. Reports
+may summarize, correlate, visualize, or aggregate evidence, but they
+should not independently collect the same evidence again.
 
 This means anyone can clone the repo and reproduce every number, and the
 whole history of every site is in git.
@@ -114,6 +125,25 @@ page-detail pruning and answer "when did this first appear?".
 `retention_weeks` (default 8) by `src/prune.js`; the weekly summaries and
 ledgers are kept indefinitely.
 
+
+Crawler
+↓
+Evidence producers
+↓
+Canonical evidence
+↓
+Aggregation
+↓
+Consumers
+• Reports
+• API
+• CSV
+• AI summaries
+• History
+• URL lookup
+
+
+
 ## Per-domain configuration (institutional tuning)
 
 Every site is configured in **one file**, `config/targets.yml`. There's a
@@ -183,6 +213,12 @@ report.yml    (after the night's scans complete)
   └─ deploy docs/ to GitHub Pages
 ```
 
+The scan pipeline is responsible for **collecting evidence**.
+
+The aggregation pipeline is responsible for **transforming evidence into reusable products**.
+
+No report should perform its own scanning or independent measurements. Reports consume aggregated evidence rather than generating it.
+
 - **`scan.yml`** runs on a staggered set of off-hours cron schedules,
   one parallel job per domain. Each job scans its budget and commits
   only its own `data/<domain>/` and `state/<domain>/` files, so parallel
@@ -202,8 +238,10 @@ report.yml    (after the night's scans complete)
   scheduling, and weekly caps. A site sees a few hundred slow page loads
   spread across a week.
 - **"Can I reproduce the reports?"** Yes — `node src/aggregate.js`
-  regenerates all of `docs/` from `data/`. Reports are a pure function
-  of committed data.
+  regenerates all of `docs/` from `data/`. Reports are a pure function of 
+  collected evidence. Reports never perform their own scans. They consume
+  the committed evidence collected during the scan pipeline, ensuring every
+  quality signal has a single canonical source.
 - **"What if a scheduled run is skipped or a job times out?"** The next
   run picks up where the frontier left off; data is append-only and
   regenerable, so nothing is lost.

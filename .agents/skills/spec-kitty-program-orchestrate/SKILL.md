@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spec-kitty-program-orchestrate/SKILL.md

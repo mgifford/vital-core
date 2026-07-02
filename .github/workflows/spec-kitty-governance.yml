@@ -34,9 +34,9 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 24
           cache: npm
@@ -46,7 +46,7 @@ jobs:
 
       - name: Parse workflow YAML
         run: |
-          ruby -e "require 'yaml'; Dir['.github/workflows/*.yml'].sort.each { |f| YAML.load_file(f); puts \"parsed #{f}\" }"
+          ruby -e "require 'yaml'; Dir['.github/workflows/*.yml'].sort.each { |f| YAML.safe_load_file(f, permitted_classes: []); puts \"parsed #{f}\" }"
 
       - name: Check Spec Kitty governance
         run: npm run check:spec-kitty
