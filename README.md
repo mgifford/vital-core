@@ -72,15 +72,11 @@ For how crawling, storage, and the pipeline work in more detail, see
 
 GitHub is the source of truth for this project. The `main` branch keeps
 the full working history, and that is where development should land.
-Hugging Face Spaces is a deployment target, not a second source branch:
+
+Hugging Face Spaces has been archived. It wasa deployment target, not a second source branch:
 it should receive a clean snapshot of the current site state on its own
 `main` branch, with large `state/` crawl artifacts stripped out before
 push.
-
-That split keeps the weekly reporting history intact on GitHub while
-making the Space easier to understand and easier to rebuild. It also
-means we do not need legacy branch names like `copilot/main-old` as part
-of the long-term workflow.
 
 1. Create a repository from these files and push to GitHub.
 2. Edit `config/targets.yml`: list your 5–10 domains and adjust budgets.
