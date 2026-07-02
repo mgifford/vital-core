@@ -23,6 +23,17 @@ defaults:
     max_html_issues: 50
     moderate_issue_threshold_percent: 5
     include_key_page_issues: true
+    # Heuristic threshold: findings on this many or more pages are flagged
+    # "Likely template" (shared component). Findings on 1–2 pages are flagged
+    # "Likely content". Between the two = "unknown".
+    template_page_threshold: 10
+  display:
+    # How the accessibility score appears in per-domain reports and the archive.
+    # letter  — letter grade only (A/B/C/D/F)
+    # percent — numeric score only (e.g. "78")
+    # both    — letter grade and numeric score (default)
+    # none    — suppress the score section entirely
+    score_format: both
 
 # Which sustainability figure the reports headline: "co2" (grams CO2 per
 # page) or "energy" (watt-hours per page). Both are always recorded in the
@@ -35,6 +46,27 @@ sustainability_metric: energy
 # so that affected_pages_csv cells are clickable in Google Sheets / Excel).
 # Trailing slash is optional. Leave empty to keep CSV links relative.
 report_base_url: "https://mgifford.github.io/vital-core"
+
+# Report languages. Each report is rendered once per listed language; the
+# `default_language` keeps the canonical (unsuffixed) file paths — e.g.
+# accessibility.html — and every other language gets a locale suffix —
+# accessibility-fr.html. Readers reach a language via the URL: ?lang=ja loads
+# the Japanese sibling and remembers the choice (localStorage); a stored choice
+# only redirects from the default-language pages, so a shared English URL stays
+# English. Only UI chrome is translated (nav, labels, buttons, headings);
+# engine-sourced text such as WCAG/axe rule descriptions stays English.
+# Supported: en, fr, ja, nl. Translations are human-reviewed catalogs in
+# src/locales/<lang>.json; any missing string falls back to English, so partial
+# catalogs are safe. A target may override either key (e.g. Canada: [en, fr]).
+languages: [en, fr, ja, nl]
+default_language: en
+
+# Show the visible header language switcher. The ?lang= / localStorage runtime
+# selection above works regardless of this flag, so `false` makes every language
+# reachable by URL while leaving the default English pages visually unchanged
+# (no switcher chip). Flip to `true` to surface the switcher for discoverability.
+# Overridable per target.
+language_switcher: false
 
 # Per-engine weekly coverage rates. Each value is the share of the week's
 # unique pages an engine runs on, as a fraction (0.3) or percent (30).
@@ -56,6 +88,7 @@ sampling:
   images: 100           # inline <img> inventory: alt text, dimensions, file size
   standards: 50        # web standards / metadata / social (ScanGov-style, per page)
   security: 10         # HTTPS, security headers, security.txt, .gov TLD (per origin)
+  public-interest: 10  # accessibility statement, carbon.txt, Green Web Foundation, sitemaps (per origin)
   sustainability: 10   # page weight + estimated CO2
   tech: 10             # technology detection (CMS, frameworks, CDNs, analytics) — small sample sufficient
   third-party: 25      # third-party JS/resource cost per page (load bytes/time + which origins serve scripts); varies per page, so sampled like sustainability
@@ -75,6 +108,15 @@ targets:
   #     every week, before the rest of the site is sampled. No URL is ever
   #     scanned more than once per ISO week.
   #   priority_urls: [ ... ] inline list, for a handful of must-cover URLs.
+  #
+  #   languages: [ ... ] / default_language: override the global report
+  #     languages for this one target. The default_language keeps the canonical
+  #     (unsuffixed) report paths; each other language is published alongside as
+  #     <page>-<lang>.html with a header language switcher. Examples:
+  #       languages: [en, fr]            # Canada — English + French
+  #       languages: [en, ja]            # Japan — English + Japanese
+  #       languages: [en, nl]            # Netherlands — English + Dutch
+  #       default_language: fr           # make French the canonical default
   #
   #   url_include: [ ... ] optional list of substrings. When set, ONLY URLs
   #     whose full normalized URL contains at least one substring are crawled
@@ -126,7 +168,9 @@ targets:
   - domain: data.healthcare.gov
     importance: 3                  # open-data site; pages are template-similar
   - domain: openpaymentsdata.cms.gov
-    importance: 3                  # open-data site
+    importance: 3                  # open-data site; lighthouse disabled (perf:6-55 → audits take 2-5 min each)
+    sampling:
+      lighthouse: 0
   - domain: www.cdc.gov
     importance: 1
   - domain: data.cms.gov
@@ -139,3 +183,18 @@ targets:
     importance: 1
   - domain: hhs.gov            # WAF-blocked (see WAF-ALLOWLIST.md)
     importance: 1
+
+  # Department of Veterans Affairs — scanned ONLY via the "va" profile on
+  # Hugging Face. hf_only: true prevents these from running in GitHub Actions.
+  - domain: www.va.gov
+    importance: 5
+    hf_only: true
+  - domain: volunteer.va.gov
+    importance: 3
+    hf_only: true
+  - domain: news.va.gov
+    importance: 3
+    hf_only: true
+  - domain: benefits.va.gov
+    importance: 3
+    hf_only: true

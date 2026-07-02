@@ -3,7 +3,10 @@ vcs:
 agents:
   available:
   - copilot
+  - claude
+  - codex
   auto_commit: true
+  lint_on_edit: false
 project:
   uuid: a7ea4bc9-7cef-4089-9526-34dd8a9f8d46
   slug: vital-core

@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spec-kitty-runtime-review/references/review-checklist.md

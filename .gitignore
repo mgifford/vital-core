@@ -1,5 +1,4 @@
 node_modules/
-.env
 .e2e-sandbox/
 .history-cache/
 ci_job_*.zip
@@ -16,5 +15,37 @@ dist/
 *.log
 .DS_Store
 
-# Added by Spec Kitty CLI (auto-managed)
+# Local secrets (HF_TOKEN, etc.). Provided to CI via repository secrets,
+# never committed. Commit .env.example with key names only if you want a
+# template.
+.env
+.env.*
+!.env.example
+
+# HF-only targets — scanned on Hugging Face, not GitHub Actions.
+# Guard against accidental commit of their scan data to this repo.
+data/www.va.gov/
+data/volunteer.va.gov/
+data/news.va.gov/
+data/benefits.va.gov/
+state/www.va.gov/
+state/volunteer.va.gov/
+state/news.va.gov/
+state/benefits.va.gov/
+
+# Spec Kitty runtime state (transient, machine-specific)
+.kittify/runtime/
+.kittify/charter/context-state.json
+.kittify/encoding-provenance/
+.kittify/events/
+.kittify/lint-report.json
+.kittify/workspaces/
 .kittify/sync-state.json
+.worktrees/
+
+# Legacy Spec Kitty managed symlink packs. Current repo-local Codex command
+# skills are real files named .agents/skills/spec-kitty.*.
+.agents/skills/ad-hoc-profile-load/
+.agents/skills/spec-kitty/
+.agents/skills/spec-kitty-*/
+.agents/skills/spk-*/

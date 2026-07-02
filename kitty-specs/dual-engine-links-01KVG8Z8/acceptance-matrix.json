@@ -1,0 +1,50 @@
+{
+  "mission_slug": "dual-engine-links-01KVG8Z8",
+  "mission_type": "software-dev",
+  "reconstructed_from": "Shipped spec (#147) and repository implementation evidence",
+  "reconstructed_at": "2026-06-20T01:03:05Z",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "consensusSection receives bugs and builds rule map",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion marks this complete."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "Consensus issue cells link to bug anchors",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion pins the anchor format."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Numeric cell/header CSS aligns right",
+      "proof_type": "manual_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion pins td.num/th.num CSS."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "Numeric headers and sortable buttons align",
+      "proof_type": "manual_review",
+      "pass_fail": "pass",
+      "evidence": "Spec lists affected report tables and sortable button CSS."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Consensus deduplication untouched",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Out-of-scope section preserves src/lib/consensus.js behavior."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Unit tests pass",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec records unit tests passing."
+    }
+  ]
+}

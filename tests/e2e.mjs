@@ -153,6 +153,12 @@ const run = (script, args, week) =>
     env: { ...process.env, VITAL_WEEK: week },
   }).toString();
 
+const reportDir = (week) => path.join(SANDBOX, 'docs', 'reports', 'localhost', week);
+const reportFile = (week, suffix) => {
+  const name = fs.readdirSync(reportDir(week)).find((f) => f.endsWith(suffix));
+  return name ? path.join(reportDir(week), name) : null;
+};
+
 const assert = (cond, msg) => {
   if (!cond) {
     console.error(`\u2717 FAIL: ${msg}`);
@@ -202,7 +208,9 @@ try {
   assert(csvBody.startsWith('url,instances'), 'CSV has a header row');
   assert(csvBody.split('\n').filter(Boolean).length - 1 === w1.axe.rules['image-alt'].pages, 'CSV lists every affected page');
   // Impact in the bug report: image-alt -> WCAG 1.1.1 -> vision groups.
-  const bugs1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'bugs.json')));
+  const bugs1Path = reportFile('2026-W23', 'bugs.json');
+  assert(bugs1Path, 'bugs JSON written');
+  const bugs1 = JSON.parse(fs.readFileSync(bugs1Path));
   const imgAltBug = bugs1.reports.find((r) => r.rule_id === 'image-alt');
   assert(imgAltBug.impact.groups.some((g) => /vision/i.test(g.group)), 'image-alt bug shows vision-impact groups');
   assert(imgAltBug.affected_pages_csv && imgAltBug.affected_pages_csv.endsWith('.csv'), 'bug report links its affected-pages CSV');
@@ -215,7 +223,8 @@ try {
   assert(w1.resources && w1.resources.total > 0, 'resources cataloged');
   assert(w1.resources.byType.pdf > 0, 'PDF links cataloged');
   assert(w1.resources.byType['embedded-media'] > 0, 'embedded media (YouTube iframe) cataloged');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'resources.csv')), 'resources CSV written');
+  const resourcesCsvPath = reportFile('2026-W23', 'resources.csv');
+  assert(resourcesCsvPath, 'resources CSV written');
   // Resource ledger first-seen; in week 1 everything is new this week.
   const resLedger1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'resources.json')));
   const anyRes = Object.values(resLedger1.resources)[0];
@@ -306,8 +315,9 @@ try {
   const tpHtml = fs.readFileSync(tpPage, 'utf8');
   assert(/third parties/i.test(tpHtml) && /Median bytes/.test(tpHtml), 'third-party page has the vendor table');
   assert(/href="third-party.html">Third parties/.test(w1index), 'subnav links to third-party page');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'third-party.csv')), 'third-party CSV written');
-  const tpCsv = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'third-party.csv'), 'utf8');
+  const thirdPartyCsvPath = reportFile('2026-W23', 'third-party.csv');
+  assert(thirdPartyCsvPath, 'third-party CSV written');
+  const tpCsv = fs.readFileSync(thirdPartyCsvPath, 'utf8');
   assert(tpCsv.startsWith('origin,is_script_vendor,pages'), 'third-party CSV has expected header');
 
   const state = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
@@ -405,7 +415,7 @@ try {
   assert(/data\/localhost\/domain\.json/.test(report), 'report links the JSON download');
   // Dashboard: leaderboard score + trajectory + cross-domain chart.
   const dash = fs.readFileSync(path.join(SANDBOX, 'docs', 'index.html'), 'utf8');
-  assert(/<th scope="col">Score<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
+  assert(/<th\b[^>]*scope="col"[^>]*>\s*Score\s*<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
   assert(/class="traj traj-/.test(dash), 'dashboard shows trajectory arrows');
   assert(dash.includes('all domains') && dash.includes('linechart'), 'dashboard has cross-domain overlay chart');
   assert(/id="h-worst"/.test(dash), 'dashboard has fleet-wide worst-offenders section');
@@ -480,21 +490,26 @@ try {
   assert(/table class="sortable"/.test(readHtml), 'readability page has a sortable table');
   assert(/class="subnav"/.test(readHtml) && /class="subnav"/.test(w1report), 'cross-page subnav present on report + readability');
   assert(/Reading ease \(Flesch\)/.test(readHtml), 'readability page documents the metrics');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv')), 'readability CSV written');
-  const readCsv = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.csv'), 'utf8');
+  const readabilityCsvPath = reportFile('2026-W23', 'readability.csv');
+  assert(readabilityCsvPath, 'readability CSV written');
+  const readCsv = fs.readFileSync(readabilityCsvPath, 'utf8');
   assert(readCsv.startsWith('url,words,reading_ease,grade,scored'), 'readability CSV has expected header');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv')), 'spelling CSV written');
-  assert(/word,pages_affected,example_pages/.test(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.csv'), 'utf8')), 'spelling CSV has expected header');
+  const spellingCsvPath = reportFile('2026-W23', 'spelling.csv');
+  assert(spellingCsvPath, 'spelling CSV written');
+  assert(/word,pages_affected,example_pages/.test(fs.readFileSync(spellingCsvPath, 'utf8')), 'spelling CSV has expected header');
   // Spelling JSON download + the readability page links it.
   const readHtmlFull = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.html'), 'utf8');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'spelling.json')), 'spelling JSON written');
-  assert(/href="spelling.json"/.test(readHtmlFull) && /href="spelling.csv"/.test(readHtmlFull), 'readability page links spelling CSV + JSON');
+  const spellingJsonPath = reportFile('2026-W23', 'spelling.json');
+  assert(spellingJsonPath, 'spelling JSON written');
+  assert(readHtmlFull.includes(`href="${path.basename(spellingJsonPath)}"`) && readHtmlFull.includes(`href="${path.basename(spellingCsvPath)}"`), 'readability page links spelling CSV + JSON');
   // Tech downloads + concise coverage + example pages.
   const techHtmlFull = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.html'), 'utf8');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.csv')), 'tech CSV written');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.json')), 'tech JSON written');
-  assert(/technology,category,all_categories,confidence/.test(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech.csv'), 'utf8')), 'tech CSV has expected header');
-  assert(/href="tech.csv"/.test(techHtmlFull) && /href="tech.json"/.test(techHtmlFull), 'tech page links CSV + JSON');
+  const techCsvPath = reportFile('2026-W23', 'tech.csv');
+  const techJsonPath = reportFile('2026-W23', 'tech.json');
+  assert(techCsvPath, 'tech CSV written');
+  assert(techJsonPath, 'tech JSON written');
+  assert(/technology,category,all_categories,confidence/.test(fs.readFileSync(techCsvPath, 'utf8')), 'tech CSV has expected header');
+  assert(techHtmlFull.includes(`href="${path.basename(techCsvPath)}"`) && techHtmlFull.includes(`href="${path.basename(techJsonPath)}"`), 'tech page links CSV + JSON');
   assert(/of \d+\)/.test(techHtmlFull), 'tech page shows concise "N of M" coverage');
   assert(/example page\(s\)/.test(techHtmlFull), 'tech page lists example pages per technology');
   // Images sub-page + CSV.
@@ -503,16 +518,18 @@ try {
   const imagesHtml = fs.readFileSync(imagesPage, 'utf8');
   assert(/id="h-images-detail"/.test(imagesHtml), 'images page has detail section');
   assert(/href="images.html">Images/.test(w1report), 'subnav links to images page');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.csv')), 'images CSV written');
-  const imagesCsvContent = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.csv'), 'utf8');
+  const imagesCsvPath = reportFile('2026-W23', 'images.csv');
+  assert(imagesCsvPath, 'images CSV written');
+  const imagesCsvContent = fs.readFileSync(imagesCsvPath, 'utf8');
   assert(imagesCsvContent.startsWith('page_url,src,alt,alt_verdict,alt_reason,has_alt,is_decorative,is_missing_alt'), 'images CSV has expected header');
   // Deduplication: /pixel.png is on every page, so it collapses to one unique
   // image with an occurrence count and a filesize; the engine classifies its
   // alt text and the page shows the alt-text quality section + JSON download.
   assert(/Occurrences/.test(imagesHtml) && /Unique images/.test(imagesHtml), 'images page shows dedup occurrences + unique count');
   assert(/id="h-images-quality"/.test(imagesHtml), 'images page has alt-text quality section');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.json')), 'images JSON written');
-  const imagesJson = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'images.json'), 'utf8'));
+  const imagesJsonPath = reportFile('2026-W23', 'images.json');
+  assert(imagesJsonPath, 'images JSON written');
+  const imagesJson = JSON.parse(fs.readFileSync(imagesJsonPath, 'utf8'));
   const pixel = imagesJson.images.find((i) => /pixel\.png$/.test(i.src));
   assert(pixel && pixel.occurrences > 1, 'reused image deduplicated with occurrence count > 1');
   assert('altVerdict' in pixel, 'unique image carries an alt-text verdict');

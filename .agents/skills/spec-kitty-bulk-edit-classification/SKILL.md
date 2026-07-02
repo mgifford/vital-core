@@ -1,1 +1,0 @@
-/Users/mike.gifford/.agents/skills/spec-kitty-bulk-edit-classification/SKILL.md

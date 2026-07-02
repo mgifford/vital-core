@@ -1,0 +1,57 @@
+{
+  "mission_slug": "download-filename-prefix-01KVG8ZB",
+  "mission_type": "software-dev",
+  "reconstructed_from": "Shipped spec (#151) and repository implementation evidence",
+  "reconstructed_at": "2026-06-20T01:03:05Z",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "weekToDateStamp converts ISO week to date stamp",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion pins 2026-W25 -> 15JUN2026."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "CSV/JSON writers prefix user-facing downloads",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec lists every covered download filename."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Aggregate passes domain/week and stores generated JSON names",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion names aggregate.js and summary/reporting fields."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "Report links use generated names with fallbacks",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion names report-html.js download links."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Per-rule csv files stay unprefixed",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion excludes per-rule CSVs."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Invalid week strings fall back to raw input",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec acceptance criterion requires parse-failure fallback."
+    },
+    {
+      "criterion_id": "NFR-02",
+      "description": "Unit tests pass",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Spec records unit tests passing."
+    }
+  ]
+}
