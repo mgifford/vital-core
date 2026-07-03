@@ -545,6 +545,72 @@ ${table}
 </figure>`;
 }
 
+/**
+ * Multi-series Lighthouse trend chart with one line each for Performance,
+ * Accessibility, Best Practices, and SEO.
+ */
+function lighthouseCategoryTrendChart(series) {
+  const CATEGORIES = [
+    { key: 'medianPerformance', label: t('Performance'), dash: 'none' },
+    { key: 'medianAccessibility', label: t('Accessibility'), dash: '6 3' },
+    { key: 'medianBestPractices', label: t('Best practices'), dash: '3 3' },
+    { key: 'medianSeo', label: t('SEO'), dash: '1 4' },
+  ];
+
+  const pts = series.map((s) => ({
+    week: s.week,
+    medianPerformance: s.lighthouse?.medianPerformance ?? null,
+    medianAccessibility: s.lighthouse?.medianAccessibility ?? null,
+    medianBestPractices: s.lighthouse?.medianBestPractices ?? null,
+    medianSeo: s.lighthouse?.medianSeo ?? null,
+  }));
+
+  const activeCategories = CATEGORIES.filter((c) => pts.some((p) => p[c.key] != null));
+  if (pts.length < 2 || activeCategories.length === 0) return '';
+
+  const W = 640, H = 200, padL = 44, padR = 120, padT = 16, padB = 28;
+  const x = (i) => padL + (i / (pts.length - 1)) * (W - padL - padR);
+  const y = (v) => H - padB - (v / 100) * (H - padT - padB);
+  const xlabels = [0, Math.floor((pts.length - 1) / 2), pts.length - 1]
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .map((i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="axis">${esc(pts[i].week.slice(5))}</text>`)
+    .join('');
+  const ylabels = `<text x="4" y="${(y(100) + 4).toFixed(1)}" class="axis">100</text><text x="4" y="${(y(0) + 4).toFixed(1)}" class="axis">0</text>`;
+
+  const lines = activeCategories.map((c) => {
+    const seriesPts = pts.map((p, i) => ({ i, value: p[c.key] })).filter((p) => p.value != null);
+    if (seriesPts.length < 2) return '';
+    const poly = seriesPts.map((p) => `${x(p.i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ');
+    const dots = seriesPts.map((p) => `<circle cx="${x(p.i).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="2.5" fill="currentColor"/>`).join('');
+    const lastPt = seriesPts[seriesPts.length - 1];
+    return `<g>
+  <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="${c.dash}"/>
+  ${dots}
+  <text x="${(x(lastPt.i) + 6).toFixed(1)}" y="${(y(lastPt.value) + 4).toFixed(1)}" class="axis" text-anchor="start">${esc(c.label)}</text>
+</g>`;
+  }).join('\n');
+
+  const tableRows = pts.map((p) =>
+    `<tr><th scope="row">${esc(p.week)}</th>${activeCategories.map((c) => `<td>${p[c.key] ?? 'n/a'}</td>`).join('')}</tr>`
+  ).join('');
+  const table = `<table class="visually-hidden">
+<caption>${t('Lighthouse category scores by week')}</caption>
+<thead><tr><th scope="col">${t('Week')}</th>${activeCategories.map((c) => `<th scope="col">${esc(c.label)}</th>`).join('')}</tr></thead>
+<tbody>${tableRows}</tbody>
+</table>`;
+
+  const ariaLabel = t('Lighthouse category scores over @n weeks (0 to 100).', { '@n': pts.length });
+
+  return `<figure class="chart">
+<figcaption>${t('Lighthouse category scores over @n weeks', { '@n': pts.length })}</figcaption>
+<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
+  ${lines}
+  ${xlabels}${ylabels}
+</svg>
+${table}
+</figure>`;
+}
+
 function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
   const pts = points.filter((p) => p.value != null);
   if (pts.length < 2) {
@@ -1950,8 +2016,6 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const scoreFormat = target.display?.score_format ?? 'both';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
-  const trendAccessibilityScore = series.map((s) => ({ week: s.week, value: scoreFor(s)?.score ?? null }));
-  const trendLighthouseScore = series.map((s) => ({ week: s.week, value: s.lighthouse?.medianPerformance ?? null }));
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
   const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
   const body = `
@@ -2004,11 +2068,9 @@ ${coverageTable(summary)}
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
 ${heading('h-trends', `Trends over time`)}
-${chartGroup('h-trends-scores', 'Score trends', 3, [
-  lineChart('Accessibility score (0-100)', trendAccessibilityScore, { lowerIsBetter: false }),
-  lineChart('Google Lighthouse score (median)', trendLighthouseScore, { lowerIsBetter: false }),
-])}
-<p class="note">Lighthouse trend points are based on sampled pages and can vary more week-to-week than full-coverage accessibility scoring.</p>
+${severityTrendChart(series)}
+${lighthouseCategoryTrendChart(series)}
+<p class="note">Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.</p>
 </section>` : ''}
 
 ${diff ? `

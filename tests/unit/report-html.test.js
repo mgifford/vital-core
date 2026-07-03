@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderAccessibilityPage, renderDomainReport } from '../../src/report-html.js';
 
-test('renderDomainReport shows two score trend charts for accessibility and Lighthouse', () => {
+test('renderDomainReport shows severity trend and four-category Lighthouse trend', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const series = [
     {
@@ -10,12 +10,25 @@ test('renderDomainReport shows two score trend charts for accessibility and Ligh
       pagesScanned: 10,
       pagesAudited: 10,
       generatedAt: '2026-06-08T00:00:00.000Z',
-      axe: { medianViolations: 4, pagesScanned: 10, pagesWithViolations: 8, rules: {} },
+      axe: {
+        medianViolations: 4,
+        pagesScanned: 10,
+        pagesWithViolations: 8,
+        rules: {
+          'color-contrast': { impact: 'serious', pages: 4 },
+          'image-alt': { impact: 'critical', pages: 2 },
+          'label': { impact: 'moderate', pages: 3 },
+          'link-name': { impact: 'minor', pages: 1 },
+        },
+      },
       alfa: { medianFailures: 12, pagesScanned: 4, pagesWithFailures: 3 },
       sustainability: { medianBytes: 204800, medianRequests: 12 },
       plainLanguage: { medianReadingEase: 63 },
       lighthouse: {
         medianPerformance: 71,
+        medianAccessibility: 76,
+        medianBestPractices: 68,
+        medianSeo: 74,
         metrics: {
           firstContentfulPaintMs: 1300,
           largestContentfulPaintMs: 2450,
@@ -31,12 +44,25 @@ test('renderDomainReport shows two score trend charts for accessibility and Ligh
       pagesScanned: 11,
       pagesAudited: 11,
       generatedAt: '2026-06-15T00:00:00.000Z',
-      axe: { medianViolations: 3, pagesScanned: 11, pagesWithViolations: 7, rules: {} },
+      axe: {
+        medianViolations: 3,
+        pagesScanned: 11,
+        pagesWithViolations: 7,
+        rules: {
+          'color-contrast': { impact: 'serious', pages: 3 },
+          'image-alt': { impact: 'critical', pages: 2 },
+          'label': { impact: 'moderate', pages: 2 },
+          'link-name': { impact: 'minor', pages: 1 },
+        },
+      },
       alfa: { medianFailures: 10, pagesScanned: 4, pagesWithFailures: 2 },
       sustainability: { medianBytes: 189440, medianRequests: 10 },
       plainLanguage: { medianReadingEase: 65 },
       lighthouse: {
         medianPerformance: 76,
+        medianAccessibility: 79,
+        medianBestPractices: 73,
+        medianSeo: 78,
         metrics: {
           firstContentfulPaintMs: 1180,
           largestContentfulPaintMs: 2210,
@@ -60,9 +86,15 @@ test('renderDomainReport shows two score trend charts for accessibility and Ligh
     null
   );
 
-  assert.match(html, /Score trends/);
-  assert.match(html, /Accessibility score \(0-100\)/);
-  assert.match(html, /Google Lighthouse score \(median\)/);
+  assert.match(html, /Pages affected by axe severity over 2 weeks/);
+  assert.match(html, /Lighthouse category scores over 2 weeks/);
+  assert.match(html, /Performance/);
+  assert.match(html, /Accessibility/);
+  assert.match(html, /Best practices/);
+  assert.match(html, /SEO/);
+  assert.doesNotMatch(html, /Score trends/);
+  assert.doesNotMatch(html, /Accessibility score \(0-100\)/);
+  assert.doesNotMatch(html, /Google Lighthouse score \(median\)/);
   assert.doesNotMatch(html, /Largest Contentful Paint \(median\)/);
   assert.doesNotMatch(html, /Median page weight \(KB\)/);
 });
