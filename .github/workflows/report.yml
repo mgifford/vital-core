@@ -45,6 +45,21 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Data-in-git growth trigger (ROADMAP-2026-07.md Mission B3): scan data
+      # is committed to this repo and history keeps every blob forever, so the
+      # repo grows without bound. Decision 2026-07-03: accept growth for now,
+      # split data/ into a companion repo when server-side size passes 1 GB.
+      # This check runs daily and turns into a run warning when that day comes.
+      - name: Check repository size
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          KB=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .size)
+          echo "Repository size (server-side, full history): ${KB} KB (~$((KB / 1024)) MB)"
+          if [ "$KB" -gt 1048576 ]; then
+            echo "::warning title=Repository over 1 GB::Repo is ~$((KB / 1024)) MB. Time to act on docs-internal/ROADMAP-2026-07.md Mission B3 (move data/ to a companion repo)."
+          fi
+
       - id: decide
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
