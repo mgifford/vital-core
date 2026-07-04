@@ -2067,7 +2067,7 @@ ${coverageTable(summary)}
 
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
-${heading('h-trends', `Trends over time`)}
+${heading('h-trends', t('Trends over time'))}
 ${severityTrendChart(series)}
 ${lighthouseCategoryTrendChart(series)}
 <p class="note">Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.</p>
