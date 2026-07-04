@@ -5,7 +5,7 @@ import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
-import { buildLineManifest } from './lib/paracharts.js';
+import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -535,7 +535,13 @@ function severityTrendChart(series) {
   const ariaLabel = t('Axe violations by severity over @n weeks.', { '@n': pts.length }) + ' ' +
     activeLevels.map((l) => t('@label: @from → @to pages', { '@label': l.label, '@from': pts[0][l.key], '@to': pts[pts.length - 1][l.key] })).join('; ') + '.';
 
-  return `<figure class="chart">
+  const manifest = buildMultiLineManifest(
+    t('Pages affected by axe severity'),
+    t('Pages affected'),
+    activeLevels.map((l) => ({ key: l.label, points: pts.map((p) => ({ week: p.week, value: p[l.key] })) }))
+  );
+
+  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
 <figcaption>${t('Pages affected by axe severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -601,7 +607,13 @@ function lighthouseCategoryTrendChart(series) {
 
   const ariaLabel = t('Lighthouse category scores over @n weeks (0 to 100).', { '@n': pts.length });
 
-  return `<figure class="chart">
+  const manifest = buildMultiLineManifest(
+    t('Lighthouse category scores'),
+    t('Score (0-100)'),
+    activeCategories.map((c) => ({ key: c.label, points: pts.map((p) => ({ week: p.week, value: p[c.key] })) }))
+  );
+
+  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
 <figcaption>${t('Lighthouse category scores over @n weeks', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -2067,10 +2079,10 @@ ${coverageTable(summary)}
 
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
-${heading('h-trends', `Trends over time`)}
+${heading('h-trends', t('Trends over time'))}
 ${severityTrendChart(series)}
 ${lighthouseCategoryTrendChart(series)}
-<p class="note">Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.</p>
+<p class="note">${t('Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.')}</p>
 </section>` : ''}
 
 ${diff ? `
