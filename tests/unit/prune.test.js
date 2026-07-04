@@ -5,6 +5,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import { isoWeekOf } from '../../src/lib/week.js';
 
 /**
@@ -20,6 +21,15 @@ import { isoWeekOf } from '../../src/lib/week.js';
  */
 
 const REPO = path.resolve(fileURLToPath(new URL('../../', import.meta.url)));
+
+// REPO may be a git worktree without its own node_modules (Node finds the
+// parent checkout's copy by walking up). Resolve the node_modules that
+// actually serves src/ so the sandbox symlink never dangles.
+const NODE_MODULES = (() => {
+  const yamlPath = createRequire(path.join(REPO, 'src', 'lib', 'config.js')).resolve('yaml');
+  const marker = `${path.sep}node_modules${path.sep}`;
+  return yamlPath.slice(0, yamlPath.lastIndexOf(marker) + marker.length - 1);
+})();
 
 function weeksAgo(n) {
   const d = new Date();
@@ -44,7 +54,7 @@ test('prune: removes old page detail only when a summary exists, keeps recent an
     // Sandbox: copy src/, symlink node_modules (so imports resolve without
     // a slow copy), write a minimal config and a data tree.
     fs.cpSync(path.join(REPO, 'src'), path.join(sandbox, 'src'), { recursive: true });
-    fs.symlinkSync(path.join(REPO, 'node_modules'), path.join(sandbox, 'node_modules'), 'dir');
+    fs.symlinkSync(NODE_MODULES, path.join(sandbox, 'node_modules'), 'dir');
     fs.mkdirSync(path.join(sandbox, 'config'), { recursive: true });
     fs.writeFileSync(
       path.join(sandbox, 'config', 'targets.yml'),
@@ -85,7 +95,7 @@ test('prune: respects a per-target retention_weeks override', () => {
   const sandbox = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-prune-'));
   try {
     fs.cpSync(path.join(REPO, 'src'), path.join(sandbox, 'src'), { recursive: true });
-    fs.symlinkSync(path.join(REPO, 'node_modules'), path.join(sandbox, 'node_modules'), 'dir');
+    fs.symlinkSync(NODE_MODULES, path.join(sandbox, 'node_modules'), 'dir');
     fs.mkdirSync(path.join(sandbox, 'config'), { recursive: true });
     // Tight 2-week retention for this target.
     fs.writeFileSync(
