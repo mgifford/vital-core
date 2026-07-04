@@ -5,7 +5,7 @@ import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
-import { buildLineManifest } from './lib/paracharts.js';
+import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -535,7 +535,13 @@ function severityTrendChart(series) {
   const ariaLabel = t('Axe violations by severity over @n weeks.', { '@n': pts.length }) + ' ' +
     activeLevels.map((l) => t('@label: @from → @to pages', { '@label': l.label, '@from': pts[0][l.key], '@to': pts[pts.length - 1][l.key] })).join('; ') + '.';
 
-  return `<figure class="chart">
+  const manifest = buildMultiLineManifest(
+    t('Pages affected by axe severity'),
+    t('Pages affected'),
+    activeLevels.map((l) => ({ key: l.label, points: pts.map((p) => ({ week: p.week, value: p[l.key] })) }))
+  );
+
+  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
 <figcaption>${t('Pages affected by axe severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -601,7 +607,13 @@ function lighthouseCategoryTrendChart(series) {
 
   const ariaLabel = t('Lighthouse category scores over @n weeks (0 to 100).', { '@n': pts.length });
 
-  return `<figure class="chart">
+  const manifest = buildMultiLineManifest(
+    t('Lighthouse category scores'),
+    t('Score (0-100)'),
+    activeCategories.map((c) => ({ key: c.label, points: pts.map((p) => ({ week: p.week, value: p[c.key] })) }))
+  );
+
+  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
 <figcaption>${t('Lighthouse category scores over @n weeks', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -1567,7 +1579,7 @@ function perfImpactSection(impact) {
   const mb = (b) => (b == null ? 'n/a' : `${(b / 1e6).toFixed(2)} MB`);
   const totals = impact.totals;
   return `<section aria-labelledby="h-lh-impact">
-${heading('h-lh-impact', `Performance impact`)}
+${heading('h-lh-impact', t('Performance impact'))}
 <p class="meta">How far pages fall short of Google's "good" benchmarks: Largest Contentful Paint ≤ 2.5s and page weight ≤ 1.6 MB. Lower is better.</p>
 <dl class="ledger">
   <div><dt>Avg extra LCP over 2.5s</dt><dd>${secs(impact.avgExtraLcpMs)}<span class="bug-meta"> ${impact.pagesOverLcp}/${impact.lcpPages} pages over</span></dd></div>
@@ -2067,10 +2079,10 @@ ${coverageTable(summary)}
 
 ${series.length > 1 ? `
 <section aria-labelledby="h-trends">
-${heading('h-trends', `Trends over time`)}
+${heading('h-trends', t('Trends over time'))}
 ${severityTrendChart(series)}
 ${lighthouseCategoryTrendChart(series)}
-<p class="note">Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.</p>
+<p class="note">${t('Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.')}</p>
 </section>` : ''}
 
 ${diff ? `
@@ -2143,7 +2155,7 @@ ${acrNote}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting, excludePatterns)}
 <section aria-labelledby="h-axe">
-${heading('h-axe', `Deque axe-core findings`)}
+${heading('h-axe', t('Deque axe-core findings'))}
 <details class="engine-findings">
 <summary>Rule-level axe-core summary (${Object.keys(summary.axe.rules).length} rule type(s))</summary>
 <p class="meta">Each failing rule links out to the axe-core documentation. For full element-level detail including HTML snippets and XPaths, see the bug reports above.</p>
@@ -2151,7 +2163,7 @@ ${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summ
 </details>
 </section>
 <section aria-labelledby="h-alfa">
-${heading('h-alfa', `Siteimprove Alfa findings`)}
+${heading('h-alfa', t('Siteimprove Alfa findings'))}
 <details class="engine-findings">
 <summary>Rule-level Alfa summary (${Object.keys(summary.alfa.rules).length} rule type(s))</summary>
 <p class="meta">Rule-level summary from Siteimprove Alfa (W3C ACT-based). Findings that overlap with axe-core on the same WCAG success criterion are noted as possible duplicates in the bug reports above.</p>
