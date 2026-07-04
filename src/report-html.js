@@ -1579,7 +1579,7 @@ function perfImpactSection(impact) {
   const mb = (b) => (b == null ? 'n/a' : `${(b / 1e6).toFixed(2)} MB`);
   const totals = impact.totals;
   return `<section aria-labelledby="h-lh-impact">
-${heading('h-lh-impact', `Performance impact`)}
+${heading('h-lh-impact', t('Performance impact'))}
 <p class="meta">How far pages fall short of Google's "good" benchmarks: Largest Contentful Paint ≤ 2.5s and page weight ≤ 1.6 MB. Lower is better.</p>
 <dl class="ledger">
   <div><dt>Avg extra LCP over 2.5s</dt><dd>${secs(impact.avgExtraLcpMs)}<span class="bug-meta"> ${impact.pagesOverLcp}/${impact.lcpPages} pages over</span></dd></div>
@@ -2155,7 +2155,7 @@ ${acrNote}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting, excludePatterns)}
 <section aria-labelledby="h-axe">
-${heading('h-axe', `Deque axe-core findings`)}
+${heading('h-axe', t('Deque axe-core findings'))}
 <details class="engine-findings">
 <summary>Rule-level axe-core summary (${Object.keys(summary.axe.rules).length} rule type(s))</summary>
 <p class="meta">Each failing rule links out to the axe-core documentation. For full element-level detail including HTML snippets and XPaths, see the bug reports above.</p>
@@ -2163,7 +2163,7 @@ ${ruleTable(`axe-core rules failing in ${summary.week}, by pages affected`, summ
 </details>
 </section>
 <section aria-labelledby="h-alfa">
-${heading('h-alfa', `Siteimprove Alfa findings`)}
+${heading('h-alfa', t('Siteimprove Alfa findings'))}
 <details class="engine-findings">
 <summary>Rule-level Alfa summary (${Object.keys(summary.alfa.rules).length} rule type(s))</summary>
 <p class="meta">Rule-level summary from Siteimprove Alfa (W3C ACT-based). Findings that overlap with axe-core on the same WCAG success criterion are noted as possible duplicates in the bug reports above.</p>
