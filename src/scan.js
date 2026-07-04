@@ -64,6 +64,14 @@ const scanDeadlineMs = process.env.VITAL_SCAN_TIME_BUDGET_MINUTES
 const baseOrigin = args['base-url'] ?? `https://${target.domain}`;
 const host = new URL(baseOrigin).hostname;
 const settleDelay = parseInt(process.env.VITAL_A11Y_SETTLE_DELAY_MS ?? target.settle_delay_ms, 10);
+// Network-idle is a passive wait (Playwright listens; nothing is requested),
+// so this cap only bounds runner idle time — it cannot add load to the target.
+// Sites with persistent analytics beacons never reach networkidle; without an
+// independent cap they'd burn the full nav_timeout_ms (30s) per page.
+const networkIdleCap = Math.min(
+  parseInt(target.networkidle_cap_ms ?? 8000, 10),
+  target.nav_timeout_ms
+);
 
 const log = (...m) => console.log(`[${target.key}]`, ...m);
 log(`run ${runId} week ${week} budget ${budget}`);
@@ -245,12 +253,13 @@ for (const item of batch) {
     // routinely fetch/hydrate after the load event, which produces
     // transient false positives if axe/alfa run too early.
     //
-    //   1. Wait for the network to go quiet (best-effort: capped so a
+    //   1. Wait for the network to go quiet (best-effort: capped at
+    //      networkidle_cap_ms — independent of nav_timeout_ms — so a
     //      site with persistent connections — analytics beacons,
     //      websockets — can't stall the scan).
     //   2. Then always wait the fixed settle delay (default 1s).
     try {
-      await page.waitForLoadState('networkidle', { timeout: target.nav_timeout_ms });
+      await page.waitForLoadState('networkidle', { timeout: networkIdleCap });
     } catch {
       // networkidle never reached within the cap; the settle delay below
       // still gives the page time to finish rendering.
