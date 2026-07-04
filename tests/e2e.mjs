@@ -287,7 +287,9 @@ try {
   const techFindingsPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'tech-findings.html');
   assert(fs.existsSync(techFindingsPage), 'tech-findings.html sub-page written');
   const tfHtml = fs.readFileSync(techFindingsPage, 'utf8');
-  assert(/WordPress/.test(tfHtml) && /image-alt/.test(tfHtml), 'tech-findings page lists WordPress and image-alt');
+  // findingLabel() renders the human-readable rule label, not the raw id,
+  // so match the plain-language text for axe:image-alt.
+  assert(/WordPress/.test(tfHtml) && /meaningful alt attribute/.test(tfHtml), 'tech-findings page lists WordPress and the image-alt finding');
   const w1index = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
   assert(/href="tech-findings.html">Tech/.test(w1index), 'subnav links to tech-findings page');
 

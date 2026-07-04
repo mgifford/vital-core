@@ -10,10 +10,24 @@
  * {x, y} records (string-valued, as the runtime expects), and a
  * `data.source` marker — omitting the last makes the runtime throw.
  */
-export function buildLineManifest(title, yLabel, points, { xLabel = 'Week', unit = '' } = {}) {
-  const records = points
-    .filter((p) => p.value != null)
-    .map((p) => ({ x: String(p.week), y: String(p.value) }));
+export function buildLineManifest(title, yLabel, points, opts = {}) {
+  return buildMultiLineManifest(title, yLabel, [{ key: yLabel, points }], opts);
+}
+
+/**
+ * Same JIM shape with one series entry per named line, for the multi-series
+ * trend charts (severity levels, Lighthouse categories). Series with no
+ * non-null points are dropped.
+ */
+export function buildMultiLineManifest(title, yLabel, seriesList, { xLabel = 'Week', unit = '' } = {}) {
+  const series = seriesList
+    .map((s) => ({
+      key: s.key,
+      records: s.points
+        .filter((p) => p.value != null)
+        .map((p) => ({ x: String(p.week), y: String(p.value) })),
+    }))
+    .filter((s) => s.records.length > 0);
   return {
     datasets: [
       {
@@ -36,7 +50,7 @@ export function buildLineManifest(title, yLabel, points, { xLabel = 'Week', unit
             ...(unit ? { units: unit.trim() } : {}),
           },
         },
-        series: [{ key: yLabel, records }],
+        series,
         data: { source: 'inline' },
         settings: { 'controlPanel.isControlPanelDefaultOpen': false },
       },
