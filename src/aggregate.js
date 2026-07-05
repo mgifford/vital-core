@@ -11,6 +11,7 @@ import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
+import { resolvePageRecord } from './lib/page-records.js';
 import { scoreFor } from './lib/score.js';
 import { loadResourceLedger, saveResourceLedger, updateResourceLedger } from './lib/resource-ledger.js';
 import { loadLinkLedger, saveLinkLedger, updateLinkLedger } from './lib/link-ledger.js';
@@ -92,7 +93,7 @@ for (const target of config.targets) {
     if (!fs.existsSync(pagesDir)) continue;
     const records = fs.readdirSync(pagesDir)
       .filter((f) => f.endsWith('.json'))
-      .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8')));
+      .map((f) => resolvePageRecord(domainDir, JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'))));
     updateInventory(inventory, week, records);
   }
   saveInventory(target.key, inventory);
@@ -430,8 +431,9 @@ console.log('docs/ written');
 // ---------------------------------------------------------------------
 
 function summarizeWeek(target, week) {
-  const pagesDir = path.join(DIRS.data, target.key, week, 'pages');
-  const summaryPath = path.join(DIRS.data, target.key, week, 'summary.json');
+  const domainDir = path.join(DIRS.data, target.key);
+  const pagesDir = path.join(domainDir, week, 'pages');
+  const summaryPath = path.join(domainDir, week, 'summary.json');
 
   // If page detail was pruned, reuse the committed summary verbatim.
   if (!fs.existsSync(pagesDir)) {
@@ -440,7 +442,7 @@ function summarizeWeek(target, week) {
 
   const records = fs.readdirSync(pagesDir)
     .filter((f) => f.endsWith('.json'))
-    .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8')));
+    .map((f) => resolvePageRecord(domainDir, JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'))));
   if (records.length === 0) return null;
 
   const runsDir = path.join(DIRS.data, target.key, week, 'runs');
@@ -471,7 +473,7 @@ function summarizeWindow(target, days = 7) {
     if (!fs.existsSync(pagesDir)) continue;
     for (const f of fs.readdirSync(pagesDir).filter((x) => x.endsWith('.json'))) {
       const rec = JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'));
-      if (rec.scannedAt && Date.parse(rec.scannedAt) >= cutoff) records.push(rec);
+      if (rec.scannedAt && Date.parse(rec.scannedAt) >= cutoff) records.push(resolvePageRecord(domainDir, rec));
     }
     runDirs.push(path.join(domainDir, week, 'runs'));
   }
