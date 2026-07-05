@@ -62,7 +62,7 @@ shape identical so aggregate.js is untouched).
 Acceptance: run log shows security/public-interest network calls once per
 run; per-page JSON unchanged in shape; existing tests pass.
 
-### A5. [ ] Investigate asset caching across pages in a run
+### A5. [x] Investigate asset caching across pages in a run
 Why: repeated CSS/JS downloads across the ~150 pages of a run may be wasted
 transfer (also load on target CDNs).
 What (investigate first, then decide):
