@@ -68,8 +68,10 @@ jobs:
     outputs:
       domains: ${{ steps.list.outputs.domains }}
     steps:
-      # Sparse + partial checkout: this job only reads config and src/lib to
-      # list targets. Skipping the ~700 MB data/ tree makes checkout near-free.
+      # Sparse + partial checkout: this job only reads config, src/lib, and
+      # each domain's small state/<domain>/crawl.json (to check weekly cap
+      # and frontier status). Skipping the ~700 MB data/ tree makes checkout
+      # near-free.
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 1
@@ -77,6 +79,7 @@ jobs:
           sparse-checkout: |
             src
             config
+            state
 
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
@@ -100,11 +103,7 @@ jobs:
                 console.log('domains=' + JSON.stringify([d]));
               }).catch(e => { console.error(String(e)); process.exit(1); })" >> "$GITHUB_OUTPUT"
           else
-            node -e "
-              import('./src/lib/config.js').then(({loadConfig}) => {
-                const targets = loadConfig().targets.filter(t => !t.hf_only);
-                console.log('domains=' + JSON.stringify(targets.map(t => t.domain)));
-              })" >> "$GITHUB_OUTPUT"
+            node scripts/list-scan-domains.js
           fi
 
   scan:
