@@ -106,7 +106,7 @@ resources, third-parties, inventory) — everything needed to know when an
 issue was introduced, fixed, or re-introduced. Aggressively forget:
 page-level detail that a newer scan supersedes.
 
-- [ ] B1. Reduce `retention_weeks` for page detail (config/targets.yml:20,
+- [x] B1. Reduce `retention_weeks` for page detail (config/targets.yml:20,
   src/prune.js). Proposal: 8 → 3. Check first what reads old pages/:
   aggregate.js diffing, CSV exports, bug-report examples — confirm none need
   more than current + previous week.
@@ -128,7 +128,7 @@ page-level detail that a newer scan supersedes.
       truncated (shallow "rolling" repo), code repo stays light,
   (c) accept growth; partial clone (A1) already shields CI.
   Recommendation: (c) now, prepare (b) when pack > 1 GB.
-- [ ] B4. Whatever is chosen, document the retention contract in
+- [x] B4. Whatever is chosen, document the retention contract in
   ARCHITECTURE.md: "summaries + ledgers forever; page detail N weeks; git
   history policy X."
 

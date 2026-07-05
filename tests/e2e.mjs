@@ -388,6 +388,7 @@ try {
   assert(/class="chart" data-parachart="/.test(report), 'trend charts carry a ParaCharts manifest');
   assert(/class="linechart chart-fallback"/.test(report), 'SVG kept as the no-JS chart fallback');
   assert(/import\('[^']*paracharts\.js'\)/.test(report), 'page lazy-imports the ParaCharts runtime');
+  assert(report.includes("window.addEventListener('error'") && report.includes("window.addEventListener('unhandledrejection'"), 'ParaCharts loader guards against runtime errors and reverts to fallback');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'paracharts.js')), 'ParaCharts runtime copied into docs/');
   // The manifest is valid JSON with the JIM shape the runtime requires.
   const mfMatch = report.match(/data-parachart="([^"]*)"/);
