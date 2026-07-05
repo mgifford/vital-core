@@ -121,9 +121,24 @@ never break — even after the raw per-page detail is pruned.
 files that accumulate across the whole life of a site, so they survive
 page-detail pruning and answer "when did this first appear?".
 
-**Retention:** per-page detail under `pages/` is pruned after
-`retention_weeks` (default 8) by `src/prune.js`; the weekly summaries and
-ledgers are kept indefinitely.
+**Retention contract:** summaries and ledgers are kept forever; page-level
+detail under `pages/` and `runs/` is pruned after `retention_weeks`
+(default 3, `config/targets.yml`) by `src/prune.js` — this is an
+insight-delivery system, not an archive, so raw per-page detail that a
+newer scan supersedes is aggressively forgotten once it's rolled up into
+`summary.json` and the ledgers. Consumers (`aggregate.js`, CSV exports,
+`url-index.js`) all check `fs.existsSync` before reading `pages/`, so a
+pruned week degrades gracefully rather than erroring.
+
+**Git history policy:** `prune.js` deletes files from the working tree,
+but git history keeps every blob forever, so the repo still grows
+unbounded even as `retention_weeks` keeps old data out of checkouts.
+Decided 2026-07-03: accept the growth for now — GitHub Actions already
+uses a partial clone so CI checkouts aren't affected — and revisit only
+when the server-side repo size passes 1 GB (a daily check in the
+`report.yml` gate job warns when it does). At that point, move `data/`
+to a companion repo whose history can be periodically truncated,
+keeping the code repo light.
 
 
 Crawler
