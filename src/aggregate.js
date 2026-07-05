@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
-import { compareWeeks, weekToDateStamp } from './lib/week.js';
+import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
