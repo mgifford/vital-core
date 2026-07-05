@@ -81,7 +81,7 @@ What (investigate first, then decide):
 Acceptance: written findings note first; code change only if measurable
 saving exists without corrupting sustainability numbers.
 
-### A6. [ ] Self-metering: publish what this service costs
+### A6. [x] Self-metering: publish what this service costs
 Why: transparency — we score other sites' CO₂ with co2.js; report our own.
 What:
 - Weekly step (report.yml or a small cron workflow) queries the GitHub API
