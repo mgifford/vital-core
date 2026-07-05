@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { chromium } from 'playwright';
 import { loadConfig, getTarget, DIRS } from './lib/config.js';
 import { normalizeUrl, pageId, buildUrlFilter } from './lib/urls.js';
-import { loadState, saveState, addPage, pickBatch } from './lib/state.js';
+import { loadState, saveState, addPage, pickBatch, weeklyCapFor } from './lib/state.js';
 import { isoWeek } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
@@ -119,13 +119,9 @@ const delayMs = Math.max(
 );
 
 // --- Batch ------------------------------------------------------------
-// importance (1-5, default 3) scales the weekly cap so low-value domains
-// (e.g. near-identical open-data sites) consume less budget than key
-// sites. importance 3 = the configured cap; 1 = 1/3; 5 = 5/3.
-const importance = Math.max(1, Math.min(5, target.importance ?? 3));
-const weeklyCap = Math.max(1, Math.round((target.max_pages_per_week * importance) / 3));
+const weeklyCap = weeklyCapFor(target);
 const { batch, scannedThisWeek } = pickBatch(state, week, budget, weeklyCap);
-log(`${scannedThisWeek} scanned in ${week}; cap ${weeklyCap} (importance ${importance}); batch of ${batch.length}`);
+log(`${scannedThisWeek} scanned in ${week}; cap ${weeklyCap} (importance ${target.importance ?? 3}); batch of ${batch.length}`);
 if (batch.length === 0) {
   log('nothing to do');
   process.exit(0);

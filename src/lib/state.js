@@ -65,6 +65,32 @@ export function addPage(state, id, url, depth, { priority = false } = {}) {
 }
 
 /**
+ * importance (1-5, default 3) scales max_pages_per_week so low-value domains
+ * (e.g. near-identical open-data sites) consume less budget than key sites.
+ * importance 3 = the configured cap; 1 = 1/3; 5 = 5/3.
+ */
+export function weeklyCapFor(target) {
+  const importance = Math.max(1, Math.min(5, target.importance ?? 3));
+  return Math.max(1, Math.round((target.max_pages_per_week * importance) / 3));
+}
+
+/**
+ * Whether a domain has anything left to do this week: budget remaining
+ * under its weekly cap, AND at least one scannable page in the frontier
+ * (not already scanned this week, not past the fail threshold). Used by
+ * the nightly matrix job to skip spawning a scan job that would just exit
+ * immediately — see pickBatch for the same two conditions applied per-run.
+ */
+export function budgetStatus(state, week, target) {
+  const cap = weeklyCapFor(target);
+  const entries = Object.entries(state.pages);
+  const scannedThisWeek = entries.filter(([, p]) => p.lastScannedWeek === week).length;
+  const remaining = Math.max(0, cap - scannedThisWeek);
+  const frontierEmpty = !entries.some(([, p]) => p.lastScannedWeek !== week && p.failCount < 3);
+  return { cap, scannedThisWeek, remaining, frontierEmpty };
+}
+
+/**
  * Pick the next batch to scan this week.
  *
  * Pages with a completed outcome are not rescanned in the same ISO week:
