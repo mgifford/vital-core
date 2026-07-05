@@ -32,7 +32,7 @@ capping it cannot add load to target sites — it only stops beacon-heavy pages
 from burning 30s of runner idle each. Verify: compare cms.gov job duration
 before/after (~27 min baseline).
 
-### A3. [ ] Skip no-op scan jobs; surface cap status
+### A3. [x] Skip no-op scan jobs; surface cap status
 Why: late-week runs spawn 11 jobs and 9 do nothing (weekly cap reached or
 frontier empty) — each still pays checkout + npm ci + Chromium install.
 What:
