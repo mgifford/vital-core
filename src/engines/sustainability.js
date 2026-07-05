@@ -26,6 +26,12 @@ export function createSustainabilityCollector(page) {
     requests++;
     let size = 0;
     try {
+      // content-length reflects the resource's real size even when Chromium
+      // serves it from its in-memory cache (repeat asset across pages in the
+      // same run) — unlike CDP's encodedDataLength, which drops to 0 on a
+      // cache hit. That's intentional: page weight here means what a
+      // first-time visitor downloads, not what this crawl happened to
+      // re-fetch. Do not switch this to transferSize/encodedDataLength.
       const lenHeader = response.headers()['content-length'];
       if (lenHeader) {
         size = parseInt(lenHeader, 10) || 0;
