@@ -19,7 +19,7 @@ let removed = 0;
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
   if (!fs.existsSync(domainDir)) continue;
-  const cutoff = weekStringWeeksAgo(now, target.retention_weeks ?? 8);
+  const cutoff = weekStringWeeksAgo(now, target.retention_weeks ?? 3);
 
   for (const week of fs.readdirSync(domainDir).filter((w) => /^\d{4}-W\d{2}$/.test(w))) {
     if (compareWeeks(week, cutoff) >= 0) continue;
