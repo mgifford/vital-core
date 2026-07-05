@@ -4,7 +4,7 @@ import { normalizeUrl, pageId, registrableDomain, isThirdParty } from '../../src
 import { isoWeekOf, previousWeekOf } from '../../src/lib/week.js';
 import { parseRobots } from '../../src/lib/robots.js';
 import { discoverFromSitemaps } from '../../src/lib/sitemap.js';
-import { addPage, pickBatch } from '../../src/lib/state.js';
+import { addPage, pickBatch, weeklyCapFor, budgetStatus } from '../../src/lib/state.js';
 import { resolveWcag, severityFor, classifyFinding } from '../../src/lib/wcag.js';
 import { buildUrlFilter } from '../../src/lib/urls.js';
 import { buildBugReports, bugReportToMarkdown } from '../../src/lib/bug-report.js';
@@ -202,6 +202,46 @@ test('pickBatch: failed pages can retry in-week until fail threshold', () => {
 
   const { batch } = pickBatch(state, '2026-W24', 10, 100);
   assert.deepEqual(batch.map((b) => b.id), ['retry']);
+});
+
+test('weeklyCapFor: importance scales max_pages_per_week around 3 as neutral', () => {
+  assert.equal(weeklyCapFor({ max_pages_per_week: 300, importance: 3 }), 300);
+  assert.equal(weeklyCapFor({ max_pages_per_week: 300, importance: 1 }), 100);
+  assert.equal(weeklyCapFor({ max_pages_per_week: 300 }), 300, 'default importance is 3');
+  // Out-of-range importance is clamped to [1,5].
+  assert.equal(weeklyCapFor({ max_pages_per_week: 300, importance: 9 }), 500);
+});
+
+test('budgetStatus: cap reached vs frontier empty vs runnable', () => {
+  const target = { max_pages_per_week: 3, importance: 3 };
+
+  // Cap reached: 3 pages already scanned this week, more remain in the frontier.
+  const capped = { domain: 'x', pages: {} };
+  addPage(capped, 'a', 'https://x/a', 0);
+  addPage(capped, 'b', 'https://x/b', 0);
+  addPage(capped, 'c', 'https://x/c', 0);
+  addPage(capped, 'd', 'https://x/d', 0);
+  for (const id of ['a', 'b', 'c']) capped.pages[id].lastScannedWeek = '2026-W24';
+  const cappedStatus = budgetStatus(capped, '2026-W24', target);
+  assert.equal(cappedStatus.remaining, 0);
+  assert.equal(cappedStatus.frontierEmpty, false, 'd is still scannable');
+
+  // Frontier empty: nothing left to scan (all done or failed out), cap not reached.
+  const empty = { domain: 'x', pages: {} };
+  addPage(empty, 'a', 'https://x/a', 0);
+  addPage(empty, 'b', 'https://x/b', 0);
+  empty.pages.a.lastScannedWeek = '2026-W24';
+  empty.pages.b.failCount = 3;
+  const emptyStatus = budgetStatus(empty, '2026-W24', target);
+  assert.equal(emptyStatus.remaining, 2);
+  assert.equal(emptyStatus.frontierEmpty, true);
+
+  // Runnable: budget left and scannable pages available.
+  const runnable = { domain: 'x', pages: {} };
+  addPage(runnable, 'a', 'https://x/a', 0);
+  const runnableStatus = budgetStatus(runnable, '2026-W24', target);
+  assert.equal(runnableStatus.remaining, 3);
+  assert.equal(runnableStatus.frontierEmpty, false);
 });
 
 test('addPage: priority promotes an existing page without duplicating', () => {
