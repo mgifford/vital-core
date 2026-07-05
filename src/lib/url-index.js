@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { resolvePageRecord } from './page-records.js';
 
 export const URL_INDEX_SCHEMA_VERSION = '1';
 
@@ -32,7 +33,7 @@ export function buildUrlIndex(domainDir, domain, week) {
   const pages = [];
 
   for (const file of fs.readdirSync(pagesDir).filter((f) => f.endsWith('.json'))) {
-    const rec = JSON.parse(fs.readFileSync(path.join(pagesDir, file), 'utf8'));
+    const rec = resolvePageRecord(domainDir, JSON.parse(fs.readFileSync(path.join(pagesDir, file), 'utf8')));
     const violations = [];
 
     for (const [ruleId, v] of Object.entries(rec.axe?.violations ?? {})) {
