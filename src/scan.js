@@ -171,6 +171,13 @@ if (lighthouseEnabled && !args['base-url']) {
 const STATE_SAVE_EVERY = 25;
 let sincePersist = 0;
 
+// Security and public-interest are origin-level checks (headers, TLD,
+// security.txt, a11y statement, etc.) — identical for every page in a run,
+// so compute each once on first use and reuse it rather than re-fetching
+// the same origin-level requests per sampled page.
+let securityResult;
+let publicInterestResult;
+
 for (const item of batch) {
   if (scanDeadlineMs && Date.now() >= scanDeadlineMs) {
     log('time budget reached; stopping scan early for clean exit');
@@ -293,8 +300,16 @@ for (const item of batch) {
       if (runs('standards')) { record.standards = await runStandards(page); mark('standards'); }
       // Security is per-origin (headers/TLD/security.txt), so check it only
       // when this page is in the sample; aggregate keeps the latest result.
-      if (runs('security')) { record.security = await runSecurity(baseOrigin, target.user_agent, target.nav_timeout_ms); mark('security'); }
-      if (runs('public-interest')) { record.publicInterest = await runPublicInterest(baseOrigin, target.domain, target.user_agent); mark('public-interest'); }
+      if (runs('security')) {
+        securityResult ??= await runSecurity(baseOrigin, target.user_agent, target.nav_timeout_ms);
+        record.security = securityResult;
+        mark('security');
+      }
+      if (runs('public-interest')) {
+        publicInterestResult ??= await runPublicInterest(baseOrigin, target.domain, target.user_agent);
+        record.publicInterest = publicInterestResult;
+        mark('public-interest');
+      }
       // Tech detection: identify CMS, frameworks, CDNs, analytics.
       // Runs on a small sample (default 10%) because the tech stack doesn't
       // change page-to-page; aggregate merges all detections for the week
