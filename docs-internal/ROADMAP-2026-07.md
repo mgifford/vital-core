@@ -52,7 +52,7 @@ If a domain consistently hits cap early, raise its `max_pages_per_week` or
 Acceptance: a scheduled run where all domains are at cap spawns 0 scan jobs;
 run summary lists per-domain reason. Unit test the budget-check helper.
 
-### A4. [ ] Memoize per-origin engines within a run
+### A4. [x] Memoize per-origin engines within a run
 Why: src/scan.js:291-292 re-runs `runSecurity(baseOrigin, …)` and
 `runPublicInterest(baseOrigin, …)` for every sampled page (~15 identical
 origin-level request sets per run per domain).
