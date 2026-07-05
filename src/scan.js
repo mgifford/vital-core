@@ -12,6 +12,7 @@ import { discoverFromSitemaps } from './lib/sitemap.js';
 import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
+import { pageFingerprint } from './lib/page-records.js';
 import { runAxe } from './engines/axe.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
@@ -381,7 +382,7 @@ for (const item of batch) {
       }
     }
 
-    fs.writeFileSync(path.join(pagesDir, `${item.id}.json`), JSON.stringify(record));
+    fs.writeFileSync(path.join(pagesDir, `${item.id}.json`), writePageRecord(target.key, item.id, record, state.pages[item.id].lastScannedWeek));
     runLog.scanned.push(item.id);
     state.pages[item.id].lastScannedWeek = week;
     state.pages[item.id].lastScannedAt = record.scannedAt;
@@ -461,6 +462,35 @@ log(`done: ${runLog.scanned.length} scanned | ${tallyStr}${coverage ? ` | ${cove
  * Chromium try to download them. Returns the lowercased content-type, or
  * null if HEAD is unsupported/failed (then we fall back to navigating).
  */
+/**
+ * If this page's content is unchanged from the immediately preceding scan
+ * (same fingerprint), write a small stub pointing at that week's full
+ * record instead of duplicating it. Only checks the prior week — if that
+ * week's detail has since been pruned, or this is the page's first scan,
+ * writes the full record. See docs-internal/B2-dedup-design.md.
+ */
+function writePageRecord(domainKey, pageId, record, lastScannedWeek) {
+  if (lastScannedWeek) {
+    const prevPath = path.join(DIRS.data, domainKey, lastScannedWeek, 'pages', `${pageId}.json`);
+    if (fs.existsSync(prevPath)) {
+      const prev = JSON.parse(fs.readFileSync(prevPath, 'utf8'));
+      if (!prev.unchanged && pageFingerprint(prev) === pageFingerprint(record)) {
+        return JSON.stringify({
+          pageId: record.pageId,
+          url: record.url,
+          week: record.week,
+          runId: record.runId,
+          scannedAt: record.scannedAt,
+          status: record.status,
+          unchanged: true,
+          since: lastScannedWeek,
+        });
+      }
+    }
+  }
+  return JSON.stringify(record);
+}
+
 async function headContentType(url, userAgent, timeoutMs) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), Math.min(timeoutMs ?? 15000, 15000));
