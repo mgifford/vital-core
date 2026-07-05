@@ -740,6 +740,39 @@ if (figs.length) {
   import('${base}paracharts.js').then(() => {
     const priorScroll = { x: window.scrollX, y: window.scrollY };
     const priorFocus = document.activeElement;
+    const mounted = [];
+    let disabled = false;
+
+    const disableCharts = () => {
+      if (disabled) return;
+      disabled = true;
+      mounted.forEach(({ chart, fallback }) => {
+        try { chart.remove(); } catch (e) {}
+        if (fallback) fallback.hidden = false;
+      });
+    };
+
+    // If the vendor chart runtime throws, immediately fall back to static SVG
+    // charts so the page remains interactive.
+    const isParaChartsError = (evt) => {
+      const file = String(evt && evt.filename ? evt.filename : '');
+      const msg = String(evt && evt.message ? evt.message : '');
+      return file.includes('paracharts.js') || msg.toLowerCase().includes('parachart');
+    };
+    const onWindowError = (evt) => {
+      if (!isParaChartsError(evt)) return;
+      disableCharts();
+    };
+    const onUnhandledRejection = (evt) => {
+      const reason = evt && evt.reason ? evt.reason : null;
+      const stack = String(reason && reason.stack ? reason.stack : '');
+      const msg = String(reason && reason.message ? reason.message : reason || '');
+      if (stack.includes('paracharts.js') || msg.toLowerCase().includes('parachart')) {
+        disableCharts();
+      }
+    };
+    window.addEventListener('error', onWindowError, true);
+    window.addEventListener('unhandledrejection', onUnhandledRejection, true);
 
     // para-chart (Lit-based) calls .focus() asynchronously during its render
     // cycle (e.g. _sparkBrailleRef.focus()), which scrolls the viewport to
@@ -755,6 +788,7 @@ if (figs.length) {
     document.addEventListener('focusin', focusGuard, true);
 
     figs.forEach((fig) => {
+      if (disabled) return;
       let manifest;
       try { manifest = fig.getAttribute('data-parachart'); } catch (e) { return; }
       if (!manifest) return;
@@ -769,6 +803,7 @@ if (figs.length) {
       const fallback = fig.querySelector('.chart-fallback');
       if (fallback) fallback.hidden = true;
       fig.insertBefore(chart, fig.firstChild ? fig.firstChild.nextSibling : null);
+      mounted.push({ chart, fallback });
     });
 
     if (priorFocus && typeof priorFocus.focus === 'function') {
@@ -780,8 +815,12 @@ if (figs.length) {
       restoreScroll();
       requestAnimationFrame(restoreScroll);
     });
-    // Remove guard after charts have had time to finish their initial render.
-    setTimeout(() => document.removeEventListener('focusin', focusGuard, true), 3000);
+    // Remove guards after charts have had time to finish their initial render.
+    setTimeout(() => {
+      document.removeEventListener('focusin', focusGuard, true);
+      window.removeEventListener('error', onWindowError, true);
+      window.removeEventListener('unhandledrejection', onUnhandledRejection, true);
+    }, 3000);
   }).catch(() => { /* keep the SVG + table fallback */ });
 }
 </script>`;
