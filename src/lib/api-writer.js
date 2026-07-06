@@ -30,6 +30,30 @@ function deriveTrend(bug, ledgerEntry) {
   return 'persistent';
 }
 
+function apiTopActions(summary) {
+  const cc = summary?.componentClusters;
+  if (!cc?.top_actions?.length) return null;
+  return {
+    design_system: cc.design_system ?? 'none',
+    design_system_theme: cc.design_system_theme ?? null,
+    generated_from_clusters: cc.total_clusters ?? cc.clusters?.length ?? 0,
+    queue: cc.top_actions.slice(0, 10).map((a) => ({
+      action_id: a.id,
+      rule_id: a.rule_id,
+      engine: a.engine_key,
+      severity: a.severity,
+      pages_affected: a.pages_affected,
+      findings: a.instances,
+      action_score: a.action_score,
+      representative_selector: a.representative_selector ?? a.selector_path ?? null,
+      representative_snippet: a.representative_snippet ?? null,
+      design_components: a.design_components ?? [],
+      drift: !!a.drift,
+      estimated_fix_impact: a.estimated_fix_impact ?? null,
+    })),
+  };
+}
+
 export function buildIndexEntry(target, latestSummary, bugs) {
   const counts = severityCounts(bugs);
   return {
@@ -60,6 +84,7 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
     inventory: invSummary ?? null,
     findings: ledger.findings ?? {},
     tech_findings: latest.techFindings?.associations ?? null,
+    top_actions: apiTopActions(latest),
     weekly: { series, diffs },
   };
 }
@@ -71,6 +96,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
     week: summary.week,
     generated_at: new Date().toISOString(),
     pages_scanned: summary.pagesScanned ?? 0,
+    top_actions: apiTopActions(summary),
     findings: bugs.map(b => {
       const ledgerEntry = ledgerFindings?.[b.pattern_id] ?? null;
       return {

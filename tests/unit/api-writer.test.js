@@ -6,7 +6,31 @@ import path from 'node:path';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles, SCHEMA_VERSION } from '../../src/lib/api-writer.js';
 
 const FAKE_TARGET = { domain: 'example.gov', key: 'example.gov' };
-const FAKE_SUMMARY = { week: '2026-W25', pagesScanned: 100 };
+const FAKE_SUMMARY = {
+  week: '2026-W25',
+  pagesScanned: 100,
+  componentClusters: {
+    design_system: 'cms-ds',
+    design_system_theme: 'medicare',
+    total_clusters: 12,
+    top_actions: [
+      {
+        id: 'cc-123',
+        rule_id: 'color-contrast',
+        engine_key: 'axe-core',
+        severity: 'Serious',
+        pages_affected: 10,
+        instances: 16,
+        action_score: 30,
+        representative_selector: '.ds-c-alert a',
+        representative_snippet: '<a class="ds-c-alert__link">Read more</a>',
+        design_components: ['ds-c-alert'],
+        drift: false,
+        estimated_fix_impact: { findings: 16, pages: 10 },
+      },
+    ],
+  },
+};
 
 const FAKE_BUG = {
   pattern_id: 'VS-abc12345',
@@ -92,6 +116,13 @@ describe('buildSnapshot', () => {
     const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
     assert.equal(snap.inventory.totalKnownPages, 500);
   });
+
+  test('includes top_actions queue derived from component clusters', () => {
+    const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
+    assert.equal(snap.top_actions.design_system, 'cms-ds');
+    assert.equal(snap.top_actions.queue.length, 1);
+    assert.equal(snap.top_actions.queue[0].action_id, 'cc-123');
+  });
 });
 
 describe('buildWeekFindings', () => {
@@ -138,6 +169,12 @@ describe('buildWeekFindings', () => {
   test('returns empty findings array when bugs is empty', () => {
     const wf = buildWeekFindings(FAKE_TARGET, FAKE_SUMMARY, [], {});
     assert.deepEqual(wf.findings, []);
+  });
+
+  test('includes top_actions queue in weekly findings payload', () => {
+    const wf = buildWeekFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER.findings);
+    assert.equal(wf.top_actions.design_system_theme, 'medicare');
+    assert.equal(wf.top_actions.queue[0].rule_id, 'color-contrast');
   });
 });
 

@@ -354,6 +354,29 @@ export function writeCsvs(repDir, summary) {
 }
 
 /**
+ * Write per-cluster affected-page CSVs for component-clustered accessibility
+ * findings. Returns a map { [clusterId]: "csv/<file>.csv" }.
+ */
+export function writeComponentClusterCsvs(repDir, summary) {
+  const clusters = summary.componentClusters?.clusters ?? [];
+  if (!clusters.length) return {};
+
+  const csvDir = path.join(repDir, 'csv');
+  fs.mkdirSync(csvDir, { recursive: true });
+
+  const links = {};
+  for (const c of clusters) {
+    const pages = c.affected_pages ?? [];
+    if (!pages.length) continue;
+    const name = `cluster__${String(c.id).toLowerCase().replace(/[^a-z0-9._-]/g, '-')}.csv`;
+    const rows = pages.map((url) => [url]);
+    fs.writeFileSync(path.join(csvDir, name), toCsv(['url'], rows));
+    links[c.id] = `csv/${name}`;
+  }
+  return links;
+}
+
+/**
  * Build a priority-pages view: for every URL that has been scanned by at
  * least one engine, compute a composite score to rank the most problematic
  * pages — factoring in accessibility bug severity, Lighthouse performance

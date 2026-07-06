@@ -44,3 +44,9 @@ test('config: loadConfig exposes languages on every target', () => {
     assert.ok(t.languages.includes(t.defaultLanguage));
   }
 });
+
+test('config: normalizes supported design_system values', () => {
+  const c = loadConfig();
+  const cms = c.targets.find((t) => t.domain === 'www.cms.gov');
+  assert.equal(cms?.design_system, 'cms-ds');
+});
