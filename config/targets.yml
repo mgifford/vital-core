@@ -154,6 +154,10 @@ targets:
   #       url_exclude_patterns: [".aspx"]          # hide legacy ASP.NET pages
   #       url_exclude_patterns: ["/api/", "/admin/"]  # hide API and admin endpoints
   #
+  #   design_system: optional component taxonomy for clustering and attribution.
+  #     Supported values: cms-ds, uswds, none.
+  #   design_system_theme: optional free-form theme string used in report copy.
+  #
   # WAF-blocked: hhs.gov and nih.gov return 403 "Access Denied" to
   # automated browsers and record as blocked with no audit data until the
   # scanner's user-agent is allowlisted. Kept in to track once access is
@@ -162,8 +166,12 @@ targets:
     importance: 5
     priority_urls_file: profiles/www.cms.gov-top-tasks.txt
     url_exclude_patterns: [".aspx"]
+    design_system: cms-ds
+    design_system_theme: default
   - domain: www.medicare.gov
     importance: 5
+    design_system: cms-ds
+    design_system_theme: medicare
   - domain: www.medicaid.gov
     importance: 5
   - domain: data.healthcare.gov

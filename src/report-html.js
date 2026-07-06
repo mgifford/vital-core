@@ -853,6 +853,322 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
 </table>`;
 }
 
+function nextActionsSection(summary, bugs, reporting = {}) {
+  const cc = summary.componentClusters;
+  const actions = cc?.top_actions ?? [];
+  if (!actions.length) return '';
+
+  const byRule = new Map((bugs ?? []).map((b) => [`${b.engine_key}:${b.rule_id}`, b]));
+  const rows = actions.slice(0, 10).map((a) => {
+    const bug = byRule.get(`${a.engine_key}:${a.rule_id}`);
+    const who = bug?.impact?.groups?.length
+      ? bug.impact.groups.map((g) => g.group).slice(0, 3).join(', ')
+      : t('Requires manual testing.');
+    const wcag = bug?.wcag_sc ? `${bug.wcag_sc}${bug.wcag_name ? ` — ${bug.wcag_name}` : ''}` : t('undetermined');
+    const snippet = a.representative_snippet ? `<pre><code>${esc(a.representative_snippet)}</code></pre>` : '';
+    const selector = a.representative_selector || a.selector_path || '';
+    const tip = bug?.remediation_tip || bug?.suggested_fix || '';
+    const ruleLabel = bug?.rule_label || bug?.rule_id || a.rule_id;
+    const clusterTitle = `${ruleLabel} · ${a.design_components?.[0] || t('unattributed component')}`;
+
+    return `<tr class="next-action-row"
+  data-action-id="${esc(a.id)}"
+  data-title="${esc(clusterTitle)}"
+  data-rule-id="${esc(a.rule_id)}"
+  data-rule-label="${esc(ruleLabel)}"
+  data-wcag="${esc(wcag)}"
+  data-severity="${esc(a.severity)}"
+  data-pages="${esc(String(a.pages_affected))}"
+  data-findings="${esc(String(a.instances))}"
+  data-selector="${esc(selector)}"
+  data-snippet="${esc(a.representative_snippet || '')}"
+  data-remediation="${esc(tip)}"
+  data-impact="${esc(who)}"
+  data-csv="${esc(a.affected_pages_csv || '')}"
+  data-bug-link="${esc(bug?.instance_id ? `#${bug.instance_id}` : '')}">
+  <th scope="row">
+    ${bug?.instance_id ? `<a href="#${esc(bug.instance_id)}">${esc(clusterTitle)}</a>` : esc(clusterTitle)}
+    <div class="bug-meta">${esc(a.estimated_fix_impact.statement)}</div>
+    ${selector ? `<div class="bug-meta"><strong>${t('XPath / selector')}:</strong> <code>${esc(selector)}</code></div>` : ''}
+    ${snippet}
+  </th>
+  <td><span class="sev-badge">${esc(t(a.severity))}</span></td>
+  <td class="num">${a.pages_affected}</td>
+  <td>${esc(who)}</td>
+  <td>${esc(tip || '—')}</td>
+  <td>${a.affected_pages_csv ? `<a href="${esc(a.affected_pages_csv)}">${t('pages (CSV)')}</a>` : '—'}</td>
+  <td>
+    <div class="next-action-controls">
+      <label class="triage-label">${t('Decision')}
+        <select class="action-status" data-action-id="${esc(a.id)}">
+          <option value="">${t('— not reviewed —')}</option>
+          <option value="fix-now">${t('Fix now')}</option>
+          <option value="defer">${t('Defer')}</option>
+        </select>
+      </label>
+      <label class="triage-label">${t('Assigned to')}
+        <input class="action-owner" data-action-id="${esc(a.id)}" type="text" placeholder="${esc(t('Team/member'))}">
+      </label>
+      <label class="triage-label">${t('Notes')}
+        <input class="action-notes" data-action-id="${esc(a.id)}" type="text" placeholder="${esc(t('Why this decision?'))}">
+      </label>
+      <div class="action-copy-wrap">
+        <button type="button" class="triage-btn action-copy-gh" data-action-id="${esc(a.id)}">${t('Copy as issue')}</button>
+        <button type="button" class="triage-btn action-copy-jira" data-action-id="${esc(a.id)}">${t('Copy for JIRA')}</button>
+      </div>
+    </div>
+  </td>
+</tr>`;
+  }).join('\n');
+
+  const usage = (cc.design_component_usage ?? []).slice(0, 5);
+  const dsBlock = cc.design_system && cc.design_system !== 'none'
+    ? `<p class="meta">${t('Design-system alignment')} (${esc(cc.design_system)}${cc.design_system_theme ? ` / ${esc(cc.design_system_theme)}` : ''}). ${usage.length ? usage.map((u) => `${esc(u.component)}: ${u.share_percent}% ${t('of sampled rule findings')}`).join(' · ') : t('No design-system components detected in sampled findings.')} ${cc.drift_clusters?.length ? t('@n possible lookalike cluster(s) without system prefixes.', { '@n': cc.drift_clusters.length }) : ''}</p>`
+    : '';
+
+  return `<section aria-labelledby="h-next-actions">
+${heading('h-next-actions', t('Next 10 actions'))}
+<p class="meta">${t('Clusters are fingerprinted by normalized selector path + rule id + snippet shape. Rank score = (severity weight × pages affected) / distinct components for the rule. This supersedes the template threshold heuristic while still surfacing it as a validation signal.')}</p>
+${dsBlock}
+<div class="triage-io" hidden id="action-io">
+  <span class="triage-io-label">${t('Action queue decisions:')}</span>
+  <button type="button" id="action-export" class="triage-btn">${t('Export (.json)')}</button>
+  <label class="triage-btn triage-import-label"><input type="file" id="action-import" accept=".json" style="display:none">${t('Import (.json)')}</label>
+  <button type="button" id="action-share" class="triage-btn">${t('Copy share payload')}</button>
+  <span id="action-io-status" class="triage-io-status" aria-live="polite"></span>
+</div>
+<table>
+<caption>${t('Top 10 clustered component fixes for this week.')}</caption>
+<thead><tr><th scope="col">${t('Cluster')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Who it affects')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th><th scope="col">${t('Decision')}</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+${nextActionsScript()}
+</section>`;
+}
+
+function nextActionsScript() {
+  return `<script>
+(function () {
+  'use strict';
+  var KEY = 'vital-next-action:';
+  var ioBar = document.getElementById('action-io');
+  if (!ioBar) return;
+  ioBar.hidden = false;
+
+  function getRow(id) {
+    return document.querySelector('.next-action-row[data-action-id="' + id + '"]');
+  }
+  function load(id) {
+    try { var raw = localStorage.getItem(KEY + id); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
+  }
+  function save(id, data) {
+    try { localStorage.setItem(KEY + id, JSON.stringify(data)); } catch (e) {}
+  }
+  function setStatus(msg) {
+    var el = document.getElementById('action-io-status');
+    if (!el) return;
+    el.textContent = msg;
+    setTimeout(function () { el.textContent = ''; }, 5000);
+  }
+
+  document.querySelectorAll('.action-status').forEach(function (el) {
+    var id = el.getAttribute('data-action-id');
+    var cur = load(id);
+    if (cur.status) el.value = cur.status;
+    el.addEventListener('change', function () {
+      var next = load(id); next.status = el.value; save(id, next);
+    });
+  });
+  document.querySelectorAll('.action-owner').forEach(function (el) {
+    var id = el.getAttribute('data-action-id');
+    var cur = load(id);
+    if (cur.owner) el.value = cur.owner;
+    el.addEventListener('input', function () {
+      var next = load(id); next.owner = el.value; save(id, next);
+    });
+  });
+  document.querySelectorAll('.action-notes').forEach(function (el) {
+    var id = el.getAttribute('data-action-id');
+    var cur = load(id);
+    if (cur.notes) el.value = cur.notes;
+    el.addEventListener('input', function () {
+      var next = load(id); next.notes = el.value; save(id, next);
+    });
+  });
+
+  function collect() {
+    var out = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (!k || !k.startsWith(KEY)) continue;
+      try { out[k.slice(KEY.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {}
+    }
+    return out;
+  }
+
+  var exportBtn = document.getElementById('action-export');
+  if (exportBtn) exportBtn.addEventListener('click', function () {
+    var entries = collect();
+    var count = Object.keys(entries).length;
+    if (!count) { setStatus(${JSON.stringify(t('No triage decisions to export.'))}); return; }
+    var payload = JSON.stringify({ version: 1, exported: new Date().toISOString(), type: 'next-actions', entries: entries }, null, 2);
+    var blob = new Blob([payload], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'vital-next-actions-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setStatus(${JSON.stringify(t('Exported @count decision(s).'))}.replace('@count', count));
+  });
+
+  var shareBtn = document.getElementById('action-share');
+  if (shareBtn) shareBtn.addEventListener('click', async function () {
+    var entries = collect();
+    var count = Object.keys(entries).length;
+    if (!count) { setStatus(${JSON.stringify(t('No triage decisions to export.'))}); return; }
+    try {
+      await navigator.clipboard.writeText(JSON.stringify({ version: 1, type: 'next-actions', entries: entries }));
+      setStatus(${JSON.stringify(t('Copied.'))});
+    } catch (e) {
+      setStatus(${JSON.stringify(t('Import failed: @msg'))}.replace('@msg', e.message || 'clipboard error'));
+    }
+  });
+
+  var importInput = document.getElementById('action-import');
+  if (importInput) importInput.addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (!data.entries || typeof data.entries !== 'object') throw new Error(${JSON.stringify(t('invalid format — missing entries object'))});
+        var count = 0;
+        Object.keys(data.entries).forEach(function (id) {
+          var entry = data.entries[id];
+          if (!entry || typeof entry !== 'object') return;
+          save(id, entry);
+          var s = document.querySelector('.action-status[data-action-id="' + id + '"]');
+          if (s && entry.status != null) s.value = entry.status;
+          var o = document.querySelector('.action-owner[data-action-id="' + id + '"]');
+          if (o && entry.owner != null) o.value = entry.owner;
+          var n = document.querySelector('.action-notes[data-action-id="' + id + '"]');
+          if (n && entry.notes != null) n.value = entry.notes;
+          count++;
+        });
+        setStatus(${JSON.stringify(t('Imported @count decision(s).'))}.replace('@count', count));
+      } catch (err) {
+        setStatus(${JSON.stringify(t('Import failed: @msg'))}.replace('@msg', err.message));
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  function markdownFromRow(row) {
+    var title = row.getAttribute('data-title') || row.getAttribute('data-rule-id') || 'Accessibility issue';
+    var out = [];
+    out.push('## ' + title);
+    out.push('');
+    out.push('- **Rule:** ' + (row.getAttribute('data-rule-label') || row.getAttribute('data-rule-id') || 'n/a'));
+    out.push('- **WCAG:** ' + (row.getAttribute('data-wcag') || 'undetermined'));
+    out.push('- **Severity:** ' + (row.getAttribute('data-severity') || 'Moderate'));
+    out.push('- **Frequency:** ' + (row.getAttribute('data-findings') || '0') + ' findings on ' + (row.getAttribute('data-pages') || '0') + ' pages');
+    out.push('- **Who is impacted:** ' + (row.getAttribute('data-impact') || 'Requires manual testing.'));
+    out.push('');
+    out.push('### Representative selector');
+    out.push('`' + (row.getAttribute('data-selector') || 'n/a') + '`');
+    if (row.getAttribute('data-snippet')) {
+      out.push('');
+      out.push('### Representative snippet');
+      out.push('```html');
+      out.push(row.getAttribute('data-snippet'));
+      out.push('```');
+    }
+    out.push('');
+    out.push('### Remediation');
+    out.push((row.getAttribute('data-remediation') || 'Requires manual testing and design review.'));
+    out.push('');
+    out.push('### Evidence');
+    var csv = row.getAttribute('data-csv');
+    var bug = row.getAttribute('data-bug-link');
+    if (csv) out.push('- Affected pages CSV: ' + csv);
+    if (bug) out.push('- Full scanner detail: accessibility.html' + bug);
+    out.push('');
+    out.push('### Manual testing follow-up');
+    out.push('- Verify with keyboard only and at least one screen reader.');
+    out.push('- Confirm no regression in the design-system component variant(s).');
+    return out.join('\n');
+  }
+
+  function jiraFromRow(row) {
+    var title = row.getAttribute('data-title') || row.getAttribute('data-rule-id') || 'Accessibility issue';
+    var out = [];
+    out.push('h3. ' + title);
+    out.push('');
+    out.push('*Rule:* ' + (row.getAttribute('data-rule-label') || row.getAttribute('data-rule-id') || 'n/a'));
+    out.push('*WCAG:* ' + (row.getAttribute('data-wcag') || 'undetermined'));
+    out.push('*Severity:* ' + (row.getAttribute('data-severity') || 'Moderate'));
+    out.push('*Frequency:* ' + (row.getAttribute('data-findings') || '0') + ' findings on ' + (row.getAttribute('data-pages') || '0') + ' pages');
+    out.push('*Who is impacted:* ' + (row.getAttribute('data-impact') || 'Requires manual testing.'));
+    out.push('');
+    out.push('h4. Selector');
+    out.push('{{' + (row.getAttribute('data-selector') || 'n/a') + '}}');
+    if (row.getAttribute('data-snippet')) {
+      out.push('');
+      out.push('h4. Snippet');
+      out.push('{code:html}');
+      out.push(row.getAttribute('data-snippet'));
+      out.push('{code}');
+    }
+    out.push('');
+    out.push('h4. Remediation');
+    out.push((row.getAttribute('data-remediation') || 'Requires manual testing and design review.'));
+    out.push('');
+    out.push('h4. Manual testing');
+    out.push('* Keyboard-only verification required');
+    out.push('* Screen reader verification required');
+    return out.join('\n');
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus(${JSON.stringify(t('Copied.'))});
+    } catch (e) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); setStatus(${JSON.stringify(t('Copied.'))}); }
+      catch (err) { setStatus(${JSON.stringify(t('Import failed: @msg'))}.replace('@msg', err.message || 'copy error')); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  document.querySelectorAll('.action-copy-gh').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-action-id');
+      var row = getRow(id);
+      if (!row) return;
+      copyText(markdownFromRow(row));
+    });
+  });
+  document.querySelectorAll('.action-copy-jira').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-action-id');
+      var row = getRow(id);
+      if (!row) return;
+      copyText(jiraFromRow(row));
+    });
+  });
+})();
+<\/script>`;
+}
+
 /**
  * Structured per-rule bug reports following the best-practices format.
  * Each report is a collapsible block — semantic, keyboard-operable, and
@@ -2192,6 +2508,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
 ${subnav('accessibility')}
 ${acrNote}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
+${nextActionsSection(summary, bugs, reporting)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting, excludePatterns)}
 <section aria-labelledby="h-axe">
 ${heading('h-axe', t('Deque axe-core findings'))}
@@ -3151,6 +3468,12 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   font-family: inherit; line-height: 1.4; }
 .triage-btn:hover { border-color: var(--accent); color: var(--accent); }
 .triage-io-status { font-size: .82rem; color: var(--muted); font-style: italic; }
+.next-action-row pre { margin: .35rem 0 0; max-width: 42rem; }
+.next-action-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .35rem .5rem; min-width: 20rem; }
+.next-action-controls .triage-label { font-size: .72rem; }
+.next-action-controls input,
+.next-action-controls select { font-size: .85rem; border: 1px solid var(--rule); border-radius: 3px; padding: .2rem .35rem; background: var(--bg); color: var(--fg); }
+.action-copy-wrap { display: flex; align-items: end; gap: .35rem; }
 .bug-meta { font-weight: 400; color: var(--muted); font-size: .85rem; }
 .bug-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: .3rem 1.5rem; margin: .3rem 0; }
 .bug-fields div { border-top: 1px solid var(--rule); padding-top: .25rem; }

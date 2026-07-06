@@ -8,7 +8,7 @@ import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, s
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { resolvePageRecord } from './lib/page-records.js';
@@ -24,6 +24,7 @@ import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { writeAcrYaml } from './lib/acr.js';
 import { computeTrainingPriorities } from './lib/training-priorities.js';
 import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
+import { createClusterTracker } from './lib/component-clusters.js';
 
 // Fixed tolerance band (in percentage points) for rate-based diff comparisons.
 // Same value used by deriveTrend() in ai-findings.js so the two views agree.
@@ -173,6 +174,7 @@ for (const target of config.targets) {
 
     // CSVs of affected pages, then link each bug to its per-rule CSV.
     const csvLinks = writeCsvs(repDir, summary);
+    const clusterCsvLinks = writeComponentClusterCsvs(repDir, summary);
     for (const b of bugs) {
       b.affected_pages_csv = csvLinks.byRule[`${b.engine_key}:${b.rule_id}`] ?? null;
     }
@@ -312,12 +314,17 @@ for (const target of config.targets) {
       setReportLanguages(weekLanguages, target.defaultLanguage, target.showLanguageSwitcher);
       const sfx = locale === target.defaultLanguage ? '' : `-${locale}`;
       // Accessibility (always has content — shows "no findings" when clean).
+      const actions = summary.componentClusters?.top_actions ?? [];
+      for (const a of actions) {
+        a.affected_pages_csv = clusterCsvLinks[a.id] ?? null;
+      }
       fs.writeFileSync(path.join(repDir, `accessibility${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {
         ...reporting, keyPages,
         priorityPagesCsv: priorityPages.csv,
         priorityPagesJson: priorityPages.json,
         bugsJson: bugsJsonName,
         aiJson: aiJsonName,
+        clusterCsvLinks,
         acrYaml: acrResult.path,
         trainingPriorities,
         trainingAdvice,
@@ -602,6 +609,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const techFindingPages = []; // { techs: string[], findings: string[] }
   // Third-party rollup: one row per page the third-party engine ran on.
   const thirdPartyPages = []; // { pageUrl, hasFindings, origins[] }
+  const clusterTracker = createClusterTracker(target);
 
   // brokenLinks is supplied by the caller (folded from run logs).
 
@@ -625,6 +633,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
         if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
         addInstances(r, rec.url, v.examples);
+        clusterTracker.observe('axe-core', id, v.impact ?? null, rec.url, v.examples);
       }
     }
     if (rec.alfa) {
@@ -639,6 +648,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
         if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
         addInstances(r, rec.url, v.examples);
+        clusterTracker.observe('alfa', id, null, rec.url, v.examples);
       }
     }
     if (rec.deprecatedHtml) {
@@ -649,6 +659,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
         if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
         addInstances(r, rec.url, v.examples);
+        clusterTracker.observe('deprecated-html', id, null, rec.url, v.examples);
       }
     }
     if (rec.resources) {
@@ -996,6 +1007,10 @@ function summarizeRecords(target, week, records, brokenLinks) {
     // Third-party resource/JS cost rolled up per vendor across the pages the
     // third-party engine ran on. Page-resolved (3rd-party JS varies per page).
     thirdParty: thirdPartyPages.length ? rollupThirdParty(thirdPartyPages) : null,
+    componentClusters: clusterTracker.finalize(
+      pagesScanned,
+      target.reporting?.template_page_threshold ?? 10
+    ),
   };
 }
 

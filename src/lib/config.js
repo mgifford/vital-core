@@ -4,6 +4,7 @@ import YAML from 'yaml';
 import { SUPPORTED_LOCALES } from './i18n.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
+const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
 
 // Mutable state (crawl progress, scan data, the built site) can be redirected
 // to a persistent volume via VITAL_DATA_ROOT. This exists for the Hugging Face
@@ -51,6 +52,13 @@ export function loadConfig() {
     t.languages = langs.languages;
     t.defaultLanguage = langs.defaultLanguage;
     t.showLanguageSwitcher = (t.language_switcher ?? cfg.language_switcher) !== false;
+    if (t.design_system != null) {
+      const ds = String(t.design_system).toLowerCase();
+      if (!DESIGN_SYSTEMS.has(ds)) {
+        throw new Error(`Unsupported design_system "${t.design_system}" in target ${t.domain}. Supported: ${[...DESIGN_SYSTEMS].join(', ')}.`);
+      }
+      t.design_system = ds;
+    }
   }
   return {
     defaults,
