@@ -110,11 +110,11 @@ page-level detail that a newer scan supersedes.
   src/prune.js). Proposal: 8 → 3. Check first what reads old pages/:
   aggregate.js diffing, CSV exports, bug-report examples — confirm none need
   more than current + previous week.
-- [ ] B2. Deduplicate unchanged pages: baseline stub-dedup is now wired in
-  (`scan.js` write path + `aggregate.js` resolver), but prune-boundary
-  hardening and dedicated regression tests are still pending before this can
-  be marked complete. Design carefully against the longitudinal-consistency
-  principle — summaries must still count the page.
+- [x] B2. Deduplicate unchanged pages: baseline stub-dedup is wired in
+  (`scan.js` write path + `aggregate.js` resolver), and prune now promotes
+  retained stubs that point to a week being deleted so summaries remain
+  longitudinally consistent across retention boundaries. Covered by unit
+  regression test in `tests/unit/prune.test.js`.
 - [x] B3. Git history strategy — DECIDED 2026-07-03: option (c) accepted —
   accept growth for now; partial clone (A1) shields CI. A daily size check in
   report.yml (gate job) warns when server-side repo size passes 1 GB; that

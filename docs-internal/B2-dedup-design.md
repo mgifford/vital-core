@@ -1,9 +1,11 @@
 # B2 design: deduplicate unchanged page records
 
-Status: partially implemented. Baseline stub dedup + read-path resolution are in
-`src/scan.js`, `src/lib/page-records.js`, and `src/aggregate.js`; prune-boundary
-hardening and dedicated regression tests are still pending. Companion to the
-retention work in `ARCHITECTURE.md` ("Retention contract") and
+Status: implemented. Baseline stub dedup + read-path resolution are in
+`src/scan.js`, `src/lib/page-records.js`, and `src/aggregate.js`; prune now
+promotes retained stubs that point to a week being deleted (so no retained
+week depends on pruned page detail), covered by a unit regression test in
+`tests/unit/prune.test.js`. Companion to the retention work in
+`ARCHITECTURE.md` ("Retention contract") and
 `docs-internal/ROADMAP-2026-07.md`.
 
 ## Problem
@@ -127,10 +129,7 @@ multi-week promotion scheme in step 4.
   validation found in `src/lib/inventory.js`).
 - No change to `prune.js` under the conservative (5, simpler) option.
 
-## Open questions for the owner
+## Follow-up questions (optional)
 
-- Is the storage win worth the added indirection (stub resolution layer)
-  given `retention_weeks` is already down to 3? The pruning already caps
-  worst-case growth; B2 only helps *within* the 3-week window.
 - Should stub-hit-rate be surfaced anywhere (e.g. a line in the daily
-  repo-size gate job) to make the tradeoff visible over time?
+  repo-size gate job) to quantify B2's ongoing storage impact?
