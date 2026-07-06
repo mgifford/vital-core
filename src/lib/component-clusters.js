@@ -101,6 +101,7 @@ export function createClusterTracker(target = {}) {
 	const ruleComponentHits = new Map();
 	const knownComponentStems = new Set();
 	const pageComponents = new Map();
+	const pageDrift = new Map();
 
 	function rememberRule(engineKey, ruleId, impact, url) {
 		const key = `${engineKey}:${ruleId}`;
@@ -170,7 +171,20 @@ export function createClusterTracker(target = {}) {
 			if (components.length === 0 && ds.prefixes.length > 0) {
 				for (const tok of classTokens) {
 					if (ds.prefixes.some((p) => tok.startsWith(p))) continue;
-					if (likelyLookalike(tok, knownComponentStems)) c.lookalike_tokens.add(tok);
+					if (!likelyLookalike(tok, knownComponentStems)) continue;
+					c.lookalike_tokens.add(tok);
+					if (!pageDrift.has(url)) {
+						pageDrift.set(url, {
+							url,
+							tokens: new Set(),
+							cluster_ids: new Set(),
+							rule_keys: new Set(),
+						});
+					}
+					const drift = pageDrift.get(url);
+					drift.tokens.add(tok);
+					drift.cluster_ids.add(c.id);
+					drift.rule_keys.add(ruleKey);
 				}
 			}
 		}
@@ -237,6 +251,15 @@ export function createClusterTracker(target = {}) {
 			.map(([url, comps]) => ({ url, components: [...comps].sort() }))
 			.sort((a, b) => b.components.length - a.components.length);
 
+		const driftPages = [...pageDrift.values()]
+			.map((d) => ({
+				url: d.url,
+				tokens: [...d.tokens].sort(),
+				cluster_ids: [...d.cluster_ids].sort(),
+				rule_keys: [...d.rule_keys].sort(),
+			}))
+			.sort((a, b) => b.tokens.length - a.tokens.length || b.cluster_ids.length - a.cluster_ids.length);
+
 		return {
 			design_system: dsKey,
 			design_system_label: ds.label,
@@ -247,6 +270,8 @@ export function createClusterTracker(target = {}) {
 			top_actions: out.slice(0, 10),
 			design_component_usage: designUsage.slice(0, 100),
 			page_component_usage: pageUsage.slice(0, 300),
+			drift_page_count: driftPages.length,
+			drift_pages: driftPages.slice(0, 300),
 			drift_clusters: out.filter((c) => c.drift).slice(0, 30),
 		};
 	}

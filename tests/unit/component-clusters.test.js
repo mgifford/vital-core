@@ -43,6 +43,9 @@ test('component clusters: detects possible lookalike drift outside design-system
 
   const out = tracker.finalize(20, 10);
   assert.ok(out.drift_clusters.length >= 1, 'lookalike drift cluster is flagged');
+  assert.equal(out.drift_page_count, 1);
+  assert.equal(out.drift_pages[0].url, 'https://example.gov/b');
+  assert.ok(out.drift_pages[0].tokens.includes('alert-card__body'));
 });
 
 test('writeComponentClusterCsvs: writes one CSV per cluster with affected URLs', () => {

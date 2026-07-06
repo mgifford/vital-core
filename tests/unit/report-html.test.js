@@ -147,3 +147,69 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /<span class="rule-badge">image-alt<\/span>/);
   assert.match(html, /Images must have alternative text/);
 });
+
+test('renderAccessibilityPage includes expanded next-actions copy payload attributes', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 4,
+    componentClusters: {
+      design_system: 'cms-ds',
+      design_system_theme: 'medicare',
+      top_actions: [
+        {
+          id: 'cc-123',
+          rule_id: 'color-contrast',
+          engine_key: 'axe-core',
+          severity: 'Serious',
+          pages_affected: 2,
+          instances: 3,
+          selector_path: 'main .ds-c-alert a',
+          representative_selector: 'main .ds-c-alert a',
+          representative_snippet: '<a class="ds-c-alert__link">Read more</a>',
+          design_components: ['ds-c-alert'],
+          estimated_fix_impact: { statement: 'Fix one place, resolve ~3 finding(s) on 2 page(s).' },
+          affected_pages: ['https://example.gov/a', 'https://example.gov/b'],
+          affected_pages_csv: 'csv/cluster__cc-123.csv',
+        },
+      ],
+      design_component_usage: [],
+      drift_clusters: [],
+    },
+    axe: { rules: {} },
+    alfa: { rules: {} },
+    deprecatedHtml: { rules: {} },
+  };
+  const bugs = [
+    {
+      instance_id: 'VS-12345678',
+      rule_id: 'color-contrast',
+      rule_label: 'Elements must have sufficient color contrast',
+      engine_key: 'axe-core',
+      severity: 'Serious',
+      wcag_sc: '1.4.3',
+      wcag_name: 'Contrast (Minimum)',
+      frequency: { instances: 3, pages_affected: 2, total_pages_scanned: 4 },
+      impact: { groups: [{ group: 'Low vision users' }] },
+      remediation_tip: 'Use a compliant foreground/background combination.',
+      testing_environment: 'Automated: axe-core, headless Chromium (Playwright). Manual AT verification required.',
+      steps_to_reproduce: ['Open page.', 'Inspect alert link.', 'Verify contrast ratio.'],
+      example_pages: ['https://example.gov/a'],
+      examples: [
+        {
+          url: 'https://example.gov/a',
+          xpath: 'main .ds-c-alert a',
+          html_snippet: '<a class="ds-c-alert__link">Read more</a>',
+        },
+      ],
+    },
+  ];
+
+  const html = renderAccessibilityPage(target, summary, bugs, { byRule: {}, bugsAll: null }, { keyPages: [] });
+
+  assert.match(html, /data-example-pages="\[/);
+  assert.match(html, /data-affected-pages="\[/);
+  assert.match(html, /data-examples="\[/);
+  assert.match(html, /data-testing-environment="Automated: axe-core/);
+  assert.match(html, /data-steps="\[/);
+});
