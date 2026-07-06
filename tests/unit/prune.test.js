@@ -46,6 +46,12 @@ function writeWeek(dataDir, key, week, { summary = true } = {}) {
   if (summary) fs.writeFileSync(path.join(base, 'summary.json'), JSON.stringify({ week }));
 }
 
+function writePage(dataDir, key, week, id, record) {
+  const pagesDir = path.join(dataDir, key, week, 'pages');
+  fs.mkdirSync(pagesDir, { recursive: true });
+  fs.writeFileSync(path.join(pagesDir, `${id}.json`), JSON.stringify(record));
+}
+
 const exists = (...p) => fs.existsSync(path.join(...p));
 
 test('prune: removes old page detail only when a summary exists, keeps recent and summaries', () => {
@@ -114,6 +120,61 @@ test('prune: respects a per-target retention_weeks override', () => {
 
     assert.equal(exists(dataDir, key, week5, 'pages'), false, '5-week-old pruned under 2-week retention');
     assert.equal(exists(dataDir, key, week1, 'pages'), true, '1-week-old kept under 2-week retention');
+  } finally {
+    fs.rmSync(sandbox, { recursive: true, force: true });
+  }
+});
+
+test('prune: promotes retained stubs that point to a week being pruned', () => {
+  const sandbox = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-prune-'));
+  try {
+    fs.cpSync(path.join(REPO, 'src'), path.join(sandbox, 'src'), { recursive: true });
+    fs.symlinkSync(NODE_MODULES, path.join(sandbox, 'node_modules'), 'dir');
+    fs.mkdirSync(path.join(sandbox, 'config'), { recursive: true });
+    fs.writeFileSync(
+      path.join(sandbox, 'config', 'targets.yml'),
+      `defaults:\n  retention_weeks: 3\ntargets:\n  - domain: example.gov\n`
+    );
+
+    const dataDir = path.join(sandbox, 'data');
+    const key = 'example.gov';
+    const prunedWeek = weeksAgo(4);   // older than retention, will be pruned
+    const retainedWeek = weeksAgo(3); // at boundary, retained
+
+    writeWeek(dataDir, key, prunedWeek, { summary: true });
+    writeWeek(dataDir, key, retainedWeek, { summary: true });
+
+    writePage(dataDir, key, prunedWeek, 'p1', {
+      pageId: 'p1',
+      url: 'https://example.gov/a',
+      week: prunedWeek,
+      runId: 'run-pruned',
+      scannedAt: '2026-01-01T00:00:00.000Z',
+      status: 200,
+      axe: { violationCount: 1, violations: { 'image-alt': { count: 1 } } }
+    });
+
+    writePage(dataDir, key, retainedWeek, 'p1', {
+      pageId: 'p1',
+      url: 'https://example.gov/a',
+      week: retainedWeek,
+      runId: 'run-retained',
+      scannedAt: '2026-01-08T00:00:00.000Z',
+      status: 200,
+      unchanged: true,
+      since: prunedWeek,
+    });
+
+    execFileSync('node', ['src/prune.js'], { cwd: sandbox, stdio: 'pipe' });
+
+    assert.equal(exists(dataDir, key, prunedWeek, 'pages'), false, 'pruned week pages removed');
+    const retained = JSON.parse(fs.readFileSync(path.join(dataDir, key, retainedWeek, 'pages', 'p1.json'), 'utf8'));
+    assert.equal(retained.unchanged, undefined, 'retained stub promoted to full record');
+    assert.equal(retained.since, undefined, 'promoted record no longer points to pruned week');
+    assert.equal(retained.axe.violationCount, 1, 'promoted record keeps full finding data');
+    assert.equal(retained.week, retainedWeek, 'promoted record keeps retained week attribution');
+    assert.equal(retained.runId, 'run-retained', 'promoted record keeps retained run attribution');
+    assert.equal(retained.scannedAt, '2026-01-08T00:00:00.000Z', 'promoted record keeps retained timestamp');
   } finally {
     fs.rmSync(sandbox, { recursive: true, force: true });
   }
