@@ -1,7 +1,10 @@
 # B2 design: deduplicate unchanged page records
 
-Status: proposal, not implemented. Companion to the retention work in
-`ARCHITECTURE.md` ("Retention contract") and `docs-internal/ROADMAP-2026-07.md`.
+Status: partially implemented. Baseline stub dedup + read-path resolution are in
+`src/scan.js`, `src/lib/page-records.js`, and `src/aggregate.js`; prune-boundary
+hardening and dedicated regression tests are still pending. Companion to the
+retention work in `ARCHITECTURE.md` ("Retention contract") and
+`docs-internal/ROADMAP-2026-07.md`.
 
 ## Problem
 
