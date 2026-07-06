@@ -56,11 +56,13 @@ function apiTopActions(summary) {
 
 export function buildIndexEntry(target, latestSummary, bugs) {
   const counts = severityCounts(bugs);
+  const topActionsCount = latestSummary.componentClusters?.top_actions?.length ?? 0;
   return {
     domain: target.domain,
     key: target.key,
     latest_week: latestSummary.week,
     pages_scanned: latestSummary.pagesScanned ?? 0,
+    top_actions_count: topActionsCount,
     critical_count: counts.critical_count,
     serious_count: counts.serious_count,
     snapshot_url: `/api/v1/${target.key}/snapshot.json`,
