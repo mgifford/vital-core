@@ -229,9 +229,12 @@ Design principles to encode:
   version, known CVEs/severity, pages seen on. Add "Vulnerable libraries"
   to the trustworthy/security outcome area (Mission D grouping).
 - [ ] E2. PDF accessibility engine.
-  data/<domain>/resources.json already inventories every PDF. Scan a few per
+  data/<domain>/resources.json already inventories every PDF. There is currently
+  some PDF info in the "Embedded & linked resources" section of the Overview page.
+  I do think that PDFs should be a new page for each domain. Each PDF should be
+  marked as unique with a unique hash, to ensure it is the same file. Scan a few per
   run (configurable, e.g. 5), newest-first by first-seen, then backfill older.
-  Store MD5 of each file so re-review happens only on change; display the
+  Re-review happens only if the file changes; display the
   hash + last-checked date with each PDF. Checks (automated-only, honest
   placeholders like bug-report.js): tagged?, has title?, has language?,
   scanned-image-only (no text layer)?, page count, size. Prior art to align
