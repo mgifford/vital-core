@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.page.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -162,6 +162,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Retry GitHub Pages deploy
+        if: steps.deploy.outcome == 'failure'
+        id: deploy_retry
+        uses: actions/deploy-pages@v4
+
+      - name: Resolve deployed page URL
+        id: page
+        if: always()
+        run: echo "page_url=${{ steps.deploy_retry.outputs.page_url || steps.deploy.outputs.page_url }}" >> "$GITHUB_OUTPUT"
 
       - name: Post weekly summary to tracking issue
         uses: actions/github-script@v9
