@@ -858,6 +858,14 @@ function nextActionsSection(summary, bugs, reporting = {}) {
   const actions = cc?.top_actions ?? [];
   if (!actions.length) return '';
 
+  const jsonAttr = (value) => {
+    try {
+      return esc(JSON.stringify(value ?? []));
+    } catch {
+      return '[]';
+    }
+  };
+
   const byRule = new Map((bugs ?? []).map((b) => [`${b.engine_key}:${b.rule_id}`, b]));
   const rows = actions.slice(0, 10).map((a) => {
     const bug = byRule.get(`${a.engine_key}:${a.rule_id}`);
@@ -870,6 +878,14 @@ function nextActionsSection(summary, bugs, reporting = {}) {
     const tip = bug?.remediation_tip || bug?.suggested_fix || '';
     const ruleLabel = bug?.rule_label || bug?.rule_id || a.rule_id;
     const clusterTitle = `${ruleLabel} · ${a.design_components?.[0] || t('unattributed component')}`;
+    const examplePages = (bug?.example_pages ?? []).slice(0, 10);
+    const affectedPages = (a.affected_pages ?? []).slice(0, 10);
+    const examples = (bug?.examples ?? []).slice(0, 5).map((e) => ({
+      url: e.url ?? null,
+      xpath: e.xpath ?? null,
+      html_snippet: e.html_snippet ?? null,
+    }));
+    const steps = (bug?.steps_to_reproduce ?? []).slice(0, 5);
 
     return `<tr class="next-action-row"
   data-action-id="${esc(a.id)}"
@@ -884,6 +900,11 @@ function nextActionsSection(summary, bugs, reporting = {}) {
   data-snippet="${esc(a.representative_snippet || '')}"
   data-remediation="${esc(tip)}"
   data-impact="${esc(who)}"
+  data-testing-environment="${esc(bug?.testing_environment || '')}"
+  data-steps="${jsonAttr(steps)}"
+  data-example-pages="${jsonAttr(examplePages)}"
+  data-affected-pages="${jsonAttr(affectedPages)}"
+  data-examples="${jsonAttr(examples)}"
   data-csv="${esc(a.affected_pages_csv || '')}"
   data-bug-link="${esc(bug?.instance_id ? `#${bug.instance_id}` : '')}">
   <th scope="row">
@@ -1080,23 +1101,56 @@ function nextActionsScript() {
     out.push('- **Who is impacted:** ' + (row.getAttribute('data-impact') || 'Requires manual testing.'));
     out.push('');
     out.push('### Representative selector');
-    out.push('`' + (row.getAttribute('data-selector') || 'n/a') + '`');
+    out.push((row.getAttribute('data-selector') || 'n/a'));
     if (row.getAttribute('data-snippet')) {
       out.push('');
       out.push('### Representative snippet');
-      out.push('```html');
+      out.push('~~~html');
       out.push(row.getAttribute('data-snippet'));
-      out.push('```');
+      out.push('~~~');
     }
     out.push('');
     out.push('### Remediation');
     out.push((row.getAttribute('data-remediation') || 'Requires manual testing and design review.'));
+    out.push('');
+    out.push('### Examples');
+    var examplePages = parseJsonAttr(row, 'data-example-pages');
+    var affectedPages = parseJsonAttr(row, 'data-affected-pages');
+    var examples = parseJsonAttr(row, 'data-examples');
+    if (examplePages.length) out.push('- Example pages: ' + examplePages.join(', '));
+    if (affectedPages.length) out.push('- Affected page sample: ' + affectedPages.join(', '));
+    if (examples.length) {
+      examples.forEach(function (ex, idx) {
+        out.push('- Example ' + (idx + 1) + ': ' + ((ex && ex.url) || 'n/a') + ((ex && ex.xpath) ? ' | ' + ex.xpath : ''));
+        if (ex && ex.html_snippet) {
+          out.push('~~~html');
+          out.push(ex.html_snippet);
+          out.push('~~~');
+        }
+      });
+    }
+    if (!examplePages.length && !affectedPages.length && !examples.length) {
+      out.push('- Not captured by automated scan — requires manual testing.');
+    }
     out.push('');
     out.push('### Evidence');
     var csv = row.getAttribute('data-csv');
     var bug = row.getAttribute('data-bug-link');
     if (csv) out.push('- Affected pages CSV: ' + csv);
     if (bug) out.push('- Full scanner detail: accessibility.html' + bug);
+    out.push('');
+    out.push('### Testing environment');
+    out.push((row.getAttribute('data-testing-environment') || 'Not captured by automated scan — requires manual testing.'));
+    out.push('');
+    out.push('### Steps to reproduce');
+    var steps = parseJsonAttr(row, 'data-steps');
+    if (steps.length) {
+      steps.forEach(function (step, i) {
+        out.push((i + 1) + '. ' + step);
+      });
+    } else {
+      out.push('1. Not captured by automated scan — requires manual testing.');
+    }
     out.push('');
     out.push('### Manual testing follow-up');
     out.push('- Verify with keyboard only and at least one screen reader.');
@@ -1128,10 +1182,54 @@ function nextActionsScript() {
     out.push('h4. Remediation');
     out.push((row.getAttribute('data-remediation') || 'Requires manual testing and design review.'));
     out.push('');
+    out.push('h4. Examples');
+    var examplePages = parseJsonAttr(row, 'data-example-pages');
+    var affectedPages = parseJsonAttr(row, 'data-affected-pages');
+    var examples = parseJsonAttr(row, 'data-examples');
+    if (examplePages.length) out.push('*Example pages:* ' + examplePages.join(', '));
+    if (affectedPages.length) out.push('*Affected page sample:* ' + affectedPages.join(', '));
+    if (examples.length) {
+      examples.forEach(function (ex, idx) {
+        out.push('* Example ' + (idx + 1) + ': ' + ((ex && ex.url) || 'n/a') + ((ex && ex.xpath) ? ' | ' + ex.xpath : ''));
+        if (ex && ex.html_snippet) {
+          out.push('{code:html}');
+          out.push(ex.html_snippet);
+          out.push('{code}');
+        }
+      });
+    }
+    if (!examplePages.length && !affectedPages.length && !examples.length) {
+      out.push('* Not captured by automated scan — requires manual testing.');
+    }
+    out.push('');
+    out.push('h4. Testing environment');
+    out.push((row.getAttribute('data-testing-environment') || 'Not captured by automated scan — requires manual testing.'));
+    out.push('');
+    out.push('h4. Steps to reproduce');
+    var steps = parseJsonAttr(row, 'data-steps');
+    if (steps.length) {
+      steps.forEach(function (step, i) {
+        out.push('# ' + (i + 1) + '. ' + step);
+      });
+    } else {
+      out.push('# 1. Not captured by automated scan — requires manual testing.');
+    }
+    out.push('');
     out.push('h4. Manual testing');
     out.push('* Keyboard-only verification required');
     out.push('* Screen reader verification required');
     return out.join('\n');
+  }
+
+  function parseJsonAttr(row, name) {
+    try {
+      var raw = row.getAttribute(name);
+      if (!raw) return [];
+      var data = JSON.parse(raw);
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      return [];
+    }
   }
 
   async function copyText(text) {

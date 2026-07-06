@@ -13,6 +13,15 @@ const FAKE_SUMMARY = {
     design_system: 'cms-ds',
     design_system_theme: 'medicare',
     total_clusters: 12,
+    drift_page_count: 1,
+    drift_pages: [
+      {
+        url: 'https://example.gov/b',
+        tokens: ['alert-card__body'],
+        cluster_ids: ['cc-123'],
+        rule_keys: ['axe-core:color-contrast'],
+      },
+    ],
     top_actions: [
       {
         id: 'cc-123',
@@ -122,6 +131,8 @@ describe('buildSnapshot', () => {
     assert.equal(snap.top_actions.design_system, 'cms-ds');
     assert.equal(snap.top_actions.queue.length, 1);
     assert.equal(snap.top_actions.queue[0].action_id, 'cc-123');
+    assert.equal(snap.top_actions.drift_page_count, 1);
+    assert.equal(snap.top_actions.drift_pages[0].url, 'https://example.gov/b');
   });
 });
 

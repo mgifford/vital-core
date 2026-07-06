@@ -140,7 +140,7 @@ page-level detail that a newer scan supersedes.
 The single highest-leverage product change. Developers fix templates and
 components, not pages.
 
-- [ ] C1. Cluster findings by component fingerprint.
+- [x] C1. Cluster findings by component fingerprint.
   Fingerprint = normalized selector path + rule id (+ snippet shape). Page
   records already carry selectors/snippets (axe/alfa examples); tech-findings
   co-occurrence (src/lib/tech-findings.js) shows the join pattern.
@@ -149,7 +149,7 @@ components, not pages.
   Rank queue by (severity weight × pages affected) / distinct components.
   Reuse the existing `template_page_threshold` heuristic (targets.yml) as a
   validation signal, then supersede it with real clustering.
-- [ ] C2. Design-system alignment.
+- [x] C2. Design-system alignment.
   New per-target config in config/targets.yml, e.g.:
     design_system: cms-ds        # or uswds, none
     design_system_theme: medicare
@@ -161,7 +161,7 @@ components, not pages.
   prior art: https://github.com/mgifford/design-system-scan and
   https://mgifford.github.io/design-system-scan/ (align approach; do not
   copy code — see INSTRUCTIONS.md provenance rules).
-- [ ] C3. "Next 10 actions" view per domain.
+- [x] C3. "Next 10 actions" view per domain.
   One page: top 10 clusters from C1, each with severity, pages affected,
   who's impacted (FPC model), remediation tip, affected-pages CSV link,
   representative snippet. Include the triage controls that
@@ -169,7 +169,7 @@ components, not pages.
   reports/<domain>/<week>/accessibility.html) — decisions (fix now / defer /
   assigned-to) stored in localStorage with the same export/import/share
   mechanism as existing triage so a team lead can share state.
-- [ ] C4. Copy-paste ticket text, not auto-filing.
+- [x] C4. Copy-paste ticket text, not auto-filing.
   Teams use different GitHub orgs and JIRA — lowest common denominator wins.
   Per cluster: a "Copy as issue" button producing GitHub-flavored Markdown
   and a "Copy for Jira" (Jira wiki markup) variant. Content = the

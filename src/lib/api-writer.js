@@ -37,6 +37,13 @@ function apiTopActions(summary) {
     design_system: cc.design_system ?? 'none',
     design_system_theme: cc.design_system_theme ?? null,
     generated_from_clusters: cc.total_clusters ?? cc.clusters?.length ?? 0,
+    drift_page_count: cc.drift_page_count ?? cc.drift_pages?.length ?? 0,
+    drift_pages: (cc.drift_pages ?? []).slice(0, 100).map((p) => ({
+      url: p.url,
+      tokens: p.tokens ?? [],
+      cluster_ids: p.cluster_ids ?? [],
+      rule_keys: p.rule_keys ?? [],
+    })),
     queue: cc.top_actions.slice(0, 10).map((a) => ({
       action_id: a.id,
       rule_id: a.rule_id,
