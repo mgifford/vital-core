@@ -412,6 +412,21 @@ function sparkline(values, width = 220, height = 36) {
 }
 
 /**
+ * One stat cell for the `<dl class="ledger">` grid: a localized label, a
+ * preformatted value, and — when the data is there — its week-over-week change
+ * and trend. Composes the existing `delta()` and `sparkline()` so any headline
+ * number can carry the same "number + ▲/▼ + trend" treatment across pages.
+ * `value` is already-formatted (route counts through `fmtMedian`/`kb`/`nf` at
+ * the call site); only the label is localized here. Returns a `<div>` — wrap
+ * several in `<dl class="ledger">`.
+ */
+export function statTile(label, value, { deltaN = null, deltaOpts = {}, spark = null } = {}) {
+  const d = deltaN != null ? ` ${delta(deltaN, deltaOpts)}` : '';
+  const s = Array.isArray(spark) && spark.length > 1 ? ` ${sparkline(spark)}` : '';
+  return `<div><dt>${t(label)}</dt><dd>${value}${d}${s}</dd></div>`;
+}
+
+/**
  * Accessible light/dark theme toggle, following the light-dark-mode skill
  * from mgifford/accessibility-skills:
  *  - defaults to prefers-color-scheme; manual choice persists in localStorage

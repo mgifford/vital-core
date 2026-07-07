@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderAccessibilityPage, renderDomainReport } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, statTile } from '../../src/report-html.js';
 
 test('renderDomainReport shows severity trend and four-category Lighthouse trend', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
@@ -212,4 +212,34 @@ test('renderAccessibilityPage includes expanded next-actions copy payload attrib
   assert.match(html, /data-examples="\[/);
   assert.match(html, /data-testing-environment="Automated: axe-core/);
   assert.match(html, /data-steps="\[/);
+});
+
+test('statTile renders a ledger cell with localized label and preformatted value', () => {
+  const html = statTile('Median page weight', '128 KB');
+  assert.match(html, /^<div><dt>Median page weight<\/dt><dd>128 KB<\/dd><\/div>$/);
+});
+
+test('statTile shows a delta only when deltaN is provided', () => {
+  const withDelta = statTile('Broken links', '3', { deltaN: 2 });
+  assert.match(withDelta, /<span class="delta worse">\+2 /);
+  const noDelta = statTile('Broken links', '3');
+  assert.doesNotMatch(noDelta, /class="delta/);
+});
+
+test('statTile honours deltaOpts (goodWhenDown/unit)', () => {
+  // Fewer requests is better: a negative delta should read as "better".
+  const html = statTile('Median requests', '42', { deltaN: -5, deltaOpts: { unit: ' req' } });
+  assert.match(html, /<span class="delta better">-5 req /);
+});
+
+test('statTile emits a sparkline for two or more points, none for fewer', () => {
+  const withSpark = statTile('Median axe violations', '4', { spark: [6, 5, 4] });
+  assert.match(withSpark, /<svg class="spark"/);
+  assert.doesNotMatch(statTile('Median axe violations', '4', { spark: [4] }), /<svg class="spark"/);
+  assert.doesNotMatch(statTile('Median axe violations', '4'), /<svg class="spark"/);
+});
+
+test('statTile output nests inside a dl.ledger without extra wrappers', () => {
+  const dl = `<dl class="ledger">${statTile('A', '1')}${statTile('B', '2')}</dl>`;
+  assert.match(dl, /^<dl class="ledger"><div><dt>A<\/dt><dd>1<\/dd><\/div><div><dt>B<\/dt><dd>2<\/dd><\/div><\/dl>$/);
 });
