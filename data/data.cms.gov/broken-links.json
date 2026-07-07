@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-07-06T15:53:49.933Z",
+ "updatedAt": "2026-07-07T11:21:06.734Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -227,12 +227,13 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W26",
+   "lastSeen": "2026-W28",
    "_weeks": [
     "2026-W25",
-    "2026-W26"
+    "2026-W26",
+    "2026-W28"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/nursing-homes/technical-details"
    ]
@@ -254,12 +255,13 @@
    "status": 0,
    "reason": "ERR_SSL_SSL/TLS_ALERT_HANDSHAKE_FAILURE",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W27",
+   "lastSeen": "2026-W28",
    "_weeks": [
     "2026-W25",
-    "2026-W27"
+    "2026-W27",
+    "2026-W28"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
    ]
@@ -268,12 +270,13 @@
    "status": 0,
    "reason": "ERR_SSL_SSL/TLS_ALERT_HANDSHAKE_FAILURE",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W27",
+   "lastSeen": "2026-W28",
    "_weeks": [
     "2026-W25",
-    "2026-W27"
+    "2026-W27",
+    "2026-W28"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
    ]
@@ -675,12 +678,14 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W27",
-   "lastSeen": "2026-W27",
+   "lastSeen": "2026-W28",
    "_weeks": [
-    "2026-W27"
+    "2026-W27",
+    "2026-W28"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county",
     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state"
    ]
   },
@@ -718,6 +723,19 @@
     "https://data.cms.gov/provider-data/topics/dialysis-facilities/measures",
     "https://data.cms.gov/provider-data/dataset/632h-zaca?page=2684",
     "https://data.cms.gov/provider-data/datasets?keyword%5B%5D=Efficiency"
+   ]
+  },
+  "https://data.cms.gov/provider-data/dataset/rrqw-56er?page=5": {
+   "status": 0,
+   "reason": "UND_ERR_CONNECT_TIMEOUT",
+   "firstSeen": "2026-W28",
+   "lastSeen": "2026-W28",
+   "_weeks": [
+    "2026-W28"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://data.cms.gov/provider-data/dataset/rrqw-56er?page=5"
    ]
   }
  }

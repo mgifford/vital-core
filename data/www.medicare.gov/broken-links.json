@@ -1,6 +1,6 @@
 {
  "domain": "www.medicare.gov",
- "updatedAt": "2026-07-06T15:53:30.528Z",
+ "updatedAt": "2026-07-07T11:20:45.954Z",
  "links": {
   "https://www.cms.gov/medicare-coverage-database/search.aspx": {
    "status": 503,
@@ -72,7 +72,8 @@
    ],
    "weeksBroken": 5,
    "foundOn": [
-    "https://www.medicare.gov/coverage/cognitive-assessment-care-plan-services"
+    "https://www.medicare.gov/coverage/cognitive-assessment-care-plan-services",
+    "http://medicare.gov/coverage/cognitive-assessment-care-plan-services"
    ]
   },
   "https://www.nia.nih.gov/health/alzheimers-and-dementia": {
@@ -89,7 +90,8 @@
    ],
    "weeksBroken": 5,
    "foundOn": [
-    "https://www.medicare.gov/coverage/cognitive-assessment-care-plan-services"
+    "https://www.medicare.gov/coverage/cognitive-assessment-care-plan-services",
+    "http://medicare.gov/coverage/cognitive-assessment-care-plan-services"
    ]
   },
   "http://www.lung.org/stop-smoking/join-freedom-from-smoking/": {
@@ -120,7 +122,8 @@
    "weeksBroken": 2,
    "foundOn": [
     "https://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
-    "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
+    "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
+    "http://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
    ]
   },
   "https://rda.dcri.duke.edu/": {
@@ -135,7 +138,8 @@
    "weeksBroken": 2,
    "foundOn": [
     "https://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
-    "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
+    "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
+    "http://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
    ]
   },
   "https://rda.dcri.duke.edu/privacy-policy": {
@@ -150,7 +154,8 @@
    "weeksBroken": 2,
    "foundOn": [
     "https://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
-    "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
+    "https://www.medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
+    "http://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
    ]
   },
   "https://connect.humana.com/terms-and-conditions": {
@@ -309,12 +314,13 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W27",
+   "lastSeen": "2026-W28",
    "_weeks": [
     "2026-W25",
-    "2026-W27"
+    "2026-W27",
+    "2026-W28"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
     "https://www.medicare.gov/basics/get-started-with-medicare/whats-next"
    ]
@@ -774,6 +780,45 @@
    "weeksBroken": 1,
    "foundOn": [
     "http://medicare.gov/coverage/popular-topics"
+   ]
+  },
+  "http://medicare.gov/mental-health-substance-use-disorder": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W28",
+   "lastSeen": "2026-W28",
+   "_weeks": [
+    "2026-W28"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "http://medicare.gov/coverage/mental-health-care-outpatient"
+   ]
+  },
+  "https://www.nia.nih.gov/health/advance-care-planning/choosing-health-care-proxy": {
+   "status": 405,
+   "reason": "HTTP 405",
+   "firstSeen": "2026-W28",
+   "lastSeen": "2026-W28",
+   "_weeks": [
+    "2026-W28"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/coverage/advance-care-planning"
+   ]
+  },
+  "https://www.nia.nih.gov/health/advance-care-planning/preparing-living-will": {
+   "status": 405,
+   "reason": "HTTP 405",
+   "firstSeen": "2026-W28",
+   "lastSeen": "2026-W28",
+   "_weeks": [
+    "2026-W28"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/coverage/advance-care-planning"
    ]
   }
  }
