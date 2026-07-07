@@ -1,0 +1,97 @@
+work_packages:
+  - id: WP01
+    title: "Reusable stat component (statTile)"
+    dependencies: []
+    owned_files:
+      - "src/report-html.js"
+      - "tests/unit/report-html.test.js"
+    requirement_refs:
+      - FR-01
+      - NFR-01
+    subtasks:
+      - T001
+    prompt_file: "tasks/WP01-stat-component.md"
+
+  - id: WP02
+    title: "Layer-1 domain landing page"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/report-html.js"
+      - "src/lib/progress.js"
+      - "src/aggregate.js"
+      - "tests/unit/report-html.test.js"
+      - "tests/unit/progress.test.js"
+    requirement_refs:
+      - FR-02
+      - FR-03
+      - FR-04
+      - FR-05
+      - C-02
+      - C-03
+      - C-06
+    subtasks:
+      - T002
+      - T003
+      - T004
+    prompt_file: "tasks/WP02-landing-page.md"
+
+  - id: WP03
+    title: "Progress panel"
+    dependencies:
+      - WP02
+    owned_files:
+      - "src/report-html.js"
+      - "src/lib/progress.js"
+      - "tests/unit/progress.test.js"
+    requirement_refs:
+      - FR-06
+      - FR-07
+      - FR-08
+      - FR-09
+      - C-03
+      - C-04
+      - NFR-02
+    subtasks:
+      - T005
+      - T006
+      - T007
+    prompt_file: "tasks/WP03-progress-panel.md"
+
+  - id: WP04
+    title: "Outcome nav regroup + redirect stubs"
+    dependencies:
+      - WP02
+    owned_files:
+      - "src/report-html.js"
+      - "src/aggregate.js"
+      - "tests/e2e.mjs"
+      - "tests/unit/i18n-render.test.js"
+      - "tests/unit/report-html.test.js"
+    requirement_refs:
+      - FR-10
+      - FR-11
+      - FR-12
+      - C-01
+      - C-05
+      - NFR-01
+    subtasks:
+      - T008
+      - T009
+      - T010
+    prompt_file: "tasks/WP04-outcome-nav.md"
+
+  - id: WP05
+    title: "Docs"
+    dependencies:
+      - WP02
+      - WP03
+      - WP04
+    owned_files:
+      - "CLAUDE.md"
+      - "README.md"
+    requirement_refs:
+      - FR-13
+    subtasks:
+      - T011
+    prompt_file: "tasks/WP05-docs.md"
