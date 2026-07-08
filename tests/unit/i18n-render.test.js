@@ -19,7 +19,7 @@ test('i18n-render: single language emits no switcher and unsuffixed links', () =
   assert.match(html, /<html lang="en"/);
   assert.doesNotMatch(html, /class="lang-switch"/);
   assert.equal(localeSuffix(), '');
-  assert.match(html, /href="accessibility\.html"/);
+  assert.match(html, /href="accessible\.html"/);
 });
 
 test('i18n-render: default language keeps canonical paths and links to suffixed siblings', () => {
@@ -29,7 +29,7 @@ test('i18n-render: default language keeps canonical paths and links to suffixed 
   assert.match(html, /<html lang="en"/);
   assert.match(html, /class="lang-switch"/);
   assert.equal(localeSuffix(), '');
-  assert.match(html, /href="accessibility\.html"/);      // subnav stays in-language
+  assert.match(html, /href="accessible\.html"/);      // subnav stays in-language
   assert.match(html, /href="index-fr\.html"[^>]*hreflang="fr"/); // switcher cross-links
 });
 
@@ -39,7 +39,7 @@ test('i18n-render: non-default language suffixes its own links and switches back
   const html = render();
   assert.match(html, /<html lang="fr"/);
   assert.equal(localeSuffix(), '-fr');
-  assert.match(html, /href="accessibility-fr\.html"/);   // subnav stays in fr
+  assert.match(html, /href="accessible-fr\.html"/);   // subnav stays in fr
   assert.match(html, /href="index\.html"[^>]*hreflang="en"/); // switch back to en default
 });
 

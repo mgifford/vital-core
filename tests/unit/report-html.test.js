@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderAccessibilityPage, renderDomainReport, statTile } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 
 test('renderDomainReport shows severity trend and four-category Lighthouse trend', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
@@ -140,7 +140,7 @@ test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted det
   // Biggest-win callout links to the top-ranked finding's canonical location.
   assert.match(html, /class="callout callout-win"/);
   assert.match(html, /Biggest available win/);
-  assert.match(html, /<a href="accessibility\.html#VS-abc12345"><strong>Images must have alternative text<\/strong><\/a>/);
+  assert.match(html, /<a href="accessible\.html#VS-abc12345"><strong>Images must have alternative text<\/strong><\/a>/);
   // The callout headlines the highest-priority finding (Critical, 7 pages), not the Serious one.
   const callout = html.match(/<aside class="callout callout-win"[\s\S]*?<\/aside>/)[0];
   assert.doesNotMatch(callout, /Form elements must have labels/);
@@ -334,4 +334,39 @@ test('statTile emits a sparkline for two or more points, none for fewer', () => 
 test('statTile output nests inside a dl.ledger without extra wrappers', () => {
   const dl = `<dl class="ledger">${statTile('A', '1')}${statTile('B', '2')}</dl>`;
   assert.match(dl, /^<dl class="ledger"><div><dt>A<\/dt><dd>1<\/dd><\/div><div><dt>B<\/dt><dd>2<\/dd><\/div><\/dl>$/);
+});
+
+test('redirectStub redirects to the new page and preserves the URL fragment', () => {
+  const html = redirectStub('accessible', 'en');
+  assert.match(html, /<link rel="canonical" href="accessible\.html">/);
+  assert.match(html, /<meta http-equiv="refresh" content="0;url=accessible\.html">/);
+  // Hash-preserving: a pinned deep link keeps its #fragment through the redirect.
+  assert.match(html, /location\.replace\("accessible\.html" \+ location\.hash\)/);
+  assert.match(html, /<meta name="robots" content="noindex">/);
+  assert.match(html, /<html lang="en">/);
+});
+
+test('PAGE_REDIRECTS maps every renamed page old→new', () => {
+  assert.deepEqual(PAGE_REDIRECTS, {
+    accessibility: 'accessible', lighthouse: 'fast', readability: 'findable', 'third-party': 'third-parties',
+  });
+});
+
+test('subnav is grouped by outcome question and links to the renamed pages', () => {
+  const target = { key: 'd', domain: 'd' };
+  const summary = {
+    week: '2026-W24', pagesScanned: 1, pagesAudited: 1, generatedAt: '2026-06-08T00:00:00.000Z',
+    axe: { medianViolations: 0, pagesScanned: 1, pagesWithViolations: 0, rules: {} },
+    alfa: { medianFailures: 0, pagesScanned: 1, pagesWithFailures: 0, rules: {} }, coverage: { axe: 1 },
+  };
+  const html = renderDomainReport(target, summary, null, null, [summary], [], { byRule: {}, bugsAll: null }, null);
+  // Outcome group headings present.
+  for (const q of ['Accessible?', 'Fast?', 'Findable?', 'Trustworthy?', 'Sustainable?']) {
+    assert.match(html, new RegExp(`subnav-heading[^>]*>${q.replace('?', '\\?')}<`));
+  }
+  // Nav links use the outcome-aligned filenames.
+  assert.match(html, /href="accessible\.html">Accessibility</);
+  assert.match(html, /href="fast\.html">Lighthouse</);
+  assert.match(html, /href="findable\.html">Readability</);
+  assert.match(html, /href="third-parties\.html">Third parties</);
 });
