@@ -266,6 +266,7 @@ const PAGES = {
   lighthouse: 'fast',
   readability: 'findable',
   standards: 'standards',
+  security: 'security',
   'third-party': 'third-parties',
   errors: 'errors',
   tech: 'tech',
@@ -302,8 +303,8 @@ const SUBNAV_GROUPS = [
   { label: null, items: [['overview', 'Overview']] },
   { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['images', 'Images']] },
   { label: 'Fast?', items: [['lighthouse', 'Lighthouse']] },
-  { label: 'Findable?', items: [['readability', 'Readability']] },
-  { label: 'Trustworthy?', items: [['standards', 'Standards'], ['third-party', 'Third parties'], ['errors', 'Errors']] },
+  { label: 'Findable?', items: [['readability', 'Readability'], ['standards', 'Standards']] },
+  { label: 'Trustworthy?', items: [['security', 'Security'], ['third-party', 'Third parties'], ['errors', 'Errors']] },
   { label: 'Sustainable?', items: [['tech', 'Tech stack'], ['tech-findings', 'Tech ↔ issues']] },
   { label: null, items: [['archive', 'Archive']] },
 ];
@@ -1896,24 +1897,29 @@ function checklist(items) {
     .map((c) => `<li class="${c.pass ? 'pass' : 'fail'}"><span class="check" aria-hidden="true">${c.pass ? '✓' : '✗'}</span> ${esc(c.label)}${c.detail ? ` <span class="bug-meta">${esc(String(c.detail))}</span>` : ''}<span class="visually-hidden">: ${c.pass ? t('pass') : t('fail')}</span></li>`)
     .join('')}</ul>`;
 }
-function standardsSecuritySection(summary) {
-  const sec = summary.security;
+// Shared intro credit for the ScanGov-style checks, reused on the Findable
+// (standards) and Trustworthy (security) pages.
+function scanGovMeta() {
+  return `<p class="meta">${t('Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.')}</p>`;
+}
+
+/**
+ * "Findable?" — web standards & metadata: the ScanGov-style metadata checks,
+ * open social presence, and PWA / offline readiness. (Security and public-
+ * interest live on the Trustworthy page, securitySection.)
+ */
+function standardsSection(summary) {
   const std = summary.standards;
-  const pi = summary.publicInterest ?? null;
-  if (!sec && !std && !pi) return '';
-  const secBlock = sec ? `
-<h3>${t('Security & domain hygiene')} <span class="bug-meta">${t('@passed/@total on the origin', { '@passed': sec.passed, '@total': sec.total })}</span></h3>
-${checklist(sec.checks)}` : '';
-  const stdBlock = std ? (() => {
-    const pwaChecks = std.checks.filter((c) => c.id.startsWith('pwa-'));
-    const metaChecks = std.checks.filter((c) => !c.id.startsWith('pwa-'));
-    const checkRow = (c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`;
-    const hasSW = pwaChecks.find((c) => c.id === 'pwa-service-worker');
-    const hasManifest = pwaChecks.find((c) => c.id === 'pwa-manifest');
-    const pwaInterpretation = hasSW?.pass > 0
-      ? t('Service worker detected on @n of @total checked page(s).', { '@n': hasSW.pass, '@total': hasSW.total }) + ' ' + (hasManifest?.pass > 0 ? t('Web app manifest also present.') : t('No web app manifest found.')) + ' ' + t('Service workers enable offline access and "Add to Home Screen" install.')
-      : t('No service worker detected on any checked page — this site does not provide offline access or PWA install capability.');
-    const pwaBlock = pwaChecks.length ? `
+  if (!std) return '';
+  const pwaChecks = std.checks.filter((c) => c.id.startsWith('pwa-'));
+  const metaChecks = std.checks.filter((c) => !c.id.startsWith('pwa-'));
+  const checkRow = (c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`;
+  const hasSW = pwaChecks.find((c) => c.id === 'pwa-service-worker');
+  const hasManifest = pwaChecks.find((c) => c.id === 'pwa-manifest');
+  const pwaInterpretation = hasSW?.pass > 0
+    ? t('Service worker detected on @n of @total checked page(s).', { '@n': hasSW.pass, '@total': hasSW.total }) + ' ' + (hasManifest?.pass > 0 ? t('Web app manifest also present.') : t('No web app manifest found.')) + ' ' + t('Service workers enable offline access and "Add to Home Screen" install.')
+    : t('No service worker detected on any checked page — this site does not provide offline access or PWA install capability.');
+  const pwaBlock = pwaChecks.length ? `
 <h3>${t('PWA & offline readiness')} <span class="bug-meta">${t('across @n page(s)', { '@n': std.pagesChecked })}</span></h3>
 <p class="meta">${pwaInterpretation} ${t('These checks run on every crawled page via Playwright (not sampled). Lighthouse 12+ removed the dedicated PWA category score.')}</p>
 <table>
@@ -1921,23 +1927,37 @@ ${checklist(sec.checks)}` : '';
 <thead><tr><th scope="col">${t('Check')}</th><th scope="col" class="num">${t('Pass rate')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${pwaChecks.map(checkRow).join('')}</tbody>
 </table>` : '';
-    return `
-<h3>${t('Web standards & metadata')} <span class="bug-meta">${t('across @n page(s)', { '@n': std.pagesChecked })}</span></h3>
+  return `<section aria-labelledby="h-standards">
+${heading('h-standards', t('Web standards & metadata'))}
+${scanGovMeta()}
 <table>
 <caption>${t('Share of checked pages passing each standard (lowest first).')}</caption>
 <thead><tr><th scope="col">${t('Standard')}</th><th scope="col" class="num">${t('Pass rate')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${metaChecks.map(checkRow).join('')}</tbody>
 </table>
+<p class="meta"><span class="bug-meta">${t('across @n page(s)', { '@n': std.pagesChecked })}</span></p>
 ${std.social?.length ? `<p class="meta">${t('Open social presence found:')} ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : `<p class="meta">${t('No Mastodon/Bluesky links detected on checked pages.')}</p>`}
-${pwaBlock}`;
-  })() : '';
-  const piBlock = publicInterestSection(pi);
-  return `<section aria-labelledby="h-standards">
-${heading('h-standards', t('Standards & security'))}
-<p class="meta">${t('Web-standards, metadata, and security checks in the spirit of <a href="https://standards.scangov.org/">ScanGov</a> (methodology CC0), run across our scan rather than only the homepage.')}</p>
+${pwaBlock}
+</section>`;
+}
+
+/**
+ * "Trustworthy?" — security & domain hygiene plus the origin-level public-
+ * interest signals (accessibility statement, carbon.txt, renewable hosting,
+ * sitemaps).
+ */
+function securitySection(summary) {
+  const sec = summary.security;
+  const pi = summary.publicInterest ?? null;
+  if (!sec && !pi) return '';
+  const secBlock = sec ? `
+<h3>${t('Security & domain hygiene')} <span class="bug-meta">${t('@passed/@total on the origin', { '@passed': sec.passed, '@total': sec.total })}</span></h3>
+${checklist(sec.checks)}` : '';
+  return `<section aria-labelledby="h-security">
+${heading('h-security', t('Security & public interest'))}
+${scanGovMeta()}
 ${secBlock}
-${stdBlock}
-${piBlock}
+${publicInterestSection(pi)}
 </section>`;
 }
 
@@ -2870,12 +2890,12 @@ ${consensusSection(summary, bugs)}
  * Standalone standards & security page.
  */
 export function renderStandardsPage(target, summary) {
-  const content = standardsSecuritySection(summary);
+  const content = standardsSection(summary);
   if (!content) {
-    return emptyCriterionPage(target, summary, { active: 'standards', label: 'Standards & Security', message: 'No web-standards or security checks ran on this week\'s sampled pages.' });
+    return emptyCriterionPage(target, summary, { active: 'standards', label: 'Web standards & metadata', message: 'No web-standards checks ran on this week\'s sampled pages.' });
   }
   const body = `
-<h1>${esc(target.domain)}: ${t('Standards & Security')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
+<h1>${esc(target.domain)}: ${t('Web standards & metadata')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('standards')}
 ${content}
 `;
@@ -2883,6 +2903,25 @@ ${content}
     title: `${target.domain} Standards ${summary.week} | vital-scans`,
     page: "standards",
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Standards")}</li>`,
+    body,
+    depth: 3,
+  });
+}
+
+export function renderSecurityPage(target, summary) {
+  const content = securitySection(summary);
+  if (!content) {
+    return emptyCriterionPage(target, summary, { active: 'security', label: 'Security & public interest', message: 'No security or public-interest checks ran on this week\'s sampled pages.' });
+  }
+  const body = `
+<h1>${esc(target.domain)}: ${t('Security & public interest')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
+${subnav('security')}
+${content}
+`;
+  return layout({
+    title: `${target.domain} Security ${summary.week} | vital-scans`,
+    page: "security",
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Security")}</li>`,
     body,
     depth: 3,
   });

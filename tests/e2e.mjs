@@ -405,7 +405,11 @@ try {
   assert(w1.standards.checks.find((c) => c.id === 'title').rate === 100, 'every page has a title (standard passes 100%)');
   assert(w1.standards.social.some((s) => s.platform === 'mastodon'), 'Mastodon social link detected');
   const standardsPage = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'standards.html'), 'utf8');
-  assert(/id="h-standards"/.test(standardsPage), 'standards sub-page has a standards & security section');
+  assert(/id="h-standards"/.test(standardsPage), 'standards sub-page (Findable) has a web-standards section');
+  // Security + public-interest moved to their own Trustworthy page.
+  const securityPage = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'security.html'), 'utf8');
+  assert(/id="h-security"/.test(securityPage), 'security sub-page (Trustworthy) has a security & public-interest section');
+  assert(!/id="h-security"/.test(standardsPage), 'security content is not duplicated on the standards page');
   // Downloadable per-domain JSON: a single snapshot of everything known.
   const domainJsonPath = path.join(SANDBOX, 'docs', 'data', 'localhost', 'domain.json');
   assert(fs.existsSync(domainJsonPath), 'domain.json export written');
@@ -434,7 +438,7 @@ try {
   // page (including archive.html) carries the identical full subnav. A
   // criterion with no data this week still renders, with an empty-state page.
   const weekDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23');
-  const SUBPAGES = ['index', 'accessible', 'standards', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'archive'];
+  const SUBPAGES = ['index', 'accessible', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'archive'];
   const navOf = (html) => {
     const m = html.match(/<nav class="subnav"[\s\S]*?<\/nav>/);
     if (!m) return null;

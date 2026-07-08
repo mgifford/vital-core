@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, redirectStub, PAGE_REDIRECTS } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
@@ -341,6 +341,7 @@ for (const target of config.targets) {
         trainingAdvice,
       }));
       fs.writeFileSync(path.join(repDir, `standards${sfx}.html`), renderStandardsPage(target, summary));
+      fs.writeFileSync(path.join(repDir, `security${sfx}.html`), renderSecurityPage(target, summary));
       fs.writeFileSync(path.join(repDir, `errors${sfx}.html`), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
       fs.writeFileSync(path.join(repDir, `fast${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson));
       fs.writeFileSync(path.join(repDir, `findable${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));

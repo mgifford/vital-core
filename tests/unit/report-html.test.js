@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderAccessibilityPage, renderDomainReport, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 
 test('renderDomainReport shows severity trend and four-category Lighthouse trend', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
@@ -369,4 +369,42 @@ test('subnav is grouped by outcome question and links to the renamed pages', () 
   assert.match(html, /href="fast\.html">Lighthouse</);
   assert.match(html, /href="findable\.html">Readability</);
   assert.match(html, /href="third-parties\.html">Third parties</);
+  // standards is now under Findable?, security under Trustworthy?.
+  assert.match(html, /href="standards\.html">Standards</);
+  assert.match(html, /href="security\.html">Security</);
+});
+
+test('standards page (Findable) and security page (Trustworthy) split cleanly', () => {
+  const target = { key: 'd', domain: 'd' };
+  const summary = {
+    week: '2026-W24',
+    standards: {
+      pagesChecked: 10,
+      checks: [
+        { id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 },
+        { id: 'pwa-service-worker', label: 'Service worker', rate: 0, pass: 0, total: 10 },
+      ],
+      social: [{ platform: 'mastodon', href: 'https://example.social/@x' }],
+    },
+    security: { passed: 3, total: 5, checks: [{ id: 'https', label: 'Serves HTTPS', pass: true }, { id: 'gov-tld', label: 'Uses a .gov domain', pass: false }] },
+    publicInterest: { a11yStatement: { result: 'fail' }, carbonTxt: { result: 'unknown' }, greenWebFoundation: { result: 'pass' }, sitemaps: { xml: { found: true, url: 'https://d/sitemap.xml' }, human: { found: false } } },
+  };
+  const std = renderStandardsPage(target, summary);
+  const sec = renderSecurityPage(target, summary);
+
+  // Standards page: web-standards content, NOT security/public-interest.
+  assert.match(std, /id="h-standards"/);
+  assert.match(std, /Web standards &amp; metadata|Web standards/);
+  assert.match(std, /PWA &amp; offline readiness|PWA/);
+  assert.doesNotMatch(std, /id="h-security"/);
+  assert.doesNotMatch(std, /Security & domain hygiene/);
+
+  // Security page: security + public interest, NOT the standards table.
+  assert.match(sec, /id="h-security"/);
+  assert.match(sec, /Security & domain hygiene/);
+  assert.match(sec, /Public interest/);
+  assert.doesNotMatch(sec, /id="h-standards"/);
+  // Each links to itself as the current nav item.
+  assert.match(std, /<li aria-current="page">Standards<\/li>/);
+  assert.match(sec, /<li aria-current="page">Security<\/li>/);
 });
