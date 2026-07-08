@@ -8,6 +8,7 @@ import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, s
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
+import { weekDeltas } from './lib/progress.js';
 import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
@@ -165,6 +166,9 @@ for (const target of config.targets) {
         b.weeks_seen = h.weeksSeen;
       }
     }
+    // Finding-level new/fixed/regressed for the Layer-1 landing page. Computed
+    // after updateFindings so the ledger reflects state through this week.
+    const progress = weekDeltas(ledger, summary.week, prev?.week ?? null);
     if (bugs.length) {
       apiWeekFindings.push({ key: target.key, week: summary.week, data: buildWeekFindings(target, summary, bugs, ledger.findings) });
     }
@@ -342,7 +346,7 @@ for (const target of config.targets) {
       const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
       if (archiveHtml) fs.writeFileSync(path.join(repDir, `archive${sfx}.html`), archiveHtml);
       fs.writeFileSync(path.join(repDir, `index${sfx}.html`),
-        renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null));
+        renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null, progress));
     }
     setLocale(target.defaultLanguage);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));

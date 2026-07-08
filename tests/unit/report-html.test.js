@@ -99,6 +99,58 @@ test('renderDomainReport shows severity trend and four-category Lighthouse trend
   assert.doesNotMatch(html, /Median page weight \(KB\)/);
 });
 
+test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted detail', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W24', pagesScanned: 10, pagesAudited: 10,
+    generatedAt: '2026-06-08T00:00:00.000Z',
+    axe: { medianViolations: 4, pagesScanned: 10, pagesWithViolations: 8, rules: {} },
+    alfa: { medianFailures: 1, pagesScanned: 10, pagesWithFailures: 3, rules: {} },
+    coverage: { axe: 10, alfa: 10 },
+  };
+  const bugs = [
+    {
+      instance_id: 'VS-abc12345', pattern_id: 'VS-pat1', tool: 'axe-core', rule_id: 'image-alt',
+      summary: 'Images must have alternative text', severity: 'Critical', wcag_sc: '1.1.1',
+      frequency: { pages_affected: 7, total_pages_scanned: 10, instances: 12 },
+      remediation_tip: 'Add alt text to every informative image.',
+      impact: { groups: [{ group: 'Blind', prevalence: 0.02 }] },
+    },
+    {
+      instance_id: 'VS-def67890', pattern_id: 'VS-pat2', tool: 'axe-core', rule_id: 'label',
+      summary: 'Form elements must have labels', severity: 'Serious', wcag_sc: '4.1.2',
+      frequency: { pages_affected: 2, total_pages_scanned: 10, instances: 3 },
+      impact: { groups: [] },
+    },
+  ];
+  const progress = {
+    new: [{ id: 'VS-pat1', severity: 'Critical' }],
+    fixed: [{ id: 'VS-x', severity: 'Serious' }, { id: 'VS-y', severity: 'Minor' }],
+    regressed: [],
+  };
+
+  const html = renderDomainReport(target, summary, null, null, [summary], bugs,
+    { byRule: {}, bugsAll: null }, null, progress);
+
+  // Three delta tiles with their counts.
+  assert.match(html, /New this week<\/dt><dd>1</);
+  assert.match(html, /Fixed this week<\/dt><dd>2</);
+  assert.match(html, /Regressed this week<\/dt><dd>0</);
+
+  // Biggest-win callout links to the top-ranked finding's canonical location.
+  assert.match(html, /class="callout callout-win"/);
+  assert.match(html, /Biggest available win/);
+  assert.match(html, /<a href="accessibility\.html#VS-abc12345"><strong>Images must have alternative text<\/strong><\/a>/);
+  // The callout headlines the highest-priority finding (Critical, 7 pages), not the Serious one.
+  const callout = html.match(/<aside class="callout callout-win"[\s\S]*?<\/aside>/)[0];
+  assert.doesNotMatch(callout, /Form elements must have labels/);
+
+  // Supporting detail is demoted into a collapsed drill-down (still in the DOM).
+  assert.match(html, /<details class="drilldown">/);
+  assert.match(html, /id="h-summary"/);
+  assert.match(html, /This week at a glance/);
+});
+
 test('renderAccessibilityPage shows engine and rule id in bug summaries', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const summary = {

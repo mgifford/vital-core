@@ -427,6 +427,24 @@ export function statTile(label, value, { deltaN = null, deltaOpts = {}, spark = 
 }
 
 /**
+ * A collapsed-by-default drill-down: supporting detail demoted below the Layer-1
+ * conclusion, with a visible count in the summary ("14 issue types ▸"). The
+ * heading keeps its `id` (still a valid fragment target — browsers auto-open the
+ * <details> when navigating to a fragment inside it), so existing `#h-…` deep
+ * links keep working. Native <details>, so it works with JavaScript off.
+ * `title` and `count` are already localized; `inner` is section body HTML.
+ */
+function drilldown(id, title, count, inner) {
+  const countHtml = count ? ` <span class="drill-count">${esc(count)}</span>` : '';
+  return `<details class="drilldown">
+<summary><h2 id="${esc(id)}" class="drill-title">${esc(title)}${countHtml}</h2></summary>
+<div class="drill-body">
+${inner}
+</div>
+</details>`;
+}
+
+/**
  * Accessible light/dark theme toggle, following the light-dark-mode skill
  * from mgifford/accessibility-skills:
  *  - defaults to prefers-color-scheme; manual choice persists in localStorage
@@ -2491,33 +2509,21 @@ ${subnav('archive')}
   });
 }
 
-export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null) {
+export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null, progress = { new: [], fixed: [], regressed: [] }) {
   const score = scoreFor(summary);
   const scoreFormat = target.display?.score_format ?? 'both';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
-  const resolvedCount = diff ? (diff.axe.resolved.length + diff.alfa.resolved.length) : 0;
-  const body = `
-<h1>${esc(target.domain)}: ${t('week @week', { '@week': esc(summary.week) })}</h1>
-${subnav('overview')}
-<p class="meta">${t('This is the <strong>@week</strong> ISO-week report (<strong>@fetched</strong> pages fetched, <strong>@audited</strong> unique pages audited by axe/Alfa). Generated @date.', { '@week': esc(summary.week), '@fetched': summary.pagesScanned, '@audited': summary.pagesAudited ?? summary.pagesScanned, '@date': esc(summary.generatedAt.slice(0, 10)) })}
-${prev ? t('Compared against @week (@n fetched).', { '@week': esc(prev.week), '@n': prev.pagesScanned }) : t('First recorded week; no comparison yet.')} ${t('The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.')}
-${t('Machine-readable API:')} <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
+  const prog = progress ?? { new: [], fixed: [], regressed: [] };
+  // The single highest-leverage finding, surfaced as the one thing to do next.
+  const win = bugs.length ? rankBugs(bugs, 1)[0] : null;
+  const changeCount = diff
+    ? [diff.axe, diff.alfa].reduce((a, d) => a + d.appeared.length + d.resolved.length + d.changed.length, 0)
+    : 0;
 
-${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Accessibility scorecard">
-  ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
-  ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
-  <span class="score-detail">${esc(scoreMeaning(summary, score))}
-  ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}
-  ${resolvedCount > 0 ? t('<strong>@n issue type(s) resolved</strong> since last week.', { '@n': resolvedCount }) : ''}</span>
-  <span class="score-caveat">${t('Score reflects the typical page\'s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.')}</span>
-</aside>` : ''}
-${invSummary ? `<p class="meta">${t('Over the whole history of this site, <strong>@known</strong> unique pages have been scanned at least once; <strong>@withIssues</strong> have known accessibility issues. <strong>@thisWeek</strong> of them were re-checked this ISO week.', { '@known': invSummary.totalKnownPages, '@withIssues': invSummary.pagesWithKnownIssues, '@thisWeek': invSummary.scannedThisWeek })} <a href="../../../data/${esc(target.key)}/domain.json">${t('Download full data (JSON)')}</a>.</p>` : ''}
-
-<section aria-labelledby="h-summary">
-${heading('h-summary', t('This week at a glance'))}
-<dl class="ledger">
+  // --- Layer 3 detail, built once, then demoted into collapsed <details> ---
+  const atGlanceInner = `<dl class="ledger">
   <div><dt>${t('Median axe violations / page')}</dt><dd>${fmtMedian(summary.axe.medianViolations)} ${sparkline(trendViol)}</dd></div>
   <div><dt>${t('Pages with axe violations')}</dt><dd>${t('@n of @total', { '@n': summary.axe.pagesWithViolations, '@total': summary.axe.pagesScanned ?? summary.pagesScanned })}${csvLink(csvLinks.axeAll, 'CSV')}</dd></div>
   <div><dt>${t('Median Alfa failures / page')}</dt><dd>${fmtMedian(summary.alfa.medianFailures)}</dd></div>
@@ -2542,25 +2548,49 @@ ${heading('h-summary', t('This week at a glance'))}
   <div><dt>${sustainabilityHeadline(summary.sustainability).label}</dt><dd>${sustainabilityHeadline(summary.sustainability).value}</dd></div>` : ''}
 </dl>
 ${prev && summary.pagesScanned !== prev.pagesScanned ? `<p class="note">${t('Note: page counts differ between weeks (@prev → @cur). Prefer the "pages affected" columns over raw instance counts when comparing.', { '@prev': prev.pagesScanned, '@cur': summary.pagesScanned })}</p>` : ''}
-${coverageTable(summary)}
+${coverageTable(summary)}`;
+
+  const body = `
+<h1>${esc(target.domain)}: ${t('week @week', { '@week': esc(summary.week) })}</h1>
+${subnav('overview')}
+<p class="meta">${t('This is the <strong>@week</strong> ISO-week report (<strong>@fetched</strong> pages fetched, <strong>@audited</strong> unique pages audited by axe/Alfa). Generated @date.', { '@week': esc(summary.week), '@fetched': summary.pagesScanned, '@audited': summary.pagesAudited ?? summary.pagesScanned, '@date': esc(summary.generatedAt.slice(0, 10)) })}
+${prev ? t('Compared against @week (@n fetched).', { '@week': esc(prev.week), '@n': prev.pagesScanned }) : t('First recorded week; no comparison yet.')} ${t('The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.')}
+${t('Machine-readable API:')} <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
+
+${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Accessibility scorecard">
+  ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
+  ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
+  <span class="score-detail">${esc(scoreMeaning(summary, score))}
+  ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
+  <span class="score-caveat">${t('Score reflects the typical page\'s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.')}</span>
+</aside>` : ''}
+
+<section aria-labelledby="h-deltas">
+<h2 id="h-deltas" class="visually-hidden">${t('Change this week')}</h2>
+<dl class="ledger deltas">
+  ${statTile('New this week', nf(prog.new.length))}
+  ${statTile('Fixed this week', nf(prog.fixed.length))}
+  ${statTile('Regressed this week', nf(prog.regressed.length))}
+</dl>
 </section>
 
-${series.length > 1 ? `
-<section aria-labelledby="h-trends">
-${heading('h-trends', t('Trends over time'))}
-${severityTrendChart(series)}
-${lighthouseCategoryTrendChart(series)}
-<p class="note">${t('Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.')}</p>
-</section>` : ''}
+${win ? `<aside class="callout callout-win" aria-labelledby="h-win">
+<h2 id="h-win">${t('Biggest available win')}</h2>
+<p><a href="accessibility.html#${esc(win.instance_id)}"><strong>${esc(win.summary)}</strong></a> — <span class="sev-badge">${esc(t(win.severity))}</span> ${t('across @n page(s)', { '@n': win.frequency.pages_affected })}.${win.remediation_tip ? ` ${esc(win.remediation_tip)}` : (win.suggested_fix ? ` ${esc(win.suggested_fix)}` : '')}</p>
+</aside>` : ''}
 
-${diff ? `
-<section aria-labelledby="h-wow">
-${heading('h-wow', t('Changes since @week', { '@week': diff.prevWeek }))}
-${changeList('axe-core', diff.axe)}
-${changeList('Alfa', diff.alfa)}
-</section>` : ''}
+${invSummary ? `<p class="meta">${t('Over the whole history of this site, <strong>@known</strong> unique pages have been scanned at least once; <strong>@withIssues</strong> have known accessibility issues. <strong>@thisWeek</strong> of them were re-checked this ISO week.', { '@known': invSummary.totalKnownPages, '@withIssues': invSummary.pagesWithKnownIssues, '@thisWeek': invSummary.scannedThisWeek })} <a href="../../../data/${esc(target.key)}/domain.json">${t('Download full data (JSON)')}</a>.</p>` : ''}
 
 ${fixFirstSection(bugs)}
+
+${drilldown('h-summary', t('This week at a glance'), t('@n issue type(s)', { '@n': nf(bugs.length) }), atGlanceInner)}
+
+${series.length > 1 ? drilldown('h-trends', t('Trends over time'), t('@n weeks', { '@n': nf(series.length) }), `${severityTrendChart(series)}
+${lighthouseCategoryTrendChart(series)}
+<p class="note">${t('Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.')}</p>`) : ''}
+
+${diff ? drilldown('h-wow', t('Changes since @week', { '@week': diff.prevWeek }), t('@n change(s)', { '@n': nf(changeCount) }), `${changeList('axe-core', diff.axe)}
+${changeList('Alfa', diff.alfa)}`) : ''}
 
 ${resourcesSection(summary)}
 `;
@@ -3444,6 +3474,15 @@ td .url, th .url { max-width: 22rem; }
   background: color-mix(in srgb, var(--worse) 8%, transparent); border-radius: 2px; }
 .callout-blocked h2 { color: var(--worse); border-bottom: none; margin-top: .75rem; }
 .callout-blocked ul { margin: .5rem 0; }
+.callout-win { border-left: 4px solid var(--better); padding: .25rem 1rem; margin: 1rem 0;
+  background: color-mix(in srgb, var(--better) 8%, transparent); border-radius: 2px; }
+.callout-win h2 { color: var(--better); border-bottom: none; margin-top: .75rem; }
+.deltas { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+.drilldown { border-top: 1px solid var(--rule); margin: .5rem 0; }
+.drilldown > summary { cursor: pointer; list-style-position: outside; }
+.drilldown > summary > .drill-title { display: inline; font-size: 1.15rem; border-bottom: none; }
+.drill-count { color: var(--muted); font-weight: 400; font-size: .85rem; }
+.drill-body { padding-left: .25rem; }
 .blocked-accordion { margin-top: 2rem; border-top: 1px solid var(--rule); padding-top: .5rem; }
 .blocked-accordion > summary { cursor: pointer; color: var(--muted); font-weight: 600; }
 .ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
