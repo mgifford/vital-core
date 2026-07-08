@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { weekDeltas, weekDeltaCounts, severityBurndown, streaks } from '../../src/lib/progress.js';
+import { weekDeltas, weekDeltaCounts, severityBurndown, streaks, deltaSeries } from '../../src/lib/progress.js';
 
 // A small synthetic ledger as it would stand when rendering 2026-W24, with the
 // previous scanned week being 2026-W23.
@@ -88,4 +88,20 @@ test('streaks counts trailing zero-runs per severity currently at zero', () => {
 test('streaks returns [] when nothing is at zero or series empty', () => {
   assert.deepEqual(streaks([{ week: 'W1', critical: 1, serious: 1, moderate: 1, minor: 1 }]), []);
   assert.deepEqual(streaks([]), []);
+});
+
+test('deltaSeries reconstructs per-week new/fixed/regressed from the final ledger', () => {
+  const s = deltaSeries(ledger(), ['2026-W23', '2026-W24']);
+  assert.equal(s.length, 2);
+  // W23 (prev=null): NEW not yet seen; FIXED seen (W20..W23) present -> not new/fixed;
+  // only firstSeen===W23 counts as new — none here.
+  assert.deepEqual(s[0], { week: '2026-W23', new: 0, fixed: 0, regressed: 0 });
+  // W24 vs W23: NEW firstSeen W24 -> new 1; FIXED present W23 not W24 -> fixed 1;
+  // REGRESSED present W24, absent W23, firstSeen<W24 -> regressed 1.
+  assert.deepEqual(s[1], { week: '2026-W24', new: 1, fixed: 1, regressed: 1 });
+});
+
+test('deltaSeries is empty-safe', () => {
+  assert.deepEqual(deltaSeries(null, ['2026-W24']), [{ week: '2026-W24', new: 0, fixed: 0, regressed: 0 }]);
+  assert.deepEqual(deltaSeries({ findings: {} }, []), []);
 });

@@ -484,10 +484,11 @@ function sparkline(values, width = 220, height = 36) {
  * the call site); only the label is localized here. Returns a `<div>` — wrap
  * several in `<dl class="ledger">`.
  */
-export function statTile(label, value, { deltaN = null, deltaOpts = {}, spark = null } = {}) {
+export function statTile(label, value, { deltaN = null, deltaOpts = {}, spark = null, tone = null } = {}) {
   const d = deltaN != null ? ` ${delta(deltaN, deltaOpts)}` : '';
   const s = Array.isArray(spark) && spark.length > 1 ? ` ${sparkline(spark)}` : '';
-  return `<div><dt>${t(label)}</dt><dd>${value}${d}${s}</dd></div>`;
+  const cls = tone ? ` class="stat-${esc(tone)}"` : '';
+  return `<div${cls}><dt>${t(label)}</dt><dd>${value}${d}${s}</dd></div>`;
 }
 
 /**
@@ -2772,9 +2773,13 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
 <section aria-labelledby="h-deltas">
 <h2 id="h-deltas" class="visually-hidden">${t('Change this week')}</h2>
 <dl class="ledger deltas">
-  ${statTile('New this week', nf(prog.new.length))}
-  ${statTile('Fixed this week', nf(prog.fixed.length))}
-  ${statTile('Regressed this week', nf(prog.regressed.length))}
+  ${(() => {
+    const ds = prog.deltaSeries ?? [];
+    const col = (k) => ds.map((d) => d[k] ?? 0);
+    return `${statTile('New this week', nf(prog.new.length), { spark: col('new') })}
+  ${statTile('Fixed this week', nf(prog.fixed.length), { spark: col('fixed'), tone: prog.fixed.length ? 'better' : null })}
+  ${statTile('Regressed this week', nf(prog.regressed.length), { spark: col('regressed'), tone: prog.regressed.length ? 'worse' : null })}`;
+  })()}
 </dl>
 </section>
 
@@ -3706,6 +3711,8 @@ td .url, th .url { max-width: 22rem; }
   background: color-mix(in srgb, var(--better) 8%, transparent); border-radius: 2px; }
 .callout-win h2 { color: var(--better); border-bottom: none; margin-top: .75rem; }
 .deltas { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+.deltas .stat-better dd { color: var(--better); }
+.deltas .stat-worse dd { color: var(--worse); }
 .drilldown { border-top: 1px solid var(--rule); margin: .5rem 0; }
 .drilldown > summary { cursor: pointer; list-style-position: outside; }
 .drilldown > summary > .drill-title { display: inline; font-size: 1.15rem; border-bottom: none; }

@@ -8,7 +8,7 @@ import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, s
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
-import { weekDeltas, severityBurndown, streaks } from './lib/progress.js';
+import { weekDeltas, severityBurndown, streaks, deltaSeries } from './lib/progress.js';
 import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
@@ -171,8 +171,10 @@ for (const target of config.targets) {
     const progress = weekDeltas(ledger, summary.week, prev?.week ?? null);
     // Progress panel: open-finding burndown over the weeks known so far (the
     // ledger has no future weeks yet), and clean-week streaks from it.
-    progress.burndown = severityBurndown(ledger, series.slice(0, i + 1).map((s) => s.week));
+    const weeksSoFar = series.slice(0, i + 1).map((s) => s.week);
+    progress.burndown = severityBurndown(ledger, weeksSoFar);
     progress.streaks = streaks(progress.burndown);
+    progress.deltaSeries = deltaSeries(ledger, weeksSoFar);
     if (bugs.length) {
       apiWeekFindings.push({ key: target.key, week: summary.week, data: buildWeekFindings(target, summary, bugs, ledger.findings) });
     }
