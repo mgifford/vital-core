@@ -13,119 +13,119 @@
       "criterion_id": "FR-02",
       "description": "Landing page leads with score + grade + band + trajectory (conclusion first)",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "tests/unit/report-html.test.js (renderDomainReport hero assertions)"
     },
     {
       "criterion_id": "FR-03",
       "description": "Three deltas (new/fixed/regressed this week) surfaced via statTile; derived from diff + ledger",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "src/lib/progress.js pure fns; tests/unit/progress.test.js"
     },
     {
       "criterion_id": "FR-04",
       "description": "Single biggest-available-win callout (rankBugs top-1) linking to the canonical finding",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "tests/unit/report-html.test.js (callout assertion)"
     },
     {
       "criterion_id": "FR-05",
       "description": "Detail sections collapsed by default with visible counts; inverted pyramid; one primary action",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "renderDomainReport <details> wrappers in src/report-html.js"
     },
     {
       "criterion_id": "FR-06",
       "description": "Fixed-this-week panel lists finding-level resolved findings",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "src/lib/progress.js fixedThisWeek(); tests/unit/progress.test.js"
     },
     {
       "criterion_id": "FR-07",
       "description": "Severity burndown across weeks (per-week Critical/Serious/Moderate/Minor buckets)",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "src/lib/progress.js severityBurndown(); tests/unit/progress.test.js"
     },
     {
       "criterion_id": "FR-08",
       "description": "Triage completion 'X of N' via client-side localStorage script; blank with JS off",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "triage-completion PE script in src/report-html.js"
     },
     {
       "criterion_id": "FR-09",
       "description": "Streak badges derived from the burndown series",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "src/lib/progress.js streaks(); tests/unit/progress.test.js"
     },
     {
       "criterion_id": "FR-10",
       "description": "Subnav grouped by outcome question; empty-state/no-404 invariant preserved",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "SUBNAV_ITEMS/subnav() in src/report-html.js; tests/e2e.mjs"
     },
     {
       "criterion_id": "FR-11",
       "description": "Pages renamed to outcome slugs per fixed map; page/active/filename consistent",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "aggregate.js write loop; plan.md old→new map"
     },
     {
       "criterion_id": "FR-12",
       "description": "Redirect-stub emitter at every old filename; canonical + meta-refresh + hash-preserving location.replace, per locale",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "redirect-stub emitter in src/report-html.js/aggregate.js; tests/unit stub-emission case"
     },
     {
       "criterion_id": "FR-13",
       "description": "CLAUDE.md IA section + README note",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "CLAUDE.md Information Architecture section; README.md"
     },
     {
       "criterion_id": "C-01",
       "description": "No deep link breaks; #VS-hash and #h-id fragments preserved through redirect stubs",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "stub-emission unit test (old URL → dest, fragment preserved); manual locale check"
     },
     {
       "criterion_id": "C-02",
       "description": "One canonical location per finding; other pages link rather than re-render",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "landing/callout link to accessible.html#<instance_id>; no duplicate finding render"
     },
     {
       "criterion_id": "C-03",
       "description": "JS is progressive enhancement; page/nav/detail work with JS off (native <details>, links)",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "native <details> + plain links; triage count is enhancement only"
     },
     {
       "criterion_id": "C-04",
       "description": "Sustainable web output: reuse CSS/chart patterns, no web fonts, minimal added bytes",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "reused .ledger/.delta/.spark/.callout CSS + existing SVG chart pattern"
     },
     {
       "criterion_id": "C-05",
       "description": "i18n lockstep: basename == filename; siblings/switcher/?lang runtime keep working",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "tests/unit/i18n-render.test.js updated hrefs; aggregate per-locale loop"
     },
     {
@@ -139,21 +139,21 @@
       "criterion_id": "C-07",
       "description": "No new npm deps; no data/ schema change; JSON API unaffected",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "package.json unchanged deps; api-writer keys on domain/week"
     },
     {
       "criterion_id": "NFR-01",
       "description": "Unit tests for statTile, progress pure fns, redirect-stub emission; e2e/i18n-render updated in lockstep",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "tests/unit/report-html.test.js, tests/unit/progress.test.js, tests/e2e.mjs, tests/unit/i18n-render.test.js"
     },
     {
       "criterion_id": "NFR-02",
       "description": "Added CSS/JS within lean budget; charts reuse accessible SVG+data-table; stubs minimal; latest-week-only non-default stubs",
       "proof_type": "code_review",
-      "pass_fail": "pending",
+      "pass_fail": "pass",
       "evidence": "reused chart pattern; minimal stub markup; aggregate latest-week policy"
     }
   ]

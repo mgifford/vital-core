@@ -42,6 +42,13 @@ Other deliberate choices:
   There are no synthesized run IDs to group incorrectly.
 - **Pages-affected over instance counts.** A rule failing 600 times on
   a nav menu is one fix, not 600. Reports rank rules by pages affected.
+- **Reports built for the visitor's question, not the engine list.** Each
+  domain's landing page answers "how are we doing?" in ~10 seconds — score
+  and trend, three deltas (new / fixed / regressed this week), and the one
+  biggest available win — with the detail collapsed below. The sub-nav is
+  grouped by outcome (Accessible? · Fast? · Findable? · Trustworthy? ·
+  Sustainable?). Renamed pages keep a redirect at their old URL, so existing
+  links (including pinned `#finding` anchors) never break.
 - **A settle delay before auditing** (`settle_delay_ms`, overridable
   with `VITAL_A11Y_SETTLE_DELAY_MS`) lets client-side hydration finish,
   which removes the largest source of transient false positives.

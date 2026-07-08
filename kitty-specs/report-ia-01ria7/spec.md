@@ -1,6 +1,6 @@
 # Spec: Report information architecture — progressive disclosure
 
-**Status**: IN PROGRESS
+**Status**: ACCEPTED
 
 > Hand-authored to mirror the spec-kitty mission format (the `spec-kitty` CLI is
 > not available in the implementing environment). Implemented incrementally on
@@ -98,14 +98,14 @@ finding. No server, no build step; usable without JavaScript.
 
 ## Acceptance criteria
 
-- [ ] `statTile` composes delta+sparkline into a ledger cell; label localized, value preformatted; covered by unit tests. *(WP01 — done)*
-- [ ] The landing page leads with score + trajectory, then three deltas (new/fixed/regressed), then a single biggest-win callout; detail is collapsed by default with visible counts.
-- [ ] "New/fixed/regressed" are computed from the diff + findings ledger by unit-tested pure functions.
-- [ ] The progress panel shows fixed-this-week, a severity burndown across weeks, a client-side triage-completion count (blank with JS off), and streak badges.
-- [ ] The subnav is grouped by outcome question; every old page URL still resolves (renamed pages redirect via a stub that preserves the `#fragment`), verified for the default and a non-default locale.
-- [ ] One canonical location per finding; severity taxonomy and the JSON API are unchanged.
-- [ ] Pages, nav, and collapsed detail work with JavaScript disabled.
-- [ ] `npm run test:unit` and `npm run test:e2e` green; `npm run i18n:check` and `npm run check:spec-kitty` green.
+- [x] `statTile` composes delta+sparkline into a ledger cell; label localized, value preformatted; covered by unit tests. *(WP01 — done)*
+- [x] The landing page leads with score + trajectory, then three deltas (new/fixed/regressed), then a single biggest-win callout; detail is collapsed by default with visible counts.
+- [x] "New/fixed/regressed" are computed from the diff + findings ledger by unit-tested pure functions.
+- [x] The progress panel shows fixed-this-week, a severity burndown across weeks, a client-side triage-completion count (blank with JS off), and streak badges.
+- [x] The subnav is grouped by outcome question; every old page URL still resolves (renamed pages redirect via a stub that preserves the `#fragment`), verified for the default and a non-default locale.
+- [x] One canonical location per finding; severity taxonomy and the JSON API are unchanged.
+- [x] Pages, nav, and collapsed detail work with JavaScript disabled.
+- [x] `npm run test:unit` and `npm run test:e2e` green; `npm run i18n:check` and `npm run check:spec-kitty` green.
 
 ---
 
