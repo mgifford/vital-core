@@ -312,11 +312,11 @@ try {
   assert(Object.keys(tpLedger.vendors).length >= 1, 'third-party ledger committed with vendors');
   assert(tpLedger.vendors[scriptVendor.origin]?.firstSeen === '2026-W23', 'vendor first-seen recorded in ledger');
   // Sub-page + CSV + subnav.
-  const tpPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'third-party.html');
-  assert(fs.existsSync(tpPage), 'third-party.html sub-page written');
+  const tpPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'third-parties.html');
+  assert(fs.existsSync(tpPage), 'third-parties.html sub-page written');
   const tpHtml = fs.readFileSync(tpPage, 'utf8');
   assert(/third parties/i.test(tpHtml) && /Median bytes/.test(tpHtml), 'third-party page has the vendor table');
-  assert(/href="third-party.html">Third parties/.test(w1index), 'subnav links to third-party page');
+  assert(/href="third-parties.html">Third parties/.test(w1index), 'subnav links to third-party page');
   const thirdPartyCsvPath = reportFile('2026-W23', 'third-party.csv');
   assert(thirdPartyCsvPath, 'third-party CSV written');
   const tpCsv = fs.readFileSync(thirdPartyCsvPath, 'utf8');
@@ -434,7 +434,7 @@ try {
   // page (including archive.html) carries the identical full subnav. A
   // criterion with no data this week still renders, with an empty-state page.
   const weekDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23');
-  const SUBPAGES = ['index', 'accessibility', 'standards', 'errors', 'lighthouse', 'readability', 'tech', 'tech-findings', 'third-party', 'images', 'archive'];
+  const SUBPAGES = ['index', 'accessible', 'standards', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'archive'];
   const navOf = (html) => {
     const m = html.match(/<nav class="subnav"[\s\S]*?<\/nav>/);
     if (!m) return null;
@@ -456,12 +456,17 @@ try {
   assert(navOf(archiveHtml) === referenceNav, 'archive.html has the identical full subnav');
   // Lighthouse is sampled and may have no data in the e2e: its page must still
   // exist with the nav (empty-state), proving the no-404 guarantee.
-  const lhHtml = fs.readFileSync(path.join(weekDir, 'lighthouse.html'), 'utf8');
-  assert(/class="subnav"/.test(lhHtml), 'lighthouse.html (possibly empty) still has the subnav');
+  const lhHtml = fs.readFileSync(path.join(weekDir, 'fast.html'), 'utf8');
+  assert(/class="subnav"/.test(lhHtml), 'fast.html (possibly empty) still has the subnav');
+  // Renamed pages keep a redirect stub at the OLD basename so existing deep
+  // links (e.g. accessibility.html#VS-…) still resolve, hash preserved.
+  const stub = fs.readFileSync(path.join(weekDir, 'accessibility.html'), 'utf8');
+  assert(/http-equiv="refresh"[^>]*url=accessible\.html/.test(stub), 'old accessibility.html is a redirect stub to accessible.html');
+  assert(/location\.replace\("accessible\.html" \+ location\.hash\)/.test(stub), 'redirect stub preserves the URL fragment');
 
   // Week-1 report (has violations): "Fix these first" + evidence CSVs.
   const w1report = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
-  const w1a11y = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessibility.html'), 'utf8');
+  const w1a11y = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessible.html'), 'utf8');
   const w1errors = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'errors.html'), 'utf8');
   assert(/id="h-fixfirst"/.test(w1report), 'domain report has a "Fix these first" section');
   assert(/href="archive.html">Archive/.test(w1report), 'subnav links to the archive');
@@ -487,7 +492,7 @@ try {
   // Long URLs use the truncatable .url class (e.g. in errors table).
   assert(/class="url"/.test(w1errors), 'long URLs use the truncatable url class');
   // Readability sub-page + subnav.
-  const readPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.html');
+  const readPage = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'findable.html');
   assert(fs.existsSync(readPage), 'standalone readability page written');
   const readHtml = fs.readFileSync(readPage, 'utf8');
   assert(/table class="sortable"/.test(readHtml), 'readability page has a sortable table');
@@ -501,7 +506,7 @@ try {
   assert(spellingCsvPath, 'spelling CSV written');
   assert(/word,pages_affected,example_pages/.test(fs.readFileSync(spellingCsvPath, 'utf8')), 'spelling CSV has expected header');
   // Spelling JSON download + the readability page links it.
-  const readHtmlFull = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'readability.html'), 'utf8');
+  const readHtmlFull = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'findable.html'), 'utf8');
   const spellingJsonPath = reportFile('2026-W23', 'spelling.json');
   assert(spellingJsonPath, 'spelling JSON written');
   assert(readHtmlFull.includes(`href="${path.basename(spellingJsonPath)}"`) && readHtmlFull.includes(`href="${path.basename(spellingCsvPath)}"`), 'readability page links spelling CSV + JSON');

@@ -253,33 +253,96 @@ function urlCell(url) {
 }
 
 /**
- * Sub-page navigation shared by every page in a domain's weekly report.
- * `active` is the current page key. The nav is FIXED — it always lists every
- * criterion we evaluate, in the same order, on every domain and every week —
- * so navigation is consistent and predictable. Every sub-page is always
- * written (with a "no data this week" empty state where a criterion had none),
- * so no link 404s. Links are relative within the same week directory.
+ * Canonical output basename for each report page, keyed by the page's stable
+ * `active` key. Filenames are outcome-aligned; the keys never change, so every
+ * render function's `subnav('<key>')` call and every cross-link route through
+ * one map. A rename is a single edit here, plus a redirect stub at the old
+ * basename (PAGE_REDIRECTS) so existing deep links keep working.
  */
-const SUBNAV_ITEMS = [
-  ['index.html', 'Overview', 'overview'],
-  ['accessibility.html', 'Accessibility', 'accessibility'],
-  ['standards.html', 'Standards', 'standards'],
-  ['errors.html', 'Errors', 'errors'],
-  ['lighthouse.html', 'Lighthouse', 'lighthouse'],
-  ['readability.html', 'Readability', 'readability'],
-  ['tech.html', 'Tech stack', 'tech'],
-  ['tech-findings.html', 'Tech ↔ issues', 'tech-findings'],
-  ['third-party.html', 'Third parties', 'third-party'],
-  ['images.html', 'Images', 'images'],
-  ['archive.html', 'Archive', 'archive'],
+const PAGES = {
+  overview: 'index',
+  accessibility: 'accessible',
+  images: 'images',
+  lighthouse: 'fast',
+  readability: 'findable',
+  standards: 'standards',
+  'third-party': 'third-parties',
+  errors: 'errors',
+  tech: 'tech',
+  'tech-findings': 'tech-findings',
+  archive: 'archive',
+};
+
+/** Old basename → new basename, for the renamed pages only (redirect stubs). */
+export const PAGE_REDIRECTS = {
+  accessibility: 'accessible',
+  lighthouse: 'fast',
+  readability: 'findable',
+  'third-party': 'third-parties',
+};
+
+/**
+ * Relative href to a report page in the same week directory, locale-suffixed for
+ * the active locale (so a French page links to its French sibling). `anchor` is
+ * an optional fragment (without '#').
+ */
+function pageHref(key, anchor = '') {
+  return `${PAGES[key]}${localeSuffix()}.html${anchor ? `#${anchor}` : ''}`;
+}
+
+/**
+ * Sub-page navigation shared by every page in a domain's weekly report, grouped
+ * by the visitor's outcome question (Accessible? · Fast? · Findable? ·
+ * Trustworthy? · Sustainable?). `active` is the current page key. The nav is
+ * FIXED — every criterion is always listed, in the same order, on every page —
+ * and every sub-page is always written (with a "no data this week" empty state),
+ * so no link 404s. Pure links, works with no JS.
+ */
+const SUBNAV_GROUPS = [
+  { label: null, items: [['overview', 'Overview']] },
+  { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['images', 'Images']] },
+  { label: 'Fast?', items: [['lighthouse', 'Lighthouse']] },
+  { label: 'Findable?', items: [['readability', 'Readability']] },
+  { label: 'Trustworthy?', items: [['standards', 'Standards'], ['third-party', 'Third parties'], ['errors', 'Errors']] },
+  { label: 'Sustainable?', items: [['tech', 'Tech stack'], ['tech-findings', 'Tech ↔ issues']] },
+  { label: null, items: [['archive', 'Archive']] },
 ];
 function subnav(active) {
-  const sfx = localeSuffix();
-  return `<nav class="subnav" aria-label="${esc(t('Domain report pages'))}"><ul>${SUBNAV_ITEMS
-    .map(([href, label, key]) => key === active
+  const groupHtml = ({ label, items }) => {
+    const lis = items.map(([key, label]) => key === active
       ? `<li aria-current="page">${esc(t(label))}</li>`
-      : `<li><a href="${esc(href.replace('.html', `${sfx}.html`))}">${esc(t(label))}</a></li>`)
-    .join('')}</ul></nav>`;
+      : `<li><a href="${esc(pageHref(key))}">${esc(t(label))}</a></li>`).join('');
+    return label
+      ? `<div class="subnav-group" role="group" aria-label="${esc(t(label))}"><p class="subnav-heading" aria-hidden="true">${esc(t(label))}</p><ul>${lis}</ul></div>`
+      : `<ul>${lis}</ul>`;
+  };
+  return `<nav class="subnav" aria-label="${esc(t('Domain report pages'))}">${SUBNAV_GROUPS.map(groupHtml).join('')}</nav>`;
+}
+
+/**
+ * A tiny redirect stub written at a page's OLD basename after a rename. Meta-
+ * refresh covers the no-JS case; the inline script re-appends location.hash so a
+ * deep link like `accessibility.html#VS-1a2b` lands on the renamed page at the
+ * right finding. `dest` is the new basename (locale suffix already applied by
+ * the caller); both files live in the same directory.
+ */
+export function redirectStub(dest, lang = getLocale()) {
+  const url = `${dest}.html`;
+  return `<!doctype html>
+<html lang="${esc(lang)}">
+<head>
+<meta charset="utf-8">
+<title>${esc(t('Moved'))}</title>
+<link rel="canonical" href="${esc(url)}">
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url=${esc(url)}">
+<script>location.replace(${JSON.stringify(url)} + location.hash);</script>
+</head>
+<body>
+<p>${t('This page has moved to <a href="@url">@url</a>.', { '@url': esc(url) })}</p>
+</body>
+</html>
+`;
 }
 
 /**
@@ -1291,7 +1354,7 @@ function nextActionsScript() {
     var csv = row.getAttribute('data-csv');
     var bug = row.getAttribute('data-bug-link');
     if (csv) out.push('- Affected pages CSV: ' + csv);
-    if (bug) out.push('- Full scanner detail: accessibility.html' + bug);
+    if (bug) out.push('- Full scanner detail: ' + PAGES.accessibility + '.html' + bug);
     out.push('');
     out.push('### Testing environment');
     out.push((row.getAttribute('data-testing-environment') || 'Not captured by automated scan — requires manual testing.'));
@@ -1804,7 +1867,7 @@ function fixFirstSection(bugs) {
   if (top.length === 0) return '';
   const rows = top
     .map((b) => `<tr>
-  <th scope="row"><a href="accessibility.html#${esc(b.instance_id)}">${esc(b.summary)}</a>${b.rule_url ? ` <a href="${esc(b.rule_url)}" class="bug-meta">${t('(rule↗)')}</a>` : ''}</th>
+  <th scope="row"><a href="${esc(pageHref('accessibility', b.instance_id))}">${esc(b.summary)}</a>${b.rule_url ? ` <a href="${esc(b.rule_url)}" class="bug-meta">${t('(rule↗)')}</a>` : ''}</th>
   <td><span class="sev-badge">${esc(t(b.severity))}</span></td>
   <td class="num">${b.frequency.pages_affected}</td>
   <td>${b.impact?.groups?.length ? esc(b.impact.groups.map((g) => g.group).slice(0, 2).join(', ')) : '—'}</td>
@@ -1814,7 +1877,7 @@ function fixFirstSection(bugs) {
     .join('\n');
   return `<section aria-labelledby="h-fixfirst">
 ${heading('h-fixfirst', t('Fix these first'))}
-<p class="meta">${t('Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessibility.html#h-bugs">Accessibility page</a>.')}</p>
+<p class="meta">${t('Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessible.html#h-bugs">Accessibility page</a>.')}</p>
 <table>
 <caption>${t('Top @n issues to prioritize this week.', { '@n': top.length })}</caption>
 <thead><tr><th scope="col">${t('Issue')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Who it affects')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th></tr></thead>
@@ -1992,7 +2055,7 @@ function consensusSection(summary, bugs = []) {
       // Link to the axe bug detail on the accessibility page if available.
       const bugAnchor = axeId ? bugByAxeRule.get(axeId) : null;
       const issueCell = bugAnchor
-        ? `<a href="accessibility.html#${esc(bugAnchor)}">${esc(help)}</a>`
+        ? `<a href="${esc(pageHref('accessibility', bugAnchor))}">${esc(help)}</a>`
         : esc(help);
       return `<tr><th scope="row">${issueCell}</th><td class="num">${g.pages}</td><td class="bug-meta">${links}</td></tr>`;
     })
@@ -2077,7 +2140,7 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
     .join('\n');
   return `<section aria-labelledby="h-lh-reco">
 ${heading('h-lh-reco', t('Recommendations'))}
-<p class="meta">${t('Issues Lighthouse flagged across the @n sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Estimated savings (transfer bytes or load time) are Lighthouse\'s own estimates where available. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessibility.html">Accessibility page</a>.', { '@n': pagesSampled })}</p>
+<p class="meta">${t('Issues Lighthouse flagged across the @n sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Estimated savings (transfer bytes or load time) are Lighthouse\'s own estimates where available. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessible.html">Accessibility page</a>.', { '@n': pagesSampled })}</p>
 ${sections}
 </section>`;
 }
@@ -2651,7 +2714,7 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   <div><dt>${t('Pages with Alfa failures')}</dt><dd>${t('@n of @total', { '@n': summary.alfa.pagesWithFailures, '@total': summary.alfa.pagesScanned ?? summary.pagesScanned })}${csvLink(csvLinks.alfaAll, 'CSV')}</dd></div>
   <div><dt>${t('Unique pages audited')}</dt><dd>${summary.pagesAudited ?? summary.pagesScanned}</dd></div>
   ${summary.lighthouse ? `
-  <div><dt>${t('Lighthouse performance (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${t('@n sampled', { '@n': summary.lighthouse.pagesSampled })}</span> ${csvLink('lighthouse.html', 'details')}</dd></div>
+  <div><dt>${t('Lighthouse performance (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianPerformance)}<span class="bug-meta"> ${t('@n sampled', { '@n': summary.lighthouse.pagesSampled })}</span> ${csvLink(pageHref('lighthouse'), 'details')}</dd></div>
   <div><dt>${t('Lighthouse SEO (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianSeo)}</dd></div>
   <div><dt>${t('Lighthouse best practices (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianBestPractices)}</dd></div>
   ${summary.lighthouse.medianAgentic != null ? `<div><dt>${t('Lighthouse agentic (median)')}</dt><dd>${fmtScore(summary.lighthouse.medianAgentic)}</dd></div>` : ''}` : ''}
@@ -2659,7 +2722,7 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   <div><dt>${t('Words per page (median)')}</dt><dd>${summary.plainLanguage.medianWordsPerPage ?? t('n/a')}<span class="bug-meta"> ${t('main content, nav excluded')}</span></dd></div>
   ${summary.plainLanguage.medianReadingEase != null ? `<div><dt>${t('Reading ease (median)')}</dt><dd>${summary.plainLanguage.medianReadingEase}<span class="bug-meta"> ${t('@n prose pages', { '@n': summary.plainLanguage.pagesScored })}</span>${csvLink(summary.plainLanguage.readabilityCsv, 'details')}</dd></div>` : ''}
   ${summary.plainLanguage.medianGrade != null ? `<div><dt>${t('Reading grade (median)')}</dt><dd>${summary.plainLanguage.medianGrade}</dd></div>` : ''}
-  ${summary.plainLanguage.topMisspellings?.length ? `<div><dt>${t('Misspellings')}</dt><dd>${t('@n+ distinct', { '@n': summary.plainLanguage.topMisspellings.length })}${csvLink('readability.html#h-spelling', 'details')}</dd></div>` : ''}` : ''}
+  ${summary.plainLanguage.topMisspellings?.length ? `<div><dt>${t('Misspellings')}</dt><dd>${t('@n+ distinct', { '@n': summary.plainLanguage.topMisspellings.length })}${csvLink(pageHref('readability', 'h-spelling'), 'details')}</dd></div>` : ''}` : ''}
   ${summary.linkCheck ? `
   <div><dt>${t('Broken links')}</dt><dd>${summary.linkCheck.brokenCount}${summary.linkCheck.brokenCount > 0 ? ` <a href="errors.html" class="csv-link">${t('details')}</a>` : ''}</dd></div>` : ''}
   ${summary.sustainability ? `
@@ -2697,7 +2760,7 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
 
 ${win ? `<aside class="callout callout-win" aria-labelledby="h-win">
 <h2 id="h-win">${t('Biggest available win')}</h2>
-<p><a href="accessibility.html#${esc(win.instance_id)}"><strong>${esc(win.summary)}</strong></a> — <span class="sev-badge">${esc(t(win.severity))}</span> ${t('across @n page(s)', { '@n': win.frequency.pages_affected })}.${win.remediation_tip ? ` ${esc(win.remediation_tip)}` : (win.suggested_fix ? ` ${esc(win.suggested_fix)}` : '')}</p>
+<p><a href="${esc(pageHref('accessibility', win.instance_id))}"><strong>${esc(win.summary)}</strong></a> — <span class="sev-badge">${esc(t(win.severity))}</span> ${t('across @n page(s)', { '@n': win.frequency.pages_affected })}.${win.remediation_tip ? ` ${esc(win.remediation_tip)}` : (win.suggested_fix ? ` ${esc(win.suggested_fix)}` : '')}</p>
 </aside>` : ''}
 
 ${invSummary ? `<p class="meta">${t('Over the whole history of this site, <strong>@known</strong> unique pages have been scanned at least once; <strong>@withIssues</strong> have known accessibility issues. <strong>@thisWeek</strong> of them were re-checked this ISO week.', { '@known': invSummary.totalKnownPages, '@withIssues': invSummary.pagesWithKnownIssues, '@thisWeek': invSummary.scannedThisWeek })} <a href="../../../data/${esc(target.key)}/domain.json">${t('Download full data (JSON)')}</a>.</p>` : ''}
@@ -3580,8 +3643,11 @@ h2:hover .anchor, h2:focus-within .anchor, .anchor:focus { opacity: 1; color: va
 .url { display: inline-block; max-width: 28rem; overflow: hidden; text-overflow: ellipsis;
   white-space: nowrap; vertical-align: bottom; }
 td .url, th .url { max-width: 22rem; }
-.subnav ul { list-style: none; display: flex; flex-wrap: wrap; gap: .25rem 1rem; padding: 0; margin: .25rem 0 1rem; font-size: .95rem; }
+.subnav { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1.25rem; margin: .25rem 0 1rem; }
+.subnav ul { list-style: none; display: flex; flex-wrap: wrap; gap: .25rem 1rem; padding: 0; margin: 0; font-size: .95rem; }
 .subnav li[aria-current="page"] { font-weight: 700; }
+.subnav-group { display: flex; flex-direction: column; gap: .1rem; }
+.subnav-heading { margin: 0; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
 .lang-switch { margin-top: .4rem; font-size: .9rem; }
 .lang-switch ul { list-style: none; display: flex; flex-wrap: wrap; gap: .15rem .6rem; padding: 0; margin: 0; }
 .lang-switch li { display: inline; }

@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
@@ -326,7 +326,10 @@ for (const target of config.targets) {
       for (const a of actions) {
         a.affected_pages_csv = clusterCsvLinks[a.id] ?? null;
       }
-      fs.writeFileSync(path.join(repDir, `accessibility${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {
+      // Filenames are outcome-aligned (accessible/fast/findable/third-parties);
+      // a redirect stub is written at each old basename below so existing deep
+      // links keep working.
+      fs.writeFileSync(path.join(repDir, `accessible${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {
         ...reporting, keyPages,
         priorityPagesCsv: priorityPages.csv,
         priorityPagesJson: priorityPages.json,
@@ -339,11 +342,11 @@ for (const target of config.targets) {
       }));
       fs.writeFileSync(path.join(repDir, `standards${sfx}.html`), renderStandardsPage(target, summary));
       fs.writeFileSync(path.join(repDir, `errors${sfx}.html`), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
-      fs.writeFileSync(path.join(repDir, `lighthouse${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson));
-      fs.writeFileSync(path.join(repDir, `readability${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));
+      fs.writeFileSync(path.join(repDir, `fast${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson));
+      fs.writeFileSync(path.join(repDir, `findable${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));
       fs.writeFileSync(path.join(repDir, `tech${sfx}.html`), renderTechPage(target, summary, techCsv));
       fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary));
-      fs.writeFileSync(path.join(repDir, `third-party${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
+      fs.writeFileSync(path.join(repDir, `third-parties${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
       fs.writeFileSync(path.join(repDir, `images${sfx}.html`), renderImagesPage(target, summary, imagesCsv));
       // Archive page (all weeks). Written in each week folder so the subnav
       // "Archive" link resolves from any week's report.
@@ -351,6 +354,11 @@ for (const target of config.targets) {
       if (archiveHtml) fs.writeFileSync(path.join(repDir, `archive${sfx}.html`), archiveHtml);
       fs.writeFileSync(path.join(repDir, `index${sfx}.html`),
         renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null, progress));
+      // Redirect stubs at the pre-rename basenames (hash-preserving), for this
+      // locale's suffix, so old bookmarks/pinned-issue links resolve.
+      for (const [oldName, newName] of Object.entries(PAGE_REDIRECTS)) {
+        fs.writeFileSync(path.join(repDir, `${oldName}${sfx}.html`), redirectStub(`${newName}${sfx}`, locale));
+      }
     }
     setLocale(target.defaultLanguage);
     fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
