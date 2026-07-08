@@ -145,6 +145,70 @@ BP/Undetermined; 2 = Moderate/Minor + WCAG A/AA + ≥10 pages; 5 = hidden.
 
 ---
 
+## Information architecture
+
+Reports are organized by the **visitor's question**, not the scanner's engine
+list, in three layers (progressive disclosure):
+
+- **Layer 1 "How are we doing?"** — the per-domain landing page
+  (`renderDomainReport`): score + trajectory, then three deltas
+  (**new / fixed / regressed** this week), then one **"biggest available win"**
+  callout, then next actions. Supporting detail ("This week at a glance",
+  trends, changes) is demoted into collapsed `<details>` drill-downs with a
+  visible count in each summary. Inverted pyramid: conclusion → support → raw
+  data. One primary action per page.
+- **Layer 2 "What do I do next?"** — the next-actions queue with triage on the
+  Accessibility page (`#h-next-actions`).
+- **Layer 3 "Show me the evidence"** — the engine pages, grouped in the subnav
+  by outcome question.
+
+Conventions to preserve:
+
+- **Deltas everywhere.** Pair a headline number with its week-over-week change +
+  sparkline via `statTile(label, value, { deltaN, deltaOpts, spark })`. Finding-
+  level new/fixed/regressed and the severity burndown come from
+  `src/lib/progress.js` (pure functions over the committed findings ledger);
+  aggregate computes them per week and passes them into the landing page.
+- **Progress artifacts**: fixed-this-week list, severity **burndown**
+  (`severityBurndown`), triage completion (client-side, reads
+  `localStorage['vital-triage:<id>']`, blank with JS off), and streak badges
+  (`streaks`).
+- **One canonical location per finding.** A finding is rendered in full once (on
+  the Accessibility page); other pages link to it (`pageHref('accessibility',
+  instanceId)`), never re-render it.
+- **Outcome nav.** The subnav (`SUBNAV_GROUPS`, `subnav()`) is grouped under
+  **Accessible? · Fast? · Findable? · Trustworthy? · Sustainable?**. The nav is
+  still FIXED (every criterion always listed; every sub-page always written with
+  a "no data this week" empty state, so no 404s).
+
+### Page filenames and the redirect-stub invariant
+
+Page basenames are outcome-aligned and centralized in the `PAGES` map in
+`src/report-html.js`; **all cross-links go through `pageHref(key, anchor)`**
+(which also applies the active locale suffix). Current renames (`PAGE_REDIRECTS`):
+
+| Key | File | Outcome |
+|---|---|---|
+| accessibility | `accessible.html` | Accessible? |
+| lighthouse | `fast.html` | Fast? |
+| readability | `findable.html` | Findable? |
+| third-party | `third-parties.html` | Trustworthy? |
+
+**Hard rule — never break a URL.** Fragment IDs are filename-independent
+(`#h-*` heading literals; `#VS-*` content hashes from `bug-report.js`), but deep
+links are hosted on specific files. **Any page rename MUST add an entry to
+`PAGE_REDIRECTS` so a hash-preserving redirect stub (`redirectStub()`) is written
+at the old basename**, for the default and every `-<loc>` sibling (see the
+`aggregate.js` write loop). The stub uses `<link rel="canonical">` + meta-refresh
++ `location.replace(dest + location.hash)` so pinned issue links land on the
+renamed page at the right anchor. When renaming, also update `tests/e2e.mjs`
+(`SUBPAGES`, subnav/href assertions), `tests/unit/i18n-render.test.js` hrefs, and
+any prose-embedded `t()` strings that hardcode the old href (migrate the catalog
+keys too). The static JSON API keys on domain/week, not page filenames, so it is
+unaffected.
+
+---
+
 ## Code conventions
 
 - **CSS changes**: edit the CSS string constant inside `src/report-html.js`.
