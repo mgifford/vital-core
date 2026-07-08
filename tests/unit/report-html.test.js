@@ -151,6 +151,46 @@ test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted det
   assert.match(html, /This week at a glance/);
 });
 
+test('renderDomainReport progress panel: burndown, streaks, triage count, fixed list', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const mk = (week, mv) => ({
+    week, pagesScanned: 10, pagesAudited: 10, generatedAt: '2026-06-08T00:00:00.000Z',
+    axe: { medianViolations: mv, pagesScanned: 10, pagesWithViolations: 8, rules: {} },
+    alfa: { medianFailures: 1, pagesScanned: 10, pagesWithFailures: 3, rules: {} },
+    coverage: { axe: 10, alfa: 10 },
+  });
+  const series = [mk('2026-W23', 6), mk('2026-W24', 4)];
+  const bugs = [{
+    instance_id: 'VS-abc12345', pattern_id: 'VS-p1', tool: 'axe-core', rule_id: 'image-alt',
+    summary: 'Images must have alternative text', severity: 'Critical', wcag_sc: '1.1.1',
+    frequency: { pages_affected: 7, total_pages_scanned: 10, instances: 12 }, impact: { groups: [] },
+  }];
+  const progress = {
+    new: [], fixed: [{ id: 'VS-f1', severity: 'Serious', summary: 'Document must have a title element' }], regressed: [],
+    burndown: [
+      { week: '2026-W23', critical: 2, serious: 1, moderate: 0, minor: 0 },
+      { week: '2026-W24', critical: 0, serious: 1, moderate: 0, minor: 0 },
+    ],
+    streaks: [{ severity: 'critical', weeks: 1 }, { severity: 'moderate', weeks: 2 }, { severity: 'minor', weeks: 2 }],
+  };
+
+  const html = renderDomainReport(target, series[1], series[0], null, series, bugs,
+    { byRule: {}, bugsAll: null }, null, progress);
+
+  // Progress section with heading.
+  assert.match(html, /id="h-progress"/);
+  // Streak badge.
+  assert.match(html, /class="streak-badge">✓ 1 week\(s\) with no Critical findings/);
+  // Client-side triage-completion placeholder carries the page's instance ids + template.
+  assert.match(html, /class="triage-progress" hidden data-triage-ids="\[&quot;VS-abc12345&quot;\]"/);
+  assert.match(html, /data-tmpl="@done of @total triaged"/);
+  assert.match(html, /localStorage\.getItem\('vital-triage:'/);
+  // Burndown chart (finding counts) with its own caption, distinct from the pages-affected trend.
+  assert.match(html, /Open findings by severity over 2 weeks/);
+  // Fixed-this-week list.
+  assert.match(html, /Document must have a title element/);
+});
+
 test('renderAccessibilityPage shows engine and rule id in bug summaries', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const summary = {
