@@ -313,6 +313,13 @@ test('renderAccessibilityPage includes expanded next-actions copy payload attrib
   assert.match(html, /data-examples="\[/);
   assert.match(html, /data-testing-environment="Automated: axe-core/);
   assert.match(html, /data-steps="\[/);
+
+  // The "Copy as issue" / "Copy for JIRA" handlers run in the browser, so the
+  // emitted inline scripts must not reference server-only symbols like the PAGES
+  // map (a bare `PAGES.` there throws ReferenceError and the copy silently fails).
+  // The accessibility page link must be baked in at render time instead.
+  assert.doesNotMatch(html, /\bPAGES\./);
+  assert.match(html, /Full scanner detail: accessible\.html/);
 });
 
 test('statTile renders a ledger cell with localized label and preformatted value', () => {

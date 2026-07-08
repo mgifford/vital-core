@@ -1356,7 +1356,7 @@ function nextActionsScript() {
     var csv = row.getAttribute('data-csv');
     var bug = row.getAttribute('data-bug-link');
     if (csv) out.push('- Affected pages CSV: ' + csv);
-    if (bug) out.push('- Full scanner detail: ' + PAGES.accessibility + '.html' + bug);
+    if (bug) out.push('- Full scanner detail: ${PAGES.accessibility}.html' + bug);
     out.push('');
     out.push('### Testing environment');
     out.push((row.getAttribute('data-testing-environment') || 'Not captured by automated scan — requires manual testing.'));
