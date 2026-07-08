@@ -59,6 +59,28 @@ export function weekDeltaCounts(ledger, currentWeek, prevWeek = null) {
   return { new: d.new.length, fixed: d.fixed.length, regressed: d.regressed.length };
 }
 
+/**
+ * Per-week new/fixed/regressed counts across `weeks` (oldest-first), reconstructed
+ * from the ledger's `_weeks` membership so it works on the final ledger (unlike
+ * weekDeltas, which reads the incremental lastSeen). Drives the sparklines on the
+ * landing-page delta tiles — the momentum of each metric over time.
+ */
+export function deltaSeries(ledger, weeks) {
+  const findings = Object.values(ledger?.findings ?? {});
+  const seenIn = (f, w) => (f._weeks ?? [f.firstSeen]).includes(w);
+  return weeks.map((week, i) => {
+    const prev = i > 0 ? weeks[i - 1] : null;
+    const row = { week, new: 0, fixed: 0, regressed: 0 };
+    for (const f of findings) {
+      const here = seenIn(f, week);
+      if (here && f.firstSeen === week) { if (!f._coverageNew) row.new += 1; }
+      else if (here && prev && !seenIn(f, prev) && f.firstSeen < week) row.regressed += 1;
+      else if (!here && prev && seenIn(f, prev)) row.fixed += 1;
+    }
+    return row;
+  });
+}
+
 const SEVERITY_ORDER = ['critical', 'serious', 'moderate', 'minor'];
 
 /**

@@ -127,15 +127,24 @@ test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted det
     new: [{ id: 'VS-pat1', severity: 'Critical' }],
     fixed: [{ id: 'VS-x', severity: 'Serious' }, { id: 'VS-y', severity: 'Minor' }],
     regressed: [],
+    deltaSeries: [
+      { week: '2026-W23', new: 0, fixed: 1, regressed: 0 },
+      { week: '2026-W24', new: 1, fixed: 2, regressed: 0 },
+    ],
   };
 
   const html = renderDomainReport(target, summary, null, null, [summary], bugs,
     { byRule: {}, bugsAll: null }, null, progress);
 
-  // Three delta tiles with their counts.
-  assert.match(html, /New this week<\/dt><dd>1</);
-  assert.match(html, /Fixed this week<\/dt><dd>2</);
-  assert.match(html, /Regressed this week<\/dt><dd>0</);
+  // Three delta tiles with their counts (a momentum sparkline follows each).
+  assert.match(html, /New this week<\/dt><dd>1[ <]/);
+  assert.match(html, /Fixed this week<\/dt><dd>2[ <]/);
+  assert.match(html, /Regressed this week<\/dt><dd>0[ <]/);
+  // Momentum sparklines on the tiles (deltaSeries has >=2 points).
+  assert.match(html, /Fixed this week<\/dt><dd>2 <svg class="spark"/);
+  // Tone: fixed is a positive (better) tile when >0; regressed has no worse tone at 0.
+  assert.match(html, /<div class="stat-better"><dt>Fixed this week/);
+  assert.doesNotMatch(html, /stat-worse"><dt>Regressed/);
 
   // Biggest-win callout links to the top-ranked finding's canonical location.
   assert.match(html, /class="callout callout-win"/);
