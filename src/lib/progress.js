@@ -58,3 +58,49 @@ export function weekDeltaCounts(ledger, currentWeek, prevWeek = null) {
   const d = weekDeltas(ledger, currentWeek, prevWeek);
   return { new: d.new.length, fixed: d.fixed.length, regressed: d.regressed.length };
 }
+
+const SEVERITY_ORDER = ['critical', 'serious', 'moderate', 'minor'];
+
+/**
+ * Open-finding burndown: for each week in `weeks` (oldest-first), the count of
+ * distinct findings that were present that week, bucketed by severity. Uses the
+ * ledger's `_weeks` membership and each finding's (last-seen) severity, so it
+ * needs no per-week bug lists. This is the "is the backlog shrinking?" series,
+ * distinct from the pages-affected severity trend.
+ *
+ * Pass only the weeks known so far (series up to the rendered week) — the ledger
+ * hasn't recorded future weeks yet, so they would read as zero.
+ */
+export function severityBurndown(ledger, weeks) {
+  const findings = Object.values(ledger?.findings ?? {});
+  return weeks.map((week) => {
+    const row = { week, critical: 0, serious: 0, moderate: 0, minor: 0 };
+    for (const f of findings) {
+      const fw = f._weeks ?? [f.firstSeen];
+      if (!fw.includes(week)) continue;
+      const sev = String(f.severity ?? '').toLowerCase();
+      if (sev in row) row[sev] += 1;
+    }
+    return row;
+  });
+}
+
+/**
+ * Clean-week streaks from a burndown series: for each severity that is at zero
+ * in the most recent week, how many consecutive most-recent weeks it has stayed
+ * at zero (e.g. "0 criticals for 3 weeks"). Returns [{ severity, weeks }] in
+ * severity order, only for severities currently at zero with a run ≥ 1.
+ */
+export function streaks(burndown) {
+  if (!Array.isArray(burndown) || burndown.length === 0) return [];
+  const out = [];
+  for (const severity of SEVERITY_ORDER) {
+    let run = 0;
+    for (let i = burndown.length - 1; i >= 0; i--) {
+      if ((burndown[i][severity] ?? 0) === 0) run += 1;
+      else break;
+    }
+    if (run > 0) out.push({ severity, weeks: run });
+  }
+  return out;
+}

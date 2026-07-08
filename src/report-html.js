@@ -585,6 +585,127 @@ ${table}
 }
 
 /**
+ * Open-finding burndown by severity: the count of distinct open findings in each
+ * severity band over time. Same accessible pattern as severityTrendChart (dash-
+ * distinguished lines + a visually-hidden data table + a ParaCharts manifest),
+ * but plots finding *counts* from the burndown series (progress.severityBurndown)
+ * rather than pages affected — the "is the backlog shrinking?" view.
+ */
+function severityBurndownChart(burndown) {
+  const LEVELS = [
+    { key: 'critical', label: t('Critical'), dash: 'none' },
+    { key: 'serious',  label: t('Serious'),  dash: '6 3' },
+    { key: 'moderate', label: t('Moderate'), dash: '3 3' },
+    { key: 'minor',    label: t('Minor'),    dash: '1 4' },
+  ];
+  const pts = burndown ?? [];
+  if (pts.length < 2) return '';
+  const activeLevels = LEVELS.filter((l) => pts.some((p) => (p[l.key] ?? 0) > 0));
+  if (activeLevels.length === 0) return '';
+
+  const W = 640, H = 200, padL = 44, padR = 90, padT = 16, padB = 28;
+  const maxVal = Math.max(...activeLevels.flatMap((l) => pts.map((p) => p[l.key] ?? 0)), 1);
+  const x = (i) => padL + (i / (pts.length - 1)) * (W - padL - padR);
+  const y = (v) => H - padB - (v / maxVal) * (H - padT - padB);
+  const xlabels = [0, Math.floor((pts.length - 1) / 2), pts.length - 1]
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .map((i) => `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" class="axis">${esc(pts[i].week.slice(5))}</text>`)
+    .join('');
+  const ylabels = `<text x="4" y="${(y(maxVal) + 4).toFixed(1)}" class="axis">${maxVal}</text><text x="4" y="${(y(0) + 4).toFixed(1)}" class="axis">0</text>`;
+  const lines = activeLevels.map((l) => {
+    const poly = pts.map((p, i) => `${x(i).toFixed(1)},${y(p[l.key] ?? 0).toFixed(1)}`).join(' ');
+    const dots = pts.map((p, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(p[l.key] ?? 0).toFixed(1)}" r="2.5" fill="currentColor"/>`).join('');
+    const labelY = y(pts[pts.length - 1][l.key] ?? 0);
+    return `<g>
+  <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="${l.dash}"/>
+  ${dots}
+  <text x="${(x(pts.length - 1) + 6).toFixed(1)}" y="${(labelY + 4).toFixed(1)}" class="axis" text-anchor="start">${esc(l.label)}</text>
+</g>`;
+  }).join('\n');
+  const tableRows = pts.map((p) =>
+    `<tr><th scope="row">${esc(p.week)}</th>${activeLevels.map((l) => `<td>${p[l.key] ?? 0}</td>`).join('')}</tr>`
+  ).join('');
+  const table = `<table class="visually-hidden">
+<caption>${t('Open findings by severity, by week')}</caption>
+<thead><tr><th scope="col">${t('Week')}</th>${activeLevels.map((l) => `<th scope="col">${esc(l.label)}</th>`).join('')}</tr></thead>
+<tbody>${tableRows}</tbody>
+</table>`;
+  const ariaLabel = t('Open findings by severity over @n weeks.', { '@n': pts.length }) + ' ' +
+    activeLevels.map((l) => t('@label: @from → @to pages', { '@label': l.label, '@from': pts[0][l.key] ?? 0, '@to': pts[pts.length - 1][l.key] ?? 0 })).join('; ') + '.';
+  const manifest = buildMultiLineManifest(
+    t('Open findings by severity'),
+    t('Open findings'),
+    activeLevels.map((l) => ({ key: l.label, points: pts.map((p) => ({ week: p.week, value: p[l.key] ?? 0 })) }))
+  );
+  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+<figcaption>${t('Open findings by severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
+<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
+  ${lines}
+  ${xlabels}${ylabels}
+</svg>
+${table}
+</figure>`;
+}
+
+/**
+ * Layer-1 progress panel: clean-week streak badges, a client-side triage-
+ * completion count, the open-finding severity burndown, and the list of findings
+ * resolved this week. All optional — the section is omitted when there's nothing
+ * to show. `progress` carries { fixed, burndown, streaks } from src/lib/progress.
+ */
+function progressSection(progress, bugs) {
+  const fixed = progress?.fixed ?? [];
+  const burndown = progress?.burndown ?? [];
+  const strk = progress?.streaks ?? [];
+  const chart = severityBurndownChart(burndown);
+  const ids = bugs.map((b) => b.instance_id);
+  if (!fixed.length && !chart && !strk.length && !ids.length) return '';
+
+  const badges = strk.length ? `<ul class="streaks" aria-label="${esc(t('Clean-week streaks'))}">${strk
+    .map((s) => {
+      const label = t(s.severity.charAt(0).toUpperCase() + s.severity.slice(1));
+      return `<li class="streak-badge">✓ ${esc(t('@n week(s) with no @severity findings', { '@n': nf(s.weeks), '@severity': label }))}</li>`;
+    }).join('')}</ul>` : '';
+
+  const triage = ids.length ? `<p class="triage-progress" hidden data-triage-ids="${esc(JSON.stringify(ids))}" data-tmpl="${esc(t('@done of @total triaged'))}"><span class="tp-count"></span></p>
+${triageCompletionScript()}` : '';
+
+  const fixedList = fixed.length ? `<h3 class="progress-sub">${t('Fixed this week')}</h3>
+<ul class="fixed-list">${fixed.slice(0, 15)
+    .map((f) => `<li><span class="sev-badge">${esc(t(f.severity ?? 'Undetermined'))}</span> ${esc(f.summary ?? f.ruleId ?? f.id)}</li>`)
+    .join('')}</ul>${fixed.length > 15 ? `<p class="bug-meta">${t('…and more — @more.', { '@more': t('@n finding(s)', { '@n': nf(fixed.length) }) })}</p>` : ''}` : '';
+
+  return `<section aria-labelledby="h-progress">
+${heading('h-progress', t('Progress'))}
+${badges}
+${triage}
+${chart}
+${fixedList}
+</section>`;
+}
+
+// Fills the "X of N triaged" count from the visitor's localStorage triage
+// decisions (key vital-triage:<instance_id>, same as the accessibility page).
+// Progressive enhancement: the line is hidden until JS computes it, so with JS
+// off nothing misleading is shown.
+function triageCompletionScript() {
+  return `<script>
+(function () {
+  var el = document.querySelector('.triage-progress');
+  if (!el) return;
+  var ids; try { ids = JSON.parse(el.getAttribute('data-triage-ids') || '[]'); } catch (e) { return; }
+  var done = 0;
+  for (var i = 0; i < ids.length; i++) {
+    try { var r = localStorage.getItem('vital-triage:' + ids[i]); if (r) { var d = JSON.parse(r); if (d && d.status) done++; } } catch (e) {}
+  }
+  var tmpl = el.getAttribute('data-tmpl') || '@done of @total triaged';
+  el.querySelector('.tp-count').textContent = tmpl.split('@done').join(done).split('@total').join(ids.length);
+  el.hidden = false;
+})();
+</script>`;
+}
+
+/**
  * Multi-series Lighthouse trend chart with one line each for Performance,
  * Accessibility, Best Practices, and SEO.
  */
@@ -2583,6 +2704,8 @@ ${invSummary ? `<p class="meta">${t('Over the whole history of this site, <stron
 
 ${fixFirstSection(bugs)}
 
+${progressSection(prog, bugs)}
+
 ${drilldown('h-summary', t('This week at a glance'), t('@n issue type(s)', { '@n': nf(bugs.length) }), atGlanceInner)}
 
 ${series.length > 1 ? drilldown('h-trends', t('Trends over time'), t('@n weeks', { '@n': nf(series.length) }), `${severityTrendChart(series)}
@@ -3483,6 +3606,13 @@ td .url, th .url { max-width: 22rem; }
 .drilldown > summary > .drill-title { display: inline; font-size: 1.15rem; border-bottom: none; }
 .drill-count { color: var(--muted); font-weight: 400; font-size: .85rem; }
 .drill-body { padding-left: .25rem; }
+.streaks { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem .6rem; padding: 0; margin: .5rem 0; }
+.streak-badge { border: 1px solid var(--better); color: var(--better); border-radius: 2px;
+  padding: .1rem .5rem; font-size: .85rem; white-space: nowrap; }
+.triage-progress { font-weight: 600; margin: .5rem 0; }
+.progress-sub { font-size: 1rem; margin: .75rem 0 .25rem; border-bottom: none; }
+.fixed-list { margin: .25rem 0; padding-left: 1.1rem; }
+.fixed-list li { margin: .15rem 0; }
 .blocked-accordion { margin-top: 2rem; border-top: 1px solid var(--rule); padding-top: .5rem; }
 .blocked-accordion > summary { cursor: pointer; color: var(--muted); font-weight: 600; }
 .ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
