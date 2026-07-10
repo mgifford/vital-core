@@ -324,6 +324,12 @@ test('renderAccessibilityPage emits the viewer URL-exclusion control (issue #209
 
   // Severity taxonomy unchanged (C-07): internal keys stay lowercase.
   assert.match(html, /class="bug sev-critical/);
+
+  // Portability controls (WP04): export / import / copy-share reuse the triage IO pattern.
+  assert.match(html, /id="exclude-export"/);
+  assert.match(html, /id="exclude-import"/);
+  assert.match(html, /id="exclude-share"/);
+  assert.match(html, /['"]vital-exclude['"]/, 'share payload carries the vital-exclude type');
 });
 
 test('renderAccessibilityPage includes expanded next-actions copy payload attributes', () => {

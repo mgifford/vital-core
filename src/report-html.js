@@ -1798,6 +1798,9 @@ function exclusionBox(target) {
 <div class="exclude-actions">
 <button type="button" id="exclude-apply" class="triage-btn">${t('Apply')}</button>
 <button type="button" id="exclude-clear" class="triage-btn">${t('Clear')}</button>
+<button type="button" id="exclude-export" class="triage-btn">${t('Export (.json)')}</button>
+<label class="triage-btn triage-import-label"><input type="file" id="exclude-import" accept=".json" style="display:none">${t('Import (.json)')}</label>
+<button type="button" id="exclude-share" class="triage-btn">${t('Copy share payload')}</button>
 <span id="exclude-status" class="triage-io-status" aria-live="polite"></span>
 </div>
 </div>
@@ -1832,6 +1835,14 @@ function exclusionFilterScript() {
   var MSG_ONFINDINGS = ${JSON.stringify(t('@n exclusion pattern(s) active — they filter the findings on the Accessibility page.'))};
   var MSG_APPLIED = ${JSON.stringify(t('Applied @n exclusion pattern(s).'))};
   var MSG_CLEARED = ${JSON.stringify(t('Exclusions cleared.'))};
+  var MSG_NONE = ${JSON.stringify(t('No exclusion patterns to export.'))};
+  var MSG_EXPORTED = ${JSON.stringify(t('Exported @n exclusion pattern(s).'))};
+  var MSG_COPIED = ${JSON.stringify(t('Share payload copied to the clipboard.'))};
+  var MSG_COPYFAIL = ${JSON.stringify(t('Could not copy — your browser blocked clipboard access.'))};
+  var MSG_IMPORTED = ${JSON.stringify(t('Imported @n exclusion pattern(s).'))};
+  var MSG_MISMATCH = ${JSON.stringify(t('Note: this list was shared for @domain.'))};
+  var MSG_IMPORTFAIL = ${JSON.stringify(t('Import failed: @msg'))};
+  var MSG_NOTFILE = ${JSON.stringify(t('not a vital-exclude share file'))};
   function compile(p) {
     var m = /^\\/(.+)\\/([a-z]*)$/i.exec(p);
     if (m) { try { var re = new RegExp(m[1], m[2]); return function (u) { return re.test(u); }; } catch (e) {} }
@@ -1904,6 +1915,50 @@ function exclusionFilterScript() {
   var clearBtn = document.getElementById('exclude-clear');
   if (clearBtn) clearBtn.addEventListener('click', function () {
     if (input) input.value = ''; saveRaw(''); apply([]); setStatus(MSG_CLEARED);
+  });
+  // Portability (WP04): export/import/copy the list as a small JSON payload
+  // stamped with the domain key so a team can agree on one scope.
+  var domain = box.getAttribute('data-domain-key') || '';
+  function currentPatterns() { return parse(input ? input.value : loadRaw()); }
+  function payload(pats, pretty) {
+    return JSON.stringify({ type: 'vital-exclude', domain: domain, exported: new Date().toISOString(), patterns: pats }, null, pretty ? 2 : 0);
+  }
+  var exportBtn = document.getElementById('exclude-export');
+  if (exportBtn) exportBtn.addEventListener('click', function () {
+    var pats = currentPatterns();
+    if (!pats.length) { setStatus(MSG_NONE); return; }
+    var blob = new Blob([payload(pats, true)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'vital-exclude-' + (domain || 'domain') + '-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    setStatus(MSG_EXPORTED.replace('@n', pats.length));
+  });
+  var shareBtn = document.getElementById('exclude-share');
+  if (shareBtn) shareBtn.addEventListener('click', function () {
+    var text = payload(currentPatterns(), false);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { setStatus(MSG_COPIED); }, function () { setStatus(MSG_COPYFAIL); });
+    } else { setStatus(MSG_COPYFAIL); }
+  });
+  var importInput = document.getElementById('exclude-import');
+  if (importInput) importInput.addEventListener('change', function (e) {
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (!data || data.type !== 'vital-exclude' || !Array.isArray(data.patterns)) throw new Error(MSG_NOTFILE);
+        var pats = data.patterns.map(String).map(function (s) { return s.trim(); }).filter(Boolean);
+        var text = pats.join('\\n');
+        if (input) input.value = text;
+        saveRaw(text); apply(pats);
+        var pre = (data.domain && data.domain !== domain) ? MSG_MISMATCH.replace('@domain', data.domain) + ' ' : '';
+        setStatus(pre + MSG_IMPORTED.replace('@n', pats.length));
+      } catch (err) { setStatus(MSG_IMPORTFAIL.replace('@msg', err.message)); }
+      e.target.value = ''; // allow re-importing the same file
+    };
+    reader.readAsText(file);
   });
 })();
 <\/script>`;
