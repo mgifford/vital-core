@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { weekToDateStamp } from './week.js';
+import { scoreFor } from './score.js';
 
 /** Build the download filename prefix: "www.cms.gov_16JUN2026". */
 function filePrefix(domain, week) {
@@ -85,6 +86,46 @@ export function writeLighthouseJson(repDir, domain, week, generatedAt, lighthous
   };
   const name = `${filePrefix(domain, week)}_lighthouse.json`;
   fs.writeFileSync(path.join(repDir, name), JSON.stringify(doc, null, 1));
+  return name;
+}
+
+/**
+ * Write the per-domain trend series as a CSV — one row per ISO week, one
+ * column per charted metric (issue #180 WP4). This is the CSV counterpart to
+ * docs/data/<key>/weekly.json and lives beside it, so the History & Trends
+ * page can offer both. Empty cells where a week has no data for a metric.
+ */
+export function writeTrendsCsv(dataOut, series) {
+  if (!series?.length) return null;
+  const passRate = (checks) => {
+    const tot = checks.reduce((a, c) => a + c.total, 0);
+    return tot ? Math.round((checks.reduce((a, c) => a + c.pass, 0) / tot) * 100) : '';
+  };
+  const rows = series.map((s) => [
+    s.week,
+    scoreFor(s)?.score ?? '',
+    s.axe?.medianViolations ?? '',
+    s.alfa?.medianFailures ?? '',
+    s.lighthouse?.medianPerformance ?? '',
+    s.lighthouse?.medianBestPractices ?? '',
+    s.lighthouse?.medianSeo ?? '',
+    s.sustainability?.medianBytes ?? '',
+    s.sustainability?.medianRequests ?? '',
+    s.sustainability?.meanCo2g ?? '',
+    s.plainLanguage?.medianReadingEase ?? '',
+    s.plainLanguage?.medianGrade ?? '',
+    s.plainLanguage?.medianWordsPerPage ?? '',
+    s.tech?.length ?? '',
+    s.standards?.checks?.length ? passRate(s.standards.checks) : '',
+    s.security?.total ? Math.round((s.security.passed / s.security.total) * 100) : '',
+  ]);
+  const name = 'trends.csv';
+  fs.writeFileSync(path.join(dataOut, name),
+    toCsv(['week', 'accessibility_score', 'median_axe_violations', 'median_alfa_failures',
+      'lighthouse_performance', 'lighthouse_best_practices', 'lighthouse_seo',
+      'median_page_weight_bytes', 'median_requests', 'mean_co2_g',
+      'reading_ease', 'reading_grade', 'words_per_page',
+      'technologies', 'standards_pass_pct', 'security_pass_pct'], rows));
   return name;
 }
 
