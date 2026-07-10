@@ -2729,27 +2729,36 @@ ${subnav('archive')}
 /**
  * History & Trends page (issue #180): the per-domain home for longitudinal
  * analysis, so the weekly overview can stay focused on "what changed this
- * week". WP1 is the scaffold — it establishes the page, its navigation, and
- * the outcome-aligned section outline. The trend charts themselves (severity,
- * Lighthouse, sustainability, content quality, technology, standards) are
- * moved here / added in follow-up work packages. Always written for every
- * week so the subnav link never 404s, with an empty state before there are
- * two weeks to compare. `series` is the full weekly summary history.
+ * week". WP2 relocates the multi-week trend charts here from the overview:
+ * the axe severity trend ("Accessible?") and the Lighthouse category trend
+ * ("Fast?"). The remaining outcome areas (Sustainable? / Findable? /
+ * Trustworthy?) are outlined here and charted in follow-up work packages.
+ * Always written for every week so the subnav link never 404s, with an empty
+ * state before there are two weeks to compare. `series` is the full weekly
+ * summary history.
  */
 export function renderHistoryPage(target, series, week) {
   const weeks = series.length;
   const firstWeek = series[0]?.week;
   const traj = trajectory(series, 4);
-  // Outcome-aligned outline: the questions this page will answer over time,
-  // in the same order as the subnav. Sections are filled in by later WPs.
-  const SECTIONS = [
-    ['Accessible?', t('Severity trends, pages affected, new vs. resolved issues, and accessibility score over time.')],
-    ['Fast?', t('Lighthouse performance, best practices, SEO, and agentic scores week over week.')],
+
+  // Charts render empty ('') with fewer than two weeks or no data; fall back
+  // to a per-section empty state so the section headings stay stable.
+  const noData = `<p class="note">${t('No trend data yet for this area.')}</p>`;
+  const severityChart = severityTrendChart(series) || noData;
+  const lighthouseChart = weeks > 1
+    ? `${lighthouseCategoryTrendChart(series) || noData}
+<p class="note">${t('Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.')}</p>`
+    : noData;
+
+  // Outcome areas still to be charted (WP3): described so the page reads as a
+  // deliberate index of what it tracks, not a set of broken stubs.
+  const PLANNED = [
     ['Sustainable?', t('Median page weight, requests per page, estimated CO₂, and third-party and JavaScript weight.')],
     ['Findable?', t('Reading ease, grade level, word count, and acronym and misspelling trends.')],
     ['Trustworthy?', t('Technology-stack changes and the standards checks (accessibility statement, carbon.txt, sitemaps, security).')],
   ];
-  const outline = `<ul class="history-outline">${SECTIONS
+  const planned = `<ul class="history-outline">${PLANNED
     .map(([label, desc]) => `<li><strong>${esc(t(label))}</strong> — ${esc(desc)}</li>`)
     .join('')}</ul>`;
 
@@ -2761,10 +2770,18 @@ ${subnav('history')}
 ${weeks > 1
     ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</p>`
     : `<p class="note">${t('Only one week has been scanned so far. Trend charts appear here once there are at least two weeks to compare — check back after the next scan.')}</p>`}
-<section aria-labelledby="h-history-outline">
-${heading('h-history-outline', t('What this page tracks'))}
-<p class="meta">${t('Longitudinal trends are being consolidated here so the weekly report can stay concise. Each area below gets its own multi-week charts, with CSV and JSON downloads.')}</p>
-${outline}
+<section aria-labelledby="h-history-a11y">
+${heading('h-history-a11y', t('Accessible? — severity over time'))}
+${severityChart}
+</section>
+<section aria-labelledby="h-history-fast">
+${heading('h-history-fast', t('Fast? — Lighthouse over time'))}
+${lighthouseChart}
+</section>
+<section aria-labelledby="h-history-planned">
+${heading('h-history-planned', t('More trends coming'))}
+<p class="meta">${t('These areas already feed the weekly report and will get their own multi-week charts here, with CSV and JSON downloads.')}</p>
+${planned}
 </section>`;
   return layout({
     title: `${target.domain} ${t('History & Trends')} ${week} | vital-scans`,
@@ -2857,9 +2874,7 @@ ${progressSection(prog, bugs)}
 
 ${drilldown('h-summary', t('This week at a glance'), t('@n issue type(s)', { '@n': nf(bugs.length) }), atGlanceInner)}
 
-${series.length > 1 ? drilldown('h-trends', t('Trends over time'), t('@n weeks', { '@n': nf(series.length) }), `${severityTrendChart(series)}
-${lighthouseCategoryTrendChart(series)}
-<p class="note">${t('Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.')}</p>`) : ''}
+${series.length > 1 ? `<p class="meta see-history"><a href="${esc(pageHref('history'))}"><strong>${esc(t('History & Trends'))} →</strong></a> ${t('Severity, Lighthouse and other measures across @n weeks.', { '@n': nf(series.length) })}</p>` : ''}
 
 ${diff ? drilldown('h-wow', t('Changes since @week', { '@week': diff.prevWeek }), t('@n change(s)', { '@n': nf(changeCount) }), `${changeList('axe-core', diff.axe)}
 ${changeList('Alfa', diff.alfa)}`) : ''}
