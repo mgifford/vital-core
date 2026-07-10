@@ -9,7 +9,7 @@ import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { weekDeltas, severityBurndown, streaks, deltaSeries } from './lib/progress.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs, writeTrendsCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { resolvePageRecord } from './lib/page-records.js';
@@ -107,10 +107,12 @@ for (const target of config.targets) {
     diffs[series[i].week] = diffWeeks(series[i - 1], series[i]);
   }
 
-  // Machine-readable trend series.
+  // Machine-readable trend series (JSON + a flat CSV counterpart for the
+  // History & Trends page).
   const dataOut = path.join(DIRS.docs, 'data', target.key);
   fs.mkdirSync(dataOut, { recursive: true });
   fs.writeFileSync(path.join(dataOut, 'weekly.json'), JSON.stringify({ domain: target.domain, series, diffs }, null, 1));
+  writeTrendsCsv(dataOut, series);
 
   // Findings ledger: first/last-seen per unique finding (pattern_id),
   // accumulated across the domain's whole history. Rebuilt from scratch
