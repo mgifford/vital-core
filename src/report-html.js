@@ -27,13 +27,41 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').
 const kb = (b) => (b >= 1048576 ? (b / 1048576).toFixed(1) + ' ' + t('MB') : Math.round(b / 1024) + ' ' + t('KB'));
 
 /**
- * Check if a URL matches any of the exclusion patterns (substrings).
- * Patterns are case-insensitive and matched against the full URL.
+ * Compile one exclusion pattern into a matcher (url) => boolean. A pattern
+ * wrapped in slashes — `/\.aspx$/i` — is a regular expression (optional trailing
+ * flags); anything else is a case-insensitive substring. An unparseable regex
+ * falls back to a case-insensitive substring on the raw text (slashes included),
+ * so a typo can't silently match nothing. Mirrors compilePattern() in
+ * src/lib/urls.js so the config `url_exclude_patterns` baseline and the viewer
+ * list (issue #209) share one matching semantics.
  */
-function matchesExclusionPattern(url, patterns) {
+function compileExclusionPattern(pattern) {
+  const str = String(pattern);
+  const m = /^\/(.+)\/([a-z]*)$/i.exec(str);
+  if (m) {
+    try {
+      const re = new RegExp(m[1], m[2]);
+      return (url) => re.test(String(url));
+    } catch {
+      // fall through to substring
+    }
+  }
+  const needle = str.toLowerCase();
+  return (url) => String(url).toLowerCase().includes(needle);
+}
+
+/** Compile a list of exclusion patterns once into matchers. */
+function compileExclusionPatterns(patterns) {
+  return (patterns ?? []).map(compileExclusionPattern);
+}
+
+/**
+ * Check if a URL matches any of the exclusion patterns. Each pattern is a
+ * case-insensitive substring or a /regex/ (see compileExclusionPattern).
+ */
+export function matchesExclusionPattern(url, patterns) {
   if (!patterns || patterns.length === 0) return false;
-  const urlLower = String(url).toLowerCase();
-  return patterns.some((pattern) => urlLower.includes(String(pattern).toLowerCase()));
+  return compileExclusionPatterns(patterns).some((m) => m(url));
 }
 
 /**
@@ -41,13 +69,15 @@ function matchesExclusionPattern(url, patterns) {
  * the patterns. If all affected pages are excluded, the bug is removed entirely.
  * Recalculates frequency counts based on the filtered pages.
  */
-function filterBugsByExclusion(bugs, patterns) {
+export function filterBugsByExclusion(bugs, patterns) {
   if (!patterns || patterns.length === 0 || !bugs || bugs.length === 0) return bugs;
+  const matchers = compileExclusionPatterns(patterns);
+  const excluded = (u) => matchers.some((m) => m(u));
   return bugs
     .map((b) => {
       const filtered = { ...b };
-      const excluded_pages = (b.affected_pages ?? []).filter((u) => matchesExclusionPattern(u, patterns));
-      const remaining_pages = (b.affected_pages ?? []).filter((u) => !matchesExclusionPattern(u, patterns));
+      const excluded_pages = (b.affected_pages ?? []).filter((u) => excluded(u));
+      const remaining_pages = (b.affected_pages ?? []).filter((u) => !excluded(u));
       if (remaining_pages.length === 0) return null; // Bug fully excluded
       if (excluded_pages.length === 0) return b; // No exclusion needed
       // Some pages excluded: filter the affected_pages list and update counts

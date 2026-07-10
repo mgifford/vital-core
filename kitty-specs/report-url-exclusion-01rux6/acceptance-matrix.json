@@ -1,0 +1,132 @@
+{
+  "mission_slug": "report-url-exclusion-01rux6",
+  "mission_type": "software-dev",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "Collapsed .triage-io-styled exclusion box (pattern input + Apply + Clear) renders under the site-inventory meta line on the landing page and on the accessibility page",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "Patterns match the full URL case-insensitively as substring or /regex/; # comments and blank lines ignored",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Active list persists in localStorage['vital-exclude:<domain-key>'] (per-domain) and re-applies on load with no re-entry",
+      "proof_type": "manual_qa",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "With a list active, matching findings/pages are hidden and all visible counts update to the filtered view, client-side",
+      "proof_type": "manual_qa",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "Viewer list is additive to the config url_exclude_patterns baseline; banner names both sources with a hidden-count and reset-to-view-all",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-06",
+      "description": "Export (.json) / Import (.json) / Copy share payload work, carrying the domain key, reusing the triage IO scaffold",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "FR-07",
+      "description": "matchesExclusionPattern / filterBugsByExclusion honour /regex/ as well as substrings; invalid regex falls back to literal substring; config-baseline behaviour unchanged",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "src/report-html.js compileExclusionPattern()/matchesExclusionPattern()/filterBugsByExclusion(); tests/unit/url-exclusion.test.js (6 cases: substring case-insensitive, /regex/ match, flag honoured, invalid-regex fallback, filter recompute, full-exclusion). WP01."
+    },
+    {
+      "criterion_id": "FR-08",
+      "description": "Docs updated: CLAUDE.md three-layer note, README/FEATURES bullet, targets.yml cross-reference",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Progressive enhancement: JS-off renders the full server report (config baseline applied); the viewer control/filter/IO never break the no-JS baseline",
+      "proof_type": "manual_qa",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-02",
+      "description": "Headline score/grade stays whole-site (not recomputed for the filtered subset); filtered view is labelled",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-03",
+      "description": "One canonical location per finding preserved; hiding is display filtering only, no re-render elsewhere",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-04",
+      "description": "Sustainable web output: reuse .triage-io/existing CSS, no web fonts, gated no-op-when-empty script, within the lean budget",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-05",
+      "description": "No data/state/API changes; deep links and #fragment anchors keep working; JSON API keyed on domain/week untouched",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-06",
+      "description": "No new npm runtime dependencies; Node ESM >= 20, no build step",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-07",
+      "description": "Severity taxonomy unchanged (internal keys critical/serious/moderate/minor; four display labels)",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "C-08",
+      "description": "i18n lockstep: new visible strings via t(); script templates injected per-locale via JSON.stringify(t()); i18n:check green",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Unit tests cover regex-aware filter (substring/regex/invalid fallback) and control+banner render/inert-when-empty; e2e/i18n hrefs updated in lockstep",
+      "proof_type": "automated_test",
+      "pass_fail": "pending",
+      "evidence": ""
+    },
+    {
+      "criterion_id": "NFR-02",
+      "description": "Net added CSS/JS within budget; reuses .triage-io + existing IO script; filter script emitted once per page and a no-op when no list stored",
+      "proof_type": "code_review",
+      "pass_fail": "pending",
+      "evidence": ""
+    }
+  ]
+}
