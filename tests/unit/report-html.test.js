@@ -304,7 +304,11 @@ test('renderAccessibilityPage emits the viewer URL-exclusion control (issue #209
   const html = renderAccessibilityPage(target, summary, bugs, { byRule: {}, bugsAll: null }, { keyPages: [] });
 
   // Control box, keyed to the domain, hidden by default (revealed by the PE script).
-  assert.match(html, /<details class="exclude-box" id="exclude-box" hidden data-domain-key="www\.example\.gov">/);
+  assert.match(html, /<details class="exclude-box" id="exclude-box" hidden data-domain-key="www\.example\.gov"/);
+  // Phase 2: the Accessibility page carries the bugs.json href for filtered downloads.
+  assert.match(html, /data-bugs-json="bugs\.json"/);
+  assert.match(html, /id="exclude-dl-csv"/, 'has the filtered-CSV download control');
+  assert.match(html, /id="exclude-dl-json"/, 'has the filtered-JSON download control');
   assert.match(html, /id="exclude-input"/, 'has the pattern textarea');
   assert.match(html, /id="exclude-apply"/, 'has an Apply button');
   assert.match(html, /id="exclude-clear"/, 'has a Clear button');

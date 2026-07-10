@@ -75,19 +75,19 @@ This is called out in the UI so counts for very large findings aren't misread.
 
 ## Acceptance criteria
 
-- [ ] `bugsCsvTable(bugs)` factored out and exported; `writeBugsCsv` uses it; the
-      written CSV is byte-identical to before (unit-tested). *(FR-01, C-05)*
-- [ ] With an active exclusion list, the box offers **Download filtered CSV/JSON**;
-      hidden when no list is active. *(FR-02, D-3)*
-- [ ] The download fetches `bugs.json`, filters it with the same logic as the
-      on-screen view, and saves filtered `.json` + `.csv`. *(FR-03, FR-04)*
-- [ ] Filtered downloads match the on-screen view; the UI labels the ≤25-sample
-      semantics. *(C-03)*
-- [ ] Works as progressive enhancement; unfiltered links unchanged; no data/API
-      change; no new deps. *(C-01, C-04)*
-- [ ] Docs updated. *(FR-05)*
-- [ ] `npm run test:unit`, `i18n:check`, `check:spec-kitty` green; browser flow
-      verified in Chromium. *(NFR-01)*
+- [x] `bugsCsvTable(bugs)` factored out and exported; `writeBugsCsv` uses it; the
+      written CSV is byte-identical to before (unit-tested). *(FR-01, C-05 — WP01)*
+- [x] With an active exclusion list, the box offers **Download filtered CSV/JSON**;
+      hidden when no list is active. *(FR-02, D-3 — WP02)*
+- [x] The download fetches `bugs.json`, filters it with the same logic as the
+      on-screen view, and saves filtered `.json` + `.csv`. *(FR-03, FR-04 — WP02)*
+- [x] Filtered downloads match the on-screen view; the UI labels the ≤25-sample
+      semantics. *(C-03 — WP02)*
+- [x] Works as progressive enhancement; unfiltered links unchanged; no data/API
+      change; no new deps. *(C-01, C-04 — WP02)*
+- [ ] Docs updated. *(FR-05 — WP03)*
+- [x] `npm run test:unit` (276), `i18n:check`, `check:spec-kitty` green; browser
+      flow verified in Chromium (filter + CSV byte-parity). *(NFR-01)*
 
 ## Out of scope
 

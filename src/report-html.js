@@ -1637,7 +1637,7 @@ ${affectedPagesBlock(b)}
   return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', t('Bug reports'))}
 ${exclusionBanner}
-${exclusionBox(target)}
+${exclusionBox(target, { bugsJson: reporting.bugsJson ?? 'bugs.json' })}
 <div id="exclude-banner" class="exclusion-banner" role="status" hidden></div>
 <p class="meta">${t('@count issue type(s) are shown by default out of @total total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.', { '@count': view.visibleCount, '@total': ordered.length })}</p>
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
@@ -1787,9 +1787,13 @@ function triageScript() {
  * JavaScript off the full report shows and the box does not. Reused verbatim on
  * the landing page (WP03). Export/import/share controls are added in WP04.
  */
-function exclusionBox(target) {
+function exclusionBox(target, { bugsJson = '' } = {}) {
   const key = esc(target?.key ?? '');
-  return `<details class="exclude-box" id="exclude-box" hidden data-domain-key="${key}">
+  // data-bugs-json (Accessibility page only) is the href the filtered-export
+  // controls fetch and re-filter client-side (issue #209 Phase 2). Absent on the
+  // landing page, so those controls never appear there.
+  const bugsAttr = bugsJson ? ` data-bugs-json="${esc(bugsJson)}"` : '';
+  return `<details class="exclude-box" id="exclude-box" hidden data-domain-key="${key}"${bugsAttr}>
 <summary>${t('Exclude URLs from this report')} <span class="exclude-count" id="exclude-count" hidden></span></summary>
 <div class="exclude-body">
 <p class="note">${t('Hide findings on pages you are not responsible for — a section another team owns, or legacy pages out of contract. One pattern per line: a plain substring (<code>/medicare/</code>) or a <code>/regex/</code> (<code>/\\.aspx$/i</code>); <code>#</code> comments are ignored. This only changes what this report shows in your browser — every page is still scanned, and your list is saved on this device.')}</p>
@@ -1802,6 +1806,12 @@ function exclusionBox(target) {
 <label class="triage-btn triage-import-label"><input type="file" id="exclude-import" accept=".json" style="display:none">${t('Import (.json)')}</label>
 <button type="button" id="exclude-share" class="triage-btn">${t('Copy share payload')}</button>
 <span id="exclude-status" class="triage-io-status" aria-live="polite"></span>
+</div>
+<div class="exclude-actions exclude-export-actions" id="exclude-export-actions" hidden>
+<span class="exclude-label exclude-export-label">${t('Download this view')}</span>
+<button type="button" id="exclude-dl-csv" class="triage-btn">${t('Filtered CSV')}</button>
+<button type="button" id="exclude-dl-json" class="triage-btn">${t('Filtered JSON')}</button>
+<span class="note exclude-export-note">${t('Findings scoped to your excluded URLs, matching this view (counts use the same up-to-25-page sample).')}</span>
 </div>
 </div>
 </details>`;
@@ -1829,6 +1839,7 @@ function exclusionFilterScript() {
   var countBadge = document.getElementById('exclude-count');
   var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
   var hasFindings = bugs.length > 0;
+  var bugsJsonHref = box.getAttribute('data-bugs-json') || '';
   var MSG_HIDDEN = ${JSON.stringify(t('Your exclusions hide @hidden finding(s).'))};
   var MSG_PARTIAL = ${JSON.stringify(t('@n more finding(s) have some affected pages hidden.'))};
   var MSG_VIEWALL = ${JSON.stringify(t('View everything'))};
@@ -1843,6 +1854,9 @@ function exclusionFilterScript() {
   var MSG_MISMATCH = ${JSON.stringify(t('Note: this list was shared for @domain.'))};
   var MSG_IMPORTFAIL = ${JSON.stringify(t('Import failed: @msg'))};
   var MSG_NOTFILE = ${JSON.stringify(t('not a vital-exclude share file'))};
+  var MSG_PREPARING = ${JSON.stringify(t('Preparing filtered download…'))};
+  var MSG_DLDONE = ${JSON.stringify(t('Downloaded @n of @total finding(s), filtered to your exclusions.'))};
+  var MSG_DLFAIL = ${JSON.stringify(t('Filtered download failed: @msg'))};
   function compile(p) {
     var m = /^\\/(.+)\\/([a-z]*)$/i.exec(p);
     if (m) { try { var re = new RegExp(m[1], m[2]); return function (u) { return re.test(u); }; } catch (e) {} }
@@ -1900,6 +1914,10 @@ function exclusionFilterScript() {
     // exclusions are active, reveal the note that says the score is whole-site.
     var scoreNote = document.getElementById('score-scope-note');
     if (scoreNote) scoreNote.hidden = !active;
+    // Phase 2: filtered-download controls appear only with an active list and a
+    // bugs.json to re-filter (Accessibility page only).
+    var exportActions = document.getElementById('exclude-export-actions');
+    if (exportActions) exportActions.hidden = !(active && bugsJsonHref);
     if (window.__vitalApplyFilter) window.__vitalApplyFilter();
   }
   function setStatus(msg) { if (!status) return; status.textContent = msg; setTimeout(function () { status.textContent = ''; }, 4000); }
@@ -1959,6 +1977,93 @@ function exclusionFilterScript() {
       e.target.value = ''; // allow re-importing the same file
     };
     reader.readAsText(file);
+  });
+  // Phase 2 (#209): download a copy of the findings scoped to the exclusion
+  // list. Fetches the pre-built bugs.json on demand and filters it with the same
+  // conservative rule as the on-screen view — a finding is dropped only when its
+  // affected-page list is complete (all pages present, i.e. <=25) and every page
+  // matches; a >25-page finding is kept with its counts intact (we can't prove
+  // it is fully out of scope from the sample). Mirrors filterBugsByExclusion +
+  // bugsCsvTable + csvField so the download matches the server exports.
+  function filterBugsData(reports, patterns) {
+    var matchers = patterns.map(compile);
+    var hit = function (u) { return matchers.some(function (m) { return m(u); }); };
+    var out = [];
+    reports.forEach(function (b) {
+      var pages = b.affected_pages || [];
+      var total = (b.frequency && b.frequency.pages_affected) || pages.length;
+      var complete = pages.length > 0 && pages.length >= total;
+      var remaining = pages.filter(function (u) { return !hit(u); });
+      if (complete) {
+        if (remaining.length === 0) return;                 // fully excluded → drop
+        if (remaining.length === pages.length) { out.push(b); return; } // nothing excluded
+        var nb = {}; for (var k in b) nb[k] = b[k];
+        nb.affected_pages = remaining;
+        if (b.frequency) {
+          nb.frequency = {}; for (var fk in b.frequency) nb.frequency[fk] = b.frequency[fk];
+          nb.frequency.pages_affected = remaining.length;
+          if (b.frequency.instances) nb.frequency.instances = Math.round(b.frequency.instances * (remaining.length / pages.length));
+        }
+        out.push(nb);
+      } else {
+        // Incomplete sample: keep the finding and its true counts; trim only the
+        // listed sample (matches the on-screen behaviour of hiding sampled rows).
+        var nb2 = {}; for (var k2 in b) nb2[k2] = b[k2];
+        nb2.affected_pages = remaining;
+        out.push(nb2);
+      }
+    });
+    return out;
+  }
+  function csvField(s) {
+    var v = (s == null) ? '' : String(s);
+    var safe = /^[=+\\-@]/.test(v) ? "'" + v : v;
+    return /[",\\n]/.test(safe) ? '"' + safe.replace(/"/g, '""') + '"' : safe;
+  }
+  var CSV_HEADERS = ['bug_id','pattern_id','combined_id','engine','rule_id','rule_url','wcag_category','wcag_sc','wcag_name','wcag_level','wcag_version','severity','pages_affected','instances','total_pages_scanned','example_url','xpath','html_snippet','summary','description','steps_to_reproduce','suggested_fix','remediation_tip','testing_environment','impact_summary','impact_groups','first_seen','last_seen','weeks_seen','possible_duplicate_of','possible_duplicate_pattern','affected_pages_csv'];
+  function bugsToCsv(reports) {
+    var lines = [CSV_HEADERS.map(csvField).join(',')];
+    reports.forEach(function (b) {
+      var f = b.frequency || {};
+      var groups = ((b.impact && b.impact.groups) || []).map(function (g) { return g.group + ' (' + g.percent + ')'; }).join('; ');
+      var row = [b.instance_id, b.pattern_id, b.instance_id + ' (pattern ' + b.pattern_id + ')', b.engine_key, b.rule_id, b.rule_url || '', b.wcag_category || '', b.wcag_sc || '', b.wcag_name || '', b.wcag_level || '', b.wcag_version || '', b.severity, f.pages_affected, f.instances, f.total_pages_scanned, b.url || '', b.xpath || '', b.html_snippet || '', b.summary || '', b.description || '', (b.steps_to_reproduce || []).join(' | '), b.suggested_fix || '', b.remediation_tip || '', b.testing_environment || '', (b.impact && b.impact.summary) || '', groups, b.first_seen || '', b.last_seen || '', b.weeks_seen || '', b.possible_duplicate_of || '', b.possible_duplicate_pattern || '', b.affected_pages_csv || ''];
+      lines.push(row.map(csvField).join(','));
+    });
+    return lines.join('\\n') + '\\n';
+  }
+  function downloadBlob(content, mime, fname) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = fname;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+  function withFiltered(cb) {
+    var pats = currentPatterns();
+    if (!pats.length || !bugsJsonHref) return;
+    setStatus(MSG_PREPARING);
+    fetch(bugsJsonHref).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (doc) {
+        var reports = (doc && doc.reports) || [];
+        cb(doc, filterBugsData(reports, pats), reports.length, pats);
+      })
+      .catch(function (err) { setStatus(MSG_DLFAIL.replace('@msg', err.message)); });
+  }
+  var stamp = function () { return new Date().toISOString().slice(0, 10); };
+  var dlCsv = document.getElementById('exclude-dl-csv');
+  if (dlCsv) dlCsv.addEventListener('click', function () {
+    withFiltered(function (doc, filtered, total) {
+      downloadBlob(bugsToCsv(filtered), 'text/csv', (domain || 'domain') + '_' + stamp() + '_bugs.filtered.csv');
+      setStatus(MSG_DLDONE.replace('@n', filtered.length).replace('@total', total));
+    });
+  });
+  var dlJson = document.getElementById('exclude-dl-json');
+  if (dlJson) dlJson.addEventListener('click', function () {
+    withFiltered(function (doc, filtered, total, pats) {
+      var out = {}; for (var k in doc) out[k] = doc[k];
+      out.reports = filtered; out.filtered_by = pats;
+      downloadBlob(JSON.stringify(out, null, 1), 'application/json', (domain || 'domain') + '_' + stamp() + '_bugs.filtered.json');
+      setStatus(MSG_DLDONE.replace('@n', filtered.length).replace('@total', total));
+    });
   });
 })();
 <\/script>`;
@@ -4179,6 +4284,9 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .exclude-input { width: 100%; box-sizing: border-box; font-family: monospace; font-size: .9rem;
   padding: .4rem .5rem; border: 1px solid var(--rule); border-radius: 2px; background: var(--paper); color: var(--ink); }
 .exclude-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem .6rem; margin-top: .5rem; }
+.exclude-export-actions { margin-top: .6rem; padding-top: .6rem; border-top: 1px solid var(--rule); }
+.exclude-export-label { display: inline; margin: 0; }
+.exclude-export-note { flex-basis: 100%; margin: .1rem 0 0; font-size: .8rem; }
 .linkish { background: none; border: none; padding: 0; font: inherit; color: var(--accent);
   font-weight: 600; cursor: pointer; text-decoration: underline; }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
