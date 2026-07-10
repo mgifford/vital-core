@@ -271,6 +271,7 @@ const PAGES = {
   errors: 'errors',
   tech: 'tech',
   'tech-findings': 'tech-findings',
+  history: 'history',
   archive: 'archive',
 };
 
@@ -306,7 +307,7 @@ const SUBNAV_GROUPS = [
   { label: 'Findable?', items: [['readability', 'Readability'], ['standards', 'Standards']] },
   { label: 'Trustworthy?', items: [['security', 'Security'], ['third-party', 'Third parties'], ['errors', 'Errors']] },
   { label: 'Sustainable?', items: [['tech', 'Tech stack'], ['tech-findings', 'Tech ↔ issues']] },
-  { label: null, items: [['archive', 'Archive']] },
+  { label: null, items: [['history', 'History & Trends'], ['archive', 'Archive']] },
 ];
 function subnav(active) {
   const groupHtml = ({ label, items }) => {
@@ -2720,6 +2721,55 @@ ${subnav('archive')}
     title: `${target.domain} archive | vital-scans`,
     page: "archive",
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">${t('Archive')}</li>`,
+    body,
+    depth: 3,
+  });
+}
+
+/**
+ * History & Trends page (issue #180): the per-domain home for longitudinal
+ * analysis, so the weekly overview can stay focused on "what changed this
+ * week". WP1 is the scaffold — it establishes the page, its navigation, and
+ * the outcome-aligned section outline. The trend charts themselves (severity,
+ * Lighthouse, sustainability, content quality, technology, standards) are
+ * moved here / added in follow-up work packages. Always written for every
+ * week so the subnav link never 404s, with an empty state before there are
+ * two weeks to compare. `series` is the full weekly summary history.
+ */
+export function renderHistoryPage(target, series, week) {
+  const weeks = series.length;
+  const firstWeek = series[0]?.week;
+  const traj = trajectory(series, 4);
+  // Outcome-aligned outline: the questions this page will answer over time,
+  // in the same order as the subnav. Sections are filled in by later WPs.
+  const SECTIONS = [
+    ['Accessible?', t('Severity trends, pages affected, new vs. resolved issues, and accessibility score over time.')],
+    ['Fast?', t('Lighthouse performance, best practices, SEO, and agentic scores week over week.')],
+    ['Sustainable?', t('Median page weight, requests per page, estimated CO₂, and third-party and JavaScript weight.')],
+    ['Findable?', t('Reading ease, grade level, word count, and acronym and misspelling trends.')],
+    ['Trustworthy?', t('Technology-stack changes and the standards checks (accessibility statement, carbon.txt, sitemaps, security).')],
+  ];
+  const outline = `<ul class="history-outline">${SECTIONS
+    .map(([label, desc]) => `<li><strong>${esc(t(label))}</strong> — ${esc(desc)}</li>`)
+    .join('')}</ul>`;
+
+  const title = esc(t('History & Trends'));
+  const body = `
+<h1>${esc(target.domain)}: ${title}</h1>
+${subnav('history')}
+<p class="meta">${t('How this site has changed over time. The <a href="index.html">weekly overview</a> answers "what should I fix now?"; this page answers "how are we trending?"')}</p>
+${weeks > 1
+    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</p>`
+    : `<p class="note">${t('Only one week has been scanned so far. Trend charts appear here once there are at least two weeks to compare — check back after the next scan.')}</p>`}
+<section aria-labelledby="h-history-outline">
+${heading('h-history-outline', t('What this page tracks'))}
+<p class="meta">${t('Longitudinal trends are being consolidated here so the weekly report can stay concise. Each area below gets its own multi-week charts, with CSV and JSON downloads.')}</p>
+${outline}
+</section>`;
+  return layout({
+    title: `${target.domain} ${t('History & Trends')} ${week} | vital-scans`,
+    page: 'history',
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(week)}</a></li><li aria-current="page">${title}</li>`,
     body,
     depth: 3,
   });
