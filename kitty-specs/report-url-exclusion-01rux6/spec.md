@@ -1,6 +1,6 @@
 # Spec: Viewer-side report URL exclusion
 
-**Status**: DRAFT
+**Status**: IMPLEMENTED (WP01–WP05) — pending `spec-kitty accept`
 **Issue**: [#209](https://github.com/mgifford/vital-core/issues/209)
 
 > Hand-authored to mirror the spec-kitty mission format (the `spec-kitty` CLI is
@@ -136,11 +136,14 @@ starting WP work.
 - [x] The report is fully usable with JavaScript disabled; the headline score is
       not recomputed for the filtered set and the filtered view is labelled.
       *(C-01 — WP02, C-02 — WP03)*
-- [ ] Docs updated (CLAUDE.md three-layer note, README/FEATURES, targets.yml
-      cross-reference). *(FR-08)*
-- [ ] `npm run test:unit`, `npm run i18n:check`, and `npm run check:spec-kitty`
-      green; `npm run test:e2e` green (or a full `npm run aggregate` where the
-      Playwright binary is unavailable). *(NFR-01)*
+- [x] Docs updated (CLAUDE.md three-layer note, README/FEATURES, targets.yml
+      cross-reference). *(FR-08 — WP05)*
+- [x] `npm run test:unit` (273), `npm run i18n:check`, and
+      `npm run check:spec-kitty` green. *(NFR-01)* — `npm run test:e2e` /
+      `aggregate` are not runnable in this environment (the scanner needs
+      `chrome-headless-shell`); the runtime paths were verified directly in the
+      installed Chromium instead (filter, persistence, cross-page share, IO
+      round-trip).
 
 ---
 

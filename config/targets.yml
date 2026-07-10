@@ -156,14 +156,19 @@ targets:
   #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
   #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
   #
-  #   url_exclude_patterns: [ ... ] optional list of substrings to exclude from
-  #     REPORT output only (not from the scan). Useful when some teams own certain
-  #     URL patterns and aren't responsible for fixing them. Affects bug counts,
-  #     affected-page lists, and prioritization on the accessibility page.
-  #     Scanning still includes everything — this only filters the report display.
+  #   url_exclude_patterns: [ ... ] optional list of substring or /regex/ patterns
+  #     to exclude from REPORT output only (not from the scan), for EVERYONE, at
+  #     build time. Useful when some teams own certain URL patterns and aren't
+  #     responsible for fixing them. Affects bug counts, affected-page lists, and
+  #     prioritization on the accessibility page. Scanning still includes
+  #     everything — this only filters the report display.
   #     Examples:
   #       url_exclude_patterns: [".aspx"]          # hide legacy ASP.NET pages
   #       url_exclude_patterns: ["/api/", "/admin/"]  # hide API and admin endpoints
+  #     Note: report readers can ALSO set their own per-viewer exclusion list in
+  #     the browser (the "Exclude URLs from this report" box on the landing and
+  #     Accessibility pages; stored in localStorage, issue #209). That is additive
+  #     to this baseline and needs no config change or re-scan.
   #
   #   design_system: optional component taxonomy for clustering and attribution.
   #     Supported values: cms-ds, uswds, none.
