@@ -27,13 +27,23 @@ downloads. No server rebuild, no new data files, and nothing extra on page load.
 Bug objects cap `affected_pages` at 25 (`src/lib/bug-report.js:113`); the complete
 per-finding list lives only in per-rule CSVs. So neither `bugs.json` nor
 `bugs.csv` carries every URL, and shipping them all would blow the sustainability
-budget. Therefore the filtered export uses the **same conservative rule as the
-on-screen filter** (WP02 of Phase 1): a finding is dropped only when its list is
-**complete** (`affected_pages.length >= pages_affected`) and every page matches;
-otherwise it is kept (with matching sampled pages removed and counts adjusted
-proportionally, exactly like `filterBugsByExclusion`). The result is an export
-**consistent with what the viewer sees**, not a re-derivation from complete data.
-This is called out in the UI so counts for very large findings aren't misread.
+budget. Therefore the filtered export uses the **same sample-based rule as the
+on-screen filter**: a finding is dropped when **every page the client can see
+matches** (for a >25-page finding that is the ≤25 sample); a finding with some
+non-matching pages is kept, with matched sampled pages removed and — only when
+the sample is the complete list — counts adjusted proportionally. The result is
+an export **consistent with what the viewer sees**, not a re-derivation from
+complete data. This is called out in the UI so large-finding matches aren't
+misread as exhaustive.
+
+> Post-merge fix (issue #209 feedback): the original rule dropped a finding only
+> when its list was *complete*. On real gov sites almost every finding spans >25
+> pages (`data-complete=0`), so nothing ever hid — the control looked broken.
+> The on-screen filter (`exclusionFilterScript`) and this export now both hide on
+> the sample and flag it. Also fixed in the same change: the config
+> `url_exclude_patterns` baseline was never threaded into
+> `renderAccessibilityPage` (a no-op until now), and the box help steered users
+> to an anchored `/\.aspx$/i` that misses `.aspx?query` URLs.
 
 ## Decisions (recommended defaults — adjustable)
 

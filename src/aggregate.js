@@ -343,7 +343,7 @@ for (const target of config.targets) {
         acrYaml: acrResult.path,
         trainingPriorities,
         trainingAdvice,
-      }));
+      }, target.url_exclude_patterns ?? []));
       fs.writeFileSync(path.join(repDir, `standards${sfx}.html`), renderStandardsPage(target, summary));
       fs.writeFileSync(path.join(repDir, `security${sfx}.html`), renderSecurityPage(target, summary));
       fs.writeFileSync(path.join(repDir, `errors${sfx}.html`), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
