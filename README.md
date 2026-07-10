@@ -57,6 +57,13 @@ Other deliberate choices:
   crawled and scanned. Each pattern is a substring or a `/regex/`, and long
   lists can live in a file via `url_include_file` / `url_exclude_file`
   (resolved under `config/`). Priority URLs always bypass the filter.
+- **Viewer URL exclusion.** A report reader can hide findings on pages they
+  are not responsible for (a section another team owns, legacy `.aspx` pages)
+  via a control on the landing and Accessibility pages. The list is a
+  substring/`/regex/` set saved per-domain in the browser (`localStorage`),
+  shared across both pages, and exportable/importable so a team can agree on
+  one scope. Scanning is unaffected — it only changes what the report shows;
+  with JavaScript off the full report renders.
 - **Plain Node, no build step, no TypeScript, six dependencies.** Less
   machinery to break in CI.
 

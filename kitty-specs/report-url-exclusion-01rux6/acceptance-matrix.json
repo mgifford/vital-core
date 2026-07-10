@@ -55,8 +55,8 @@
       "criterion_id": "FR-08",
       "description": "Docs updated: CLAUDE.md three-layer note, README/FEATURES bullet, targets.yml cross-reference",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "CLAUDE.md 'URL exclusion (three layers)' section (scan/report/viewer table + localStorage key + PE/conservative-hide notes); README.md + FEATURES.md viewer-control bullets; config/targets.yml cross-reference under url_exclude_patterns. WP05."
     },
     {
       "criterion_id": "C-01",
@@ -90,15 +90,15 @@
       "criterion_id": "C-05",
       "description": "No data/state/API changes; deep links and #fragment anchors keep working; JSON API keyed on domain/week untouched",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Whole feature is client-only (localStorage); no writes to data/, state/, or api-writer; no page renames or fragment changes. Diff touches only src/report-html.js + tests + docs."
     },
     {
       "criterion_id": "C-06",
       "description": "No new npm runtime dependencies; Node ESM >= 20, no build step",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "No package.json change across WP01–WP05; vanilla browser JS in a template string, no bundler."
     },
     {
       "criterion_id": "C-07",
@@ -118,8 +118,8 @@
       "criterion_id": "NFR-01",
       "description": "Unit tests cover regex-aware filter (substring/regex/invalid fallback) and control+banner render/inert-when-empty; e2e/i18n hrefs updated in lockstep",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "tests/unit/url-exclusion.test.js (WP01 filter cases) + tests/unit/report-html.test.js (accessibility + landing control render, IO controls, JS-off baseline). npm run test:unit 273 pass; i18n:check clean. e2e not runnable in-env (scanner needs chrome-headless-shell); runtime paths verified directly in Chromium instead."
     },
     {
       "criterion_id": "NFR-02",

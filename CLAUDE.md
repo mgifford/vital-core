@@ -145,6 +145,31 @@ BP/Undetermined; 2 = Moderate/Minor + WCAG A/AA + ≥10 pages; 5 = hidden.
 
 ---
 
+## URL exclusion (three layers)
+
+Three independent mechanisms drop URLs, at three different stages. Keep them
+straight — they are not interchangeable:
+
+| Layer | Key(s) | Stage | Who controls it | Effect |
+|---|---|---|---|---|
+| **Scan** | `url_exclude` / `url_exclude_file` (substring or `/regex/`), `url_include` | crawl | config author (`config/targets.yml`) | URL is never fetched or audited |
+| **Report render** | `url_exclude_patterns` | build (aggregate) | config author | URL hidden from the rendered report for everyone; still scanned |
+| **Viewer** | `localStorage['vital-exclude:<domain-key>']` | runtime, in the browser | the report reader | URL's findings hidden from *this viewer's* view; still scanned, still in the data/API |
+
+The **viewer** layer (issue #209) is a progressive-enhancement control
+(`exclusionBox()` + `exclusionFilterScript()` in `src/report-html.js`) shown on
+the landing page (under the site-inventory line) and the Accessibility page. It
+shares one per-domain `localStorage` list across both pages, filters findings
+client-side, and supports export/import/copy-share. Matching mirrors the config
+filter (`matchesExclusionPattern`): case-insensitive substring or slash-wrapped
+`/regex/`. It is **additive** to the config `url_exclude_patterns` baseline and
+never recomputes the headline score (a note flags the whole-site scope). With JS
+off, the box is hidden and the full report renders. A finding is only fully
+hidden when its complete affected-page list is in the DOM (`data-complete=1`) and
+every page matches — never on a truncated 25-page sample.
+
+---
+
 ## Information architecture
 
 Reports are organized by the **visitor's question**, not the scanner's engine
