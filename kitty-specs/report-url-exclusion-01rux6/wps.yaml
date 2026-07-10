@@ -1,0 +1,92 @@
+work_packages:
+  - id: WP01
+    title: "Regex-aware exclusion filter (shared semantics)"
+    dependencies: []
+    owned_files:
+      - "src/report-html.js"
+      - "tests/unit/url-exclusion.test.js"
+    requirement_refs:
+      - FR-07
+      - NFR-01
+    subtasks:
+      - T001
+    prompt_file: "tasks/WP01-regex-filter.md"
+
+  - id: WP02
+    title: "Viewer exclusion control on the accessibility page"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/report-html.js"
+      - "tests/unit/report-html.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-02
+      - FR-03
+      - FR-04
+      - FR-05
+      - C-01
+      - C-02
+      - C-03
+      - C-04
+      - C-07
+      - C-08
+    subtasks:
+      - T002
+      - T003
+      - T004
+    prompt_file: "tasks/WP02-viewer-control.md"
+
+  - id: WP03
+    title: "Landing-page placement + cross-page shared state"
+    dependencies:
+      - WP02
+    owned_files:
+      - "src/report-html.js"
+      - "tests/unit/report-html.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-03
+      - FR-04
+      - FR-05
+      - C-01
+      - C-02
+      - C-04
+    subtasks:
+      - T005
+      - T006
+    prompt_file: "tasks/WP03-landing-placement.md"
+
+  - id: WP04
+    title: "Export / import / share of the exclusion set"
+    dependencies:
+      - WP02
+    owned_files:
+      - "src/report-html.js"
+      - "tests/unit/report-html.test.js"
+    requirement_refs:
+      - FR-06
+      - C-04
+      - C-08
+      - NFR-02
+    subtasks:
+      - T007
+      - T008
+    prompt_file: "tasks/WP04-share-io.md"
+
+  - id: WP05
+    title: "Docs"
+    dependencies:
+      - WP02
+      - WP03
+      - WP04
+    owned_files:
+      - "CLAUDE.md"
+      - "README.md"
+      - "FEATURES.md"
+      - "config/targets.yml"
+    requirement_refs:
+      - FR-08
+    subtasks:
+      - T009
+    prompt_file: "tasks/WP05-docs.md"
