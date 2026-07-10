@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 
 test('renderDomainReport shows severity trend and four-category Lighthouse trend', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
@@ -423,4 +423,29 @@ test('standards page (Findable) and security page (Trustworthy) split cleanly', 
   // Each links to itself as the current nav item.
   assert.match(std, /<li aria-current="page">Standards<\/li>/);
   assert.match(sec, /<li aria-current="page">Security<\/li>/);
+});
+test('renderHistoryPage (WP1): scaffold with subnav, self-current nav, and multi-week summary', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const series = [
+    { week: '2026-W24', axe: { medianViolations: 4 } },
+    { week: '2026-W25', axe: { medianViolations: 3 } },
+  ];
+  const html = renderHistoryPage(target, series, '2026-W25');
+
+  // It's a real page in the subnav, marked current, linking back to the overview.
+  // The ampersand in the label is HTML-escaped in the H1 and nav.
+  assert.match(html, /<h1>www\.example\.gov: History &amp; Trends<\/h1>/);
+  assert.match(html, /class="subnav"/);
+  assert.match(html, /<li aria-current="page">History &amp; Trends<\/li>/);
+  assert.match(html, /href="index\.html"/);
+  // Longitudinal framing: weeks tracked, outcome-aligned outline.
+  assert.match(html, /<strong>2<\/strong> weeks recorded/);
+  assert.match(html, /What this page tracks/);
+});
+
+test('renderHistoryPage (WP1): single week shows an empty state, not a broken chart', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const html = renderHistoryPage(target, [{ week: '2026-W24', axe: { medianViolations: 4 } }], '2026-W24');
+  assert.match(html, /Only one week has been scanned so far/);
+  assert.doesNotMatch(html, /weeks recorded/);
 });

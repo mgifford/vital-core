@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, redirectStub, PAGE_REDIRECTS } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
@@ -351,6 +351,9 @@ for (const target of config.targets) {
       fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary));
       fs.writeFileSync(path.join(repDir, `third-parties${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
       fs.writeFileSync(path.join(repDir, `images${sfx}.html`), renderImagesPage(target, summary, imagesCsv));
+      // History & Trends page (issue #180). Written for every week so the
+      // subnav link resolves from any week's report.
+      fs.writeFileSync(path.join(repDir, `history${sfx}.html`), renderHistoryPage(target, series, summary.week));
       // Archive page (all weeks). Written in each week folder so the subnav
       // "Archive" link resolves from any week's report.
       const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
