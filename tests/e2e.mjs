@@ -344,6 +344,11 @@ try {
 
   const weekly = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'docs', 'data', 'localhost', 'weekly.json')));
   assert(weekly.series.length === 2, 'trend series has two weeks');
+  // Trend series is also exported as a flat CSV beside weekly.json (WP4).
+  const trendsCsvPath = path.join(SANDBOX, 'docs', 'data', 'localhost', 'trends.csv');
+  assert(fs.existsSync(trendsCsvPath), 'trends.csv exported for the History page');
+  const trendsCsv = fs.readFileSync(trendsCsvPath, 'utf8').trim().split('\n');
+  assert(/^week,/.test(trendsCsv[0]) && trendsCsv.length === 3, 'trends.csv has a header + one row per week');
   const w2 = weekly.series[1];
   const diff = weekly.diffs['2026-W24'];
   assert(w2.axe.violationTotal < w1.axe.violationTotal, `week 2 axe violations dropped (${w1.axe.violationTotal} -> ${w2.axe.violationTotal})`);

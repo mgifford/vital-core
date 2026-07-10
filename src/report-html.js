@@ -2732,6 +2732,54 @@ ${subnav('archive')}
   });
 }
 
+// Historical-comparison snapshot (issue #180 WP4): the latest week's headline
+// numbers against fixed look-back windows (4 / 13 / 52 weeks ago), so a reader
+// can see "how does now compare to a month / quarter / year ago" at a glance.
+// Static and no-JS; only windows the history actually reaches are shown, and a
+// metric row is skipped when the latest week has no value for it.
+function historyComparison(series) {
+  if (series.length < 2) return '';
+  const latest = series[series.length - 1];
+  const passRate = (checks) => {
+    const tot = checks.reduce((a, c) => a + c.total, 0);
+    return tot ? Math.round((checks.reduce((a, c) => a + c.pass, 0) / tot) * 100) : null;
+  };
+  const METRICS = [
+    { label: 'Accessibility score', pick: (s) => scoreFor(s)?.score ?? null, goodWhenDown: false },
+    { label: 'Median axe violations / page', pick: (s) => s.axe?.medianViolations ?? null, goodWhenDown: true },
+    { label: 'Median page weight (KB)', pick: (s) => (s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null), goodWhenDown: true, unit: ' KB' },
+    { label: 'Reading ease (Flesch)', pick: (s) => s.plainLanguage?.medianReadingEase ?? null, goodWhenDown: false },
+    { label: 'Standards checks passing (%)', pick: (s) => (s.standards?.checks?.length ? passRate(s.standards.checks) : null), goodWhenDown: false, unit: '%' },
+  ];
+  const WINDOWS = [4, 13, 52].filter((w) => series.length > w);
+  if (WINDOWS.length === 0) return '';
+
+  const head = `<tr><th scope="col">${t('Measure')}</th><th scope="col" class="num">${t('Now')}</th>${WINDOWS
+    .map((w) => `<th scope="col" class="num">${t('vs @n wk ago', { '@n': w })}</th>`).join('')}</tr>`;
+  const rows = METRICS.map((m) => {
+    const now = m.pick(latest);
+    if (now == null) return '';
+    const unit = m.unit ?? '';
+    const cells = WINDOWS.map((w) => {
+      const then = m.pick(series[series.length - 1 - w]);
+      if (then == null) return `<td class="num">${t('n/a')}</td>`;
+      const d = now - then;
+      return `<td class="num">${d === 0 ? `<span class="delta same">${t('no change')}</span>` : delta(d, { goodWhenDown: m.goodWhenDown, unit })}</td>`;
+    }).join('');
+    return `<tr><th scope="row">${esc(t(m.label))}</th><td class="num">${esc(String(now))}${esc(unit)}</td>${cells}</tr>`;
+  }).filter(Boolean).join('');
+  if (!rows) return '';
+
+  return `<section aria-labelledby="h-history-compare">
+${heading('h-history-compare', t('How the latest week compares'), 2)}
+<table class="trend-compare">
+<caption>${t('Latest week (@week) vs. earlier look-back windows.', { '@week': esc(latest.week) })} <span class="bug-meta">${t('positive/negative is relative to each measure — coloured by better or worse')}</span></caption>
+<thead>${head}</thead>
+<tbody>${rows}</tbody>
+</table>
+</section>`;
+}
+
 /**
  * History & Trends page (issue #180): the per-domain home for longitudinal
  * analysis, so the weekly overview can stay focused on "what changed this
@@ -2793,8 +2841,9 @@ export function renderHistoryPage(target, series, week) {
 ${subnav('history')}
 <p class="meta">${t('How this site has changed over time. The <a href="index.html">weekly overview</a> answers "what should I fix now?"; this page answers "how are we trending?"')}</p>
 ${weeks > 1
-    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''} <a href="../../../data/${esc(target.key)}/weekly.json">${t('Download the full trend series (JSON)')}</a>.</p>`
+    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''} ${t('Download the full trend series:')} <a href="../../../data/${esc(target.key)}/trends.csv">${t('CSV')}</a> · <a href="../../../data/${esc(target.key)}/weekly.json">${t('JSON')}</a>.</p>`
     : `<p class="note">${t('Only one week has been scanned so far. Trend charts appear here once there are at least two weeks to compare — check back after the next scan.')}</p>`}
+${weeks > 1 ? historyComparison(series) : ''}
 <section aria-labelledby="h-history-a11y">
 ${heading('h-history-a11y', t('Accessible? — severity over time'))}
 ${severityChart}

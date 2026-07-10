@@ -482,6 +482,42 @@ test('renderHistoryPage (WP3): renders sustainability, readability and standards
   assert.match(html, /id="h-history-trustworthy"/);
 });
 
+test('renderHistoryPage (WP4): comparison table with look-back windows and CSV/JSON links', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  // Six weeks so the 4-week look-back window is reachable (needs length > 4).
+  const series = Array.from({ length: 6 }, (_, i) => ({
+    week: `2026-W${20 + i}`,
+    pagesScanned: 10, pagesAudited: 10,
+    axe: { medianViolations: 6 - i, pagesScanned: 10, pagesWithViolations: 5, rules: { 'image-alt': { impact: 'critical', pages: 6 - i } } },
+    alfa: { medianFailures: 2, pagesScanned: 10, pagesWithFailures: 3, rules: {} },
+    sustainability: { medianBytes: 300000 - i * 10000, medianRequests: 12, meanCo2g: 0.4 },
+    plainLanguage: { medianReadingEase: 50 + i, medianGrade: 11, medianWordsPerPage: 800 },
+    standards: { checks: [{ id: 'title', pass: 8 + (i % 2), total: 10 }] },
+    coverage: { axe: 10, alfa: 10 },
+  }));
+  const html = renderHistoryPage(target, series, '2026-W25');
+
+  // Look-back comparison section with the reachable window.
+  assert.match(html, /id="h-history-compare"/);
+  assert.match(html, /How the latest week compares/);
+  assert.match(html, /vs 4 wk ago/);
+  assert.doesNotMatch(html, /vs 52 wk ago/); // history isn't a year long yet
+  assert.match(html, /Median page weight \(KB\)/);
+  // Both machine-readable downloads.
+  assert.match(html, /href="\.\.\/\.\.\/\.\.\/data\/www\.example\.gov\/trends\.csv"/);
+  assert.match(html, /href="\.\.\/\.\.\/\.\.\/data\/www\.example\.gov\/weekly\.json"/);
+});
+
+test('renderHistoryPage (WP4): no comparison table until a look-back window is reachable', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const series = [
+    { week: '2026-W24', axe: { medianViolations: 4, rules: {} } },
+    { week: '2026-W25', axe: { medianViolations: 3, rules: {} } },
+  ];
+  const html = renderHistoryPage(target, series, '2026-W25');
+  assert.doesNotMatch(html, /id="h-history-compare"/);
+});
+
 test('renderHistoryPage (WP3): omits metric groups when a domain has no such data', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const wk = (week) => ({ week, axe: { medianViolations: 3, rules: {} } });
