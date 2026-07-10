@@ -1,6 +1,6 @@
 # Spec: Filtered report exports (viewer exclusion, Phase 2)
 
-**Status**: DRAFT
+**Status**: IMPLEMENTED (WP01–WP03) — pending `spec-kitty accept`
 **Issue**: [#209](https://github.com/mgifford/vital-core/issues/209) (Phase 2)
 **Builds on**: `report-url-exclusion-01rux6` (WP01–WP05, shipped) — the viewer
 URL-exclusion control.
@@ -85,7 +85,7 @@ This is called out in the UI so counts for very large findings aren't misread.
       semantics. *(C-03 — WP02)*
 - [x] Works as progressive enhancement; unfiltered links unchanged; no data/API
       change; no new deps. *(C-01, C-04 — WP02)*
-- [ ] Docs updated. *(FR-05 — WP03)*
+- [x] Docs updated. *(FR-05 — WP03)*
 - [x] `npm run test:unit` (276), `i18n:check`, `check:spec-kitty` green; browser
       flow verified in Chromium (filter + CSV byte-parity). *(NFR-01)*
 

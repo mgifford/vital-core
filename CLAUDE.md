@@ -168,6 +168,16 @@ off, the box is hidden and the full report renders. A finding is only fully
 hidden when its complete affected-page list is in the DOM (`data-complete=1`) and
 every page matches — never on a truncated 25-page sample.
 
+The viewer can also **download a filtered copy** of the findings (issue #209
+Phase 2): the box's "Download this view" controls fetch the pre-built `bugs.json`
+on demand and re-filter it in the browser, saving `<domain>_<date>_bugs.filtered.
+{csv,json}`. The filter uses the **same conservative ≤25-sample rule** as the
+on-screen view, so the download matches what's shown (large findings keep their
+true counts). The browser CSV serializer mirrors `bugsCsvTable()` (the single
+source of truth for the bugs.csv schema, `src/lib/csv.js`) so filtered CSV is
+byte-identical to the server export. The pre-built static files are never
+modified; this is on-demand, client-side only.
+
 ---
 
 ## Information architecture
