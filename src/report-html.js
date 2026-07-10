@@ -843,7 +843,7 @@ ${table}
 </figure>`;
 }
 
-function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
+function lineChart(title, points, { unit = '', lowerIsBetter = true, neutral = false } = {}) {
   const pts = points.filter((p) => p.value != null);
   if (pts.length < 2) {
     return `<p class="meta">${t('@title: not enough weeks yet for a trend.', { '@title': esc(title) })}</p>`;
@@ -866,7 +866,13 @@ function lineChart(title, points, { unit = '', lowerIsBetter = true } = {}) {
   const first = pts[0].value, last = pts[pts.length - 1].value;
   const change = last - first;
   const better = lowerIsBetter ? change < 0 : change > 0;
-  const trend = change === 0 ? t('unchanged') : `${better ? t('better') : t('worse')} (${first}${unit} → ${last}${unit})`;
+  // Neutral metrics (word count, technologies detected) have no inherent
+  // "better" direction, so report the movement without a better/worse verdict.
+  const trend = change === 0
+    ? t('unchanged')
+    : neutral
+      ? `${first}${unit} → ${last}${unit}`
+      : `${better ? t('better') : t('worse')} (${first}${unit} → ${last}${unit})`;
 
   const table = `<table class="visually-hidden"><caption>${t('@title by week', { '@title': esc(title) })}</caption>
 <thead><tr><th scope="col">${t('Week')}</th><th scope="col">${esc(title)}</th></tr></thead>
@@ -2731,11 +2737,12 @@ ${subnav('archive')}
  * analysis, so the weekly overview can stay focused on "what changed this
  * week". WP2 relocates the multi-week trend charts here from the overview:
  * the axe severity trend ("Accessible?") and the Lighthouse category trend
- * ("Fast?"). The remaining outcome areas (Sustainable? / Findable? /
- * Trustworthy?) are outlined here and charted in follow-up work packages.
- * Always written for every week so the subnav link never 404s, with an empty
- * state before there are two weeks to compare. `series` is the full weekly
- * summary history.
+ * ("Fast?"). WP3 adds single-metric trend charts for the remaining outcome
+ * areas — Sustainable? (page weight, requests, CO₂), Findable? (reading ease,
+ * grade, words), and Trustworthy? (technologies, standards & security pass
+ * rates) — each emitted only when it has two weeks of data. Always written
+ * for every week so the subnav link never 404s, with an empty state before
+ * there are two weeks to compare. `series` is the full weekly summary history.
  */
 export function renderHistoryPage(target, series, week) {
   const weeks = series.length;
@@ -2751,16 +2758,34 @@ export function renderHistoryPage(target, series, week) {
 <p class="note">${t('Lighthouse trend points are based on sampled pages and can vary week-to-week depending on which pages were sampled.')}</p>`
     : noData;
 
-  // Outcome areas still to be charted (WP3): described so the page reads as a
-  // deliberate index of what it tracks, not a set of broken stubs.
-  const PLANNED = [
-    ['Sustainable?', t('Median page weight, requests per page, estimated CO₂, and third-party and JavaScript weight.')],
-    ['Findable?', t('Reading ease, grade level, word count, and acronym and misspelling trends.')],
-    ['Trustworthy?', t('Technology-stack changes and the standards checks (accessibility statement, carbon.txt, sitemaps, security).')],
-  ];
-  const planned = `<ul class="history-outline">${PLANNED
-    .map(([label, desc]) => `<li><strong>${esc(t(label))}</strong> — ${esc(desc)}</li>`)
-    .join('')}</ul>`;
+  // Single-metric trend charts for the remaining outcome areas (WP3). Every
+  // metric already lives in each week's summary, so this is pure extraction:
+  // only emit a chart when a metric has at least two weeks of real data.
+  const chartIf = (label, pick, opts = {}) => {
+    const pts = trendPoints(series, pick).filter((p) => p.value != null);
+    return pts.length >= 2 ? lineChart(t(label), pts, opts) : '';
+  };
+  const passRate = (checks) => {
+    const tot = checks.reduce((a, c) => a + c.total, 0);
+    return tot ? Math.round((checks.reduce((a, c) => a + c.pass, 0) / tot) * 100) : null;
+  };
+
+  const sustainableGroup = chartGroup('h-history-sustainable', t('Sustainable? — page weight, requests & carbon over time'), 2, [
+    chartIf('Median page weight (KB)', (s) => (s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null), { unit: ' KB' }),
+    chartIf('Median requests per page', (s) => s.sustainability?.medianRequests ?? null),
+    chartIf('Mean CO₂ per page (g)', (s) => s.sustainability?.meanCo2g ?? null, { unit: ' g' }),
+  ]);
+  const findableGroup = chartGroup('h-history-findable', t('Findable? — readability over time'), 2, [
+    chartIf('Reading ease (Flesch)', (s) => s.plainLanguage?.medianReadingEase ?? null, { lowerIsBetter: false }),
+    chartIf('Reading grade (Flesch-Kincaid)', (s) => s.plainLanguage?.medianGrade ?? null),
+    chartIf('Words per page (median)', (s) => s.plainLanguage?.medianWordsPerPage ?? null, { neutral: true }),
+  ]);
+  const trustworthyGroup = chartGroup('h-history-trustworthy', t('Trustworthy? — technology & standards over time'), 2, [
+    chartIf('Technologies detected', (s) => s.tech?.length ?? null, { neutral: true }),
+    chartIf('Standards checks passing (%)', (s) => (s.standards?.checks?.length ? passRate(s.standards.checks) : null), { unit: '%', lowerIsBetter: false }),
+    chartIf('Security checks passing (%)', (s) => (s.security?.total ? Math.round((s.security.passed / s.security.total) * 100) : null), { unit: '%', lowerIsBetter: false }),
+  ]);
+  const moreGroups = [sustainableGroup, findableGroup, trustworthyGroup].filter(Boolean).join('\n');
 
   const title = esc(t('History & Trends'));
   const body = `
@@ -2768,7 +2793,7 @@ export function renderHistoryPage(target, series, week) {
 ${subnav('history')}
 <p class="meta">${t('How this site has changed over time. The <a href="index.html">weekly overview</a> answers "what should I fix now?"; this page answers "how are we trending?"')}</p>
 ${weeks > 1
-    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</p>`
+    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''} <a href="../../../data/${esc(target.key)}/weekly.json">${t('Download the full trend series (JSON)')}</a>.</p>`
     : `<p class="note">${t('Only one week has been scanned so far. Trend charts appear here once there are at least two weeks to compare — check back after the next scan.')}</p>`}
 <section aria-labelledby="h-history-a11y">
 ${heading('h-history-a11y', t('Accessible? — severity over time'))}
@@ -2778,11 +2803,7 @@ ${severityChart}
 ${heading('h-history-fast', t('Fast? — Lighthouse over time'))}
 ${lighthouseChart}
 </section>
-<section aria-labelledby="h-history-planned">
-${heading('h-history-planned', t('More trends coming'))}
-<p class="meta">${t('These areas already feed the weekly report and will get their own multi-week charts here, with CSV and JSON downloads.')}</p>
-${planned}
-</section>`;
+${moreGroups}`;
   return layout({
     title: `${target.domain} ${t('History & Trends')} ${week} | vital-scans`,
     page: 'history',
