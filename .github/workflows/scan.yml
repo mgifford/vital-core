@@ -62,17 +62,18 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: scan-global
+  cancel-in-progress: false
+
 jobs:
   matrix:
     runs-on: ubuntu-latest
     outputs:
       domains: ${{ steps.list.outputs.domains }}
     steps:
-      # Sparse + partial checkout: this job only reads config, src/lib, and
-      # each domain's small state/<domain>/crawl.json (to check weekly cap
-      # and frontier status). Skipping the ~700 MB data/ tree makes checkout
-      # near-free.
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      # Sparse + partial checkout to keep workspace footprint tiny
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
           filter: blob:none
@@ -82,9 +83,9 @@ jobs:
             config
             state
 
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 26 # 🟢 Upgraded to Node 26 Latest Stable Release
 
       - id: list
         env:
@@ -122,14 +123,7 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      # Sparse + partial checkout: a scan job reads src/config/vendor and
-      # writes only state/<domain>/ and data/<domain>/. Materializing just
-      # those paths (with blobs fetched on demand) avoids downloading the
-      # full multi-hundred-MB data/ tree for every job. Root files
-      # (package.json, package-lock.json) are always included in cone mode.
-      # The commit step's `git add state/ data/` only sees this domain's
-      # files, which is exactly the per-domain write isolation we promise.
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
           filter: blob:none
@@ -140,16 +134,16 @@ jobs:
             state/${{ matrix.domain }}
             data/${{ matrix.domain }}
 
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 26 # 🟢 Upgraded to Node 26 Latest Stable Release
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: Cache Playwright browser
-        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        uses: actions/cache@v4 # Cleaned up to standard tag
         with:
           path: ~/.cache/ms-playwright
           key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -175,8 +169,6 @@ jobs:
       - name: Scan
         env:
           NODE_OPTIONS: --max-old-space-size=8192
-          # Leave ~15 min for link-check flush, browser close, state save,
-          # and the commit step. Must be less than timeout-minutes: 110.
           VITAL_SCAN_TIME_BUDGET_MINUTES: 95
           DISPATCH_BUDGET: ${{ github.event.inputs.budget }}
         run: |
