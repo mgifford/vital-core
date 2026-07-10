@@ -91,10 +91,17 @@ export function writeLighthouseJson(repDir, domain, week, generatedAt, lighthous
 /** Write per-page readability CSV (words, Flesch reading ease, grade). */
 export function writeReadabilityCsv(repDir, domain, week, plRows) {
   if (!plRows?.length) return null;
-  const rows = plRows.map((r) => [r.url, r.wordCount, r.fleschReadingEase, r.fleschKincaidGrade, r.scored]);
+  const rows = plRows.map((r) => {
+    // Mirror the report's "Scored" column: distinguish too-little-text from
+    // non-prose (tables/data) so a huge tabular page doesn't read as "too
+    // little" anything (issue #201). Older rows carry no reason — infer it.
+    const status = r.scored ? 'scored'
+      : (r.scoreSkipReason || (r.wordCount >= 100 ? 'non-prose' : 'too-little-text'));
+    return [r.url, r.wordCount, r.fleschReadingEase, r.fleschKincaidGrade, r.scored, status];
+  });
   const name = `${filePrefix(domain, week)}_readability.csv`;
   fs.writeFileSync(path.join(repDir, name),
-    toCsv(['url', 'words', 'reading_ease', 'grade', 'scored'], rows));
+    toCsv(['url', 'words', 'reading_ease', 'grade', 'scored', 'score_status'], rows));
   return name;
 }
 

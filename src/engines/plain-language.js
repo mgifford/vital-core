@@ -60,6 +60,14 @@ export async function runPlainLanguage(page, { extraAllowlist = [] } = {}) {
   // of prose AND a plausible sentence structure before scoring.
   const hasProse = words.length >= 100 && sentences.length >= 3 && words.length / sentences.length <= 40;
 
+  // When we skip scoring, record *why*. A page can be unscored for two very
+  // different reasons and conflating them confuses readers (a 300k-word
+  // coverage-database dump is not "too little" anything — it just isn't
+  // prose): 'too-little-text' = genuinely few words (mostly links/cards);
+  // 'non-prose' = plenty of words but tabular/coded content with almost no
+  // sentence structure, so a reading grade would be meaningless.
+  const scoreSkipReason = hasProse ? null : words.length < 100 ? 'too-little-text' : 'non-prose';
+
   let fleschReadingEase = null;
   let fleschKincaidGrade = null;
   let avgSentenceLength = null;
@@ -92,7 +100,8 @@ export async function runPlainLanguage(page, { extraAllowlist = [] } = {}) {
 
   return {
     engine: 'plain-language',
-    scored: hasProse, // false = too little prose to score readability meaningfully
+    scored: hasProse, // false = not enough prose to score readability meaningfully
+    scoreSkipReason, // null when scored; else 'too-little-text' | 'non-prose'
     wordCount: words.length,
     misspelledCount: spelling.misspelledCount,
     misspelled: spelling.misspelled,
