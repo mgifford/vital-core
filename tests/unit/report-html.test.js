@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 
-test('renderDomainReport shows severity trend and four-category Lighthouse trend', () => {
+test('renderDomainReport links to History & Trends instead of embedding trend charts', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const series = [
     {
@@ -86,12 +86,12 @@ test('renderDomainReport shows severity trend and four-category Lighthouse trend
     null
   );
 
-  assert.match(html, /Pages affected by axe severity over 2 weeks/);
-  assert.match(html, /Lighthouse category scores over 2 weeks/);
-  assert.match(html, /Performance/);
-  assert.match(html, /Accessibility/);
-  assert.match(html, /Best practices/);
-  assert.match(html, /SEO/);
+  // WP2: the multi-week trend charts moved to the History & Trends page; the
+  // overview links there rather than embedding them.
+  assert.match(html, /History &amp; Trends →/);
+  assert.match(html, /href="history\.html"/);
+  assert.doesNotMatch(html, /Pages affected by axe severity over 2 weeks/);
+  assert.doesNotMatch(html, /Lighthouse category scores over 2 weeks/);
   assert.doesNotMatch(html, /Score trends/);
   assert.doesNotMatch(html, /Accessibility score \(0-100\)/);
   assert.doesNotMatch(html, /Google Lighthouse score \(median\)/);
@@ -438,9 +438,24 @@ test('renderHistoryPage (WP1): scaffold with subnav, self-current nav, and multi
   assert.match(html, /class="subnav"/);
   assert.match(html, /<li aria-current="page">History &amp; Trends<\/li>/);
   assert.match(html, /href="index\.html"/);
-  // Longitudinal framing: weeks tracked, outcome-aligned outline.
+  // Longitudinal framing + the relocated trend-section headings.
   assert.match(html, /<strong>2<\/strong> weeks recorded/);
-  assert.match(html, /What this page tracks/);
+  assert.match(html, /Accessible\? — severity over time/);
+  assert.match(html, /Fast\? — Lighthouse over time/);
+  assert.match(html, /More trends coming/);
+});
+
+test('renderHistoryPage (WP2): renders the relocated severity and Lighthouse trend charts', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const wk = (week, crit, perf) => ({
+    week,
+    axe: { medianViolations: 3, rules: { 'image-alt': { impact: 'critical', pages: crit } } },
+    lighthouse: { medianPerformance: perf, medianBestPractices: 70, medianSeo: 75 },
+  });
+  const html = renderHistoryPage(target, [wk('2026-W24', 5, 71), wk('2026-W25', 3, 76)], '2026-W25');
+  assert.match(html, /Pages affected by axe severity over 2 weeks/);
+  assert.match(html, /Lighthouse category scores over 2 weeks/);
+  assert.match(html, /class="linechart/);
 });
 
 test('renderHistoryPage (WP1): single week shows an empty state, not a broken chart', () => {
