@@ -1796,7 +1796,7 @@ function exclusionBox(target, { bugsJson = '' } = {}) {
   return `<details class="exclude-box" id="exclude-box" hidden data-domain-key="${key}"${bugsAttr}>
 <summary>${t('Exclude URLs from this report')} <span class="exclude-count" id="exclude-count" hidden></span></summary>
 <div class="exclude-body">
-<p class="note">${t('Hide findings on pages you are not responsible for — a section another team owns, or legacy pages out of contract. One pattern per line: a plain substring (<code>/medicare/</code>) or a <code>/regex/</code> (<code>/\\.aspx$/i</code>); <code>#</code> comments are ignored. This only changes what this report shows in your browser — every page is still scanned, and your list is saved on this device.')}</p>
+<p class="note">${t('Hide findings on pages you are not responsible for — a section another team owns, or legacy pages out of contract. One pattern per line: a plain substring that matches anywhere in the URL (<code>/medicare/</code>, <code>.aspx</code>) or a slash-wrapped <code>/regex/</code> (<code>/medicare|medicaid/i</code>); <code>#</code> comments are ignored. A finding is hidden when every affected page matches; for findings with more than 25 pages this is judged by the listed sample. This only changes what this report shows in your browser — every page is still scanned, and your list is saved on this device.')}</p>
 <label class="exclude-label" for="exclude-input">${t('Excluded URL patterns')}</label>
 <textarea id="exclude-input" class="exclude-input" rows="5" spellcheck="false" aria-describedby="exclude-status"></textarea>
 <div class="exclude-actions">
@@ -1843,6 +1843,7 @@ function exclusionFilterScript() {
   var MSG_HIDDEN = ${JSON.stringify(t('Your exclusions hide @hidden finding(s).'))};
   var MSG_PARTIAL = ${JSON.stringify(t('@n more finding(s) have some affected pages hidden.'))};
   var MSG_VIEWALL = ${JSON.stringify(t('View everything'))};
+  var MSG_SAMPLE = ${JSON.stringify(t('(@n matched on a sample — findings with more than 25 pages are judged by the pages listed here.)'))};
   var MSG_ONFINDINGS = ${JSON.stringify(t('@n exclusion pattern(s) active — they filter the findings on the Accessibility page.'))};
   var MSG_APPLIED = ${JSON.stringify(t('Applied @n exclusion pattern(s).'))};
   var MSG_CLEARED = ${JSON.stringify(t('Exclusions cleared.'))};
@@ -1878,23 +1879,28 @@ function exclusionFilterScript() {
   function apply(patterns) {
     var matchers = patterns.map(compile);
     var hit = function (u) { return matchers.some(function (m) { return m(u); }); };
-    var active = patterns.length > 0, hidden = 0, partial = 0;
+    var active = patterns.length > 0, hidden = 0, partial = 0, sampled = 0;
     bugs.forEach(function (bug) {
       var info = pagesOf(bug), anyMatch = false;
       if (info.ul) Array.prototype.forEach.call(info.ul.querySelectorAll('li'), function (li) {
         var a = li.querySelector('a'); var m = active && a && hit(a.getAttribute('href'));
         li.hidden = !!m; if (m) anyMatch = true;
       });
+      // Hide the finding when every page we know about matches. For a finding
+      // with >25 pages the DOM only carries a sample (data-complete=0), so this
+      // is a sample-based decision — flagged in the banner — rather than proof
+      // the whole finding is out of scope. Erring toward hiding is what makes
+      // the control usable on large sites (a "view everything" reset is offered).
       var allExcluded = active && info.urls.length > 0 && info.urls.every(hit);
-      var hide = active && info.complete && allExcluded;
-      bug.setAttribute('data-excluded', hide ? '1' : '');
-      if (hide) hidden++;
+      bug.setAttribute('data-excluded', allExcluded ? '1' : '');
+      if (allExcluded) { hidden++; if (!info.complete) sampled++; }
       else if (active && (anyMatch || info.urls.some(hit))) partial++;
     });
     if (banner) {
       if (active && hasFindings && (hidden || partial)) {
         var msg = MSG_HIDDEN.replace('@hidden', hidden);
         if (partial) msg += ' ' + MSG_PARTIAL.replace('@n', partial);
+        if (sampled) msg += ' ' + MSG_SAMPLE.replace('@n', sampled);
         banner.innerHTML = '<p>\\u2298 ' + msg + ' <button type="button" class="linkish" id="exclude-viewall"></button></p>';
         var vb = document.getElementById('exclude-viewall');
         if (vb) { vb.textContent = MSG_VIEWALL; vb.addEventListener('click', function () { if (input) input.value = ''; saveRaw(''); apply([]); }); }
@@ -1980,11 +1986,11 @@ function exclusionFilterScript() {
   });
   // Phase 2 (#209): download a copy of the findings scoped to the exclusion
   // list. Fetches the pre-built bugs.json on demand and filters it with the same
-  // conservative rule as the on-screen view — a finding is dropped only when its
-  // affected-page list is complete (all pages present, i.e. <=25) and every page
-  // matches; a >25-page finding is kept with its counts intact (we can't prove
-  // it is fully out of scope from the sample). Mirrors filterBugsByExclusion +
-  // bugsCsvTable + csvField so the download matches the server exports.
+  // sample-based rule as the on-screen view — a finding is dropped when every
+  // page we know about matches (for a >25-page finding that is the <=25 sample).
+  // A finding with some non-matching pages is kept; its counts are recomputed
+  // only when the sample is the complete list, otherwise the true counts stand.
+  // Mirrors bugsCsvTable + csvField so the CSV matches the server export.
   function filterBugsData(reports, patterns) {
     var matchers = patterns.map(compile);
     var hit = function (u) { return matchers.some(function (m) { return m(u); }); };
@@ -1994,24 +2000,16 @@ function exclusionFilterScript() {
       var total = (b.frequency && b.frequency.pages_affected) || pages.length;
       var complete = pages.length > 0 && pages.length >= total;
       var remaining = pages.filter(function (u) { return !hit(u); });
-      if (complete) {
-        if (remaining.length === 0) return;                 // fully excluded → drop
-        if (remaining.length === pages.length) { out.push(b); return; } // nothing excluded
-        var nb = {}; for (var k in b) nb[k] = b[k];
-        nb.affected_pages = remaining;
-        if (b.frequency) {
-          nb.frequency = {}; for (var fk in b.frequency) nb.frequency[fk] = b.frequency[fk];
-          nb.frequency.pages_affected = remaining.length;
-          if (b.frequency.instances) nb.frequency.instances = Math.round(b.frequency.instances * (remaining.length / pages.length));
-        }
-        out.push(nb);
-      } else {
-        // Incomplete sample: keep the finding and its true counts; trim only the
-        // listed sample (matches the on-screen behaviour of hiding sampled rows).
-        var nb2 = {}; for (var k2 in b) nb2[k2] = b[k2];
-        nb2.affected_pages = remaining;
-        out.push(nb2);
+      if (pages.length > 0 && remaining.length === 0) return;       // all known pages excluded → drop
+      if (remaining.length === pages.length) { out.push(b); return; } // nothing excluded → keep as-is
+      var nb = {}; for (var k in b) nb[k] = b[k];
+      nb.affected_pages = remaining;
+      if (complete && b.frequency) {                                // full list → recompute counts
+        nb.frequency = {}; for (var fk in b.frequency) nb.frequency[fk] = b.frequency[fk];
+        nb.frequency.pages_affected = remaining.length;
+        if (b.frequency.instances) nb.frequency.instances = Math.round(b.frequency.instances * (remaining.length / pages.length));
       }
+      out.push(nb);
     });
     return out;
   }

@@ -164,19 +164,33 @@ client-side, and supports export/import/copy-share. Matching mirrors the config
 filter (`matchesExclusionPattern`): case-insensitive substring or slash-wrapped
 `/regex/`. It is **additive** to the config `url_exclude_patterns` baseline and
 never recomputes the headline score (a note flags the whole-site scope). With JS
-off, the box is hidden and the full report renders. A finding is only fully
-hidden when its complete affected-page list is in the DOM (`data-complete=1`) and
-every page matches — never on a truncated 25-page sample.
+off, the box is hidden and the full report renders. A finding is hidden when
+**every affected page the viewer can see matches** the patterns. Findings with
+>25 pages only carry a sample in the DOM (`data-complete=0`), so for those the
+decision is **sample-based** — the banner flags how many were matched on a sample
+and offers a "view everything" reset. (This is deliberately more aggressive than
+"prove the whole finding is out of scope": on large gov sites almost every
+finding spans >25 pages, so a strict rule never hid anything — see issue #209
+feedback.) Matching is a case-insensitive substring or slash-wrapped `/regex/`;
+prefer a substring like `.aspx` over an anchored `/\.aspx$/i`, since normalized
+URLs keep query strings and the `$` anchor would miss `…\.aspx?x=1`.
 
 The viewer can also **download a filtered copy** of the findings (issue #209
 Phase 2): the box's "Download this view" controls fetch the pre-built `bugs.json`
 on demand and re-filter it in the browser, saving `<domain>_<date>_bugs.filtered.
-{csv,json}`. The filter uses the **same conservative ≤25-sample rule** as the
-on-screen view, so the download matches what's shown (large findings keep their
-true counts). The browser CSV serializer mirrors `bugsCsvTable()` (the single
-source of truth for the bugs.csv schema, `src/lib/csv.js`) so filtered CSV is
-byte-identical to the server export. The pre-built static files are never
-modified; this is on-demand, client-side only.
+{csv,json}`. The filter uses the **same sample-based rule** as the on-screen
+view, so the download matches what's shown (counts are recomputed only when the
+sample is the complete list; larger findings keep their true counts). The browser
+CSV serializer mirrors `bugsCsvTable()` (the single source of truth for the
+bugs.csv schema, `src/lib/csv.js`) so filtered CSV is byte-identical to the server
+export. The pre-built static files are never modified; this is on-demand,
+client-side only.
+
+The build-time **`url_exclude_patterns`** baseline (report render layer) is wired
+through `aggregate.js` → `renderAccessibilityPage(…, target.url_exclude_patterns)`
+→ `filterBugsByExclusion`; it also accepts substrings or `/regex/`. Keep that
+argument threaded when touching the aggregate render call — it was silently
+dropped once, which made the config exclusion a no-op.
 
 ---
 
