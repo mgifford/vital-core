@@ -438,7 +438,7 @@ try {
   // page (including archive.html) carries the identical full subnav. A
   // criterion with no data this week still renders, with an empty-state page.
   const weekDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23');
-  const SUBPAGES = ['index', 'accessible', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'archive'];
+  const SUBPAGES = ['index', 'accessible', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'history', 'archive'];
   const navOf = (html) => {
     const m = html.match(/<nav class="subnav"[\s\S]*?<\/nav>/);
     if (!m) return null;
