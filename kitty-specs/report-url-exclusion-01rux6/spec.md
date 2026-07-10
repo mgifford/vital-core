@@ -130,9 +130,9 @@ starting WP work.
       *(FR-05)*
 - [ ] Export (.json) / Import (.json) / Copy share payload work, carrying the
       domain key, reusing the triage IO scaffold. *(FR-06)*
-- [ ] `matchesExclusionPattern` / `filterBugsByExclusion` honour `/regex/` as well
+- [x] `matchesExclusionPattern` / `filterBugsByExclusion` honour `/regex/` as well
       as substrings; invalid regex falls back to literal substring; existing
-      config-baseline behaviour unchanged. *(FR-07)*
+      config-baseline behaviour unchanged. *(FR-07 — WP01)*
 - [ ] The report is fully usable with JavaScript disabled; the headline score is
       not recomputed for the filtered set and the filtered view is labelled.
       *(C-01, C-02)*
