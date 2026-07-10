@@ -1555,7 +1555,22 @@ ${heading('h-bugs', t('Bug reports'))}
   const catOrder = ['WCAG 2.0 A', 'WCAG 2.0 AA', 'WCAG 2.1 A', 'WCAG 2.1 AA', 'WCAG 2.2 A', 'WCAG 2.2 AA', 'WCAG 2.x AAA', 'Best Practice', 'Undetermined'];
   const catSummary = catOrder.filter((c) => catCounts[c]).map((c) => `${catCounts[c]} ${t(c)}`).join(', ');
 
-  const blocks = ordered
+  // Cap how many findings render in full (issue: on large gov sites the page
+  // rendered *every* finding — description, steps, snippet, up to 25 page links,
+  // triage form — producing a multi-MB DOM that janks on filter. max_html_issues
+  // was defined but never applied.) `ordered` is already sorted by priority, so
+  // the top N render in full and the lower-priority tail is summarised compactly.
+  // <=0 means "no cap" (disable). The CSV/JSON downloads still carry every
+  // finding in full, and the viewer exclusion + downloads are unaffected.
+  const maxHtml = Number(view.reporting?.max_html_issues) || 0;
+  const fullCount = maxHtml > 0 ? maxHtml : ordered.length;
+  const fullBugs = ordered.slice(0, fullCount);
+  const overflowBugs = ordered.slice(fullCount);
+  const fullVisibleCount = fullBugs.filter((b) => b.default_visible).length;
+  const fullSevCount = fullBugs.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
+  const fullCatCount = fullBugs.reduce((m, b) => ((m[b.wcag_category ?? 'Undetermined'] = (m[b.wcag_category ?? 'Undetermined'] ?? 0) + 1), m), {});
+
+  const blocks = fullBugs
     .map((b) => {
       const wcagDetail = b.wcag_sc
         ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (${t('Level @level, WCAG @version', { '@level': esc(b.wcag_level), '@version': esc(b.wcag_version ?? '2.x') })})`
@@ -1608,11 +1623,11 @@ ${affectedPagesBlock(b)}
   // Progressive-enhancement filter. Without JS every bug is visible; the
   // script below reveals the controls and filters the <details> blocks by
   // their data-severity / data-category attributes.
-  const sevPresent = ['Critical', 'Serious', 'Moderate', 'Minor'].filter((s) => sevCount[s]);
-  const catPresent = catOrder.filter((c) => catCounts[c]);
-  const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${t(s)} (${sevCount[s]})</option>`).join('');
-  const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${t(c)} (${catCounts[c]})</option>`).join('');
-  const filterBar = `<form class="bug-filter" hidden aria-label="${esc(t('Filter bug reports'))}" data-total="${ordered.length}" data-prioritized="${view.visibleCount}">
+  const sevPresent = ['Critical', 'Serious', 'Moderate', 'Minor'].filter((s) => fullSevCount[s]);
+  const catPresent = catOrder.filter((c) => fullCatCount[c]);
+  const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${t(s)} (${fullSevCount[s]})</option>`).join('');
+  const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${t(c)} (${fullCatCount[c]})</option>`).join('');
+  const filterBar = `<form class="bug-filter" hidden aria-label="${esc(t('Filter bug reports'))}" data-total="${fullBugs.length}" data-prioritized="${fullVisibleCount}">
 <div class="bug-filter-row">
 <label class="bug-filter-check"><input type="checkbox" id="filter-all"> ${t('Show everything')}</label>
 <label>${t('Severity')} <select id="filter-sev"><option value="">${t('All severities')}</option>${sevOpts}</select></label>
@@ -1621,14 +1636,16 @@ ${affectedPagesBlock(b)}
 <label class="bug-filter-check"><input type="checkbox" id="filter-dup"> ${t('Hide possible duplicates')}</label>
 <button type="button" id="filter-reset">${t('Reset')}</button>
 </div>
-<p class="bug-filter-count" aria-live="polite" id="filter-count">${t('Showing @count prioritized issue type(s) out of @total.', { '@count': view.visibleCount, '@total': ordered.length })}</p>
+<p class="bug-filter-count" aria-live="polite" id="filter-count">${t('Showing @count prioritized issue type(s) out of @total.', { '@count': fullVisibleCount, '@total': fullBugs.length })}</p>
 </form>`;
 
   const csvLink = csvBugsHref ? ` · <a href="${esc(csvBugsHref)}">${t('CSV (all findings)')}</a>` : '';
-  const hiddenCount = ordered.length - view.visibleCount;
-  const priorityLine = hiddenCount > 0
-    ? `<p class="note">${t('Default view shows @count prioritized issue type(s); @hidden more are available if you switch to "Show everything".', { '@count': view.visibleCount, '@hidden': hiddenCount })}</p>`
-    : `<p class="note">${t('All findings fit within the prioritized view this week.')}</p>`;
+  const hiddenCount = fullBugs.length - fullVisibleCount;
+  const priorityLine = overflowBugs.length > 0
+    ? `<p class="note">${t('The @shown highest-priority findings are shown in full; @overflow more lower-priority finding(s) are summarised at the end of the page, and every finding is in the CSV/JSON downloads.', { '@shown': fullBugs.length, '@overflow': overflowBugs.length })}</p>`
+    : hiddenCount > 0
+      ? `<p class="note">${t('Default view shows @count prioritized issue type(s); @hidden more are available if you switch to "Show everything".', { '@count': fullVisibleCount, '@hidden': hiddenCount })}</p>`
+      : `<p class="note">${t('All findings fit within the prioritized view this week.')}</p>`;
   const dupLine = dupCount > 0
     ? `<p class="note">${t('@n finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.', { '@n': dupCount })}</p>`
     : '';
@@ -1639,7 +1656,7 @@ ${heading('h-bugs', t('Bug reports'))}
 ${exclusionBanner}
 ${exclusionBox(target, { bugsJson: reporting.bugsJson ?? 'bugs.json' })}
 <div id="exclude-banner" class="exclusion-banner" role="status" hidden></div>
-<p class="meta">${t('@count issue type(s) are shown by default out of @total total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.', { '@count': view.visibleCount, '@total': ordered.length })}</p>
+<p class="meta">${t('@count issue type(s) are shown by default out of @total total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.', { '@count': fullVisibleCount, '@total': ordered.length })}</p>
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
 ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
 <p class="note">${t('Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.')}</p>
@@ -1654,10 +1671,38 @@ ${dupLine}
 ${filterBar}
 <div class="bug-list">${blocks}</div>
 <p class="bug-filter-empty" hidden>${t('No issues match the current filters.')} <button type="button" id="filter-reset-2">${t('Clear filters')}</button></p>
+${overflowFindings(overflowBugs, csvBugsHref)}
 ${bugFilterScript()}
 ${triageScript()}
 ${exclusionFilterScript()}
 </section>`;
+}
+
+/**
+ * Compact, collapsed summary of the lower-priority findings that are NOT
+ * rendered in full (issue: keep the DOM small on large sites). One light row
+ * each — severity, summary, pages, rule — no page lists, snippets, or triage.
+ * Every finding's full detail is still in the CSV/JSON downloads.
+ */
+function overflowFindings(overflowBugs, csvBugsHref) {
+  if (!overflowBugs || overflowBugs.length === 0) return '';
+  const rows = overflowBugs.map((b) => `<tr>
+<td><span class="sev-badge">${esc(t(b.severity))}</span></td>
+<td>${b.rule_url ? `<a href="${esc(b.rule_url)}">${esc(b.summary)}</a>` : esc(b.summary)} <span class="bug-meta">[${esc(b.rule_id)}]</span></td>
+<td>${b.wcag_category ? esc(t(b.wcag_category)) : ''}</td>
+<td class="num">${b.frequency.pages_affected}</td>
+</tr>`).join('\n');
+  const csvNote = csvBugsHref
+    ? t('Full detail — steps, affected pages, snippets — for these and every finding is in the <a href="@csv">CSV</a>.', { '@csv': esc(csvBugsHref) })
+    : t('Full detail — steps, affected pages, snippets — for these and every finding is in the downloads above.');
+  return `<details class="overflow-findings">
+<summary>${t('@n more lower-priority finding(s) — summary only', { '@n': overflowBugs.length })}</summary>
+<p class="note">${csvNote}</p>
+<table>
+<thead><tr><th scope="col">${t('Severity')}</th><th scope="col">${t('Finding')}</th><th scope="col">${t('WCAG category')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</details>`;
 }
 
 // Progressive-enhancement triage UI. Adds a status dropdown and notes field
@@ -4287,6 +4332,9 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .exclude-export-note { flex-basis: 100%; margin: .1rem 0 0; font-size: .8rem; }
 .linkish { background: none; border: none; padding: 0; font: inherit; color: var(--accent);
   font-weight: 600; cursor: pointer; text-decoration: underline; }
+.overflow-findings { margin: 1.25rem 0; border: 1px solid var(--rule); border-radius: 3px; padding: 0 .9rem; }
+.overflow-findings > summary { cursor: pointer; font-weight: 600; padding: .6rem 0; }
+.overflow-findings table { width: 100%; font-size: .9rem; margin-bottom: .8rem; }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
   margin: .6rem 0; padding: 0 .9rem; }
 .bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }

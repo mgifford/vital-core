@@ -363,6 +363,34 @@ test('renderAccessibilityPage honours the config url_exclude_patterns baseline (
   assert.match(html, /finding-VS-keep0002/, 'other findings remain');
 });
 
+test('renderAccessibilityPage caps findings rendered in full at max_html_issues, summarising the rest', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25', pagesScanned: 100,
+    axe: { rules: {} }, alfa: { rules: {} }, deprecatedHtml: { rules: {} },
+    componentClusters: null, consensus: null,
+  };
+  const mkBug = (i) => ({
+    instance_id: `VS-cap${i}`, pattern_id: `VS-cap${i}`, url: `https://example.gov/p${i}`, xpath: 'img',
+    wcag_sc: '1.1.1', wcag_name: 'Non-text Content', wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A',
+    rule_id: `rule-${i}`, rule_label: `Rule ${i}`, engine_key: 'axe-core', tool: 'axe-core', rule_url: `https://example.gov/r${i}`,
+    severity: 'Critical', frequency: { instances: 5, pages_affected: 20, total_pages_scanned: 100 },
+    summary: `cap-finding-${i}`, description: 'd', examples: [], example_pages: [], affected_pages: [`https://example.gov/p${i}`],
+    impact: { groups: [], summary: 's' }, testing_environment: 'e', steps_to_reproduce: ['a'], remediation_tip: null,
+    suggested_fix: 'f', default_visible: true, priority_tier: 0,
+  });
+  const bugs = Array.from({ length: 8 }, (_, i) => mkBug(i));
+
+  const capped = renderAccessibilityPage(target, summary, bugs, { byRule: {}, bugsAll: null }, { max_html_issues: 3, keyPages: [] });
+  assert.equal((capped.match(/class="bug sev-/g) || []).length, 3, 'only 3 findings render in full');
+  assert.match(capped, /class="overflow-findings"/, 'overflow summary section present');
+  assert.match(capped, /5 more lower-priority/, '5 findings summarised (8 − 3)');
+
+  const uncapped = renderAccessibilityPage(target, summary, bugs, { byRule: {}, bugsAll: null }, { max_html_issues: 0, keyPages: [] });
+  assert.equal((uncapped.match(/class="bug sev-/g) || []).length, 8, 'cap disabled renders all in full');
+  assert.doesNotMatch(uncapped, /overflow-findings/, 'no overflow section when uncapped');
+});
+
 test('renderAccessibilityPage includes expanded next-actions copy payload attributes', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const summary = {
