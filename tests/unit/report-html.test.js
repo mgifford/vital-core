@@ -249,6 +249,52 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /Images must have alternative text/);
 });
 
+test('renderAccessibilityPage emits the viewer URL-exclusion control (issue #209)', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25', pagesScanned: 4,
+    axe: { rules: {} }, alfa: { rules: {} }, deprecatedHtml: { rules: {} },
+    componentClusters: null, consensus: null,
+  };
+  const mkBug = (id, url, pages) => ({
+    instance_id: id, pattern_id: id, url, xpath: 'img', wcag_sc: '1.1.1', wcag_name: 'Non-text Content',
+    wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A', rule_id: 'image-alt',
+    rule_label: 'Images must have alternative text', engine_key: 'axe-core', tool: 'axe-core 4.11.0',
+    rule_url: 'https://example.gov/axe/image-alt', severity: 'Critical',
+    frequency: { instances: pages.length, pages_affected: pages.length, total_pages_scanned: 4 },
+    summary: `Alt text (${id})`, description: 'd', examples: [], example_pages: pages, affected_pages: pages,
+    impact: { groups: [], summary: 's' }, testing_environment: 'e',
+    steps_to_reproduce: ['a'], remediation_tip: null, suggested_fix: 'f', default_visible: true, priority_tier: 0,
+  });
+  const bugs = [
+    mkBug('VS-medic01', 'https://example.gov/medicare/x', ['https://example.gov/medicare/x', 'https://example.gov/medicare/y']),
+    mkBug('VS-about002', 'https://example.gov/about', ['https://example.gov/about']),
+  ];
+  const html = renderAccessibilityPage(target, summary, bugs, { byRule: {}, bugsAll: null }, { keyPages: [] });
+
+  // Control box, keyed to the domain, hidden by default (revealed by the PE script).
+  assert.match(html, /<details class="exclude-box" id="exclude-box" hidden data-domain-key="www\.example\.gov">/);
+  assert.match(html, /id="exclude-input"/, 'has the pattern textarea');
+  assert.match(html, /id="exclude-apply"/, 'has an Apply button');
+  assert.match(html, /id="exclude-clear"/, 'has a Clear button');
+  assert.match(html, /id="exclude-banner"/, 'has the dynamic banner slot');
+
+  // Client filter script is present and reads the per-domain localStorage key.
+  assert.match(html, /vital-exclude:/, 'script references the localStorage key');
+
+  // Per-finding data the client filter relies on.
+  assert.match(html, /data-example-url="https:\/\/example\.gov\/medicare\/x"/);
+  assert.match(html, /class="affected" data-complete="1"/);
+  assert.match(html, /data-excluded=""/, 'findings start un-excluded (server never pre-hides for the viewer)');
+
+  // JS-off baseline: every finding is in the server HTML; nothing pre-hidden by the viewer layer.
+  assert.equal((html.match(/class="bug sev-/g) || []).length, 2, 'both findings render server-side');
+  assert.doesNotMatch(html, /data-excluded="1"/, 'no finding is excluded in the static HTML');
+
+  // Severity taxonomy unchanged (C-07): internal keys stay lowercase.
+  assert.match(html, /class="bug sev-critical/);
+});
+
 test('renderAccessibilityPage includes expanded next-actions copy payload attributes', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const summary = {

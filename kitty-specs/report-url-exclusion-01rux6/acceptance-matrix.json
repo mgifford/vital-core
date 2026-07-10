@@ -13,29 +13,29 @@
       "criterion_id": "FR-02",
       "description": "Patterns match the full URL case-insensitively as substring or /regex/; # comments and blank lines ignored",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "exclusionFilterScript() compile()/parse() mirror compileExclusionPattern; Playwright drive confirmed /medicare/ substring filtering; # comments/blank lines dropped in parse(). WP02."
     },
     {
       "criterion_id": "FR-03",
       "description": "Active list persists in localStorage['vital-exclude:<domain-key>'] (per-domain) and re-applies on load with no re-entry",
       "proof_type": "manual_qa",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "exclusionFilterScript() loadRaw/saveRaw on 'vital-exclude:'+data-domain-key; Playwright reload confirmed the list persists and re-applies with the textarea prefilled. WP02."
     },
     {
       "criterion_id": "FR-04",
       "description": "With a list active, matching findings/pages are hidden and all visible counts update to the filtered view, client-side",
       "proof_type": "manual_qa",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Playwright: all-excluded finding hidden, mixed finding kept with matched <li> hidden, bug-filter 'Showing N of M' total drops via data-excluded + window.__vitalApplyFilter. WP02."
     },
     {
       "criterion_id": "FR-05",
       "description": "Viewer list is additive to the config url_exclude_patterns baseline; banner names both sources with a hidden-count and reset-to-view-all",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Server still applies filterBugsByExclusion(config baseline) then the viewer script adds on top (additive); config banner (formatExclusionBanner) + dynamic #exclude-banner with hidden count and a 'View everything' reset. WP02."
     },
     {
       "criterion_id": "FR-06",
@@ -62,8 +62,8 @@
       "criterion_id": "C-01",
       "description": "Progressive enhancement: JS-off renders the full server report (config baseline applied); the viewer control/filter/IO never break the no-JS baseline",
       "proof_type": "manual_qa",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Box rendered hidden and revealed only by exclusionFilterScript; findings ship data-excluded=\"\" (never pre-hidden); render test asserts both findings present with no data-excluded=\"1\" in static HTML. WP02."
     },
     {
       "criterion_id": "C-02",
@@ -76,15 +76,15 @@
       "criterion_id": "C-03",
       "description": "One canonical location per finding preserved; hiding is display filtering only, no re-render elsewhere",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Filtering toggles element.hidden / data-excluded on the existing accessibility-page finding blocks; no finding re-rendered elsewhere. WP02."
     },
     {
       "criterion_id": "C-04",
       "description": "Sustainable web output: reuse .triage-io/existing CSS, no web fonts, gated no-op-when-empty script, within the lean budget",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Reuses .triage-io-status + minimal .exclude-* CSS (~12 lines); one script, returns early when #exclude-box absent and no-ops when the stored list is empty; no web fonts, no network. WP02."
     },
     {
       "criterion_id": "C-05",
@@ -104,15 +104,15 @@
       "criterion_id": "C-07",
       "description": "Severity taxonomy unchanged (internal keys critical/serious/moderate/minor; four display labels)",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Exclusion layer adds no severity strings; render test asserts class=\"bug sev-critical\" internal key preserved. WP02."
     },
     {
       "criterion_id": "C-08",
       "description": "i18n lockstep: new visible strings via t(); script templates injected per-locale via JSON.stringify(t()); i18n:check green",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "All new box/banner/script strings via t(); script message templates injected as JSON.stringify(t(...)); npm run i18n:extract → template.json 571 strings; i18n:check clean. WP02."
     },
     {
       "criterion_id": "NFR-01",
