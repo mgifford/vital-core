@@ -40,9 +40,9 @@
     {
       "criterion_id": "FR-06",
       "description": "Export (.json) / Import (.json) / Copy share payload work, carrying the domain key, reusing the triage IO scaffold",
-      "proof_type": "automated_test",
-      "pass_fail": "pending",
-      "evidence": ""
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "exclusionBox() adds Export/Import/Copy controls; exclusionFilterScript() handlers build {type:'vital-exclude',domain,exported,patterns}. Playwright round-trip: export (comment lines dropped) → clear → import re-applies + prefills textarea; copy-share writes valid JSON to the clipboard; import warns on domain mismatch. WP04."
     },
     {
       "criterion_id": "FR-07",
@@ -125,8 +125,8 @@
       "criterion_id": "NFR-02",
       "description": "Net added CSS/JS within budget; reuses .triage-io + existing IO script; filter script emitted once per page and a no-op when no list stored",
       "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "Reuses .triage-btn/.triage-io-status + existing Export/Import/'Copy share payload' catalog strings; ~12 lines new CSS; one script per page, returns early without #exclude-box and no-ops on an empty list. WP04."
     }
   ]
 }

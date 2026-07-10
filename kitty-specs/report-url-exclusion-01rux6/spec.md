@@ -128,8 +128,8 @@ starting WP work.
 - [x] The viewer list is additive to the config `url_exclude_patterns` baseline;
       a banner names both sources with a hidden-count and a reset-to-view-all.
       *(FR-05 — WP02)*
-- [ ] Export (.json) / Import (.json) / Copy share payload work, carrying the
-      domain key, reusing the triage IO scaffold. *(FR-06)*
+- [x] Export (.json) / Import (.json) / Copy share payload work, carrying the
+      domain key, reusing the triage IO scaffold. *(FR-06 — WP04)*
 - [x] `matchesExclusionPattern` / `filterBugsByExclusion` honour `/regex/` as well
       as substrings; invalid regex falls back to literal substring; existing
       config-baseline behaviour unchanged. *(FR-07 — WP01)*
