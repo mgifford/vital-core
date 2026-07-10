@@ -2281,6 +2281,17 @@ ${totals ? `<p>With an estimated <strong>${totals.pageLoadsPerWeek.toLocaleStrin
 </section>`;
 }
 
+// Label for the readability "Scored" column. A page can be left unscored
+// for two different reasons; showing "too little prose" for a 300k-word
+// tabular page (see issue #201) reads as a contradiction. Prefer the
+// engine's recorded reason; for rows from older scans (no reason stored)
+// infer it from word count so historical reports read correctly too.
+function scoredLabel(r) {
+  if (r.scored) return t('yes');
+  const reason = r.scoreSkipReason || (r.wordCount >= 100 ? 'non-prose' : 'too-little-text');
+  return reason === 'non-prose' ? t('not prose (tables/data)') : t('too little text');
+}
+
 /**
  * Standalone readability page: a sortable table of every prose page with
  * its word count, Flesch Reading Ease and Flesch-Kincaid grade, plus
@@ -2303,7 +2314,7 @@ export function renderReadabilityPage(target, summary, csvHref) {
       cell(String(r.wordCount), r.wordCount),
       cell(r.fleschReadingEase === '' ? t('n/a') : String(r.fleschReadingEase), r.fleschReadingEase),
       cell(r.fleschKincaidGrade === '' ? t('n/a') : String(r.fleschKincaidGrade), r.fleschKincaidGrade),
-      cell(r.scored ? t('yes') : t('too little prose'), r.scored ? 1 : 0),
+      cell(scoredLabel(r), r.scored ? 1 : 0),
     ];
   });
   const acronyms = summary.plainLanguage?.topUnexplainedAcronyms ?? [];
@@ -2318,7 +2329,7 @@ ${heading('h-read-about', t('What these mean'))}
   <div><dt>${t('Words per page')}</dt><dd>${t('Main-content word count.')}<span class="bug-meta"> ${t('Median @n', { '@n': pl.medianWordsPerPage ?? t('n/a') })}</span></dd></div>
   <div><dt>${t('Reading ease (Flesch)')}</dt><dd>${t('0–100; higher is easier. ~60+ is plain language; below ~30 is very hard.')}<span class="bug-meta"> ${t('Median @n', { '@n': pl.medianReadingEase ?? t('n/a') })}</span></dd></div>
   <div><dt>${t('Grade level (Flesch-Kincaid)')}</dt><dd>${t('US school grade needed to read it; aim for ~8 or lower for the public.')}<span class="bug-meta"> ${t('Median @n', { '@n': pl.medianGrade ?? t('n/a') })}</span></dd></div>
-  <div><dt>${t('Scored')}</dt><dd>${t('Pages with too little prose (mostly links/cards) are not scored — those numbers would be misleading.')}<span class="bug-meta"> ${t('@scored of @checked scored', { '@scored': pl.pagesScored, '@checked': pl.pagesChecked })}</span></dd></div>
+  <div><dt>${t('Scored')}</dt><dd>${t('A reading grade is only meaningful on running prose, so we score a page only when it has enough of it. Pages that are mostly links or cards (too little text) or mostly tables and data (not prose) are left unscored — a grade there would be misleading, no matter how many words they contain.')}<span class="bug-meta"> ${t('@scored of @checked scored', { '@scored': pl.pagesScored, '@checked': pl.pagesChecked })}</span></dd></div>
 </dl>
 <p class="meta">${t('Heuristics for triage and trends, not authoritative linguistics. They flag pages worth a human plain-language review.')}</p>
 </section>
