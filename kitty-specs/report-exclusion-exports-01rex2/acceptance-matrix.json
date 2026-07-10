@@ -1,0 +1,90 @@
+{
+  "mission_slug": "report-exclusion-exports-01rex2",
+  "mission_type": "software-dev",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "bugsCsvTable(bugs) factored out and exported; writeBugsCsv uses it; written CSV byte-identical",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "bugsCsvTable(bugs)->{headers,rows} factored out of writeBugsCsv (single schema source); writeBugsCsv calls it, output byte-identical. tests/unit/csv.test.js: header order/count, field mapping, comma/quote escaping. WP01."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "With an active list, box offers Download filtered CSV/JSON; hidden when no list active",
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "exclusionBox adds Filtered CSV/JSON controls (hidden); apply() reveals #exclude-export-actions only when patterns active AND data-bugs-json present (Accessibility page). Chromium: controls appear on Apply. WP02."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": "Browser filter mirrors filterBugsByExclusion (drop-if-complete-and-all-excluded; else trim+scale)",
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "Browser filterBugsData mirrors the on-screen conservative rule: drop only when complete (affected_pages.length>=pages_affected) and all excluded; else trim sample; scale pages_affected/instances for complete findings, keep counts for >25 samples. Chromium: all-medicare dropped, mixed trimmed 2->1 pages / 4->2 instances. WP02."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "Filtered CSV uses bugsCsvTable header/escaping; filtered JSON preserves archive shape; filenames carry domain/date/filtered",
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "Filtered CSV built via browser mirror of bugsCsvTable headers + csvField escaping (byte-identical to server toCsv(bugsCsvTable(filtered)) in Chromium); filtered JSON keeps {domain,week,generatedAt,reports} + filtered_by provenance; filenames <domain>_<date>_bugs.filtered.{csv,json}. WP02."
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "Docs updated (CLAUDE.md three-layer note + FEATURES.md) for the filtered-export capability and its semantics",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "CLAUDE.md three-layer viewer note extended with the filtered-download flow (fetch bugs.json, <=25-sample rule, bugsCsvTable byte-parity); FEATURES.md viewer bullet adds the filtered-copy download. WP03."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Progressive enhancement; existing unfiltered download links keep working with JS off",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Enhancement only; existing unfiltered bugs.json/bugs.csv/CSV links unchanged; controls hidden without JS. WP02."
+    },
+    {
+      "criterion_id": "C-02",
+      "description": "Fetch only on user click; nothing added to page-load bytes/requests; reuse existing IO/CSS patterns",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "fetch(bugsJsonHref) runs only on a download click; nothing added to page load. Reuses .triage-btn + a few .exclude-* rules. WP02."
+    },
+    {
+      "criterion_id": "C-03",
+      "description": "Filtered export consistent with the on-screen view (same <=25-sample conservative rule); UI labels it",
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "Same conservative <=25-sample rule as the on-screen view; a note in the box states counts use the up-to-25-page sample. WP02."
+    },
+    {
+      "criterion_id": "C-04",
+      "description": "No new data files, no data/API schema change, no new npm deps; pre-built static files untouched",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "No new data files, no data/API schema change, no npm deps; pre-built static files untouched (fetched read-only). WP02."
+    },
+    {
+      "criterion_id": "C-05",
+      "description": "Severity taxonomy and CSV column schema unchanged (refactor behaviour-preserving)",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "Refactor behaviour-preserving; header list + row mapping verbatim; severity labels untouched. WP01."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "Unit tests for bugsCsvTable parity; browser fetch->filter->download verified in Chromium; test:unit/i18n/spec-kitty green",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/csv.test.js (bugsCsvTable parity) + report-html.test.js (data-bugs-json + dl controls); Chromium verified fetch->filter->download incl. CSV byte-parity. test:unit 276 pass; i18n:check + check:spec-kitty green. WP01/WP02."
+    },
+    {
+      "criterion_id": "NFR-02",
+      "description": "Net added CSS/JS within budget; serializer/filter reuse existing logic; controls inert without an active list",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "~4 lines CSS; browser filter/CSV reuse the on-screen logic + bugsCsvTable schema; controls emitted once and inert without an active list/bugs.json. WP02."
+    }
+  ]
+}

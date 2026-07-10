@@ -214,8 +214,13 @@ export function writeResourceCsv(repDir, domain, week, resources, ledger) {
  *
  * Returns the relative path "bugs.csv" (from index.html) or null.
  */
-export function writeBugsCsv(repDir, domain, week, bugs) {
-  if (!bugs?.length) return null;
+/**
+ * Pure column schema for the flat bugs export: one row per bug report. The
+ * single source of truth for the header order and per-bug row mapping, so the
+ * viewer's client-side "download filtered export" (issue #209 Phase 2) can
+ * mirror it exactly. Returns `{ headers, rows }`.
+ */
+export function bugsCsvTable(bugs) {
   const headers = [
     'bug_id', 'pattern_id', 'combined_id',
     'engine', 'rule_id', 'rule_url',
@@ -229,7 +234,7 @@ export function writeBugsCsv(repDir, domain, week, bugs) {
     'possible_duplicate_of', 'possible_duplicate_pattern',
     'affected_pages_csv',
   ];
-  const rows = bugs.map((b) => {
+  const rows = (bugs ?? []).map((b) => {
     const groups = (b.impact?.groups ?? [])
       .map((g) => `${g.group} (${g.percent})`)
       .join('; ');
@@ -268,6 +273,12 @@ export function writeBugsCsv(repDir, domain, week, bugs) {
       b.affected_pages_csv ?? '',
     ];
   });
+  return { headers, rows };
+}
+
+export function writeBugsCsv(repDir, domain, week, bugs) {
+  if (!bugs?.length) return null;
+  const { headers, rows } = bugsCsvTable(bugs);
   const name = `${filePrefix(domain, week)}_bugs.csv`;
   fs.writeFileSync(path.join(repDir, name), toCsv(headers, rows));
   return name;
