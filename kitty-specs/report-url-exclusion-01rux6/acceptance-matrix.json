@@ -6,8 +6,8 @@
       "criterion_id": "FR-01",
       "description": "Collapsed .triage-io-styled exclusion box (pattern input + Apply + Clear) renders under the site-inventory meta line on the landing page and on the accessibility page",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "exclusionBox() emitted in bugReportsSection (accessibility, WP02) and renderDomainReport directly under the inventory <p class=\"meta\"> (WP03); render tests assert box present + ordering after the inventory line. WP03."
     },
     {
       "criterion_id": "FR-02",
@@ -68,9 +68,9 @@
     {
       "criterion_id": "C-02",
       "description": "Headline score/grade stays whole-site (not recomputed for the filtered subset); filtered view is labelled",
-      "proof_type": "code_review",
-      "pass_fail": "pending",
-      "evidence": ""
+      "proof_type": "manual_qa",
+      "pass_fail": "pass",
+      "evidence": "Server never recomputes the score; #score-scope-note (hidden) is revealed by the script only when exclusions are active. Playwright confirmed the note appears on the landing page with /medicare/ active. WP03."
     },
     {
       "criterion_id": "C-03",

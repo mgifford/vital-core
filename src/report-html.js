@@ -1825,9 +1825,11 @@ function exclusionFilterScript() {
   var banner = document.getElementById('exclude-banner');
   var countBadge = document.getElementById('exclude-count');
   var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
+  var hasFindings = bugs.length > 0;
   var MSG_HIDDEN = ${JSON.stringify(t('Your exclusions hide @hidden finding(s).'))};
   var MSG_PARTIAL = ${JSON.stringify(t('@n more finding(s) have some affected pages hidden.'))};
   var MSG_VIEWALL = ${JSON.stringify(t('View everything'))};
+  var MSG_ONFINDINGS = ${JSON.stringify(t('@n exclusion pattern(s) active — they filter the findings on the Accessibility page.'))};
   var MSG_APPLIED = ${JSON.stringify(t('Applied @n exclusion pattern(s).'))};
   var MSG_CLEARED = ${JSON.stringify(t('Exclusions cleared.'))};
   function compile(p) {
@@ -1865,12 +1867,17 @@ function exclusionFilterScript() {
       else if (active && (anyMatch || info.urls.some(hit))) partial++;
     });
     if (banner) {
-      if (active && (hidden || partial)) {
+      if (active && hasFindings && (hidden || partial)) {
         var msg = MSG_HIDDEN.replace('@hidden', hidden);
         if (partial) msg += ' ' + MSG_PARTIAL.replace('@n', partial);
         banner.innerHTML = '<p>\\u2298 ' + msg + ' <button type="button" class="linkish" id="exclude-viewall"></button></p>';
         var vb = document.getElementById('exclude-viewall');
         if (vb) { vb.textContent = MSG_VIEWALL; vb.addEventListener('click', function () { if (input) input.value = ''; saveRaw(''); apply([]); }); }
+        banner.hidden = false;
+      } else if (active && !hasFindings) {
+        // Landing page (or any page without the findings list): the list is
+        // stored and shared, but there is nothing here to hide — say where it applies.
+        banner.innerHTML = '<p>\\u2298 ' + MSG_ONFINDINGS.replace('@n', patterns.length) + '</p>';
         banner.hidden = false;
       } else { banner.hidden = true; banner.innerHTML = ''; }
     }
@@ -1878,6 +1885,10 @@ function exclusionFilterScript() {
       if (active) { countBadge.textContent = '(' + patterns.length + ')'; countBadge.hidden = false; }
       else { countBadge.textContent = ''; countBadge.hidden = true; }
     }
+    // C-02: the headline score is never recomputed for a filtered subset; when
+    // exclusions are active, reveal the note that says the score is whole-site.
+    var scoreNote = document.getElementById('score-scope-note');
+    if (scoreNote) scoreNote.hidden = !active;
     if (window.__vitalApplyFilter) window.__vitalApplyFilter();
   }
   function setStatus(msg) { if (!status) return; status.textContent = msg; setTimeout(function () { status.textContent = ''; }, 4000); }
@@ -3078,7 +3089,8 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
   <span class="score-caveat">${t('Score reflects the typical page\'s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.')}</span>
-</aside>` : ''}
+</aside>
+<p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
 <section aria-labelledby="h-deltas">
 <h2 id="h-deltas" class="visually-hidden">${t('Change this week')}</h2>
@@ -3100,6 +3112,9 @@ ${win ? `<aside class="callout callout-win" aria-labelledby="h-win">
 
 ${invSummary ? `<p class="meta">${t('Over the whole history of this site, <strong>@known</strong> unique pages have been scanned at least once; <strong>@withIssues</strong> have known accessibility issues. <strong>@thisWeek</strong> of them were re-checked this ISO week.', { '@known': invSummary.totalKnownPages, '@withIssues': invSummary.pagesWithKnownIssues, '@thisWeek': invSummary.scannedThisWeek })} <a href="../../../data/${esc(target.key)}/domain.json">${t('Download full data (JSON)')}</a>.</p>` : ''}
 
+${exclusionBox(target)}
+<div id="exclude-banner" class="exclusion-banner" role="status" hidden></div>
+
 ${fixFirstSection(bugs)}
 
 ${progressSection(prog, bugs)}
@@ -3112,6 +3127,7 @@ ${diff ? drilldown('h-wow', t('Changes since @week', { '@week': diff.prevWeek })
 ${changeList('Alfa', diff.alfa)}`) : ''}
 
 ${resourcesSection(summary)}
+${exclusionFilterScript()}
 `;
   return layout({
     title: `${target.domain} ${summary.week} | vital-scans`,

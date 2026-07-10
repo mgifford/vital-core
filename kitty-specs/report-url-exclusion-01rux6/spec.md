@@ -116,9 +116,9 @@ starting WP work.
 
 ## Acceptance criteria
 
-- [ ] A collapsed `.triage-io`-styled exclusion box renders under the
+- [x] A collapsed `.triage-io`-styled exclusion box renders under the
       site-inventory meta line on the domain landing page and on the accessibility
-      page, with a pattern input, **Apply**, and **Clear**. *(FR-01)*
+      page, with a pattern input, **Apply**, and **Clear**. *(FR-01 — WP02/WP03)*
 - [x] Patterns match the full URL case-insensitively as substring or `/regex/`;
       `#` comments and blank lines ignored. *(FR-02 — WP02)*
 - [x] The list persists in `localStorage['vital-exclude:<domain-key>']` and
@@ -133,9 +133,9 @@ starting WP work.
 - [x] `matchesExclusionPattern` / `filterBugsByExclusion` honour `/regex/` as well
       as substrings; invalid regex falls back to literal substring; existing
       config-baseline behaviour unchanged. *(FR-07 — WP01)*
-- [ ] The report is fully usable with JavaScript disabled; the headline score is
+- [x] The report is fully usable with JavaScript disabled; the headline score is
       not recomputed for the filtered set and the filtered view is labelled.
-      *(C-01, C-02)*
+      *(C-01 — WP02, C-02 — WP03)*
 - [ ] Docs updated (CLAUDE.md three-layer note, README/FEATURES, targets.yml
       cross-reference). *(FR-08)*
 - [ ] `npm run test:unit`, `npm run i18n:check`, and `npm run check:spec-kitty`
