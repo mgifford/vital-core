@@ -786,6 +786,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         fleschReadingEase: rec.plainLanguage.fleschReadingEase ?? '',
         fleschKincaidGrade: rec.plainLanguage.fleschKincaidGrade ?? '',
         scored: rec.plainLanguage.scored ?? false,
+        scoreSkipReason: rec.plainLanguage.scoreSkipReason ?? null,
       });
       if (rec.plainLanguage.scored) {
         plPagesScored++;
