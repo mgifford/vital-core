@@ -48,8 +48,8 @@
       "criterion_id": "FR-07",
       "description": "matchesExclusionPattern / filterBugsByExclusion honour /regex/ as well as substrings; invalid regex falls back to literal substring; config-baseline behaviour unchanged",
       "proof_type": "automated_test",
-      "pass_fail": "pending",
-      "evidence": ""
+      "pass_fail": "pass",
+      "evidence": "src/report-html.js compileExclusionPattern()/matchesExclusionPattern()/filterBugsByExclusion(); tests/unit/url-exclusion.test.js (6 cases: substring case-insensitive, /regex/ match, flag honoured, invalid-regex fallback, filter recompute, full-exclusion). WP01."
     },
     {
       "criterion_id": "FR-08",
