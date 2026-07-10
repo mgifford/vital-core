@@ -4,7 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { chromium } from 'playwright';
 import { loadConfig, getTarget, DIRS } from './lib/config.js';
-import { normalizeUrl, pageId, buildUrlFilter } from './lib/urls.js';
+import { normalizeUrl, pageId, buildUrlFilter, resolveUrlPatterns } from './lib/urls.js';
 import { loadState, saveState, addPage, pickBatch, weeklyCapFor } from './lib/state.js';
 import { isoWeek } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
@@ -104,12 +104,15 @@ if (priorityUrls.length) {
 }
 
 // --- URL filter -------------------------------------------------------
-// url_include / url_exclude substrings from targets.yml. Applied when
-// adding URLs to the frontier and before scanning each page. Priority URLs
-// bypass the filter so must-cover pages are never accidentally excluded.
+// url_include / url_exclude patterns (inline arrays and/or *_file lists) from
+// targets.yml, matched as substrings or /regex/. Applied when adding URLs to
+// the frontier and before scanning each page. Priority URLs bypass the filter
+// so must-cover pages are never accidentally excluded.
 const urlFilter = buildUrlFilter(target);
-if (target.url_include?.length || target.url_exclude?.length) {
-  log(`URL filter: include=${JSON.stringify(target.url_include ?? [])}, exclude=${JSON.stringify(target.url_exclude ?? [])}`);
+const includePatterns = resolveUrlPatterns(target.url_include, target.url_include_file, target.key);
+const excludePatterns = resolveUrlPatterns(target.url_exclude, target.url_exclude_file, target.key);
+if (includePatterns.length || excludePatterns.length) {
+  log(`URL filter: include=${JSON.stringify(includePatterns)}, exclude=${JSON.stringify(excludePatterns)}`);
 }
 
 // --- Robots -----------------------------------------------------------

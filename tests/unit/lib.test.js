@@ -830,6 +830,50 @@ test('buildUrlFilter: url_include + url_exclude compose correctly', () => {
   assert.equal(filter('https://example.gov/about'), false, 'not in include list');
 });
 
+test('buildUrlFilter: /regex/ patterns match against the full URL', () => {
+  const filter = buildUrlFilter({ url_exclude: ['/\\/\\d{4}\\/\\d{2}\\//'] });
+  assert.equal(filter('https://example.gov/news/2026/06/story'), false, 'dated archive path excluded');
+  assert.equal(filter('https://example.gov/news/story'), true, 'undated path kept');
+});
+
+test('buildUrlFilter: regex flags are honored (case-insensitive)', () => {
+  const filter = buildUrlFilter({ url_exclude: ['/press[-_]release/i'] });
+  assert.equal(filter('https://example.gov/Press-Release/1'), false, 'case-insensitive match');
+  assert.equal(filter('https://example.gov/press_release/2'), false, 'char class match');
+  assert.equal(filter('https://example.gov/pressrelease/3'), true, 'no separator, no match');
+});
+
+test('buildUrlFilter: invalid regex falls back to literal substring', () => {
+  const filter = buildUrlFilter({ url_exclude: ['/(unclosed/'] });
+  assert.equal(filter('https://example.gov/a/(unclosed/b'), false, 'matched as literal substring');
+  assert.equal(filter('https://example.gov/a/b'), true, 'non-matching URL kept');
+});
+
+test('buildUrlFilter: url_exclude_file merges with inline list (substring + regex)', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'url-exclude-'));
+  const file = path.join(tmpDir, 'exclude.txt');
+  fs.writeFileSync(file, '# excluded paths\n/api/\n/\\.aspx$/i\n\n');
+  const filter = buildUrlFilter({ key: 'example.gov', url_exclude: ['?page='], url_exclude_file: file });
+  assert.equal(filter('https://example.gov/list?page=2'), false, 'inline substring excluded');
+  assert.equal(filter('https://example.gov/api/data'), false, 'file substring excluded');
+  assert.equal(filter('https://example.gov/Legacy.ASPX'), false, 'file regex excluded (case-insensitive)');
+  assert.equal(filter('https://example.gov/about'), true, 'unlisted URL kept');
+});
+
+test('buildUrlFilter: url_include_file restricts the scan to listed patterns', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'url-include-'));
+  const file = path.join(tmpDir, 'include.txt');
+  fs.writeFileSync(file, '/children/\n');
+  const filter = buildUrlFilter({ key: 'example.gov', url_include_file: file });
+  assert.equal(filter('https://example.gov/children/page'), true, 'listed subtree kept');
+  assert.equal(filter('https://example.gov/adults/page'), false, 'other subtree dropped');
+});
+
+test('buildUrlFilter: missing pattern file warns but does not throw', () => {
+  const filter = buildUrlFilter({ key: 'example.gov', url_exclude_file: 'does-not-exist.txt' });
+  assert.equal(filter('https://example.gov/anything'), true, 'no patterns → keep everything');
+});
+
 test('loadPriorityUrls: normalizes apex/www urls and reads files', () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'priority-'));
   const file = path.join(tmpDir, 'top-tasks.txt');

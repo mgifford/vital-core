@@ -1,4 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import crypto from 'node:crypto';
+import { DIRS } from './config.js';
 
 /**
  * URL identity is the foundation of week-over-week comparability.
@@ -103,30 +106,91 @@ export function pageId(normalizedUrl) {
 }
 
 /**
+ * Compile one filter pattern into a matcher (url: string) -> boolean.
+ *
+ * A pattern wrapped in slashes — `/press[-_]release/i` — is a JavaScript
+ * regular expression (an optional trailing flag string is honored); anything
+ * else is a plain case-sensitive substring. An unparseable regex falls back
+ * to a literal substring match on the raw text (including the slashes) and
+ * warns, so a typo can never silently match everything or nothing.
+ */
+function compilePattern(pattern, key) {
+  const str = String(pattern);
+  const m = /^\/(.+)\/([a-z]*)$/i.exec(str);
+  if (m) {
+    try {
+      const re = new RegExp(m[1], m[2]);
+      return (url) => re.test(url);
+    } catch (err) {
+      console.warn(`[${key ?? '?'}] invalid url filter regex ${str}: ${err.message}; treating as substring`);
+    }
+  }
+  return (url) => url.includes(str);
+}
+
+/**
+ * Read a URL-pattern file: one pattern per line, blank lines and `#` comments
+ * ignored. Relative paths resolve under `config/` then the repo root, matching
+ * priority_urls_file. A missing file warns and contributes no patterns (the
+ * scan still runs) rather than throwing.
+ */
+function readPatternFile(file, key) {
+  const candidates = path.isAbsolute(file)
+    ? [file]
+    : [path.join(DIRS.config, file), path.join(DIRS.root, file)];
+  const p = candidates.find((c) => fs.existsSync(c));
+  if (!p) {
+    console.warn(`[${key ?? '?'}] url pattern file not found: tried ${candidates.join(', ')}`);
+    return [];
+  }
+  const out = [];
+  for (const line of fs.readFileSync(p, 'utf8').split('\n')) {
+    const t = line.trim();
+    if (t && !t.startsWith('#')) out.push(t);
+  }
+  return out;
+}
+
+/**
+ * Resolve a target's URL patterns from an inline array plus an optional file,
+ * merged in that order. Used for both url_include (+ url_include_file) and
+ * url_exclude (+ url_exclude_file). Returns an array of raw pattern strings.
+ */
+export function resolveUrlPatterns(list, file, key) {
+  const patterns = [...(list ?? [])].map(String);
+  if (file) patterns.push(...readPatternFile(file, key));
+  return patterns;
+}
+
+/**
  * Build a URL filter from a target's url_include / url_exclude config.
  *
- * Both accept an array of strings. Each string is matched against the
- * full normalized URL (so it can match on path, query string, or domain).
- * Simple substring match — no regex complexity in config files.
+ * Each accepts an inline array (`url_include` / `url_exclude`) and/or a file of
+ * patterns (`url_include_file` / `url_exclude_file`, one per line, `#` comments
+ * allowed — resolved under config/ like priority_urls_file). Inline and file
+ * patterns are merged. Every pattern is matched against the full normalized URL
+ * (so it can match on path, query string, or host) as a substring, or — when
+ * wrapped in slashes, e.g. `/\/news\/\d{4}\//` — as a regular expression.
  *
- * url_include: if set, only URLs whose full string contains at least one
- *   of the listed substrings are crawled/scanned. Used to restrict a scan
- *   to a subtree (e.g. url_include: ["/children/"]).
+ * url_include: if set, only URLs matching at least one include pattern are
+ *   crawled/scanned. Used to restrict a scan to a subtree (e.g. ["/children/"]).
  *
- * url_exclude: URLs whose full string contains any of the listed substrings
- *   are skipped. Applied after url_include. Used to prune noise
- *   (e.g. url_exclude: ["press_release", "?page=", "/search?"]).
+ * url_exclude: URLs matching any exclude pattern are skipped. Applied after
+ *   url_include. Used to prune noise (e.g. ["press_release", "?page="]).
  *
  * Returns a function (url: string) -> boolean (true = keep, false = skip).
- * When neither is configured, always returns true.
+ * When neither list nor file is configured, always returns true.
  */
 export function buildUrlFilter(target) {
-  const includes = (target.url_include ?? []).map(String);
-  const excludes = (target.url_exclude ?? []).map(String);
-  if (!includes.length && !excludes.length) return () => true;
+  const key = target.key;
+  const includePatterns = resolveUrlPatterns(target.url_include, target.url_include_file, key);
+  const excludePatterns = resolveUrlPatterns(target.url_exclude, target.url_exclude_file, key);
+  if (!includePatterns.length && !excludePatterns.length) return () => true;
+  const includes = includePatterns.map((p) => compilePattern(p, key));
+  const excludes = excludePatterns.map((p) => compilePattern(p, key));
   return (url) => {
-    if (includes.length && !includes.some((p) => url.includes(p))) return false;
-    if (excludes.some((p) => url.includes(p))) return false;
+    if (includes.length && !includes.some((m) => m(url))) return false;
+    if (excludes.some((m) => m(url))) return false;
     return true;
   };
 }
