@@ -442,7 +442,8 @@ test('renderHistoryPage (WP1): scaffold with subnav, self-current nav, and multi
   assert.match(html, /<strong>2<\/strong> weeks recorded/);
   assert.match(html, /Accessible\? — severity over time/);
   assert.match(html, /Fast\? — Lighthouse over time/);
-  assert.match(html, /More trends coming/);
+  // Machine-readable trend download.
+  assert.match(html, /href="\.\.\/\.\.\/\.\.\/data\/www\.example\.gov\/weekly\.json"/);
 });
 
 test('renderHistoryPage (WP2): renders the relocated severity and Lighthouse trend charts', () => {
@@ -456,6 +457,37 @@ test('renderHistoryPage (WP2): renders the relocated severity and Lighthouse tre
   assert.match(html, /Pages affected by axe severity over 2 weeks/);
   assert.match(html, /Lighthouse category scores over 2 weeks/);
   assert.match(html, /class="linechart/);
+});
+
+test('renderHistoryPage (WP3): renders sustainability, readability and standards metric charts', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const wk = (week, bytes, ease) => ({
+    week,
+    axe: { medianViolations: 3, rules: {} },
+    sustainability: { medianBytes: bytes, medianRequests: 12, meanCo2g: 0.4 },
+    plainLanguage: { medianReadingEase: ease, medianGrade: 11, medianWordsPerPage: 800 },
+    tech: [{ name: 'Drupal' }, { name: 'jQuery' }],
+    standards: { checks: [{ id: 'title', pass: 9, total: 10 }, { id: 'canonical', pass: 8, total: 10 }] },
+    security: { passed: 6, total: 8 },
+  });
+  const html = renderHistoryPage(target, [wk('2026-W24', 300000, 55), wk('2026-W25', 250000, 60)], '2026-W25');
+  assert.match(html, /Median page weight \(KB\) over 2 weeks/);
+  assert.match(html, /Mean CO₂ per page \(g\) over 2 weeks/);
+  assert.match(html, /Reading ease \(Flesch\) over 2 weeks/);
+  assert.match(html, /Words per page \(median\) over 2 weeks/);
+  assert.match(html, /Standards checks passing \(%\) over 2 weeks/);
+  assert.match(html, /Security checks passing \(%\) over 2 weeks/);
+  assert.match(html, /id="h-history-sustainable"/);
+  assert.match(html, /id="h-history-findable"/);
+  assert.match(html, /id="h-history-trustworthy"/);
+});
+
+test('renderHistoryPage (WP3): omits metric groups when a domain has no such data', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const wk = (week) => ({ week, axe: { medianViolations: 3, rules: {} } });
+  const html = renderHistoryPage(target, [wk('2026-W24'), wk('2026-W25')], '2026-W25');
+  assert.doesNotMatch(html, /id="h-history-sustainable"/);
+  assert.doesNotMatch(html, /id="h-history-trustworthy"/);
 });
 
 test('renderHistoryPage (WP1): single week shows an empty state, not a broken chart', () => {
