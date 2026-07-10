@@ -19,7 +19,7 @@ still being implemented.
 - Per-run budget (`pages_per_run`, overridable with `--budget`) and a hard weekly cap (`max_pages_per_week`). Coverage accumulates across runs into one weekly dataset per domain.
 - Politeness: configurable `delay_ms` between page loads, honored alongside `robots.txt` `Crawl-delay`.
 - Accessibility hydration settle delay (`settle_delay_ms`, overridable with `VITAL_A11Y_SETTLE_DELAY_MS`) before auditing, to reduce transient client-side timing false positives.
-- **URL path/query filtering**: per-target `url_include` / `url_exclude` substring arrays in `config/targets.yml` restrict which URLs are crawled and scanned. Priority URLs always bypass the filter. Both arrays accept multiple substrings (any match triggers); examples and documentation are inline in `targets.yml`.
+- **URL path/query filtering**: per-target `url_include` / `url_exclude` pattern arrays in `config/targets.yml` restrict which URLs are crawled and scanned. Each pattern is a plain substring or a `/regex/` (wrap in slashes, optional trailing flags); any match triggers. Long lists can be kept in a separate file referenced by `url_include_file` / `url_exclude_file` (one pattern per line, `#` comments allowed, resolved under `config/` like `priority_urls_file`) and merged with the inline arrays. Priority URLs always bypass the filter. Examples and documentation are inline in `targets.yml`.
 
 ### Auditing and Data Collection
 

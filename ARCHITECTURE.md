@@ -195,11 +195,16 @@ The per-domain options:
   top-task pages are always audited even if the broader crawl is scoped
   down. (No URL is scanned more than once per ISO week regardless.)
 
-- **`url_include:` / `url_exclude:`** — substring filters on the full URL.
+- **`url_include:` / `url_exclude:`** — pattern filters on the full URL.
+  Each pattern is a substring, or a `/regex/` when wrapped in slashes
+  (optional trailing flags, e.g. `/\/\d{4}\/\d{2}\//` for dated archives).
   `url_include` restricts the scan to matching URLs only (focus on a
   subtree or topic, e.g. `["/children/"]`); `url_exclude` drops noisy or
-  off-limits paths (e.g. `["/news/", "?page="]`). Applied during both
-  crawl and scan. Priority URLs always bypass both.
+  off-limits paths (e.g. `["/news/", "?page="]`). Long lists can be kept in
+  a file via **`url_include_file:` / `url_exclude_file:`** (one pattern per
+  line, `#` comments allowed; relative paths resolve under `config/` like
+  `priority_urls_file`) and are merged with the inline arrays. Applied
+  during both crawl and scan. Priority URLs always bypass both.
 
 - **`spelling_allowlist:`** — domain-specific terms (program names,
   medical jargon, agency acronyms) the spell checker should accept,
