@@ -99,6 +99,37 @@ test('renderDomainReport links to History & Trends instead of embedding trend ch
   assert.doesNotMatch(html, /Median page weight \(KB\)/);
 });
 
+test('renderDomainReport surfaces the viewer exclusion control under the inventory line (issue #209)', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const mkWeek = (week) => ({
+    week, pagesScanned: 11, pagesAudited: 11, generatedAt: '2026-06-15T00:00:00.000Z',
+    axe: { medianViolations: 3, pagesScanned: 11, pagesWithViolations: 7, rules: { 'image-alt': { impact: 'critical', pages: 2 } } },
+    alfa: { medianFailures: 10, pagesScanned: 4, pagesWithFailures: 2 },
+    sustainability: { medianBytes: 189440, medianRequests: 10 },
+    plainLanguage: { medianReadingEase: 65 },
+    lighthouse: { medianPerformance: 76, medianAccessibility: 79, medianBestPractices: 73, medianSeo: 78, metrics: {} },
+    coverage: { axe: 11 },
+  });
+  const series = [mkWeek('2026-W24'), mkWeek('2026-W25')];
+  const invSummary = { totalKnownPages: 100, pagesWithKnownIssues: 40, scannedThisWeek: 10 };
+  const html = renderDomainReport(target, series[1], series[0], null, series, [], { byRule: {}, bugsAll: null }, invSummary);
+
+  // The control renders on the landing page, keyed to the same per-domain store.
+  assert.match(html, /<details class="exclude-box" id="exclude-box" hidden data-domain-key="www\.example\.gov">/);
+  assert.match(html, /id="exclude-input"/);
+  assert.match(html, /vital-exclude:/, 'shared client filter script present');
+
+  // …positioned directly under the "unique pages scanned" inventory line.
+  const invIdx = html.indexOf('unique pages have been scanned');
+  const boxIdx = html.indexOf('id="exclude-box"');
+  assert.ok(invIdx !== -1 && boxIdx !== -1 && boxIdx > invIdx, 'exclusion box comes after the inventory line');
+
+  // C-02: a score-scope note exists (hidden; the script reveals it when a filter is active),
+  // and the headline score is never recomputed server-side.
+  assert.match(html, /id="score-scope-note" hidden/);
+  assert.match(html, /this whole-site score still reflects every scanned page/);
+});
+
 test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted detail', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const summary = {
