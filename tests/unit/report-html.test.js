@@ -99,6 +99,37 @@ test('renderDomainReport links to History & Trends instead of embedding trend ch
   assert.doesNotMatch(html, /Median page weight \(KB\)/);
 });
 
+test('renderDomainReport surfaces the viewer exclusion control under the inventory line (issue #209)', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const mkWeek = (week) => ({
+    week, pagesScanned: 11, pagesAudited: 11, generatedAt: '2026-06-15T00:00:00.000Z',
+    axe: { medianViolations: 3, pagesScanned: 11, pagesWithViolations: 7, rules: { 'image-alt': { impact: 'critical', pages: 2 } } },
+    alfa: { medianFailures: 10, pagesScanned: 4, pagesWithFailures: 2 },
+    sustainability: { medianBytes: 189440, medianRequests: 10 },
+    plainLanguage: { medianReadingEase: 65 },
+    lighthouse: { medianPerformance: 76, medianAccessibility: 79, medianBestPractices: 73, medianSeo: 78, metrics: {} },
+    coverage: { axe: 11 },
+  });
+  const series = [mkWeek('2026-W24'), mkWeek('2026-W25')];
+  const invSummary = { totalKnownPages: 100, pagesWithKnownIssues: 40, scannedThisWeek: 10 };
+  const html = renderDomainReport(target, series[1], series[0], null, series, [], { byRule: {}, bugsAll: null }, invSummary);
+
+  // The control renders on the landing page, keyed to the same per-domain store.
+  assert.match(html, /<details class="exclude-box" id="exclude-box" hidden data-domain-key="www\.example\.gov">/);
+  assert.match(html, /id="exclude-input"/);
+  assert.match(html, /vital-exclude:/, 'shared client filter script present');
+
+  // …positioned directly under the "unique pages scanned" inventory line.
+  const invIdx = html.indexOf('unique pages have been scanned');
+  const boxIdx = html.indexOf('id="exclude-box"');
+  assert.ok(invIdx !== -1 && boxIdx !== -1 && boxIdx > invIdx, 'exclusion box comes after the inventory line');
+
+  // C-02: a score-scope note exists (hidden; the script reveals it when a filter is active),
+  // and the headline score is never recomputed server-side.
+  assert.match(html, /id="score-scope-note" hidden/);
+  assert.match(html, /this whole-site score still reflects every scanned page/);
+});
+
 test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted detail', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const summary = {
@@ -247,6 +278,58 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /<span class="engine-badge" data-engine="axe-core">axe<\/span>/);
   assert.match(html, /<span class="rule-badge">image-alt<\/span>/);
   assert.match(html, /Images must have alternative text/);
+});
+
+test('renderAccessibilityPage emits the viewer URL-exclusion control (issue #209)', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25', pagesScanned: 4,
+    axe: { rules: {} }, alfa: { rules: {} }, deprecatedHtml: { rules: {} },
+    componentClusters: null, consensus: null,
+  };
+  const mkBug = (id, url, pages) => ({
+    instance_id: id, pattern_id: id, url, xpath: 'img', wcag_sc: '1.1.1', wcag_name: 'Non-text Content',
+    wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A', rule_id: 'image-alt',
+    rule_label: 'Images must have alternative text', engine_key: 'axe-core', tool: 'axe-core 4.11.0',
+    rule_url: 'https://example.gov/axe/image-alt', severity: 'Critical',
+    frequency: { instances: pages.length, pages_affected: pages.length, total_pages_scanned: 4 },
+    summary: `Alt text (${id})`, description: 'd', examples: [], example_pages: pages, affected_pages: pages,
+    impact: { groups: [], summary: 's' }, testing_environment: 'e',
+    steps_to_reproduce: ['a'], remediation_tip: null, suggested_fix: 'f', default_visible: true, priority_tier: 0,
+  });
+  const bugs = [
+    mkBug('VS-medic01', 'https://example.gov/medicare/x', ['https://example.gov/medicare/x', 'https://example.gov/medicare/y']),
+    mkBug('VS-about002', 'https://example.gov/about', ['https://example.gov/about']),
+  ];
+  const html = renderAccessibilityPage(target, summary, bugs, { byRule: {}, bugsAll: null }, { keyPages: [] });
+
+  // Control box, keyed to the domain, hidden by default (revealed by the PE script).
+  assert.match(html, /<details class="exclude-box" id="exclude-box" hidden data-domain-key="www\.example\.gov">/);
+  assert.match(html, /id="exclude-input"/, 'has the pattern textarea');
+  assert.match(html, /id="exclude-apply"/, 'has an Apply button');
+  assert.match(html, /id="exclude-clear"/, 'has a Clear button');
+  assert.match(html, /id="exclude-banner"/, 'has the dynamic banner slot');
+
+  // Client filter script is present and reads the per-domain localStorage key.
+  assert.match(html, /vital-exclude:/, 'script references the localStorage key');
+
+  // Per-finding data the client filter relies on.
+  assert.match(html, /data-example-url="https:\/\/example\.gov\/medicare\/x"/);
+  assert.match(html, /class="affected" data-complete="1"/);
+  assert.match(html, /data-excluded=""/, 'findings start un-excluded (server never pre-hides for the viewer)');
+
+  // JS-off baseline: every finding is in the server HTML; nothing pre-hidden by the viewer layer.
+  assert.equal((html.match(/class="bug sev-/g) || []).length, 2, 'both findings render server-side');
+  assert.doesNotMatch(html, /data-excluded="1"/, 'no finding is excluded in the static HTML');
+
+  // Severity taxonomy unchanged (C-07): internal keys stay lowercase.
+  assert.match(html, /class="bug sev-critical/);
+
+  // Portability controls (WP04): export / import / copy-share reuse the triage IO pattern.
+  assert.match(html, /id="exclude-export"/);
+  assert.match(html, /id="exclude-import"/);
+  assert.match(html, /id="exclude-share"/);
+  assert.match(html, /['"]vital-exclude['"]/, 'share payload carries the vital-exclude type');
 });
 
 test('renderAccessibilityPage includes expanded next-actions copy payload attributes', () => {

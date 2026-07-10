@@ -236,13 +236,17 @@ function affectedPagesBlock(b) {
     try { label = new URL(u).pathname || u; } catch { /* keep raw */ }
     return `<li><a href="${esc(u)}">${esc(label)}</a></li>`;
   };
+  // data-complete=1 marks that the DOM carries the finding's full affected-page
+  // list. The viewer exclusion filter (issue #209) only hides a whole finding
+  // when it can prove every page is excluded, which needs the complete list;
+  // for truncated lists it filters the shown sample but never hides the finding.
   if (total <= 25 && urls.length >= total) {
-    return `<ul class="affected">${urls.map(li).join('')}</ul>`;
+    return `<ul class="affected" data-complete="1">${urls.map(li).join('')}</ul>`;
   }
   const more = b.affected_pages_csv
     ? `<a href="${esc(b.affected_pages_csv)}">${t('all @total pages (CSV)', { '@total': total })}</a>`
     : t('@total pages total', { '@total': total });
-  return `<ul class="affected">${urls.slice(0, 25).map(li).join('')}</ul><p>${t('…and more — @more.', { '@more': more })}</p>`;
+  return `<ul class="affected" data-complete="0">${urls.slice(0, 25).map(li).join('')}</ul><p>${t('…and more — @more.', { '@more': more })}</p>`;
 }
 /** Render the pages that link to a broken URL, capped with a "+N more". */
 function linkedFrom(sources) {
@@ -1565,7 +1569,7 @@ ${heading('h-bugs', t('Bug reports'))}
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>${t('Possible duplicate')}</dt><dd>${t('Same WCAG SC covered by axe report <code>@id</code> (pattern <code>@pattern</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.', { '@id': esc(b.possible_duplicate_of), '@pattern': esc(b.possible_duplicate_pattern) })}</dd></div>`
         : '';
-      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="">
+      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="" data-excluded="">
 <summary><span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
@@ -1633,6 +1637,8 @@ ${affectedPagesBlock(b)}
   return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', t('Bug reports'))}
 ${exclusionBanner}
+${exclusionBox(target)}
+<div id="exclude-banner" class="exclusion-banner" role="status" hidden></div>
 <p class="meta">${t('@count issue type(s) are shown by default out of @total total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.', { '@count': view.visibleCount, '@total': ordered.length })}</p>
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
 ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
@@ -1650,6 +1656,7 @@ ${filterBar}
 <p class="bug-filter-empty" hidden>${t('No issues match the current filters.')} <button type="button" id="filter-reset-2">${t('Clear filters')}</button></p>
 ${bugFilterScript()}
 ${triageScript()}
+${exclusionFilterScript()}
 </section>`;
 }
 
@@ -1771,6 +1778,192 @@ function triageScript() {
 <\/script>`;
 }
 
+/**
+ * Viewer URL-exclusion control (issue #209). A collapsed box letting a report
+ * reader hide findings on pages they are not responsible for. The list is a
+ * per-viewer, per-domain preference (localStorage['vital-exclude:<domain-key>'])
+ * — it never re-runs a scan and is additive to the config `url_exclude_patterns`
+ * baseline. Rendered `hidden`; exclusionFilterScript() reveals it, so with
+ * JavaScript off the full report shows and the box does not. Reused verbatim on
+ * the landing page (WP03). Export/import/share controls are added in WP04.
+ */
+function exclusionBox(target) {
+  const key = esc(target?.key ?? '');
+  return `<details class="exclude-box" id="exclude-box" hidden data-domain-key="${key}">
+<summary>${t('Exclude URLs from this report')} <span class="exclude-count" id="exclude-count" hidden></span></summary>
+<div class="exclude-body">
+<p class="note">${t('Hide findings on pages you are not responsible for — a section another team owns, or legacy pages out of contract. One pattern per line: a plain substring (<code>/medicare/</code>) or a <code>/regex/</code> (<code>/\\.aspx$/i</code>); <code>#</code> comments are ignored. This only changes what this report shows in your browser — every page is still scanned, and your list is saved on this device.')}</p>
+<label class="exclude-label" for="exclude-input">${t('Excluded URL patterns')}</label>
+<textarea id="exclude-input" class="exclude-input" rows="5" spellcheck="false" aria-describedby="exclude-status"></textarea>
+<div class="exclude-actions">
+<button type="button" id="exclude-apply" class="triage-btn">${t('Apply')}</button>
+<button type="button" id="exclude-clear" class="triage-btn">${t('Clear')}</button>
+<button type="button" id="exclude-export" class="triage-btn">${t('Export (.json)')}</button>
+<label class="triage-btn triage-import-label"><input type="file" id="exclude-import" accept=".json" style="display:none">${t('Import (.json)')}</label>
+<button type="button" id="exclude-share" class="triage-btn">${t('Copy share payload')}</button>
+<span id="exclude-status" class="triage-io-status" aria-live="polite"></span>
+</div>
+</div>
+</details>`;
+}
+
+// Progressive-enhancement client filter for the viewer exclusion list. Reads
+// localStorage['vital-exclude:<domain-key>'], compiles each pattern (substring
+// or /regex/, mirroring compileExclusionPattern), and on the accessibility page
+// hides matching affected-page samples and whole findings — but only hides a
+// finding when the DOM carries its COMPLETE affected-page list (data-complete=1)
+// and every page is excluded, so a finding is never wrongly hidden on the basis
+// of a truncated sample. Composes with the bug filter via data-excluded +
+// window.__vitalApplyFilter. No-op when the box or the stored list is absent, so
+// it is safe to include on any page (the landing page reuses it in WP03).
+function exclusionFilterScript() {
+  return `<script>
+(function () {
+  'use strict';
+  var box = document.getElementById('exclude-box');
+  if (!box) return;
+  var key = 'vital-exclude:' + (box.getAttribute('data-domain-key') || '');
+  var input = document.getElementById('exclude-input');
+  var status = document.getElementById('exclude-status');
+  var banner = document.getElementById('exclude-banner');
+  var countBadge = document.getElementById('exclude-count');
+  var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
+  var hasFindings = bugs.length > 0;
+  var MSG_HIDDEN = ${JSON.stringify(t('Your exclusions hide @hidden finding(s).'))};
+  var MSG_PARTIAL = ${JSON.stringify(t('@n more finding(s) have some affected pages hidden.'))};
+  var MSG_VIEWALL = ${JSON.stringify(t('View everything'))};
+  var MSG_ONFINDINGS = ${JSON.stringify(t('@n exclusion pattern(s) active — they filter the findings on the Accessibility page.'))};
+  var MSG_APPLIED = ${JSON.stringify(t('Applied @n exclusion pattern(s).'))};
+  var MSG_CLEARED = ${JSON.stringify(t('Exclusions cleared.'))};
+  var MSG_NONE = ${JSON.stringify(t('No exclusion patterns to export.'))};
+  var MSG_EXPORTED = ${JSON.stringify(t('Exported @n exclusion pattern(s).'))};
+  var MSG_COPIED = ${JSON.stringify(t('Share payload copied to the clipboard.'))};
+  var MSG_COPYFAIL = ${JSON.stringify(t('Could not copy — your browser blocked clipboard access.'))};
+  var MSG_IMPORTED = ${JSON.stringify(t('Imported @n exclusion pattern(s).'))};
+  var MSG_MISMATCH = ${JSON.stringify(t('Note: this list was shared for @domain.'))};
+  var MSG_IMPORTFAIL = ${JSON.stringify(t('Import failed: @msg'))};
+  var MSG_NOTFILE = ${JSON.stringify(t('not a vital-exclude share file'))};
+  function compile(p) {
+    var m = /^\\/(.+)\\/([a-z]*)$/i.exec(p);
+    if (m) { try { var re = new RegExp(m[1], m[2]); return function (u) { return re.test(u); }; } catch (e) {} }
+    var needle = p.toLowerCase();
+    return function (u) { return String(u).toLowerCase().indexOf(needle) !== -1; };
+  }
+  function parse(text) {
+    return (text || '').split('\\n').map(function (l) { return l.trim(); })
+      .filter(function (l) { return l && l.charAt(0) !== '#'; });
+  }
+  function loadRaw() { try { return localStorage.getItem(key) || ''; } catch (e) { return ''; } }
+  function saveRaw(text) { try { if (text) localStorage.setItem(key, text); else localStorage.removeItem(key); } catch (e) {} }
+  function pagesOf(bug) {
+    var urls = [], ul = bug.querySelector('ul.affected');
+    var ex = bug.getAttribute('data-example-url'); if (ex) urls.push(ex);
+    if (ul) Array.prototype.forEach.call(ul.querySelectorAll('li a'), function (a) { urls.push(a.getAttribute('href')); });
+    return { urls: urls, complete: !!(ul && ul.getAttribute('data-complete') === '1'), ul: ul };
+  }
+  function apply(patterns) {
+    var matchers = patterns.map(compile);
+    var hit = function (u) { return matchers.some(function (m) { return m(u); }); };
+    var active = patterns.length > 0, hidden = 0, partial = 0;
+    bugs.forEach(function (bug) {
+      var info = pagesOf(bug), anyMatch = false;
+      if (info.ul) Array.prototype.forEach.call(info.ul.querySelectorAll('li'), function (li) {
+        var a = li.querySelector('a'); var m = active && a && hit(a.getAttribute('href'));
+        li.hidden = !!m; if (m) anyMatch = true;
+      });
+      var allExcluded = active && info.urls.length > 0 && info.urls.every(hit);
+      var hide = active && info.complete && allExcluded;
+      bug.setAttribute('data-excluded', hide ? '1' : '');
+      if (hide) hidden++;
+      else if (active && (anyMatch || info.urls.some(hit))) partial++;
+    });
+    if (banner) {
+      if (active && hasFindings && (hidden || partial)) {
+        var msg = MSG_HIDDEN.replace('@hidden', hidden);
+        if (partial) msg += ' ' + MSG_PARTIAL.replace('@n', partial);
+        banner.innerHTML = '<p>\\u2298 ' + msg + ' <button type="button" class="linkish" id="exclude-viewall"></button></p>';
+        var vb = document.getElementById('exclude-viewall');
+        if (vb) { vb.textContent = MSG_VIEWALL; vb.addEventListener('click', function () { if (input) input.value = ''; saveRaw(''); apply([]); }); }
+        banner.hidden = false;
+      } else if (active && !hasFindings) {
+        // Landing page (or any page without the findings list): the list is
+        // stored and shared, but there is nothing here to hide — say where it applies.
+        banner.innerHTML = '<p>\\u2298 ' + MSG_ONFINDINGS.replace('@n', patterns.length) + '</p>';
+        banner.hidden = false;
+      } else { banner.hidden = true; banner.innerHTML = ''; }
+    }
+    if (countBadge) {
+      if (active) { countBadge.textContent = '(' + patterns.length + ')'; countBadge.hidden = false; }
+      else { countBadge.textContent = ''; countBadge.hidden = true; }
+    }
+    // C-02: the headline score is never recomputed for a filtered subset; when
+    // exclusions are active, reveal the note that says the score is whole-site.
+    var scoreNote = document.getElementById('score-scope-note');
+    if (scoreNote) scoreNote.hidden = !active;
+    if (window.__vitalApplyFilter) window.__vitalApplyFilter();
+  }
+  function setStatus(msg) { if (!status) return; status.textContent = msg; setTimeout(function () { status.textContent = ''; }, 4000); }
+  box.hidden = false;
+  var initial = loadRaw();
+  if (input) input.value = initial;
+  apply(parse(initial));
+  var applyBtn = document.getElementById('exclude-apply');
+  if (applyBtn) applyBtn.addEventListener('click', function () {
+    var text = input ? input.value : ''; saveRaw(text);
+    var p = parse(text); apply(p); setStatus(MSG_APPLIED.replace('@n', p.length));
+  });
+  var clearBtn = document.getElementById('exclude-clear');
+  if (clearBtn) clearBtn.addEventListener('click', function () {
+    if (input) input.value = ''; saveRaw(''); apply([]); setStatus(MSG_CLEARED);
+  });
+  // Portability (WP04): export/import/copy the list as a small JSON payload
+  // stamped with the domain key so a team can agree on one scope.
+  var domain = box.getAttribute('data-domain-key') || '';
+  function currentPatterns() { return parse(input ? input.value : loadRaw()); }
+  function payload(pats, pretty) {
+    return JSON.stringify({ type: 'vital-exclude', domain: domain, exported: new Date().toISOString(), patterns: pats }, null, pretty ? 2 : 0);
+  }
+  var exportBtn = document.getElementById('exclude-export');
+  if (exportBtn) exportBtn.addEventListener('click', function () {
+    var pats = currentPatterns();
+    if (!pats.length) { setStatus(MSG_NONE); return; }
+    var blob = new Blob([payload(pats, true)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'vital-exclude-' + (domain || 'domain') + '-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    setStatus(MSG_EXPORTED.replace('@n', pats.length));
+  });
+  var shareBtn = document.getElementById('exclude-share');
+  if (shareBtn) shareBtn.addEventListener('click', function () {
+    var text = payload(currentPatterns(), false);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { setStatus(MSG_COPIED); }, function () { setStatus(MSG_COPYFAIL); });
+    } else { setStatus(MSG_COPYFAIL); }
+  });
+  var importInput = document.getElementById('exclude-import');
+  if (importInput) importInput.addEventListener('change', function (e) {
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (!data || data.type !== 'vital-exclude' || !Array.isArray(data.patterns)) throw new Error(MSG_NOTFILE);
+        var pats = data.patterns.map(String).map(function (s) { return s.trim(); }).filter(Boolean);
+        var text = pats.join('\\n');
+        if (input) input.value = text;
+        saveRaw(text); apply(pats);
+        var pre = (data.domain && data.domain !== domain) ? MSG_MISMATCH.replace('@domain', data.domain) + ' ' : '';
+        setStatus(pre + MSG_IMPORTED.replace('@n', pats.length));
+      } catch (err) { setStatus(MSG_IMPORTFAIL.replace('@msg', err.message)); }
+      e.target.value = ''; // allow re-importing the same file
+    };
+    reader.readAsText(file);
+  });
+})();
+<\/script>`;
+}
+
 // Progressive-enhancement filtering for the bug-report list. Reveals the
 // filter form (hidden by default so no-JS users see every bug) and toggles
 // each .bug <details> by its data-severity / data-category attributes.
@@ -1788,13 +1981,18 @@ function bugFilterScript() {
   var count = document.getElementById('filter-count');
   var empty = document.querySelector('.bug-filter-empty');
   var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
-  var total = bugs.length;
-  var prioritized = Number(form.getAttribute('data-prioritized') || '0');
   function apply() {
     var s = sev.value, c = cat.value, t = triage ? triage.value : '', hideDup = dup.checked, showEverything = showAll.checked, shown = 0;
     // Triage filter implicitly expands to all priority tiers so you can find triaged items that are normally hidden.
     var effectiveShowAll = showEverything || !!t;
+    // Findings the viewer excluded (issue #209) are removed from view and from
+    // the totals, so "showing N of M" reflects the viewer's chosen scope. With
+    // no exclusions active these equal the full finding count / prioritized count.
+    var effTotal = 0, effPrioritized = 0;
     bugs.forEach(function (b) {
+      if (b.getAttribute('data-excluded') === '1') { b.hidden = true; return; }
+      effTotal++;
+      if (b.getAttribute('data-default-visible') === '1') effPrioritized++;
       var bugTriage = b.getAttribute('data-triage') || '';
       var triageOk = !t || (t === '__none__' ? !bugTriage : bugTriage === t);
       var ok = (effectiveShowAll || b.getAttribute('data-default-visible') === '1')
@@ -1809,8 +2007,8 @@ function bugFilterScript() {
     count.textContent = filtered
       ? (showEverything && !t
           ? ${JSON.stringify(t('Showing all @count issue type(s).'))}.replace('@count', shown)
-          : ${JSON.stringify(t('Showing @count of @total issue type(s).'))}.replace('@count', shown).replace('@total', total))
-      : ${JSON.stringify(t('Showing @count prioritized issue type(s) out of @total.'))}.replace('@count', prioritized).replace('@total', total);
+          : ${JSON.stringify(t('Showing @count of @total issue type(s).'))}.replace('@count', shown).replace('@total', effTotal))
+      : ${JSON.stringify(t('Showing @count prioritized issue type(s) out of @total.'))}.replace('@count', effPrioritized).replace('@total', effTotal);
     if (empty) empty.hidden = shown !== 0;
   }
   function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; if (triage) triage.value = ''; dup.checked = false; apply(); }
@@ -2946,7 +3144,8 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
   <span class="score-caveat">${t('Score reflects the typical page\'s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.')}</span>
-</aside>` : ''}
+</aside>
+<p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
 <section aria-labelledby="h-deltas">
 <h2 id="h-deltas" class="visually-hidden">${t('Change this week')}</h2>
@@ -2968,6 +3167,9 @@ ${win ? `<aside class="callout callout-win" aria-labelledby="h-win">
 
 ${invSummary ? `<p class="meta">${t('Over the whole history of this site, <strong>@known</strong> unique pages have been scanned at least once; <strong>@withIssues</strong> have known accessibility issues. <strong>@thisWeek</strong> of them were re-checked this ISO week.', { '@known': invSummary.totalKnownPages, '@withIssues': invSummary.pagesWithKnownIssues, '@thisWeek': invSummary.scannedThisWeek })} <a href="../../../data/${esc(target.key)}/domain.json">${t('Download full data (JSON)')}</a>.</p>` : ''}
 
+${exclusionBox(target)}
+<div id="exclude-banner" class="exclusion-banner" role="status" hidden></div>
+
 ${fixFirstSection(bugs)}
 
 ${progressSection(prog, bugs)}
@@ -2980,6 +3182,7 @@ ${diff ? drilldown('h-wow', t('Changes since @week', { '@week': diff.prevWeek })
 ${changeList('Alfa', diff.alfa)}`) : ''}
 
 ${resourcesSection(summary)}
+${exclusionFilterScript()}
 `;
   return layout({
     title: `${target.domain} ${summary.week} | vital-scans`,
@@ -3966,6 +4169,18 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .exclusion-banner code { background: color-mix(in srgb, var(--ink) 12%, transparent); padding: .2rem .35rem;
   border-radius: 2px; font-family: monospace; font-size: .9em; }
 .exclusion-banner a { font-weight: 600; }
+.exclude-box { margin: 1rem 0 1.25rem; border: 1px solid var(--rule); border-radius: 3px; padding: 0 .9rem; }
+.exclude-box > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }
+.exclude-box[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
+.exclude-count { color: var(--muted); font-weight: 400; font-size: .85rem; }
+.exclude-body { padding-bottom: .8rem; }
+.exclude-label { display: block; font-size: .78rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--muted); margin: .4rem 0 .25rem; }
+.exclude-input { width: 100%; box-sizing: border-box; font-family: monospace; font-size: .9rem;
+  padding: .4rem .5rem; border: 1px solid var(--rule); border-radius: 2px; background: var(--paper); color: var(--ink); }
+.exclude-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem .6rem; margin-top: .5rem; }
+.linkish { background: none; border: none; padding: 0; font: inherit; color: var(--accent);
+  font-weight: 600; cursor: pointer; text-decoration: underline; }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
   margin: .6rem 0; padding: 0 .9rem; }
 .bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }

@@ -116,26 +116,26 @@ starting WP work.
 
 ## Acceptance criteria
 
-- [ ] A collapsed `.triage-io`-styled exclusion box renders under the
+- [x] A collapsed `.triage-io`-styled exclusion box renders under the
       site-inventory meta line on the domain landing page and on the accessibility
-      page, with a pattern input, **Apply**, and **Clear**. *(FR-01)*
-- [ ] Patterns match the full URL case-insensitively as substring or `/regex/`;
-      `#` comments and blank lines ignored. *(FR-02)*
-- [ ] The list persists in `localStorage['vital-exclude:<domain-key>']` and
-      re-applies on reload with no re-entry. *(FR-03)*
-- [ ] With a list active, matching findings/pages are hidden and all visible
-      counts update to the filtered view, client-side. *(FR-04)*
-- [ ] The viewer list is additive to the config `url_exclude_patterns` baseline;
+      page, with a pattern input, **Apply**, and **Clear**. *(FR-01 — WP02/WP03)*
+- [x] Patterns match the full URL case-insensitively as substring or `/regex/`;
+      `#` comments and blank lines ignored. *(FR-02 — WP02)*
+- [x] The list persists in `localStorage['vital-exclude:<domain-key>']` and
+      re-applies on reload with no re-entry. *(FR-03 — WP02)*
+- [x] With a list active, matching findings/pages are hidden and all visible
+      counts update to the filtered view, client-side. *(FR-04 — WP02)*
+- [x] The viewer list is additive to the config `url_exclude_patterns` baseline;
       a banner names both sources with a hidden-count and a reset-to-view-all.
-      *(FR-05)*
-- [ ] Export (.json) / Import (.json) / Copy share payload work, carrying the
-      domain key, reusing the triage IO scaffold. *(FR-06)*
+      *(FR-05 — WP02)*
+- [x] Export (.json) / Import (.json) / Copy share payload work, carrying the
+      domain key, reusing the triage IO scaffold. *(FR-06 — WP04)*
 - [x] `matchesExclusionPattern` / `filterBugsByExclusion` honour `/regex/` as well
       as substrings; invalid regex falls back to literal substring; existing
       config-baseline behaviour unchanged. *(FR-07 — WP01)*
-- [ ] The report is fully usable with JavaScript disabled; the headline score is
+- [x] The report is fully usable with JavaScript disabled; the headline score is
       not recomputed for the filtered set and the filtered view is labelled.
-      *(C-01, C-02)*
+      *(C-01 — WP02, C-02 — WP03)*
 - [ ] Docs updated (CLAUDE.md three-layer note, README/FEATURES, targets.yml
       cross-reference). *(FR-08)*
 - [ ] `npm run test:unit`, `npm run i18n:check`, and `npm run check:spec-kitty`
