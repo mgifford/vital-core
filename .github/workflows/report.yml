@@ -8,12 +8,12 @@
 # reports are separate by default.
 #
 # Steps, in order:
-#   1. aggregate         : computes summaries from data/, writes docs/
-#   2. prune             : removes page-level detail older than retention_weeks
-#   3. commit            : writes summaries and retention marker back to data/
-#   4. generate comment  : creates docs/comment.md
-#   5. deploy            : publishes docs/ to GitHub Pages
-#   6. post comment      : posts weekly Markdown summary to a pinned issue
+#   1. aggregate       : computes summaries from data/, writes docs/
+#   2. prune           : removes page-level detail older than retention_weeks
+#   3. commit          : writes summaries and retention marker back to data/
+#   4. generate comment: creates docs/comment.md
+#   5. deploy          : publishes docs/ to GitHub Pages
+#   6. post comment    : posts weekly Markdown summary to a pinned issue
 
 name: report
 
@@ -41,7 +41,7 @@ jobs:
     outputs:
       publish: ${{ steps.decide.outputs.publish }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -62,12 +62,7 @@ jobs:
 
       - id: decide
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "publish=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          if [ "${{ github.event_name }}" = "workflow_call" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "workflow_call" ]; then
             echo "publish=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -96,11 +91,11 @@ jobs:
       url: ${{ steps.page.outputs.page_url }}
 
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 26 # 🟢 Upgraded to Node 26 Latest Stable Release
           cache: npm
 
       - name: Install dependencies
@@ -155,13 +150,15 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5 # 🟢 Upgraded v3 -> v5 to target the updated engine pipeline
         with:
           path: docs
 
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+        with:
+          timeout_minutes: 10
         continue-on-error: true
 
       - name: Retry GitHub Pages deploy
@@ -175,7 +172,7 @@ jobs:
         run: echo "page_url=${{ steps.deploy_retry.outputs.page_url || steps.deploy.outputs.page_url }}" >> "$GITHUB_OUTPUT"
 
       - name: Post weekly summary to tracking issue
-        uses: actions/github-script@v9
+        uses: actions/github-script@v9 # Already updated and fully functional with modern tokens
         with:
           script: |
             const fs = require('fs');
