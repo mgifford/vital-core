@@ -1,0 +1,26 @@
+# Example URL exclusion list.
+#
+# Reference this file from a target in config/targets.yml with:
+#
+#   url_exclude_file: exclusions/example.txt
+#
+# (url_include_file uses the same format to *restrict* a scan instead.)
+#
+# One pattern per line. Blank lines and lines starting with `#` are ignored.
+# Each pattern is matched against the full normalized URL and is either:
+#   - a plain substring, e.g.  /api/
+#   - a /regex/ when wrapped in slashes (optional trailing flags), e.g.
+#       /\/\d{4}\/\d{2}\//   dated archive paths like /2026/06/
+#       /\.aspx$/i           legacy ASP.NET pages, case-insensitive
+#
+# Patterns here are merged with any inline `url_exclude:` array on the target.
+# Priority URLs (priority_urls / priority_urls_file) always bypass exclusion.
+
+# --- substrings ---
+/api/
+?page=
+/search?
+
+# --- regexes ---
+/\/print\/?$/
+/\.(aspx|cfm)$/i

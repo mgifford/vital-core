@@ -119,22 +119,33 @@ targets:
   #       languages: [en, nl]            # Netherlands — English + Dutch
   #       default_language: fr           # make French the canonical default
   #
-  #   url_include: [ ... ] optional list of substrings. When set, ONLY URLs
-  #     whose full normalized URL contains at least one substring are crawled
-  #     and scanned. Useful for focusing a scan on a subtree or topic area.
+  #   url_include: [ ... ] optional list of patterns. When set, ONLY URLs whose
+  #     full normalized URL matches at least one pattern are crawled and scanned.
+  #     Useful for focusing a scan on a subtree or topic area. Each pattern is a
+  #     substring, or a /regex/ when wrapped in slashes (optional trailing flags).
   #     Examples:
-  #       url_include: ["/children/"]          # only paths containing /children/
+  #       url_include: ["/children/"]           # only paths containing /children/
   #       url_include: ["medicare", "medicaid"] # either word in the URL
+  #       url_include: ["/\\d{4}/report/"]      # regex: a 4-digit year segment
   #     Priority URLs always bypass this filter.
   #
-  #   url_exclude: [ ... ] optional list of substrings. URLs whose full
-  #     normalized URL contains any of these are silently skipped during
-  #     crawl and scan. Applied after url_include. Useful for pruning noise
-  #     or known-inaccessible paths that would skew results.
+  #   url_exclude: [ ... ] optional list of patterns. URLs whose full normalized
+  #     URL matches any of these are silently skipped during crawl and scan.
+  #     Applied after url_include. Same substring-or-/regex/ matching as
+  #     url_include. Useful for pruning noise or known-inaccessible paths that
+  #     would skew results.
   #     Examples:
   #       url_exclude: ["press_release", "/news/", "?page="]
-  #       url_exclude: ["/es/", "/zh/"]  # skip non-English language sections
+  #       url_exclude: ["/es/", "/zh/"]         # skip non-English language sections
+  #       url_exclude: ["/\\d{4}/\\d{2}/"]      # regex: dated archive paths
   #     Priority URLs always bypass this filter.
+  #
+  #   url_include_file: / url_exclude_file: optional path to a file of the same
+  #     patterns, one per line (# comments and blank lines ignored). Merged with
+  #     the inline list above. Relative paths resolve under config/ (like
+  #     priority_urls_file), so keep long exclusion lists in their own file.
+  #     Examples:
+  #       url_exclude_file: exclusions/www.cms.gov-exclude.txt
   #
   #   spelling_allowlist: [ ... ] optional list of domain-specific terms that
   #     the spell checker should accept without flagging. Layered on top of
