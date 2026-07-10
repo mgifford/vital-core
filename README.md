@@ -53,8 +53,10 @@ Other deliberate choices:
   with `VITAL_A11Y_SETTLE_DELAY_MS`) lets client-side hydration finish,
   which removes the largest source of transient false positives.
 - **URL path/query filtering.** Per-target `url_include` / `url_exclude`
-  substring arrays (set in `config/targets.yml`) narrow which pages are
-  crawled and scanned. Priority URLs always bypass the filter.
+  pattern arrays (set in `config/targets.yml`) narrow which pages are
+  crawled and scanned. Each pattern is a substring or a `/regex/`, and long
+  lists can live in a file via `url_include_file` / `url_exclude_file`
+  (resolved under `config/`). Priority URLs always bypass the filter.
 - **Plain Node, no build step, no TypeScript, six dependencies.** Less
   machinery to break in CI.
 
