@@ -198,3 +198,12 @@ async function loadDomainSummary(domainKey) {
   as part of a finding's identity.
 - The API is UI-chrome-free structured data; it is not a substitute for the
   human-readable HTML reports.
+
+## Consuming this API from a coding agent
+
+[`MCP.md`](MCP.md) documents a local, read-only [Model Context
+Protocol](https://modelcontextprotocol.io/) server (`mcp/`) that wraps this
+API for MCP-compatible coding clients (Claude Code, GitHub Copilot, etc.) —
+tools to list and inspect findings without a client having to know this
+document's endpoint shapes directly. It runs locally, on demand, and only
+ever talks to the single Vital Core instance configured in `.vital.yml`.
