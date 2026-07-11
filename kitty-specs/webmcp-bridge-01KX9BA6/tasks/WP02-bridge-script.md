@@ -1,6 +1,6 @@
 ---
 work_package_id: WP02
-title: "webmcpBridgeScript() client-side bridge"
+title: webmcpBridgeScript() client-side bridge
 dependencies:
 - WP01
 requirement_refs:
@@ -14,17 +14,20 @@ requirement_refs:
 - NFR-03
 - NFR-04
 - C-05
+tracker_refs: []
 planning_base_branch: main
 merge_target_branch: main
-branch_strategy: Planning artifacts for this mission were generated on main. During implementation this WP branches from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002
 - T003
 - T004
-agent: ""
+agent: ''
 shell_pid: 0
+history: []
 authoritative_surface: src/
+create_intent: []
 execution_mode: code_change
 owned_files:
 - src/report-html.js

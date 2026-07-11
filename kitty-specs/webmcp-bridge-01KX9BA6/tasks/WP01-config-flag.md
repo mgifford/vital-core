@@ -1,18 +1,21 @@
 ---
 work_package_id: WP01
-title: "webmcp config flag"
+title: webmcp config flag
 dependencies: []
 requirement_refs:
 - FR-01
+tracker_refs: []
 planning_base_branch: main
 merge_target_branch: main
-branch_strategy: Planning artifacts for this mission were generated on main. During implementation this WP branches from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002
-agent: ""
+agent: ''
 shell_pid: 0
+history: []
 authoritative_surface: src/lib/
+create_intent: []
 execution_mode: code_change
 owned_files:
 - config/targets.yml
