@@ -159,6 +159,11 @@ repository access, no command execution. See [MCP.md](MCP.md) for setup,
 `.vital.yml`, the available tools, and what's intentionally not implemented
 yet.
 
+A separate, opt-in [WebMCP](https://github.com/webmachinelearning/webmcp)
+bridge registers the same read-only tools directly in a domain's report
+pages, for an in-browser agent instead of a local coding client — see
+[MCP.md#webmcp](MCP.md#webmcp).
+
 ## Politeness
 
 The crawler honors `robots.txt` (Disallow/Allow/Crawl-delay),
