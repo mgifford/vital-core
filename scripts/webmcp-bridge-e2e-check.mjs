@@ -44,11 +44,14 @@ async function main() {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
     });
 
-    // Stub document.modelContext before any page script runs, capturing
+    // Stub navigator.modelContext before any page script runs, capturing
     // registrations on window so the test can inspect/call them after load.
+    // The bridge checks navigator.modelContext first, falling back to
+    // document.modelContext — stub the primary path here so this check
+    // exercises the same precedence a real WebMCP-capable browser would.
     await page.addInitScript(() => {
       window.__registeredTools = {};
-      document.modelContext = {
+      navigator.modelContext = {
         registerTool(def) {
           window.__registeredTools[def.name] = def;
           return Promise.resolve();
@@ -79,8 +82,16 @@ async function main() {
       'vital_list_findings severity filter',
     );
 
-    console.log('PASS: WebMCP bridge verified in a real headless Chromium page.');
+    const readOnlyHints = await page.evaluate(() =>
+      Object.fromEntries(Object.entries(window.__registeredTools).map(([name, def]) => [name, def.readOnlyHint])),
+    );
+    for (const [name, hint] of Object.entries(readOnlyHints)) {
+      if (hint !== true) throw new Error(`FAIL: ${name} did not set readOnlyHint: true (got ${hint})`);
+    }
+
+    console.log('PASS: WebMCP bridge verified in a real headless Chromium page (via navigator.modelContext).');
     console.log('  Registered tools:', toolNames.join(', '));
+    console.log('  readOnlyHint set on all tools:', readOnlyHints);
     console.log('  vital_list_findings({severity:["Critical"]}) ->', JSON.stringify(listResult));
   } finally {
     await browser.close();
