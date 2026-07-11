@@ -21,6 +21,8 @@ import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
 import { buildAiFindings } from './lib/ai-findings.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
+import { filterBugsByExclusion } from './report-html.js';
+import { redactBugs } from './lib/api-redact.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { writeAcrYaml } from './lib/acr.js';
 import { computeTrainingPriorities } from './lib/training-priorities.js';
@@ -55,6 +57,17 @@ const config = applyProfile(loadConfig(), profile);
 if (profile) console.log(`Building profile "${profile.name}" (${config.targets.length} targets).`);
 setSustainabilityMetric(config.sustainabilityMetric);
 fs.mkdirSync(DIRS.docs, { recursive: true });
+
+// Bugs fed into the static JSON API must honor the same render-time
+// url_exclude_patterns baseline the HTML report applies (parity), and must have
+// their URLs redacted before publication (fragments stripped, sensitive query
+// values [REDACTED]) — issue #136. The scan-time url_exclude filter already
+// dropped whole excluded pages before fetch; this is the second and third
+// layers for the API surface.
+function apiBugsFor(target, bugs) {
+  const filtered = filterBugsByExclusion(bugs, target.url_exclude_patterns ?? []);
+  return redactBugs(filtered, { denyParams: target.api_redact_params ?? [] });
+}
 
 const dashboard = [];
 const apiIndexEntries = [];
@@ -178,7 +191,10 @@ for (const target of config.targets) {
     progress.streaks = streaks(progress.burndown);
     progress.deltaSeries = deltaSeries(ledger, weeksSoFar);
     if (bugs.length) {
-      apiWeekFindings.push({ key: target.key, week: summary.week, data: buildWeekFindings(target, summary, bugs, ledger.findings) });
+      const apiBugs = apiBugsFor(target, bugs);
+      if (apiBugs.length) {
+        apiWeekFindings.push({ key: target.key, week: summary.week, data: buildWeekFindings(target, summary, apiBugs, ledger.findings) });
+      }
     }
 
     const repDir = path.join(DIRS.docs, 'reports', target.key, summary.week);
@@ -395,7 +411,7 @@ for (const target of config.targets) {
   saveThirdPartyLedger(target.key, tpLedger);
 
   const latestSummary = series[series.length - 1];
-  const latestBugsOnly = latestBugs.map(({ _week, ...b }) => b);
+  const latestBugsOnly = apiBugsFor(target, latestBugs.map(({ _week, ...b }) => b));
   apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
   apiSnapshots.push({ key: target.key, data: buildSnapshot(target, series, diffs, ledger, invSummary, latestBugsOnly) });
 

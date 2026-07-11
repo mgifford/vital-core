@@ -138,6 +138,17 @@ Catalogs are human-reviewed JSON in `src/locales/<lang>.json` (`en`, `fr`, `ja`,
 (`src/locales/template.json`). Only the UI chrome is translated — engine-sourced
 WCAG/rule descriptions stay English. See CLAUDE.md for details.
 
+## JSON API
+
+Every build publishes a static, read-only, versioned JSON API next to the HTML
+reports at `/api/v1/` — no server, database, or auth. Consume it with a plain
+HTTP `GET` (`curl`, `fetch`, CI) instead of scraping HTML. Endpoints: an
+`index.json` of all domains, a per-domain `snapshot.json`, and per-week
+`findings.json`, each carrying a `schema_version` and validated against
+published JSON Schemas. URLs are redacted for publication (fragments stripped,
+sensitive query values `[REDACTED]`) and excluded pages are omitted. See
+[API.md](API.md) for the full contract, schemas, retention, and examples.
+
 ## Politeness
 
 The crawler honors `robots.txt` (Disallow/Allow/Crawl-delay),

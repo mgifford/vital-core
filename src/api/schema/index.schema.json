@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mgifford.github.io/vital-core/api/v1/schema/index.schema.json",
+  "title": "vital-core API v1 index",
+  "description": "Top-level listing of all published domains with summary stats and links. Served at /api/v1/index.json.",
+  "type": "object",
+  "required": ["schema_version", "domains"],
+  "properties": {
+    "schema_version": {
+      "description": "Stable API contract version. Bumps only on a breaking change (a new /api/vN/ path).",
+      "const": "1"
+    },
+    "domains": {
+      "description": "One compact entry per published domain. Ordered deterministically.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/domainEntry" }
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "domainEntry": {
+      "type": "object",
+      "required": [
+        "domain", "key", "latest_week", "pages_scanned",
+        "critical_count", "serious_count", "snapshot_url", "findings_url"
+      ],
+      "properties": {
+        "domain": { "type": "string", "description": "Hostname scanned (e.g. www.cms.gov)." },
+        "key": { "type": "string", "description": "Stable domain identifier; matches config/targets.yml key." },
+        "latest_week": { "$ref": "#/definitions/isoWeek" },
+        "pages_scanned": { "type": "integer", "minimum": 0 },
+        "top_actions_count": { "type": "integer", "minimum": 0 },
+        "critical_count": { "type": "integer", "minimum": 0 },
+        "serious_count": { "type": "integer", "minimum": 0 },
+        "snapshot_url": { "type": "string", "description": "Relative link to the domain snapshot resource." },
+        "findings_url": { "type": "string", "description": "Relative link to the latest per-week findings resource." }
+      },
+      "additionalProperties": true
+    },
+    "isoWeek": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-W[0-9]{2}$",
+      "description": "ISO year-week identifier, e.g. 2026-W25."
+    }
+  }
+}
