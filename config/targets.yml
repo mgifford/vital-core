@@ -198,16 +198,19 @@ targets:
     url_exclude_patterns: [".aspx"]
     design_system: cms-ds
     design_system_theme: default
+    webmcp: true
   - domain: www.medicare.gov
     importance: 5
     design_system: cms-ds
     design_system_theme: medicare
+    webmcp: true
   - domain: www.medicaid.gov
     importance: 5
   - domain: data.healthcare.gov
     importance: 3                  # open-data site; pages are template-similar
   - domain: openpaymentsdata.cms.gov
     importance: 3                  # open-data site; lighthouse disabled (perf:6-55 → audits take 2-5 min each)
+    webmcp: true
     sampling:
       lighthouse: 0
   - domain: www.cdc.gov
