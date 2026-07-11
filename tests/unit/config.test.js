@@ -95,9 +95,12 @@ targets:
   assert.equal(c.targets[0].webmcpEnabled, false);
 });
 
-test('config: real committed targets.yml has no target opted into webmcp yet', () => {
+test('config: webmcpEnabled resolves to a strict boolean for every real target', () => {
+  // Which targets opt in is expected to change over time (it's live in
+  // config/targets.yml now, not just documented) — this only guards the
+  // resolution logic's type, not a specific enabled/disabled snapshot.
   const c = loadConfig();
   for (const t of c.targets) {
-    assert.equal(t.webmcpEnabled, false);
+    assert.equal(typeof t.webmcpEnabled, 'boolean');
   }
 });

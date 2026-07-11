@@ -207,29 +207,35 @@ Same three tools as the local server, same names and argument shapes —
 `vital_get_project_context`, `vital_list_findings`,
 `vital_get_finding_context` — sourced from the domain's own same-origin
 `/api/v1/` data (`snapshot.json`, `<week>/findings.json`), fetched and
-cached client-side for the life of the page. The filter/sort/bound logic
-is a small, deliberate hand-written duplicate of `mcp/tools/list-findings.js`
-/ `get-finding-context.js`, not a shared import — this is a browser bundle
+cached client-side for the life of the page. Every tool sets
+`readOnlyHint: true` so a calling agent can tell at a glance that none of
+them mutate anything. The filter/sort/bound logic is a small, deliberate
+hand-written duplicate of `mcp/tools/list-findings.js` /
+`get-finding-context.js`, not a shared import — this is a browser bundle
 with no build step, and the local server is a Node-only package; coupling
 them would cost more than the ~60 lines of duplicated logic saves.
 
 ### Size budget
 
-Measured at **1463 bytes gzipped** (4590 bytes raw) for the generated
+Measured at **1502 bytes gzipped** (4727 bytes raw) for the generated
 script, against a target of under 2 KB gzipped. Verified in
 `tests/unit/webmcp-bridge.test.js`.
 
 ### Registration mechanism (unstable — read this before relying on it)
 
 The [WebMCP proposal](https://github.com/webmachinelearning/webmcp) is a
-pre-standardization W3C/WICG incubation, **not a finished spec**. As of
-this writing it registers tools via `document.modelContext.registerTool()`
-(name, description, JSON Schema `inputSchema`, async `execute`), and the
-bridge script feature-detects that exact shape — a browser without it is a
-complete no-op, not an error. If the proposal's API shape changes, this
-bridge will need a follow-up mission to track it; the tool *contract*
-(names, arguments, return shape) is the part expected to stay stable, not
-the registration mechanics.
+pre-standardization W3C/WICG incubation, **not a finished spec** — it has
+not settled which global object owns the registration point. As of this
+writing the bridge script checks `navigator.modelContext` first, falling
+back to `document.modelContext` (matching the practice of
+[mgifford/wsg-webmcp-experiment](https://github.com/mgifford/wsg-webmcp-experiment),
+an actively maintained sibling WebMCP demo), then calls
+`.registerTool({ name, description, inputSchema, readOnlyHint, execute })`
+on whichever is present. A browser with neither is a complete no-op, not
+an error. If the proposal's API shape changes further, this bridge will
+need a follow-up mission to track it; the tool *contract* (names,
+arguments, return shape) is the part expected to stay stable, not the
+registration mechanics.
 
 ### What WebMCP does not add
 

@@ -1877,17 +1877,21 @@ function exclusionBox(target, { bugsJson = '' } = {}) {
 // name/argument parity with the local MCP server's vital_get_project_context /
 // vital_list_findings / vital_get_finding_context (mcp/tools/*.js) — with an
 // in-page WebMCP agent, sourced from this domain's own same-origin /api/v1/
-// data. Feature-detects document.modelContext (the WebMCP proposal's current
-// registration point as of implementation time; see
-// https://github.com/webmachinelearning/webmcp) and is a complete no-op when
-// absent or when the target hasn't opted in — emits zero bytes in that case
-// (see the early return below), not just an inert script.
+// data. Feature-detects navigator.modelContext || document.modelContext
+// (the WebMCP proposal has not settled which object owns it as of
+// implementation time — checking both costs nothing and matches the
+// practice of mgifford/wsg-webmcp-experiment, an actively maintained
+// sibling WebMCP demo; see https://github.com/webmachinelearning/webmcp)
+// and is a complete no-op when neither is present or when the target
+// hasn't opted in — emits zero bytes in that case (see the early return
+// below), not just an inert script.
 export function webmcpBridgeScript(target) {
   if (!target.webmcpEnabled) return '';
   return `<script>
 (function () {
   'use strict';
-  if (!(typeof document !== 'undefined' && document.modelContext && typeof document.modelContext.registerTool === 'function')) return;
+  var modelContext = (typeof navigator !== 'undefined' && navigator.modelContext) || (typeof document !== 'undefined' && document.modelContext);
+  if (!(modelContext && typeof modelContext.registerTool === 'function')) return;
   var DOMAIN = ${JSON.stringify(target.key)};
   var API_BASE = '/api/v1/';
   var SEVERITIES = ['Critical', 'Serious', 'Moderate', 'Minor'];
@@ -1914,10 +1918,11 @@ export function webmcpBridgeScript(target) {
     return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] };
   }
 
-  document.modelContext.registerTool({
+  modelContext.registerTool({
     name: 'vital_get_project_context',
     description: 'Return the Vital Core domain and latest reporting week for the report page this tool was called from.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    readOnlyHint: true,
     execute: function () {
       return snapshot().then(function (s) {
         return toolResult({ domain: DOMAIN, latestWeek: s.latest_week, reportUrl: location.href });
@@ -1925,7 +1930,7 @@ export function webmcpBridgeScript(target) {
     }
   });
 
-  document.modelContext.registerTool({
+  modelContext.registerTool({
     name: 'vital_list_findings',
     description: 'List findings for this domain from the /api/v1/ findings feed, filtered and sorted by pages affected, not raw instance count.',
     inputSchema: {
@@ -1939,6 +1944,7 @@ export function webmcpBridgeScript(target) {
       },
       additionalProperties: false
     },
+    readOnlyHint: true,
     execute: function (args) {
       args = args || {};
       return findingsForWeek(args.week).then(function (r) {
@@ -1969,7 +1975,7 @@ export function webmcpBridgeScript(target) {
     }
   });
 
-  document.modelContext.registerTool({
+  modelContext.registerTool({
     name: 'vital_get_finding_context',
     description: 'Return the full evidence record for one finding, verbatim, from the /api/v1/ findings feed, by finding_id.',
     inputSchema: {
@@ -1978,6 +1984,7 @@ export function webmcpBridgeScript(target) {
       required: ['finding_id'],
       additionalProperties: false
     },
+    readOnlyHint: true,
     execute: function (args) {
       if (!args || !args.finding_id) throw new Error('vital_get_finding_context requires a "finding_id" string.');
       return findingsForWeek(args.week).then(function (r) {
