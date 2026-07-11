@@ -20,7 +20,8 @@ agent: ''
 shell_pid: 0
 history: []
 authoritative_surface: tests/
-create_intent: []
+create_intent:
+- tests/unit/webmcp-bridge.test.js
 execution_mode: code_change
 owned_files:
 - tests/unit/webmcp-bridge.test.js

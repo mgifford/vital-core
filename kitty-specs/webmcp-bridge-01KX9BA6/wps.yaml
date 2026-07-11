@@ -41,6 +41,8 @@ work_packages:
       - WP02
     owned_files:
       - "tests/unit/webmcp-bridge.test.js"
+    create_intent:
+      - "tests/unit/webmcp-bridge.test.js"
     requirement_refs:
       - NFR-01
       - NFR-05
