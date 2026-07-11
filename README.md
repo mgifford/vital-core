@@ -149,6 +149,16 @@ published JSON Schemas. URLs are redacted for publication (fragments stripped,
 sensitive query values `[REDACTED]`) and excluded pages are omitted. See
 [API.md](API.md) for the full contract, schemas, retention, and examples.
 
+## Local MCP server
+
+`mcp/` is a local, read-only-by-default [Model Context Protocol](https://modelcontextprotocol.io/)
+server that lets an MCP-compatible coding client (Claude Code, GitHub
+Copilot, etc.) list and inspect findings from a Vital Core instance's JSON
+API. It runs on your own machine over stdio — no network port, no local
+repository access, no command execution. See [MCP.md](MCP.md) for setup,
+`.vital.yml`, the available tools, and what's intentionally not implemented
+yet.
+
 ## Politeness
 
 The crawler honors `robots.txt` (Disallow/Allow/Crawl-delay),
