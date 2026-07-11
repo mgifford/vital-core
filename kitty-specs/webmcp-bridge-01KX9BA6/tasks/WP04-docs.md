@@ -3,7 +3,8 @@ work_package_id: WP04
 title: "WebMCP docs"
 dependencies:
 - WP02
-requirement_refs: []
+requirement_refs:
+- FR-08
 planning_base_branch: main
 merge_target_branch: main
 branch_strategy: Planning artifacts for this mission were generated on main. During implementation this WP branches from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
@@ -49,7 +50,7 @@ MCP server" section, linking to the new `MCP.md` section.
 
 ## Acceptance Boundary
 
-Requirement refs: spec.md Success Criterion 5.
+Requirement refs: FR-08.
 
 ## Validation
 
