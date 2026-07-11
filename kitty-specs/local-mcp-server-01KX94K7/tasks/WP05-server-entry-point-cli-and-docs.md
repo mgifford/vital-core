@@ -1,6 +1,6 @@
 ---
 work_package_id: WP05
-title: "Server entry point, CLI, and docs"
+title: Server entry point, CLI, and docs
 dependencies:
 - WP01
 - WP02
@@ -9,31 +9,33 @@ dependencies:
 requirement_refs:
 - FR-01
 - FR-09
+tracker_refs: []
 planning_base_branch: main
 merge_target_branch: main
-branch_strategy: Implemented directly on claude/vital-core-issue-214-spec-m237h3; merges back into main via the PR opened for that branch (#223) unless redirected.
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002
 - T003
 - T004
 - T005
+agent: claude
+shell_pid: 0
+scope: mcp, docs
 history:
-- timestamp: 2026-07-11T00:00:00Z
+- timestamp: '2026-07-11T00:00:00Z'
   agent: claude
   action: Backfilled after implementation — spec-kitty CLI was unavailable in the implementing environment, so the tasks phase was skipped and WP05 was implemented directly from plan.md. This file documents work already committed, not a plan for future execution.
-agent: "claude"
-shell_pid: 0
-authoritative_surface: "kitty-specs/local-mcp-server-01KX94K7/"
+authoritative_surface: kitty-specs/local-mcp-server-01KX94K7/
+create_intent: []
 execution_mode: planning_artifact
-scope: mcp, docs
 owned_files:
-- "mcp/server.js"
-- "package.json"
-- "package-lock.json"
-- "MCP.md"
-- "README.md"
-- "tests/unit/mcp/server.test.js"
+- mcp/server.js
+- package.json
+- package-lock.json
+- MCP.md
+- README.md
+- tests/unit/mcp/server.test.js
 tags:
 - reconstructed
 ---

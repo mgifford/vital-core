@@ -1,6 +1,6 @@
 ---
 work_package_id: WP04
-title: "vital_list_findings and vital_get_finding_context tools"
+title: vital_list_findings and vital_get_finding_context tools
 dependencies:
 - WP01
 - WP02
@@ -8,28 +8,30 @@ requirement_refs:
 - FR-05
 - FR-06
 - NFR-05
+tracker_refs: []
 planning_base_branch: main
 merge_target_branch: main
-branch_strategy: Implemented directly on claude/vital-core-issue-214-spec-m237h3; merges back into main via the PR opened for that branch (#223) unless redirected.
+branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002
 - T003
 - T004
+agent: claude
+shell_pid: 0
+scope: mcp/tools
 history:
-- timestamp: 2026-07-11T00:00:00Z
+- timestamp: '2026-07-11T00:00:00Z'
   agent: claude
   action: Backfilled after implementation — spec-kitty CLI was unavailable in the implementing environment, so the tasks phase was skipped and WP04 was implemented directly from plan.md. This file documents work already committed, not a plan for future execution.
-agent: "claude"
-shell_pid: 0
-authoritative_surface: "kitty-specs/local-mcp-server-01KX94K7/"
+authoritative_surface: kitty-specs/local-mcp-server-01KX94K7/
+create_intent: []
 execution_mode: planning_artifact
-scope: mcp/tools
 owned_files:
-- "mcp/tools/shared.js"
-- "mcp/tools/list-findings.js"
-- "mcp/tools/get-finding-context.js"
-- "tests/unit/mcp/findings-tools.test.js"
+- mcp/tools/shared.js
+- mcp/tools/list-findings.js
+- mcp/tools/get-finding-context.js
+- tests/unit/mcp/findings-tools.test.js
 tags:
 - reconstructed
 ---
