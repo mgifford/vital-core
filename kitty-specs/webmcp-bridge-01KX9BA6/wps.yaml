@@ -1,0 +1,64 @@
+work_packages:
+  - id: WP01
+    title: "webmcp config flag"
+    dependencies: []
+    owned_files:
+      - "config/targets.yml"
+      - "src/lib/config.js"
+      - "tests/unit/config.test.js"
+    requirement_refs:
+      - FR-01
+    subtasks:
+      - T001
+      - T002
+    prompt_file: "tasks/WP01-config-flag.md"
+  - id: WP02
+    title: "webmcpBridgeScript() client-side bridge"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/report-html.js"
+    requirement_refs:
+      - FR-02
+      - FR-03
+      - FR-04
+      - FR-05
+      - FR-06
+      - FR-07
+      - NFR-02
+      - NFR-04
+      - C-05
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+    prompt_file: "tasks/WP02-bridge-script.md"
+  - id: WP03
+    title: "Size budget, render, and adversarial tests"
+    dependencies:
+      - WP02
+    owned_files:
+      - "tests/unit/webmcp-bridge.test.js"
+    requirement_refs:
+      - NFR-01
+      - NFR-05
+      - NFR-06
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+    prompt_file: "tasks/WP03-size-budget-and-tests.md"
+  - id: WP04
+    title: "WebMCP docs"
+    dependencies:
+      - WP02
+    owned_files:
+      - "MCP.md"
+      - "README.md"
+    requirement_refs: []
+    subtasks:
+      - T001
+      - T002
+    prompt_file: "tasks/WP04-docs.md"
