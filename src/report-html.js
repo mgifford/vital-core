@@ -1675,6 +1675,7 @@ ${overflowFindings(overflowBugs, csvBugsHref)}
 ${bugFilterScript()}
 ${triageScript()}
 ${exclusionFilterScript()}
+${webmcpBridgeScript(target)}
 </section>`;
 }
 
@@ -1871,6 +1872,132 @@ function exclusionBox(target, { bugsJson = '' } = {}) {
 // of a truncated sample. Composes with the bug filter via data-excluded +
 // window.__vitalApplyFilter. No-op when the box or the stored list is absent, so
 // it is safe to include on any page (the landing page reuses it in WP03).
+
+// Opt-in per target (issue #214 step 10). Registers three read-only tools —
+// name/argument parity with the local MCP server's vital_get_project_context /
+// vital_list_findings / vital_get_finding_context (mcp/tools/*.js) — with an
+// in-page WebMCP agent, sourced from this domain's own same-origin /api/v1/
+// data. Feature-detects document.modelContext (the WebMCP proposal's current
+// registration point as of implementation time; see
+// https://github.com/webmachinelearning/webmcp) and is a complete no-op when
+// absent or when the target hasn't opted in — emits zero bytes in that case
+// (see the early return below), not just an inert script.
+function webmcpBridgeScript(target) {
+  if (!target.webmcpEnabled) return '';
+  return `<script>
+(function () {
+  'use strict';
+  if (!(typeof document !== 'undefined' && document.modelContext && typeof document.modelContext.registerTool === 'function')) return;
+  var DOMAIN = ${JSON.stringify(target.key)};
+  var API_BASE = '/api/v1/';
+  var SEVERITIES = ['Critical', 'Serious', 'Moderate', 'Minor'];
+  var cache = {};
+  function fetchJson(relPath) {
+    if (!cache[relPath]) {
+      cache[relPath] = fetch(API_BASE + relPath).then(function (r) {
+        if (!r.ok) throw new Error('Vital API request failed: ' + relPath + ' returned HTTP ' + r.status);
+        return r.json();
+      });
+    }
+    return cache[relPath];
+  }
+  function snapshot() { return fetchJson(DOMAIN + '/snapshot.json'); }
+  function findingsForWeek(week) {
+    var weekPromise = week ? Promise.resolve(week) : snapshot().then(function (s) { return s.latest_week; });
+    return weekPromise.then(function (resolvedWeek) {
+      return fetchJson(DOMAIN + '/' + resolvedWeek + '/findings.json').then(function (doc) {
+        return { week: resolvedWeek, doc: doc };
+      });
+    });
+  }
+  function toolResult(data) {
+    return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] };
+  }
+
+  document.modelContext.registerTool({
+    name: 'vital_get_project_context',
+    description: 'Return the Vital Core domain and latest reporting week for the report page this tool was called from.',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    execute: function () {
+      return snapshot().then(function (s) {
+        return toolResult({ domain: DOMAIN, latestWeek: s.latest_week, reportUrl: location.href });
+      });
+    }
+  });
+
+  document.modelContext.registerTool({
+    name: 'vital_list_findings',
+    description: 'List findings for this domain from the /api/v1/ findings feed, filtered and sorted by pages affected, not raw instance count.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        severity: { type: 'array', items: { type: 'string', enum: SEVERITIES } },
+        min_pages_affected: { type: 'integer', minimum: 0 },
+        rule_id: { type: 'string' },
+        week: { type: 'string' },
+        limit: { type: 'integer', minimum: 1, maximum: 200 }
+      },
+      additionalProperties: false
+    },
+    execute: function (args) {
+      args = args || {};
+      return findingsForWeek(args.week).then(function (r) {
+        var findings = r.doc.findings || [];
+        if (args.severity && args.severity.length) {
+          var wanted = {};
+          args.severity.forEach(function (s) { wanted[s] = true; });
+          findings = findings.filter(function (f) { return wanted[f.severity]; });
+        }
+        if (typeof args.min_pages_affected === 'number') {
+          findings = findings.filter(function (f) { return f.pages_affected >= args.min_pages_affected; });
+        }
+        if (args.rule_id) {
+          findings = findings.filter(function (f) { return f.rule_id === args.rule_id; });
+        }
+        findings = findings.slice().sort(function (a, b) { return b.pages_affected - a.pages_affected; });
+        var totalMatched = findings.length;
+        var limit = Math.min(args.limit || 50, 200);
+        var truncated = totalMatched > limit;
+        return toolResult({
+          week: r.week,
+          total_matched: totalMatched,
+          returned: Math.min(totalMatched, limit),
+          truncated: truncated,
+          findings: findings.slice(0, limit)
+        });
+      });
+    }
+  });
+
+  document.modelContext.registerTool({
+    name: 'vital_get_finding_context',
+    description: 'Return the full evidence record for one finding, verbatim, from the /api/v1/ findings feed, by finding_id.',
+    inputSchema: {
+      type: 'object',
+      properties: { finding_id: { type: 'string' }, week: { type: 'string' } },
+      required: ['finding_id'],
+      additionalProperties: false
+    },
+    execute: function (args) {
+      if (!args || !args.finding_id) throw new Error('vital_get_finding_context requires a "finding_id" string.');
+      return findingsForWeek(args.week).then(function (r) {
+        var matches = (r.doc.findings || []).filter(function (f) { return f.finding_id === args.finding_id; });
+        if (!matches.length) {
+          return toolResult({
+            found: false,
+            finding_id: args.finding_id,
+            week: r.week,
+            message: 'No finding "' + args.finding_id + '" in week ' + r.week + ' for domain "' + DOMAIN + '".'
+          });
+        }
+        return toolResult({ found: true, week: r.week, finding: matches[0] });
+      });
+    }
+  });
+})();
+</script>`;
+}
+
 function exclusionFilterScript() {
   return `<script>
 (function () {
@@ -3331,6 +3458,7 @@ ${changeList('Alfa', diff.alfa)}`) : ''}
 
 ${resourcesSection(summary)}
 ${exclusionFilterScript()}
+${webmcpBridgeScript(target)}
 `;
   return layout({
     title: `${target.domain} ${summary.week} | vital-scans`,
