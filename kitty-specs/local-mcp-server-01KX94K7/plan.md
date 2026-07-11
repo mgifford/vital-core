@@ -1,6 +1,6 @@
 # Implementation Plan: Local Vital MCP Server — Read-Only Findings Retrieval (Phase 1)
 
-**Branch**: `main` | **Spec**: [spec.md](spec.md)
+**Branch**: `claude/vital-core-issue-214-spec-m237h3` | **Spec**: [spec.md](spec.md)
 **Mission**: `local-mcp-server-01KX94K7`
 
 ## Summary
