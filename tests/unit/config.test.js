@@ -50,3 +50,54 @@ test('config: normalizes supported design_system values', () => {
   const cms = c.targets.find((t) => t.domain === 'www.cms.gov');
   assert.equal(cms?.design_system, 'cms-ds');
 });
+
+test('config: webmcpEnabled defaults to false when the flag is absent', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
+});
+
+test('config: webmcpEnabled is true only for an explicit `webmcp: true`', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+    webmcp: true
+`);
+  assert.equal(c.targets[0].webmcpEnabled, true);
+});
+
+test('config: webmcpEnabled is false for an explicit `webmcp: false`', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+    webmcp: false
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
+});
+
+test('config: webmcpEnabled is false for a non-boolean truthy value (opt-in requires literal true)', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+    webmcp: "yes"
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
+});
+
+test('config: webmcp has no global default — only per-target opt-in', () => {
+  const c = loadConfig(`
+webmcp: true
+targets:
+  - domain: example.gov
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
+});
+
+test('config: real committed targets.yml has no target opted into webmcp yet', () => {
+  const c = loadConfig();
+  for (const t of c.targets) {
+    assert.equal(t.webmcpEnabled, false);
+  }
+});
