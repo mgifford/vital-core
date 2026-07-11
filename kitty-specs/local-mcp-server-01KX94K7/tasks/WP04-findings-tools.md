@@ -9,9 +9,9 @@ requirement_refs:
 - FR-06
 - NFR-05
 tracker_refs: []
-planning_base_branch: main
-merge_target_branch: main
-branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
+planning_base_branch: claude/vital-core-issue-214-spec-m237h3
+merge_target_branch: claude/vital-core-issue-214-spec-m237h3
+branch_strategy: Planning artifacts for this mission were generated on claude/vital-core-issue-214-spec-m237h3. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into claude/vital-core-issue-214-spec-m237h3 unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002
