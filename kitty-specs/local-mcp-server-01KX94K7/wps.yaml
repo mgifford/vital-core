@@ -1,0 +1,96 @@
+work_packages:
+  - id: WP01
+    title: "Config loading and validation"
+    dependencies: []
+    owned_files:
+      - "mcp/config/vital-config.js"
+      - "tests/fixtures/mcp/.vital.yml"
+      - "tests/unit/mcp/vital-config.test.js"
+    requirement_refs:
+      - FR-02
+      - FR-03
+      - NFR-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+    prompt_file: "tasks/WP01-config-loading-and-validation.md"
+  - id: WP02
+    title: "Host-restricted, bounded Vital API client"
+    dependencies: []
+    owned_files:
+      - "mcp/security/host-allowlist.js"
+      - "mcp/api/vital-api-client.js"
+      - "tests/unit/mcp/host-allowlist.test.js"
+      - "tests/unit/mcp/vital-api-client.test.js"
+    requirement_refs:
+      - FR-07
+      - FR-08
+      - NFR-01
+      - NFR-03
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+      - T005
+    prompt_file: "tasks/WP02-host-restricted-bounded-api-client.md"
+  - id: WP03
+    title: "vital_get_project_context tool"
+    dependencies:
+      - WP01
+      - WP02
+    owned_files:
+      - "mcp/tools/get-project-context.js"
+      - "tests/unit/mcp/get-project-context.test.js"
+    requirement_refs:
+      - FR-04
+    subtasks:
+      - T001
+      - T002
+    prompt_file: "tasks/WP03-get-project-context-tool.md"
+  - id: WP04
+    title: "vital_list_findings and vital_get_finding_context tools"
+    dependencies:
+      - WP01
+      - WP02
+    owned_files:
+      - "mcp/tools/shared.js"
+      - "mcp/tools/list-findings.js"
+      - "mcp/tools/get-finding-context.js"
+      - "tests/unit/mcp/findings-tools.test.js"
+    requirement_refs:
+      - FR-05
+      - FR-06
+      - NFR-05
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+    prompt_file: "tasks/WP04-findings-tools.md"
+  - id: WP05
+    title: "Server entry point, CLI, and docs"
+    dependencies:
+      - WP01
+      - WP02
+      - WP03
+      - WP04
+    owned_files:
+      - "mcp/server.js"
+      - "package.json"
+      - "package-lock.json"
+      - "MCP.md"
+      - "README.md"
+      - "tests/unit/mcp/server.test.js"
+    requirement_refs:
+      - FR-01
+      - FR-09
+    subtasks:
+      - T001
+      - T002
+      - T003
+      - T004
+      - T005
+    prompt_file: "tasks/WP05-server-entry-point-cli-and-docs.md"

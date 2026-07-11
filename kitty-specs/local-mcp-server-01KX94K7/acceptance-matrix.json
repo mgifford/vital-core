@@ -1,0 +1,155 @@
+{
+  "mission_slug": "local-mcp-server-01KX94K7",
+  "mission_type": "software-dev",
+  "reconstructed_from": "spec.md acceptance status and repository implementation evidence on claude/vital-core-issue-214-spec-m237h3 (PR #223)",
+  "reconstructed_at": "2026-07-11T00:00:00Z",
+  "criteria": [
+    {
+      "criterion_id": "FR-01",
+      "description": "mcp/ package implements an MCP server over stdio, Node.js ESM >=20, no network port opened by default",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "mcp/server.js; tests/unit/mcp/server.test.js; smoke-tested against the real stdio transport via a spawned child process."
+    },
+    {
+      "criterion_id": "FR-02",
+      "description": "Server reads and validates .vital.yml before starting; refuses on invalid config with a specific error",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "mcp/config/vital-config.js resolveVitalConfig(); tests/unit/mcp/vital-config.test.js covers each validation failure."
+    },
+    {
+      "criterion_id": "FR-03",
+      "description": ".vital.yml supports version/instance.api/instance.domain and ${ENV_VAR} substitution",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "mcp/config/vital-config.js substituteEnvVars(); tests cover set/unset env vars and non-echo of substituted values."
+    },
+    {
+      "criterion_id": "FR-04",
+      "description": "vital_get_project_context returns instance/domain/warnings, never secrets",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "mcp/tools/get-project-context.js; tests/unit/mcp/get-project-context.test.js includes an extra-field (simulated secret) leak test."
+    },
+    {
+      "criterion_id": "FR-05",
+      "description": "vital_list_findings fetches the latest (or specified) week, filters by severity/min_pages_affected/rule_id, sorts by pages_affected",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "mcp/tools/list-findings.js; tests/unit/mcp/findings-tools.test.js."
+    },
+    {
+      "criterion_id": "FR-06",
+      "description": "vital_get_finding_context returns one finding's detail by id, sourced from already-fetched data",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "mcp/tools/get-finding-context.js; found:false path tested for unknown ids. No report-link field returned — the shipped /api/v1/ findings contract does not carry one; documented as a known limitation in MCP.md rather than fabricated."
+    },
+    {
+      "criterion_id": "FR-07",
+      "description": "Only the three documented /api/v1/ endpoints are ever fetched; no internal report artifacts",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "mcp/api/vital-api-client.js exposes only getIndex/getSnapshot/getFindings; no data/ or state/ access anywhere in mcp/."
+    },
+    {
+      "criterion_id": "FR-08",
+      "description": "Outbound requests restricted to the single configured host",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "mcp/security/host-allowlist.js assertAllowedUrl(); tests/unit/mcp/host-allowlist.test.js and vital-api-client.test.js assert a different host/scheme/port is blocked."
+    },
+    {
+      "criterion_id": "FR-09",
+      "description": "CLI entry point starts the server; documents client registration",
+      "proof_type": "manual_review",
+      "pass_fail": "pass",
+      "evidence": "package.json bin.vital-mcp; MCP.md Installation and Registering with an MCP client sections."
+    },
+    {
+      "criterion_id": "NFR-01",
+      "description": "No filesystem access outside the package directory / disposable cache",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Only fs use in mcp/ is fs.readFileSync of the configured .vital.yml path in vital-config.js; no other fs calls in mcp/."
+    },
+    {
+      "criterion_id": "NFR-02",
+      "description": "No shell/process execution of any kind",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "No child_process import anywhere under mcp/."
+    },
+    {
+      "criterion_id": "NFR-03",
+      "description": "Bounded API responses: timeouts, size caps, truncation signaled explicitly",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "vital-api-client.js AbortController timeout (VitalApiTimeoutError) and streamed size cap (VitalApiResponseTooLargeError); vital_list_findings returns truncated:true when capped."
+    },
+    {
+      "criterion_id": "NFR-04",
+      "description": "Tool names/descriptions/schemas are static, never built from remote content",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "All three mcp/tools/*.js export static objects; no remote data is interpolated into a tool definition."
+    },
+    {
+      "criterion_id": "NFR-05",
+      "description": "Remote finding text treated as inert data, never interpreted",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "tests/unit/mcp/findings-tools.test.js hostile-finding-text fixture asserts verbatim pass-through with no behavior change."
+    },
+    {
+      "criterion_id": "NFR-06",
+      "description": "npm run test:unit stays green; tests follow the repo's real-module-API convention",
+      "proof_type": "automated_test",
+      "pass_fail": "pass",
+      "evidence": "366/366 tests passing; no fs/db mocking anywhere in tests/unit/mcp/ (real fixture files and a real local HTTP server)."
+    },
+    {
+      "criterion_id": "NFR-07",
+      "description": "New dependency is the standard official MCP SDK, version pinned",
+      "proof_type": "manual_review",
+      "pass_fail": "pass",
+      "evidence": "package.json dependencies: \"@modelcontextprotocol/sdk\": \"^1.29.0\"."
+    },
+    {
+      "criterion_id": "C-01",
+      "description": "Read-only in every dimension: no write_patches, no write_repository, no command execution",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "No write-capable tool or config key implemented in mcp/."
+    },
+    {
+      "criterion_id": "C-02",
+      "description": "Local stdio transport only; no network listener opened by the server itself",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "mcp/server.js uses StdioServerTransport only; no http.createServer or similar in mcp/."
+    },
+    {
+      "criterion_id": "C-03",
+      "description": "Only the versioned /api/v1/ contract is consumed",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "Same as FR-07 evidence."
+    },
+    {
+      "criterion_id": "C-04",
+      "description": "WebMCP not implemented in this mission",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "No browser-facing code added; MCP.md explicitly lists WebMCP under Not yet implemented."
+    },
+    {
+      "criterion_id": "C-05",
+      "description": "MCP protocol/transport code kept separate from Vital-domain logic",
+      "proof_type": "code_review",
+      "pass_fail": "pass",
+      "evidence": "mcp/server.js only wires config/api-client/tools; buildContext/listToolsResult/callTool are transport-independent and unit tested without the SDK's transport."
+    }
+  ]
+}
