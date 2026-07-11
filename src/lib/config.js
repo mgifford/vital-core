@@ -25,8 +25,8 @@ export const DIRS = {
   docs: path.join(DATA_ROOT, 'docs'),
 };
 
-export function loadConfig() {
-  const raw = fs.readFileSync(path.join(DIRS.config, 'targets.yml'), 'utf8');
+export function loadConfig(rawYaml) {
+  const raw = rawYaml ?? fs.readFileSync(path.join(DIRS.config, 'targets.yml'), 'utf8');
   const cfg = YAML.parse(raw);
   const defaults = cfg.defaults ?? {};
   // Per-engine weekly sampling rates live at the top level so a target
@@ -52,6 +52,10 @@ export function loadConfig() {
     t.languages = langs.languages;
     t.defaultLanguage = langs.defaultLanguage;
     t.showLanguageSwitcher = (t.language_switcher ?? cfg.language_switcher) !== false;
+    // WebMCP bridge (issue #214 step 10): opt-in per target, unlike the
+    // language switcher above — only a literal `true` enables it, so an
+    // unset or misconfigured flag never silently ships client-side JS.
+    t.webmcpEnabled = t.webmcp === true;
     if (t.design_system != null) {
       const ds = String(t.design_system).toLowerCase();
       if (!DESIGN_SYSTEMS.has(ds)) {
