@@ -80,6 +80,7 @@ source mapping, reproduction, or any of #214's remaining steps.
 | FR-05 | The bridge script is static, versioned, first-party JS shipped with the report build (no CDN, matching the repo's existing ParaCharts/Wappalyzer vendoring convention) — no runtime dependency on an external script host | Proposed |
 | FR-06 | Tool schemas/descriptions are static in source, never constructed from finding content (same NFR-04 requirement as the local MCP server) | Proposed |
 | FR-07 | Remote/scan-derived text (rule labels, descriptions) returned by a tool is treated as inert data, never interpreted or used to alter script behavior (same NFR-05 requirement as the local MCP server) | Proposed |
+| FR-08 | `MCP.md` documents the WebMCP bridge (config flag, the three tools, the measured size budget, the unstable-API caveat) and `README.md` links to it | Proposed |
 
 ## Non-Functional Requirements
 

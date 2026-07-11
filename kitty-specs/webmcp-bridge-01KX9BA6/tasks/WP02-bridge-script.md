@@ -11,6 +11,7 @@ requirement_refs:
 - FR-06
 - FR-07
 - NFR-02
+- NFR-03
 - NFR-04
 - C-05
 planning_base_branch: main
@@ -81,7 +82,7 @@ on this); called alongside `exclusionFilterScript()` on both
 
 ## Acceptance Boundary
 
-Requirement refs: FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, NFR-02, NFR-04, C-05.
+Requirement refs: FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, NFR-02, NFR-03, NFR-04, C-05.
 
 ## Validation
 

@@ -26,6 +26,7 @@ work_packages:
       - FR-06
       - FR-07
       - NFR-02
+      - NFR-03
       - NFR-04
       - C-05
     subtasks:
@@ -57,7 +58,8 @@ work_packages:
     owned_files:
       - "MCP.md"
       - "README.md"
-    requirement_refs: []
+    requirement_refs:
+      - FR-08
     subtasks:
       - T001
       - T002
