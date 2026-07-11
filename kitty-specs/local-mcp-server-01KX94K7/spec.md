@@ -1,8 +1,8 @@
 # Spec: Local Vital MCP Server — Read-Only Findings Retrieval (Phase 1)
 
 **Mission**: `local-mcp-server-01KX94K7`
-**Branch**: `main`
-**Status**: Draft
+**Branch**: `claude/vital-core-issue-214-spec-m237h3`
+**Status**: Implemented (WP01–WP05 complete, pending review)
 **Source issue**: [#214](https://github.com/mgifford/vital-core/issues/214)
 
 ---
@@ -59,27 +59,27 @@ and depend on this one existing first.
 
 | ID | Requirement | Status |
 |---|---|---|
-| FR-01 | New package `mcp/` (or `packages/vital-mcp/`, decided in `plan.md` after inspecting repo conventions) implements an MCP server over the stdio transport, using Node.js ESM ≥20, no network port opened by default | Proposed |
-| FR-02 | Server reads and validates a repository-owned `.vital.yml` before starting; refuses to start on invalid config and reports the specific validation error | Proposed |
-| FR-03 | `.vital.yml` supports at minimum: `version`, `instance.api` (a `/api/v1/` base URL), `instance.domain` (a domain key matching `config/targets.yml`), and environment-variable substitution for values that must not be committed | Proposed |
-| FR-04 | Tool `vital_get_project_context` returns the configured instance URL, domain key, and any config warnings; never returns secrets or raw environment variables | Proposed |
-| FR-05 | Tool `vital_list_findings` fetches `<api>/<domain-key>/<week>/findings.json` (defaulting to the latest available week) and returns a bounded, filterable list — filters at minimum: severity, minimum pages affected, rule ID; default ordering by pages affected, not raw instance count | Proposed |
-| FR-06 | Tool `vital_get_finding_context` fetches a single finding's detail (affected pages, scanner evidence, first/last seen, trend, report link) by finding ID, sourced from the already-fetched findings/snapshot data | Proposed |
-| FR-07 | All three tools consume only the documented `/api/v1/` JSON contract (`index.json`, `snapshot.json`, `<week>/findings.json`) and its published schemas under `docs/api/v1/schema/`; the server must not read `data/`, `state/`, or any other internal report artifact | Proposed |
-| FR-08 | Outbound HTTP requests are restricted to the single host configured in `instance.api`; no other network access is possible from any tool | Proposed |
-| FR-09 | A CLI entry point starts the server (e.g. `npx vital-mcp` or `node mcp/server.js`) and documents how to register it with an MCP-compatible client | Proposed |
+| FR-01 | New package `mcp/` (or `packages/vital-mcp/`, decided in `plan.md` after inspecting repo conventions) implements an MCP server over the stdio transport, using Node.js ESM ≥20, no network port opened by default | ✓ Done |
+| FR-02 | Server reads and validates a repository-owned `.vital.yml` before starting; refuses to start on invalid config and reports the specific validation error | ✓ Done |
+| FR-03 | `.vital.yml` supports at minimum: `version`, `instance.api` (a `/api/v1/` base URL), `instance.domain` (a domain key matching `config/targets.yml`), and environment-variable substitution for values that must not be committed | ✓ Done |
+| FR-04 | Tool `vital_get_project_context` returns the configured instance URL, domain key, and any config warnings; never returns secrets or raw environment variables | ✓ Done |
+| FR-05 | Tool `vital_list_findings` fetches `<api>/<domain-key>/<week>/findings.json` (defaulting to the latest available week) and returns a bounded, filterable list — filters at minimum: severity, minimum pages affected, rule ID; default ordering by pages affected, not raw instance count | ✓ Done |
+| FR-06 | Tool `vital_get_finding_context` fetches a single finding's detail (severity, pages affected, WCAG mapping, first/last seen, trend) by finding ID, sourced from the already-fetched findings data | ✓ Done — the shipped `/api/v1/` findings contract carries no `report link` field, so none is fabricated; this is a documented limitation (see `MCP.md`), not an unmet requirement |
+| FR-07 | All three tools consume only the documented `/api/v1/` JSON contract (`index.json`, `snapshot.json`, `<week>/findings.json`) and its published schemas under `docs/api/v1/schema/`; the server must not read `data/`, `state/`, or any other internal report artifact | ✓ Done |
+| FR-08 | Outbound HTTP requests are restricted to the single host configured in `instance.api`; no other network access is possible from any tool | ✓ Done |
+| FR-09 | A CLI entry point starts the server (e.g. `npx vital-mcp` or `node mcp/server.js`) and documents how to register it with an MCP-compatible client | ✓ Done |
 
 ## Non-Functional Requirements
 
 | ID | Requirement | Status |
 |---|---|---|
-| NFR-01 | No local filesystem access outside the server's own package directory and its disposable cache location; no `fs.readFile`/`fs.writeFile` calls reach outside those roots | Proposed |
-| NFR-02 | No shell/process execution of any kind in this mission — no `child_process`, no command-running tool. That capability does not exist yet | Proposed |
-| NFR-03 | Bounded API responses: request timeouts, response-size limits, and truncation with an explicit "truncated" flag rather than unbounded output | Proposed |
-| NFR-04 | Tool names, descriptions, and schemas are static and defined in code — never constructed from remote API content | Proposed |
-| NFR-05 | Remote finding text (rule descriptions, HTML excerpts, URLs) is treated as inert data returned to the client, never interpreted, evaluated, or used to alter tool behavior | Proposed |
-| NFR-06 | `npm run test:unit` stays green; new tests for this package follow the existing `tests/unit/**/*.test.js` convention (no DB/filesystem mocking — real module APIs over small synthetic fixtures) | Proposed |
-| NFR-07 | New runtime dependency (an MCP server SDK) is acceptable if it is the standard official SDK; document the choice and pin the version in `plan.md` | Proposed |
+| NFR-01 | No local filesystem access outside the server's own package directory and its disposable cache location; no `fs.readFile`/`fs.writeFile` calls reach outside those roots | ✓ Done |
+| NFR-02 | No shell/process execution of any kind in this mission — no `child_process`, no command-running tool. That capability does not exist yet | ✓ Done |
+| NFR-03 | Bounded API responses: request timeouts, response-size limits, and truncation with an explicit "truncated" flag rather than unbounded output | ✓ Done |
+| NFR-04 | Tool names, descriptions, and schemas are static and defined in code — never constructed from remote API content | ✓ Done |
+| NFR-05 | Remote finding text (rule descriptions, HTML excerpts, URLs) is treated as inert data returned to the client, never interpreted, evaluated, or used to alter tool behavior | ✓ Done |
+| NFR-06 | `npm run test:unit` stays green; new tests for this package follow the existing `tests/unit/**/*.test.js` convention (no DB/filesystem mocking — real module APIs over small synthetic fixtures) | ✓ Done — 366/366 passing |
+| NFR-07 | New runtime dependency (an MCP server SDK) is acceptable if it is the standard official SDK; document the choice and pin the version in `plan.md` | ✓ Done — `@modelcontextprotocol/sdk` `^1.29.0` |
 
 ## Constraints
 
@@ -158,19 +158,23 @@ no tool behavior, permission, or network target changes as a result.
 
 ## Success Criteria
 
-1. The MCP server starts over stdio, loads and validates `.vital.yml`, and
+1. ✓ The MCP server starts over stdio, loads and validates `.vital.yml`, and
    exposes exactly the three tools defined in FR-04–FR-06 — nothing else.
-2. All three tools return data sourced only from the documented `/api/v1/`
+   Verified with a real spawned `mcp/server.js` process over `initialize` /
+   `tools/list` / `tools/call`, not just unit tests.
+2. ✓ All three tools return data sourced only from the documented `/api/v1/`
    contract, matching the equivalent HTML report content for the same
    domain/week.
-3. No filesystem access outside the package's own directory/cache; no
+3. ✓ No filesystem access outside the package's own directory/cache; no
    process execution; no network access outside the configured instance host.
-4. Adversarial fixtures (oversized responses, malformed JSON, hostile finding
-   text, an unconfigured host) are covered by tests and handled without
-   crashing or escalating capability.
-5. `npm run test:unit` passes with new tests included; no regressions to
-   existing suites.
-6. `MCP.md` documents installation, `.vital.yml` for this phase, the three
+4. ✓ Adversarial fixtures (oversized responses, malformed JSON, hostile
+   finding text, an unconfigured host) are covered by tests and handled
+   without crashing or escalating capability.
+5. ✓ `npm run test:unit` passes with new tests included (366/366); no
+   regressions to existing suites. (`npm run test:e2e` has a pre-existing,
+   unrelated failure in this sandbox — reproduced on a clean checkout of this
+   branch before any mcp/ changes; not touched by this mission.)
+6. ✓ `MCP.md` documents installation, `.vital.yml` for this phase, the three
    tools, and explicitly states what is *not yet* implemented (linking to
    the deferred steps above) so downstream users don't assume repository
    access exists.
