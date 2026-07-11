@@ -69,6 +69,20 @@ default_language: en
 # Overridable per target.
 language_switcher: false
 
+# WebMCP bridge (issue #214 step 10, opt-in — no global default). Set
+# `webmcp: true` on an individual target below to emit a small, first-party
+# client-side script that registers read-only findings tools (mirroring the
+# local MCP server's vital_get_project_context / vital_list_findings /
+# vital_get_finding_context) with an in-browser MCP-capable agent, sourced
+# from this domain's own published /api/v1/ data. Unset or `false` means
+# the target ships zero additional bytes — this is not a per-target
+# override of a global default the way language_switcher is; there is no
+# top-level `webmcp:` key. See MCP.md.
+#
+# Example (commented out — enable deliberately per target, not by default):
+#   - domain: www.example.gov
+#     webmcp: true
+
 # Per-engine weekly coverage rates. Each value is the share of the week's
 # unique pages an engine runs on, as a fraction (0.3) or percent (30).
 # 0 (or omitted) disables an engine. Selection is deterministic per page
