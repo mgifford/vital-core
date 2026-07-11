@@ -1,6 +1,6 @@
 # Implementation Plan: WebMCP Bridge — Read-Only Findings Tools in the Browser
 
-**Branch**: `main` (spec/plan only; a dedicated branch is created when WP work starts)
+**Branch**: `claude/vital-core-issue-214-spec-m237h3`
 **Spec**: [spec.md](spec.md)
 **Mission**: `webmcp-bridge-01KX9BA6`
 

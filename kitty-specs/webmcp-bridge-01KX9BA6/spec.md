@@ -1,8 +1,8 @@
 # Spec: WebMCP Bridge — Read-Only Findings Tools in the Browser
 
 **Mission**: `webmcp-bridge-01KX9BA6`
-**Branch**: `main` (spec/plan artifacts only; a dedicated implementation
-branch is created when WP work starts — see Assumptions)
+**Branch**: `claude/vital-core-issue-214-spec-m237h3` (mission bookkeeping
+lives here; implementation WPs may branch further as needed — see Assumptions)
 **Status**: Draft
 **Source issue**: [#214](https://github.com/mgifford/vital-core/issues/214)
 
@@ -196,7 +196,10 @@ against the 2 KB target before this mission can be considered complete.
   convention (both read the same `/api/v1/` contract); no shared package is
   created solely to DRY ~50 lines across a Node CLI tool and a browser
   bundle.
-- The dedicated implementation branch is deliberately not named yet — it
-  will be created once a Claude Code session or developer actually starts
-  WP work, rather than guessed now, after `local-mcp-server-01KX94K7`'s
-  `meta.json` had to be corrected mid-mission for exactly this reason.
+- `meta.json`'s `target_branch` is set to the branch this mission's
+  bookkeeping actually lives on (`claude/vital-core-issue-214-spec-m237h3`),
+  not `main` — `local-mcp-server-01KX94K7` set it to `main` (matching this
+  repo's spec-on-main convention) and had to correct it mid-mission when
+  `spec-kitty`'s tooling refused to commit its own generated artifacts to a
+  protected branch. This mission's `meta.json` was fixed the same way once
+  the same error recurred, rather than guessed correctly up front.
