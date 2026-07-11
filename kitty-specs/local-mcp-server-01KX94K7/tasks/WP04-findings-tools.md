@@ -24,9 +24,9 @@ history:
 - timestamp: '2026-07-11T00:00:00Z'
   agent: claude
   action: Backfilled after implementation — spec-kitty CLI was unavailable in the implementing environment, so the tasks phase was skipped and WP04 was implemented directly from plan.md. This file documents work already committed, not a plan for future execution.
-authoritative_surface: kitty-specs/local-mcp-server-01KX94K7/
+authoritative_surface: mcp/tools/
 create_intent: []
-execution_mode: planning_artifact
+execution_mode: code_change
 owned_files:
 - mcp/tools/shared.js
 - mcp/tools/list-findings.js
