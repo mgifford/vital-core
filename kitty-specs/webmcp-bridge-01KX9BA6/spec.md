@@ -1,7 +1,8 @@
 # Spec: WebMCP Bridge — Read-Only Findings Tools in the Browser
 
 **Mission**: `webmcp-bridge-01KX9BA6`
-**Branch**: TBD (set once implementation starts; see Assumptions)
+**Branch**: `main` (spec/plan artifacts only; a dedicated implementation
+branch is created when WP work starts — see Assumptions)
 **Status**: Draft
 **Source issue**: [#214](https://github.com/mgifford/vital-core/issues/214)
 
@@ -194,7 +195,7 @@ against the 2 KB target before this mission can be considered complete.
   convention (both read the same `/api/v1/` contract); no shared package is
   created solely to DRY ~50 lines across a Node CLI tool and a browser
   bundle.
-- Branch/target-branch for implementation will be set once a Claude Code
-  session or developer actually starts WP work — left `TBD` here
-  deliberately rather than guessed, after `local-mcp-server-01KX94K7`'s
+- The dedicated implementation branch is deliberately not named yet — it
+  will be created once a Claude Code session or developer actually starts
+  WP work, rather than guessed now, after `local-mcp-server-01KX94K7`'s
   `meta.json` had to be corrected mid-mission for exactly this reason.
