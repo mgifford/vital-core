@@ -20,6 +20,9 @@
     "test:e2e": "node tests/e2e.mjs",
     "test": "npm run test:unit && npm run test:e2e"
   },
+  "bin": {
+    "vital-mcp": "mcp/server.js"
+  },
   "engines": {
     "node": ">=20"
   },
@@ -27,6 +30,7 @@
     "@opentelemetry/core": ">=2.8.0"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@siteimprove/alfa-playwright": "^0.84.0",
     "@siteimprove/alfa-test-utils": "^0.84.0",
     "@tgwf/co2": "^0.18.0",
