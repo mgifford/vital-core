@@ -1,108 +1,89 @@
-# Implementation Plan: [FEATURE]
-*Path: [templates/plan-template.md](templates/plan-template.md)*
+# Implementation Plan: JSON API — Schemas, Docs, and Redaction Proof
 
-
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/kitty-specs/[###-feature-name]/spec.md`
-
-**Note**: This template is filled in by the `/spec-kitty.plan` command. See `src/specify_cli/missions/software-dev/command-templates/plan.md` for the execution workflow.
-
-The planner will not begin until all planning questions have been answered—capture those answers in this document before progressing to later phases.
+**Branch**: `main` | **Spec**: [spec.md](spec.md)
+**Mission**: `api-schemas-docs-redaction-01KX7DN5`
 
 ## Summary
 
-[Extract from feature spec: primary requirement + technical approach from research]
+Close the three remaining gaps from issue #136 on top of the already-shipped
+`src/lib/api-writer.js`: (1) published JSON Schemas + a validation test,
+(2) `API.md` + README link, (3) exclusion parity and URL redaction for the API
+feed, proven by a leak test. No new dependencies; no change to the shipped
+endpoint layout or to reporting calculations.
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [Project-specific test approach or NEEDS CLARIFICATION]
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+- **Language**: Node.js ESM ≥20, no build step, no bundler.
+- **Testing**: Node built-in test runner (`npm run test:unit`), smoke `test:e2e`.
+- **Storage**: files only; `docs/` is a gitignored build artifact.
+- **Dependencies**: none added (NFR-01). JSON Schema validation uses a small
+  in-repo validator — the schemas we author are simple (types, required,
+  const, pattern, enum), so a compact recursive checker covers them without
+  pulling `ajv`.
 
 ## Charter Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+- **Sustainability gate**: build-time only. No client JS, no data transfer,
+  no fonts/scripts in `API.md`. PASS.
+- **Security rules**: FR-06/07/08 strengthen the privacy boundary (excluded and
+  sensitive URLs kept out of the published API). No VA-domain behavior change. PASS.
 
-[Gates determined based on charter file]
+## Design
 
-## Project Structure
+### Source of truth for schemas
+Schemas live under `src/api/schema/*.schema.json` (checked in). `writeApiFiles`
+copies them into `docs/api/v1/schema/` at aggregate time (C-04: `docs/` is
+generated). Three schemas: `index`, `snapshot`, `findings`.
 
-### Documentation (this feature)
+### Redaction + exclusion (new module `src/lib/api-redact.js`)
+Two concerns, one small module:
 
-```
-kitty-specs/[###-feature]/
-├── plan.md              # This file (/spec-kitty.plan command output)
-├── research.md          # Phase 0 output (/spec-kitty.plan command)
-├── data-model.md        # Phase 1 output (/spec-kitty.plan command)
-├── quickstart.md        # Phase 1 output (/spec-kitty.plan command)
-├── contracts/           # Phase 1 output (/spec-kitty.plan command)
-└── tasks.md             # Phase 2 output (/spec-kitty.tasks command - NOT created by /spec-kitty.plan)
-```
+- `redactUrl(url, { denyParams })` — drop the `#fragment`; for each query param
+  whose name matches a built-in sensitive set (token, key, secret, session,
+  sid, auth, password, pwd, email, apikey, access_token, id_token, code,
+  signature, sig) or a configured denylist entry, replace its **value** with
+  `[REDACTED]`; keep param names and harmless values. Parse/serialize with
+  `URL` where possible, string-fallback otherwise (some entries are already
+  normalized paths without an origin).
+- `redactBugUrls(bug, opts)` — map `redactUrl` over the URL-bearing fields a bug
+  can surface into the API: `url`, `examples[].url`, `affected_pages[]`.
 
-### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+Exclusion parity reuses the existing `filterBugsByExclusion` (import from
+`report-html.js`) — no forked logic (C-03).
 
-```
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+### Wiring in aggregate.js
+Before feeding bugs to the API builders, run them through the same exclusion +
+redaction the report path already implies:
 
-tests/
-├── contract/
-├── integration/
-└── unit/
+- Per-week feed (~line 181): filter+redact `bugs` → `buildWeekFindings`.
+- Latest feed (~lines 398-400): filter+redact `latestBugsOnly` before
+  `buildIndexEntry` / `buildSnapshot`.
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+`excl = target.url_exclude_patterns ?? []`; `opts.denyParams =
+target.api_redact_params ?? []` (optional per-target extension).
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
+`buildSnapshot`'s `top_actions.drift_pages[].url` also emits URLs — redact at the
+`api-writer` boundary (a redactor applied inside `apiTopActions`) so every URL
+api-writer emits is covered in one place.
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
+### Determinism
+Filtering + redaction are pure and order-preserving; no new timestamps. Schema
+files are static. No new per-build churn (NFR-04).
 
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
-```
+## Work Breakdown (one session)
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+1. **WP-A — Redaction/exclusion module + unit tests** — `src/lib/api-redact.js`;
+   `tests/unit/api-redact.test.js`. → verify `npm run test:unit`.
+2. **WP-B — Wire exclusion + redaction into the API feed** — `src/aggregate.js`,
+   `src/lib/api-writer.js` (`apiTopActions` redactor).
+3. **WP-C — JSON Schemas + validation** — `src/api/schema/{index,snapshot,findings}.schema.json`,
+   `src/lib/api-schema-validate.js`, copy step in `writeApiFiles`,
+   `tests/unit/api-schema.test.js`.
+4. **WP-D — Docs** — `API.md` + README section.
+5. **WP-E — Leak test** — `tests/unit/api-redaction-leak.test.js`.
 
 ## Complexity Tracking
 
-*Fill ONLY if Charter Check has violations that must be justified*
-
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+No charter violations. In-repo schema validator chosen over `ajv` to honor
+NFR-01 (no new dependency); the schemas are simple enough that this is not a
+maintenance burden.

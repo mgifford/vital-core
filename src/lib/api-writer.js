@@ -1,7 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { redactUrl, deepRedactUrls } from './api-redact.js';
 
 export const SCHEMA_VERSION = '1';
+
+// Public JSON Schemas live under src/api/schema/ (checked in) and are copied
+// into docs/api/v1/schema/ at build time so consumers can validate responses.
+const SCHEMA_SRC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'api', 'schema');
+const SCHEMA_FILES = ['index.schema.json', 'snapshot.schema.json', 'findings.schema.json'];
 
 function severityCounts(bugs) {
   let critical_count = 0;
@@ -30,16 +37,17 @@ function deriveTrend(bug, ledgerEntry) {
   return 'persistent';
 }
 
-function apiTopActions(summary) {
+function apiTopActions(summary, denyParams = []) {
   const cc = summary?.componentClusters;
   if (!cc?.top_actions?.length) return null;
+  const opts = { denyParams };
   return {
     design_system: cc.design_system ?? 'none',
     design_system_theme: cc.design_system_theme ?? null,
     generated_from_clusters: cc.total_clusters ?? cc.clusters?.length ?? 0,
     drift_page_count: cc.drift_page_count ?? cc.drift_pages?.length ?? 0,
     drift_pages: (cc.drift_pages ?? []).slice(0, 100).map((p) => ({
-      url: p.url,
+      url: redactUrl(p.url, opts),
       tokens: p.tokens ?? [],
       cluster_ids: p.cluster_ids ?? [],
       rule_keys: p.rule_keys ?? [],
@@ -80,6 +88,11 @@ export function buildIndexEntry(target, latestSummary, bugs) {
 export function buildSnapshot(target, series, diffs, ledger, invSummary, latestBugs) {
   const latest = series[series.length - 1];
   const counts = severityCounts(latestBugs);
+  const opts = { denyParams: target.api_redact_params ?? [] };
+  // The weekly series carries internal summary objects with nested `url` fields
+  // (component-cluster drift pages, etc.). Deep-redact so no URL escapes,
+  // regardless of nesting depth.
+  const weekly = deepRedactUrls({ series, diffs }, opts);
   return {
     schema_version: SCHEMA_VERSION,
     domain: target.domain,
@@ -93,8 +106,8 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
     inventory: invSummary ?? null,
     findings: ledger.findings ?? {},
     tech_findings: latest.techFindings?.associations ?? null,
-    top_actions: apiTopActions(latest),
-    weekly: { series, diffs },
+    top_actions: apiTopActions(latest, opts.denyParams),
+    weekly,
   };
 }
 
@@ -105,7 +118,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
     week: summary.week,
     generated_at: new Date().toISOString(),
     pages_scanned: summary.pagesScanned ?? 0,
-    top_actions: apiTopActions(summary),
+    top_actions: apiTopActions(summary, target.api_redact_params ?? []),
     findings: bugs.map(b => {
       const ledgerEntry = ledgerFindings?.[b.pattern_id] ?? null;
       return {
@@ -130,6 +143,13 @@ export function writeApiFiles(docsDir, indexEntries, snapshots, weekFindings) {
   const apiBase = path.join(docsDir, 'api', 'v1');
 
   fs.mkdirSync(apiBase, { recursive: true });
+
+  const schemaDir = path.join(apiBase, 'schema');
+  fs.mkdirSync(schemaDir, { recursive: true });
+  for (const name of SCHEMA_FILES) {
+    fs.copyFileSync(path.join(SCHEMA_SRC_DIR, name), path.join(schemaDir, name));
+  }
+
   fs.writeFileSync(
     path.join(apiBase, 'index.json'),
     JSON.stringify({ schema_version: SCHEMA_VERSION, domains: indexEntries }, null, 1)

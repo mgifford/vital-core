@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mgifford.github.io/vital-core/api/v1/schema/findings.schema.json",
+  "title": "vital-core API v1 per-week findings",
+  "description": "Normalized accessibility findings for one domain and reporting week. Served at /api/v1/<domain-key>/<week>/findings.json.",
+  "type": "object",
+  "required": ["schema_version", "domain", "week", "pages_scanned", "findings"],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "domain": { "type": "string" },
+    "week": { "$ref": "#/definitions/isoWeek" },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Build timestamp (ISO 8601). Present for provenance; not part of finding identity."
+    },
+    "pages_scanned": { "type": "integer", "minimum": 0 },
+    "top_actions": {
+      "description": "Optional component-cluster next-actions queue. Null or absent when no clusters were computed.",
+      "type": ["object", "null"]
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/finding" }
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "finding": {
+      "type": "object",
+      "required": [
+        "finding_id", "rule_id", "engine", "severity",
+        "pages_affected", "trend_status"
+      ],
+      "properties": {
+        "finding_id": {
+          "type": "string",
+          "pattern": "^VS-[0-9a-f]+$",
+          "description": "Stable per-domain finding identifier (content hash)."
+        },
+        "rule_id": { "type": "string", "description": "Engine rule id, e.g. color-contrast. Stable across weeks." },
+        "rule_label": { "type": "string" },
+        "engine": {
+          "type": "string",
+          "description": "Detecting engine. axe-core and alfa are preserved as distinct engines.",
+          "examples": ["axe-core", "alfa", "deprecated-html"]
+        },
+        "severity": {
+          "description": "axe-core impact taxonomy, verbatim.",
+          "enum": ["Critical", "Serious", "Moderate", "Minor"]
+        },
+        "wcag_sc": { "type": ["string", "null"] },
+        "wcag_level": { "type": ["string", "null"] },
+        "pages_affected": { "type": "integer", "minimum": 0 },
+        "trend_status": {
+          "description": "Week-over-week status derived from the findings ledger.",
+          "enum": ["new", "persistent", "improving", "worsening"]
+        },
+        "first_seen": { "oneOf": [{ "$ref": "#/definitions/isoWeek" }, { "type": "null" }] },
+        "last_seen": { "oneOf": [{ "$ref": "#/definitions/isoWeek" }, { "type": "null" }] },
+        "weeks_seen": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "isoWeek": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-W[0-9]{2}$"
+    }
+  }
+}

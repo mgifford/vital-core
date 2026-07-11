@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mgifford.github.io/vital-core/api/v1/schema/snapshot.schema.json",
+  "title": "vital-core API v1 domain snapshot",
+  "description": "Full history snapshot for one domain: latest summary, findings ledger, weekly series, tech associations. Served at /api/v1/<domain-key>/snapshot.json.",
+  "type": "object",
+  "required": ["schema_version", "domain", "key", "latest_week", "summary", "weekly"],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "domain": { "type": "string" },
+    "key": { "type": "string" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "latest_week": { "$ref": "#/definitions/isoWeek" },
+    "summary": {
+      "type": "object",
+      "required": [
+        "critical_count", "serious_count", "moderate_count",
+        "minor_count", "total_findings", "pages_scanned"
+      ],
+      "properties": {
+        "critical_count": { "type": "integer", "minimum": 0 },
+        "serious_count": { "type": "integer", "minimum": 0 },
+        "moderate_count": { "type": "integer", "minimum": 0 },
+        "minor_count": { "type": "integer", "minimum": 0 },
+        "total_findings": { "type": "integer", "minimum": 0 },
+        "pages_scanned": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "inventory": { "type": ["object", "null"] },
+    "findings": {
+      "description": "Findings ledger keyed by finding_id (accumulates across the scan's life).",
+      "type": "object"
+    },
+    "tech_findings": { "type": ["array", "object", "null"] },
+    "top_actions": { "type": ["object", "null"] },
+    "weekly": {
+      "type": "object",
+      "required": ["series"],
+      "properties": {
+        "series": {
+          "type": "array",
+          "description": "Per-week summary series, oldest first.",
+          "items": { "type": "object" }
+        },
+        "diffs": { "type": ["object", "null"] }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "isoWeek": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-W[0-9]{2}$"
+    }
+  }
+}
