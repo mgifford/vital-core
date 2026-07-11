@@ -1,7 +1,7 @@
 # Spec: Local Vital MCP Server — Read-Only Findings Retrieval (Phase 1)
 
 **Mission**: `local-mcp-server-01KX94K7`
-**Branch**: `main`
+**Branch**: `claude/vital-core-issue-214-spec-m237h3`
 **Status**: Implemented (WP01–WP05 complete, pending review)
 **Source issue**: [#214](https://github.com/mgifford/vital-core/issues/214)
 
