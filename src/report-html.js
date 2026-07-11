@@ -1882,7 +1882,7 @@ function exclusionBox(target, { bugsJson = '' } = {}) {
 // https://github.com/webmachinelearning/webmcp) and is a complete no-op when
 // absent or when the target hasn't opted in — emits zero bytes in that case
 // (see the early return below), not just an inert script.
-function webmcpBridgeScript(target) {
+export function webmcpBridgeScript(target) {
   if (!target.webmcpEnabled) return '';
   return `<script>
 (function () {
