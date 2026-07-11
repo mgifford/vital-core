@@ -24,24 +24,27 @@ function extractScriptBody(html) {
   return html.slice(start, end);
 }
 
-// Runs the real generated script in a sandboxed VM against stub
-// document.modelContext / fetch — this is the only way to exercise the
-// tool handlers, since they are deliberately generated as an inline string
+// Runs the real generated script in a sandboxed VM against a stub
+// modelContext / fetch — this is the only way to exercise the tool
+// handlers, since they are deliberately generated as an inline string
 // (C-04: not a separately importable module; see plan.md).
-function runBridgeScript(target, { snapshot, findings }) {
+// `globalName` selects which global the stub modelContext hangs off of
+// (the bridge script checks navigator.modelContext first, then falls back
+// to document.modelContext — see plan.md WP02 T001's dual-global note).
+function runBridgeScript(target, { snapshot, findings }, globalName = 'document') {
   const html = webmcpBridgeScript(target);
   const body = extractScriptBody(html);
   const registeredTools = {};
   const fetchCalls = [];
-  const sandbox = {
-    document: {
-      modelContext: {
-        registerTool(def) {
-          registeredTools[def.name] = def;
-          return Promise.resolve();
-        },
-      },
+  const modelContextStub = {
+    registerTool(def) {
+      registeredTools[def.name] = def;
+      return Promise.resolve();
     },
+  };
+  const sandbox = {
+    document: globalName === 'document' ? { modelContext: modelContextStub } : {},
+    navigator: globalName === 'navigator' ? { modelContext: modelContextStub } : undefined,
     fetch(url) {
       fetchCalls.push(url);
       const body2 = url.indexOf('snapshot.json') !== -1 ? snapshot : findings;
@@ -81,7 +84,8 @@ test('webmcpBridgeScript: emits a <script> tag with all three tools when enabled
   assert.match(html, /vital_get_project_context/);
   assert.match(html, /vital_list_findings/);
   assert.match(html, /vital_get_finding_context/);
-  assert.match(html, /document\.modelContext\.registerTool/);
+  assert.match(html, /navigator\.modelContext.*document\.modelContext/);
+  assert.match(html, /modelContext\.registerTool/);
 });
 
 test('webmcpBridgeScript: gzipped size is under the NFR-01 budget', () => {
@@ -108,6 +112,34 @@ test('bridge runtime: registers exactly the three tools', () => {
     Object.keys(registeredTools).sort(),
     ['vital_get_finding_context', 'vital_get_project_context', 'vital_list_findings'],
   );
+});
+
+test('bridge runtime: registers via navigator.modelContext when that is what the browser exposes', () => {
+  const { registeredTools } = runBridgeScript(
+    enabledTarget(),
+    { snapshot: FIXTURE_SNAPSHOT, findings: FIXTURE_FINDINGS },
+    'navigator',
+  );
+  assert.deepEqual(
+    Object.keys(registeredTools).sort(),
+    ['vital_get_finding_context', 'vital_get_project_context', 'vital_list_findings'],
+  );
+});
+
+test('bridge runtime: is a no-op when neither navigator.modelContext nor document.modelContext is present', () => {
+  const { registeredTools } = runBridgeScript(
+    enabledTarget(),
+    { snapshot: FIXTURE_SNAPSHOT, findings: FIXTURE_FINDINGS },
+    'neither',
+  );
+  assert.deepEqual(Object.keys(registeredTools), []);
+});
+
+test('bridge runtime: every tool is registered with readOnlyHint: true', () => {
+  const { registeredTools } = runBridgeScript(enabledTarget(), { snapshot: FIXTURE_SNAPSHOT, findings: FIXTURE_FINDINGS });
+  for (const [name, def] of Object.entries(registeredTools)) {
+    assert.equal(def.readOnlyHint, true, `${name} should set readOnlyHint: true`);
+  }
 });
 
 test('bridge runtime: vital_get_project_context returns domain, latest week, and report URL', async () => {
