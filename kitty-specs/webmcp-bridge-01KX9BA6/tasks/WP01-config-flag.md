@@ -58,3 +58,7 @@ Requirement refs: FR-01 (spec.md).
 ## Validation
 
 `npm run test:unit` green; `npm run check:spec-kitty` green.
+
+## Activity Log
+
+- 2026-07-12T18:24:06Z – user – shell_pid=0 – Done override: Already implemented and merged to main via PR #229 (commits 29dc9f9b4, 012b3d6c4, 39dbaab34, bddac339f); mission tracking was stale relative to actual repo state.

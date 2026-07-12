@@ -91,3 +91,7 @@ Requirement refs: FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, NFR-02, NFR-03, NFR-
 
 `npm run test:unit` green; a generated report page with `webmcp: true`
 contains the script; one without it is byte-identical to today's output.
+
+## Activity Log
+
+- 2026-07-12T18:24:11Z – user – shell_pid=0 – Done override: Already implemented and merged to main via PR #229 (commits 29dc9f9b4, 012b3d6c4, 39dbaab34, bddac339f); mission tracking was stale relative to actual repo state.
