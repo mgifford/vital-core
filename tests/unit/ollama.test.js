@@ -25,8 +25,8 @@ function mockFetchThrow(err) {
 }
 
 describe('isAvailable()', () => {
-  it('returns true when /api/tags responds 200', async () => {
-    mockFetch({ models: [] });
+  it('returns true when /v1/models responds 200', async () => {
+    mockFetch({ data: [] });
     assert.equal(await isAvailable(), true);
   });
 
@@ -57,25 +57,25 @@ describe('detectModel()', () => {
       else process.env.VITAL_OLLAMA_MODEL = saved;
     }
     // Soft assertion — the module was loaded without VITAL_OLLAMA_MODEL set,
-    // so detectModel() will hit the server path; just confirm it falls back to 'llama3'.
-    mockFetch({ models: [] });
+    // so detectModel() will hit the server path; just confirm it falls back to 'local-model'.
+    mockFetch({ data: [] });
     const model = await detectModel();
-    assert.equal(model, 'llama3');
+    assert.equal(model, 'local-model');
   });
 
-  it('returns first model name from /api/tags when env var is not set', async () => {
-    mockFetch({ models: [{ name: 'codellama:7b' }] });
-    assert.equal(await detectModel(), 'codellama:7b');
+  it('returns first model id from /v1/models when env var is not set', async () => {
+    mockFetch({ data: [{ id: 'codellama-7b.gguf' }] });
+    assert.equal(await detectModel(), 'codellama-7b.gguf');
   });
 
-  it('falls back to llama3 when server returns empty model list', async () => {
-    mockFetch({ models: [] });
-    assert.equal(await detectModel(), 'llama3');
+  it('falls back to local-model when server returns empty model list', async () => {
+    mockFetch({ data: [] });
+    assert.equal(await detectModel(), 'local-model');
   });
 
-  it('falls back to llama3 when server is unreachable', async () => {
+  it('falls back to local-model when server is unreachable', async () => {
     mockFetchThrow(new Error('ECONNREFUSED'));
-    assert.equal(await detectModel(), 'llama3');
+    assert.equal(await detectModel(), 'local-model');
   });
 });
 
@@ -84,12 +84,12 @@ describe('chat()', () => {
     let callCount = 0;
     globalThis.fetch = async (url) => {
       callCount++;
-      if (url.includes('/api/tags')) {
-        return { ok: true, json: async () => ({ models: [{ name: 'llama3' }] }) };
+      if (url.includes('/v1/models')) {
+        return { ok: true, json: async () => ({ data: [{ id: 'llama3' }] }) };
       }
       return {
         ok: true,
-        json: async () => ({ response: '  Hello world  ', done: true }),
+        json: async () => ({ choices: [{ message: { content: '  Hello world  ' } }] }),
       };
     };
     const result = await chat('Say hello');
@@ -105,19 +105,19 @@ describe('chat()', () => {
     let capturedBody;
     globalThis.fetch = async (url, init) => {
       capturedBody = JSON.parse(init.body);
-      return { ok: true, json: async () => ({ response: 'ok', done: true }) };
+      return { ok: true, json: async () => ({ choices: [{ message: { content: 'ok' } }] }) };
     };
-    const result = await chat('prompt', 'gemma:2b');
+    const result = await chat('prompt', 'gemma-2b.gguf');
     assert.equal(result, 'ok');
-    assert.equal(capturedBody.model, 'gemma:2b');
+    assert.equal(capturedBody.model, 'gemma-2b.gguf');
   });
 
-  it('returns null when response field is not a string', async () => {
+  it('returns null when message content is not a string', async () => {
     globalThis.fetch = async (url) => {
-      if (url.includes('/api/tags')) {
-        return { ok: true, json: async () => ({ models: [{ name: 'llama3' }] }) };
+      if (url.includes('/v1/models')) {
+        return { ok: true, json: async () => ({ data: [{ id: 'llama3' }] }) };
       }
-      return { ok: true, json: async () => ({ response: null, done: true }) };
+      return { ok: true, json: async () => ({ choices: [{ message: { content: null } }] }) };
     };
     assert.equal(await chat('prompt'), null);
   });
