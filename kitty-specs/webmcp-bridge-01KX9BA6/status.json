@@ -1,7 +1,7 @@
 {
-  "event_count": 7,
-  "last_event_id": "01KXBS56QYMCS8RFZZD6KHETED",
-  "materialized_at": "2026-07-12T18:24:13.566922+00:00",
+  "event_count": 8,
+  "last_event_id": "01KXBS5B06PDYWN5SAVB424VB1",
+  "materialized_at": "2026-07-12T18:24:17.926378+00:00",
   "mission_number": "",
   "mission_slug": "webmcp-bridge-01KX9BA6",
   "mission_type": "software-dev",
@@ -10,11 +10,11 @@
     "blocked": 0,
     "canceled": 0,
     "claimed": 0,
-    "done": 3,
+    "done": 4,
     "for_review": 0,
     "in_progress": 0,
     "in_review": 0,
-    "planned": 1
+    "planned": 0
   },
   "work_packages": {
     "WP01": {
@@ -39,11 +39,11 @@
       "last_transition_at": "2026-07-12T18:24:13.566922+00:00"
     },
     "WP04": {
-      "actor": "finalize-tasks",
-      "force_count": 0,
-      "lane": "planned",
-      "last_event_id": "01KX9D65CAW3GJXZXB9HBBMPW0",
-      "last_transition_at": "2026-07-11T20:16:33.162776+00:00"
+      "actor": "user",
+      "force_count": 1,
+      "lane": "done",
+      "last_event_id": "01KXBS5B06PDYWN5SAVB424VB1",
+      "last_transition_at": "2026-07-12T18:24:17.926378+00:00"
     }
   }
 }
