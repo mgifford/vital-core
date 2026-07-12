@@ -1,45 +1,28 @@
-schema_version: 1.0.0
-project: vital-core
-mission: software-dev
-authority_paths:
-  - AGENTS.md
-  - ACCESSIBILITY.md
-  - README.md
+# Auto-generated from charter.md — do not edit directly.
+# Run 'spec-kitty charter sync' to regenerate.
+
 testing:
-  required_commands:
-    - spec-kitty upgrade --agent-check --json
-    - spec-kitty agent config sync --create-missing
-    - spec-kitty agent config status
-    - spec-kitty doctor skills --json
-    - spec-kitty charter preflight --json
-    - npm run check:spec-kitty
-    - npm run test:unit
+  min_coverage: 0
+  tdd_required: false
+  framework: ''
+  type_checking: ''
 quality:
-  accessibility: WCAG 2.2 AA
-  report_format: semantic HTML with accessible chart alternatives
-  text_alternatives: required for meaningful charts, images, and other graphics
-  sustainability:
-    standard: W3C Web Sustainability Guidelines + SUSTAINABILITY.md
-    no_web_fonts: true
-    javascript: progressive enhancement only; pages must work without it
-    prefer_build_time_over_client_computation: true
-    minimize_data_transfer: avoid shipping unused bytes; leverage caching
+  linting: ''
+  pr_approvals: 1
+  pre_commit_hooks: false
+commits:
+  convention:
 performance:
-  reporting:
-    charts_should_tell_change_story: true
-    prefer_week_over_week_trends: true
-  scanning:
-    deterministic_sampling: true
-    preserve_weekly_history: true
-branching:
-  source_of_truth: GitHub
-  deployment_target: Hugging Face Spaces via the hf remote
-selected_directives:
-  - weekly-accessibility-tracking
-  - stable-page-identity
-  - historical-evidence-preservation
-  - accessible-reporting
-  - efficient-recurring-scans
-  - sustainable-web-output
-selected_tactics: []
-selected_styleguides: []
+  cli_timeout_seconds: 2.0
+  dashboard_max_wps: 100
+branch_strategy:
+  main_branch: main
+  dev_branch:
+  rules: []
+doctrine:
+  selected_paradigms: []
+  selected_directives: []
+  selected_tactics: []
+  available_tools: []
+  template_set:
+enforcement: {}
