@@ -50,3 +50,17 @@ test('config: normalizes supported design_system values', () => {
   const cms = c.targets.find((t) => t.domain === 'www.cms.gov');
   assert.equal(cms?.design_system, 'cms-ds');
 });
+
+test('config: webmcpEnabled resolves false when the flag is absent', () => {
+  const c = loadConfig();
+  for (const t of c.targets) {
+    if (t.webmcp === undefined) assert.equal(t.webmcpEnabled, false);
+  }
+});
+
+test('config: webmcpEnabled resolves true only for literal webmcp: true', () => {
+  assert.equal({ webmcp: true }.webmcp === true, true);
+  assert.equal({ webmcp: false }.webmcp === true, false);
+  assert.equal({ webmcp: 'yes' }.webmcp === true, false);
+  assert.equal({}.webmcp === true, false);
+});

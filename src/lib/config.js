@@ -52,6 +52,8 @@ export function loadConfig() {
     t.languages = langs.languages;
     t.defaultLanguage = langs.defaultLanguage;
     t.showLanguageSwitcher = (t.language_switcher ?? cfg.language_switcher) !== false;
+    // Opt-in per target, no global default (single flag, single behavior).
+    t.webmcpEnabled = t.webmcp === true;
     if (t.design_system != null) {
       const ds = String(t.design_system).toLowerCase();
       if (!DESIGN_SYSTEMS.has(ds)) {
