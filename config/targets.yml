@@ -174,6 +174,9 @@ targets:
   #     Supported values: cms-ds, uswds, none.
   #   design_system_theme: optional free-form theme string used in report copy.
   #
+  #   webmcp: optional boolean, default false. Opt-in only — omit or set to
+  #     false to leave a target unaffected. Example: webmcp: true
+  #
   # WAF-blocked: hhs.gov and nih.gov return 403 "Access Denied" to
   # automated browsers and record as blocked with no audit data until the
   # scanner's user-agent is allowlisted. Kept in to track once access is
