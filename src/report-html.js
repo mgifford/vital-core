@@ -1584,8 +1584,8 @@ ${heading('h-bugs', t('Bug reports'))}
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>${t('Possible duplicate')}</dt><dd>${t('Same WCAG SC covered by axe report <code>@id</code> (pattern <code>@pattern</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.', { '@id': esc(b.possible_duplicate_of), '@pattern': esc(b.possible_duplicate_pattern) })}</dd></div>`
         : '';
-      return `<details id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="" data-excluded="">
-<summary><span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
+      return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="" data-excluded="">
+<summary id="${esc(b.instance_id)}" tabindex="-1"><span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
@@ -1676,7 +1676,37 @@ ${bugFilterScript()}
 ${triageScript()}
 ${exclusionFilterScript()}
 ${webmcpBridgeScript(target)}
+${bugDeepLinkScript()}
 </section>`;
+}
+
+// Deep-linking (issue #178): a URL fragment naming a finding's permalink
+// (id lives on the <summary>, not the <details>, so the browser's native
+// scroll-into-view targets the clickable control screen readers announce)
+// should expand its <details>, scroll it into view, move focus to the
+// summary, and highlight it. Re-runs on hashchange so in-page navigation
+// between findings keeps working, and clears the previous highlight.
+function bugDeepLinkScript() {
+  return `<script>
+(function () {
+  'use strict';
+  function goToTarget() {
+    var prev = document.querySelector('.target-bug');
+    if (prev) prev.classList.remove('target-bug');
+    var hash = window.location.hash.slice(1);
+    if (!hash) return;
+    var summary = document.getElementById(hash);
+    if (!summary || summary.tagName !== 'SUMMARY') return;
+    var details = summary.closest('details');
+    if (details) details.open = true;
+    summary.classList.add('target-bug');
+    summary.scrollIntoView();
+    summary.focus();
+  }
+  window.addEventListener('hashchange', goToTarget);
+  goToTarget();
+})();
+</script>`;
 }
 
 /**
@@ -1736,7 +1766,7 @@ function triageScript() {
     }
   }
   function updateBugTriage(id, status) {
-    var bug = document.getElementById(id);
+    var bug = document.querySelector('.bug[data-bug-id="' + id + '"]');
     if (bug) bug.setAttribute('data-triage', status || '');
   }
   // Restore saved triage state on page load.
@@ -4472,8 +4502,9 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .overflow-findings table { width: 100%; font-size: .9rem; margin-bottom: .8rem; }
 .bug { border: 1px solid var(--rule); border-left-width: 4px; border-radius: 2px;
   margin: .6rem 0; padding: 0 .9rem; }
-.bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }
+.bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; scroll-margin-top: 2rem; }
 .bug[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
+.bug > summary.target-bug { outline: 4px solid var(--accent); outline-offset: 2px; }
 .engine-findings > summary { cursor: pointer; font-weight: 600; padding: .4rem 0; }
 .bug.sev-critical { border-left-color: var(--worse); }
 .bug.sev-serious { border-left-color: var(--worse); }
