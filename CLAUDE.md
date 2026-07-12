@@ -23,12 +23,13 @@ npm run test:e2e      # smoke test
 npm run check:public-interest www.cms.gov   # quick 4-check diagnostic
 ```
 
-**Optional — local Ollama LLM** (adds `ollama_summary` to ai-findings output):
+**Optional — local LLM summaries** (adds `ollama_summary` to ai-findings output):
 ```bash
-# Set in .env (see .env.example); defaults to http://localhost:11434
+# Set VITAL_OLLAMA_URL in .env (see .env.example); defaults to http://localhost:11434.
+# Any OpenAI-compatible server works (llama.cpp's llama-server, Ollama, LM Studio).
 npm run check:ollama   # verify connectivity
 ```
-Ollama is always optional — absent or unreachable = no change in report output.
+This is always optional — absent or unreachable = no change in report output.
 
 ---
 
@@ -36,8 +37,8 @@ Ollama is always optional — absent or unreachable = no change in report output
 
 This project uses [Spec Kitty](https://spec-kitty.dev) as its AI-agent
 orchestration layer. Every non-trivial feature goes through a mission.
-Spec Kitty is not an Ollama-specific workflow; Ollama is only an optional
-runtime feature for `ai-findings` summaries.
+Spec Kitty is not an LLM-specific workflow; a local LLM server is only an
+optional runtime feature for `ai-findings` summaries.
 
 Configured agent surfaces:
 
