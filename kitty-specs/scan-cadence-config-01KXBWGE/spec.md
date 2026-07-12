@@ -60,32 +60,32 @@ This mission does **not** change:
 
 | ID | Requirement | Status |
 |---|---|---|
-| FR-01 | `config/targets.yml`'s `defaults:` block supports `domain_scan_cadence` (`incremental` \| `daily`, default `incremental`), `url_rescan_interval_days` (positive integer, default `7`), and `priority_url_rescan_interval_days` (positive integer, default `7`). All three are resolved onto every target in `src/lib/config.js`, per-target values overriding the global default (same merge pattern as every other `defaults:`-backed field). | Proposed |
-| FR-02 | `domain_scan_cadence: incremental` (the default) preserves exactly today's behavior: a domain may be scanned multiple times per UTC day, limited only by eligible URLs and the weekly budget. `www.cms.gov` is not given an explicit `domain_scan_cadence` and therefore continues on `incremental`. | Proposed |
-| FR-03 | `domain_scan_cadence: daily` makes a domain ineligible for a scan run if it has already completed a scan run earlier the same UTC day; the domain becomes eligible again at UTC midnight. This check happens at the same decision point `scripts/list-scan-domains.js` already uses (`budgetStatus`/domain-selection), so a `daily`-cadence domain that already ran today is excluded from that night's CI matrix the same way a cap-exhausted or frontier-empty domain is today. | Proposed |
-| FR-04 | Ordinary (non-priority) URL eligibility is `lastScannedAt == null OR (now − lastScannedAt) >= url_rescan_interval_days`, replacing the `lastScannedWeek !== week` filter. `lastScannedAt` is the field `src/lib/state.js`'s `addPage`/scan-recording logic already populates; no new state fields are required for this rule. | Proposed |
-| FR-05 | Priority URL eligibility uses the same elapsed-time formula but with `priority_url_rescan_interval_days` in place of `url_rescan_interval_days`. Priority URLs remain sorted before non-priority URLs in `pickBatch`'s candidate ordering, unchanged from today. | Proposed |
-| FR-06 | The weekly page budget (`weeklyCapFor`, `max_pages_per_week`, importance scaling) continues to gate how many pages a single run/week may scan, applied on top of (not instead of) the new elapsed-day eligibility filter — a page can be interval-eligible and still not scanned this run if the budget is exhausted. | Proposed |
-| FR-07 | `lastScannedWeek` continues to be written on every scan outcome exactly as today (for any downstream code, reporting, or diagnostics that reads it), but it is no longer read for eligibility decisions anywhere in `pickBatch` or `budgetStatus`. | Proposed |
-| FR-08 | Existing state files (with `lastScannedWeek`/`lastScannedAt` values from before this mission) work unmodified under the new eligibility rule — no migration script, no state version bump, no required one-time rewrite. | Proposed |
+| FR-001 | `config/targets.yml`'s `defaults:` block supports `domain_scan_cadence` (`incremental` \| `daily`, default `incremental`), `url_rescan_interval_days` (positive integer, default `7`), and `priority_url_rescan_interval_days` (positive integer, default `7`). All three are resolved onto every target in `src/lib/config.js`, per-target values overriding the global default (same merge pattern as every other `defaults:`-backed field). | Proposed |
+| FR-002 | `domain_scan_cadence: incremental` (the default) preserves exactly today's behavior: a domain may be scanned multiple times per UTC day, limited only by eligible URLs and the weekly budget. `www.cms.gov` is not given an explicit `domain_scan_cadence` and therefore continues on `incremental`. | Proposed |
+| FR-003 | `domain_scan_cadence: daily` makes a domain ineligible for a scan run if it has already completed a scan run earlier the same UTC day; the domain becomes eligible again at UTC midnight. This check happens at the same decision point `scripts/list-scan-domains.js` already uses (`budgetStatus`/domain-selection), so a `daily`-cadence domain that already ran today is excluded from that night's CI matrix the same way a cap-exhausted or frontier-empty domain is today. | Proposed |
+| FR-004 | Ordinary (non-priority) URL eligibility is `lastScannedAt == null OR (now − lastScannedAt) >= url_rescan_interval_days`, replacing the `lastScannedWeek !== week` filter. `lastScannedAt` is the field `src/lib/state.js`'s `addPage`/scan-recording logic already populates; no new state fields are required for this rule. | Proposed |
+| FR-005 | Priority URL eligibility uses the same elapsed-time formula but with `priority_url_rescan_interval_days` in place of `url_rescan_interval_days`. Priority URLs remain sorted before non-priority URLs in `pickBatch`'s candidate ordering, unchanged from today. | Proposed |
+| FR-006 | The weekly page budget (`weeklyCapFor`, `max_pages_per_week`, importance scaling) continues to gate how many pages a single run/week may scan, applied on top of (not instead of) the new elapsed-day eligibility filter — a page can be interval-eligible and still not scanned this run if the budget is exhausted. | Proposed |
+| FR-007 | `lastScannedWeek` continues to be written on every scan outcome exactly as today (for any downstream code, reporting, or diagnostics that reads it), but it is no longer read for eligibility decisions anywhere in `pickBatch` or `budgetStatus`. | Proposed |
+| FR-008 | Existing state files (with `lastScannedWeek`/`lastScannedAt` values from before this mission) work unmodified under the new eligibility rule — no migration script, no state version bump, no required one-time rewrite. | Proposed |
 
 ## Non-Functional Requirements
 
 | ID | Requirement | Status |
 |---|---|---|
-| NFR-01 | All currently-passing tests in `tests/unit/lib.test.js` covering `pickBatch`, `budgetStatus`, `weeklyCapFor`, and `addPage` continue to pass, updated only where they assert the literal `lastScannedWeek !== week` mechanism rather than the eligibility *outcome* (e.g. "a just-scanned page is not immediately eligible again" must still hold; the test's method of asserting it may need to change from setting `lastScannedWeek` to setting `lastScannedAt`). | Proposed |
-| NFR-02 | New unit tests cover: resolved defaults when a target sets none of the three new fields; per-target override of each of the three fields independently; elapsed-day URL eligibility at the boundary (interval−1 day: ineligible; interval day: eligible) using `lastScannedAt`; `daily` domain cadence blocking a same-UTC-day rescan and allowing one the next UTC day; `incremental` domain cadence behaving identically to today (multiple eligible runs same day); and a state file with only legacy fields populated (`lastScannedWeek` set, `lastScannedAt` present per the existing schema) working correctly under the new rule. | Proposed |
-| NFR-03 | Ordering of `pickBatch`'s candidate list stays deterministic per `(state, "now" input)` for replay/testing purposes, consistent with today's per-week `weeklyRank` determinism — the elapsed-time model must not introduce nondeterminism into otherwise-identical inputs. | Proposed |
-| NFR-04 | `.github/workflows/scan.yml` is unchanged by this mission except for previously-approved, unrelated workflow improvements — no new inputs, no new jobs, no schedule changes. | Proposed |
+| NFR-001 | All currently-passing tests in `tests/unit/lib.test.js` covering `pickBatch`, `budgetStatus`, `weeklyCapFor`, and `addPage` continue to pass, updated only where they assert the literal `lastScannedWeek !== week` mechanism rather than the eligibility *outcome* (e.g. "a just-scanned page is not immediately eligible again" must still hold; the test's method of asserting it may need to change from setting `lastScannedWeek` to setting `lastScannedAt`). | Proposed |
+| NFR-002 | New unit tests cover: resolved defaults when a target sets none of the three new fields; per-target override of each of the three fields independently; elapsed-day URL eligibility at the boundary (interval−1 day: ineligible; interval day: eligible) using `lastScannedAt`; `daily` domain cadence blocking a same-UTC-day rescan and allowing one the next UTC day; `incremental` domain cadence behaving identically to today (multiple eligible runs same day); and a state file with only legacy fields populated (`lastScannedWeek` set, `lastScannedAt` present per the existing schema) working correctly under the new rule. | Proposed |
+| NFR-003 | Ordering of `pickBatch`'s candidate list stays deterministic per `(state, "now" input)` for replay/testing purposes, consistent with today's per-week `weeklyRank` determinism — the elapsed-time model must not introduce nondeterminism into otherwise-identical inputs. | Proposed |
+| NFR-004 | `.github/workflows/scan.yml` is unchanged by this mission except for previously-approved, unrelated workflow improvements — no new inputs, no new jobs, no schedule changes. | Proposed |
 
 ## Constraints
 
 | ID | Constraint | Status |
 |---|---|---|
-| C-01 | `www.cms.gov`'s target entry in `config/targets.yml` is not given an explicit `domain_scan_cadence`, `url_rescan_interval_days`, or `priority_url_rescan_interval_days` override — it inherits the global defaults, which reproduce its current behavior exactly (incremental cadence; effectively unthrottled rescan within the existing weekly-cap/ISO-week-equivalent cadence, since default `url_rescan_interval_days: 7` approximates "about once a week" the same as the old rule for a domain scanned roughly weekly). | Accepted |
-| C-02 | No new state schema version or migration path — every field this mission reads from state (`lastScannedAt`, `priority`, `failCount`) already exists in every state file written by the current code. | Accepted |
-| C-03 | `pickBatch`'s and `budgetStatus`'s exported signatures may change (e.g. to accept a "now" reference instead of/alongside a `week` string) but must remain callable from `src/scan.js` and `scripts/list-scan-domains.js` with a coherent, single migration of all call sites in this mission — no dual old/new API left behind. | Accepted |
-| C-04 | Time-dependent tests must inject a fixed "now" (mirroring the existing `VITAL_WEEK` override pattern in `src/lib/week.js`) rather than depending on wall-clock time, so the new tests are deterministic and not flaky around day/week boundaries. | Accepted |
+| C-001 | `www.cms.gov`'s target entry in `config/targets.yml` is not given an explicit `domain_scan_cadence`, `url_rescan_interval_days`, or `priority_url_rescan_interval_days` override — it inherits the global defaults, which reproduce its current behavior exactly (incremental cadence; effectively unthrottled rescan within the existing weekly-cap/ISO-week-equivalent cadence, since default `url_rescan_interval_days: 7` approximates "about once a week" the same as the old rule for a domain scanned roughly weekly). | Accepted |
+| C-002 | No new state schema version or migration path — every field this mission reads from state (`lastScannedAt`, `priority`, `failCount`) already exists in every state file written by the current code. | Accepted |
+| C-003 | `pickBatch`'s and `budgetStatus`'s exported signatures may change (e.g. to accept a "now" reference instead of/alongside a `week` string) but must remain callable from `src/scan.js` and `scripts/list-scan-domains.js` with a coherent, single migration of all call sites in this mission — no dual old/new API left behind. | Accepted |
+| C-004 | Time-dependent tests must inject a fixed "now" (mirroring the existing `VITAL_WEEK` override pattern in `src/lib/week.js`) rather than depending on wall-clock time, so the new tests are deterministic and not flaky around day/week boundaries. | Accepted |
 
 ## Out of Scope
 
@@ -156,7 +156,7 @@ the boundary day, i.e. `>=`, not `>`).
 3. A `daily` domain cadence is enforced at the same point
    `scripts/list-scan-domains.js` currently gates on weekly budget/frontier
    state.
-4. `npm run test:unit` passes, including new tests enumerated in NFR-02.
+4. `npm run test:unit` passes, including new tests enumerated in NFR-002.
 5. No state migration is required; every currently-committed state file
    under `state/` continues to work.
 6. `.github/workflows/scan.yml` has no changes beyond previously-approved,
@@ -192,5 +192,5 @@ the boundary day, i.e. `>=`, not `>`).
   domain-scoped and this avoids introducing a new state store.
 - `pickBatch`/`budgetStatus` will take a "now" timestamp/date parameter
   (replacing or alongside the `week` parameter) — the exact signature is a
-  `plan.md` decision, constrained by C-03 (single coherent migration, no
+  `plan.md` decision, constrained by C-003 (single coherent migration, no
   dual API).
