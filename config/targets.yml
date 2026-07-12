@@ -228,6 +228,12 @@ targets:
     webmcp: true
   - domain: www.medicare.gov
     importance: 5
+
+    # DRAFT, NOT YET IMPLEMENTED.
+    domain_scan_cadence: incremental
+    url_rescan_interval_days: 7
+    priority_url_rescan_interval_days: 7
+    
     design_system: cms-ds
     design_system_theme: medicare
     webmcp: true
