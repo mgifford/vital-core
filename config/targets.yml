@@ -108,6 +108,22 @@ sampling:
   tech: 10             # technology detection (CMS, frameworks, CDNs, analytics) — small sample sufficient
   third-party: 25      # third-party JS/resource cost per page (load bytes/time + which origins serve scripts); varies per page, so sampled like sustainability
 
+# DRAFT, NOT YET IMPLEMENTED:
+#
+# domain_scan_cadence:
+#   Controls how often this domain may start a scan.
+#   Supported future values:
+#     incremental  - current behaviour; may run several times during the week
+#                    until the weekly cap or frontier is exhausted
+#     daily        - run no more than once per UTC calendar day
+#
+# url_rescan_interval_days:
+#   Number of days before an ordinary previously scanned URL becomes
+#   eligible for another scan.
+#
+# priority_url_rescan_interval_days:
+#   Number of days before a configured priority URL becomes eligible again.
+
 targets:
   # Discovery is host-scoped. The apex domain and its `www.` variant are
   # treated as the same site (so cdc.gov and www.cdc.gov are crawled
@@ -195,6 +211,17 @@ targets:
   - domain: www.cms.gov
     importance: 5
     priority_urls_file: profiles/www.cms.gov-top-tasks.txt
+
+    # DRAFT, NOT YET IMPLEMENTED.
+    # Run this domain no more than once per UTC calendar day.
+    domain_scan_cadence: daily
+    # DRAFT, NOT YET IMPLEMENTED.
+    # Previously scanned ordinary URLs become eligible after seven days.
+    url_rescan_interval_days: 7
+    # DRAFT, NOT YET IMPLEMENTED.
+    # Priority URLs remain weekly, as requested.
+    priority_url_rescan_interval_days: 7
+    
     url_exclude_patterns: [".aspx"]
     design_system: cms-ds
     design_system_theme: default
