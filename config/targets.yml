@@ -123,6 +123,25 @@ sampling:
 #
 # priority_url_rescan_interval_days:
 #   Number of days before a configured priority URL becomes eligible again.
+#
+#   priority_urls_file: path to a file of top-task URLs, one per line.
+#     Blank lines and # comments are ignored. These URLs are covered before
+#     ordinary URLs. Under the current implementation, no URL is scanned
+#     more than once per ISO week.
+#
+#   domain_scan_cadence: DRAFT, NOT YET IMPLEMENTED.
+#     Intended values:
+#       incremental - allow multiple incremental runs during the week
+#       daily       - allow no more than one domain scan per UTC day
+#
+#   url_rescan_interval_days: DRAFT, NOT YET IMPLEMENTED.
+#     Intended number of elapsed days before an ordinary URL is eligible
+#     for rescanning. Current behaviour uses the ISO-week boundary.
+#
+#   priority_url_rescan_interval_days: DRAFT, NOT YET IMPLEMENTED.
+#     Intended number of elapsed days before a priority URL is eligible
+#     for rescanning. Use 7 for weekly priority URL coverage.
+
 
 targets:
   # Discovery is host-scoped. The apex domain and its `www.` variant are
