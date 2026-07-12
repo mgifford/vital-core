@@ -1585,7 +1585,7 @@ ${heading('h-bugs', t('Bug reports'))}
         ? `<div><dt>${t('Possible duplicate')}</dt><dd>${t('Same WCAG SC covered by axe report <code>@id</code> (pattern <code>@pattern</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.', { '@id': esc(b.possible_duplicate_of), '@pattern': esc(b.possible_duplicate_pattern) })}</dd></div>`
         : '';
       return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="" data-excluded="">
-<summary id="${esc(b.instance_id)}" tabindex="-1"><span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
+<summary id="${esc(b.instance_id)}" tabindex="-1"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
@@ -1703,6 +1703,12 @@ function bugDeepLinkScript() {
     summary.focus();
   }
   window.addEventListener('hashchange', goToTarget);
+  // A permalink click when the URL hash is already this finding's id (e.g.
+  // clicking it a second time, or the browser not firing hashchange because
+  // the hash string is unchanged) wouldn't otherwise re-run goToTarget.
+  document.querySelectorAll('.bug-permalink').forEach(function (a) {
+    a.addEventListener('click', function () { setTimeout(goToTarget, 0); });
+  });
   goToTarget();
 })();
 </script>`;
@@ -4370,6 +4376,11 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; scroll-margin-top: 2rem; }
 .bug[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
 .bug > summary.target-bug { outline: 4px solid var(--accent); outline-offset: 2px; }
+.bug-permalink { opacity: 0; text-decoration: none; color: var(--accent); font-weight: 700;
+  padding: 0 .2rem; margin-right: .1rem; border-radius: 2px; }
+.bug > summary:hover .bug-permalink, .bug-permalink:focus { opacity: 1; }
+.bug-permalink:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+@media (prefers-reduced-motion: no-preference) { .bug-permalink { transition: opacity .1s ease-in; } }
 .engine-findings > summary { cursor: pointer; font-weight: 600; padding: .4rem 0; }
 .bug.sev-critical { border-left-color: var(--worse); }
 .bug.sev-serious { border-left-color: var(--worse); }
