@@ -7,3 +7,11 @@ export async function resolveLatestWeek(ctx) {
   }
   return snapshot.latest_week;
 }
+
+// Shared by every tool that looks up a single finding by id, so there is
+// one fetch-by-id implementation (used by get-finding-context.js and
+// find-probable-sources.js).
+export async function fetchFindingById(ctx, findingId, week) {
+  const doc = await ctx.apiClient.getFindings(ctx.config.domain, week);
+  return (doc.findings ?? []).find((f) => f.finding_id === findingId);
+}
