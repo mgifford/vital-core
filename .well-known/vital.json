@@ -1,7 +1,21 @@
 {
-  "name": "Vital Core",
-  "api": "https://mgifford.github.io/vital-core/api/v1/",
-  "api_documentation": "https://github.com/mgifford/vital-core/blob/main/API.md",
-  "mcp_documentation": "https://github.com/mgifford/vital-core/blob/main/MCP.md",
-  "repository": "https://github.com/mgifford/vital-core"
+  "schema_version": 1,
+  "service": "Vital Core",
+  "api": "/api/v1/",
+  "resources": [
+    "index.json",
+    "snapshot.json",
+    "findings.json"
+  ],
+  "capabilities": [
+    "accessibility",
+    "sustainability",
+    "technology",
+    "security",
+    "standards"
+  ],
+  "mcp": {
+    "supported": true,
+    "documentation": "/MCP.md"
+  }
 }
