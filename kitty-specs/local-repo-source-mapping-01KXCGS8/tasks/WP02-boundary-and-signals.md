@@ -18,7 +18,7 @@ subtasks:
 agent: ''
 shell_pid: 0
 history: []
-authoritative_surface: mcp/security/, mcp/local/
+authoritative_surface: mcp/security/path-allowlist.js
 create_intent:
 - mcp/security/path-allowlist.js
 - mcp/local/signals.js
