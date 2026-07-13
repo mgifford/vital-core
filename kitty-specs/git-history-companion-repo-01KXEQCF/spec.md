@@ -47,38 +47,26 @@ policy" section and Mission B3.
   `src/prune.js` (Mission B1/B2 — already done, unrelated).
 - Migrating VA domain data (already gitignored, never entered history).
 
-## Acceptance criteria
+## Functional Requirements
 
-- [ ] A companion repo exists and contains the current `data/` content with
-      history (or a fresh baseline commit — decide during planning whether
-      to carry old history over or start clean, given B3 explicitly wants
-      history that CAN be truncated).
-- [ ] `vital-core`'s `data/` directory is removed from the working tree and
-      added to `.gitignore` (matching how VA domains are already handled).
-      Decided mechanism: a **separate clone/checkout step**, not a git
-      submodule — CI and local dev explicitly clone/checkout the companion
-      repo into `data/` (e.g. a second `actions/checkout` step in
-      `report.yml`, and a documented local step for contributors). No
-      submodule pointer is committed to `vital-core`.
-- [ ] `npm run scan` and `npm run aggregate` work unchanged from a
-      contributor's point of view aside from the new setup step (docs
-      updated, e.g. "clone the companion repo into data/ first" in
-      README/CLAUDE.md dev-setup instructions).
-- [ ] `.github/workflows/report.yml` is updated: a checkout step fetches the
-      companion repo into `data/` before scan/aggregate runs, and the
-      workflow commits/pushes updates back to the companion repo instead of
-      `vital-core`.
-- [ ] The 1 GB size-check gate job's warning condition and text are updated
-      to reflect the new reality (either checking the companion repo's size
-      too, or removing the now-resolved warning for `vital-core` itself).
-- [ ] `ARCHITECTURE.md` "Git history policy" paragraph rewritten to describe
-      the companion-repo split as implemented (repo name, how scan/aggregate
-      reach it, truncation cadence if decided).
-- [ ] `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes updated
-      with resolution date and pointer to this mission.
-- [ ] No change to committed data shapes (summary.json/findings.json/etc
-      schemas) — this is a storage-location change only.
-- [ ] `npm run test:unit` and `npm run test:e2e` pass after the change.
+| ID | Requirement | Status |
+|---|---|---|
+| FR-01 | A new companion repo (e.g. `vital-core-data`) is created and contains the current `data/` content, with history that can be periodically truncated independently of `vital-core` | Pending |
+| FR-02 | `vital-core`'s `data/` directory is removed from the working tree and added to `.gitignore` (matching how VA domains are already handled) | Pending |
+| FR-03 | Access mechanism is a **separate clone/checkout step**, not a git submodule — CI and local dev explicitly clone/checkout the companion repo into `data/` (e.g. a second `actions/checkout` step in `report.yml`, and a documented local step for contributors). No submodule pointer is committed to `vital-core` | Pending |
+| FR-04 | `npm run scan` and `npm run aggregate` work unchanged from a contributor's point of view aside from the new setup step (docs updated, e.g. "clone the companion repo into data/ first" in README/CLAUDE.md dev-setup instructions) | Pending |
+| FR-05 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | Pending |
+| FR-06 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | Pending |
+| FR-07 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | Pending |
+| FR-08 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Pending |
+
+## Non-Functional Requirements
+
+| ID | Requirement | Status |
+|---|---|---|
+| NFR-01 | No change to committed data shapes (summary.json/findings.json/etc schemas) — this is a storage-location change only | Pending |
+| NFR-02 | Existing `vital-core` git history is not rewritten or squashed as part of this mission | Pending |
+| NFR-03 | `npm run test:unit` and `npm run test:e2e` pass after the change | Pending |
 
 ## Sustainability gate
 
