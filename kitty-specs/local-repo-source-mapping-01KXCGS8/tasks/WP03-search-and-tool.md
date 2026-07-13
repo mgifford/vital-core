@@ -25,7 +25,7 @@ subtasks:
 agent: ''
 shell_pid: 0
 history: []
-authoritative_surface: mcp/local/, mcp/tools/, mcp/server.js
+authoritative_surface: mcp/local/search.js
 create_intent:
 - mcp/local/search.js
 - mcp/local/default-ignore.js

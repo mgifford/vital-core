@@ -18,7 +18,7 @@ subtasks:
 agent: ''
 shell_pid: 0
 history: []
-authoritative_surface: mcp/config/
+authoritative_surface: mcp/config/vital-config.js
 create_intent: []
 execution_mode: code_change
 owned_files:
