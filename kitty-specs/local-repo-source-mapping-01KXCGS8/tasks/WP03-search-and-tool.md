@@ -23,7 +23,7 @@ subtasks:
 - T010
 - T011
 agent: "claude"
-shell_pid: 0
+shell_pid: "88536"
 history: []
 authoritative_surface: mcp/local/search.js
 create_intent:
@@ -423,3 +423,4 @@ smoke check, not just a code read).
 
 - 2026-07-13T12:58:06Z – claude – shell_pid=0 – Moved to in_progress
 - 2026-07-13T12:58:50Z – claude – shell_pid=0 – Moved to for_review
+- 2026-07-13T13:10:16Z – claude – shell_pid=88536 – Started review via action command
