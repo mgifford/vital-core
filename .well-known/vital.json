@@ -1,21 +1,108 @@
 {
-  "schema_version": 1,
-  "service": "Vital Core",
-  "api": "/api/v1/",
+  "schema_version": "1",
+  "status": "experimental",
+  "service": {
+    "name": "Vital Core",
+    "description": "Continuous monitoring and reporting for accessibility, sustainability, security, web standards, technologies, and related public-interest indicators.",
+    "homepage": "https://mgifford.github.io/vital-core/",
+    "repository": "https://github.com/mgifford/vital-core"
+  },
+  "discovery": {
+    "canonical_url": "https://mgifford.github.io/vital-core/.well-known/vital.json",
+    "documentation": {
+      "overview": "https://github.com/mgifford/vital-core/blob/main/README.md",
+      "api": "https://github.com/mgifford/vital-core/blob/main/API.md",
+      "mcp": "https://github.com/mgifford/vital-core/blob/main/MCP.md"
+    }
+  },
+  "api": {
+    "supported": true,
+    "type": "static-json",
+    "read_only": true,
+    "version": "v1",
+    "base_url": "https://mgifford.github.io/vital-core/api/v1/",
+    "index_url": "https://mgifford.github.io/vital-core/api/v1/index.json",
+    "schema_base_url": "https://mgifford.github.io/vital-core/api/v1/schema/",
+    "documentation": "https://github.com/mgifford/vital-core/blob/main/API.md"
+  },
   "resources": [
-    "index.json",
-    "snapshot.json",
-    "findings.json"
+    {
+      "name": "domain-index",
+      "description": "Index of all published domains and their latest available reporting periods.",
+      "url": "https://mgifford.github.io/vital-core/api/v1/index.json",
+      "media_type": "application/json"
+    },
+    {
+      "name": "domain-snapshot",
+      "description": "Current summary and historical reporting data for a domain.",
+      "url_template": "https://mgifford.github.io/vital-core/api/v1/{domain}/snapshot.json",
+      "media_type": "application/json",
+      "template_variables": [
+        "domain"
+      ]
+    },
+    {
+      "name": "weekly-findings",
+      "description": "Normalized findings for a domain during a specified ISO week.",
+      "url_template": "https://mgifford.github.io/vital-core/api/v1/{domain}/{week}/findings.json",
+      "media_type": "application/json",
+      "template_variables": [
+        "domain",
+        "week"
+      ]
+    },
+    {
+      "name": "domain-report",
+      "description": "Human-readable report for a domain during a specified ISO week.",
+      "url_template": "https://mgifford.github.io/vital-core/reports/{domain}/{week}/index.html",
+      "media_type": "text/html",
+      "template_variables": [
+        "domain",
+        "week"
+      ]
+    }
   ],
   "capabilities": [
     "accessibility",
     "sustainability",
-    "technology",
     "security",
-    "standards"
+    "standards",
+    "technology",
+    "performance",
+    "plain-language",
+    "broken-links",
+    "deprecated-html",
+    "document-and-media-inventory",
+    "third-party-resources",
+    "public-interest-signals"
   ],
   "mcp": {
     "supported": true,
-    "documentation": "/MCP.md"
+    "availability": "local",
+    "read_only": true,
+    "transport": "stdio",
+    "entrypoint": "mcp/server.js",
+    "documentation": "https://github.com/mgifford/vital-core/blob/main/MCP.md",
+    "source": "https://github.com/mgifford/vital-core/tree/main/mcp",
+    "tools": [
+      "vital_get_project_context",
+      "vital_list_findings",
+      "vital_get_finding_context",
+      "vital_find_probable_sources"
+    ]
+  },
+  "ai": {
+    "preferred_interfaces": [
+      "mcp",
+      "api"
+    ],
+    "html_scraping": "fallback-only",
+    "instructions": "Use the MCP tools when the local Vital MCP server is configured. Otherwise, use the published JSON API. Do not infer findings from rendered HTML when equivalent structured data is available.",
+    "example_tasks": [
+      "Identify the findings affecting the largest number of pages.",
+      "Prioritize findings that are likely caused by shared templates or components.",
+      "Compare the latest findings with earlier reporting periods.",
+      "Identify findings that may be fixable in a local source repository."
+    ]
   }
 }
