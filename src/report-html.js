@@ -400,6 +400,7 @@ ${subnav(active)}
     depth: 3,
     page: active,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -944,7 +945,7 @@ ${content}
 </section>`;
 }
 
-function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', apiFinding = null }) {
+function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', apiFinding = null, target = null }) {
   const base = '../'.repeat(depth);
   // Machine-discoverable pointers to the underlying JSON API and its docs —
   // present on every page so a page found in isolation (deep link, search
@@ -1002,6 +1003,7 @@ ${body}
         })}</p>
 </footer>
 ${paraChartLoader(base)}
+${target ? webmcpBridgeScript(target) : ''}
 ${extraScript}
 </body>
 </html>`;
@@ -1697,7 +1699,6 @@ ${overflowFindings(overflowBugs, csvBugsHref)}
 ${bugFilterScript()}
 ${triageScript()}
 ${exclusionFilterScript()}
-${webmcpBridgeScript(target)}
 ${bugDeepLinkScript()}
 </section>`;
 }
@@ -2833,6 +2834,7 @@ ${sortableTable(t('Lighthouse scores and Core Web Vitals per sampled page (@week
     depth: 3,
     extraScript: SORT_SCRIPT,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -2931,6 +2933,7 @@ ${heading('h-spelling', t('Possible misspellings'))}
     depth: 3,
     extraScript: SORT_SCRIPT,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3000,6 +3003,7 @@ ${sections}`;
     depth: 3,
     extraScript: SORT_SCRIPT,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3075,6 +3079,7 @@ ${sections}`;
     depth: 3,
     extraScript: SORT_SCRIPT,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3138,6 +3143,7 @@ ${subnav('third-party')}
     depth: 3,
     extraScript: SORT_SCRIPT,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3260,6 +3266,7 @@ ${detailTable}
     depth: 3,
     extraScript: SORT_SCRIPT,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3304,6 +3311,7 @@ ${subnav('archive')}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: latestWeek },
+    target,
   });
 }
 
@@ -3435,6 +3443,7 @@ ${moreGroups}`;
     body,
     depth: 3,
     apiFinding: { key: target.key, week },
+    target,
   });
 }
 
@@ -3531,7 +3540,6 @@ ${changeList('Alfa', diff.alfa)}`) : ''}
 
 ${resourcesSection(summary)}
 ${exclusionFilterScript()}
-${webmcpBridgeScript(target)}
 `;
   return layout({
     title: `${target.domain} ${summary.week} | vital-scans`,
@@ -3540,6 +3548,7 @@ ${webmcpBridgeScript(target)}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3618,6 +3627,7 @@ ${consensusSection(summary, bugs)}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3641,6 +3651,7 @@ ${content}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3661,6 +3672,7 @@ ${content}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
@@ -3684,6 +3696,7 @@ ${content}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: summary.week },
+    target,
   });
 }
 
