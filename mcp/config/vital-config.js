@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import YAML from 'yaml';
 
 const ENV_VAR_PATTERN = /\$\{([A-Z0-9_]+)\}/g;
@@ -24,7 +25,11 @@ export function substituteEnvVars(text) {
 // Returns only what the rest of the server needs — apiBase, domain, host,
 // warnings — never the raw parsed object, so there is no accidental path for
 // an unvalidated or secret-bearing field to reach a tool response.
-export function resolveVitalConfig(raw) {
+// Pure validation/resolution over an already-parsed .vital.yml object.
+// Returns only what the rest of the server needs — apiBase, domain, host,
+// warnings — never the raw parsed object, so there is no accidental path for
+// an unvalidated or secret-bearing field to reach a tool response.
+export function resolveVitalConfig(raw, configFilePath = process.cwd()) {
   if (raw?.version !== 1) {
     throw new Error(`.vital.yml: "version" must be 1 (got ${JSON.stringify(raw?.version)}).`);
   }
@@ -50,15 +55,39 @@ export function resolveVitalConfig(raw) {
     throw new Error('.vital.yml: "instance.domain" must be a non-empty string.');
   }
   const apiBaseNormalized = apiBase.endsWith('/') ? apiBase : `${apiBase}/`;
+
+  // Local repository search (issue #214 step 4): opt-in, off by default —
+  // an existing .vital.yml keeps working unchanged (spec.md C-001).
+  const permissions = raw.permissions ?? {};
+  const readRepository = permissions.read_repository === true;
+  const local = raw.local ?? {};
+  let repositoryPath = null;
+  if (readRepository) {
+    if (typeof local.repository_path !== 'string' || local.repository_path.trim() === '') {
+      throw new Error('.vital.yml: "local.repository_path" is required when "permissions.read_repository" is true.');
+    }
+    // Resolved relative to .vital.yml's own directory, never process.cwd()
+    // (spec.md FR-003) — a developer's cwd when invoking the MCP client may
+    // differ from where .vital.yml lives.
+    const configDir = path.dirname(configFilePath);
+    repositoryPath = path.isAbsolute(local.repository_path)
+      ? local.repository_path
+      : path.resolve(configDir, local.repository_path);
+  }
+  const ignorePatterns = Array.isArray(local.ignore_patterns) ? local.ignore_patterns : [];
+
   return {
     apiBase: apiBaseNormalized,
     domain,
     host: apiUrl.origin,
+    readRepository,
+    repositoryPath,
+    ignorePatterns,
     warnings: [],
   };
 }
 
-export function parseVitalConfig(yamlText) {
+export function parseVitalConfig(yamlText, configFilePath = process.cwd()) {
   const { text, warnings: envWarnings } = substituteEnvVars(yamlText);
   let raw;
   try {
@@ -66,11 +95,11 @@ export function parseVitalConfig(yamlText) {
   } catch (err) {
     throw new Error(`.vital.yml: invalid YAML — ${err.message}`);
   }
-  const resolved = resolveVitalConfig(raw);
+  const resolved = resolveVitalConfig(raw, configFilePath);
   return { ...resolved, warnings: [...envWarnings, ...resolved.warnings] };
 }
 
 export function loadVitalConfig(filePath) {
   const text = fs.readFileSync(filePath, 'utf8');
-  return parseVitalConfig(text);
+  return parseVitalConfig(text, filePath);
 }
