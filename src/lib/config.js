@@ -43,6 +43,10 @@ export function loadConfig(rawYaml) {
   // localStorage runtime selection and per-language builds are independent of
   // this, so languages can be reachable by URL with no visible UI change.
   const globalShowSwitcher = cfg.language_switcher !== false;
+  // Base URL for published reports — used for absolute links where a
+  // relative path would be wrong outside the site itself (llms.txt, CSV
+  // exports). Trailing slash stripped so callers can always do `${base}${path}`.
+  const reportBaseUrl = (cfg.report_base_url || '').replace(/\/+$/, '');
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
@@ -71,6 +75,7 @@ export function loadConfig(rawYaml) {
     languages: globalLangs.languages,
     defaultLanguage: globalLangs.defaultLanguage,
     showLanguageSwitcher: globalShowSwitcher,
+    reportBaseUrl,
     targets,
   };
 }

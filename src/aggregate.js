@@ -24,6 +24,7 @@ import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
+import { buildLlmsTxt } from './lib/llms-txt.js';
 import { writeAcrYaml } from './lib/acr.js';
 import { computeTrainingPriorities } from './lib/training-priorities.js';
 import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
@@ -473,6 +474,7 @@ for (const locale of config.languages) {
 setLocale(config.defaultLanguage);
 writeAsset(DIRS.docs);
 writeApiFiles(DIRS.docs, apiIndexEntries, apiSnapshots, apiWeekFindings);
+fs.writeFileSync(path.join(DIRS.docs, 'llms.txt'), buildLlmsTxt(config, apiIndexEntries));
 console.log('docs/ written');
 
 // ---------------------------------------------------------------------
