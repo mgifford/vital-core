@@ -399,6 +399,7 @@ ${subnav(active)}
     body,
     depth: 3,
     page: active,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -943,8 +944,18 @@ ${content}
 </section>`;
 }
 
-function layout({ title, breadcrumb, body, depth, extraScript = '', page = '' }) {
+function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', apiFinding = null }) {
   const base = '../'.repeat(depth);
+  // Machine-discoverable pointers to the underlying JSON API and its docs —
+  // present on every page so a page found in isolation (deep link, search
+  // result) still leads an agent or tool to structured data, not just HTML.
+  // apiFinding (set only on pages backed by a single domain+week) links this
+  // exact page's findings.json; the two `help` links are unconditional.
+  const apiLink = apiFinding
+    ? `<link rel="alternate" type="application/json" href="${esc(`${base}api/v1/${apiFinding.key}/${apiFinding.week}/findings.json`)}" title="This page's findings as JSON">\n`
+    : '';
+  const relatedLinks = `${apiLink}<link rel="help" href="https://github.com/mgifford/vital-core/blob/main/API.md" title="JSON API documentation">
+<link rel="help" href="https://github.com/mgifford/vital-core/blob/main/MCP.md" title="Local MCP server documentation">`;
   return `<!DOCTYPE html>
 <html lang="${esc(getLocale())}">
 <head>
@@ -954,6 +965,7 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '' })
 <title>${esc(title)}</title>
 <link rel="stylesheet" href="${base}style.css">
 <link rel="llms.txt" href="${base}llms.txt" title="Machine-readable guide for LLMs and agents">
+${relatedLinks}
 <script>
   // Apply the saved theme before first paint to avoid a flash of the
   // wrong colour scheme. No saved choice = follow the OS (prefers-color-scheme).
@@ -979,6 +991,15 @@ ${body}
   <p>${t('Built in the open with <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Siteimprove Alfa</a>; emissions estimated with <a href="https://github.com/thegreenwebfoundation/co2.js">co2.js</a> (SWD v4 model).')}</p>
   <p>${t('This project follows public commitments to <a href="https://mgifford.github.io/ACCESSIBILITY.md/">accessibility</a> and <a href="https://mgifford.github.io/SUSTAINABILITY.md/">sustainability</a>, and the <a href="https://w3c.github.io/sustainableweb-wsg/">W3C Web Sustainability Guidelines</a>.')}</p>
   <p>${t('Automated checks find roughly a third of accessibility barriers. A clean report is a floor, not a finish line.')}</p>
+  <p>${apiFinding
+      ? t('Machine-readable data for this page is available through the <a href="@apiUrl">Vital Core JSON API</a>. Developers using an MCP-compatible coding assistant can connect through the <a href="@mcpUrl">Vital MCP server</a>.', {
+          '@apiUrl': esc(`${base}api/v1/${apiFinding.key}/${apiFinding.week}/findings.json`),
+          '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
+        })
+      : t('Machine-readable data for this site is available through the <a href="@apiUrl">Vital Core JSON API</a>. Developers using an MCP-compatible coding assistant can connect through the <a href="@mcpUrl">Vital MCP server</a>.', {
+          '@apiUrl': esc(`${base}api/v1/index.json`),
+          '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
+        })}</p>
 </footer>
 ${paraChartLoader(base)}
 ${extraScript}
@@ -2811,6 +2832,7 @@ ${sortableTable(t('Lighthouse scores and Core Web Vitals per sampled page (@week
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -2908,6 +2930,7 @@ ${heading('h-spelling', t('Possible misspellings'))}
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -2976,6 +2999,7 @@ ${sections}`;
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3050,6 +3074,7 @@ ${sections}`;
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3112,6 +3137,7 @@ ${subnav('third-party')}
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3233,6 +3259,7 @@ ${detailTable}
     body,
     depth: 3,
     extraScript: SORT_SCRIPT,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3276,6 +3303,7 @@ ${subnav('archive')}
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">${t('Archive')}</li>`,
     body,
     depth: 3,
+    apiFinding: { key: target.key, week: latestWeek },
   });
 }
 
@@ -3406,6 +3434,7 @@ ${moreGroups}`;
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(week)}</a></li><li aria-current="page">${title}</li>`,
     body,
     depth: 3,
+    apiFinding: { key: target.key, week },
   });
 }
 
@@ -3510,6 +3539,7 @@ ${webmcpBridgeScript(target)}
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li aria-current="page">${esc(target.domain)} ${esc(summary.week)}</li>`,
     body,
     depth: 3,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3587,6 +3617,7 @@ ${consensusSection(summary, bugs)}
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Accessibility</li>`,
     body,
     depth: 3,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3609,6 +3640,7 @@ ${content}
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Standards")}</li>`,
     body,
     depth: 3,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3628,6 +3660,7 @@ ${content}
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t("Security")}</li>`,
     body,
     depth: 3,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
@@ -3650,6 +3683,7 @@ ${content}
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Errors</li>`,
     body,
     depth: 3,
+    apiFinding: { key: target.key, week: summary.week },
   });
 }
 
