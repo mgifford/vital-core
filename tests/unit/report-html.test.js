@@ -38,6 +38,35 @@ test('related-links: the fleet index has no domain-specific JSON alternate (no s
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
 });
 
+test('webmcp bridge: reaches every domain sub-page via layout(), not just Accessibility/index', () => {
+  // Standards was one of 11 sub-pages that had no bridge before it moved into
+  // layout() — a real regression test, not just re-testing webmcpBridgeScript
+  // itself (already covered unit-by-unit in webmcp-bridge.test.js).
+  const target = { key: 'd', domain: 'd', webmcpEnabled: true };
+  const summary = {
+    week: '2026-W24',
+    standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
+  };
+  const html = renderStandardsPage(target, summary);
+  assert.match(html, /modelContext\.registerTool/);
+  assert.match(html, /vital_get_project_context/);
+});
+
+test('webmcp bridge: absent when the domain has not opted in, even via layout()', () => {
+  const target = { key: 'd', domain: 'd', webmcpEnabled: false };
+  const summary = {
+    week: '2026-W24',
+    standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
+  };
+  const html = renderStandardsPage(target, summary);
+  assert.doesNotMatch(html, /registerTool/);
+});
+
+test('webmcp bridge: absent from the fleet index (no single target to scope tools to)', () => {
+  const html = renderIndex([]);
+  assert.doesNotMatch(html, /registerTool/);
+});
+
 test('related-links: a visible footer sentence links the JSON API and MCP server on a domain page', () => {
   const target = { key: 'd', domain: 'd' };
   const summary = {
