@@ -41,7 +41,7 @@ jobs:
     outputs:
       publish: ${{ steps.decide.outputs.publish }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
@@ -91,9 +91,9 @@ jobs:
       url: ${{ steps.page.outputs.page_url }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 26 # 🟢 Upgraded to Node 26 Latest Stable Release
           cache: npm
@@ -147,7 +147,7 @@ jobs:
         run: node src/issue-comment.js
 
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5 # 🟢 Upgraded v3 -> v5 to target the updated engine pipeline
@@ -156,7 +156,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         with:
           timeout_minutes: 10
         continue-on-error: true
@@ -164,7 +164,7 @@ jobs:
       - name: Retry GitHub Pages deploy
         if: steps.deploy.outcome == 'failure'
         id: deploy_retry
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       - name: Resolve deployed page URL
         id: page
