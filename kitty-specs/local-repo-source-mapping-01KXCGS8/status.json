@@ -1,0 +1,49 @@
+{
+  "event_count": 6,
+  "last_event_id": "01KXCJB2QKF94AZ34N3SJQSME6",
+  "materialized_at": "2026-07-13T01:44:20.466736+00:00",
+  "mission_number": "",
+  "mission_slug": "local-repo-source-mapping-01KXCGS8",
+  "mission_type": "software-dev",
+  "summary": {
+    "approved": 0,
+    "blocked": 0,
+    "canceled": 0,
+    "claimed": 0,
+    "done": 0,
+    "for_review": 0,
+    "in_progress": 1,
+    "in_review": 0,
+    "planned": 3
+  },
+  "work_packages": {
+    "WP01": {
+      "actor": "claude:sonnet:implementer:implementer",
+      "force_count": 0,
+      "lane": "in_progress",
+      "last_event_id": "01KXCJB2QKF94AZ34N3SJQSME6",
+      "last_transition_at": "2026-07-13T01:44:20.466736+00:00"
+    },
+    "WP02": {
+      "actor": "finalize-tasks",
+      "force_count": 0,
+      "lane": "planned",
+      "last_event_id": "01KXCHYYP1AK1CEWMZCKH1CMW5",
+      "last_transition_at": "2026-07-13T01:37:43.105381+00:00"
+    },
+    "WP03": {
+      "actor": "finalize-tasks",
+      "force_count": 0,
+      "lane": "planned",
+      "last_event_id": "01KXCHZ1FN4DSHKN3Y5FTW3783",
+      "last_transition_at": "2026-07-13T01:37:45.973689+00:00"
+    },
+    "WP04": {
+      "actor": "finalize-tasks",
+      "force_count": 0,
+      "lane": "planned",
+      "last_event_id": "01KXCHZ4DQPKD888KCE1RQ7PZ0",
+      "last_transition_at": "2026-07-13T01:37:48.983709+00:00"
+    }
+  }
+}
