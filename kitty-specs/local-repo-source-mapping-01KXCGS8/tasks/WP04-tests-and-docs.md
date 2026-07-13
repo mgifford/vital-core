@@ -19,7 +19,7 @@ subtasks:
 agent: ''
 shell_pid: 0
 history: []
-authoritative_surface: tests/unit/mcp/, MCP.md
+authoritative_surface: tests/unit/mcp/search.test.js
 create_intent:
 - tests/unit/mcp/search.test.js
 - tests/unit/mcp/find-probable-sources.test.js
