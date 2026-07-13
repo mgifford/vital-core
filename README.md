@@ -149,6 +149,12 @@ published JSON Schemas. URLs are redacted for publication (fragments stripped,
 sensitive query values `[REDACTED]`) and excluded pages are omitted. See
 [API.md](API.md) for the full contract, schemas, retention, and examples.
 
+Every deployed site also publishes `/llms.txt` (the
+[llmstxt.org](https://llmstxt.org/) convention): a plain-text index pointing
+an LLM or coding agent at the JSON API, `API.md`, and `MCP.md`, so the data
+behind the HTML report is discoverable without already knowing this
+repository exists.
+
 ## Local MCP server
 
 `mcp/` is a local, read-only-by-default [Model Context Protocol](https://modelcontextprotocol.io/)

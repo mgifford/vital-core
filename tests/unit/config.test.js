@@ -104,3 +104,9 @@ test('config: webmcpEnabled resolves to a strict boolean for every real target',
     assert.equal(typeof t.webmcpEnabled, 'boolean');
   }
 });
+
+test('config: loadConfig surfaces reportBaseUrl with no trailing slash', () => {
+  const c = loadConfig();
+  assert.equal(typeof c.reportBaseUrl, 'string');
+  assert.ok(!c.reportBaseUrl.endsWith('/'), 'reportBaseUrl should have its trailing slash stripped');
+});
