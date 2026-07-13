@@ -106,7 +106,7 @@
     },
     {
       "criterion_id": "NFR-001",
-      "description": "Read-only in every dimension — the tool never writes, modifies, or deletes anything locally.",
+      "description": "Read-only in every dimension \u2014 the tool never writes, modifies, or deletes anything locally.",
       "proof_type": "code_review",
       "evidence": "mcp/local/search.js only calls fs.readdirSync/statSync/readFileSync; no fs.writeFileSync/unlinkSync/mkdirSync anywhere in mcp/local/ or mcp/tools/find-probable-sources.js",
       "pass_fail": "pass",
@@ -116,7 +116,7 @@
     },
     {
       "criterion_id": "NFR-002",
-      "description": "Confidence tiers are honestly conservative — a single weak signal alone yields low, never high; the tool's own description warns results are probabilistic.",
+      "description": "Confidence tiers are honestly conservative \u2014 a single weak signal alone yields low, never high; the tool's own description warns results are probabilistic.",
       "proof_type": "automated_test",
       "evidence": "mcp/local/search.js tierFor(): >=3 types->high, 2->medium, else low; tests/unit/mcp/search.test.js and find-probable-sources.test.js Scenario 3 both strictly assert 'low' (not just !=='high'); findProbableSourcesTool.description matched against /not certain|probabilistic|confidence/i in the static-schema test",
       "pass_fail": "pass",
@@ -126,7 +126,7 @@
     },
     {
       "criterion_id": "NFR-003",
-      "description": "No new external dependency for the core matching logic — plain Node.js fs/path/string matching.",
+      "description": "No new external dependency for the core matching logic \u2014 plain Node.js fs/path/string matching.",
       "proof_type": "code_review",
       "evidence": "mcp/local/search.js and mcp/local/default-ignore.js import only node:fs, node:path, and sibling mcp/ modules; package.json dependencies unchanged by this mission",
       "pass_fail": "pass",
@@ -136,7 +136,7 @@
     },
     {
       "criterion_id": "NFR-004",
-      "description": "Remote/scan-derived text used to build search signals is treated as inert data — never interpreted as a command, path, or code; only literal/regex-escaped substring matches.",
+      "description": "Remote/scan-derived text used to build search signals is treated as inert data \u2014 never interpreted as a command, path, or code; only literal/regex-escaped substring matches.",
       "proof_type": "automated_test",
       "evidence": "mcp/local/search.js escapeRegex() before compiling each signal into a RegExp; tests/unit/mcp/search.test.js adversarial regex-metacharacter test (literal 'a.*b' matches only verbatim, not as a wildcard); find-probable-sources.test.js Scenario 4 uses a path-traversal-shaped finding value and confirms it is treated as inert search text",
       "pass_fail": "pass",
@@ -156,7 +156,7 @@
     },
     {
       "criterion_id": "C-001",
-      "description": "permissions.read_repository defaults to false — an existing .vital.yml continues to work exactly as before.",
+      "description": "permissions.read_repository defaults to false \u2014 an existing .vital.yml continues to work exactly as before.",
       "proof_type": "automated_test",
       "evidence": "mcp/config/vital-config.js: readRepository = permissions.read_repository === true (strict equality, defaults false when absent); tests/unit/mcp/vital-config.test.js (WP01) covers the default; find-probable-sources.test.js Scenario 2b covers the field-absent-from-config case at the tool layer",
       "pass_fail": "pass",
@@ -166,7 +166,7 @@
     },
     {
       "criterion_id": "C-002",
-      "description": "No capability beyond source-location suggestion is implemented — no reproduction, command execution, patch/diff generation, or upstream issue search.",
+      "description": "No capability beyond source-location suggestion is implemented \u2014 no reproduction, command execution, patch/diff generation, or upstream issue search.",
       "proof_type": "code_review",
       "evidence": "mcp/tools/find-probable-sources.js handler only reads and returns candidate file paths/signals; no execution, no write, no diff/patch logic anywhere in this mission's changed files",
       "pass_fail": "pass",
@@ -176,7 +176,7 @@
     },
     {
       "criterion_id": "C-003",
-      "description": "No Drupal-specific or other framework-specific parsing (Twig, theme registry, etc.) — all signals are framework-agnostic.",
+      "description": "No Drupal-specific or other framework-specific parsing (Twig, theme registry, etc.) \u2014 all signals are framework-agnostic.",
       "proof_type": "code_review",
       "evidence": "mcp/local/signals.js and mcp/local/search.js contain only generic HTML-attribute/text matching; MCP.md explicitly states the framework-agnostic scope boundary and defers Drupal-specific mapping to a separate future mission",
       "pass_fail": "pass",
@@ -192,7 +192,7 @@
       "verification_method": "custom_command",
       "verification_command": "node --test tests/unit/mcp/path-allowlist.test.js tests/unit/mcp/find-probable-sources.test.js",
       "result": "confirmed_absent",
-      "evidence": "tests/unit/mcp/path-allowlist.test.js (WP02) symlink-escape and traversal tests; tests/unit/mcp/find-probable-sources.test.js Scenario 4 places a sentinel file outside repositoryPath and asserts its content/path never appear anywhere in the serialized tool response"
+      "evidence": "Command exited 0: TAP version 13\n# Subtest: vital_find_probable_sources: Scenario 1 \u2014 a distinctive signal yields a high/medium-confidence top candidate\nok 1 - vital_find_probable_sources: Scenario 1 \u2014 a distinctive si"
     },
     {
       "invariant_id": "NI-002",
@@ -200,7 +200,7 @@
       "verification_method": "custom_command",
       "verification_command": "node --test tests/unit/mcp/find-probable-sources.test.js",
       "result": "confirmed_absent",
-      "evidence": "tests/unit/mcp/find-probable-sources.test.js Scenario 2 spies on fs.readdirSync/fs.readFileSync and asserts neither is called, and asserts ctx.calls.getSnapshot/getFindings both remain 0"
+      "evidence": "Command exited 0: TAP version 13\n# Subtest: vital_find_probable_sources: Scenario 1 \u2014 a distinctive signal yields a high/medium-confidence top candidate\nok 1 - vital_find_probable_sources: Scenario 1 \u2014 a distinctive si"
     }
   ]
 }
