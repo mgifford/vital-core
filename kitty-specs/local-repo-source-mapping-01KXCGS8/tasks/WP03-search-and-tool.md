@@ -22,7 +22,7 @@ subtasks:
 - T009
 - T010
 - T011
-agent: ''
+agent: "claude"
 shell_pid: 0
 history: []
 authoritative_surface: mcp/local/search.js
@@ -418,3 +418,7 @@ site in `search.js` is preceded by `assertPathWithinRoot`; (3) the
 result `path` values are relative to `repositoryRoot`, never absolute;
 (5) the tool is registered and callable end-to-end (a quick `node -e`
 smoke check, not just a code read).
+
+## Activity Log
+
+- 2026-07-13T12:58:06Z – claude – shell_pid=0 – Moved to in_progress
