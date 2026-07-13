@@ -22,8 +22,8 @@ subtasks:
 - T009
 - T010
 - T011
-agent: ''
-shell_pid: 0
+agent: "claude"
+shell_pid: "88536"
 history: []
 authoritative_surface: mcp/local/search.js
 create_intent:
@@ -418,3 +418,10 @@ site in `search.js` is preceded by `assertPathWithinRoot`; (3) the
 result `path` values are relative to `repositoryRoot`, never absolute;
 (5) the tool is registered and callable end-to-end (a quick `node -e`
 smoke check, not just a code read).
+
+## Activity Log
+
+- 2026-07-13T12:58:06Z – claude – shell_pid=0 – Moved to in_progress
+- 2026-07-13T12:58:50Z – claude – shell_pid=0 – Moved to for_review
+- 2026-07-13T13:10:16Z – claude – shell_pid=88536 – Started review via action command
+- 2026-07-13T13:15:11Z – user – shell_pid=88536 – Review passed: searchForSignals bounds files/size correctly, honors default+config ignore lists, every fs.readFileSync gated by assertPathWithinRoot on the realpath-resolved root (fixed a symlink-relative-path bug found during independent verification), confidence tiers from distinct signal-type count, results capped/sorted. Permission-disabled path short-circuits before any fs/apiClient call. Tool registered in server.js TOOLS array, confirmed via the WP's own node -e smoke check. Independently re-ran npm run test:unit (388/388 pass) and npm run check:spec-kitty (pass). No contracts/ dir for this mission.

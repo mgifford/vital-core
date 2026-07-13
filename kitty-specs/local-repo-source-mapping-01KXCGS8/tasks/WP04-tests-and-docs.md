@@ -16,7 +16,7 @@ subtasks:
 - T012
 - T013
 - T014
-agent: ''
+agent: "claude"
 shell_pid: 0
 history: []
 authoritative_surface: tests/unit/mcp/search.test.js
@@ -272,3 +272,9 @@ tool's `description` string actually greps for uncertainty language, not
 just checks the description is non-empty; (4) `npm run test:unit`'s full
 output shows zero regressions to any pre-existing test, and a test count
 strictly higher than before this mission.
+
+## Activity Log
+
+- 2026-07-13T13:42:31Z – claude – shell_pid=0 – Moved to in_progress
+- 2026-07-13T13:46:04Z – claude – shell_pid=0 – Moved to for_review
+- 2026-07-13T13:48:19Z – user – shell_pid=0 – Review passed: search.test.js's conservatism test strictly asserts 'low' (not just !=='high') for every match on a common single-type signal. find-probable-sources.test.js Scenario 4 places a sentinel file outside repositoryPath and asserts its content/path never appear in the serialized response (not just a no-throw check), plus verifies every candidate path is relative and non-traversing. Static-schema test greps the tool description for uncertainty language via regex, not a non-empty check. Independently re-ran npm run test:unit (408/408, up from 388 pre-mission, zero regressions) and npm run check:spec-kitty (pass). Grepped mcp/ and MCP.md for stray DRAFT/NOT YET IMPLEMENTED language referencing this tool — clean. MCP.md read end-to-end: documents config fields, confidence-tier semantics, and the framework-agnostic scope boundary without requiring source-code reading.

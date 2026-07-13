@@ -9,16 +9,16 @@ const FIXTURE_PATH = path.join(
   '..', '..', 'fixtures', 'mcp', '.vital.yml',
 );
 
-test('server: exposes exactly the three phase-1 tools', () => {
+test('server: exposes exactly the four tools', () => {
   assert.deepEqual(
     TOOLS.map((t) => t.name).sort(),
-    ['vital_get_finding_context', 'vital_get_project_context', 'vital_list_findings'],
+    ['vital_find_probable_sources', 'vital_get_finding_context', 'vital_get_project_context', 'vital_list_findings'],
   );
 });
 
 test('server: listToolsResult surfaces static name/description/inputSchema only', () => {
   const result = listToolsResult();
-  assert.equal(result.tools.length, 3);
+  assert.equal(result.tools.length, 4);
   for (const tool of result.tools) {
     assert.equal(typeof tool.name, 'string');
     assert.equal(typeof tool.description, 'string');
