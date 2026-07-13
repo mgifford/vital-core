@@ -422,3 +422,4 @@ smoke check, not just a code read).
 ## Activity Log
 
 - 2026-07-13T12:58:06Z – claude – shell_pid=0 – Moved to in_progress
+- 2026-07-13T12:58:50Z – claude – shell_pid=0 – Moved to for_review
