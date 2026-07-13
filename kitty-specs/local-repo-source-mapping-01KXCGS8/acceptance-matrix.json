@@ -2,108 +2,205 @@
   "mission_slug": "local-repo-source-mapping-01KXCGS8",
   "mission_number": "",
   "mission_type": "software-dev",
-  "overall_verdict": "pending",
+  "overall_verdict": "pass",
   "criteria": [
     {
       "criterion_id": "FR-001",
-      "description": "Verify FR-001 is satisfied",
+      "description": "vital_find_probable_sources accepts { finding_id, week? } and returns a ranked list of candidate source files with confidence tiers and matched signals; registered alongside the existing tools in mcp/server.js following the same tool shape.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/tools/find-probable-sources.js; registered in mcp/server.js TOOLS array; tests/unit/mcp/find-probable-sources.test.js Scenario 1 and static-schema test; node -e smoke check confirms 4 tools including vital_find_probable_sources",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "Verified end-to-end via handler call and server.js TOOLS registration."
     },
     {
       "criterion_id": "FR-002",
-      "description": "Verify FR-002 is satisfied",
+      "description": "Tool is gated behind permissions.read_repository (boolean, default false). Absent/false returns a structured refusal, not a thrown error.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/tools/find-probable-sources.js handler's readRepository check; tests/unit/mcp/find-probable-sources.test.js Scenario 2 (explicit false) and Scenario 2b (field absent) both assert found:false, reason:'permission_disabled'",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "Both the explicit-false and field-absent cases are covered."
     },
     {
       "criterion_id": "FR-003",
-      "description": "Verify FR-003 is satisfied",
+      "description": "local.repository_path is required when permissions.read_repository is true; resolved relative to .vital.yml's own directory, not process.cwd().",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/config/vital-config.js resolveVitalConfig() resolves local.repository_path via path.resolve(configDir, ...) using path.dirname(configFilePath); tests/unit/mcp/vital-config.test.js (WP01) covers relative-path resolution against .vital.yml's own directory",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "Implemented in WP01, consumed unchanged by WP03's tool."
     },
     {
       "criterion_id": "FR-004",
-      "description": "Verify FR-004 is satisfied",
+      "description": "Search is strictly confined to local.repository_path; no path traversal via tool argument or symlink resolution. Implemented as a single filesystem-boundary module, not per-call-site checks.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/security/path-allowlist.js assertPathWithinRoot() (WP02), called on every directory and file in mcp/local/search.js before any read; tests/unit/mcp/path-allowlist.test.js adversarial traversal/symlink-escape tests; tests/unit/mcp/find-probable-sources.test.js Scenario 4 places a sentinel file outside repositoryPath and asserts it never appears in any response",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "Symlink-safe realpath comparison; single shared module, no duplicated inline checks."
     },
     {
       "criterion_id": "FR-005",
-      "description": "Verify FR-005 is satisfied",
+      "description": "Candidate files found by matching signals (CSS classes/IDs, data-* attributes, distinctive text, script/stylesheet URLs) extracted from finding evidence, with no framework-specific knowledge required.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/local/signals.js extractSignals() (WP02); mcp/local/search.js searchForSignals() matches each signal type as a literal substring; tests/unit/mcp/signals.test.js and tests/unit/mcp/search.test.js basic-match test",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "No framework/CMS-specific logic present in either module."
     },
     {
       "criterion_id": "FR-006",
-      "description": "Verify FR-006 is satisfied",
+      "description": "Each candidate includes a repository-relative path (never absolute), a confidence tier, and the specific matched signals.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/local/search.js: path.relative(resolvedRoot, resolvedPath); tests/unit/mcp/search.test.js basic-match test asserts relative path; find-probable-sources.test.js Scenario 4 asserts !path.isAbsolute(candidate.path)",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "Fixed a symlink-relative-path bug during WP03 implementation (root now realpath-resolved once up front) so the relative path is always clean even when the configured root is itself a symlink."
     },
     {
       "criterion_id": "FR-007",
-      "description": "Verify FR-007 is satisfied",
+      "description": "Results are capped (default 20) and sorted by confidence tier then signal count.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/local/search.js: resultCap option + TIER_RANK sort; tests/unit/mcp/search.test.js result-cap test verifies exactly-capped length and that survivors are the highest-confidence results",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
     },
     {
       "criterion_id": "FR-008",
-      "description": "Verify FR-008 is satisfied",
+      "description": "File content reading is bounded by max file size and max total files scanned per call, both with safe defaults.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/local/search.js: DEFAULT_MAX_FILE_SIZE_BYTES (1MB), DEFAULT_MAX_FILES (5000); tests/unit/mcp/search.test.js file-size-bound and maxFiles-bound tests",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "filesVisited counts every file examined (matched or not), closing the zero-match unbounded-walk gap."
     },
     {
       "criterion_id": "FR-009",
-      "description": "Verify FR-009 is satisfied",
+      "description": "Binary files, node_modules/, .git/, and other common non-source directories are excluded by default; overridable via local.ignore_patterns.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/local/default-ignore.js DEFAULT_IGNORE_DIRS/DEFAULT_IGNORE_EXTENSIONS; tests/unit/mcp/search.test.js node_modules-exclusion test and custom-ignore-pattern test",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "ignore_patterns adds to the default list, never replaces it, per FR-009's design intent."
     },
     {
       "criterion_id": "FR-010",
-      "description": "Verify FR-010 is satisfied",
+      "description": "MCP.md updated: tool moves from \"Not yet implemented\" to a documented section (config fields, tool, confidence-tier semantics, explicit framework-agnostic statement).",
+      "proof_type": "manual_review",
+      "evidence": "MCP.md: new '### vital_find_probable_sources' section, 'Local repository search (optional)' config section, framework-agnostic scope statement, 'Not yet implemented' entry removed; read end-to-end during WP04 review",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "Confirmed a new reader could understand the tool's purpose, enablement, and confidence caveats without reading source."
+    },
+    {
+      "criterion_id": "NFR-001",
+      "description": "Read-only in every dimension — the tool never writes, modifies, or deletes anything locally.",
+      "proof_type": "code_review",
+      "evidence": "mcp/local/search.js only calls fs.readdirSync/statSync/readFileSync; no fs.writeFileSync/unlinkSync/mkdirSync anywhere in mcp/local/ or mcp/tools/find-probable-sources.js",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
+    },
+    {
+      "criterion_id": "NFR-002",
+      "description": "Confidence tiers are honestly conservative — a single weak signal alone yields low, never high; the tool's own description warns results are probabilistic.",
       "proof_type": "automated_test",
-      "evidence": null,
-      "pass_fail": "pending",
-      "verified_by": null,
-      "verified_at": null,
-      "notes": "TODO: replace with a real acceptance criterion"
+      "evidence": "mcp/local/search.js tierFor(): >=3 types->high, 2->medium, else low; tests/unit/mcp/search.test.js and find-probable-sources.test.js Scenario 3 both strictly assert 'low' (not just !=='high'); findProbableSourcesTool.description matched against /not certain|probabilistic|confidence/i in the static-schema test",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": "Reviewer explicitly checked the conservatism tests assert the literal 'low' value, per WP04's own reviewer guidance."
+    },
+    {
+      "criterion_id": "NFR-003",
+      "description": "No new external dependency for the core matching logic — plain Node.js fs/path/string matching.",
+      "proof_type": "code_review",
+      "evidence": "mcp/local/search.js and mcp/local/default-ignore.js import only node:fs, node:path, and sibling mcp/ modules; package.json dependencies unchanged by this mission",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
+    },
+    {
+      "criterion_id": "NFR-004",
+      "description": "Remote/scan-derived text used to build search signals is treated as inert data — never interpreted as a command, path, or code; only literal/regex-escaped substring matches.",
+      "proof_type": "automated_test",
+      "evidence": "mcp/local/search.js escapeRegex() before compiling each signal into a RegExp; tests/unit/mcp/search.test.js adversarial regex-metacharacter test (literal 'a.*b' matches only verbatim, not as a wildcard); find-probable-sources.test.js Scenario 4 uses a path-traversal-shaped finding value and confirms it is treated as inert search text",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
+    },
+    {
+      "criterion_id": "NFR-005",
+      "description": "npm run test:unit stays green; new tests use a small synthetic fixture directory under os.tmpdir(), never the real repository checkout.",
+      "proof_type": "automated_test",
+      "evidence": "tests/unit/mcp/search.test.js and find-probable-sources.test.js both use fs.mkdtempSync(path.join(os.tmpdir(), ...)) fixtures with try/finally cleanup; npm run test:unit: 408/408 passing (up from 388 before this mission), zero regressions, independently re-run twice during WP03 and WP04 review",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
+    },
+    {
+      "criterion_id": "C-001",
+      "description": "permissions.read_repository defaults to false — an existing .vital.yml continues to work exactly as before.",
+      "proof_type": "automated_test",
+      "evidence": "mcp/config/vital-config.js: readRepository = permissions.read_repository === true (strict equality, defaults false when absent); tests/unit/mcp/vital-config.test.js (WP01) covers the default; find-probable-sources.test.js Scenario 2b covers the field-absent-from-config case at the tool layer",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
+    },
+    {
+      "criterion_id": "C-002",
+      "description": "No capability beyond source-location suggestion is implemented — no reproduction, command execution, patch/diff generation, or upstream issue search.",
+      "proof_type": "code_review",
+      "evidence": "mcp/tools/find-probable-sources.js handler only reads and returns candidate file paths/signals; no execution, no write, no diff/patch logic anywhere in this mission's changed files",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
+    },
+    {
+      "criterion_id": "C-003",
+      "description": "No Drupal-specific or other framework-specific parsing (Twig, theme registry, etc.) — all signals are framework-agnostic.",
+      "proof_type": "code_review",
+      "evidence": "mcp/local/signals.js and mcp/local/search.js contain only generic HTML-attribute/text matching; MCP.md explicitly states the framework-agnostic scope boundary and defers Drupal-specific mapping to a separate future mission",
+      "pass_fail": "pass",
+      "verified_by": "claude",
+      "verified_at": "2026-07-13",
+      "notes": null
     }
   ],
-  "negative_invariants": []
+  "negative_invariants": [
+    {
+      "invariant_id": "NI-001",
+      "description": "No file outside the configured local.repository_path is ever read or referenced in a tool response, even under adversarial finding evidence or symlink escape.",
+      "verification_method": "custom_command",
+      "verification_command": "node --test tests/unit/mcp/path-allowlist.test.js tests/unit/mcp/find-probable-sources.test.js",
+      "result": "confirmed_absent",
+      "evidence": "tests/unit/mcp/path-allowlist.test.js (WP02) symlink-escape and traversal tests; tests/unit/mcp/find-probable-sources.test.js Scenario 4 places a sentinel file outside repositoryPath and asserts its content/path never appear anywhere in the serialized tool response"
+    },
+    {
+      "invariant_id": "NI-002",
+      "description": "The permission-disabled refusal path never touches the filesystem or the API client.",
+      "verification_method": "custom_command",
+      "verification_command": "node --test tests/unit/mcp/find-probable-sources.test.js",
+      "result": "confirmed_absent",
+      "evidence": "tests/unit/mcp/find-probable-sources.test.js Scenario 2 spies on fs.readdirSync/fs.readFileSync and asserts neither is called, and asserts ctx.calls.getSnapshot/getFindings both remain 0"
+    }
+  ]
 }

@@ -15,7 +15,7 @@ subtasks:
 - T005
 - T006
 - T007
-agent: ''
+agent: "claude"
 shell_pid: 0
 history: []
 authoritative_surface: mcp/security/path-allowlist.js
