@@ -12,13 +12,13 @@
 
 defaults:
   pages_per_run: 150        # max pages scanned per domain per workflow run (keeps runs < 2h)
-  max_pages_per_week: 5000  # hard weekly cap per domain
+  max_pages_per_week: 10000  # hard weekly cap per domain
   delay_ms: 1500            # pause between page loads (politeness)
   nav_timeout_ms: 30000     # page navigation timeout
   networkidle_cap_ms: 8000  # max wait for network-idle after load; passive listening (sends nothing), so capping never adds server load
   settle_delay_ms: 1000     # wait after load + network-idle before auditing (avoids pre-hydration false positives)
-  max_crawl_depth: 6        # BFS depth from seeds
-  retention_weeks: 3        # page-level detail kept this long; weekly summaries kept forever
+  max_crawl_depth: 10        # BFS depth from seeds
+  retention_weeks: 2        # page-level detail kept this long; weekly summaries kept forever
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
   reporting:
     max_html_issues: 50
@@ -69,6 +69,20 @@ default_language: en
 # Overridable per target.
 language_switcher: false
 
+# WebMCP bridge (issue #214 step 10, opt-in — no global default). Set
+# `webmcp: true` on an individual target below to emit a small, first-party
+# client-side script that registers read-only findings tools (mirroring the
+# local MCP server's vital_get_project_context / vital_list_findings /
+# vital_get_finding_context) with an in-browser MCP-capable agent, sourced
+# from this domain's own published /api/v1/ data. Unset or `false` means
+# the target ships zero additional bytes — this is not a per-target
+# override of a global default the way language_switcher is; there is no
+# top-level `webmcp:` key. See MCP.md.
+#
+# Example (commented out — enable deliberately per target, not by default):
+#   - domain: www.example.gov
+#     webmcp: true
+
 # Per-engine weekly coverage rates. Each value is the share of the week's
 # unique pages an engine runs on, as a fraction (0.3) or percent (30).
 # 0 (or omitted) disables an engine. Selection is deterministic per page
@@ -93,6 +107,41 @@ sampling:
   sustainability: 10   # page weight + estimated CO2
   tech: 10             # technology detection (CMS, frameworks, CDNs, analytics) — small sample sufficient
   third-party: 25      # third-party JS/resource cost per page (load bytes/time + which origins serve scripts); varies per page, so sampled like sustainability
+
+# DRAFT, NOT YET IMPLEMENTED:
+#
+# domain_scan_cadence:
+#   Controls how often this domain may start a scan.
+#   Supported future values:
+#     incremental  - current behaviour; may run several times during the week
+#                    until the weekly cap or frontier is exhausted
+#     daily        - run no more than once per UTC calendar day
+#
+# url_rescan_interval_days:
+#   Number of days before an ordinary previously scanned URL becomes
+#   eligible for another scan.
+#
+# priority_url_rescan_interval_days:
+#   Number of days before a configured priority URL becomes eligible again.
+#
+#   priority_urls_file: path to a file of top-task URLs, one per line.
+#     Blank lines and # comments are ignored. These URLs are covered before
+#     ordinary URLs. Under the current implementation, no URL is scanned
+#     more than once per ISO week.
+#
+#   domain_scan_cadence: DRAFT, NOT YET IMPLEMENTED.
+#     Intended values:
+#       incremental - allow multiple incremental runs during the week
+#       daily       - allow no more than one domain scan per UTC day
+#
+#   url_rescan_interval_days: DRAFT, NOT YET IMPLEMENTED.
+#     Intended number of elapsed days before an ordinary URL is eligible
+#     for rescanning. Current behaviour uses the ISO-week boundary.
+#
+#   priority_url_rescan_interval_days: DRAFT, NOT YET IMPLEMENTED.
+#     Intended number of elapsed days before a priority URL is eligible
+#     for rescanning. Use 7 for weekly priority URL coverage.
+
 
 targets:
   # Discovery is host-scoped. The apex domain and its `www.` variant are
@@ -184,19 +233,36 @@ targets:
   - domain: www.cms.gov
     importance: 5
     priority_urls_file: profiles/www.cms.gov-top-tasks.txt
+
+    # DRAFT, NOT YET IMPLEMENTED.
+    # Previously scanned ordinary URLs become eligible after seven days.
+    url_rescan_interval_days: 7
+    # DRAFT, NOT YET IMPLEMENTED.
+    # Priority URLs remain weekly, as requested.
+    priority_url_rescan_interval_days: 7
+    
     url_exclude_patterns: [".aspx"]
     design_system: cms-ds
     design_system_theme: default
+    webmcp: true
   - domain: www.medicare.gov
     importance: 5
+
+    # DRAFT, NOT YET IMPLEMENTED.
+    domain_scan_cadence: incremental
+    url_rescan_interval_days: 7
+    priority_url_rescan_interval_days: 7
+    
     design_system: cms-ds
     design_system_theme: medicare
+    webmcp: true
   - domain: www.medicaid.gov
     importance: 5
   - domain: data.healthcare.gov
     importance: 3                  # open-data site; pages are template-similar
   - domain: openpaymentsdata.cms.gov
     importance: 3                  # open-data site; lighthouse disabled (perf:6-55 → audits take 2-5 min each)
+    webmcp: true
     sampling:
       lighthouse: 0
   - domain: www.cdc.gov

@@ -51,16 +51,56 @@ test('config: normalizes supported design_system values', () => {
   assert.equal(cms?.design_system, 'cms-ds');
 });
 
-test('config: webmcpEnabled resolves false when the flag is absent', () => {
-  const c = loadConfig();
-  for (const t of c.targets) {
-    if (t.webmcp === undefined) assert.equal(t.webmcpEnabled, false);
-  }
+test('config: webmcpEnabled defaults to false when the flag is absent', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
 });
 
-test('config: webmcpEnabled resolves true only for literal webmcp: true', () => {
-  assert.equal({ webmcp: true }.webmcp === true, true);
-  assert.equal({ webmcp: false }.webmcp === true, false);
-  assert.equal({ webmcp: 'yes' }.webmcp === true, false);
-  assert.equal({}.webmcp === true, false);
+test('config: webmcpEnabled is true only for an explicit `webmcp: true`', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+    webmcp: true
+`);
+  assert.equal(c.targets[0].webmcpEnabled, true);
+});
+
+test('config: webmcpEnabled is false for an explicit `webmcp: false`', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+    webmcp: false
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
+});
+
+test('config: webmcpEnabled is false for a non-boolean truthy value (opt-in requires literal true)', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+    webmcp: "yes"
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
+});
+
+test('config: webmcp has no global default — only per-target opt-in', () => {
+  const c = loadConfig(`
+webmcp: true
+targets:
+  - domain: example.gov
+`);
+  assert.equal(c.targets[0].webmcpEnabled, false);
+});
+
+test('config: webmcpEnabled resolves to a strict boolean for every real target', () => {
+  // Which targets opt in is expected to change over time (it's live in
+  // config/targets.yml now, not just documented) — this only guards the
+  // resolution logic's type, not a specific enabled/disabled snapshot.
+  const c = loadConfig();
+  for (const t of c.targets) {
+    assert.equal(typeof t.webmcpEnabled, 'boolean');
+  }
 });
