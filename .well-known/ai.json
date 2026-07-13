@@ -1,0 +1,14 @@
+{
+  "name": "Vital Core",
+  "description": "Continuous accessibility, sustainability, standards and security monitoring.",
+  "repository": "https://github.com/mgifford/vital-core",
+  "api": {
+    "type": "static-json",
+    "root": "https://mgifford.github.io/vital-core/api/v1/"
+  },
+  "mcp": {
+    "documentation": "https://github.com/mgifford/vital-core/blob/main/MCP.md",
+    "transport": "stdio",
+    "package": "npx vital-mcp"
+  }
+}
