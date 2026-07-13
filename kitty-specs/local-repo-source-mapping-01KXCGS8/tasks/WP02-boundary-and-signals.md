@@ -285,3 +285,8 @@ fix is present and tested (a `/repo` vs `/repo-evil` case); (3)
 degrades to fewer/no signals, never an exception that could crash the
 tool's handler; (4) all five signal types are genuinely implemented, not
 just four with a typo.
+
+## Activity Log
+
+- 2026-07-13T11:56:47Z – user – shell_pid=0 – Filesystem boundary + signal extraction implemented and tested directly on the working branch (bypassing the lane-worktree flow after hitting the same tooling bug as WP01). 13/13 new tests pass (6 path-allowlist including symlink-escape + boundary-prefix adversarial tests, 7 signals including adversarial inert-data test). Full suite 380/381, only the pre-existing unrelated mcp/server.test.js failure.
+- 2026-07-13T11:56:57Z – user – shell_pid=0 – Self-reviewed: matches WP02 prompt's Definition of Done — assertPathWithinRoot uses fs.realpathSync for both target and root (symlink-safe), boundary check includes the trailing-separator fix (verified by the /repo vs /repo-evil test), extractSignals produces all five signal types with a pure no-I/O implementation, adversarial-input tests confirm no interpretation/execution of hostile content.
