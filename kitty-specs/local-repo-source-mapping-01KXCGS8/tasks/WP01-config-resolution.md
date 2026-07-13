@@ -15,8 +15,8 @@ subtasks:
 - T002
 - T003
 - T004
-agent: ''
-shell_pid: 0
+agent: "claude:sonnet:implementer:implementer"
+shell_pid: "64948"
 history: []
 authoritative_surface: mcp/config/vital-config.js
 create_intent: []
@@ -254,3 +254,7 @@ pre-existing tests pass with zero source changes to their assertions; (3)
 `permissions.read_repository: true` (no truthy-string coercion, no
 inheritance from a hypothetical global default — this mirrors the
 `webmcpEnabled` precedent's strict-boolean-equality style).
+
+## Activity Log
+
+- 2026-07-13T01:44:24Z – claude:sonnet:implementer:implementer – shell_pid=64948 – Assigned agent via action command
