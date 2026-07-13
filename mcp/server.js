@@ -8,8 +8,9 @@ import { VitalApiClient } from './api/vital-api-client.js';
 import { getProjectContextTool } from './tools/get-project-context.js';
 import { listFindingsTool } from './tools/list-findings.js';
 import { getFindingContextTool } from './tools/get-finding-context.js';
+import { findProbableSourcesTool } from './tools/find-probable-sources.js';
 
-export const TOOLS = [getProjectContextTool, listFindingsTool, getFindingContextTool];
+export const TOOLS = [getProjectContextTool, listFindingsTool, getFindingContextTool, findProbableSourcesTool];
 
 // Loads and validates .vital.yml, then wires a bounded/host-restricted API
 // client to it. Kept separate from server transport wiring so tests can

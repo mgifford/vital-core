@@ -169,20 +169,20 @@ and binary files are skipped by default (FR-009).
 
 ## Success Criteria
 
-1. `vital_find_probable_sources` is implemented, registered, and callable
+1. ✓ `vital_find_probable_sources` is implemented, registered, and callable
    from an MCP client, following the existing three tools' structural
    pattern exactly.
-2. The tool is off by default (`permissions.read_repository: false`) and
+2. ✓ The tool is off by default (`permissions.read_repository: false`) and
    an existing `.vital.yml` from before this mission needs zero changes to
    keep working exactly as today.
-3. No signal-matching logic can read outside the configured
+3. ✓ No signal-matching logic can read outside the configured
    `local.repository_path`, verified by a dedicated adversarial test
    (Scenario 4).
-4. Confidence tiers are demonstrably conservative — a synthetic test with
+4. ✓ Confidence tiers are demonstrably conservative — a synthetic test with
    a deliberately weak/common signal never yields `high`.
-5. `npm run test:unit` passes with new tests; no regressions to the
+5. ✓ `npm run test:unit` passes with new tests; no regressions to the
    phase-1 tools' existing tests.
-6. `MCP.md` documents the new tool, its config fields, and confidence-tier
+6. ✓ `MCP.md` documents the new tool, its config fields, and confidence-tier
    semantics, and explicitly states the framework-agnostic scope boundary.
 
 ## Key Entities
