@@ -991,6 +991,15 @@ ${body}
   <p>${t('Built in the open with <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Siteimprove Alfa</a>; emissions estimated with <a href="https://github.com/thegreenwebfoundation/co2.js">co2.js</a> (SWD v4 model).')}</p>
   <p>${t('This project follows public commitments to <a href="https://mgifford.github.io/ACCESSIBILITY.md/">accessibility</a> and <a href="https://mgifford.github.io/SUSTAINABILITY.md/">sustainability</a>, and the <a href="https://w3c.github.io/sustainableweb-wsg/">W3C Web Sustainability Guidelines</a>.')}</p>
   <p>${t('Automated checks find roughly a third of accessibility barriers. A clean report is a floor, not a finish line.')}</p>
+  <p>${apiFinding
+      ? t('Machine-readable data for this page is available through the <a href="@apiUrl">Vital Core JSON API</a>. Developers using an MCP-compatible coding assistant can connect through the <a href="@mcpUrl">Vital MCP server</a>.', {
+          '@apiUrl': esc(`${base}api/v1/${apiFinding.key}/${apiFinding.week}/findings.json`),
+          '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
+        })
+      : t('Machine-readable data for this site is available through the <a href="@apiUrl">Vital Core JSON API</a>. Developers using an MCP-compatible coding assistant can connect through the <a href="@mcpUrl">Vital MCP server</a>.', {
+          '@apiUrl': esc(`${base}api/v1/index.json`),
+          '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
+        })}</p>
 </footer>
 ${paraChartLoader(base)}
 ${extraScript}

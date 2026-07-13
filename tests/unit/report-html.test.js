@@ -38,6 +38,25 @@ test('related-links: the fleet index has no domain-specific JSON alternate (no s
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
 });
 
+test('related-links: a visible footer sentence links the JSON API and MCP server on a domain page', () => {
+  const target = { key: 'd', domain: 'd' };
+  const summary = {
+    week: '2026-W24',
+    standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
+  };
+  const html = renderStandardsPage(target, summary);
+  assert.match(html, /Machine-readable data for this page is available through the/);
+  assert.match(html, /<a href="\.\.\/\.\.\/\.\.\/api\/v1\/d\/2026-W24\/findings\.json">Vital Core JSON API<\/a>/);
+  assert.match(html, /<a href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md">Vital MCP server<\/a>/);
+});
+
+test('related-links: the fleet index footer says "this site" and links the API index, not a per-domain file', () => {
+  const html = renderIndex([]);
+  assert.match(html, /Machine-readable data for this site is available through the/);
+  assert.match(html, /<a href="api\/v1\/index\.json">Vital Core JSON API<\/a>/);
+  assert.match(html, /<a href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md">Vital MCP server<\/a>/);
+});
+
 test('renderDomainReport links to History & Trends instead of embedding trend charts', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const series = [
