@@ -250,11 +250,80 @@ Deferred to later missions, in the order issue #214 recommends:
 - Any command execution, diff inspection, or patch/report preparation
   (`commands.*`, `permissions.run_commands`, `vital_run_validation`,
   `vital_show_change_context`, `vital_prepare_remediation_report`).
-- WebMCP.
 
 If you need any of the above today, the tools don't exist — this server
 will not attempt to guess at local source locations or run anything on your
 behalf.
+
+## WebMCP
+
+A separate, opt-in, **browser**-facing surface (issue #214 step 10) — not
+part of the local server above, and not a substitute for it. Where the
+local MCP server runs on a developer's machine over stdio, the WebMCP
+bridge runs inside the report pages themselves, registering the same
+read-only tool contract for an in-page [WebMCP](https://github.com/webmachinelearning/webmcp)-capable
+agent (e.g. an agentic browser extension) to call directly.
+
+### Enabling it
+
+Opt-in per target in `config/targets.yml` — unset or `false` means a
+domain's report pages ship zero additional bytes:
+
+```yaml
+targets:
+  - domain: www.example.gov
+    webmcp: true
+```
+
+There is no global default and no top-level `webmcp:` key — this is
+deliberately narrower than the local server's `.vital.yml`, with no
+equivalent config file of its own; the flag lives directly on the target
+that opts in.
+
+### Tools
+
+Same three tools as the local server, same names and argument shapes —
+`vital_get_project_context`, `vital_list_findings`,
+`vital_get_finding_context` — sourced from the domain's own same-origin
+`/api/v1/` data (`snapshot.json`, `<week>/findings.json`), fetched and
+cached client-side for the life of the page. Every tool sets
+`readOnlyHint: true` so a calling agent can tell at a glance that none of
+them mutate anything. The filter/sort/bound logic is a small, deliberate
+hand-written duplicate of `mcp/tools/list-findings.js` /
+`get-finding-context.js`, not a shared import — this is a browser bundle
+with no build step, and the local server is a Node-only package; coupling
+them would cost more than the ~60 lines of duplicated logic saves.
+
+### Size budget
+
+Measured at **1502 bytes gzipped** (4727 bytes raw) for the generated
+script, against a target of under 2 KB gzipped. Verified in
+`tests/unit/webmcp-bridge.test.js`.
+
+### Registration mechanism (unstable — read this before relying on it)
+
+The [WebMCP proposal](https://github.com/webmachinelearning/webmcp) is a
+pre-standardization W3C/WICG incubation, **not a finished spec** — it has
+not settled which global object owns the registration point. As of this
+writing the bridge script checks `navigator.modelContext` first, falling
+back to `document.modelContext` (matching the practice of
+[mgifford/wsg-webmcp-experiment](https://github.com/mgifford/wsg-webmcp-experiment),
+an actively maintained sibling WebMCP demo), then calls
+`.registerTool({ name, description, inputSchema, readOnlyHint, execute })`
+on whichever is present. A browser with neither is a complete no-op, not
+an error. If the proposal's API shape changes further, this bridge will
+need a follow-up mission to track it; the tool *contract* (names,
+arguments, return shape) is the part expected to stay stable, not the
+registration mechanics.
+
+### What WebMCP does not add
+
+No local repository access, no reproduction, no command execution, no
+write capability — the same constraints as the local server's own
+[Not yet implemented](#not-yet-implemented) list, plus one more: an
+in-browser agent has no local checkout to reason about in the first place,
+so source mapping and reproduction aren't just deferred here, they're out
+of scope by construction.
 
 ## Example session
 

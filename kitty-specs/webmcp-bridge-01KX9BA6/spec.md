@@ -1,9 +1,9 @@
 # Spec: WebMCP Bridge — Read-Only Findings Tools in the Browser
 
 **Mission**: `webmcp-bridge-01KX9BA6`
-**Branch**: `main` (spec/plan artifacts only; a dedicated implementation
-branch is created when WP work starts — see Assumptions)
-**Status**: Draft
+**Branch**: `claude/vital-core-issue-214-spec-m237h3` (mission bookkeeping
+lives here; implementation WPs may branch further as needed — see Assumptions)
+**Status**: Implemented (WP01–WP04 complete)
 **Source issue**: [#214](https://github.com/mgifford/vital-core/issues/214)
 
 ---
@@ -73,25 +73,25 @@ source mapping, reproduction, or any of #214's remaining steps.
 
 | ID | Requirement | Status |
 |---|---|---|
-| FR-01 | A new per-target config flag (default `false`, e.g. `webmcp: true` in `config/targets.yml`, mirroring the existing `language_switcher` opt-in pattern) controls whether the WebMCP bridge script is emitted for a domain's report pages | Proposed |
-| FR-02 | The bridge script feature-detects the WebMCP registration API at runtime; if unsupported, it does nothing further (no error, no fallback UI, no behavior change to the page) | Proposed |
-| FR-03 | When supported and enabled, the script registers exactly three tools, functionally equivalent to the local MCP server's `vital_get_project_context`, `vital_list_findings`, `vital_get_finding_context` (same filters, same sort-by-pages-affected default, same bounded/truncated response shape) | Proposed |
-| FR-04 | Tool data is sourced from the same public `/api/v1/` JSON already used by the local MCP server (`snapshot.json`, `<week>/findings.json`) for the **current page's domain only** — no cross-domain queries, no new server-side aggregation | Proposed |
-| FR-05 | The bridge script is static, versioned, first-party JS shipped with the report build (no CDN, matching the repo's existing ParaCharts/Wappalyzer vendoring convention) — no runtime dependency on an external script host | Proposed |
-| FR-06 | Tool schemas/descriptions are static in source, never constructed from finding content (same NFR-04 requirement as the local MCP server) | Proposed |
-| FR-07 | Remote/scan-derived text (rule labels, descriptions) returned by a tool is treated as inert data, never interpreted or used to alter script behavior (same NFR-05 requirement as the local MCP server) | Proposed |
-| FR-08 | `MCP.md` documents the WebMCP bridge (config flag, the three tools, the measured size budget, the unstable-API caveat) and `README.md` links to it | Proposed |
+| FR-01 | A new per-target config flag (default `false`, e.g. `webmcp: true` in `config/targets.yml`, mirroring the existing `language_switcher` opt-in pattern) controls whether the WebMCP bridge script is emitted for a domain's report pages | ✓ Done |
+| FR-02 | The bridge script feature-detects the WebMCP registration API at runtime; if unsupported, it does nothing further (no error, no fallback UI, no behavior change to the page) | ✓ Done |
+| FR-03 | When supported and enabled, the script registers exactly three tools, functionally equivalent to the local MCP server's `vital_get_project_context`, `vital_list_findings`, `vital_get_finding_context` (same filters, same sort-by-pages-affected default, same bounded/truncated response shape) | ✓ Done |
+| FR-04 | Tool data is sourced from the same public `/api/v1/` JSON already used by the local MCP server (`snapshot.json`, `<week>/findings.json`) for the **current page's domain only** — no cross-domain queries, no new server-side aggregation | ✓ Done |
+| FR-05 | The bridge script is static, versioned, first-party JS shipped with the report build (no CDN, matching the repo's existing ParaCharts/Wappalyzer vendoring convention) — no runtime dependency on an external script host | ✓ Done |
+| FR-06 | Tool schemas/descriptions are static in source, never constructed from finding content (same NFR-04 requirement as the local MCP server) | ✓ Done |
+| FR-07 | Remote/scan-derived text (rule labels, descriptions) returned by a tool is treated as inert data, never interpreted or used to alter script behavior (same NFR-05 requirement as the local MCP server) | ✓ Done |
+| FR-08 | `MCP.md` documents the WebMCP bridge (config flag, the three tools, the measured size budget, the unstable-API caveat) and `README.md` links to it | ✓ Done |
 
 ## Non-Functional Requirements
 
 | ID | Requirement | Status |
 |---|---|---|
-| NFR-01 | **Sustainability gate (hard requirement, not optional):** the bridge script must be small (target: under 2 KB gzipped, matching the project's existing CSS budget order of magnitude) and loaded only when `webmcp: true` is configured for that target — domains that don't opt in ship zero additional bytes | Proposed |
-| NFR-02 | The script is deferred/non-blocking and never affects the page's no-JavaScript baseline — with JS disabled or the WebMCP API absent, the page renders and functions exactly as it does today | Proposed |
-| NFR-03 | No new build-time cost of consequence — the script is static (checked in, not generated per-build) and the config flag only gates whether a `<script>` tag is emitted, mirroring `languageRuntime()` / `exclusionFilterScript()` in `src/report-html.js` | Proposed |
-| NFR-04 | Read-only in every dimension: no tool can write to the API, modify the page beyond what already happens, or trigger a scan | Proposed |
-| NFR-05 | `npm run test:unit` stays green; new tests follow the repo's existing convention (no DOM mocking beyond what `tests/unit/i18n-render.test.js`-style render tests already do) | Proposed |
-| NFR-06 | If a WebMCP JS library/polyfill is used rather than hand-rolled feature detection, it is small, vendored first-party (no CDN, per repo convention), and its choice/version is documented and justified in `plan.md` | Proposed |
+| NFR-01 | **Sustainability gate (hard requirement, not optional):** the bridge script must be small (target: under 2 KB gzipped, matching the project's existing CSS budget order of magnitude) and loaded only when `webmcp: true` is configured for that target — domains that don't opt in ship zero additional bytes | ✓ Done — measured 1463 bytes gzipped (4590 raw) |
+| NFR-02 | The script is deferred/non-blocking and never affects the page's no-JavaScript baseline — with JS disabled or the WebMCP API absent, the page renders and functions exactly as it does today | ✓ Done |
+| NFR-03 | No new build-time cost of consequence — the script is static (checked in, not generated per-build) and the config flag only gates whether a `<script>` tag is emitted, mirroring `languageRuntime()` / `exclusionFilterScript()` in `src/report-html.js` | ✓ Done |
+| NFR-04 | Read-only in every dimension: no tool can write to the API, modify the page beyond what already happens, or trigger a scan | ✓ Done |
+| NFR-05 | `npm run test:unit` stays green; new tests follow the repo's existing convention (no DOM mocking beyond what `tests/unit/i18n-render.test.js`-style render tests already do) | ✓ Done — 385/385 passing |
+| NFR-06 | If a WebMCP JS library/polyfill is used rather than hand-rolled feature detection, it is small, vendored first-party (no CDN, per repo convention), and its choice/version is documented and justified in `plan.md` | ✓ Done — no library used; hand-rolled `document.modelContext` feature detection only |
 
 ## Constraints
 
@@ -152,15 +152,19 @@ behavior changes as a result.
 
 ## Success Criteria
 
-1. The bridge script is opt-in per target, emits nothing when disabled, and
-   is under the NFR-01 size budget when enabled.
-2. All three tools return data consistent with the equivalent local MCP
-   server tool for the same domain/week.
-3. No-JS and WebMCP-unsupported baselines are unchanged from today's output.
-4. `npm run test:unit` passes with new tests; no regressions.
-5. `MCP.md` (or a new `WEBMCP.md`, decided in `plan.md`) documents the
-   feature, the config flag, the size budget, and explicitly what is out of
-   scope.
+1. ✓ The bridge script is opt-in per target, emits nothing when disabled,
+   and is under the NFR-01 size budget when enabled (1463 bytes gzipped).
+2. ✓ All three tools return data consistent with the equivalent local MCP
+   server tool for the same domain/week. Verified both in a Node `vm`
+   sandbox and in a real headless-Chromium page (`scripts/webmcp-bridge-e2e-check.mjs`).
+3. ✓ No-JS and WebMCP-unsupported baselines are unchanged from today's
+   output — the script is a complete no-op without `document.modelContext`,
+   and unset for any target that hasn't opted in.
+4. ✓ `npm run test:unit` passes with new tests (385/385); no regressions.
+5. ✓ `MCP.md` documents the feature (config flag, tools, measured size
+   budget, unstable-API caveat, what's out of scope) in a `## WebMCP`
+   section — kept in the same file as the local server docs rather than a
+   new `WEBMCP.md`; `README.md` links to it.
 
 ## Sustainability Acceptance Criterion
 
@@ -196,7 +200,10 @@ against the 2 KB target before this mission can be considered complete.
   convention (both read the same `/api/v1/` contract); no shared package is
   created solely to DRY ~50 lines across a Node CLI tool and a browser
   bundle.
-- The dedicated implementation branch is deliberately not named yet — it
-  will be created once a Claude Code session or developer actually starts
-  WP work, rather than guessed now, after `local-mcp-server-01KX94K7`'s
-  `meta.json` had to be corrected mid-mission for exactly this reason.
+- `meta.json`'s `target_branch` is set to the branch this mission's
+  bookkeeping actually lives on (`claude/vital-core-issue-214-spec-m237h3`),
+  not `main` — `local-mcp-server-01KX94K7` set it to `main` (matching this
+  repo's spec-on-main convention) and had to correct it mid-mission when
+  `spec-kitty`'s tooling refused to commit its own generated artifacts to a
+  protected branch. This mission's `meta.json` was fixed the same way once
+  the same error recurred, rather than guessed correctly up front.

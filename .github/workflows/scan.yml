@@ -2,6 +2,13 @@
 # per domain; coverage accumulates across the week into one ISO-week
 # dataset per domain.
 #
+# Current rescan behaviour:
+# - Successfully scanned URLs are scanned at most once per ISO week.
+# - Previously scanned URLs become eligible again when the ISO week changes.
+# - Priority URLs are selected before ordinary URLs but remain subject to
+#   the same once-per-ISO-week rule.
+# - Failed scans may be retried during the week, up to the failure threshold.
+#
 # Off-hours: crons are UTC. These schedules target late evening through
 # early morning US Eastern. During daylight saving time they run roughly
 # 23:11-05:47 ET on weeknights and 21:13-07:37 ET on weekends.
@@ -56,9 +63,11 @@ on:
 permissions:
   contents: write
   issues: write
-  # Required for the optional-report job which calls report.yml via workflow_call.
-  # GitHub grants the intersection of caller + callee permissions, so these must
-  # be declared here even though the scan jobs themselves do not deploy to Pages.
+
+  # Required for the optional-report job, which calls report.yml through
+  # workflow_call. GitHub grants the intersection of caller and callee
+  # permissions, so these must be declared here even though the scan jobs
+  # do not deploy directly to GitHub Pages.
   pages: write
   id-token: write
 
@@ -69,11 +78,14 @@ concurrency:
 jobs:
   matrix:
     runs-on: ubuntu-latest
+
     outputs:
       domains: ${{ steps.list.outputs.domains }}
+      has_domains: ${{ steps.validate.outputs.has_domains }}
+
     steps:
-      # Sparse + partial checkout to keep workspace footprint tiny
-      - uses: actions/checkout@v4
+      # Sparse and partial checkout keeps the matrix-discovery workspace small.
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
           filter: blob:none
@@ -83,35 +95,114 @@ jobs:
             config
             state
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 26 # 🟢 Upgraded to Node 26 Latest Stable Release
+          node-version: 26
 
-      - id: list
+      - name: Select eligible domains
+        id: list
         env:
           DISPATCH_DOMAIN: ${{ github.event.inputs.domain }}
         run: |
           npm ci --omit=optional --ignore-scripts
+
           if [ -n "$DISPATCH_DOMAIN" ]; then
-            if ! printf '%s' "$DISPATCH_DOMAIN" | grep -qE '^[a-z0-9][a-z0-9._-]*\.[a-z]{2,}$'; then
+            if ! printf '%s' "$DISPATCH_DOMAIN" |
+              grep -qE '^[a-z0-9][a-z0-9._-]*\.[a-z]{2,}$'; then
               echo "::error::domain must be a valid hostname (e.g. www.cms.gov)"
               exit 1
             fi
+
             node -e "
-              import('./src/lib/config.js').then(({loadConfig}) => {
-                const d = process.env.DISPATCH_DOMAIN;
-                const known = loadConfig().targets.filter(t => !t.hf_only).map(t => t.domain);
-                if (!known.includes(d)) { console.error('Unknown or restricted domain: ' + d); process.exit(1); }
-                console.log('domains=' + JSON.stringify([d]));
-              }).catch(e => { console.error(String(e)); process.exit(1); })" >> "$GITHUB_OUTPUT"
+              import('./src/lib/config.js')
+                .then(({ loadConfig }) => {
+                  const domain = process.env.DISPATCH_DOMAIN;
+                  const known = loadConfig()
+                    .targets
+                    .filter((target) => !target.hf_only)
+                    .map((target) => target.domain);
+
+                  if (!known.includes(domain)) {
+                    console.error(
+                      'Unknown or restricted domain: ' + domain
+                    );
+                    process.exit(1);
+                  }
+
+                  console.log(
+                    'domains=' + JSON.stringify([domain])
+                  );
+                })
+                .catch((error) => {
+                  console.error(String(error));
+                  process.exit(1);
+                });
+            " >> "$GITHUB_OUTPUT"
           else
             node scripts/list-scan-domains.js
           fi
 
+      - name: Validate matrix output
+        id: validate
+        env:
+          DOMAINS: ${{ steps.list.outputs.domains }}
+        run: |
+          if [ -z "$DOMAINS" ]; then
+            echo "::error::The domain-selection step did not produce a domains output."
+            exit 1
+          fi
+
+          if ! printf '%s' "$DOMAINS" |
+            node -e "
+              let input = '';
+
+              process.stdin.on('data', (chunk) => {
+                input += chunk;
+              });
+
+              process.stdin.on('end', () => {
+                try {
+                  const value = JSON.parse(input);
+
+                  if (!Array.isArray(value)) {
+                    throw new Error('domains must be a JSON array');
+                  }
+
+                  if (!value.every((domain) => typeof domain === 'string')) {
+                    throw new Error(
+                      'every domains entry must be a string'
+                    );
+                  }
+                } catch (error) {
+                  console.error(String(error));
+                  process.exit(1);
+                }
+              });
+            "; then
+            echo "::error::Invalid domains output: $DOMAINS"
+            exit 1
+          fi
+
+          echo "Selected domains: $DOMAINS"
+
+          if [ "$DOMAINS" = "[]" ]; then
+            echo "has_domains=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No domains currently have eligible scan work."
+            echo "::notice::The scan job will be skipped."
+          else
+            echo "has_domains=true" >> "$GITHUB_OUTPUT"
+          fi
+
   scan:
     needs: matrix
+
+    # GitHub rejects an empty matrix. Skip this job before matrix expansion
+    # when the discovery job reports that no domains are currently eligible.
+    if: ${{ needs.matrix.outputs.has_domains == 'true' }}
+
     runs-on: ubuntu-latest
     timeout-minutes: 110
+
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -123,7 +214,7 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
           filter: blob:none
@@ -134,16 +225,16 @@ jobs:
             state/${{ matrix.domain }}
             data/${{ matrix.domain }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 26 # 🟢 Upgraded to Node 26 Latest Stable Release
+          node-version: 26
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: Cache Playwright browser
-        uses: actions/cache@v4 # Cleaned up to standard tag
+        uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -154,14 +245,21 @@ jobs:
       - name: Check Wappalyzer vendor age
         run: |
           DATE=$(grep '^date:' vendor/wappalyzer/VERSION | awk '{print $2}')
+
           if [ -z "$DATE" ]; then
             echo "::warning::vendor/wappalyzer/VERSION has no date field - cannot check age"
             exit 0
           fi
-          VENDOR_EPOCH=$(date -d "$DATE" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$DATE" +%s)
+
+          VENDOR_EPOCH=$(
+            date -d "$DATE" +%s 2>/dev/null ||
+              date -j -f "%Y-%m-%d" "$DATE" +%s
+          )
           NOW_EPOCH=$(date +%s)
           AGE_DAYS=$(( (NOW_EPOCH - VENDOR_EPOCH) / 86400 ))
+
           echo "Wappalyzer vendor age: ${AGE_DAYS} days (vendored ${DATE})"
+
           if [ "$AGE_DAYS" -gt 90 ]; then
             echo "::warning file=vendor/wappalyzer/VERSION::Wappalyzer fingerprints are ${AGE_DAYS} days old (vendored ${DATE}). Run scripts/update-wappalyzer.sh to refresh."
           fi
@@ -173,43 +271,83 @@ jobs:
           DISPATCH_BUDGET: ${{ github.event.inputs.budget }}
         run: |
           BUDGET_FLAG=""
+
           if [ -n "$DISPATCH_BUDGET" ]; then
-            if ! printf '%s' "$DISPATCH_BUDGET" | grep -qE '^[0-9]+$'; then
+            if ! printf '%s' "$DISPATCH_BUDGET" |
+              grep -qE '^[0-9]+$'; then
               echo "::error::budget must be a positive integer"
               exit 1
             fi
+
             BUDGET_FLAG="--budget $DISPATCH_BUDGET"
           fi
-          node src/scan.js --domain "${{ matrix.domain }}" $BUDGET_FLAG
+
+          node src/scan.js \
+            --domain "${{ matrix.domain }}" \
+            $BUDGET_FLAG
 
       - name: Commit state and data
         if: always()
         run: |
           git config user.name "vital-scans[bot]"
           git config user.email "vital-scans@users.noreply.github.com"
+
           git add state/ data/
+
           if git diff --cached --quiet; then
             echo "no changes"
             exit 0
           fi
-          git commit -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)"
+
+          git commit \
+            -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)"
+
           for i in 1 2 3 4 5; do
             if git push; then
               exit 0
             fi
-            if ! git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"; then
+
+            if ! git pull \
+              --rebase \
+              -X theirs \
+              origin \
+              "${GITHUB_REF_NAME}"; then
+
               git rebase --abort 2>/dev/null || true
               git reset --soft HEAD~1 2>/dev/null || true
               git pull --rebase origin "${GITHUB_REF_NAME}"
+
               git add state/ data/
-              git commit -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)" || true
+
+              git commit \
+                -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)" ||
+                true
             fi
+
             sleep $((RANDOM % 10 + 2))
           done
+
           echo "push failed after retries" >&2
           exit 1
 
   optional-report:
-    needs: scan
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_report }}
+    needs:
+      - matrix
+      - scan
+
+    # A requested report may run when scan was skipped because no domains
+    # were eligible. It must not run when matrix discovery or a real scan
+    # failed.
+    if: >-
+      ${{
+        always() &&
+        github.event_name == 'workflow_dispatch' &&
+        inputs.run_report &&
+        needs.matrix.result == 'success' &&
+        (
+          needs.scan.result == 'success' ||
+          needs.scan.result == 'skipped'
+        )
+      }}
+
     uses: ./.github/workflows/report.yml
