@@ -51,14 +51,14 @@ policy" section and Mission B3.
 
 | ID | Requirement | Status |
 |---|---|---|
-| FR-01 | A new companion repo (e.g. `vital-core-data`) is created and contains the current `data/` content, with history that can be periodically truncated independently of `vital-core` | Pending |
-| FR-02 | `vital-core`'s `data/` directory is removed from the working tree and added to `.gitignore` (matching how VA domains are already handled) | Pending |
-| FR-03 | Access mechanism is a **separate clone/checkout step**, not a git submodule — CI and local dev explicitly clone/checkout the companion repo into `data/` (e.g. a second `actions/checkout` step in `report.yml`, and a documented local step for contributors). No submodule pointer is committed to `vital-core` | Pending |
-| FR-04 | `npm run scan` and `npm run aggregate` work unchanged from a contributor's point of view aside from the new setup step (docs updated, e.g. "clone the companion repo into data/ first" in README/CLAUDE.md dev-setup instructions) | Pending |
-| FR-05 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | Pending |
-| FR-06 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | Pending |
-| FR-07 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | Pending |
-| FR-08 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Pending |
+| FR-001 | A new companion repo (e.g. `vital-core-data`) is created and contains the current `data/` content, with history that can be periodically truncated independently of `vital-core` | Pending |
+| FR-002 | `vital-core`'s `data/` directory is removed from the working tree and added to `.gitignore` (matching how VA domains are already handled) | Pending |
+| FR-003 | Access mechanism is a **separate clone/checkout step**, not a git submodule — CI and local dev explicitly clone/checkout the companion repo into `data/` (e.g. a second `actions/checkout` step in `report.yml`, and a documented local step for contributors). No submodule pointer is committed to `vital-core` | Pending |
+| FR-004 | `npm run scan` and `npm run aggregate` work unchanged from a contributor's point of view aside from the new setup step (docs updated, e.g. "clone the companion repo into data/ first" in README/CLAUDE.md dev-setup instructions) | Pending |
+| FR-005 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | Pending |
+| FR-006 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | Pending |
+| FR-007 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | Pending |
+| FR-008 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Pending |
 
 ## Non-Functional Requirements
 
