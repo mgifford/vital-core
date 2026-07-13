@@ -1,0 +1,7 @@
+id,finding,source,date
+E1,"Local .git is 1.8 GB (232210 objects 21 packs)","git count-objects -v (this repo, 2026-07-13)",2026-07-13
+E2,"data/ working tree is 824 MB, 68703 files tracked in git","du -sh data/; git ls-files data/ | wc -l (this repo, 2026-07-13)",2026-07-13
+E3,"Server-side repo size passed 1 GB, CI warning fired","GitHub Actions run 29287101399 (::warning title=Repository over 1 GB::...)",2026-07-13
+E4,"CI currently authenticates git operations with the default GITHUB_TOKEN, repo-scoped only","report.yml lines 28-31 (permissions block), line 55 (GH_TOKEN: github.token)",2026-07-13
+E5,"VA domains already gitignored, never entered data/ git history","`.gitignore` lines 27-30 (data/www.va.gov/ etc.)",2026-07-13
+E6,"Mission B3 decided 2026-07-03 to accept growth until 1GB trigger, then execute option (b)","docs-internal/ROADMAP-2026-07.md lines 118-131",2026-07-13
