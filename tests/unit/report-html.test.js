@@ -1,6 +1,61 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+
+test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
+  const target = { key: 'd', domain: 'd' };
+  const summary = {
+    week: '2026-W24',
+    standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
+  };
+  const html = renderStandardsPage(target, summary);
+  assert.match(
+    html,
+    /<link rel="alternate" type="application\/json" href="\.\.\/\.\.\/\.\.\/api\/v1\/d\/2026-W24\/findings\.json" title="This page's findings as JSON">/,
+  );
+  assert.match(html, /<link rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md"/);
+  assert.match(html, /<link rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
+});
+
+test('related-links: help links appear on every domain sub-page (Standards, Security, Accessibility)', () => {
+  const target = { key: 'd', domain: 'd' };
+  const summary = {
+    week: '2026-W24',
+    standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
+    security: { passed: 1, total: 1, checks: [{ id: 'https', label: 'Serves HTTPS', pass: true }] },
+  };
+  for (const html of [renderStandardsPage(target, summary), renderSecurityPage(target, summary)]) {
+    assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md"/);
+    assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
+  }
+});
+
+test('related-links: the fleet index has no domain-specific JSON alternate (no single domain+week)', () => {
+  const html = renderIndex([]);
+  assert.doesNotMatch(html, /rel="alternate" type="application\/json"/);
+  // The help links (API.md/MCP.md) are unconditional, unlike the JSON alternate.
+  assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md"/);
+  assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
+});
+
+test('related-links: a visible footer sentence links the JSON API and MCP server on a domain page', () => {
+  const target = { key: 'd', domain: 'd' };
+  const summary = {
+    week: '2026-W24',
+    standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
+  };
+  const html = renderStandardsPage(target, summary);
+  assert.match(html, /Machine-readable data for this page is available through the/);
+  assert.match(html, /<a href="\.\.\/\.\.\/\.\.\/api\/v1\/d\/2026-W24\/findings\.json">Vital Core JSON API<\/a>/);
+  assert.match(html, /<a href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md">Vital MCP server<\/a>/);
+});
+
+test('related-links: the fleet index footer says "this site" and links the API index, not a per-domain file', () => {
+  const html = renderIndex([]);
+  assert.match(html, /Machine-readable data for this site is available through the/);
+  assert.match(html, /<a href="api\/v1\/index\.json">Vital Core JSON API<\/a>/);
+  assert.match(html, /<a href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md">Vital MCP server<\/a>/);
+});
 
 test('renderDomainReport links to History & Trends instead of embedding trend charts', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };

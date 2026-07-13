@@ -59,9 +59,9 @@ test('i18n-render: single-language build emits no language runtime (config gate)
   setReportLanguages(['en'], 'en');
   setLocale('en');
   const html = render();
-  assert.doesNotMatch(html, /vital-lang/);          // no redirect/persist script
-  assert.doesNotMatch(html, /rel="alternate"/);     // no hreflang alternates
-  assert.doesNotMatch(html, /class="lang-switch"/); // no switcher
+  assert.doesNotMatch(html, /vital-lang/);                          // no redirect/persist script
+  assert.doesNotMatch(html, /rel="alternate" hreflang="/);          // no hreflang alternates
+  assert.doesNotMatch(html, /class="lang-switch"/);                 // no switcher
 });
 
 test('i18n-render: multi-language build emits the redirect script and hreflang alternates', () => {
