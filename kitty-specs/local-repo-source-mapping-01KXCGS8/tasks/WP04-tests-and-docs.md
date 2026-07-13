@@ -16,7 +16,7 @@ subtasks:
 - T012
 - T013
 - T014
-agent: ''
+agent: "claude"
 shell_pid: 0
 history: []
 authoritative_surface: tests/unit/mcp/search.test.js
@@ -272,3 +272,7 @@ tool's `description` string actually greps for uncertainty language, not
 just checks the description is non-empty; (4) `npm run test:unit`'s full
 output shows zero regressions to any pre-existing test, and a test count
 strictly higher than before this mission.
+
+## Activity Log
+
+- 2026-07-13T13:42:31Z – claude – shell_pid=0 – Moved to in_progress
