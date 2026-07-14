@@ -215,6 +215,15 @@ try {
   assert(imgAltBug.impact.groups.some((g) => /vision/i.test(g.group)), 'image-alt bug shows vision-impact groups');
   assert(imgAltBug.affected_pages_csv && imgAltBug.affected_pages_csv.endsWith('.csv'), 'bug report links its affected-pages CSV');
   assert(imgAltBug.remediation_tip && /alt/i.test(imgAltBug.remediation_tip), 'bug report carries a remediation tip');
+  // Attribution: the fixture is fully server-rendered static HTML, so the
+  // image-alt instances must classify as server-rendered and the finding
+  // must carry an evidence-based attribution object.
+  assert(imgAltBug.attribution && ['content', 'site-custom', 'platform', 'third-party', 'undetermined'].includes(imgAltBug.attribution.layer), `image-alt bug carries an attribution layer (got ${JSON.stringify(imgAltBug.attribution?.layer)})`);
+  assert(['low', 'medium', 'high'].includes(imgAltBug.attribution.confidence), 'attribution carries a confidence level');
+  assert(
+    imgAltBug.attribution.evidence.some((e) => e.signal === 'render-origin' && /server-rendered/.test(e.detail) && !/0 of/.test(e.detail)),
+    `attribution evidence records server-rendered instances (got ${JSON.stringify(imgAltBug.attribution.evidence)})`
+  );
   // Cross-engine consensus: unique issues are not the naive axe+alfa sum.
   assert(w1.consensus && w1.consensus.uniqueIssues > 0, 'consensus computed');
   assert(w1.consensus.uniqueIssues <= w1.consensus.rawAxe + w1.consensus.rawAlfa, 'unique issues never exceed the raw engine sum');
@@ -490,6 +499,11 @@ try {
   // plus the no-JS-safe filter script.
   assert(/class="bug-filter"/.test(w1a11y) && /id="filter-sev"/.test(w1a11y) && /id="filter-cat"/.test(w1a11y), 'accessibility page has severity + category filter controls');
   assert(/<details[^>]*class="bug[^"]*"[^>]*data-severity=/.test(w1a11y), 'bug blocks carry data-severity for filtering');
+  // Attribution surface: the fixture's findings are server-rendered, so at
+  // least one bug drill-down carries the evidence block ("Source attribution")
+  // rendered as static HTML (no client-side JS involved).
+  assert(/Source attribution/.test(w1a11y), 'bug drill-downs carry the source-attribution evidence block');
+  assert(/class="attribution-evidence"/.test(w1a11y), 'attribution evidence list is rendered as static HTML');
   // Engine rule tables are collapsed by default (bugs above are the focus);
   // the axe section is retitled "Deque axe-core findings".
   assert(/Deque axe-core findings/.test(w1a11y), 'axe section retitled "Deque axe-core findings"');

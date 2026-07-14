@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { deriveAttribution } from './attribution.js';
 import { resolveWcag, classifyFinding, severityFor } from './wcag.js';
 import { impactFor, estimateExcluded, pct } from './fpc.js';
 import { remediationTip } from './remediation.js';
@@ -74,6 +75,15 @@ export function buildBugReports(target, summary) {
 
     const techTip = techRemediationTip(summary.tech, ruleId);
 
+    const attribution = deriveAttribution({
+      instances: rule.instances ?? [],
+      pages: rule.pages,
+      totalPages: total,
+      templateThreshold: target.reporting?.template_page_threshold ?? 10,
+      siteTech: (summary.tech ?? []).map((d) => d?.name ?? d),
+      domain: target.domain,
+    });
+
     return {
       instance_id: instanceId,
       pattern_id: patternId,
@@ -96,9 +106,16 @@ export function buildBugReports(target, summary) {
         pages_affected: rule.pages,
         total_pages_scanned: total,
       },
-      likely_source: rule.pages >= (target.reporting?.template_page_threshold ?? 10)
-        ? 'template'
-        : rule.pages <= 2 ? 'content' : 'unknown',
+      // Evidence-based attribution: who can act on this finding. The page-
+      // spread likely_source below is preserved for existing consumers;
+      // attribution's 'content' layer only arises at content-scale spread,
+      // so the two never disagree.
+      attribution,
+      likely_source: attribution.layer === 'content'
+        ? 'content'
+        : rule.pages >= (target.reporting?.template_page_threshold ?? 10)
+          ? 'template'
+          : rule.pages <= 2 ? 'content' : 'unknown',
       summary: `${component} (${scLabel})`,
       description: `${component}. Detected by ${toolName} rule ${ruleId} on ${rule.pages} of ${total} scanned pages (${rule.count} instances).`,
       // Capped representative instances with real DOM context.

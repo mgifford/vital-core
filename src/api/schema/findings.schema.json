@@ -58,7 +58,39 @@
         },
         "first_seen": { "oneOf": [{ "$ref": "#/definitions/isoWeek" }, { "type": "null" }] },
         "last_seen": { "oneOf": [{ "$ref": "#/definitions/isoWeek" }, { "type": "null" }] },
-        "weeks_seen": { "type": "integer", "minimum": 1 }
+        "weeks_seen": { "type": "integer", "minimum": 1 },
+        "attribution": {
+          "description": "Evidence-based source attribution: which layer the evidence points to and why. Language is associative ('evidence points to'), never causal. Null for weeks aggregated before attribution existed.",
+          "oneOf": [{ "$ref": "#/definitions/attribution" }, { "type": "null" }]
+        }
+      },
+      "additionalProperties": true
+    },
+    "attribution": {
+      "type": "object",
+      "required": ["layer", "confidence", "evidence"],
+      "properties": {
+        "layer": {
+          "description": "Primary attribution: who can act on this finding.",
+          "enum": ["content", "site-custom", "platform", "third-party", "undetermined"]
+        },
+        "confidence": { "enum": ["low", "medium", "high"] },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["signal", "detail"],
+            "properties": {
+              "signal": { "type": "string", "examples": ["render-origin", "asset-path", "class-namespace", "third-party-url", "third-party-iframe", "page-spread"] },
+              "detail": { "type": "string" },
+              "supports": {
+                "description": "Layer this entry supports; null for contextual evidence.",
+                "oneOf": [{ "enum": ["content", "site-custom", "platform", "third-party"] }, { "type": "null" }]
+              }
+            },
+            "additionalProperties": true
+          }
+        }
       },
       "additionalProperties": true
     },

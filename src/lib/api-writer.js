@@ -134,6 +134,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         first_seen:     b.first_seen ?? null,
         last_seen:      b.last_seen ?? null,
         weeks_seen:     b.weeks_seen ?? 1,
+        attribution:    b.attribution ?? null,
       };
     }),
   };

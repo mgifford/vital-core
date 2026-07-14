@@ -13,6 +13,7 @@ import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
+import { createRawHtmlIndex, annotateRenderOrigins } from './lib/attribution.js';
 import { runAxe } from './engines/axe.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
@@ -291,10 +292,24 @@ for (const item of batch) {
     if (sustain) { record.sustainability = sustain.collect(); mark('sustainability'); }
 
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
+      // Raw pre-JS HTML for render-origin attribution. Held in memory for
+      // this page only and never written to data/ or state/ — raw bodies
+      // would bloat committed history and can embed session tokens.
+      let rawHtmlIndex = null;
+      const willAudit = runs('axe') || runs('alfa') || runs('deprecated-html');
+      if (willAudit) {
+        try {
+          rawHtmlIndex = createRawHtmlIndex(await response.text());
+        } catch {
+          log(`raw-html capture failed: ${urlPath} — render origin will be unknown`);
+        }
+      }
+
       if (runs('axe')) { record.axe = await runAxe(page); mark('axe'); }
       if (runs('alfa')) { record.alfa = await runAlfa(page); mark('alfa'); }
       if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page, { extraAllowlist: target.spelling_allowlist ?? [] }); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
+      if (record.axe || record.alfa || record.deprecatedHtml) annotateRenderOrigins(record, rawHtmlIndex);
       if (runs('resources')) { record.resources = await runResources(page, item.url); mark('resources'); }
       if (imgCollector) {
         const imgs = await runImages(page, item.url);

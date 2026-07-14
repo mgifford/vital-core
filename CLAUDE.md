@@ -146,6 +146,30 @@ BP/Undetermined; 2 = Moderate/Minor + WCAG A/AA + ≥10 pages; 5 = hidden.
 
 ---
 
+## Finding attribution
+
+Every bug report carries an `attribution` object (`src/lib/attribution.js`,
+derived in `buildBugReports`): `layer` ∈ `content` / `site-custom` /
+`platform` / `third-party` / `undetermined`, plus `confidence` and an
+`evidence` list. Invariants:
+
+- Report language is **"evidence points to"**, never "caused by".
+  `undetermined` is a first-class answer — the matcher and derivation are
+  deliberately conservative; never trade honesty for coverage.
+- The scan captures each page's **raw pre-JS HTML** to classify every kept
+  a11y example's `render_origin` (`server` / `js-injected` / `unknown`).
+  The raw body is held in memory for that page only and **must never be
+  written to `data/` or `state/`** — data/ is committed, and raw bodies can
+  embed session tokens (see Security rules).
+- Namespace/path signals (Drupal `views-`, `/wp-content/…`, `usa-`, …) only
+  support a `platform` attribution when the tech engine actually detected
+  that product on the site; ungated matches become null-support evidence.
+- Attribution never changes the headline score, severity, or priority
+  tiers. `likely_source` is preserved for existing consumers and stays
+  consistent with the attribution layer.
+
+---
+
 ## URL exclusion (three layers)
 
 Three independent mechanisms drop URLs, at three different stages. Keep them

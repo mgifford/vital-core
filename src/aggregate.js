@@ -1134,6 +1134,7 @@ function addInstances(rule, url, examples) {
       url,
       target: ex.target ?? null, // CSS selector (axe) / element description (alfa)
       html: ex.html ?? null, // minimal failing markup (axe only)
+      render_origin: ex.render_origin ?? null, // 'server' | 'js-injected' | 'unknown' | null (pre-attribution records)
     });
   }
 }

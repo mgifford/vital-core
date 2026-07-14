@@ -1137,6 +1137,49 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
 </table>`;
 }
 
+// Attribution display labels: internal layer keys stay English; only these
+// labels localize (same convention as the severity taxonomy).
+const ATTRIBUTION_LAYER_LABELS = {
+  content: 'Page content',
+  'site-custom': 'Site code',
+  platform: 'Platform',
+  'third-party': 'Third party',
+  undetermined: 'Undetermined',
+};
+const ATTRIBUTION_GROUP_LABELS = {
+  'site-custom': 'Fix in your site',
+  platform: 'Report upstream',
+  'third-party': 'Third-party vendor',
+  content: 'Review content',
+  undetermined: 'Undetermined',
+};
+const ATTRIBUTION_GROUP_ORDER = ['site-custom', 'platform', 'third-party', 'content', 'undetermined'];
+
+function attributionChip(b) {
+  const a = b.attribution;
+  if (a && a.layer !== 'undetermined') {
+    const style = a.layer === 'content' ? 'content' : 'template';
+    const label = t(ATTRIBUTION_LAYER_LABELS[a.layer] ?? a.layer);
+    return ` <span class="source-badge source-${style}" title="${esc(t('Evidence points to @layer (@confidence confidence)', { '@layer': label, '@confidence': t(a.confidence) }))}">${label}</span>`;
+  }
+  if (b.likely_source && b.likely_source !== 'unknown') {
+    return ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>`;
+  }
+  return '';
+}
+
+function attributionBlock(b) {
+  const a = b.attribution;
+  if (!a?.evidence?.length) return '';
+  const intro = a.layer === 'undetermined'
+    ? t('Evidence is insufficient or conflicting — triage manually.')
+    : `${t('Evidence points to @layer (@confidence confidence)', { '@layer': t(ATTRIBUTION_LAYER_LABELS[a.layer] ?? a.layer), '@confidence': t(a.confidence) })}. ${t('Automated evidence is associative, not proof — verify before assigning.')}`;
+  const items = a.evidence
+    .map((e) => `<li>${esc(e.detail)}${e.supports ? ` → ${esc(t(ATTRIBUTION_LAYER_LABELS[e.supports] ?? e.supports))}` : ''}</li>`)
+    .join('');
+  return `<p class="bug-label">${t('Source attribution')}</p><p>${intro}</p><ul class="attribution-evidence">${items}</ul>`;
+}
+
 function nextActionsSection(summary, bugs, reporting = {}) {
   const cc = summary.componentClusters;
   const actions = cc?.top_actions ?? [];
@@ -1151,7 +1194,7 @@ function nextActionsSection(summary, bugs, reporting = {}) {
   };
 
   const byRule = new Map((bugs ?? []).map((b) => [`${b.engine_key}:${b.rule_id}`, b]));
-  const rows = actions.slice(0, 10).map((a) => {
+  const rowFor = (a) => {
     const bug = byRule.get(`${a.engine_key}:${a.rule_id}`);
     const who = bug?.impact?.groups?.length
       ? bug.impact.groups.map((g) => g.group).slice(0, 3).join(', ')
@@ -1224,7 +1267,22 @@ function nextActionsSection(summary, bugs, reporting = {}) {
     </div>
   </td>
 </tr>`;
-  }).join('\n');
+  };
+
+  // Group the queue by who can act (attribution layer), ranked order kept
+  // within each group. All-undetermined queues render ungrouped — a single
+  // "Undetermined" heading would be noise, not information.
+  const top = actions.slice(0, 10);
+  const layerOf = (a) => byRule.get(`${a.engine_key}:${a.rule_id}`)?.attribution?.layer ?? 'undetermined';
+  const groups = ATTRIBUTION_GROUP_ORDER
+    .map((layer) => ({ layer, items: top.filter((a) => layerOf(a) === layer) }))
+    .filter((g) => g.items.length);
+  const showHeaders = groups.length > 1 || groups[0]?.layer !== 'undetermined';
+  const rows = groups
+    .map((g) =>
+      (showHeaders ? `<tr class="action-group-row"><th colspan="7" scope="colgroup">${t(ATTRIBUTION_GROUP_LABELS[g.layer])}</th></tr>\n` : '')
+      + g.items.map(rowFor).join('\n'))
+    .join('\n');
 
   const usage = (cc.design_component_usage ?? []).slice(0, 5);
   const dsBlock = cc.design_system && cc.design_system !== 'none'
@@ -1610,7 +1668,7 @@ ${heading('h-bugs', t('Bug reports'))}
         : '';
       return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="" data-excluded="">
 <summary id="${esc(b.instance_id)}" tabindex="-1"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
-<span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
+<span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${attributionChip(b)}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
@@ -1624,6 +1682,7 @@ ${heading('h-bugs', t('Bug reports'))}
   ${dupNote}
 </dl>
 ${b.html_snippet ? `<p class="bug-label">${t('HTML snippet — use this to validate the finding without re-running the tool')}</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
+${attributionBlock(b)}
 <p class="bug-label">${t('Description')}</p><p>${esc(b.description)}</p>
 <p class="bug-label">${t('Steps to reproduce')}</p><ol>${b.steps_to_reproduce.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
 <p class="bug-label">${t('Impact')}</p>
@@ -4590,6 +4649,8 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .source-badge.source-content { color: var(--muted);
   border-color: color-mix(in srgb, var(--muted) 35%, transparent);
   background: color-mix(in srgb, var(--muted) 8%, transparent); }
+.action-group-row th { background: color-mix(in srgb, var(--accent) 7%, transparent); font-size: .85rem; }
+.attribution-evidence { font-size: .85rem; margin: .25rem 0 .75rem; }
 .training-priorities { border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1.25rem; margin: 1.25rem 0; }
 .training-priorities h2 { font-size: 1.1rem; margin: 0 0 .5rem; }
 .tp-table { border-collapse: collapse; width: 100%; font-size: .9rem; margin-top: .75rem; }
