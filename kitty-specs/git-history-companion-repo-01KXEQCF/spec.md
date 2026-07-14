@@ -1,5 +1,22 @@
 # Mission: Move `data/` into a companion repo
 
+## Status: ON HOLD (fallback plan) — 2026-07-14
+
+Root-caused instead: the growth wasn't primarily page-level detail, it was
+`aggregate.js`/ledger modules unconditionally rewriting unchanged content
+on every run. Fixed in PR #235 by skipping no-op writes rather than
+executing this mission's companion-repo split — see
+`ARCHITECTURE.md`'s "Git history policy" section and
+`docs-internal/ROADMAP-2026-07.md` Mission B3 for the full writeup.
+
+This does **not** shrink the history already committed (~1.9 GB) — only
+this mission's companion-repo split, or a history rewrite, would do that.
+The spec/plan/research below remain valid if the write-pattern fix proves
+insufficient (watch `report.yml`'s new run-over-run growth alert — it now
+fires on renewed fast growth rather than the one-time 1 GB threshold,
+which already fired and won't fire usefully again). Resume from `plan.md`'s
+Implementation Concern Map if this mission needs to be picked back up.
+
 ## Problem
 
 `data/` (68,703 tracked files as of 2026-07-13) is committed directly into
