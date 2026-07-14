@@ -1,0 +1,721 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W28",
+ "generatedAt": "2026-07-13T22:45:23.083Z",
+ "pagesScanned": 103,
+ "pagesAudited": 1,
+ "coverage": {
+  "sustainability": 8,
+  "axe": 1,
+  "plain-language": 1,
+  "deprecated-html": 1,
+  "resources": 1,
+  "tech": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 2,
+  "pagesWithViolations": 1,
+  "pagesScanned": 1,
+  "medianViolations": 2,
+  "rules": {
+   "link-in-text-block": {
+    "count": 1,
+    "pages": 1,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 0,
+  "pagesWithFailures": 0,
+  "pagesScanned": 0,
+  "medianFailures": null,
+  "rules": {}
+ },
+ "consensus": {
+  "uniqueIssues": 2,
+  "consensus": 0,
+  "axeOnly": 2,
+  "alfaOnly": 0,
+  "rawAxe": 2,
+  "rawAlfa": 0,
+  "byKey": {
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 8,
+  "medianBytes": 64631,
+  "meanBytes": 64631,
+  "medianRequests": 7,
+  "totalCo2g": 0.08,
+  "meanCo2g": 0.0096,
+  "totalEnergyWh": 0.16,
+  "meanEnergyWh": 0.0194
+ },
+ "deprecatedHtml": null,
+ "resources": null,
+ "standards": null,
+ "security": null,
+ "publicInterest": null,
+ "plainLanguage": {
+  "pagesChecked": 1,
+  "pagesScored": 1,
+  "medianWordsPerPage": 417,
+  "medianReadingEase": 49.5,
+  "medianGrade": 10.5,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   },
+   {
+    "acronym": "NAS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "Marston",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   },
+   {
+    "word": "Quarles",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   },
+   {
+    "word": "Florey",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   },
+   {
+    "word": "Markle",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   }
+  ]
+ },
+ "lighthouse": null,
+ "linkCheck": null,
+ "errorPages": [
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/lasker-awards",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/organization",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/who-we-are/nih-director",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/deputy-directors",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/nih-launches-new-office-advance-human-based-research-reduce-animal-use",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/research-training/research-resources",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/bernadine-healy-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/budget",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/lewis-ryers-thompson-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/department-health-human-services-secretaries",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-director/congressional-testimonies",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/research-training",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/get-involved-nih",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/press-room",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/ruth-kirschstein-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/photo-galleries",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/list-institutes-centers",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/organization/budget",
+   "status": 403
+  }
+ ],
+ "tech": [
+  {
+   "name": "Cloudflare Browser Insights",
+   "category": "Analytics",
+   "categories": [
+    "Analytics",
+    "RUM"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Crazy Egg",
+   "category": "Analytics",
+   "categories": [
+    "Analytics"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://crazyegg.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Google Analytics",
+   "category": "Analytics",
+   "categories": [
+    "Analytics"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://google.com/analytics",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Varnish",
+   "category": "Caching",
+   "categories": [
+    "Caching"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.varnish-cache.org",
+   "cpe": "cpe:2.3:a:varnish-software:varnish_cache:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Cloudflare",
+   "category": "CDN",
+   "categories": [
+    "CDN"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Drupal",
+   "category": "CMS",
+   "categories": [
+    "CMS"
+   ],
+   "confidence": 100,
+   "version": "10",
+   "website": "https://www.drupal.org/",
+   "cpe": "cpe:2.3:a:drupal:drupal:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "jQuery",
+   "category": "JavaScript libraries",
+   "categories": [
+    "JavaScript libraries"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://jquery.com",
+   "cpe": "cpe:2.3:a:jquery:jquery:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "HTTP/3",
+   "category": "Miscellaneous",
+   "categories": [
+    "Miscellaneous"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://httpwg.org/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Acquia Cloud Platform",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.acquia.com/products/drupal-cloud/cloud-platform",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Amazon Web Services",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://aws.amazon.com/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "PHP",
+   "category": "Programming languages",
+   "categories": [
+    "Programming languages"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://php.net",
+   "cpe": "cpe:2.3:a:php:php:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "HSTS",
+   "category": "Security",
+   "categories": [
+    "Security"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.rfc-editor.org/rfc/rfc6797#section-6.1",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "Google Tag Manager",
+   "category": "Tag managers",
+   "categories": [
+    "Tag managers"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.google.com/tagmanager",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  },
+  {
+   "name": "USWDS",
+   "category": "UI frameworks",
+   "categories": [
+    "UI frameworks"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://designsystem.digital.gov",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+   ]
+  }
+ ],
+ "images": {
+  "pagesScanned": 1,
+  "totalImages": 14,
+  "uniqueImages": 14,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 14,
+  "altVerdicts": {
+   "GOOD": 11,
+   "SUSPICIOUS": 1,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": {
+  "model": {
+   "pages": 1,
+   "tech": {
+    "Cloudflare Browser Insights": 1,
+    "Crazy Egg": 1,
+    "Google Analytics": 1,
+    "Varnish": 1,
+    "Cloudflare": 1,
+    "Drupal": 1,
+    "jQuery": 1,
+    "HTTP/3": 1,
+    "Acquia Cloud Platform": 1,
+    "Amazon Web Services": 1,
+    "PHP": 1,
+    "HSTS": 1,
+    "Google Tag Manager": 1,
+    "USWDS": 1
+   },
+   "finding": {
+    "axe:link-in-text-block": 1,
+    "axe:region": 1
+   },
+   "pair": {
+    "Cloudflare Browser Insights": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Crazy Egg": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Google Analytics": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Varnish": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Cloudflare": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Drupal": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "jQuery": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "HTTP/3": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Acquia Cloud Platform": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Amazon Web Services": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "PHP": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "HSTS": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Google Tag Manager": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "USWDS": {
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    }
+   }
+  },
+  "associations": []
+ },
+ "thirdParty": null,
+ "componentClusters": {
+  "design_system": "none",
+  "design_system_label": "none",
+  "design_system_theme": null,
+  "template_page_threshold": 10,
+  "total_clusters": 2,
+  "clusters": [
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   }
+  ],
+  "top_actions": [
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md"
+    ]
+   }
+  ],
+  "design_component_usage": [],
+  "page_component_usage": [],
+  "drift_page_count": 0,
+  "drift_pages": [],
+  "drift_clusters": []
+ },
+ "pagesAttempted": 103,
+ "pagesSucceeded": 1
+}

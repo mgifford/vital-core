@@ -1,0 +1,853 @@
+{
+ "domain": "www.nih.gov",
+ "week": "2026-W25",
+ "generatedAt": "2026-06-16T11:18:44.212Z",
+ "pagesScanned": 90,
+ "pagesAudited": 6,
+ "coverage": {
+  "axe": 6,
+  "resources": 6,
+  "lighthouse": 1,
+  "plain-language": 3,
+  "deprecated-html": 4,
+  "sustainability": 8,
+  "standards": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 55,
+  "pagesWithViolations": 6,
+  "pagesScanned": 6,
+  "medianViolations": 7,
+  "rules": {
+   "heading-order": {
+    "count": 6,
+    "pages": 6,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/glp-1-plus-therapy-can-reduce-heavy-drinking",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/covid-19-vaccines-linked-small-increase-menstrual-cycle-length",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "target": ".callout__text > h3",
+      "html": "<h3>Tracking how the environment affects health</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/glp-1-plus-therapy-can-reduce-heavy-drinking",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 6,
+    "pages": 6,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/glp-1-plus-therapy-can-reduce-heavy-drinking",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/covid-19-vaccines-linked-small-increase-menstrual-cycle-length",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/glp-1-plus-therapy-can-reduce-heavy-drinking",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   },
+   "link-in-text-block": {
+    "count": 37,
+    "pages": 6,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "instances": 5
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "instances": 16
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/glp-1-plus-therapy-can-reduce-heavy-drinking",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/covid-19-vaccines-linked-small-increase-menstrual-cycle-length",
+      "instances": 4
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "target": "article[data-history-node-id=\"11286\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.cdc.gov/coronavirus/2019-ncov/index.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">COVID-19 (CDC)</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "target": "p:nth-child(15) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/35051292/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">A prospective cohort study of COVID-1"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "target": "p:nth-child(3) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "target": "li:nth-child(3) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.niehs.nih.gov/health/topics/science/exposure\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Exposure science</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "target": "article[data-history-node-id=\"22976\"] > div > ul > li:nth-child(6) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.niehs.nih.gov/health/topics/agents/mold\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Mold</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 6,
+    "pages": 6,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/glp-1-plus-therapy-can-reduce-heavy-drinking",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/covid-19-vaccines-linked-small-increase-menstrual-cycle-length",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-opioid-use-disorder-jail-reduces-risk-return",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/glp-1-plus-therapy-can-reduce-heavy-drinking",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 0,
+  "pagesWithFailures": 0,
+  "pagesScanned": 0,
+  "medianFailures": null,
+  "rules": {}
+ },
+ "consensus": {
+  "uniqueIssues": 24,
+  "consensus": 0,
+  "axeOnly": 24,
+  "alfaOnly": 0,
+  "rawAxe": 24,
+  "rawAlfa": 0,
+  "byKey": {
+   "axe-core:heading-order": {
+    "actRuleId": null,
+    "axeRules": [
+     "heading-order"
+    ],
+    "alfaRules": [],
+    "pages": 6,
+    "engines": "axe"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 6,
+    "engines": "axe"
+   },
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 6,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 6,
+    "engines": "axe"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 8,
+  "medianBytes": 66249,
+  "meanBytes": 518029,
+  "medianRequests": 6,
+  "totalCo2g": 0.61,
+  "meanCo2g": 0.0768,
+  "totalEnergyWh": 1.24,
+  "meanEnergyWh": 0.1554
+ },
+ "deprecatedHtml": null,
+ "resources": {
+  "total": 6,
+  "byType": {
+   "image": 6
+  },
+  "list": [
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20220208-preg.jpg",
+    "type": "image",
+    "pages": 1
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-06/20260609-collage.jpg",
+    "type": "image",
+    "pages": 1
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20220208-opioids.jpg",
+    "type": "image",
+    "pages": 1
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-05/20260511-glp-1.jpg",
+    "type": "image",
+    "pages": 1
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-06/20250603-substance.jpg",
+    "type": "image",
+    "pages": 1
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20220125-vaccine.jpg",
+    "type": "image",
+    "pages": 1
+   }
+  ]
+ },
+ "standards": {
+  "pagesChecked": 1,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (6/6)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "security": null,
+ "plainLanguage": {
+  "pagesChecked": 3,
+  "pagesScored": 3,
+  "medianWordsPerPage": 698,
+  "medianReadingEase": 52,
+  "medianGrade": 10.6,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 3
+   },
+   {
+    "acronym": "PMID",
+    "pages": 3
+   },
+   {
+    "acronym": "KA",
+    "pages": 2
+   },
+   {
+    "acronym": "ER",
+    "pages": 2
+   },
+   {
+    "acronym": "DNA",
+    "pages": 1
+   },
+   {
+    "acronym": "PFAS",
+    "pages": 1
+   },
+   {
+    "acronym": "GPS",
+    "pages": 1
+   },
+   {
+    "acronym": "NEXUS",
+    "pages": 1
+   },
+   {
+    "acronym": "HEPA",
+    "pages": 1
+   },
+   {
+    "acronym": "MT",
+    "pages": 1
+   },
+   {
+    "acronym": "LM",
+    "pages": 1
+   },
+   {
+    "acronym": "ET",
+    "pages": 1
+   },
+   {
+    "acronym": "ZA",
+    "pages": 1
+   },
+   {
+    "acronym": "PM",
+    "pages": 1
+   },
+   {
+    "acronym": "RK",
+    "pages": 1
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "Shutterstock",
+    "pages": 3,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+     "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://www.nih.gov/news-events/nih-research-matters/covid-19-vaccines-linked-small-increase-menstrual-cycle-length"
+    ]
+   },
+   {
+    "word": "doi",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://www.nih.gov/news-events/nih-research-matters/covid-19-vaccines-linked-small-increase-menstrual-cycle-length"
+    ]
+   },
+   {
+    "word": "exposome",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Zoteva",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Hansche",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "biobanks",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "exposomics",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "phthalates",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Exposome",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "spectrometry",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Sodel",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Vladyslav",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "isn",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "polyfluoroalkyl",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Rima",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Habre",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Chirag",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "polyexposure",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "polygenic",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "aren",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "leolintang",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Exposomics",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Srikanth",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "Nadadur",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   },
+   {
+    "word": "sclerosing",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome"
+    ]
+   }
+  ]
+ },
+ "lighthouse": {
+  "pagesSampled": 1,
+  "medianPerformance": 48,
+  "medianAccessibility": 95,
+  "medianBestPractices": 73,
+  "medianSeo": 100,
+  "medianAgentic": null,
+  "metrics": {
+   "firstContentfulPaintMs": 3250,
+   "largestContentfulPaintMs": 4191,
+   "speedIndexMs": 4391,
+   "totalBlockingTimeMs": 5795,
+   "cumulativeLayoutShift": 0
+  },
+  "medianPwa": null,
+  "pwaSignals": []
+ },
+ "linkCheck": null,
+ "errorPages": [
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/medications-reduce-risk-death-after-opioid-overdose",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/blood-test-predicts-start-alzheimers-disease-symptoms",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/nih-selects-dr-steven-schiff-director-fogarty-international-center-associate-director-international-research",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/lack-buprenorphine-access-adolescents-residential-facilities",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/privacy-policy",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/moderna-covid-19-booster-may-protect-against-variants",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/organization",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/research-in-context",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/nih-turning-discovery-into-health",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/learning-about-fatal-opioid-overdoses-changes-prescribing-behavior",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/nih-almanac",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/people-taking-semaglutide-had-lower-risk-suicidal-thoughts",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/measuring-ultra-processed-foods-diet",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-social-media",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/echo",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/research-training/research-nih-labs-clinics",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/press-room",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/institutes-nih/nih-office-director",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/health-information/your-healthiest-self-wellness-toolkits",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/institutes-nih/directors-nih-institutes-centers",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/dr-raymond-jacobson-selected-director-nih-center-scientific-review",
+   "status": 403
+  }
+ ]
+}
