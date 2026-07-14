@@ -1,0 +1,460 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W27",
+ "generatedAt": "2026-07-13T22:45:23.079Z",
+ "pagesScanned": 103,
+ "pagesAudited": 1,
+ "coverage": {
+  "sustainability": 11,
+  "axe": 1,
+  "resources": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 3,
+  "pagesWithViolations": 1,
+  "pagesScanned": 1,
+  "medianViolations": 3,
+  "rules": {
+   "heading-order": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/disclaimers"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/disclaimers",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/disclaimers",
+      "target": "h3:nth-child(1)",
+      "html": "<h3>Endorsement Disclaimer — Links to Other Sites</h3>"
+     }
+    ]
+   },
+   "link-in-text-block": {
+    "count": 1,
+    "pages": 1,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://nih.gov/disclaimers"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/disclaimers",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/disclaimers",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/disclaimers"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/disclaimers",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/disclaimers",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 0,
+  "pagesWithFailures": 0,
+  "pagesScanned": 0,
+  "medianFailures": null,
+  "rules": {}
+ },
+ "consensus": {
+  "uniqueIssues": 3,
+  "consensus": 0,
+  "axeOnly": 3,
+  "alfaOnly": 0,
+  "rawAxe": 3,
+  "rawAlfa": 0,
+  "byKey": {
+   "axe-core:heading-order": {
+    "actRuleId": null,
+    "axeRules": [
+     "heading-order"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 11,
+  "medianBytes": 66248,
+  "meanBytes": 66248,
+  "medianRequests": 7,
+  "totalCo2g": 0.11,
+  "meanCo2g": 0.0098,
+  "totalEnergyWh": 0.22,
+  "meanEnergyWh": 0.0199
+ },
+ "deprecatedHtml": null,
+ "resources": null,
+ "standards": null,
+ "security": null,
+ "publicInterest": null,
+ "plainLanguage": null,
+ "lighthouse": null,
+ "linkCheck": null,
+ "errorPages": [
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/lasker-awards",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/organization",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/who-we-are/nih-director",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/deputy-directors",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/nih-launches-new-office-advance-human-based-research-reduce-animal-use",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/research-training/research-resources",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/bernadine-healy-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/budget",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/robert-q-marston-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/lewis-ryers-thompson-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/department-health-human-services-secretaries",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-director/congressional-testimonies",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/research-training",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/get-involved-nih",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/press-room",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/ruth-kirschstein-md",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/photo-galleries",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/list-institutes-centers",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director",
+   "status": 403
+  }
+ ],
+ "tech": null,
+ "images": {
+  "pagesScanned": 1,
+  "totalImages": 13,
+  "uniqueImages": 13,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 13,
+  "altVerdicts": {
+   "GOOD": 10,
+   "SUSPICIOUS": 1,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": null,
+ "thirdParty": null,
+ "componentClusters": {
+  "design_system": "none",
+  "design_system_label": "none",
+  "design_system_theme": null,
+  "template_page_threshold": 10,
+  "total_clusters": 3,
+  "clusters": [
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/disclaimers"
+    ]
+   },
+   {
+    "id": "cc-61c26a3768ea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(1)",
+    "representative_snippet": "<h3>Endorsement Disclaimer — Links to Other Sites</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/disclaimers"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/disclaimers"
+    ]
+   }
+  ],
+  "top_actions": [
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/disclaimers"
+    ]
+   },
+   {
+    "id": "cc-61c26a3768ea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(1)",
+    "representative_snippet": "<h3>Endorsement Disclaimer — Links to Other Sites</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/disclaimers"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/disclaimers"
+    ]
+   }
+  ],
+  "design_component_usage": [],
+  "page_component_usage": [],
+  "drift_page_count": 0,
+  "drift_pages": [],
+  "drift_clusters": []
+ },
+ "pagesAttempted": 103,
+ "pagesSucceeded": 1
+}

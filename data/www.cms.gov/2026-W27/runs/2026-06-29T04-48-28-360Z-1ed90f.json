@@ -1,0 +1,683 @@
+{
+ "runId": "2026-06-29T04-48-28-360Z-1ed90f",
+ "week": "2026-W27",
+ "domain": "www.cms.gov",
+ "startedAt": "2026-06-29T04:48:29.876Z",
+ "scanned": [
+  "bed3909b33c6e687",
+  "132061abda6a916c",
+  "60d5902a2840fb9c",
+  "a863ce3d388c9ac4",
+  "bf970c8c919841c1",
+  "60cc47d460052987",
+  "eb3225e72c15771c",
+  "481d3334a7da614b",
+  "476ce39273d2fb01",
+  "01c25b1a95fee191",
+  "ca36c99b112500ac",
+  "aed7c995348f7823",
+  "573a56ed877375b7",
+  "4347048c7122fe6f",
+  "be7f6e297a238d12",
+  "7008e83084803b41",
+  "36310a36eebf7f6a",
+  "b49aeeb375c50a0a",
+  "9e05221a7a327ae3",
+  "b78d95df2b5e90eb",
+  "b7714fd24c9ba766",
+  "6b4b66a91fbb5f27",
+  "2546c2acafd3a840",
+  "e4b55d44693623c3",
+  "9998ee60e47fbb2a",
+  "2c82d53acd500227",
+  "79c9b2f02e535291",
+  "4d16626afce9638a",
+  "ad3f7f07e7fe44fa",
+  "5128f380e6c88970",
+  "d40cccd6f632d8c1",
+  "1695eadcb2337d1f",
+  "f99c1c6dd611af05",
+  "c7c210e56e757b26",
+  "3a0aa8704a90a532",
+  "e77ce5326ffa7fe6",
+  "b5819a5d41369cfc",
+  "834e1f2dd6908b53",
+  "05b1fa294820a287",
+  "d9b9964a5fc24376",
+  "8fe8b19b13f03d52",
+  "6bcea64795b4a781",
+  "027a8348ba12bc9f",
+  "8e23a44b355cb0fd",
+  "2997574defb02969",
+  "9c866988273ef8ba",
+  "674e0ed0062de0b0",
+  "13206d48eb8c7a60",
+  "06ee8574304ceacf",
+  "1693ca32a69319f4",
+  "b2b042d819de618a",
+  "28422c1a290df69e",
+  "0ba22dd76ca97514",
+  "11aadefcb61695ad",
+  "6b9f33bca5616c75",
+  "1136e46edcae1510",
+  "90c9d7aae421bb84",
+  "453a993c881d5645",
+  "85e3c56e33086014",
+  "4c87f3a51ae0f027",
+  "ab52438b69cef32a",
+  "1b4d269743a6076e",
+  "a0a65360e925c341",
+  "d0076906b70a75e9",
+  "072d27eb90c277ff",
+  "8d55d4d7685ddb31",
+  "fae3db6127a30b1d",
+  "472b74697e327602",
+  "20c475bf33dc767b",
+  "86c50faa86d78b68",
+  "b0108ccd471cd4e9",
+  "6e6999cc2266fe7e",
+  "08e981e800f738c3",
+  "9f3d103801697548",
+  "cdf4125ee6c32959",
+  "341310315b13e5d9",
+  "e56530b56a5908fe",
+  "d39224a6c7a34c8f",
+  "2cdeb10b471bc61a",
+  "220e812efe6d737b",
+  "c4f902260f4a31fa",
+  "b6bb776c4d4d7237",
+  "19fed75493d28484",
+  "efdf55ea4df535dd",
+  "7ca236fa541b6c58",
+  "71f6b3789bb35ea3",
+  "ed454dab7f5432ef",
+  "d2776bff1c78c8ba",
+  "b324899e0f773d3b",
+  "d9c8e9606329fc5c",
+  "172f80ae5ae03534",
+  "5326310250d28e45",
+  "79ae25d1c65f8c6c",
+  "f0a62b4fdeaa3ad3",
+  "bfe394eeebd2668e",
+  "ea9c468a458d310c",
+  "6679f34f210beb93",
+  "31f4c3901919b3a5",
+  "67ac3803ec7dbde7",
+  "1697e666b7baefbb",
+  "856fe0eb84b38908",
+  "2912fcd49ff80eb1",
+  "9e13808728050666",
+  "b5b6c012573595e3",
+  "2fea3edd55e48fd3",
+  "5926a336e0faa1a9",
+  "c5009572462f97b1",
+  "8685cde89ca0adb9",
+  "71b0b307afe94ba6",
+  "0f4930ec254774f3",
+  "b928b09ab0f87db4",
+  "fc6cadadaa189ed4",
+  "399f8570712a8a6a",
+  "d97f41bfe07f769c",
+  "2b2085b37db844d1",
+  "9d28efe81cc3738f",
+  "421857bdea612b2a",
+  "b4136725f1e5c06f",
+  "94057d51da91b0e9",
+  "e1ad186eec00ff08",
+  "828d72501ccba854",
+  "399db6c704e8d3df"
+ ],
+ "errors": [
+  {
+   "pageId": "8b4c9933ef608aa3",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=37311&lcdStatus=all&sortBy=title&ver=21",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=37311&lcdStatus=all&sortBy=title&ver=21\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "ef2dc0e31171be0a",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52711&articleStatus=all&bc=3&sortBy=title&ver=22",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52711&articleStatus=all&bc=3&sortBy=title&ver=22\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "5bb5d9d8a9ca0b54",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40377&proposedStatus=all&sortBy=title&ver=27",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40377&proposedStatus=all&sortBy=title&ver=27\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "f45bd1e3881c2a80",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57753&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57753&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "2904c20a6d2b15f4",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52379&articleStatus=all&bc=3&sortBy=title&ver=9",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52379&articleStatus=all&bc=3&sortBy=title&ver=9\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "0d9f2ad916733d24",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=38792&lcdStatus=all&sortBy=title&ver=6",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=38792&lcdStatus=all&sortBy=title&ver=6\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "45f36cfce0fe54eb",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=55904&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=3",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=55904&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=3\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "9876442de17db986",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53019&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=14",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53019&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=14\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "13329f1a51f0f653",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57520&articleStatus=all&bc=3&sortBy=title&ver=43",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57520&articleStatus=all&bc=3&sortBy=title&ver=43\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "c0ed1172854a717a",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=36544&lcdStatus=all&sortBy=title&ver=21",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=36544&lcdStatus=all&sortBy=title&ver=21\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "eda5a313698b439b",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=54498&articleStatus=all&bc=3&sortBy=title&ver=24",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=54498&articleStatus=all&bc=3&sortBy=title&ver=24\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "4f56fcb906bda290",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34520&lcdStatus=all&sortBy=title&ver=32",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34520&lcdStatus=all&sortBy=title&ver=32\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "8335c2fef3eff484",
+   "url": "https://www.cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&lcdid=40386&proposedStatus=all&sortBy=title",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&lcdid=40386&proposedStatus=all&sortBy=title\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "e7c7f08c035a65b2",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdid=33398&ver=35",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdid=33398&ver=35\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "3345bb297d4efb3d",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58930&articleStatus=all&bc=3&sortBy=title&ver=2",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58930&articleStatus=all&bc=3&sortBy=title&ver=2\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "0b7d9ec3b4665f08",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/nca.aspx?bc=17&ncacaldoctype=NCA&ncaid=321&sortBy=status&status=Open+for+Public+Comment",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/nca.aspx?bc=17&ncacaldoctype=NCA&ncaid=321&sortBy=status&status=Open+for+Public+Comment\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "032b72122942e8fc",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57830&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=4",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57830&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=4\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "0d4704ba5f7d9994",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58960&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=7",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58960&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=7\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "a1de389a75bd9be1",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57685&articleStatus=all&bc=3&sortBy=title&ver=15",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57685&articleStatus=all&bc=3&sortBy=title&ver=15\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "ed1d95dfa693e58a",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=40381&ver=4",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=40381&ver=4\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "6dd1ac99e919d93f",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56559&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=26",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56559&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=26\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "2db1dde1e941bc08",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35936&lcdStatus=all&sortBy=title&ver=58",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35936&lcdStatus=all&sortBy=title&ver=58\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "f81550cf3941b9fd",
+   "url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=37033&lcdStatus=all&sortBy=title&ver=30",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=37033&lcdStatus=all&sortBy=title&ver=30\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "dc8cc99655a91d4a",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56471&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=18",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56471&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=18\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "5a31f596a2da6baf",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58038&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=10",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58038&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=10\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "49ffa8b81e4054dc",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58641&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=4",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58641&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=4\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "6297b7dc625c3957",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57053&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=22",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57053&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=22\", waiting until \"load\"\n"
+  },
+  {
+   "pageId": "e458b85539aa08e6",
+   "url": "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59330&articleStatus=all&bc=3&sortBy=title&ver=6",
+   "error": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59330&articleStatus=all&bc=3&sortBy=title&ver=6\", waiting until \"load\"\n"
+  }
+ ],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 3015,
+  "checked": 500,
+  "brokenCount": 33,
+  "broken": [
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/reports.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/downloads/downloads.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-whats-new-report.aspx?docType=all&timeframe=30",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-annual-report.aspx?docType=all&year=2026",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-ncacal-status-report.aspx?ncacaldoctype=all&status=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-ncd-report.aspx?chapter=all&labOnly=allncd&sortBy=title",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-ncd-report.aspx?chapter=190&labOnly=labonlyncd&sortBy=chapter",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-ncacal-status-report.aspx?ncacaldoctype=all&status=Open%20for%20Public%20Comment",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-medicare-coverage-documents-report.aspx?docTypeId=-1&status=Open%20for%20Public%20Comment",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-medicare-coverage-documents-report.aspx?docTypeId=-1",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-medcac-meetings-report.aspx?year=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/national-coverage-technology-assessments-report.aspx?year=0",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-final-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&lcdStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-final-lcds-alphabetical-report.aspx?lcdStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-whats-new-report.aspx?contractorName=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-final-lcds-state-report.aspx?stateRegion=all&contractorNumber=all&lcdStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-articles-contractor-report.aspx?contractorName=all&contractorNumber=all&articleStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-state-report.aspx?stateRegion=all&contractorNumber=all&proposedStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-articles-state-report.aspx?stateRegion=all&contractorNumber=all&articleStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-alphabetical-report.aspx?proposedStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-articles-alphabetical-report.aspx?articleStatus=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-mac-contacts-report.aspx?contractType=all&stateRegion=all&contractorName=all&contractorNumber=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/basket/basket.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/reports/local-coverage-sad-exclusion-list-report.aspx?contractorName=all&dateOption=current",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://cms.gov/medicare-coverage-database/help/help-and-resources.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://www.cms.gov/medicare-coverage-database/help/help-and-resources.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://www.cms.gov/medicare-coverage-database/new-search/search.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all",
+     "https://www.cms.gov/medicare/coverage/evidence/cpap"
+    ]
+   },
+   {
+    "url": "https://www.cms.gov/medicare-coverage-database/reports/local-coverage-mac-contacts-report.aspx?contractType=all&stateRegion=all&contractorName=all&contractorNumber=all",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all"
+    ]
+   },
+   {
+    "url": "https://www.cms.gov/medicare-coverage-database/search.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://cms.gov/medicare-coverage-database/reports/local-coverage-proposed-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&proposedStatus=all",
+     "http://www.cms.gov/medicare/quality/value-based-programs/quality-payment-program/measure-development",
+     "http://www.cms.gov/medicare/appeals-grievances/managed-care/review-appeals-council",
+     "https://www.cms.gov/medicare/health-safety-standards/quality-safety-oversight-general-information/quality-and-safety-special-alerts/temporary-pause-nursing-home-care-compare-updates-revised",
+     "https://cms.gov/derechos-facturas-medicas/ayuda/envie-una-queja",
+     "http://www.cms.gov/training-education/medicare-learning-networkr-mln/compliance/medicare-provider-compliance-tips/cardiac-pacemakers",
+     "https://www.cms.gov/about-cms/work-us/business-resources/contract-opportunities",
+     "https://www.cms.gov/data-research/statistics-trends-and-reports/medicare-program-rates-statistics/trust-fund-interest-rates",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11262otn",
+     "https://www.cms.gov/contacts/alef-behavioral-group-llc-eden/general-beneficiary-contact/1556926",
+     "https://www.cms.gov/about-cms/what-we-do/emergency-response/get-ready",
+     "http://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/ak-flex",
+     "https://www.cms.gov/apps/acronyms?page=0",
+     "https://cms.gov/medicare/regulations-guidance/transmittals/2025-transmittals?items_per_page=25&order=field_dyna_subject_formatted&page=0&sort=asc",
+     "https://www.cms.gov/about-cms/what-we-do/emergency-response/past-emergencies/earthquakes",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/wage-index",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11764bp",
+     "https://www.cms.gov/medicare/quality/initiatives/pac-quality-initiatives/impact-act-2014-data-standardization-cross-setting-measures",
+     "http://www.cms.gov/data-research",
+     "https://cms.gov/priorities/innovation-center/value-based-care-spotlight/disponible-en-espanol/apoyo-los-proveedores-para-apoyar-los-pacientes-la-historia-del-northwestern-hospital",
+     "https://www.cms.gov/contacts/west-virginia-department-health-human-resources/general-professional-contact/1563421",
+     "https://www.cms.gov/medicare/advantage-quality-improvement-program/chronic-care",
+     "https://www.cms.gov/medicare/coding-billing/skilled-nursing-facility-snf-consolidated-billing/part-b-medicare-administrative-contractor-file-explanation",
+     "https://cms.gov/medicare/quality/value-based-programs/quality-payment-program/feedback",
+     "https://www.cms.gov/medicare/coverage/evidence/cpap",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11369otn",
+     "https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency",
+     "https://www.cms.gov/medicare/regulations-guidance/transmittals/2022-transmittals?items_per_page=25&order=field_dyna_pe_number&page=10&sort=desc",
+     "https://www.cms.gov/research-statistics-data-systems/improper-payment-measurement-programs/medicare-part-c",
+     "https://www.cms.gov/medicare/quality/long-term-care-hospital/ltch-quality-reporting-measures-information",
+     "https://cms.gov/medicare/audits-compliance/part-c-d/compliance-program-policy-and-guidance",
+     "https://www.cms.gov/training-education/partner-outreach-resources/medicare",
+     "https://www.cms.gov/medicare/coordination-benefits-recovery/mandatory-insurer-reporting-group-health-plans/user-guide",
+     "https://www.cms.gov/medicare/regulations-guidance/transmittals/2016-transmittals?items_per_page=25&order=field_dyna_subject_formatted&page=7&sort=desc",
+     "https://cms.gov/medicare/coverage/approved-facilities-trials-registries/carotid-artery-stenting-facilities",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11236otn",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/2016-transmittals-items/r3535cp",
+     "https://cms.gov/training-education/medicare-learning-networkr-mln/compliance/medicare-provider-compliance-tips/respiratory-assist-devices",
+     "https://www.cms.gov/priorities/nursing-home-careers/get-up-40000-student-loan-repayment",
+     "http://www.cms.gov/partbid-provider",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11685cp",
+     "https://www.cms.gov/data-research/statistics-trends-and-reports/chart-series/cms-facts-figures",
+     "https://www.cms.gov/medicare/payment/fee-for-service-providers/hospice/hospice-regulations-and-notices",
+     "https://cms.gov/priorities/innovation/innovation-models/aco-reach",
+     "https://cms.gov/medicare/regulations-guidance/transmittals/2025-transmittals/r13304cp",
+     "https://www.cms.gov/medicare/audits-compliance/part-a-cost-report/21st-century-cures-act-mid-build-audits",
+     "https://www.cms.gov/apps/ama/license.asp?file=%2FResearch-Statistics-Data-and-Systems%2FDownloadable-Public-Use-Files%2FPart-B-Carrier-Summary-Data-File%2FDownloads%2F2005Carriers00591thru00803.zip",
+     "https://cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11195cp",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/2016-transmittals-items/r3461cp",
+     "https://www.cms.gov/medicare/quality/hospice/hqrp-extensions-and-exemption-requests"
+    ]
+   },
+   {
+    "url": "http://www.ofr.gov/inspection.aspx?AspxAutoDetectCookieSupport=1",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cms.gov/newsroom/fact-sheets/fact-sheet-two-midnight-rule-0"
+    ]
+   },
+   {
+    "url": "https://www.agentbrokerfaq.cms.gov/s/",
+    "status": 0,
+    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "foundOn": [
+     "http://www.cms.gov/medicare/quality/value-based-programs/quality-payment-program/measure-development",
+     "http://www.cms.gov/medicare/appeals-grievances/managed-care/review-appeals-council",
+     "https://www.cms.gov/medicare/health-safety-standards/quality-safety-oversight-general-information/quality-and-safety-special-alerts/temporary-pause-nursing-home-care-compare-updates-revised",
+     "https://cms.gov/derechos-facturas-medicas/ayuda/envie-una-queja",
+     "http://www.cms.gov/training-education/medicare-learning-networkr-mln/compliance/medicare-provider-compliance-tips/cardiac-pacemakers",
+     "https://www.cms.gov/about-cms/work-us/business-resources/contract-opportunities",
+     "https://www.cms.gov/data-research/statistics-trends-and-reports/medicare-program-rates-statistics/trust-fund-interest-rates",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11262otn",
+     "https://www.cms.gov/contacts/alef-behavioral-group-llc-eden/general-beneficiary-contact/1556926",
+     "https://www.cms.gov/about-cms/what-we-do/emergency-response/get-ready",
+     "http://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/ak-flex",
+     "https://www.cms.gov/apps/acronyms?page=0",
+     "https://cms.gov/medicare/regulations-guidance/transmittals/2025-transmittals?items_per_page=25&order=field_dyna_subject_formatted&page=0&sort=asc",
+     "https://www.cms.gov/about-cms/what-we-do/emergency-response/past-emergencies/earthquakes",
+     "https://www.cms.gov/medicare/payment/prospective-payment-systems/skilled-nursing-facility-snf/wage-index",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11764bp",
+     "https://www.cms.gov/medicare/quality/initiatives/pac-quality-initiatives/impact-act-2014-data-standardization-cross-setting-measures",
+     "http://www.cms.gov/data-research",
+     "https://cms.gov/priorities/innovation-center/value-based-care-spotlight/disponible-en-espanol/apoyo-los-proveedores-para-apoyar-los-pacientes-la-historia-del-northwestern-hospital",
+     "https://www.cms.gov/contacts/west-virginia-department-health-human-resources/general-professional-contact/1563421",
+     "https://www.cms.gov/medicare/advantage-quality-improvement-program/chronic-care",
+     "https://www.cms.gov/medicare/coding-billing/skilled-nursing-facility-snf-consolidated-billing/part-b-medicare-administrative-contractor-file-explanation",
+     "https://cms.gov/medicare/quality/value-based-programs/quality-payment-program/feedback",
+     "https://www.cms.gov/medicare/coverage/evidence/cpap",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11369otn",
+     "https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency",
+     "https://www.cms.gov/medicare/regulations-guidance/transmittals/2022-transmittals?items_per_page=25&order=field_dyna_pe_number&page=10&sort=desc",
+     "https://www.cms.gov/research-statistics-data-systems/improper-payment-measurement-programs/medicare-part-c",
+     "https://www.cms.gov/medicare/quality/long-term-care-hospital/ltch-quality-reporting-measures-information",
+     "https://cms.gov/medicare/audits-compliance/part-c-d/compliance-program-policy-and-guidance",
+     "https://www.cms.gov/training-education/partner-outreach-resources/medicare",
+     "https://www.cms.gov/medicare/coordination-benefits-recovery/mandatory-insurer-reporting-group-health-plans/user-guide",
+     "https://www.cms.gov/medicare/regulations-guidance/transmittals/2016-transmittals?items_per_page=25&order=field_dyna_subject_formatted&page=7&sort=desc",
+     "https://cms.gov/medicare/coverage/approved-facilities-trials-registries/carotid-artery-stenting-facilities",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11236otn",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/2016-transmittals-items/r3535cp",
+     "https://cms.gov/training-education/medicare-learning-networkr-mln/compliance/medicare-provider-compliance-tips/respiratory-assist-devices",
+     "https://www.cms.gov/priorities/nursing-home-careers/get-up-40000-student-loan-repayment",
+     "http://www.cms.gov/partbid-provider",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11685cp",
+     "https://www.cms.gov/data-research/statistics-trends-and-reports/chart-series/cms-facts-figures",
+     "https://www.cms.gov/medicare/payment/fee-for-service-providers/hospice/hospice-regulations-and-notices",
+     "https://cms.gov/priorities/innovation/innovation-models/aco-reach",
+     "https://cms.gov/medicare/regulations-guidance/transmittals/2025-transmittals/r13304cp",
+     "https://www.cms.gov/medicare/audits-compliance/part-a-cost-report/21st-century-cures-act-mid-build-audits",
+     "https://www.cms.gov/apps/ama/license.asp?file=%2FResearch-Statistics-Data-and-Systems%2FDownloadable-Public-Use-Files%2FPart-B-Carrier-Summary-Data-File%2FDownloads%2F2005Carriers00591thru00803.zip",
+     "https://cms.gov/regulations-and-guidance/guidance/transmittals/transmittals/r11195cp",
+     "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/2016-transmittals-items/r3461cp",
+     "https://www.cms.gov/medicare/quality/hospice/hqrp-extensions-and-exemption-requests"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 79,
+  "resources": 79,
+  "images": 79,
+  "standards": 39,
+  "link-check": 79,
+  "plain-language": 39,
+  "security": 9,
+  "third-party": 22,
+  "lighthouse": 11,
+  "alfa": 45,
+  "deprecated-html": 12,
+  "tech": 9,
+  "sustainability": 7,
+  "public-interest": 9
+ },
+ "tally": {
+  "ok": 80,
+  "blocked": 8,
+  "timeout": 28,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 34,
+  "error": 0
+ },
+ "finishedAt": "2026-06-29T05:16:50.390Z"
+}

@@ -1,0 +1,77 @@
+{
+ "runId": "2026-07-01T04-48-08-534Z-43862e",
+ "week": "2026-W27",
+ "domain": "www.medicare.gov",
+ "startedAt": "2026-07-01T04:48:08.890Z",
+ "scanned": [
+  "19a2d676ff2ce1e9",
+  "e23c7b5e1781ae0b",
+  "d2694e8429f402a6",
+  "b0e67e9125df8a7b",
+  "15c51e1e7c6589c8",
+  "182fa72e6968b6fa",
+  "6b45f616b35b4ed2",
+  "8005ebad9f75cc86",
+  "4863a0667e91f605",
+  "8749e4987b00edec",
+  "e4869abf8f7bab9a",
+  "11c6193d0f5ddccc"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 113,
+  "checked": 113,
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "http://www.lung.org/stop-smoking/join-freedom-from-smoking/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://medicare.gov/coverage/counseling-to-prevent-tobacco-use-tobacco-caused-disease"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 12,
+  "alfa": 8,
+  "resources": 12,
+  "images": 12,
+  "link-check": 12,
+  "plain-language": 6,
+  "third-party": 1,
+  "lighthouse": 2,
+  "public-interest": 2,
+  "standards": 7,
+  "deprecated-html": 3,
+  "sustainability": 1,
+  "tech": 1
+ },
+ "tally": {
+  "ok": 12,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 1,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-07-01T04:55:50.124Z"
+}

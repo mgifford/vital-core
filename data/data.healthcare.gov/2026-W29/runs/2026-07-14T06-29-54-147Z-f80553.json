@@ -1,0 +1,196 @@
+{
+ "runId": "2026-07-14T06-29-54-147Z-f80553",
+ "week": "2026-W29",
+ "domain": "data.healthcare.gov",
+ "startedAt": "2026-07-14T06:29:54.866Z",
+ "scanned": [
+  "d2348936a920bd13",
+  "6db65d7ec6db1c17",
+  "544aa45b8fe1d1cb",
+  "00aa599fec69b828",
+  "bb17bf19c416ad37",
+  "9fefe9beece1dbe1",
+  "0bdd686429d7b183",
+  "a613812db589a664",
+  "b9b1418179521ff2",
+  "eb375aab27070c0b",
+  "4541a6a29957affe",
+  "45275ddc129c5554",
+  "2505ccdd0222831d",
+  "f87d87bc528f5584",
+  "f954169d40516cea",
+  "8ddceb7b2126950d",
+  "3ccf5eb7002debb1",
+  "47be23e4b0f6832e",
+  "51c90fb61a77369e",
+  "c1ca508c5aafa4c9",
+  "26c2a7a01e0be2cf",
+  "706ae317c877937a",
+  "fa34e3fabdcc886b",
+  "9237216a4937105b",
+  "6c30a5e2aa4089f7",
+  "b63fbe03ed8f383e",
+  "569f654efbcea438",
+  "8ee19561553ba568",
+  "b3a17b0146fe4655",
+  "aa0328a4462869fe",
+  "493e271d1c980926",
+  "20eca7f49bf0d066"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 309,
+  "checked": 309,
+  "brokenCount": 7,
+  "broken": [
+   {
+    "url": "https://data.healthcare.gov/whats-new",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/32q5-vymq?page=4",
+     "https://data.healthcare.gov/dataset/mfay-6hbn",
+     "https://data.healthcare.gov/dataset/tfna-vz76?page=2",
+     "https://data.healthcare.gov/dataset/bx9c-fkxn?page=2",
+     "https://data.healthcare.gov/dataset/nyb9-erui?page=3",
+     "https://data.healthcare.gov/dataset/r3nu-ebdw?page=5",
+     "https://data.healthcare.gov/dataset/hrtn-a9fq",
+     "https://data.healthcare.gov/datasets?keyword%5B0%5D=Marketplace+PUF&page=2",
+     "https://data.healthcare.gov/dataset/vf3k-stxb?page=176",
+     "https://data.healthcare.gov/dataset/ncbw-vdsn?page=2",
+     "https://data.healthcare.gov/dataset/d3ea6f2d-a517-4f9b-a2fb-1ffcaebc3107",
+     "https://data.healthcare.gov/dataset/4ej5-srs2?page=4",
+     "https://data.healthcare.gov/ab-registration-completion-list?page=2",
+     "https://data.healthcare.gov/dataset/cfvf-wask?page=4",
+     "https://data.healthcare.gov/dataset/j5bh-rfhd",
+     "https://data.healthcare.gov/dataset/na7e-pbra?page=3",
+     "https://data.healthcare.gov/dataset/cqrd-buzn?page=2",
+     "https://data.healthcare.gov/dataset/79409395-1868-4895-8601-e39a6a9266fe",
+     "https://data.healthcare.gov/ab-registration-completion-list?page=3",
+     "https://data.healthcare.gov/dataset/dxg8-kay3",
+     "https://data.healthcare.gov/dataset/h8gm-uh38?page=2",
+     "https://data.healthcare.gov/dataset/vcra-66c2",
+     "https://data.healthcare.gov/dataset/esht-9tqi?page=4",
+     "https://data.healthcare.gov/datasets?page=5",
+     "https://data.healthcare.gov/ab-registration-completion-list?page=39501",
+     "https://data.healthcare.gov/datasets?keyword%5B0%5D=Exchange+PUF&page=3",
+     "https://data.healthcare.gov/dataset/ctt7-ra7n?page=1733"
+    ]
+   },
+   {
+    "url": "https://data.healthcare.gov/page=2",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/32q5-vymq?page=4",
+     "https://data.healthcare.gov/dataset/tfna-vz76?page=2",
+     "https://data.healthcare.gov/dataset/nyb9-erui?page=3",
+     "https://data.healthcare.gov/dataset/r3nu-ebdw?page=5",
+     "https://data.healthcare.gov/dataset/hrtn-a9fq",
+     "https://data.healthcare.gov/dataset/4ej5-srs2?page=4",
+     "https://data.healthcare.gov/dataset/j5bh-rfhd",
+     "https://data.healthcare.gov/dataset/dxg8-kay3",
+     "https://data.healthcare.gov/dataset/h8gm-uh38?page=2",
+     "https://data.healthcare.gov/dataset/esht-9tqi?page=4",
+     "https://data.healthcare.gov/dataset/ctt7-ra7n?page=1733"
+    ]
+   },
+   {
+    "url": "https://data.healthcare.gov/page=3",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/tfna-vz76?page=2",
+     "https://data.healthcare.gov/dataset/nyb9-erui?page=3",
+     "https://data.healthcare.gov/dataset/hrtn-a9fq",
+     "https://data.healthcare.gov/dataset/4ej5-srs2?page=4",
+     "https://data.healthcare.gov/dataset/j5bh-rfhd",
+     "https://data.healthcare.gov/dataset/dxg8-kay3",
+     "https://data.healthcare.gov/dataset/h8gm-uh38?page=2",
+     "https://data.healthcare.gov/dataset/ctt7-ra7n?page=1733"
+    ]
+   },
+   {
+    "url": "https://data.healthcare.gov/page=7",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/tfna-vz76?page=2"
+    ]
+   },
+   {
+    "url": "https://data.healthcare.gov/page=6",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/tfna-vz76?page=2"
+    ]
+   },
+   {
+    "url": "https://data.healthcare.gov/page=5",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/tfna-vz76?page=2"
+    ]
+   },
+   {
+    "url": "https://data.healthcare.gov/page=4",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/tfna-vz76?page=2",
+     "https://data.healthcare.gov/dataset/nyb9-erui?page=3",
+     "https://data.healthcare.gov/dataset/hrtn-a9fq",
+     "https://data.healthcare.gov/dataset/4ej5-srs2?page=4",
+     "https://data.healthcare.gov/dataset/j5bh-rfhd",
+     "https://data.healthcare.gov/dataset/dxg8-kay3",
+     "https://data.healthcare.gov/dataset/h8gm-uh38?page=2",
+     "https://data.healthcare.gov/dataset/ctt7-ra7n?page=1733"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 27,
+  "plain-language": 15,
+  "resources": 27,
+  "images": 27,
+  "standards": 12,
+  "third-party": 9,
+  "link-check": 27,
+  "lighthouse": 3,
+  "security": 7,
+  "alfa": 14,
+  "deprecated-html": 2,
+  "public-interest": 2,
+  "sustainability": 2,
+  "tech": 1
+ },
+ "tally": {
+  "ok": 27,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 5,
+  "error": 0
+ },
+ "finishedAt": "2026-07-14T06:35:38.785Z"
+}
