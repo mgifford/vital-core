@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DIRS } from './config.js';
+import { writeLedgerIfChanged } from './fs-utils.js';
 
 /**
  * Per-domain ledger of third-party vendors (registrable domains) ever seen
@@ -29,10 +30,7 @@ export function loadThirdPartyLedger(domainKey, domain) {
 }
 
 export function saveThirdPartyLedger(domainKey, ledger) {
-  const p = ledgerPath(domainKey);
-  fs.mkdirSync(path.dirname(p), { recursive: true });
-  ledger.updatedAt = new Date().toISOString();
-  fs.writeFileSync(p, JSON.stringify(ledger, null, 1));
+  writeLedgerIfChanged(ledgerPath(domainKey), ledger);
 }
 
 /**
