@@ -664,26 +664,156 @@ test('priority: ranks by pages x severity x reach; fleet flattens across domains
   assert.equal(fleet[0].domain, 'b.gov', 'worst issue across domains floats to the top, tagged with its domain');
 });
 
-test('inventory: accumulates last-known status, keeps newer over older', async () => {
+test('inventory: keeps a full row only for pages with issues, keeps newer over older', async () => {
   const { updateInventory, inventorySummary } = await import('../../src/lib/inventory.js');
-  const inv = { domain: 'x', pages: {} };
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0 };
   updateInventory(inv, '2026-W20', [
     { url: 'x/a', pageId: 'a', status: 200, scannedAt: 't1', axe: { violationCount: 3 } },
     { url: 'x/b', pageId: 'b', status: 200, scannedAt: 't1', axe: { violationCount: 0 }, alfa: { failedCount: 0 } },
   ]);
-  // Later week re-checks /a (now clean); /b not re-scanned this week.
-  updateInventory(inv, '2026-W24', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
-  assert.equal(inv.pages['x/a'].lastWeek, '2026-W24', '/a advanced to newer week');
-  assert.equal(inv.pages['x/a'].hasIssues, false, '/a now clean');
-  assert.equal(inv.pages['x/b'].lastWeek, '2026-W20', '/b retains its older last-known result');
+  // /b was clean and never had issues: no row, folded into cleanCount.
+  assert.equal(inv.pages['x/b'], undefined, '/b never gets a row (clean, no history)');
+  assert.equal(inv.cleanCount, 1);
 
-  // Re-applying an older week must NOT clobber the newer /a result.
+  // Later week re-checks /a (now clean): row is dropped, a fix marker replaces it.
+  updateInventory(inv, '2026-W24', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
+  assert.equal(inv.pages['x/a'], undefined, '/a row dropped once clean');
+  assert.equal(inv.fixed['x/a'].fixedAsOf, '2026-W24');
+
+  // Re-applying an older week must NOT clobber the newer fix.
   updateInventory(inv, '2026-W20', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't0', axe: { violationCount: 9 } }]);
-  assert.equal(inv.pages['x/a'].lastWeek, '2026-W24', 'older re-run did not overwrite newer');
+  assert.equal(inv.pages['x/a'], undefined, 'older re-run did not resurrect a row');
+  assert.equal(inv.fixed['x/a'].fixedAsOf, '2026-W24', 'older re-run did not clobber the newer fix marker');
 
   const s = inventorySummary(inv, '2026-W24');
-  assert.equal(s.totalKnownPages, 2);
-  assert.equal(s.scannedThisWeek, 1);
+  assert.equal(s.totalKnownPages, 2, 'x/a (fixed) + x/b (clean) = 2');
+  assert.equal(s.pagesWithKnownIssues, 0);
+  assert.equal(s.scannedThisWeek, 0, 'no page currently has a row scanned this week');
+});
+
+test('inventory: a page that breaks again after being fixed gets a full row back, clears the fix marker', async () => {
+  const { updateInventory } = await import('../../src/lib/inventory.js');
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0 };
+  updateInventory(inv, '2026-W20', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't1', axe: { violationCount: 2 } }]);
+  updateInventory(inv, '2026-W21', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
+  assert.equal(inv.fixed['x/a'].fixedAsOf, '2026-W21');
+
+  updateInventory(inv, '2026-W22', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't3', axe: { violationCount: 5 } }]);
+  assert.equal(inv.fixed['x/a'], undefined, 'fix marker cleared once broken again');
+  assert.equal(inv.pages['x/a'].hasIssues, true);
+  assert.equal(inv.pages['x/a'].lastWeek, '2026-W22');
+});
+
+test('inventory: pages with issues currently keep contributing to scannedThisWeek/coverageByWeek', async () => {
+  const { updateInventory, inventorySummary } = await import('../../src/lib/inventory.js');
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0 };
+  updateInventory(inv, '2026-W24', [
+    { url: 'x/a', pageId: 'a', status: 200, scannedAt: 't1', axe: { violationCount: 1 } },
+    { url: 'x/c', pageId: 'c', status: 200, scannedAt: 't1', alfa: { failedCount: 2 } },
+  ]);
+  const s = inventorySummary(inv, '2026-W24');
+  assert.equal(s.pagesWithKnownIssues, 2);
+  assert.equal(s.scannedThisWeek, 2);
+  assert.deepEqual(s.coverageByWeek, { '2026-W24': 2 });
+});
+
+test('inventory: replaying the same week again does not re-count already-clean pages (aggregate.js replays every retained week on every run)', async () => {
+  const { updateInventory } = await import('../../src/lib/inventory.js');
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0, countedWeeks: [] };
+  const records = [
+    { url: 'x/clean-1', pageId: 'c1', status: 200, scannedAt: 't1', axe: { violationCount: 0 } },
+    { url: 'x/clean-2', pageId: 'c2', status: 200, scannedAt: 't1', axe: { violationCount: 0 } },
+  ];
+  updateInventory(inv, '2026-W24', records);
+  assert.equal(inv.cleanCount, 2, 'first pass counts both clean pages');
+  assert.deepEqual(inv.countedWeeks, ['2026-W24']);
+
+  // Same week, same records, replayed again (exactly what aggregate.js does
+  // on every subsequent run for a week whose pages/ hasn't changed).
+  updateInventory(inv, '2026-W24', records);
+  assert.equal(inv.cleanCount, 2, 'replaying the same week does not double-count');
+
+  // A genuinely new week's clean pages DO still get counted.
+  updateInventory(inv, '2026-W25', [{ url: 'x/clean-3', pageId: 'c3', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
+  assert.equal(inv.cleanCount, 3, 'a new week still contributes');
+  assert.deepEqual(inv.countedWeeks, ['2026-W24', '2026-W25']);
+});
+
+test('inventory: loadInventory migrates legacy hasIssues:false rows into cleanCount', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const { DIRS } = await import('../../src/lib/config.js');
+  const { loadInventory, saveInventory } = await import('../../src/lib/inventory.js');
+  const key = `__test-migration-${Date.now()}__`;
+  const domainDir = path.join(DIRS.data, key);
+  fs.mkdirSync(domainDir, { recursive: true });
+  try {
+    // Legacy shape: full rows for both clean and issue pages, no fixed/cleanCount.
+    fs.writeFileSync(
+      path.join(domainDir, 'inventory.json'),
+      JSON.stringify({
+        domain: 'legacy.example.gov',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+        pages: {
+          'x/clean-1': { pageId: 'c1', lastWeek: '2026-W10', hasIssues: false },
+          'x/clean-2': { pageId: 'c2', lastWeek: '2026-W11', hasIssues: false },
+          'x/broken': { pageId: 'b1', lastWeek: '2026-W12', hasIssues: true },
+        },
+      })
+    );
+    const { updateInventory } = await import('../../src/lib/inventory.js');
+    const inv = loadInventory(key, 'legacy.example.gov');
+    assert.deepEqual(Object.keys(inv.pages), ['x/broken'], 'clean rows purged on load, issue row kept');
+    assert.equal(inv.cleanCount, 2, 'purged clean rows folded into cleanCount');
+    assert.deepEqual(inv.fixed, {}, 'fixed starts empty (no accurate fixedAsOf for pre-migration rows)');
+    assert.ok(inv.countedWeeks.includes('2026-W10') && inv.countedWeeks.includes('2026-W11'), 'purged weeks marked counted');
+
+    // A later aggregate.js replay of one of the purged weeks (e.g. it's
+    // still within retention_weeks) must not double-count via updateInventory.
+    updateInventory(inv, '2026-W10', [{ url: 'x/clean-1', pageId: 'c1', status: 200, axe: { violationCount: 0 } }]);
+    assert.equal(inv.cleanCount, 2, 'replaying an already-migrated week does not re-count');
+
+    saveInventory(key, inv);
+    const onDisk = JSON.parse(fs.readFileSync(path.join(domainDir, 'inventory.json'), 'utf8'));
+    assert.equal(Object.keys(onDisk.pages).length, 1, 'migrated shape persists after save');
+  } finally {
+    fs.rmSync(domainDir, { recursive: true, force: true });
+  }
+});
+
+test('writeLedgerIfChanged: skips the write (and updatedAt bump) when content is unchanged', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const os = await import('node:os');
+  const { writeLedgerIfChanged } = await import('../../src/lib/fs-utils.js');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ledger-write-'));
+  const file = path.join(tmpDir, 'ledger.json');
+  try {
+    const ledger = { domain: 'x.gov', updatedAt: null, things: { a: 1 } };
+    const wrote1 = writeLedgerIfChanged(file, ledger);
+    assert.equal(wrote1, true, 'first write happens (file did not exist)');
+    const onDisk1 = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.ok(onDisk1.updatedAt, 'updatedAt stamped on first write');
+
+    // Re-save with identical content: should be a no-op, same updatedAt.
+    const reloaded = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const wrote2 = writeLedgerIfChanged(file, reloaded);
+    assert.equal(wrote2, false, 'no write when content unchanged');
+    const onDisk2 = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(onDisk2.updatedAt, onDisk1.updatedAt, 'updatedAt not bumped when nothing changed');
+
+    // Now change real content: should write (timestamp bump isn't checked
+    // here — two writes can land in the same millisecond and produce an
+    // identical ISO string, so it's not a reliable signal; `wrote3` itself
+    // already proves the write path executed).
+    reloaded.things.b = 2;
+    const wrote3 = writeLedgerIfChanged(file, reloaded);
+    assert.equal(wrote3, true, 'write happens when content actually changes');
+    const onDisk3 = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.deepEqual(onDisk3.things, { a: 1, b: 2 });
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
 });
 
 test('security: classifies TLD, HTTPS, and headers from a mocked origin', async () => {

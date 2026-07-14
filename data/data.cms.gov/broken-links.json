@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-07-13T22:45:20.460Z",
+ "updatedAt": "2026-07-14T13:00:36.621Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -21,44 +21,28 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W29",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W29"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "h",
-    "t",
-    "p",
-    "s",
-    ":",
-    "/",
-    "d",
-    "a",
-    ".",
-    "c"
+    "https://data.cms.gov/provider-data/topics/hospitals/complications-deaths"
    ]
   },
   "https://www.cdc.gov/infectioncontrol/guidelines/BSI/index.html": {
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W29",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W29"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "h",
-    "t",
-    "p",
-    "s",
-    ":",
-    "/",
-    "d",
-    "a",
-    ".",
-    "c"
+    "https://data.cms.gov/provider-data/topics/hospitals/complications-deaths"
    ]
   },
   "http://www.cdc.gov/HAI/ca_uti/uti.html": {
@@ -87,66 +71,42 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W29",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W29"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "h",
-    "t",
-    "p",
-    "s",
-    ":",
-    "/",
-    "d",
-    "a",
-    ".",
-    "c"
+    "https://data.cms.gov/provider-data/topics/hospitals/complications-deaths"
    ]
   },
   "http://www.cdc.gov/HAI/ssi/ssi.html": {
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W29",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W29"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "h",
-    "t",
-    "p",
-    "s",
-    ":",
-    "/",
-    "d",
-    "a",
-    ".",
-    "c"
+    "https://data.cms.gov/provider-data/topics/hospitals/complications-deaths"
    ]
   },
   "https://www.cdc.gov/infectioncontrol/guidelines/cauti/index.html": {
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W24",
+   "lastSeen": "2026-W29",
    "_weeks": [
-    "2026-W24"
+    "2026-W24",
+    "2026-W29"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "h",
-    "t",
-    "p",
-    "s",
-    ":",
-    "/",
-    "d",
-    "a",
-    ".",
-    "c"
+    "https://data.cms.gov/provider-data/topics/hospitals/complications-deaths"
    ]
   },
   "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/n0yb-util/docs?": {
@@ -228,15 +188,15 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W28",
+   "lastSeen": "2026-W29",
    "_weeks": [
     "2026-W25",
     "2026-W26",
-    "2026-W28"
+    "2026-W28",
+    "2026-W29"
    ],
-   "weeksBroken": 3,
+   "weeksBroken": 4,
    "foundOn": [
-    "https://data.cms.gov/provider-data/topics/nursing-homes/technical-details",
     "https://data.cms.gov/provider-data/topics/nursing-homes/quality-measures"
    ]
   },
@@ -723,7 +683,8 @@
    ],
    "weeksBroken": 3,
    "foundOn": [
-    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county"
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county",
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state"
    ]
   },
   "https://www.cms.gov/marketplace/resources/data/archive": {
@@ -773,6 +734,19 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://data.cms.gov/provider-data/dataset/rrqw-56er?page=5"
+   ]
+  },
+  "https://www.cdc.gov/infectioncontrol/index.html": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W29",
+   "lastSeen": "2026-W29",
+   "_weeks": [
+    "2026-W29"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://data.cms.gov/provider-data/topics/hospitals/complications-deaths"
    ]
   }
  }

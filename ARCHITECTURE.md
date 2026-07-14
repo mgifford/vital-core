@@ -131,14 +131,52 @@ newer scan supersedes is aggressively forgotten once it's rolled up into
 pruned week degrades gracefully rather than erroring.
 
 **Git history policy:** `prune.js` deletes files from the working tree,
-but git history keeps every blob forever, so the repo still grows
-unbounded even as `retention_weeks` keeps old data out of checkouts.
-Decided 2026-07-03: accept the growth for now — GitHub Actions already
-uses a partial clone so CI checkouts aren't affected — and revisit only
-when the server-side repo size passes 1 GB (a daily check in the
-`report.yml` gate job warns when it does). At that point, move `data/`
-to a companion repo whose history can be periodically truncated,
-keeping the code repo light.
+but git history keeps every blob forever — deleting a file from a later
+commit does not shrink any earlier commit that still contains it, so the
+repo's `.git` size never decreases on its own; it can only grow slower.
+
+The 1 GB server-side size trigger (decided 2026-07-03) fired 2026-07-14.
+Investigation found the growth was **not** primarily page-level detail
+(that's correctly bounded by `retention_weeks`, ~10% of history size) —
+it was `aggregate.js` and the ledger modules (`inventory.js`,
+`findings.js`, `resource-ledger.js`, `third-party-ledger.js`,
+`link-ledger.js`) unconditionally rewriting and re-committing their
+output on every run, even when the underlying content hadn't changed
+(each write stamped a fresh timestamp, which alone made git see the file
+as "different"). `inventory.json` was the worst offender: it kept a full
+row for every page ever scanned, clean or not, refreshed every run.
+
+Fixed 2026-07-14 (PR #235), root cause first rather than reaching for the
+companion-repo split:
+- `inventory.js` only keeps a full row for pages with **current** known
+  issues (the actual repro evidence); a fixed page gets a small
+  `fixed[url]: { fixedAsOf }` marker; a page that's always been clean is
+  folded into an approximate `cleanCount` (not stored per-URL — that would
+  reproduce the same problem at smaller scale).
+- `aggregate.js` recomputes every retained week's `summary.json` on every
+  run (not just the current week); it now skips the write when the
+  content — ignoring `generatedAt` — is unchanged from what's on disk.
+- All ledger `save*()` functions now go through a shared
+  `writeLedgerIfChanged()` helper (`src/lib/fs-utils.js`) that compares
+  against the on-disk content (ignoring `updatedAt`) and skips the write
+  (and the timestamp bump) when nothing real changed.
+
+This does not shrink the ~1.9 GB already in history — only a history
+rewrite (squashing/truncating old commits) or moving `data/` to a
+periodically-truncated companion repo would do that, and both remain
+deliberately out of scope for now (see the `git-history-companion-repo`
+Spec Kitty mission, kept open as the fallback plan). It does fix the
+*growth rate*: reruns with no new scan data now produce a near-empty
+diff, instead of rewriting every domain's ledgers and every retained
+week's summary daily regardless of content.
+
+**Alerting:** the `report.yml` gate job no longer warns on a static
+"still over 1 GB" threshold (that would now fire every single day forever
+and become noise, since existing history won't shrink). Instead it
+tracks server-side repo size run-over-run (`data/.repo-size-kb`) and
+warns if it grows by more than ~50 MB between two report runs — a signal
+the write-pattern fix regressed or a new bloat source appeared, not just
+"the repo is still large."
 
 
 Crawler

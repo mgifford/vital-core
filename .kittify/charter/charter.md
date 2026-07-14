@@ -17,7 +17,7 @@ remediation work on government sites.
 | --- | --- |
 | weekly-accessibility-tracking | Prefer weekly comparisons, regressions, and recovery trends over isolated single-run output. |
 | stable-page-identity | Keep URL and page identity stable so records dedupe cleanly across weeks. |
-| historical-evidence-preservation | Treat summaries as durable history; prune only page-level detail after retention rules allow it. |
+| historical-evidence-preservation | Treat summaries as durable history; prune only page-level detail after retention rules allow it. Committed git history is append-only by default — no agent may rewrite, squash, or force-push over existing history on its own initiative. **Exception (added 2026-07-14, owner-authorized):** a one-time rewrite of `data/`'s git history is permitted to shrink the repository, in response to the unconditional-rewrite bug fixed in PR #235 (see ARCHITECTURE.md "Git history policy" and the `git-history-companion-repo` mission). This exception authorizes that ONE rewrite only. **Any further history rewrite, squash, or force-push to `main` requires a new EXPLICIT OWNER OVERRIDE given in that session's chat before the agent may proceed** — a prior approval, this charter entry, or "we discussed this before" does not carry forward. An agent that believes another rewrite is warranted must stop and ask, not act. |
 | accessible-reporting | Generated HTML must be semantic, keyboard-usable, and provide text alternatives for charts and other visualizations. |
 | efficient-recurring-scans | Keep scans deterministic, rate-controlled, and proportionate to the site's value and weekly budget. |
 | sustainable-web-output | Minimize data transfer and client computation: no web fonts, static SVG, JS only as progressive enhancement, build-time over per-request work, and caching over re-shipping bytes. |
@@ -46,3 +46,7 @@ remediation work on government sites.
   the canonical branch.
 - Generated reports and weekly data must remain reproducible from the committed
   repository state.
+- History is append-only on `main`; no force-push or history rewrite without an
+  explicit owner override given in that session's chat (see
+  `historical-evidence-preservation` above for the one-time, already-used
+  exception and the standing override requirement for any future rewrite).

@@ -116,19 +116,36 @@ page-level detail that a newer scan supersedes.
   longitudinally consistent across retention boundaries. Covered by unit
   regression test in `tests/unit/prune.test.js`.
 - [x] B3. Git history strategy — DECIDED 2026-07-03: option (c) accepted —
-  accept growth for now; partial clone (A1) shields CI. A daily size check in
-  report.yml (gate job) warns when server-side repo size passes 1 GB; that
-  warning is the trigger to revisit and execute option (b). Original options
-  kept below for that future decision:
-  prune.js deletes files but git history keeps every blob forever; the 468 MB
-  pack becomes multi-GB in a year+. Options:
+  accept growth for now; partial clone (A1) shields CI. The 1 GB trigger
+  fired 2026-07-14 (GitHub Actions run 29287101399). Investigation found the
+  growth was NOT primarily page-level detail (already correctly bounded by
+  retention_weeks, ~10% of history size) — it was aggregate.js and the ledger
+  modules unconditionally rewriting/re-committing their full output on every
+  run even when content hadn't changed (a stamped timestamp alone made git
+  see every file as "different" every time). RESOLVED 2026-07-14 (PR #235)
+  by fixing the write pattern instead of executing option (b):
+  inventory.json now only keeps full rows for pages with CURRENT known
+  issues (fixed pages get a small marker, always-clean pages fold into an
+  approximate count); aggregate.js and all ledger save*() functions skip the
+  write entirely when content — ignoring the timestamp field — is unchanged
+  from what's on disk. See ARCHITECTURE.md "Git history policy" for the
+  full writeup. This does NOT shrink the ~1.9 GB already committed — only a
+  history rewrite (a) or the companion-repo split (b) would do that, and
+  both remain deliberately out of scope for now. The `git-history-companion-
+  repo` Spec Kitty mission (spec/plan/research done, no tasks/implementation)
+  stays open as the fallback plan — return to it if the growth-rate fix
+  proves insufficient. Original options kept below for that future decision:
   (a) periodic history rewrite squashing scan-bot commits older than N weeks
       (rewrites history — conflicts with append-only doctrine; needs charter
       amendment + coordination since forks/clones break),
   (b) move data/ to a companion repo where history can be periodically
       truncated (shallow "rolling" repo), code repo stays light,
   (c) accept growth; partial clone (A1) already shields CI.
-  Recommendation: (c) now, prepare (b) when pack > 1 GB.
+  New alert (replaces the static 1 GB check, which would now fire daily
+  forever since existing history can't shrink): report.yml's gate job
+  compares server-side repo size run-over-run (data/.repo-size-kb) and warns
+  if it grows >50 MB between two report runs — signals the write-pattern fix
+  regressed, or a new bloat source appeared, rather than "still large."
 - [x] B4. Whatever is chosen, document the retention contract in
   ARCHITECTURE.md: "summaries + ledgers forever; page detail N weeks; git
   history policy X."

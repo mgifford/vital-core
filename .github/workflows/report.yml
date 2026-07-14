@@ -40,24 +40,42 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       publish: ${{ steps.decide.outputs.publish }}
+      repo_size_kb: ${{ steps.size.outputs.kb }}
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
-      # Data-in-git growth trigger (ROADMAP-2026-07.md Mission B3): scan data
-      # is committed to this repo and history keeps every blob forever, so the
-      # repo grows without bound. Decision 2026-07-03: accept growth for now,
-      # split data/ into a companion repo when server-side size passes 1 GB.
-      # This check runs daily and turns into a run warning when that day comes.
-      - name: Check repository size
+      # Data-in-git growth watchdog (ROADMAP-2026-07.md Mission B3). The
+      # 1 GB static threshold this used to check was a one-time trigger —
+      # it fired 2026-07-14, the write-pattern fix in that mission landed
+      # (aggregate.js / ledger modules no longer rewrite unchanged data),
+      # and existing history doesn't shrink on its own. A static "still
+      # over 1 GB" check would now warn every single day forever, which is
+      # just noise. Instead: compare against the size recorded on the
+      # LAST run (data/.repo-size-kb, written by the commit step below) and
+      # warn only on fast renewed growth — that's the signal the
+      # write-pattern fix stopped working or a new bloat source appeared,
+      # not "the repo is still as big as it was."
+      - id: size
+        name: Check repository size growth
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           KB=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .size)
-          echo "Repository size (server-side, full history): ${KB} KB (~$((KB / 1024)) MB)"
-          if [ "$KB" -gt 1048576 ]; then
-            echo "::warning title=Repository over 1 GB::Repo is ~$((KB / 1024)) MB. Time to act on docs-internal/ROADMAP-2026-07.md Mission B3 (move data/ to a companion repo)."
+          MB=$((KB / 1024))
+          echo "Repository size (server-side, full history): ${KB} KB (~${MB} MB)"
+          echo "kb=${KB}" >> "$GITHUB_OUTPUT"
+          PREV_KB=$(cat data/.repo-size-kb 2>/dev/null || echo "")
+          if [ -n "$PREV_KB" ]; then
+            GROWTH_KB=$((KB - PREV_KB))
+            GROWTH_MB=$((GROWTH_KB / 1024))
+            echo "Growth since last run: ${GROWTH_KB} KB (~${GROWTH_MB} MB)"
+            if [ "$GROWTH_MB" -gt 50 ]; then
+              echo "::warning title=Repo growing fast::Repo grew ~${GROWTH_MB} MB since the last report run (now ~${MB} MB). The write-pattern fix (see ARCHITECTURE.md 'Git history policy') may have regressed, or a new bloat source appeared — investigate before falling back to docs-internal/ROADMAP-2026-07.md Mission B3 (move data/ to a companion repo)."
+            fi
+          else
+            echo "No prior size recorded yet (first run after the watchdog rewrite) — nothing to compare."
           fi
 
       - id: decide
@@ -108,11 +126,20 @@ jobs:
         run: node src/prune.js
 
       - name: Commit summaries and pruning
+        env:
+          REPO_SIZE_KB: ${{ needs.gate.outputs.repo_size_kb }}
         run: |
           git config user.name "vital-scans[bot]"
           git config user.email "vital-scans@users.noreply.github.com"
 
           date -u +%Y-%m-%d > data/.last-report-date
+          # Size as measured by the gate job at the START of this run — the
+          # growth-watchdog check above compares against this on the NEXT
+          # run, so it's tracking size-at-report-time to size-at-report-time,
+          # not size mid-way through today's own commit.
+          if [ -n "$REPO_SIZE_KB" ]; then
+            echo "$REPO_SIZE_KB" > data/.repo-size-kb
+          fi
           git add data/
 
           if git diff --cached --quiet; then

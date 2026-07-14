@@ -92,10 +92,24 @@ for (const target of config.targets) {
       // The full per-page lists are large and reconstructable; keep them
       // in memory for CSV generation but don't commit them to summary.json.
       const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows', 'uniqueImageList']);
-      fs.writeFileSync(
-        path.join(domainDir, week, 'summary.json'),
-        JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
-      );
+      const summaryPath = path.join(domainDir, week, 'summary.json');
+      // summarizeRecords() stamps a fresh generatedAt on every call, even
+      // for weeks whose underlying page data hasn't changed since the last
+      // run (aggregate.js recomputes ALL retained weeks every run, not just
+      // the current one). Committing that unconditionally re-writes every
+      // retained week's summary.json daily forever, even when nothing else
+      // differs — compare content ignoring generatedAt and skip the write
+      // (and the timestamp bump) when nothing real changed.
+      const nextJson = JSON.stringify(summary, (k, v) => (omit.has(k) || k === 'generatedAt' ? undefined : v), 1);
+      const prevJson = fs.existsSync(summaryPath)
+        ? JSON.stringify(JSON.parse(fs.readFileSync(summaryPath, 'utf8')), (k, v) => (omit.has(k) || k === 'generatedAt' ? undefined : v), 1)
+        : null;
+      if (nextJson !== prevJson) {
+        fs.writeFileSync(
+          summaryPath,
+          JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
+        );
+      }
     }
   }
   if (series.length === 0) continue;
@@ -423,8 +437,8 @@ for (const target of config.targets) {
   }
 
   // Single downloadable snapshot of everything known about the domain:
-  // every scanned URL's latest status, current known findings (with
-  // first/last-seen), the weekly trend series, and the latest score.
+  // every URL with known issues (repro evidence), current known findings
+  // (with first/last-seen), the weekly trend series, and the latest score.
   const latest = series[series.length - 1];
   fs.writeFileSync(
     path.join(dataOut, 'domain.json'),
@@ -435,8 +449,12 @@ for (const target of config.targets) {
         latestWeek: latest.week,
         latestScore: scoreFor(latest),
         inventorySummary: invSummary,
-        // Last-known result for every URL ever scanned (survives pruning).
+        // Last-known result for every URL with known issues (survives
+        // pruning). Clean pages aren't listed individually — see
+        // inventorySummary for aggregate counts, and `fixed` for pages
+        // that recently had issues and no longer do.
         pages: Object.entries(inventory.pages).map(([url, p]) => ({ url, ...p })),
+        fixed: Object.entries(inventory.fixed ?? {}).map(([url, f]) => ({ url, ...f })),
         // Every unique finding with first/last-seen history.
         findings: ledger.findings,
         // Latest week's tech↔finding associations (lift-ranked), for anyone
