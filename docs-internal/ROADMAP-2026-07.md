@@ -129,17 +129,31 @@ page-level detail that a newer scan supersedes.
   approximate count); aggregate.js and all ledger save*() functions skip the
   write entirely when content — ignoring the timestamp field — is unchanged
   from what's on disk. See ARCHITECTURE.md "Git history policy" for the
-  full writeup. This does NOT shrink the ~1.9 GB already committed — only a
-  history rewrite (a) or the companion-repo split (b) would do that, and
-  both remain deliberately out of scope for now. The `git-history-companion-
-  repo` Spec Kitty mission (spec/plan/research done, no tasks/implementation)
-  stays open as the fallback plan — return to it if the growth-rate fix
-  proves insufficient. Original options kept below for that future decision:
+  full writeup. This did NOT by itself shrink the ~1.9 GB already
+  committed — only a history rewrite (a) or the companion-repo split (b)
+  would do that.
+
+  FOLLOW-UP RESOLVED 2026-07-14: option (a) executed instead of (b). Owner
+  authorized a one-time `git filter-repo` rewrite of `main` (charter
+  `historical-evidence-preservation` exception) stripping historical
+  `data/` and `state/` blob churn and re-adding current content as a
+  single fresh commit — working tree verified byte-identical
+  (`HEAD^{tree}` hash match) before and after; `.git` went from 1.8 GB to
+  128 MB; `npm run test:unit`/`test:e2e` passed against the rewritten repo.
+  The `git-history-companion-repo` Spec Kitty mission (spec/plan/research
+  done) is re-scoped to record this outcome rather than executing its
+  original companion-repo plan; see ARCHITECTURE.md "Git history policy"
+  for the full writeup. Any *future* rewrite still requires a fresh,
+  explicit owner override per the charter — this was a one-time exception,
+  not a standing policy.
+  Original options kept below for context:
   (a) periodic history rewrite squashing scan-bot commits older than N weeks
       (rewrites history — conflicts with append-only doctrine; needs charter
-      amendment + coordination since forks/clones break),
+      amendment + coordination since forks/clones break) — EXECUTED 2026-07-14
+      as a one-time exception, see above,
   (b) move data/ to a companion repo where history can be periodically
-      truncated (shallow "rolling" repo), code repo stays light,
+      truncated (shallow "rolling" repo), code repo stays light — not
+      executed; superseded by (a),
   (c) accept growth; partial clone (A1) already shields CI.
   New alert (replaces the static 1 GB check, which would now fire daily
   forever since existing history can't shrink): report.yml's gate job

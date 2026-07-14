@@ -4,6 +4,15 @@
 **Spec**: [spec.md](spec.md)
 **Mission**: `git-history-companion-repo-01KXEQCF`
 
+**SUPERSEDED 2026-07-14** — this plan was not executed. The mission was
+resolved instead by a one-time in-place `git filter-repo` history rewrite
+(owner-authorized charter exception). See spec.md's Status section and
+ARCHITECTURE.md's "Git history policy" for what actually happened. The
+plan below is retained as the considered companion-repo design in case
+that approach is separately revisited later (e.g. for ongoing truncatable
+history rather than a one-time size fix) — none of its Implementation
+Concern Map items (IC-01 through IC-05) were carried out.
+
 ## Summary
 
 Split `data/` out of `vital-core` into a new companion repo (working name
