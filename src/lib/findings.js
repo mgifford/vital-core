@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DIRS } from './config.js';
+import { writeLedgerIfChanged } from './fs-utils.js';
 
 /**
  * Per-domain findings ledger: a committed record of every unique finding
@@ -37,10 +38,7 @@ export function loadFindings(domainKey, domain) {
 }
 
 export function saveFindings(domainKey, ledger) {
-  const p = ledgerPath(domainKey);
-  fs.mkdirSync(path.dirname(p), { recursive: true });
-  ledger.updatedAt = new Date().toISOString();
-  fs.writeFileSync(p, JSON.stringify(ledger, null, 1));
+  writeLedgerIfChanged(ledgerPath(domainKey), ledger);
 }
 
 /**

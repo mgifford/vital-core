@@ -401,9 +401,20 @@ try {
   const mfMatch = historyPage.match(/data-parachart="([^"]*)"/);
   const mf = JSON.parse(mfMatch[1].replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&'));
   assert(mf.datasets?.[0]?.data?.source === 'inline' && mf.datasets[0].series?.[0]?.records?.length >= 1, 'manifest has the JIM dataset/series shape');
-  // Rolling inventory committed and surfaced.
+  // Rolling inventory committed and surfaced. Every fixture page carries a
+  // fixed Alfa failure the fixture never resolves (see writeSite), so every
+  // page still has hasIssues:true in week 2 even though the axe violation
+  // toggled by `fixed: true` is gone — inventory rows are keyed off ANY
+  // engine's finding, not just axe. That means every page keeps a full row
+  // (repro evidence: pageId, last engine failure counts), none is folded
+  // into cleanCount/fixed here — this fixture doesn't happen to exercise
+  // that path, it's covered by the inventory.js unit tests instead.
   const inv = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'inventory.json')));
-  assert(Object.keys(inv.pages).length >= PAGES, `inventory tracks all known pages (${Object.keys(inv.pages).length})`);
+  // PAGES numbered fixture pages + the homepage itself.
+  assert(Object.keys(inv.pages).length === PAGES + 1, `every known page still has a row (persistent Alfa failure) (${Object.keys(inv.pages).length})`);
+  assert(Object.keys(inv.fixed).length === 0, `no page fully cleared all engines in this fixture (${Object.keys(inv.fixed).length})`);
+  const totalKnownPages = Object.keys(inv.pages).length + Object.keys(inv.fixed).length + (inv.cleanCount ?? 0);
+  assert(totalKnownPages >= PAGES, `inventory summary still accounts for all known pages (${totalKnownPages})`);
   assert(/unique pages have been scanned at least once/.test(report), 'report cites total known pages from inventory');
   // ScanGov-style standards + security engines.
   assert(w1.security && w1.security.checks.some((c) => c.id === 'https'), 'security checks recorded (per origin)');

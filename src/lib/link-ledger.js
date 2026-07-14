@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DIRS } from './config.js';
+import { writeLedgerIfChanged } from './fs-utils.js';
 
 /**
  * Per-domain ledger of broken links, with when each was first and last
@@ -30,10 +31,7 @@ export function loadLinkLedger(domainKey, domain) {
 }
 
 export function saveLinkLedger(domainKey, ledger) {
-  const p = ledgerPath(domainKey);
-  fs.mkdirSync(path.dirname(p), { recursive: true });
-  ledger.updatedAt = new Date().toISOString();
-  fs.writeFileSync(p, JSON.stringify(ledger, null, 1));
+  writeLedgerIfChanged(ledgerPath(domainKey), ledger);
 }
 
 /**
