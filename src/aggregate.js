@@ -92,10 +92,24 @@ for (const target of config.targets) {
       // The full per-page lists are large and reconstructable; keep them
       // in memory for CSV generation but don't commit them to summary.json.
       const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows', 'uniqueImageList']);
-      fs.writeFileSync(
-        path.join(domainDir, week, 'summary.json'),
-        JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
-      );
+      const summaryPath = path.join(domainDir, week, 'summary.json');
+      // summarizeRecords() stamps a fresh generatedAt on every call, even
+      // for weeks whose underlying page data hasn't changed since the last
+      // run (aggregate.js recomputes ALL retained weeks every run, not just
+      // the current one). Committing that unconditionally re-writes every
+      // retained week's summary.json daily forever, even when nothing else
+      // differs — compare content ignoring generatedAt and skip the write
+      // (and the timestamp bump) when nothing real changed.
+      const nextJson = JSON.stringify(summary, (k, v) => (omit.has(k) || k === 'generatedAt' ? undefined : v), 1);
+      const prevJson = fs.existsSync(summaryPath)
+        ? JSON.stringify(JSON.parse(fs.readFileSync(summaryPath, 'utf8')), (k, v) => (omit.has(k) || k === 'generatedAt' ? undefined : v), 1)
+        : null;
+      if (nextJson !== prevJson) {
+        fs.writeFileSync(
+          summaryPath,
+          JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
+        );
+      }
     }
   }
   if (series.length === 0) continue;
