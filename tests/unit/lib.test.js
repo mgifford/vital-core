@@ -664,26 +664,92 @@ test('priority: ranks by pages x severity x reach; fleet flattens across domains
   assert.equal(fleet[0].domain, 'b.gov', 'worst issue across domains floats to the top, tagged with its domain');
 });
 
-test('inventory: accumulates last-known status, keeps newer over older', async () => {
+test('inventory: keeps a full row only for pages with issues, keeps newer over older', async () => {
   const { updateInventory, inventorySummary } = await import('../../src/lib/inventory.js');
-  const inv = { domain: 'x', pages: {} };
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0 };
   updateInventory(inv, '2026-W20', [
     { url: 'x/a', pageId: 'a', status: 200, scannedAt: 't1', axe: { violationCount: 3 } },
     { url: 'x/b', pageId: 'b', status: 200, scannedAt: 't1', axe: { violationCount: 0 }, alfa: { failedCount: 0 } },
   ]);
-  // Later week re-checks /a (now clean); /b not re-scanned this week.
-  updateInventory(inv, '2026-W24', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
-  assert.equal(inv.pages['x/a'].lastWeek, '2026-W24', '/a advanced to newer week');
-  assert.equal(inv.pages['x/a'].hasIssues, false, '/a now clean');
-  assert.equal(inv.pages['x/b'].lastWeek, '2026-W20', '/b retains its older last-known result');
+  // /b was clean and never had issues: no row, folded into cleanCount.
+  assert.equal(inv.pages['x/b'], undefined, '/b never gets a row (clean, no history)');
+  assert.equal(inv.cleanCount, 1);
 
-  // Re-applying an older week must NOT clobber the newer /a result.
+  // Later week re-checks /a (now clean): row is dropped, a fix marker replaces it.
+  updateInventory(inv, '2026-W24', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
+  assert.equal(inv.pages['x/a'], undefined, '/a row dropped once clean');
+  assert.equal(inv.fixed['x/a'].fixedAsOf, '2026-W24');
+
+  // Re-applying an older week must NOT clobber the newer fix.
   updateInventory(inv, '2026-W20', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't0', axe: { violationCount: 9 } }]);
-  assert.equal(inv.pages['x/a'].lastWeek, '2026-W24', 'older re-run did not overwrite newer');
+  assert.equal(inv.pages['x/a'], undefined, 'older re-run did not resurrect a row');
+  assert.equal(inv.fixed['x/a'].fixedAsOf, '2026-W24', 'older re-run did not clobber the newer fix marker');
 
   const s = inventorySummary(inv, '2026-W24');
-  assert.equal(s.totalKnownPages, 2);
-  assert.equal(s.scannedThisWeek, 1);
+  assert.equal(s.totalKnownPages, 2, 'x/a (fixed) + x/b (clean) = 2');
+  assert.equal(s.pagesWithKnownIssues, 0);
+  assert.equal(s.scannedThisWeek, 0, 'no page currently has a row scanned this week');
+});
+
+test('inventory: a page that breaks again after being fixed gets a full row back, clears the fix marker', async () => {
+  const { updateInventory } = await import('../../src/lib/inventory.js');
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0 };
+  updateInventory(inv, '2026-W20', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't1', axe: { violationCount: 2 } }]);
+  updateInventory(inv, '2026-W21', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
+  assert.equal(inv.fixed['x/a'].fixedAsOf, '2026-W21');
+
+  updateInventory(inv, '2026-W22', [{ url: 'x/a', pageId: 'a', status: 200, scannedAt: 't3', axe: { violationCount: 5 } }]);
+  assert.equal(inv.fixed['x/a'], undefined, 'fix marker cleared once broken again');
+  assert.equal(inv.pages['x/a'].hasIssues, true);
+  assert.equal(inv.pages['x/a'].lastWeek, '2026-W22');
+});
+
+test('inventory: pages with issues currently keep contributing to scannedThisWeek/coverageByWeek', async () => {
+  const { updateInventory, inventorySummary } = await import('../../src/lib/inventory.js');
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0 };
+  updateInventory(inv, '2026-W24', [
+    { url: 'x/a', pageId: 'a', status: 200, scannedAt: 't1', axe: { violationCount: 1 } },
+    { url: 'x/c', pageId: 'c', status: 200, scannedAt: 't1', alfa: { failedCount: 2 } },
+  ]);
+  const s = inventorySummary(inv, '2026-W24');
+  assert.equal(s.pagesWithKnownIssues, 2);
+  assert.equal(s.scannedThisWeek, 2);
+  assert.deepEqual(s.coverageByWeek, { '2026-W24': 2 });
+});
+
+test('inventory: loadInventory migrates legacy hasIssues:false rows into cleanCount', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const { DIRS } = await import('../../src/lib/config.js');
+  const { loadInventory, saveInventory } = await import('../../src/lib/inventory.js');
+  const key = `__test-migration-${Date.now()}__`;
+  const domainDir = path.join(DIRS.data, key);
+  fs.mkdirSync(domainDir, { recursive: true });
+  try {
+    // Legacy shape: full rows for both clean and issue pages, no fixed/cleanCount.
+    fs.writeFileSync(
+      path.join(domainDir, 'inventory.json'),
+      JSON.stringify({
+        domain: 'legacy.example.gov',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+        pages: {
+          'x/clean-1': { pageId: 'c1', lastWeek: '2026-W10', hasIssues: false },
+          'x/clean-2': { pageId: 'c2', lastWeek: '2026-W11', hasIssues: false },
+          'x/broken': { pageId: 'b1', lastWeek: '2026-W12', hasIssues: true },
+        },
+      })
+    );
+    const inv = loadInventory(key, 'legacy.example.gov');
+    assert.deepEqual(Object.keys(inv.pages), ['x/broken'], 'clean rows purged on load, issue row kept');
+    assert.equal(inv.cleanCount, 2, 'purged clean rows folded into cleanCount');
+    assert.deepEqual(inv.fixed, {}, 'fixed starts empty (no accurate fixedAsOf for pre-migration rows)');
+
+    saveInventory(key, inv);
+    const onDisk = JSON.parse(fs.readFileSync(path.join(domainDir, 'inventory.json'), 'utf8'));
+    assert.equal(Object.keys(onDisk.pages).length, 1, 'migrated shape persists after save');
+  } finally {
+    fs.rmSync(domainDir, { recursive: true, force: true });
+  }
 });
 
 test('security: classifies TLD, HTTPS, and headers from a mocked origin', async () => {

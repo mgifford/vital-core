@@ -423,8 +423,8 @@ for (const target of config.targets) {
   }
 
   // Single downloadable snapshot of everything known about the domain:
-  // every scanned URL's latest status, current known findings (with
-  // first/last-seen), the weekly trend series, and the latest score.
+  // every URL with known issues (repro evidence), current known findings
+  // (with first/last-seen), the weekly trend series, and the latest score.
   const latest = series[series.length - 1];
   fs.writeFileSync(
     path.join(dataOut, 'domain.json'),
@@ -435,8 +435,12 @@ for (const target of config.targets) {
         latestWeek: latest.week,
         latestScore: scoreFor(latest),
         inventorySummary: invSummary,
-        // Last-known result for every URL ever scanned (survives pruning).
+        // Last-known result for every URL with known issues (survives
+        // pruning). Clean pages aren't listed individually — see
+        // inventorySummary for aggregate counts, and `fixed` for pages
+        // that recently had issues and no longer do.
         pages: Object.entries(inventory.pages).map(([url, p]) => ({ url, ...p })),
+        fixed: Object.entries(inventory.fixed ?? {}).map(([url, f]) => ({ url, ...f })),
         // Every unique finding with first/last-seen history.
         findings: ledger.findings,
         // Latest week's tech↔finding associations (lift-ranked), for anyone
