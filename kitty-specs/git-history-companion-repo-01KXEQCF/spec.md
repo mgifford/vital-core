@@ -1,21 +1,38 @@
 # Mission: Move `data/` into a companion repo
 
-## Status: ON HOLD (fallback plan) — 2026-07-14
+## Status: SUPERSEDED — resolved by in-place history rewrite, 2026-07-14
 
-Root-caused instead: the growth wasn't primarily page-level detail, it was
+Root-caused first: the growth wasn't primarily page-level detail, it was
 `aggregate.js`/ledger modules unconditionally rewriting unchanged content
-on every run. Fixed in PR #235 by skipping no-op writes rather than
-executing this mission's companion-repo split — see
-`ARCHITECTURE.md`'s "Git history policy" section and
-`docs-internal/ROADMAP-2026-07.md` Mission B3 for the full writeup.
+on every run. Fixed in PR #235 by skipping no-op writes (stops the
+*growth rate*, does not shrink existing history).
 
-This does **not** shrink the history already committed (~1.9 GB) — only
-this mission's companion-repo split, or a history rewrite, would do that.
-The spec/plan/research below remain valid if the write-pattern fix proves
-insufficient (watch `report.yml`'s new run-over-run growth alert — it now
-fires on renewed fast growth rather than the one-time 1 GB threshold,
-which already fired and won't fire usefully again). Resume from `plan.md`'s
-Implementation Concern Map if this mission needs to be picked back up.
+This mission's spec/plan/research (below) describe the companion-repo
+split that was the fallback plan if the growth-rate fix proved
+insufficient. Instead, the owner authorized a **one-time in-place git
+history rewrite** (charter `historical-evidence-preservation` exception,
+added 2026-07-14) as a simpler, equally-effective way to shrink the
+already-committed ~1.9 GB, without taking on a permanent second repo,
+cross-repo CI checkout/push wiring, or a new cross-repo credential
+(FR-003/FR-005/R2 below, all now moot).
+
+**What actually ran:** `git filter-repo --path data/ --path state/
+--invert-paths` against a mirror-backed working clone of `main`, stripping
+every historical version of those two directories from every commit, then
+re-adding current `data/` + `state/` content as one fresh commit. Verified
+byte-identical working tree (`HEAD^{tree}` hash match before/after),
+`.git` 1.8 GB → 128 MB, `npm run test:unit` + `test:e2e` passing against
+the rewritten repo, before any force-push. See `ARCHITECTURE.md`'s "Git
+history policy" section and `docs-internal/ROADMAP-2026-07.md` Mission B3
+for the full writeup and evidence.
+
+This mission is now closed. The spec/plan/research below are retained for
+historical context (they document real, considered trade-offs — e.g. why
+a fresh companion-repo baseline was preferred over porting history, and
+the cross-repo credential problem) in case a companion-repo split is ever
+reconsidered for a *different* reason (e.g. wanting truncatable history
+going forward rather than a one-time size fix). No FR/NFR below should be
+treated as pending work.
 
 ## Problem
 
@@ -56,34 +73,42 @@ policy" section and Mission B3.
    `docs-internal/ROADMAP-2026-07.md` Mission B3 are updated to reflect the
    decision actually executed and the date it happened.
 
-## Non-goals
+## Non-goals (as originally scoped; superseded — see Status)
 
-- Rewriting/squashing existing `vital-core` git history (option (a) — out of
-  scope, needs its own charter decision).
+- Rewriting/squashing existing `vital-core` git history (option (a) — was
+  out of scope pending its own charter decision). **That charter decision
+  was subsequently obtained** (2026-07-14 exception) and this is exactly
+  what resolved the mission instead — recorded here for the historical
+  record, not as a still-standing non-goal.
 - Changing `retention_weeks` or the working-tree pruning behavior in
-  `src/prune.js` (Mission B1/B2 — already done, unrelated).
+  `src/prune.js` (Mission B1/B2 — already done, unrelated). Still true.
 - Migrating VA domain data (already gitignored, never entered history).
+  Still true.
 
-## Functional Requirements
+## Functional Requirements (companion-repo plan — not executed)
 
-| ID | Requirement | Status |
-|---|---|---|
-| FR-001 | A new companion repo (e.g. `vital-core-data`) is created and contains the current `data/` content, with history that can be periodically truncated independently of `vital-core` | Pending |
-| FR-002 | `vital-core`'s `data/` directory is removed from the working tree and added to `.gitignore` (matching how VA domains are already handled) | Pending |
-| FR-003 | Access mechanism is a **separate clone/checkout step**, not a git submodule — CI and local dev explicitly clone/checkout the companion repo into `data/` (e.g. a second `actions/checkout` step in `report.yml`, and a documented local step for contributors). No submodule pointer is committed to `vital-core` | Pending |
-| FR-004 | `npm run scan` and `npm run aggregate` work unchanged from a contributor's point of view aside from the new setup step (docs updated, e.g. "clone the companion repo into data/ first" in README/CLAUDE.md dev-setup instructions) | Pending |
-| FR-005 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | Pending |
-| FR-006 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | Pending |
-| FR-007 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | Pending |
-| FR-008 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Pending |
-
-## Non-Functional Requirements
+None of FR-001 through FR-008 below were implemented; the mission was
+resolved by the history rewrite instead (see Status). Left as-authored
+for context if a companion-repo split is separately reconsidered later.
 
 | ID | Requirement | Status |
 |---|---|---|
-| NFR-01 | No change to committed data shapes (summary.json/findings.json/etc schemas) — this is a storage-location change only | Pending |
-| NFR-02 | Existing `vital-core` git history is not rewritten or squashed as part of this mission | Pending |
-| NFR-03 | `npm run test:unit` and `npm run test:e2e` pass after the change | Pending |
+| FR-001 | A new companion repo (e.g. `vital-core-data`) is created and contains the current `data/` content, with history that can be periodically truncated independently of `vital-core` | Not executed — superseded |
+| FR-002 | `vital-core`'s `data/` directory is removed from the working tree and added to `.gitignore` (matching how VA domains are already handled) | Not executed — superseded |
+| FR-003 | Access mechanism is a **separate clone/checkout step**, not a git submodule — CI and local dev explicitly clone/checkout the companion repo into `data/` (e.g. a second `actions/checkout` step in `report.yml`, and a documented local step for contributors). No submodule pointer is committed to `vital-core` | Not executed — superseded |
+| FR-004 | `npm run scan` and `npm run aggregate` work unchanged from a contributor's point of view aside from the new setup step (docs updated, e.g. "clone the companion repo into data/ first" in README/CLAUDE.md dev-setup instructions) | Not executed — superseded |
+| FR-005 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | Not executed — superseded |
+| FR-006 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | Done — resolved via PR #235's run-over-run growth alert (see ARCHITECTURE.md), not via this mission |
+| FR-007 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | Done — rewritten to describe the history rewrite instead, 2026-07-14 |
+| FR-008 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Done — 2026-07-14 |
+
+## Non-Functional Requirements (companion-repo plan — not executed)
+
+| ID | Requirement | Status |
+|---|---|---|
+| NFR-01 | No change to committed data shapes (summary.json/findings.json/etc schemas) — this is a storage-location change only | N/A — no storage-location change was made |
+| NFR-02 | Existing `vital-core` git history is not rewritten or squashed as part of this mission | **Superseded by owner decision** — history *was* rewritten instead, under a separate one-time charter exception (2026-07-14), not as part of this mission's original NFRs |
+| NFR-03 | `npm run test:unit` and `npm run test:e2e` pass after the change | Done — both passed against the rewritten repo before force-push |
 
 ## Sustainability gate
 
