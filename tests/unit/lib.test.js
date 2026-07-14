@@ -717,6 +717,28 @@ test('inventory: pages with issues currently keep contributing to scannedThisWee
   assert.deepEqual(s.coverageByWeek, { '2026-W24': 2 });
 });
 
+test('inventory: replaying the same week again does not re-count already-clean pages (aggregate.js replays every retained week on every run)', async () => {
+  const { updateInventory } = await import('../../src/lib/inventory.js');
+  const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0, countedWeeks: [] };
+  const records = [
+    { url: 'x/clean-1', pageId: 'c1', status: 200, scannedAt: 't1', axe: { violationCount: 0 } },
+    { url: 'x/clean-2', pageId: 'c2', status: 200, scannedAt: 't1', axe: { violationCount: 0 } },
+  ];
+  updateInventory(inv, '2026-W24', records);
+  assert.equal(inv.cleanCount, 2, 'first pass counts both clean pages');
+  assert.deepEqual(inv.countedWeeks, ['2026-W24']);
+
+  // Same week, same records, replayed again (exactly what aggregate.js does
+  // on every subsequent run for a week whose pages/ hasn't changed).
+  updateInventory(inv, '2026-W24', records);
+  assert.equal(inv.cleanCount, 2, 'replaying the same week does not double-count');
+
+  // A genuinely new week's clean pages DO still get counted.
+  updateInventory(inv, '2026-W25', [{ url: 'x/clean-3', pageId: 'c3', status: 200, scannedAt: 't2', axe: { violationCount: 0 } }]);
+  assert.equal(inv.cleanCount, 3, 'a new week still contributes');
+  assert.deepEqual(inv.countedWeeks, ['2026-W24', '2026-W25']);
+});
+
 test('inventory: loadInventory migrates legacy hasIssues:false rows into cleanCount', async () => {
   const fs = await import('node:fs');
   const path = await import('node:path');
@@ -739,16 +761,58 @@ test('inventory: loadInventory migrates legacy hasIssues:false rows into cleanCo
         },
       })
     );
+    const { updateInventory } = await import('../../src/lib/inventory.js');
     const inv = loadInventory(key, 'legacy.example.gov');
     assert.deepEqual(Object.keys(inv.pages), ['x/broken'], 'clean rows purged on load, issue row kept');
     assert.equal(inv.cleanCount, 2, 'purged clean rows folded into cleanCount');
     assert.deepEqual(inv.fixed, {}, 'fixed starts empty (no accurate fixedAsOf for pre-migration rows)');
+    assert.ok(inv.countedWeeks.includes('2026-W10') && inv.countedWeeks.includes('2026-W11'), 'purged weeks marked counted');
+
+    // A later aggregate.js replay of one of the purged weeks (e.g. it's
+    // still within retention_weeks) must not double-count via updateInventory.
+    updateInventory(inv, '2026-W10', [{ url: 'x/clean-1', pageId: 'c1', status: 200, axe: { violationCount: 0 } }]);
+    assert.equal(inv.cleanCount, 2, 'replaying an already-migrated week does not re-count');
 
     saveInventory(key, inv);
     const onDisk = JSON.parse(fs.readFileSync(path.join(domainDir, 'inventory.json'), 'utf8'));
     assert.equal(Object.keys(onDisk.pages).length, 1, 'migrated shape persists after save');
   } finally {
     fs.rmSync(domainDir, { recursive: true, force: true });
+  }
+});
+
+test('writeLedgerIfChanged: skips the write (and updatedAt bump) when content is unchanged', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const os = await import('node:os');
+  const { writeLedgerIfChanged } = await import('../../src/lib/fs-utils.js');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ledger-write-'));
+  const file = path.join(tmpDir, 'ledger.json');
+  try {
+    const ledger = { domain: 'x.gov', updatedAt: null, things: { a: 1 } };
+    const wrote1 = writeLedgerIfChanged(file, ledger);
+    assert.equal(wrote1, true, 'first write happens (file did not exist)');
+    const onDisk1 = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.ok(onDisk1.updatedAt, 'updatedAt stamped on first write');
+
+    // Re-save with identical content: should be a no-op, same updatedAt.
+    const reloaded = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const wrote2 = writeLedgerIfChanged(file, reloaded);
+    assert.equal(wrote2, false, 'no write when content unchanged');
+    const onDisk2 = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(onDisk2.updatedAt, onDisk1.updatedAt, 'updatedAt not bumped when nothing changed');
+
+    // Now change real content: should write (timestamp bump isn't checked
+    // here — two writes can land in the same millisecond and produce an
+    // identical ISO string, so it's not a reliable signal; `wrote3` itself
+    // already proves the write path executed).
+    reloaded.things.b = 2;
+    const wrote3 = writeLedgerIfChanged(file, reloaded);
+    assert.equal(wrote3, true, 'write happens when content actually changes');
+    const onDisk3 = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.deepEqual(onDisk3.things, { a: 1, b: 2 });
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 });
 
