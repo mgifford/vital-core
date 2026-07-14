@@ -161,14 +161,39 @@ companion-repo split:
   against the on-disk content (ignoring `updatedAt`) and skips the write
   (and the timestamp bump) when nothing real changed.
 
-This does not shrink the ~1.9 GB already in history — only a history
-rewrite (squashing/truncating old commits) or moving `data/` to a
-periodically-truncated companion repo would do that, and both remain
-deliberately out of scope for now (see the `git-history-companion-repo`
-Spec Kitty mission, kept open as the fallback plan). It does fix the
-*growth rate*: reruns with no new scan data now produce a near-empty
-diff, instead of rewriting every domain's ledgers and every retained
-week's summary daily regardless of content.
+PR #235 does not by itself shrink the ~1.9 GB already in history — it
+only fixes the *growth rate*: reruns with no new scan data now produce a
+near-empty diff, instead of rewriting every domain's ledgers and every
+retained week's summary daily regardless of content.
+
+**One-time history rewrite (2026-07-14):** with the growth-rate fix
+landed, the owner authorized (charter `historical-evidence-preservation`
+exception) a one-time `git filter-repo` rewrite of `main` to remove the
+already-committed churn rather than executing the `git-history-companion-
+repo` mission's companion-repo split. Analysis (`git filter-repo
+--analyze`) confirmed the bloat was near-duplicate blob versions of a
+small set of frequently-rewritten paths — `data/<domain>/inventory.json`,
+`data/<domain>/resources.json`, `data/<domain>/<week>/summary.json`, and
+`state/<domain>/crawl.json` — not stale old week-directories (only 6 weeks
+of directory names ever existed in history at all, consistent with
+`retention_weeks` already bounding page-level detail).
+
+The rewrite ran `git filter-repo --path data/ --path state/
+--invert-paths` to strip every historical version of those two
+directories from every commit, then re-added the current `data/` and
+`state/` content as a single fresh commit on top — so the resulting
+working tree is byte-identical to pre-rewrite `main` (verified by
+comparing `HEAD^{tree}` hashes) while history no longer carries the
+superseded versions. `.git` dropped from 1.8 GB to 128 MB; commit count
+dropped from 2075 to 800 (purely-`data/`/`state/` scan-bot commits that
+became empty were pruned). `npm run test:unit` and `npm run test:e2e`
+were run against the rewritten repo and matched the original exactly
+before the force-push.
+
+This was a one-time exception. Any further history rewrite, squash, or
+force-push to `main` requires a new explicit owner override given in
+that session's chat — see the charter's `historical-evidence-preservation`
+directive.
 
 **Alerting:** the `report.yml` gate job no longer warns on a static
 "still over 1 GB" threshold (that would now fire every single day forever
