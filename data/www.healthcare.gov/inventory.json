@@ -1,6 +1,6 @@
 {
  "domain": "www.healthcare.gov",
- "updatedAt": "2026-07-13T22:45:22.618Z",
+ "updatedAt": "2026-07-14T13:00:39.615Z",
  "pages": {
   "https://www.healthcare.gov/agent-privacy-act-statement": {
    "pageId": "000d03e3517ca5a5",
@@ -271,15 +271,6 @@
    "axeViolations": 1,
    "alfaFailures": null,
    "hasIssues": true
-  },
-  "https://www.healthcare.gov/income-calculator": {
-   "pageId": "0a2259479346023c",
-   "lastWeek": "2026-W29",
-   "lastScannedAt": "2026-07-13T09:22:36.562Z",
-   "status": 200,
-   "axeViolations": 0,
-   "alfaFailures": null,
-   "hasIssues": false
   },
   "https://www.healthcare.gov/small-businesses": {
    "pageId": "0b730ef520a9ef38",
@@ -1063,15 +1054,6 @@
    "axeViolations": 1,
    "alfaFailures": null,
    "hasIssues": true
-  },
-  "https://www.healthcare.gov/qsehra": {
-   "pageId": "31e22e62b21524a7",
-   "lastWeek": "2026-W29",
-   "lastScannedAt": "2026-07-13T02:26:46.903Z",
-   "status": 200,
-   "axeViolations": 0,
-   "alfaFailures": null,
-   "hasIssues": false
   },
   "https://www.healthcare.gov/glossary/certified-applicant-counselor": {
    "pageId": "3349957a03f427f8",
@@ -2279,15 +2261,6 @@
    "alfaFailures": 49,
    "hasIssues": true
   },
-  "https://www.healthcare.gov/job-based-help/marketplace": {
-   "pageId": "6e241b6dd03e75db",
-   "lastWeek": "2026-W29",
-   "lastScannedAt": "2026-07-13T11:58:47.367Z",
-   "status": 200,
-   "axeViolations": 0,
-   "alfaFailures": null,
-   "hasIssues": false
-  },
   "https://www.healthcare.gov/medicare/changing-from-marketplace-to-medicare": {
    "pageId": "6e787d48e26196d4",
    "lastWeek": "2026-W29",
@@ -2575,15 +2548,6 @@
    "axeViolations": 1,
    "alfaFailures": 46,
    "hasIssues": true
-  },
-  "https://www.healthcare.gov/forgot-password": {
-   "pageId": "7dd96f25a45bc0d7",
-   "lastWeek": "2026-W29",
-   "lastScannedAt": "2026-07-13T12:20:01.133Z",
-   "status": 200,
-   "axeViolations": 0,
-   "alfaFailures": null,
-   "hasIssues": false
   },
   "https://www.healthcare.gov/glossary/alimony": {
    "pageId": "7df86a2ceab492c5",
@@ -2881,15 +2845,6 @@
    "axeViolations": 1,
    "alfaFailures": 49,
    "hasIssues": true
-  },
-  "https://www.healthcare.gov/find-local-help": {
-   "pageId": "8b6d5086887d891f",
-   "lastWeek": "2026-W29",
-   "lastScannedAt": "2026-07-13T12:00:12.076Z",
-   "status": 200,
-   "axeViolations": 0,
-   "alfaFailures": null,
-   "hasIssues": false
   },
   "https://www.healthcare.gov/agent-broker-quick-start": {
    "pageId": "8c4e1a182960f210",
@@ -5132,5 +5087,25 @@
    "alfaFailures": null,
    "hasIssues": true
   }
- }
+ },
+ "fixed": {
+  "https://www.healthcare.gov/qsehra": {
+   "fixedAsOf": "2026-W28"
+  },
+  "https://www.healthcare.gov/job-based-help/marketplace": {
+   "fixedAsOf": "2026-W29"
+  },
+  "https://www.healthcare.gov/forgot-password": {
+   "fixedAsOf": "2026-W29"
+  },
+  "https://www.healthcare.gov/find-local-help": {
+   "fixedAsOf": "2026-W29"
+  }
+ },
+ "cleanCount": 9,
+ "countedWeeks": [
+  "2026-W29",
+  "2026-W27",
+  "2026-W28"
+ ]
 }
