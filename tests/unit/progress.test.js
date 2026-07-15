@@ -26,13 +26,41 @@ test('weekDeltas classifies new / fixed / regressed against the previous week', 
   assert.deepEqual(d.new.map((x) => x.id), ['NEW']);
   assert.deepEqual(d.fixed.map((x) => x.id), ['FIXED']);
   assert.deepEqual(d.regressed.map((x) => x.id), ['REGRESSED']);
+  assert.deepEqual(d.fixedUnconfirmed, []);
   // entries carry the finding fields through
   assert.equal(d.new[0].severity, 'Serious');
   assert.equal(d.fixed[0].severity, 'Critical');
 });
 
-test('weekDeltaCounts returns the three bucket sizes', () => {
-  assert.deepEqual(weekDeltaCounts(ledger(), '2026-W24', '2026-W23'), { new: 1, fixed: 1, regressed: 1 });
+test('weekDeltaCounts returns the four bucket sizes', () => {
+  assert.deepEqual(weekDeltaCounts(ledger(), '2026-W24', '2026-W23'), { new: 1, fixed: 1, regressed: 1, fixedUnconfirmed: 0 });
+});
+
+// ---------------------------------------------------------------------------
+// Issue #222: coverage-lost / fixedUnconfirmed classification
+// ---------------------------------------------------------------------------
+
+test('weekDeltas: a finding flagged _coverageLost classifies into fixedUnconfirmed, not fixed', () => {
+  const l = { findings: {
+    FIXED_UNCONFIRMED: { severity: 'Moderate', firstSeen: '2026-W19', lastSeen: '2026-W23', _weeks: ['2026-W19', '2026-W20', '2026-W21', '2026-W22', '2026-W23'], weeksSeen: 5, _coverageLost: true },
+  } };
+  const d = weekDeltas(l, '2026-W24', '2026-W23');
+  assert.deepEqual(d.fixedUnconfirmed.map((x) => x.id), ['FIXED_UNCONFIRMED']);
+  assert.deepEqual(d.fixed, []);
+});
+
+test('weekDeltas: a finding without _coverageLost still classifies into fixed (no regression)', () => {
+  const d = weekDeltas(ledger(), '2026-W24', '2026-W23');
+  assert.deepEqual(d.fixedUnconfirmed, [], 'the shared FIXED fixture has no _coverageLost flag');
+  assert.deepEqual(d.fixed.map((x) => x.id), ['FIXED']);
+});
+
+test('weekDeltaCounts reflects the fixed/fixedUnconfirmed split', () => {
+  const l = { findings: {
+    FIXED: { severity: 'Critical', firstSeen: '2026-W20', lastSeen: '2026-W23', _weeks: ['2026-W20', '2026-W23'], weeksSeen: 2 },
+    FIXED_UNCONFIRMED: { severity: 'Moderate', firstSeen: '2026-W19', lastSeen: '2026-W23', _weeks: ['2026-W19', '2026-W23'], weeksSeen: 2, _coverageLost: true },
+  } };
+  assert.deepEqual(weekDeltaCounts(l, '2026-W24', '2026-W23'), { new: 0, fixed: 1, regressed: 0, fixedUnconfirmed: 1 });
 });
 
 test('coverage-expansion findings are not counted as new', () => {
@@ -49,11 +77,12 @@ test('first recorded week: everything present is new, nothing fixed/regressed', 
   assert.equal(d.new.length, 2);
   assert.equal(d.fixed.length, 0);
   assert.equal(d.regressed.length, 0);
+  assert.equal(d.fixedUnconfirmed.length, 0);
 });
 
 test('empty / missing ledger yields empty buckets', () => {
-  assert.deepEqual(weekDeltas(null, '2026-W24', '2026-W23'), { new: [], fixed: [], regressed: [] });
-  assert.deepEqual(weekDeltas({ findings: {} }, '2026-W24', '2026-W23'), { new: [], fixed: [], regressed: [] });
+  assert.deepEqual(weekDeltas(null, '2026-W24', '2026-W23'), { new: [], fixed: [], regressed: [], fixedUnconfirmed: [] });
+  assert.deepEqual(weekDeltas({ findings: {} }, '2026-W24', '2026-W23'), { new: [], fixed: [], regressed: [], fixedUnconfirmed: [] });
 });
 
 test('severityBurndown counts open findings per severity per week', () => {
@@ -95,13 +124,22 @@ test('deltaSeries reconstructs per-week new/fixed/regressed from the final ledge
   assert.equal(s.length, 2);
   // W23 (prev=null): NEW not yet seen; FIXED seen (W20..W23) present -> not new/fixed;
   // only firstSeen===W23 counts as new — none here.
-  assert.deepEqual(s[0], { week: '2026-W23', new: 0, fixed: 0, regressed: 0 });
+  assert.deepEqual(s[0], { week: '2026-W23', new: 0, fixed: 0, regressed: 0, fixedUnconfirmed: 0 });
   // W24 vs W23: NEW firstSeen W24 -> new 1; FIXED present W23 not W24 -> fixed 1;
   // REGRESSED present W24, absent W23, firstSeen<W24 -> regressed 1.
-  assert.deepEqual(s[1], { week: '2026-W24', new: 1, fixed: 1, regressed: 1 });
+  assert.deepEqual(s[1], { week: '2026-W24', new: 1, fixed: 1, regressed: 1, fixedUnconfirmed: 0 });
 });
 
 test('deltaSeries is empty-safe', () => {
-  assert.deepEqual(deltaSeries(null, ['2026-W24']), [{ week: '2026-W24', new: 0, fixed: 0, regressed: 0 }]);
+  assert.deepEqual(deltaSeries(null, ['2026-W24']), [{ week: '2026-W24', new: 0, fixed: 0, regressed: 0, fixedUnconfirmed: 0 }]);
   assert.deepEqual(deltaSeries({ findings: {} }, []), []);
+});
+
+test('deltaSeries splits a coverage-lost disappearance into fixedUnconfirmed, not fixed', () => {
+  const l = { findings: {
+    FIXED_UNCONFIRMED: { severity: 'Moderate', firstSeen: '2026-W19', lastSeen: '2026-W23', _weeks: ['2026-W19', '2026-W20', '2026-W21', '2026-W22', '2026-W23'], weeksSeen: 5, _coverageLost: true },
+  } };
+  const s = deltaSeries(l, ['2026-W23', '2026-W24']);
+  assert.deepEqual(s[0], { week: '2026-W23', new: 0, fixed: 0, regressed: 0, fixedUnconfirmed: 0 }, 'still present in W23, not yet counted as disappeared');
+  assert.deepEqual(s[1], { week: '2026-W24', new: 0, fixed: 0, regressed: 0, fixedUnconfirmed: 1 }, 'disappeared in W24, flagged coverage-lost');
 });
