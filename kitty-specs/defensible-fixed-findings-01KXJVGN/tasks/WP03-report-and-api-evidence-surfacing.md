@@ -382,3 +382,4 @@ Focus review on:
 - 2026-07-15T19:48:04Z – claude – Moved to in_progress
 - 2026-07-15T19:48:18Z – claude – Implemented directly on branch wp03-report-and-api-evidence-surfacing (same rationale as WP01/WP02); merged to main at 851d1472f
 - 2026-07-15T19:48:55Z – user – Code reviewed in-session against WP03 prompt's subtasks/DoD; 457 unit tests passed at merge time; verified _coverageLost passthrough in snapshot.json needed no api-writer.js code change; governance check passed
+- 2026-07-15T19:49:13Z – user – Done override: Implemented on a plain feature branch (wp03-report-and-api-evidence-surfacing, since deleted after merge) rather than spec-kitty's own lane worktree, due to unresolved worktree/sparse-checkout state drift encountered during WP01 implementation. Commit 851d1472f is confirmed present in main's ancestry via git log.
