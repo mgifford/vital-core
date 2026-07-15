@@ -15,7 +15,7 @@ subtasks:
 - T006
 - T007
 - T008
-agent: claude
+agent: "claude"
 history: []
 agent_profile: node-norris
 authoritative_surface: src/report-html.js
@@ -29,6 +29,7 @@ owned_files:
 - tests/unit/api-writer.test.js
 role: implementer
 tags: []
+assignee: "claude"
 ---
 
 # WP03: Report and API evidence surfacing
@@ -375,3 +376,7 @@ Focus review on:
    rendered output / JSON — not just that the function ran without throwing.
 
 **Implementation command**: `spec-kitty agent action implement WP03 --agent <name>`
+
+## Activity Log
+
+- 2026-07-15T19:48:04Z – claude – Moved to in_progress
