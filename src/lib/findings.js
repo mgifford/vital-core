@@ -21,7 +21,9 @@ import { writeLedgerIfChanged } from './fs-utils.js';
  *       engine, ruleId, summary, wcag, severity,
  *       firstSeen: "2026-W12", lastSeen: "2026-W24",
  *       weeksSeen: 7,
- *       lastPagesAffected: 12
+ *       lastPagesAffected: 12,
+ *       lastAffectedPages: ["https://example.gov/p1", ...],
+ *       _coverageLost: true  // optional; see updateFindings() doc below
  *     }
  *   }
  * }
@@ -58,8 +60,20 @@ export function saveFindings(domainKey, ledger) {
  * coverage expanded and the finding only appeared on freshly-sampled pages.
  * Omitting prevCoveredUrls reproduces the original behavior exactly — no
  * migration of committed findings.json files is required.
+ *
+ * options.thisWeekCoveredUrls — the symmetric case (issue #222): an optional
+ * Set of page URLs checked by any engine during THIS week. When provided
+ * together with options.prevWeek, a finding whose lastSeen is exactly
+ * prevWeek (present last week, the immediately preceding one) and that is
+ * absent from `reports` this week is marked _coverageLost:true if none of
+ * its last-recorded affected pages (lastAffectedPages) appear in that set —
+ * i.e. its pages were never re-checked, so its disappearance cannot be
+ * credited as a confirmed fix. weekDeltas() (src/lib/progress.js) uses this
+ * flag to keep "fixed" honest. Omitting thisWeekCoveredUrls (or prevWeek)
+ * reproduces the original behavior exactly, same fallback contract as
+ * prevCoveredUrls.
  */
-export function updateFindings(ledger, week, reports, { prevCoveredUrls } = {}) {
+export function updateFindings(ledger, week, reports, { prevCoveredUrls, thisWeekCoveredUrls, prevWeek } = {}) {
   for (const r of reports) {
     const id = r.pattern_id;
     const existing = ledger.findings[id];
@@ -83,9 +97,13 @@ export function updateFindings(ledger, week, reports, { prevCoveredUrls } = {}) 
         _weeks: [week],
         weeksSeen: 1,
         lastPagesAffected: r.frequency.pages_affected,
+        lastAffectedPages: r.affected_pages ?? [],
         ...(isCoverageNew ? { _coverageNew: true } : {}),
       };
     } else {
+      // Any reappearance supersedes a stale coverage-lost flag from a prior
+      // disappearance (see the coverage-lost pass below).
+      delete existing._coverageLost;
       // Track distinct weeks (idempotent re-runs of the same week).
       const weeks = new Set(existing._weeks ?? [existing.firstSeen]);
       weeks.add(week);
@@ -98,9 +116,29 @@ export function updateFindings(ledger, week, reports, { prevCoveredUrls } = {}) 
       if (compareWeek(week, existing.lastSeen) >= 0) {
         existing.lastSeen = week;
         existing.lastPagesAffected = r.frequency.pages_affected;
+        existing.lastAffectedPages = r.affected_pages ?? [];
         existing.severity = r.severity;
         existing.summary = r.summary;
       }
+    }
+  }
+
+  // Coverage-lost detection (issue #222): a finding present last week but
+  // absent from `reports` this week is only a *confirmed* fix if we know its
+  // old pages were actually re-checked. Walk findings not touched by the loop
+  // above (i.e. not in `reports` this week) and flag the ones whose prior
+  // pages were never re-covered, so they aren't silently credited as fixed.
+  // Mirrors weekDeltas()'s own "present last week" definition (lastSeen ===
+  // prevWeek) for consistency with how the fixed/coverage-lost split reads it.
+  if (thisWeekCoveredUrls != null && prevWeek != null) {
+    const reportedIds = new Set(reports.map((r) => r.pattern_id));
+    for (const [id, existing] of Object.entries(ledger.findings)) {
+      if (reportedIds.has(id)) continue; // handled by the loop above (still present)
+      if (existing.lastSeen !== prevWeek) continue; // not a "disappeared this week" case
+      const priorPages = existing.lastAffectedPages ?? [];
+      if (priorPages.length === 0) continue; // no data to positively confirm against
+      const reCovered = priorPages.some((url) => thisWeekCoveredUrls.has(url));
+      if (!reCovered) existing._coverageLost = true;
     }
   }
 
