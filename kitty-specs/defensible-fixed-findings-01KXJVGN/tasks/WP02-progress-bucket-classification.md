@@ -335,3 +335,4 @@ regress the existing new/fixed/regressed behavior other callers depend on.
 ## Activity Log
 
 - 2026-07-15T19:44:40Z – claude – Moved to in_progress
+- 2026-07-15T19:45:07Z – claude – Implemented directly on branch wp02-progress-bucket-classification (same rationale as WP01); merged to main at 837701614
