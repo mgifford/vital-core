@@ -391,3 +391,4 @@ lines 44-89, as the template to mirror).
 
 - 2026-07-15T16:18:05Z – claude – shell_pid=75932 – Assigned agent via action command
 - 2026-07-15T16:23:45Z – claude – shell_pid=76777 – Assigned agent via action command
+- 2026-07-15T19:39:57Z – claude – shell_pid=76777 – Implemented directly on branch wp01-coverage-lost-ledger-detection (bypassing spec-kitty implement due to worktree/lane state drift); merged to main at 28d72ae34
