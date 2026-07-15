@@ -1,0 +1,65 @@
+work_packages:
+  - id: WP01
+    title: "Coverage-lost ledger detection"
+    dependencies: []
+    owned_files:
+      - "src/lib/findings.js"
+      - "src/aggregate.js"
+      - "tests/unit/findings.test.js"
+    requirement_refs:
+      - FR-001
+      - FR-003
+      - C-01
+    plan_concern_refs:
+      - IC-01
+    subtasks:
+      - T001
+      - T002
+      - T003
+    prompt_file: "tasks/WP01-coverage-lost-ledger-detection.md"
+    agent_profile: "node-norris"
+    role: "implementer"
+    agent: "claude"
+
+  - id: WP02
+    title: "Progress bucket classification"
+    dependencies:
+      - WP01
+    owned_files:
+      - "src/lib/progress.js"
+      - "tests/unit/progress.test.js"
+    requirement_refs:
+      - FR-002
+    plan_concern_refs:
+      - IC-02
+    subtasks:
+      - T004
+      - T005
+    prompt_file: "tasks/WP02-progress-bucket-classification.md"
+    agent_profile: "node-norris"
+    role: "implementer"
+    agent: "claude"
+
+  - id: WP03
+    title: "Report and API evidence surfacing"
+    dependencies:
+      - WP02
+    owned_files:
+      - "src/report-html.js"
+      - "src/lib/api-writer.js"
+      - "tests/unit/report-html.test.js"
+      - "tests/unit/api-writer.test.js"
+    requirement_refs:
+      - FR-004
+      - FR-005
+      - NFR-02
+    plan_concern_refs:
+      - IC-03
+    subtasks:
+      - T006
+      - T007
+      - T008
+    prompt_file: "tasks/WP03-report-and-api-evidence-surfacing.md"
+    agent_profile: "node-norris"
+    role: "implementer"
+    agent: "claude"
