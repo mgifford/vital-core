@@ -185,9 +185,27 @@ for (const target of config.targets) {
       if (urlSet.size > 0) prevCoveredUrls = urlSet;
     }
 
+    // Symmetric case (issue #222): the set of page URLs covered by any engine
+    // THIS week. Used by updateFindings() to detect coverage-lost false
+    // "fixed" signals — a finding that disappears only because its pages were
+    // never re-checked this week is not a confirmed fix. Same conservative
+    // subset logic as prevCoveredUrls above, just read from the current week.
+    let thisWeekCoveredUrls = null;
+    {
+      const urlSet = new Set();
+      for (const rules of [summary.axe?.rules, summary.alfa?.rules]) {
+        for (const rule of Object.values(rules ?? {})) {
+          for (const p of rule.affectedPages ?? []) urlSet.add(p.url);
+        }
+      }
+      for (const url of summary.pagesWithAxeList ?? []) urlSet.add(url);
+      for (const url of summary.pagesWithAlfaList ?? []) urlSet.add(url);
+      if (urlSet.size > 0) thisWeekCoveredUrls = urlSet;
+    }
+
     // Update the ledger for this week and annotate each bug with its
     // first/last-seen history.
-    const history = updateFindings(ledger, summary.week, bugs, { prevCoveredUrls });
+    const history = updateFindings(ledger, summary.week, bugs, { prevCoveredUrls, thisWeekCoveredUrls, prevWeek: prev?.week ?? null });
     for (const b of bugs) {
       const h = history[b.pattern_id];
       if (h) {
