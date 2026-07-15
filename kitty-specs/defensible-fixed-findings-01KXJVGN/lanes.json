@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "mission_slug": "defensible-fixed-findings-01KXJVGN",
+  "mission_id": "01KXJVGN2AYFH2GGBXKEG1RGX9",
+  "mission_branch": "kitty/mission-defensible-fixed-findings-01KXJVGN",
+  "target_branch": "main",
+  "lanes": [
+    {
+      "lane_id": "lane-a",
+      "wp_ids": [
+        "WP01"
+      ],
+      "write_scope": [
+        "src/aggregate.js",
+        "src/lib/findings.js",
+        "tests/unit/findings.test.js"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "dashboard"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-b",
+      "wp_ids": [
+        "WP02"
+      ],
+      "write_scope": [
+        "src/lib/progress.js",
+        "tests/unit/progress.test.js"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "dashboard",
+        "legacy-cleanup"
+      ],
+      "depends_on_lanes": [
+        "lane-a"
+      ],
+      "parallel_group": 1
+    },
+    {
+      "lane_id": "lane-c",
+      "wp_ids": [
+        "WP03"
+      ],
+      "write_scope": [
+        "src/lib/api-writer.js",
+        "src/report-html.js",
+        "tests/unit/api-writer.test.js",
+        "tests/unit/report-html.test.js"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "dashboard",
+        "legacy-cleanup"
+      ],
+      "depends_on_lanes": [
+        "lane-b"
+      ],
+      "parallel_group": 2
+    }
+  ],
+  "computed_at": "2026-07-15T15:48:18.819837+00:00",
+  "computed_from": "dependency_graph+ownership",
+  "planning_artifact_wps": []
+}

@@ -115,18 +115,26 @@ directories captured above]
 > multiple WPs; multiple small concerns may merge into one WP. Do not label concerns
 > with WP-style IDs or sequencing language.
 
-### IC-01 — [Name]
+### IC-01 — Coverage-lost ledger detection
 
-- **Purpose**: [One sentence: what this concern addresses and why it matters]
-- **Relevant requirements**: [FR-### refs from spec.md]
-- **Affected surfaces**: [File paths or module names this concern touches]
-- **Sequencing/depends-on**: [IC-## IDs this concern must follow, or "none"]
-- **Risks**: [Key coordination notes or implementation risks]
+- **Purpose**: Detect when a finding disappears because its previously-affected pages were never re-crawled this week, and mark it distinctly from a confirmed fix.
+- **Relevant requirements**: FR-001, FR-003, C-01
+- **Affected surfaces**: `src/lib/findings.js` (`updateFindings()`), `src/aggregate.js` (call site passing per-engine coverage sets)
+- **Sequencing/depends-on**: none
+- **Risks**: Per-engine coverage-set data must already be available at the point `updateFindings()` runs (same shape as existing `prevCoveredUrls` used for `_coverageNew`) — if it isn't, this WP needs to capture it earlier in the pipeline, which would grow scope.
 
-### IC-02 — [Name]
+### IC-02 — Progress bucket classification
 
-- **Purpose**: [One sentence]
-- **Relevant requirements**: [FR-### refs]
-- **Affected surfaces**: [Paths/modules]
-- **Sequencing/depends-on**: [IC-## or "none"]
-- **Risks**: [Notes]
+- **Purpose**: Split `weekDeltas()`'s `fixed` bucket into confirmed-fixed vs. coverage-lost/unconfirmed, so downstream consumers never conflate the two.
+- **Relevant requirements**: FR-002
+- **Affected surfaces**: `src/lib/progress.js` (`weekDeltas()`, `weekDeltaCounts()`, `deltaSeries()`)
+- **Sequencing/depends-on**: IC-01 (needs the `_coverageLost` flag on ledger findings to classify against)
+- **Risks**: Existing callers of `weekDeltaCounts()`/`weekDeltas()` in `src/aggregate.js` and `src/report-html.js` expect the current `{ new, fixed, regressed }` shape — must extend, not break, that contract.
+
+### IC-03 — Report and API evidence surfacing
+
+- **Purpose**: Give every "fixed" (and ideally "new"/"regressed") item a visible pattern-id and page-link trail in both the HTML report and the static JSON API, so a reader can verify the claim.
+- **Relevant requirements**: FR-004, FR-005
+- **Affected surfaces**: `src/report-html.js` (`progressSection()`), `src/lib/api-writer.js`
+- **Sequencing/depends-on**: IC-02 (needs the classified buckets to render/export)
+- **Risks**: Must not grow the client-side JS budget (NFR-02) — links are plain server-rendered anchors, no new fetch/client logic.
