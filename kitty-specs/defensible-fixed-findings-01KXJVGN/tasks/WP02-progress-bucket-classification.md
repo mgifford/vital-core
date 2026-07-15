@@ -12,7 +12,7 @@ branch_strategy: Planning artifacts for this mission were generated on main. Dur
 subtasks:
 - T004
 - T005
-agent: claude
+agent: "claude"
 history: []
 agent_profile: node-norris
 authoritative_surface: src/lib/progress.js
@@ -24,6 +24,7 @@ owned_files:
 - tests/unit/progress.test.js
 role: implementer
 tags: []
+assignee: "claude"
 ---
 
 # WP02: Progress bucket classification
@@ -330,3 +331,7 @@ regress the existing new/fixed/regressed behavior other callers depend on.
   need a key added, never a value changed).
 
 **Implementation command**: `spec-kitty agent action implement WP02 --agent <name>`
+
+## Activity Log
+
+- 2026-07-15T19:44:40Z – claude – Moved to in_progress
