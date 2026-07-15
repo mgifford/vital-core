@@ -336,3 +336,4 @@ regress the existing new/fixed/regressed behavior other callers depend on.
 
 - 2026-07-15T19:44:40Z – claude – Moved to in_progress
 - 2026-07-15T19:45:07Z – claude – Implemented directly on branch wp02-progress-bucket-classification (same rationale as WP01); merged to main at 837701614
+- 2026-07-15T19:47:29Z – user – Code reviewed in-session against WP02 prompt's subtasks/DoD; 456 unit tests passed at merge time (up from 452); governance check passed
