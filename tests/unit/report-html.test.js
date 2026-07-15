@@ -290,7 +290,10 @@ test('renderDomainReport progress panel: burndown, streaks, triage count, fixed 
     frequency: { pages_affected: 7, total_pages_scanned: 10, instances: 12 }, impact: { groups: [] },
   }];
   const progress = {
-    new: [], fixed: [{ id: 'VS-f1', severity: 'Serious', summary: 'Document must have a title element' }], regressed: [],
+    new: [],
+    fixed: [{ id: 'VS-f1', severity: 'Serious', summary: 'Document must have a title element', lastAffectedPages: ['https://www.example.gov/about'] }],
+    regressed: [],
+    fixedUnconfirmed: [{ id: 'VS-f2', severity: 'Moderate', summary: 'Link name is not descriptive', lastAffectedPages: [] }],
     burndown: [
       { week: '2026-W23', critical: 2, serious: 1, moderate: 0, minor: 0 },
       { week: '2026-W24', critical: 0, serious: 1, moderate: 0, minor: 0 },
@@ -311,8 +314,18 @@ test('renderDomainReport progress panel: burndown, streaks, triage count, fixed 
   assert.match(html, /localStorage\.getItem\('vital-triage:'/);
   // Burndown chart (finding counts) with its own caption, distinct from the pages-affected trend.
   assert.match(html, /Open findings by severity over 2 weeks/);
-  // Fixed-this-week list.
+  // Fixed-this-week list: pattern id + evidence link (issue #222 FR-004).
   assert.match(html, /Document must have a title element/);
+  assert.match(html, /<a href="https:\/\/www\.example\.gov\/about"><span class="pattern-id">VS-f1<\/span> Document must have a title element<\/a>/);
+
+  // Coverage-lost findings render in a visibly separate list, never merged into "Fixed this week".
+  assert.match(html, /Dropped from this week's sample/);
+  assert.match(html, /fixed-list-unconfirmed/);
+  assert.match(html, /Link name is not descriptive/);
+  // No lastAffectedPages recorded for this one — degrades to plain text, not a dead link.
+  assert.doesNotMatch(html, /<a href=""[^>]*>[^<]*Link name is not descriptive/);
+  const fixedSection = html.slice(html.indexOf('Fixed this week'), html.indexOf("Dropped from this week's sample"));
+  assert.doesNotMatch(fixedSection, /Link name is not descriptive/, 'coverage-lost finding must not appear inside the confirmed-fixed list');
 });
 
 test('renderAccessibilityPage shows engine and rule id in bug summaries', () => {

@@ -134,6 +134,23 @@ describe('buildSnapshot', () => {
     assert.equal(snap.top_actions.drift_page_count, 1);
     assert.equal(snap.top_actions.drift_pages[0].url, 'https://example.gov/b');
   });
+
+  // Issue #222 / FR-005: the snapshot's findings ledger passthrough already
+  // carries whatever WP01 (src/lib/findings.js updateFindings()) wrote onto a
+  // ledger entry, including _coverageLost — no buildSnapshot() code change is
+  // needed for this field to reach the static API; this test proves it.
+  test('findings passthrough exposes _coverageLost when the ledger sets it (FR-005)', () => {
+    const ledgerWithCoverageLost = {
+      findings: {
+        'VS-abc12345': { firstSeen: '2026-W24', lastSeen: '2026-W25', weeksSeen: 2, lastPagesAffected: 8 },
+        'VS-gone9999': { firstSeen: '2026-W20', lastSeen: '2026-W24', weeksSeen: 4, lastPagesAffected: 2, _coverageLost: true },
+      },
+    };
+    const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, ledgerWithCoverageLost, FAKE_INV, [FAKE_BUG]);
+    assert.equal(snap.findings['VS-gone9999']._coverageLost, true);
+    assert.equal(snap.findings['VS-abc12345']._coverageLost, undefined,
+      'a confirmed-fixed finding (no flag) is not marked coverage-lost');
+  });
 });
 
 describe('buildWeekFindings', () => {

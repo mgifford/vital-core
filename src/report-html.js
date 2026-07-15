@@ -750,18 +750,35 @@ ${table}
 }
 
 /**
+ * One "Fixed this week" / "Dropped from this week's sample" list item: pattern
+ * id, severity, summary, and — when the finding carries a recorded affected
+ * page (lastAffectedPages, added in src/lib/findings.js) — a link to a
+ * representative page as evidence. Degrades to plain text (no dead link) when
+ * no page is recorded, e.g. for ledger entries written before this field
+ * existed (spec.md C-01: no forced migration).
+ */
+function progressListItem(f) {
+  const page = (f.lastAffectedPages ?? [])[0];
+  const label = `<span class="pattern-id">${esc(f.id)}</span> ${esc(f.summary ?? f.ruleId ?? f.id)}`;
+  const body = page ? `<a href="${esc(page)}">${label}</a>` : label;
+  return `<li><span class="sev-badge">${esc(t(f.severity ?? 'Undetermined'))}</span> ${body}</li>`;
+}
+
+/**
  * Layer-1 progress panel: clean-week streak badges, a client-side triage-
- * completion count, the open-finding severity burndown, and the list of findings
- * resolved this week. All optional — the section is omitted when there's nothing
- * to show. `progress` carries { fixed, burndown, streaks } from src/lib/progress.
+ * completion count, the open-finding severity burndown, and the lists of
+ * findings resolved this week. All optional — the section is omitted when
+ * there's nothing to show. `progress` carries { fixed, fixedUnconfirmed,
+ * burndown, streaks } from src/lib/progress.
  */
 function progressSection(progress, bugs) {
   const fixed = progress?.fixed ?? [];
+  const fixedUnconfirmed = progress?.fixedUnconfirmed ?? [];
   const burndown = progress?.burndown ?? [];
   const strk = progress?.streaks ?? [];
   const chart = severityBurndownChart(burndown);
   const ids = bugs.map((b) => b.instance_id);
-  if (!fixed.length && !chart && !strk.length && !ids.length) return '';
+  if (!fixed.length && !fixedUnconfirmed.length && !chart && !strk.length && !ids.length) return '';
 
   const badges = strk.length ? `<ul class="streaks" aria-label="${esc(t('Clean-week streaks'))}">${strk
     .map((s) => {
@@ -773,9 +790,13 @@ function progressSection(progress, bugs) {
 ${triageCompletionScript()}` : '';
 
   const fixedList = fixed.length ? `<h3 class="progress-sub">${t('Fixed this week')}</h3>
-<ul class="fixed-list">${fixed.slice(0, 15)
-    .map((f) => `<li><span class="sev-badge">${esc(t(f.severity ?? 'Undetermined'))}</span> ${esc(f.summary ?? f.ruleId ?? f.id)}</li>`)
-    .join('')}</ul>${fixed.length > 15 ? `<p class="bug-meta">${t('…and more — @more.', { '@more': t('@n finding(s)', { '@n': nf(fixed.length) }) })}</p>` : ''}` : '';
+<ul class="fixed-list">${fixed.slice(0, 15).map(progressListItem).join('')}</ul>${fixed.length > 15 ? `<p class="bug-meta">${t('…and more — @more.', { '@more': t('@n finding(s)', { '@n': nf(fixed.length) }) })}</p>` : ''}` : '';
+
+  // Never merge coverage-lost findings into "Fixed this week" — a disappearance
+  // we can't positively confirm as remediated stays visibly separate (issue #222).
+  const fixedUnconfirmedList = fixedUnconfirmed.length ? `<h3 class="progress-sub">${t("Dropped from this week's sample")}</h3>
+<p class="bug-meta">${t('These stopped appearing in scan results, but their pages were not re-checked this week — this is not a confirmed fix.')}</p>
+<ul class="fixed-list fixed-list-unconfirmed">${fixedUnconfirmed.slice(0, 15).map(progressListItem).join('')}</ul>${fixedUnconfirmed.length > 15 ? `<p class="bug-meta">${t('…and more — @more.', { '@more': t('@n finding(s)', { '@n': nf(fixedUnconfirmed.length) }) })}</p>` : ''}` : '';
 
   return `<section aria-labelledby="h-progress">
 ${heading('h-progress', t('Progress'))}
@@ -783,6 +804,7 @@ ${badges}
 ${triage}
 ${chart}
 ${fixedList}
+${fixedUnconfirmedList}
 </section>`;
 }
 
@@ -4472,6 +4494,8 @@ td .url, th .url { max-width: 22rem; }
 .progress-sub { font-size: 1rem; margin: .75rem 0 .25rem; border-bottom: none; }
 .fixed-list { margin: .25rem 0; padding-left: 1.1rem; }
 .fixed-list li { margin: .15rem 0; }
+.fixed-list-unconfirmed { color: var(--muted); }
+.pattern-id { font-family: ui-monospace, monospace; font-size: .8rem; }
 .blocked-accordion { margin-top: 2rem; border-top: 1px solid var(--rule); padding-top: .5rem; }
 .blocked-accordion > summary { cursor: pointer; color: var(--muted); font-weight: 600; }
 .ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
