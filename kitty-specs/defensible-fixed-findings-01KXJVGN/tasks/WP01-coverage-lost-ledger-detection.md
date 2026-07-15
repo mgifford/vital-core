@@ -10,11 +10,15 @@ tracker_refs: []
 planning_base_branch: main
 merge_target_branch: main
 branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-defensible-fixed-findings-01KXJVGN
+base_commit: 50a5c7540ed8960c8c25aec1efccd4a1d4dd7a41
+created_at: '2026-07-15T16:17:51.803194+00:00'
 subtasks:
 - T001
 - T002
 - T003
-agent: claude
+agent: "claude"
+shell_pid: "76777"
 history: []
 agent_profile: node-norris
 authoritative_surface: src/lib/
@@ -382,3 +386,8 @@ lines 44-89, as the template to mirror).
   out of scope to fix here.
 
 **Implementation command**: `spec-kitty agent action implement WP01 --agent <name>`
+
+## Activity Log
+
+- 2026-07-15T16:18:05Z – claude – shell_pid=75932 – Assigned agent via action command
+- 2026-07-15T16:23:45Z – claude – shell_pid=76777 – Assigned agent via action command
