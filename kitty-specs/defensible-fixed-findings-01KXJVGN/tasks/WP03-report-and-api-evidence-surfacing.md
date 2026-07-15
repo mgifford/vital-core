@@ -380,3 +380,4 @@ Focus review on:
 ## Activity Log
 
 - 2026-07-15T19:48:04Z – claude – Moved to in_progress
+- 2026-07-15T19:48:18Z – claude – Implemented directly on branch wp03-report-and-api-evidence-surfacing (same rationale as WP01/WP02); merged to main at 851d1472f
