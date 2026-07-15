@@ -393,3 +393,4 @@ lines 44-89, as the template to mirror).
 - 2026-07-15T16:23:45Z – claude – shell_pid=76777 – Assigned agent via action command
 - 2026-07-15T19:39:57Z – claude – shell_pid=76777 – Implemented directly on branch wp01-coverage-lost-ledger-detection (bypassing spec-kitty implement due to worktree/lane state drift); merged to main at 28d72ae34
 - 2026-07-15T19:41:14Z – user – shell_pid=76777 – Code reviewed in-session against WP01 prompt's subtasks/DoD; 452 unit tests passed at merge time; governance check passed
+- 2026-07-15T19:44:21Z – user – shell_pid=76777 – Done override: Implemented on a plain feature branch (wp01-coverage-lost-ledger-detection, since deleted after merge) rather than spec-kitty's own lane worktree, due to unresolved worktree/sparse-checkout state drift encountered during implementation. Commit 28d72ae34 is confirmed present in main's ancestry via git log.
