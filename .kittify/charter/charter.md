@@ -41,12 +41,12 @@ remediation work on government sites.
 ## Deployment and Branching
 
 - GitHub is the source of truth.
-- Hugging Face is a deployment target only and is updated through the `hf`
-  remote and the publishing scripts, not by treating a Hugging Face branch as
-  the canonical branch.
 - Generated reports and weekly data must remain reproducible from the committed
   repository state.
 - History is append-only on `main`; no force-push or history rewrite without an
   explicit owner override given in that session's chat (see
   `historical-evidence-preservation` above for the one-time, already-used
   exception and the standing override requirement for any future rewrite).
+- Hugging Face is an optional deployment target. It is only and is updated through the `hf`
+  remote and the publishing scripts, not by treating a Hugging Face branch as
+  the canonical branch.
