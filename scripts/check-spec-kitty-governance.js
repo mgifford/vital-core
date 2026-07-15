@@ -85,6 +85,12 @@ function assertNoMachineBoundArtifacts() {
     if (entry.mode === '120000' || !textFilePattern.test(entry.relPath)) {
       continue;
     }
+    // Lane worktrees intentionally sparse-exclude some paths (e.g. the status
+    // ledger) from disk even though they're tracked in the index — nothing to
+    // scan for a file that isn't materialized here.
+    if (!exists(entry.relPath)) {
+      continue;
+    }
 
     const text = read(entry.relPath);
     for (const pattern of machinePathPatterns) {
