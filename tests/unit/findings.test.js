@@ -86,3 +86,59 @@ test('findings: _coverageNew skipped when no affected_pages list provided', () =
   assert.equal(ledger.findings['VS-new']._coverageNew, undefined,
     'cannot determine coverage without an affected_pages list — no false flag');
 });
+
+// ---------------------------------------------------------------------------
+// Issue #222: coverage-lost detection
+// ---------------------------------------------------------------------------
+
+const DISAPPEARING_REPORT = {
+  pattern_id: 'VS-gone',
+  tool: 'axe-core',
+  rule_id: 'color-contrast',
+  summary: 'Low contrast text (WCAG 1.4.3)',
+  wcag_sc: '1.4.3',
+  severity: 'serious',
+  frequency: { pages_affected: 2 },
+  affected_pages: ['https://example.gov/p1', 'https://example.gov/p2'],
+};
+
+test('findings: _coverageLost is true when a disappearing finding\'s pages were not re-covered', () => {
+  const ledger = { domain: 'x', findings: {} };
+  updateFindings(ledger, '2026-W24', [DISAPPEARING_REPORT]);
+  const thisWeekCoveredUrls = new Set(['https://example.gov/other']);
+  updateFindings(ledger, '2026-W25', [], { thisWeekCoveredUrls, prevWeek: '2026-W24' });
+  assert.equal(ledger.findings['VS-gone']._coverageLost, true,
+    'neither prior page was re-covered — disappearance is not a confirmed fix');
+  assert.equal(ledger.findings['VS-gone'].lastSeen, '2026-W24',
+    'lastSeen does not advance for a coverage-lost finding — it was never seen this week');
+});
+
+test('findings: _coverageLost is NOT set when a disappearing finding\'s page was re-covered (real fix)', () => {
+  const ledger = { domain: 'x', findings: {} };
+  updateFindings(ledger, '2026-W24', [DISAPPEARING_REPORT]);
+  const thisWeekCoveredUrls = new Set(['https://example.gov/p1']);
+  updateFindings(ledger, '2026-W25', [], { thisWeekCoveredUrls, prevWeek: '2026-W24' });
+  assert.equal(ledger.findings['VS-gone']._coverageLost, undefined,
+    'one prior page WAS re-covered and found clean — genuinely fixed, no coverage-lost flag');
+});
+
+test('findings: _coverageLost is never set when thisWeekCoveredUrls/prevWeek are omitted (C-01 regression guard)', () => {
+  const ledger = { domain: 'x', findings: {} };
+  updateFindings(ledger, '2026-W24', [DISAPPEARING_REPORT]);
+  updateFindings(ledger, '2026-W25', []);
+  assert.equal(ledger.findings['VS-gone']._coverageLost, undefined,
+    'omitting the new coverage options reproduces original behavior exactly — no forced migration');
+  assert.equal(ledger.findings['VS-gone'].lastSeen, '2026-W24');
+});
+
+test('findings: _coverageLost is cleared when a flagged finding reappears in a later week', () => {
+  const ledger = { domain: 'x', findings: {} };
+  updateFindings(ledger, '2026-W24', [DISAPPEARING_REPORT]);
+  const thisWeekCoveredUrls = new Set(['https://example.gov/other']);
+  updateFindings(ledger, '2026-W25', [], { thisWeekCoveredUrls, prevWeek: '2026-W24' });
+  assert.equal(ledger.findings['VS-gone']._coverageLost, true, 'flagged in W25');
+
+  updateFindings(ledger, '2026-W26', [DISAPPEARING_REPORT]);
+  assert.equal(ledger.findings['VS-gone']._coverageLost, undefined, 'flag cleared on reappearance');
+  assert.equal(ledger.findings['VS-gone'].lastSeen, '2026-W26');
+});
