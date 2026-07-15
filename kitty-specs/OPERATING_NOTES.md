@@ -3,7 +3,7 @@
 ## Source of Truth
 
 GitHub is the canonical repository for code, config, and generated outputs.
-Hugging Face Spaces is only a deployment target and is updated through the
+Hugging Face Spaces is an optional deployment target. Hugging Face is only updated through the
 `hf` remote and the publishing scripts.
 
 ## Validation Order
