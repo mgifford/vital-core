@@ -664,6 +664,40 @@ test('priority: ranks by pages x severity x reach; fleet flattens across domains
   assert.equal(fleet[0].domain, 'b.gov', 'worst issue across domains floats to the top, tagged with its domain');
 });
 
+test('priority: fleet pattern rollup groups by pattern_id and ranks by fix leverage (#221)', async () => {
+  const { mergeFleetPatterns, rankFleetPatterns } = await import('../../src/lib/priority.js');
+  const patBug = (patternId, sev, pages) => ({
+    pattern_id: patternId, rule_label: `Label ${patternId}`, wcag_sc: '1.1.1', severity: sev, likely_source: 'template',
+    frequency: { pages_affected: pages }, _week: '2026-W24',
+  });
+
+  assert.deepEqual(mergeFleetPatterns([]), [], 'empty input merges to []');
+  assert.deepEqual(rankFleetPatterns([]), [], 'empty input ranks to []');
+
+  // Pattern A: Moderate, 3 sites, pages 10+5+20=35 -> score 3*2*35=210.
+  // Pattern B: Critical, 2 sites, pages 2+3=5 -> score 2*4*5=40.
+  // Pattern C: only 1 site -> excluded at the default minSites=2.
+  const perDomain = [
+    { target: { domain: 'a.gov', key: 'a' }, bugs: [patBug('VS-A', 'Moderate', 10), patBug('VS-B', 'Critical', 2), patBug('VS-C', 'Minor', 99)] },
+    { target: { domain: 'b.gov', key: 'b' }, bugs: [patBug('VS-A', 'Moderate', 5), patBug('VS-B', 'Critical', 3)] },
+    { target: { domain: 'c.gov', key: 'c' }, bugs: [patBug('VS-A', 'Moderate', 20)] },
+  ];
+
+  const merged = mergeFleetPatterns(perDomain);
+  const a = merged.find((p) => p.pattern_id === 'VS-A');
+  assert.equal(a.sites, 3, 'pattern A seen on 3 distinct domains');
+  assert.equal(a.pages, 35, 'pattern A pages sum across domains: 10+5+20');
+  assert.equal(a.domains.length, 3);
+
+  const ranked = rankFleetPatterns(merged, { minSites: 2, limit: 25 });
+  assert.equal(ranked.length, 2, 'VS-C excluded: only 1 site');
+  assert.equal(ranked[0].pattern_id, 'VS-A', 'moderate-but-widespread outranks critical-but-narrow: 210 > 40');
+  assert.equal(ranked[1].pattern_id, 'VS-B');
+
+  const permissive = rankFleetPatterns(merged, { minSites: 1, limit: 25 });
+  assert.equal(permissive.length, 3, 'minSites=1 includes the single-site pattern');
+});
+
 test('inventory: keeps a full row only for pages with issues, keeps newer over older', async () => {
   const { updateInventory, inventorySummary } = await import('../../src/lib/inventory.js');
   const inv = { domain: 'x', pages: {}, fixed: {}, cleanCount: 0 };
