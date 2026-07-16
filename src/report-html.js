@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
-import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
+import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
@@ -4001,6 +4001,42 @@ ${heading('h-lhfleet', t('Common Lighthouse recommendations'))}
 </section>`;
   }
 
+  // Fleet-wide recurring patterns: the same pattern_id (same underlying
+  // axe/Alfa rule) appearing on multiple independent domains is the
+  // strongest signal of a shared CMS template, design-system component, or
+  // widget bug — issue #221. Ranked by fix leverage (sites × severity ×
+  // pages), not raw count, so a moderate issue hitting many sites can
+  // outrank a critical issue confined to one.
+  const mergedPatterns = mergeFleetPatterns(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })));
+  const fleetPatterns = rankFleetPatterns(mergedPatterns, { minSites: 2, limit: 25 });
+  let patternsSection = '';
+  if (fleetPatterns.length) {
+    patternsSection = `
+<section aria-labelledby="h-patterns">
+${heading('h-patterns', t('Recurring patterns across domains'))}
+<p class="meta">${t('The same underlying rule failing on multiple independent sites — the strongest signal of a shared CMS template, design-system component, or widget bug rather than a one-off content issue. Ranked by fix leverage: sites affected × severity × pages, not raw count.')}</p>
+<table class="sortable">
+<caption>${t('Top @n patterns spanning ≥2 sites.', { '@n': fleetPatterns.length })}</caption>
+<thead><tr>
+  <th scope="col">${t('Pattern')}</th>
+  <th scope="col">${t('Severity')}</th>
+  <th scope="col">${t('Likely source')}</th>
+  <th scope="col" class="num">${t('Sites')}</th>
+  <th scope="col" class="num">${t('Pages')}</th>
+</tr></thead>
+<tbody>${fleetPatterns
+      .map((p) => `<tr>
+  <th scope="row"><a href="reports/${esc(p.representative.key)}/${esc(p.representative.week)}/index.html">${esc(p.rule_label)}</a></th>
+  <td><span class="sev-badge">${esc(t(p.severity))}</span></td>
+  <td>${esc(t(p.likely_source ?? 'unknown'))}</td>
+  <td class="num">${p.sites}</td>
+  <td class="num">${p.pages}</td>
+</tr>`)
+      .join('\n')}</tbody>
+</table>
+</section>`;
+  }
+
   const body = `
 <h1>${esc(h1)}</h1>
 <p class="meta">${esc(intro)}</p>
@@ -4020,6 +4056,7 @@ ${sustainTrend}
 ${worstSection}
 ${techFindingsSection}
 ${lighthouseFleetSection}
+${patternsSection}
 ${blockedCallout}`}
 <section aria-labelledby="h-tools">
 ${heading('h-tools', t('Tools'))}
