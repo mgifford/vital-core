@@ -46,3 +46,52 @@ export function fleetWorstOffenders(perDomain, n = 20) {
   }
   return all.sort((a, b) => b.priority - a.priority).slice(0, n);
 }
+
+/**
+ * Group bugs by pattern_id across all domains (issue #221): pattern_id is
+ * hash(engine, ruleId), so the same underlying rule failing on independent
+ * domains lands in one entry — a recurring pattern is the strongest signal
+ * of a shared CMS template, design-system component, or widget bug.
+ */
+export function mergeFleetPatterns(perDomain) {
+  const byPattern = new Map();
+  for (const { target, bugs } of perDomain) {
+    for (const b of bugs) {
+      let entry = byPattern.get(b.pattern_id);
+      if (!entry) {
+        entry = {
+          pattern_id: b.pattern_id,
+          rule_label: b.rule_label,
+          wcag_sc: b.wcag_sc,
+          severity: b.severity,
+          likely_source: b.likely_source,
+          sites: new Set(),
+          pages: 0,
+          domains: [],
+          representative: { domain: target.domain, key: target.key, week: b._week },
+        };
+        byPattern.set(b.pattern_id, entry);
+      }
+      if (!entry.sites.has(target.key)) {
+        entry.sites.add(target.key);
+        entry.domains.push({ domain: target.domain, key: target.key });
+      }
+      entry.pages += b.frequency?.pages_affected ?? 0;
+    }
+  }
+  return Array.from(byPattern.values()).map((e) => ({ ...e, sites: e.sites.size }));
+}
+
+/**
+ * Rank merged patterns by fix leverage — sites affected × severity × pages —
+ * rather than raw instance count, so a moderate issue hitting many sites can
+ * outrank a critical issue confined to one. Only patterns on >= minSites
+ * distinct domains qualify (a single-site finding isn't a cross-site pattern).
+ */
+export function rankFleetPatterns(merged, { minSites = 2, limit = 25 } = {}) {
+  return merged
+    .filter((p) => p.sites >= minSites)
+    .map((p) => ({ ...p, score: Math.round(p.sites * (SEVERITY_WEIGHT[p.severity] ?? 1) * p.pages * 100) / 100 }))
+    .sort((a, b) => b.score - a.score || b.sites - a.sites)
+    .slice(0, limit);
+}
