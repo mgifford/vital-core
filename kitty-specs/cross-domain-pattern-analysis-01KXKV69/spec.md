@@ -48,12 +48,6 @@ This mission adds a fourth section, **"Recurring patterns across domains"**
 | FR-004 | Functional | The subnav entry / heading is added to the same outcome group these other fleet sections already live under; no new top-level nav item. |
 | FR-005 | Functional | Section is omitted entirely (no empty table) when fewer than 2 active domains report data, or no pattern meets `minSites`, matching the existing `techFindingsSection`/`lighthouseFleetSection` empty-state convention (`''` when nothing qualifies). |
 
-### CSV / API export (optional stretch — only if FR-001–005 land cleanly)
-
-| ID | Type | Requirement |
-|---|---|---|
-| FR-006 | Functional | The ranked fleet-pattern list is available as a downloadable CSV alongside the dashboard, following the existing `filePrefix`/CSV convention in `src/lib/csv.js`, so a reviewer can work the list outside the browser. |
-
 ---
 
 ## Constraints
@@ -93,6 +87,12 @@ This mission adds a fourth section, **"Recurring patterns across domains"**
 
 ## Out of scope
 
+- **CSV/API export of the ranked fleet-pattern list** (downloadable export
+  following the existing `filePrefix`/CSV convention in `src/lib/csv.js`) —
+  a natural follow-up once the fleet-pattern table itself proves useful, but
+  deliberately excluded from this mission's single WP so the slice stays
+  minimal. Candidate for a future WP/mission once FR-001–005 are in
+  production and a reviewer asks for it.
 - DOM similarity, HTML fingerprinting, CSS selector clustering, visual
   similarity, or AI-assisted grouping of related findings (issue's own
   "Future Enhancements" — future mission).
