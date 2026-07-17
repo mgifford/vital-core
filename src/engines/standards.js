@@ -8,12 +8,55 @@
  *
  * Includes social-presence detection (Mastodon / Bluesky) — open social
  * platforms governments increasingly use — via rel="me" links and known
- * hosts. Returns { checks: [{id,label,pass,detail}], social: [...] }.
+ * hosts. Returns { checks: [{id,label,pass,detail}], social: [...],
+ * resilience: { checks: [{id,label,status,evidence,exampleUrl,why}],
+ * manifest, serviceWorker } }.
  *
- * PWA / offline-readiness signals are detected here via Playwright because
- * Lighthouse 12+ removed the PWA category score. Service-worker detection
- * uses navigator.serviceWorker.getRegistration() inside page.evaluate.
+ * Progressive Web Resilience (manifest, service worker, installability) is
+ * detected here via Playwright, in its own `resilience` section — distinct
+ * from `checks` — because Lighthouse 12+ removed the PWA category score
+ * (issue #145). Offline/network resilience (which needs a second,
+ * origin-level navigation) lives in engines/offline-resilience.js instead.
  */
+
+// Standard browser install criteria (Chrome/Edge "Add to Home Screen"),
+// roughly: HTTPS, a valid manifest with a standalone-ish display mode and
+// a >=192px icon, and a registered service worker. This is a heuristic
+// derived signal, not a guarantee any specific browser will prompt
+// install — reasons are returned so the report can show real evidence.
+function evaluateInstallability(isHttps, manifest, serviceWorker) {
+  const reasons = [];
+  if (!isHttps) reasons.push('not served over HTTPS');
+  if (!manifest || manifest.parseError) {
+    reasons.push('no readable web app manifest');
+  } else {
+    if (!manifest.display || !['standalone', 'fullscreen', 'minimal-ui'].includes(manifest.display)) {
+      reasons.push('manifest display mode is not standalone/fullscreen/minimal-ui');
+    }
+    const hasLargeIcon = (manifest.icons || []).some((i) => {
+      const sizes = String(i.sizes || '');
+      return sizes.includes('192x192') || sizes.includes('512x512') || sizes === 'any';
+    });
+    if (!hasLargeIcon) reasons.push('no 192x192 or larger icon declared');
+  }
+  if (!serviceWorker?.registered) reasons.push('no service worker registered');
+  return { installable: reasons.length === 0, reasons };
+}
+
+// Short, specific explanation of why each Progressive Web Resilience check
+// matters — shown alongside the evidence in the report (FR-006).
+const RESILIENCE_WHY = {
+  'pwa-https': 'HTTPS is required for service workers and most install prompts.',
+  'pwa-manifest': 'A web app manifest is required for installability and controls how the app appears when launched.',
+  'pwa-service-worker': 'A service worker is what makes offline access, caching, and background sync possible.',
+  'pwa-theme-color': 'Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.',
+  'pwa-apple-touch-icon': 'iOS uses this icon for home-screen bookmarks and "Add to Home Screen" — without it the icon falls back to a screenshot.',
+  'manifest-parsed': 'A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.',
+  'manifest-maskable-icon': 'A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.',
+  'sw-active': 'An active service worker (not just registered) is what actually intercepts requests and serves cached content.',
+  'sw-controlling': 'A controlling service worker means THIS page load is being served/intercepted, not just a future one.',
+  installable: 'Determines whether the browser can realistically offer "Add to Home Screen" / install, based on manifest + service worker + HTTPS together.',
+};
 
 export async function runStandards(page) {
   const pageUrl = page.url();
@@ -150,12 +193,42 @@ export async function runStandards(page) {
   const platforms = [...new Set(data.social.map((s) => s.platform))];
   add('open-social', 'Open social presence (Mastodon/Bluesky) linked', platforms.length > 0, platforms.join(', '));
 
-  // PWA / offline-readiness (Lighthouse 12+ removed the PWA score; we detect here instead).
-  add('pwa-https',             'HTTPS (required for service workers)',      isHttps);
-  add('pwa-manifest',          'Web app manifest declared',                 !!data.manifestHref);
-  add('pwa-service-worker',    'Service worker registered',                 data.hasServiceWorker);
-  add('pwa-theme-color',       'Theme color declared',                      !!data.themeColor, data.themeColor || '');
-  add('pwa-apple-touch-icon',  'Apple touch icon (iOS/bookmark icon)',      data.appleTouchIcon);
+  // Progressive Web Resilience: manifest characteristics, service-worker
+  // state, and installability — a distinct section (not mixed into
+  // `checks` above), each entry carrying evidence + why it matters
+  // (issue #145). The 5 pwa-* ids below existed as flat `checks` entries
+  // before this WP; they keep their ids (external consumers may key on
+  // them) but now live only here, never duplicated in `checks`.
+  const resilienceChecks = [];
+  const addResilience = (id, label, status, evidence = '') =>
+    resilienceChecks.push({ id, label, status, evidence, exampleUrl: pageUrl, why: RESILIENCE_WHY[id] ?? '' });
+  const tri = (pass) => (pass ? 'pass' : 'fail');
+
+  addResilience('pwa-https', 'HTTPS (required for service workers)', tri(isHttps));
+  addResilience('pwa-manifest', 'Web app manifest declared', tri(!!data.manifestHref));
+  addResilience('pwa-service-worker', 'Service worker registered', tri(data.hasServiceWorker));
+  addResilience('pwa-theme-color', 'Theme color declared', tri(!!data.themeColor), data.themeColor || '');
+  addResilience('pwa-apple-touch-icon', 'Apple touch icon (iOS/bookmark icon)', tri(data.appleTouchIcon));
+
+  if (data.manifestHref) {
+    const manifestOk = !!data.manifest && !data.manifest.parseError;
+    addResilience('manifest-parsed', 'Manifest fetched and parsed successfully', tri(manifestOk),
+      manifestOk
+        ? `display=${data.manifest.display ?? 'unset'}, start_url=${data.manifest.startUrl ?? 'unset'}`
+        : (data.manifest?.parseError ?? 'unknown error'));
+    addResilience('manifest-maskable-icon', 'Manifest declares a maskable icon', tri(!!data.manifest?.hasMaskableIcon),
+      data.manifest?.hasMaskableIcon ? 'Maskable icon present' : 'No icon with purpose "maskable"');
+  } else {
+    addResilience('manifest-parsed', 'Manifest fetched and parsed successfully', 'n/a', 'No manifest declared');
+    addResilience('manifest-maskable-icon', 'Manifest declares a maskable icon', 'n/a', 'No manifest declared');
+  }
+
+  addResilience('sw-active', 'Service worker is active (not just registered)', tri(data.serviceWorker.active));
+  addResilience('sw-controlling', 'Service worker controls this page load', tri(data.serviceWorker.controllingThisPage));
+
+  const { installable, reasons: installReasons } = evaluateInstallability(isHttps, data.manifest, data.serviceWorker);
+  addResilience('installable', 'Meets basic installability criteria', tri(installable),
+    installable ? 'All installability criteria met' : installReasons.join('; '));
 
   const passed = checks.filter((c) => c.pass).length;
   return {
@@ -165,5 +238,10 @@ export async function runStandards(page) {
     total: checks.length,
     social: data.social.slice(0, 10),
     og: data.og,
+    resilience: {
+      checks: resilienceChecks,
+      manifest: data.manifest,
+      serviceWorker: data.serviceWorker,
+    },
   };
 }
