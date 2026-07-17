@@ -156,8 +156,8 @@ test('manifest link pointing at malformed JSON does not throw', async () => {
 test('no manifest link declared means no manifest fetch attempted', async () => {
   const html = '<!doctype html><html><head></head><body></body></html>';
   const result = await scan(html);
-  const manifestCheck = result.checks.find((c) => c.id === 'pwa-manifest');
-  assert.equal(manifestCheck.pass, false);
+  const manifestCheck = result.resilience.checks.find((c) => c.id === 'pwa-manifest');
+  assert.equal(manifestCheck.status, 'fail');
 });
 
 test('page with no service worker reports all-false state', async () => {
@@ -187,12 +187,45 @@ test('page with no service worker reports all-false state', async () => {
   await page.close();
 });
 
-test('existing checks array is unchanged by this WP (no regression)', async () => {
+test('pwa-* checks live only in resilience.checks, never duplicated in checks (FR-007)', async () => {
   const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Test</title><meta name="theme-color" content="#fff"></head><body></body></html>';
   const result = await scan(html);
-  const pwaIds = result.checks.filter((c) => c.id.startsWith('pwa-')).map((c) => c.id);
-  assert.deepEqual(pwaIds, ['pwa-https', 'pwa-manifest', 'pwa-service-worker', 'pwa-theme-color', 'pwa-apple-touch-icon']);
-  const themeCheck = result.checks.find((c) => c.id === 'pwa-theme-color');
-  assert.equal(themeCheck.pass, true);
-  assert.equal(themeCheck.detail, '#fff');
+  const pwaIdsInFlatChecks = result.checks.filter((c) => c.id.startsWith('pwa-')).map((c) => c.id);
+  assert.deepEqual(pwaIdsInFlatChecks, []);
+
+  const pwaIdsInResilience = result.resilience.checks.filter((c) => c.id.startsWith('pwa-')).map((c) => c.id);
+  assert.deepEqual(pwaIdsInResilience, ['pwa-https', 'pwa-manifest', 'pwa-service-worker', 'pwa-theme-color', 'pwa-apple-touch-icon']);
+
+  const themeCheck = result.resilience.checks.find((c) => c.id === 'pwa-theme-color');
+  assert.equal(themeCheck.status, 'pass');
+  assert.equal(themeCheck.evidence, '#fff');
+});
+
+test('every resilience check carries a non-empty why explanation', async () => {
+  const html = '<!doctype html><html><head></head><body></body></html>';
+  const result = await scan(html);
+  for (const c of result.resilience.checks) {
+    assert.ok(c.why && c.why.length > 0, `check "${c.id}" is missing a why explanation`);
+  }
+});
+
+test('installable check reflects unmet criteria with human-readable reasons', async () => {
+  // http (not https), no manifest, no service worker -> not installable,
+  // with a reason for each unmet criterion.
+  const html = '<!doctype html><html><head></head><body></body></html>';
+  const result = await scan(html);
+  const installable = result.resilience.checks.find((c) => c.id === 'installable');
+  assert.equal(installable.status, 'fail');
+  assert.match(installable.evidence, /HTTPS/i);
+  assert.match(installable.evidence, /manifest/i);
+  assert.match(installable.evidence, /service worker/i);
+});
+
+test('manifest-parsed and manifest-maskable-icon are n/a when no manifest is declared', async () => {
+  const html = '<!doctype html><html><head></head><body></body></html>';
+  const result = await scan(html);
+  const parsed = result.resilience.checks.find((c) => c.id === 'manifest-parsed');
+  const maskable = result.resilience.checks.find((c) => c.id === 'manifest-maskable-icon');
+  assert.equal(parsed.status, 'n/a');
+  assert.equal(maskable.status, 'n/a');
 });
