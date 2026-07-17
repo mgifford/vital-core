@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --omit=optional --ignore-scripts
 
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
       - name: Parse workflow YAML
         run: |
           ruby -e "require 'yaml'; Dir['.github/workflows/*.yml'].sort.each { |f| YAML.safe_load_file(f, permitted_classes: []); puts \"parsed #{f}\" }"
