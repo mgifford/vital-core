@@ -31,11 +31,22 @@ than simply detecting its presence, report useful manifest characteristics."*
 
 ## Goal
 
-Add a distinct Progressive Web Resilience section to the Standards & Security
-report that reports actionable capability evidence (not another aggregate
-score), reusing existing scan infrastructure and avoiding duplication with
+Add a distinct Progressive Web Resilience section to the "Findable?" page's
+Web standards & metadata report (`standardsSection()` in
+`src/report-html.js`, `findable.html`, `#h-standards`) that reports
+actionable capability evidence (not another aggregate score), reusing
+existing scan infrastructure and avoiding duplication with
 Accessibility/Lighthouse (title, lang, viewport, WCAG failures, HTML
 validation stay where they are).
+
+**Correction to issue #145's framing**: the issue's own comment links to a
+`standards.html` URL from an earlier report layout; the current report
+renames that page `findable.html` under the "Findable?" outcome group
+(`SUBNAV_GROUPS`, `src/report-html.js:341`), and PWA checks already render
+there (`pwaChecks` filter, `src/report-html.js:2513-2528`) — not on a
+separate "Standards & Security" page (that name does not exist in the
+current IA; "Trustworthy?" holds `security`/`third-party`/`errors`
+instead). This mission targets the actual current page.
 
 ## Requirements
 
@@ -56,7 +67,8 @@ validation stay where they are).
 
 ## Acceptance criteria
 
-- [ ] Standards & Security report shows a distinct "Progressive Web
+- [ ] The "Findable?" page's Web standards & metadata report
+      (`findable.html`, `#h-standards`) shows a distinct "Progressive Web
       Resilience" section, not checks mixed into the existing flat list.
 - [ ] Manifest checks report `start_url`, `display`, `scope`, `theme_color`,
       `background_color`, icons, and maskable-icon presence — not just
