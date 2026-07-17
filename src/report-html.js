@@ -2503,40 +2503,60 @@ function scanGovMeta() {
 }
 
 /**
+ * The Progressive Web Resilience subsection of the "Findable?" page
+ * (issue #145): manifest characteristics, service-worker state, and
+ * installability (per-page, rolled up like `standards`), plus offline and
+ * network resilience (per-origin, "latest wins" like security). Each row
+ * is independent evidence — deliberately not another aggregate score.
+ */
+function resilienceSection(summary) {
+  const res = summary.resilience;
+  if (!res) return '';
+  const badge = (status) => status === 'pass'
+    ? `<span class="pwa-badge pwa-pass" aria-label="${esc(t('pass'))}">✓</span>`
+    : status === 'fail'
+      ? `<span class="pwa-badge pwa-fail" aria-label="${esc(t('fail'))}">✗</span>`
+      : `<span class="pwa-badge pwa-partial" aria-label="${esc(t('not applicable'))}">~</span>`;
+  const rows = res.checks.map((c) => `<tr>
+<th scope="row">${esc(c.label)}</th>
+<td>${badge(c.rate === 100 ? 'pass' : c.rate === 0 ? 'fail' : 'partial')} ${c.pass}/${c.total} ${t('pages')}</td>
+<td class="bug-meta">${esc(c.why || '')}</td>
+<td class="bug-meta">${c.evidenceExamples?.[0] ? `<a href="${esc(c.evidenceExamples[0].url)}">${esc(String(c.evidenceExamples[0].evidence)).slice(0, 80)}</a>` : '—'}</td>
+</tr>`).join('');
+  const offlineChecks = res.offline?.checks ?? [];
+  const offlineBlock = offlineChecks.length ? `
+<h4>${t('Offline & network resilience')}</h4>
+${checklist(offlineChecks)}` : '';
+  return `<h3>${t('Progressive Web Resilience')} <span class="bug-meta">${t('across @n page(s)', { '@n': res.pagesChecked })}</span></h3>
+<p class="meta">${t('Capabilities that keep the site useful under real-world conditions — unreliable connectivity, interrupted sessions, mobile install. Not a compliance score: each row is independent evidence.')}</p>
+<table>
+<caption>${t('Progressive Web Resilience signals (lowest pass rate first).')}</caption>
+<thead><tr><th scope="col">${t('Capability')}</th><th scope="col">${t('Result')}</th><th scope="col">${t('Why it matters')}</th><th scope="col">${t('Evidence')}</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+${offlineBlock}`;
+}
+
+/**
  * "Findable?" — web standards & metadata: the ScanGov-style metadata checks,
- * open social presence, and PWA / offline readiness. (Security and public-
- * interest live on the Trustworthy page, securitySection.)
+ * open social presence, and Progressive Web Resilience. (Security and
+ * public-interest live on the Trustworthy page, securitySection.)
  */
 function standardsSection(summary) {
   const std = summary.standards;
   if (!std) return '';
-  const pwaChecks = std.checks.filter((c) => c.id.startsWith('pwa-'));
-  const metaChecks = std.checks.filter((c) => !c.id.startsWith('pwa-'));
   const checkRow = (c) => `<tr><th scope="row">${esc(c.label)}</th><td class="num">${c.rate}%</td><td class="num">${c.pass}/${c.total}</td></tr>`;
-  const hasSW = pwaChecks.find((c) => c.id === 'pwa-service-worker');
-  const hasManifest = pwaChecks.find((c) => c.id === 'pwa-manifest');
-  const pwaInterpretation = hasSW?.pass > 0
-    ? t('Service worker detected on @n of @total checked page(s).', { '@n': hasSW.pass, '@total': hasSW.total }) + ' ' + (hasManifest?.pass > 0 ? t('Web app manifest also present.') : t('No web app manifest found.')) + ' ' + t('Service workers enable offline access and "Add to Home Screen" install.')
-    : t('No service worker detected on any checked page — this site does not provide offline access or PWA install capability.');
-  const pwaBlock = pwaChecks.length ? `
-<h3>${t('PWA & offline readiness')} <span class="bug-meta">${t('across @n page(s)', { '@n': std.pagesChecked })}</span></h3>
-<p class="meta">${pwaInterpretation} ${t('These checks run on every crawled page via Playwright (not sampled). Lighthouse 12+ removed the dedicated PWA category score.')}</p>
-<table>
-<caption>${t('PWA / offline readiness signals (lowest pass rate first).')}</caption>
-<thead><tr><th scope="col">${t('Check')}</th><th scope="col" class="num">${t('Pass rate')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
-<tbody>${pwaChecks.map(checkRow).join('')}</tbody>
-</table>` : '';
   return `<section aria-labelledby="h-standards">
 ${heading('h-standards', t('Web standards & metadata'))}
 ${scanGovMeta()}
 <table>
 <caption>${t('Share of checked pages passing each standard (lowest first).')}</caption>
 <thead><tr><th scope="col">${t('Standard')}</th><th scope="col" class="num">${t('Pass rate')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
-<tbody>${metaChecks.map(checkRow).join('')}</tbody>
+<tbody>${std.checks.map(checkRow).join('')}</tbody>
 </table>
 <p class="meta"><span class="bug-meta">${t('across @n page(s)', { '@n': std.pagesChecked })}</span></p>
 ${std.social?.length ? `<p class="meta">${t('Open social presence found:')} ${std.social.map((s) => `<a href="${esc(s.href)}">${esc(s.platform)}</a>`).join(', ')}.</p>` : `<p class="meta">${t('No Mastodon/Bluesky links detected on checked pages.')}</p>`}
-${pwaBlock}
+${resilienceSection(summary)}
 </section>`;
 }
 
@@ -4545,6 +4565,10 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .checklist .check { display: inline-block; width: 1.2em; font-weight: 700; }
 .checklist li.pass .check { color: var(--better); }
 .checklist li.fail .check { color: var(--worse); }
+.pwa-badge { display: inline-block; font-weight: 700; }
+.pwa-badge.pwa-pass { color: var(--better); }
+.pwa-badge.pwa-fail { color: var(--worse); }
+.pwa-badge.pwa-partial { color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }
 .bug-filter { margin: .75rem 0 1rem; padding: .75rem .9rem; border: 1px solid var(--rule);
   border-radius: 2px; background: color-mix(in srgb, var(--accent) 5%, transparent); }
