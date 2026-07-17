@@ -26,8 +26,8 @@ before(async () => {
 });
 
 after(async () => {
-  await browser.close();
-  await new Promise((resolve) => server.close(resolve));
+  await browser?.close();
+  if (server) await new Promise((resolve) => server.close(resolve));
 });
 
 async function scan(html) {
