@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
-import { rankBugs, fleetWorstOffenders } from './lib/priority.js';
+import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
@@ -1630,7 +1630,7 @@ ${heading('h-bugs', t('Bug reports'))}
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>${t('Possible duplicate')}</dt><dd>${t('Same WCAG SC covered by axe report <code>@id</code> (pattern <code>@pattern</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.', { '@id': esc(b.possible_duplicate_of), '@pattern': esc(b.possible_duplicate_pattern) })}</dd></div>`
         : '';
-      return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''} data-triage="" data-excluded="">
+      return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
 <summary id="${esc(b.instance_id)}" tabindex="-1"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
@@ -1673,6 +1673,13 @@ ${affectedPagesBlock(b)}
   const catPresent = catOrder.filter((c) => fullCatCount[c]);
   const sevOpts = sevPresent.map((s) => `<option value="${esc(s)}">${t(s)} (${fullSevCount[s]})</option>`).join('');
   const catOpts = catPresent.map((c) => `<option value="${esc(c)}">${t(c)} (${fullCatCount[c]})</option>`).join('');
+  // Priority-URL checkbox only appears when this target has priority_urls /
+  // priority_urls_file configured (reporting.keyPages, resolved in aggregate.js)
+  // — most domains don't set one, so the control would otherwise be dead weight.
+  const keyPageCount = fullBugs.filter((b) => b.priority_key_page).length;
+  const keyPageFilter = keyPageCount > 0
+    ? `<label class="bug-filter-check"><input type="checkbox" id="filter-key-page"> ${t('Priority URLs only')} (${keyPageCount})</label>\n`
+    : '';
   const filterBar = `<form class="bug-filter" hidden aria-label="${esc(t('Filter bug reports'))}" data-total="${fullBugs.length}" data-prioritized="${fullVisibleCount}">
 <div class="bug-filter-row">
 <label class="bug-filter-check"><input type="checkbox" id="filter-all"> ${t('Show everything')}</label>
@@ -1680,7 +1687,7 @@ ${affectedPagesBlock(b)}
 <label>${t('WCAG category')} <select id="filter-cat"><option value="">${t('All categories')}</option>${catOpts}</select></label>
 <label>${t('Triage')} <select id="filter-triage"><option value="">${t('All statuses')}</option><option value="__none__">${t('Not reviewed')}</option><option value="valid">${t('Valid')}</option><option value="false-positive">${t('False positive')}</option><option value="duplicate">${t('Duplicate')}</option><option value="wont-fix">${t("Won't fix")}</option><option value="deferred">${t('Deferred')}</option></select></label>
 <label class="bug-filter-check"><input type="checkbox" id="filter-dup"> ${t('Hide possible duplicates')}</label>
-<button type="button" id="filter-reset">${t('Reset')}</button>
+${keyPageFilter}<button type="button" id="filter-reset">${t('Reset')}</button>
 </div>
 <p class="bug-filter-count" aria-live="polite" id="filter-count">${t('Showing @count prioritized issue type(s) out of @total.', { '@count': fullVisibleCount, '@total': fullBugs.length })}</p>
 </form>`;
@@ -2341,13 +2348,15 @@ function bugFilterScript() {
   var cat = document.getElementById('filter-cat');
   var triage = document.getElementById('filter-triage');
   var dup = document.getElementById('filter-dup');
+  var keyPage = document.getElementById('filter-key-page');
   var count = document.getElementById('filter-count');
   var empty = document.querySelector('.bug-filter-empty');
   var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
   function apply() {
-    var s = sev.value, c = cat.value, t = triage ? triage.value : '', hideDup = dup.checked, showEverything = showAll.checked, shown = 0;
-    // Triage filter implicitly expands to all priority tiers so you can find triaged items that are normally hidden.
-    var effectiveShowAll = showEverything || !!t;
+    var s = sev.value, c = cat.value, t = triage ? triage.value : '', hideDup = dup.checked, keyPageOnly = keyPage ? keyPage.checked : false, showEverything = showAll.checked, shown = 0;
+    // Triage and priority-URL filters implicitly expand to all priority tiers
+    // so you can find triaged/key-page items that are normally hidden.
+    var effectiveShowAll = showEverything || !!t || keyPageOnly;
     // Findings the viewer excluded (issue #209) are removed from view and from
     // the totals, so "showing N of M" reflects the viewer's chosen scope. With
     // no exclusions active these equal the full finding count / prioritized count.
@@ -2362,11 +2371,12 @@ function bugFilterScript() {
         && (!s || b.getAttribute('data-severity') === s)
         && (!c || b.getAttribute('data-category') === c)
         && (!hideDup || b.getAttribute('data-duplicate') !== '1')
+        && (!keyPageOnly || b.getAttribute('data-key-page') === '1')
         && triageOk;
       b.hidden = !ok;
       if (ok) shown++;
     });
-    var filtered = showEverything || s || c || t || hideDup;
+    var filtered = showEverything || s || c || t || hideDup || keyPageOnly;
     count.textContent = filtered
       ? (showEverything && !t
           ? ${JSON.stringify(t('Showing all @count issue type(s).'))}.replace('@count', shown)
@@ -2374,12 +2384,13 @@ function bugFilterScript() {
       : ${JSON.stringify(t('Showing @count prioritized issue type(s) out of @total.'))}.replace('@count', effPrioritized).replace('@total', effTotal);
     if (empty) empty.hidden = shown !== 0;
   }
-  function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; if (triage) triage.value = ''; dup.checked = false; apply(); }
+  function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; if (triage) triage.value = ''; dup.checked = false; if (keyPage) keyPage.checked = false; apply(); }
   showAll.addEventListener('change', apply);
   sev.addEventListener('change', apply);
   cat.addEventListener('change', apply);
   if (triage) triage.addEventListener('change', apply);
   dup.addEventListener('change', apply);
+  if (keyPage) keyPage.addEventListener('change', apply);
   document.getElementById('filter-reset').addEventListener('click', reset);
   var r2 = document.getElementById('filter-reset-2');
   if (r2) r2.addEventListener('click', reset);
@@ -4021,6 +4032,42 @@ ${heading('h-lhfleet', t('Common Lighthouse recommendations'))}
 </section>`;
   }
 
+  // Fleet-wide recurring patterns: the same pattern_id (same underlying
+  // axe/Alfa rule) appearing on multiple independent domains is the
+  // strongest signal of a shared CMS template, design-system component, or
+  // widget bug — issue #221. Ranked by fix leverage (sites × severity ×
+  // pages), not raw count, so a moderate issue hitting many sites can
+  // outrank a critical issue confined to one.
+  const mergedPatterns = mergeFleetPatterns(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })));
+  const fleetPatterns = rankFleetPatterns(mergedPatterns, { minSites: 2, limit: 25 });
+  let patternsSection = '';
+  if (fleetPatterns.length) {
+    patternsSection = `
+<section aria-labelledby="h-patterns">
+${heading('h-patterns', t('Recurring patterns across domains'))}
+<p class="meta">${t('The same underlying rule failing on multiple independent sites — the strongest signal of a shared CMS template, design-system component, or widget bug rather than a one-off content issue. Ranked by fix leverage: sites affected × severity × pages, not raw count.')}</p>
+<table class="sortable">
+<caption>${t('Top @n patterns spanning ≥2 sites.', { '@n': fleetPatterns.length })}</caption>
+<thead><tr>
+  <th scope="col">${t('Pattern')}</th>
+  <th scope="col">${t('Severity')}</th>
+  <th scope="col">${t('Likely source')}</th>
+  <th scope="col" class="num">${t('Sites')}</th>
+  <th scope="col" class="num">${t('Pages')}</th>
+</tr></thead>
+<tbody>${fleetPatterns
+      .map((p) => `<tr>
+  <th scope="row"><a href="reports/${esc(p.representative.key)}/${esc(p.representative.week)}/index.html">${esc(p.rule_label)}</a></th>
+  <td><span class="sev-badge">${esc(t(p.severity))}</span></td>
+  <td>${esc(t(p.likely_source ?? 'unknown'))}</td>
+  <td class="num">${p.sites}</td>
+  <td class="num">${p.pages}</td>
+</tr>`)
+      .join('\n')}</tbody>
+</table>
+</section>`;
+  }
+
   const body = `
 <h1>${esc(h1)}</h1>
 <p class="meta">${esc(intro)}</p>
@@ -4040,6 +4087,7 @@ ${sustainTrend}
 ${worstSection}
 ${techFindingsSection}
 ${lighthouseFleetSection}
+${patternsSection}
 ${blockedCallout}`}
 <section aria-labelledby="h-tools">
 ${heading('h-tools', t('Tools'))}
