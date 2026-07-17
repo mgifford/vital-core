@@ -1,6 +1,6 @@
 ---
 work_package_id: WP02
-title: "Origin-level offline and network resilience checks"
+title: Origin-level offline and network resilience checks
 dependencies: []
 requirement_refs:
 - FR-003
@@ -10,19 +10,23 @@ tracker_refs:
 planning_base_branch: main
 merge_target_branch: main
 branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-progressive-web-resilience-01KXPWGM
+base_commit: 6e8d047aedb76f23f770a40e8d297600bb8c0d59
+created_at: '2026-07-17T18:49:09.996083+00:00'
 subtasks:
 - T003
 - T004
+shell_pid: '66388'
+authoritative_surface: src/engines/offline-resilience.js
+create_intent:
+- src/engines/offline-resilience.js
+- tests/unit/offline-resilience.test.js
+execution_mode: code_change
 owned_files:
 - src/engines/offline-resilience.js
 - src/scan.js
 - src/lib/sampling.js
 - tests/unit/offline-resilience.test.js
-create_intent:
-- src/engines/offline-resilience.js
-- tests/unit/offline-resilience.test.js
-execution_mode: code_change
-authoritative_surface: src/engines/offline-resilience.js
 role: implementer
 tags: []
 ---
