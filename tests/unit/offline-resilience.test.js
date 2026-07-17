@@ -10,7 +10,7 @@ import { runOfflineResilience } from '../../src/engines/offline-resilience.js';
 let browser;
 
 before(async () => { browser = await chromium.launch(); });
-after(async () => { await browser.close(); });
+after(async () => { await browser?.close(); });
 
 function startServer(html) {
   return new Promise((resolve) => {
