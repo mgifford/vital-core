@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "mission_slug": "progressive-web-resilience-01KXPWGM",
+  "mission_id": "01KXPWGM126XQBHMF40TAH78W7",
+  "mission_branch": "kitty/mission-progressive-web-resilience-01KXPWGM",
+  "target_branch": "main",
+  "lanes": [
+    {
+      "lane_id": "lane-b",
+      "wp_ids": [
+        "WP02"
+      ],
+      "write_scope": [
+        "src/engines/offline-resilience.js",
+        "src/lib/sampling.js",
+        "src/scan.js",
+        "tests/unit/offline-resilience.test.js"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "app-shell",
+        "artifact-rendering",
+        "legacy-cleanup",
+        "tracker-integration"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-a",
+      "wp_ids": [
+        "WP01",
+        "WP03"
+      ],
+      "write_scope": [
+        "src/aggregate.js",
+        "src/engines/standards.js",
+        "src/lib/api-writer.js",
+        "src/lib/csv.js",
+        "src/report-html.js",
+        "tests/unit/standards.test.js"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "app-shell",
+        "artifact-rendering",
+        "legacy-cleanup",
+        "tracker-integration"
+      ],
+      "depends_on_lanes": [
+        "lane-b"
+      ],
+      "parallel_group": 1
+    }
+  ],
+  "computed_at": "2026-07-17T15:44:28.596944+00:00",
+  "computed_from": "dependency_graph+ownership",
+  "planning_artifact_wps": [],
+  "collapse_report": {
+    "events": [
+      {
+        "wp_a": "WP01",
+        "wp_b": "WP03",
+        "rule": "write_scope_overlap",
+        "evidence": "overlapping globs: 'src/engines/standards.js' vs 'src/engines/standards.js', 'tests/unit/standards.test.js' vs 'tests/unit/standards.test.js'; WP03 depends on WP01"
+      }
+    ],
+    "total_merges": 1,
+    "independent_wps_collapsed": 0,
+    "by_rule": {
+      "write_scope_overlap": 1
+    }
+  }
+}
