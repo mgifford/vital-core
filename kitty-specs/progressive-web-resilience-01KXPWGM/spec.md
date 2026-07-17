@@ -67,25 +67,25 @@ instead). This mission targets the actual current page.
 
 ## Acceptance criteria
 
-- [ ] The "Findable?" page's Web standards & metadata report
+- [x] The "Findable?" page's Web standards & metadata report
       (`findable.html`, `#h-standards`) shows a distinct "Progressive Web
       Resilience" section, not checks mixed into the existing flat list.
-- [ ] Manifest checks report `start_url`, `display`, `scope`, `theme_color`,
+- [x] Manifest checks report `start_url`, `display`, `scope`, `theme_color`,
       `background_color`, icons, and maskable-icon presence — not just
       manifest-link presence.
-- [ ] Service worker checks report registered/active/controlling state
+- [x] Service worker checks report registered/active/controlling state
       distinctly (no longer a single boolean).
-- [ ] At least one offline-resilience and one network-resilience check is
+- [x] At least one offline-resilience and one network-resilience check is
       implemented and reports Pass/Fail/N/A with evidence.
-- [ ] Installability is reported as a derived signal, with no new aggregate
+- [x] Installability is reported as a derived signal, with no new aggregate
       PWA score introduced.
-- [ ] Every check in the new section carries evidence and a brief
+- [x] Every check in the new section carries evidence and a brief
       explanation of why it matters; example URL is included where
       applicable.
-- [ ] No check present in this section duplicates an Accessibility or
+- [x] No check present in this section duplicates an Accessibility or
       Lighthouse check (title, lang, viewport, WCAG, HTML validation).
-- [ ] New fields are present in the static JSON API and CSV export.
-- [ ] `npm run test:unit` passes with new coverage for manifest parsing and
+- [x] New fields are present in the static JSON API and CSV export.
+- [x] `npm run test:unit` passes with new coverage for manifest parsing and
       section grouping.
 
 ## Out of scope
