@@ -117,6 +117,7 @@ export function writeTrendsCsv(dataOut, series) {
     s.plainLanguage?.medianWordsPerPage ?? '',
     s.tech?.length ?? '',
     s.standards?.checks?.length ? passRate(s.standards.checks) : '',
+    s.resilience?.checks?.length ? passRate(s.resilience.checks) : '',
     s.security?.total ? Math.round((s.security.passed / s.security.total) * 100) : '',
   ]);
   const name = 'trends.csv';
@@ -125,7 +126,7 @@ export function writeTrendsCsv(dataOut, series) {
       'lighthouse_performance', 'lighthouse_best_practices', 'lighthouse_seo',
       'median_page_weight_bytes', 'median_requests', 'mean_co2_g',
       'reading_ease', 'reading_grade', 'words_per_page',
-      'technologies', 'standards_pass_pct', 'security_pass_pct'], rows));
+      'technologies', 'standards_pass_pct', 'resilience_pass_pct', 'security_pass_pct'], rows));
   return name;
 }
 
