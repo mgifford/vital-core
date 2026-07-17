@@ -19,6 +19,26 @@
       "status": "resolved",
       "step_id": "specify.problem_statement",
       "summary_json": null
+    },
+    {
+      "created_at": "2026-07-17T11:40:07.056524Z",
+      "decision_id": "01KXQY0VGGR04EQ3KCK3GY24EG",
+      "final_answer": "Extend src/engines/standards.js's existing page.evaluate block to fetch/parse the manifest and expand service-worker state (IC-01, IC-02), add an origin-level memoized offline/network-resilience check in src/scan.js mirroring the existing runSecurity/runPublicInterest pattern with an isolated browser context (IC-03), derive installability from those outputs (IC-04), and restructure runStandards()'s return shape into a new resilience section migrated from the flat checks array, rendered as a distinct report subsection and threaded through the CSV/JSON API pipeline (IC-05).",
+      "input_key": "approach",
+      "mission_id": "01KXPWGM126XQBHMF40TAH78W7",
+      "mission_slug": "progressive-web-resilience-01KXPWGM",
+      "opened_by": "mike.gifford@gmail.com",
+      "options": [],
+      "origin_flow": "plan",
+      "other_answer": false,
+      "question": "What is the high-level implementation approach?",
+      "rationale": "Derived from plan.md's Implementation Concern Map (IC-01..IC-05), grounded in research.md's D-01..D-06 decisions about scan.js's per-page vs per-origin execution model.",
+      "resolved_at": "2026-07-17T11:41:12.439169Z",
+      "resolved_by": "mike.gifford@gmail.com",
+      "slot_key": null,
+      "status": "resolved",
+      "step_id": "plan.approach",
+      "summary_json": null
     }
   ],
   "mission_id": "01KXPWGM126XQBHMF40TAH78W7",
