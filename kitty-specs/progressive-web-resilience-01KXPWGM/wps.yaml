@@ -1,0 +1,63 @@
+work_packages:
+  - id: WP01
+    title: "Manifest fetch, parsing, and expanded service-worker state"
+    dependencies: []
+    owned_files:
+      - "src/engines/standards.js"
+      - "tests/unit/standards.test.js"
+    create_intent:
+      - "tests/unit/standards.test.js"
+    requirement_refs:
+      - FR-001
+      - FR-002
+    subtasks:
+      - T001
+      - T002
+    prompt_file: "tasks/WP01-manifest-and-service-worker-state.md"
+
+  - id: WP02
+    title: "Origin-level offline and network resilience checks"
+    dependencies: []
+    owned_files:
+      - "src/engines/offline-resilience.js"
+      - "src/scan.js"
+      - "src/lib/sampling.js"
+      - "tests/unit/offline-resilience.test.js"
+    create_intent:
+      - "src/engines/offline-resilience.js"
+      - "tests/unit/offline-resilience.test.js"
+    requirement_refs:
+      - FR-003
+      - FR-005
+    subtasks:
+      - T003
+      - T004
+    prompt_file: "tasks/WP02-offline-network-resilience.md"
+
+  - id: WP03
+    title: "Installability, Progressive Web Resilience section, report rendering, and export pipeline"
+    dependencies:
+      - WP01
+      - WP02
+    owned_files:
+      - "src/engines/standards.js"
+      - "src/report-html.js"
+      - "src/lib/csv.js"
+      - "src/aggregate.js"
+      - "src/lib/api-writer.js"
+      - "tests/unit/standards.test.js"
+    create_intent:
+      - "tests/unit/standards.test.js"
+    requirement_refs:
+      - FR-004
+      - FR-006
+      - FR-007
+      - FR-008
+      - C-01
+      - C-02
+    subtasks:
+      - T005
+      - T006
+      - T007
+      - T008
+    prompt_file: "tasks/WP03-installability-section-and-export.md"
