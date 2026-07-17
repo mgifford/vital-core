@@ -3,7 +3,7 @@
     {
       "created_at": "2026-07-17T01:54:32.868859Z",
       "decision_id": "01KXPWGMS4TSFYB0C5R24X6H9A",
-      "final_answer": null,
+      "final_answer": "The Standards & Security report's PWA checks (manifest, service worker) are presence-only booleans with no evidence, mixed into a flat check list. Issue #145 asks for a dedicated Progressive Web Resilience section reporting manifest characteristics, service-worker state, offline/network resilience, and installability as Pass/Fail/N/A with evidence \u2014 not another aggregate score.",
       "input_key": "problem_statement",
       "mission_id": "01KXPWGM126XQBHMF40TAH78W7",
       "mission_slug": "progressive-web-resilience",
@@ -12,11 +12,11 @@
       "origin_flow": "specify",
       "other_answer": false,
       "question": "What problem does this feature solve?",
-      "rationale": null,
-      "resolved_at": null,
-      "resolved_by": null,
+      "rationale": "Derived from spec.md Problem/Goal sections, authored from issue #145 and a read of src/engines/standards.js.",
+      "resolved_at": "2026-07-17T02:03:28.760325Z",
+      "resolved_by": "mike.gifford@gmail.com",
       "slot_key": null,
-      "status": "open",
+      "status": "resolved",
       "step_id": "specify.problem_statement",
       "summary_json": null
     }

@@ -1,0 +1,8 @@
+decision_id,finding,source,date
+D-01,manifestHref already resolved inside page.evaluate; entire data object built in one round-trip,src/engines/standards.js:22-83,2026-07-17
+D-02,getRegistration() already called; active/installing/waiting/controller are standard fields on the object it returns,src/engines/standards.js:49-57,2026-07-17
+D-03,scan.js reuses one browser.newContext() across the whole domain crawl; setOffline is context-level not page-level,src/scan.js:140-145,2026-07-17
+D-03,runStandards runs per-page via runs('standards'); runSecurity/runPublicInterest memoize per-origin with ??=,src/scan.js:304-314,2026-07-17
+D-04,runSecurity takes baseOrigin/user_agent not page -- precedent for origin-level checks running outside the shared crawl context,src/scan.js:307-309,2026-07-17
+D-05,spec.md FR-005 already scopes network-resilience detection to detectable runtime signals not SW source parsing,kitty-specs/progressive-web-resilience-01KXPWGM/spec.md,2026-07-17
+D-06,Existing runStandards() return already has non-checks structured keys (social, og) alongside the flat checks array,src/engines/standards.js:120-127,2026-07-17
