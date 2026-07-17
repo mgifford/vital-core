@@ -637,9 +637,15 @@ test('standards page (Findable) and security page (Trustworthy) split cleanly', 
       pagesChecked: 10,
       checks: [
         { id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 },
-        { id: 'pwa-service-worker', label: 'Service worker', rate: 0, pass: 0, total: 10 },
       ],
       social: [{ platform: 'mastodon', href: 'https://example.social/@x' }],
+    },
+    resilience: {
+      pagesChecked: 10,
+      checks: [
+        { id: 'pwa-service-worker', label: 'Service worker registered', rate: 0, pass: 0, total: 10, why: 'Enables offline access.' },
+      ],
+      offline: null,
     },
     security: { passed: 3, total: 5, checks: [{ id: 'https', label: 'Serves HTTPS', pass: true }, { id: 'gov-tld', label: 'Uses a .gov domain', pass: false }] },
     publicInterest: { a11yStatement: { result: 'fail' }, carbonTxt: { result: 'unknown' }, greenWebFoundation: { result: 'pass' }, sitemaps: { xml: { found: true, url: 'https://d/sitemap.xml' }, human: { found: false } } },
@@ -650,7 +656,7 @@ test('standards page (Findable) and security page (Trustworthy) split cleanly', 
   // Standards page: web-standards content, NOT security/public-interest.
   assert.match(std, /id="h-standards"/);
   assert.match(std, /Web standards &amp; metadata|Web standards/);
-  assert.match(std, /PWA &amp; offline readiness|PWA/);
+  assert.match(std, /Progressive Web Resilience/);
   assert.doesNotMatch(std, /id="h-security"/);
   assert.doesNotMatch(std, /Security & domain hygiene/);
 

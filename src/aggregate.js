@@ -628,10 +628,15 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const standardsChecks = {};
   let standardsPages = 0;
   const socialSeen = new Map(); // platform -> example href
+  // Progressive Web Resilience (per-page): checkId -> { label, pass, total, why, evidenceExamples }.
+  const resilienceChecks = {};
+  let resiliencePages = 0;
   // Security (per-origin): keep the latest result seen this week.
   let securityLatest = null;
   // Public-interest checks (per-origin): keep the latest result seen this week.
   let publicInterestLatest = null;
+  // Offline/network resilience (per-origin): keep the latest result seen this week.
+  let offlineResilienceLatest = null;
   let pagesScanned = 0;
   let pagesWithAxeViolations = 0;
   let pagesWithAlfaFailures = 0;
@@ -758,8 +763,20 @@ function summarizeRecords(target, week, records, brokenLinks) {
       for (const soc of rec.standards.social ?? []) {
         if (!socialSeen.has(soc.platform)) socialSeen.set(soc.platform, soc.href);
       }
+      if (rec.standards.resilience) {
+        resiliencePages++;
+        for (const c of rec.standards.resilience.checks ?? []) {
+          const s = (resilienceChecks[c.id] ??= { label: c.label, pass: 0, total: 0, why: c.why, evidenceExamples: [] });
+          s.total++;
+          if (c.status === 'pass') s.pass++;
+          if (c.evidence && s.evidenceExamples.length < 3) s.evidenceExamples.push({ evidence: c.evidence, url: c.exampleUrl ?? rec.url });
+          s.label = c.label;
+          s.why = c.why;
+        }
+      }
     }
     if (rec.security) securityLatest = rec.security; // per-origin; latest wins
+    if (rec.offlineResilience) offlineResilienceLatest = rec.offlineResilience; // per-origin; latest wins
     if (rec.publicInterest) publicInterestLatest = rec.publicInterest; // per-origin; latest wins
     if (rec.tech) {
       for (const d of rec.tech) {
@@ -967,6 +984,21 @@ function summarizeRecords(target, week, records, brokenLinks) {
             rate: Math.round((s.pass / s.total) * 100),
           })).sort((a, b) => a.rate - b.rate),
           social: [...socialSeen.entries()].map(([platform, href]) => ({ platform, href })),
+        }
+      : null,
+    // Progressive Web Resilience (issue #145): per-page checks (manifest,
+    // service worker, installability) roll up like `standards` above;
+    // offline/network checks are per-origin, "latest wins" like security.
+    resilience: resiliencePages
+      ? {
+          pagesChecked: resiliencePages,
+          checks: Object.entries(resilienceChecks).map(([id, s]) => ({
+            id, label: s.label, pass: s.pass, total: s.total,
+            rate: Math.round((s.pass / s.total) * 100),
+            why: s.why,
+            evidenceExamples: s.evidenceExamples,
+          })).sort((a, b) => a.rate - b.rate),
+          offline: offlineResilienceLatest,
         }
       : null,
     security: securityLatest
