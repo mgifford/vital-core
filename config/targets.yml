@@ -104,6 +104,7 @@ sampling:
   standards: 50        # web standards / metadata / social (ScanGov-style, per page)
   security: 10         # HTTPS, security headers, security.txt, .gov TLD (per origin)
   public-interest: 10  # accessibility statement, carbon.txt, Green Web Foundation, sitemaps (per origin)
+  offline-resilience: 0 # offline fallback + Cache Storage usage (per origin; own browser context, opt-in cost — enable per target)
   sustainability: 10   # page weight + estimated CO2
   tech: 10             # technology detection (CMS, frameworks, CDNs, analytics) — small sample sufficient
   third-party: 25      # third-party JS/resource cost per page (load bytes/time + which origins serve scripts); varies per page, so sampled like sustainability
