@@ -1,0 +1,7 @@
+source_id,source,type,relevance,date_accessed
+S-01,src/engines/standards.js,codebase,Primary implementation file to extend with the new resilience section,2026-07-17
+S-02,src/scan.js,codebase,Crawl loop context/sampling model that constrains where offline/network checks can run,2026-07-17
+S-03,src/lib/csv.js,codebase,CSV export conventions the new fields must follow,2026-07-17
+S-04,src/engines/lighthouse.js,codebase,Confirms Lighthouse 12+ dropped the PWA category; establishes standards.js as sole owner of PWA detection,2026-07-17
+S-05,GitHub issue #145,issue,Origin request defining proposed scope and reporting model,2026-07-17
+S-06,kitty-specs/defensible-fixed-findings-01KXJVGN/spec.md,codebase,Format convention reference for this mission's spec.md,2026-07-17
