@@ -1,6 +1,6 @@
 ---
 work_package_id: WP01
-title: "Manifest fetch, parsing, and expanded service-worker state"
+title: Manifest fetch, parsing, and expanded service-worker state
 dependencies: []
 requirement_refs:
 - FR-001
@@ -10,16 +10,20 @@ tracker_refs:
 planning_base_branch: main
 merge_target_branch: main
 branch_strategy: Planning artifacts for this mission were generated on main. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into main unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-progressive-web-resilience-01KXPWGM
+base_commit: 44e56c5957c7560be3f996b198c1a81137793074
+created_at: '2026-07-17T18:07:42.405595+00:00'
 subtasks:
 - T001
 - T002
-owned_files:
-- src/engines/standards.js
-- tests/unit/standards.test.js
+shell_pid: '63009'
+authoritative_surface: src/engines/standards.js
 create_intent:
 - tests/unit/standards.test.js
 execution_mode: code_change
-authoritative_surface: src/engines/standards.js
+owned_files:
+- src/engines/standards.js
+- tests/unit/standards.test.js
 role: implementer
 tags: []
 ---
