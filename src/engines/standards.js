@@ -46,13 +46,52 @@ export async function runStandards(page) {
     const themeColor = meta('meta[name="theme-color"]');
     const appleTouchIcon = has('link[rel="apple-touch-icon"]');
 
-    // Best-effort: check if a service worker is registered for this scope.
-    // getRegistration() resolves even if the SW hasn't activated yet.
+    // Fetch and parse the manifest JSON itself, not just detect the link.
+    // null = no manifest declared; { parseError, ... } = declared but
+    // unreadable (fetch failure, non-2xx, or invalid JSON) — cross-origin
+    // manifests fail same-origin fetch() here, which is exactly that state.
+    let manifest = null;
+    if (manifestHref) {
+      try {
+        const manifestUrl = new URL(manifestHref, location.href).href;
+        const res = await fetch(manifestUrl);
+        if (!res.ok) {
+          manifest = { parseError: `HTTP ${res.status}` };
+        } else {
+          const json = await res.json();
+          const icons = Array.isArray(json.icons) ? json.icons : [];
+          manifest = {
+            startUrl: json.start_url ?? null,
+            display: json.display ?? null,
+            scope: json.scope ?? null,
+            themeColor: json.theme_color ?? null,
+            backgroundColor: json.background_color ?? null,
+            icons,
+            hasMaskableIcon: icons.some((i) => String(i.purpose || '').includes('maskable')),
+            parseError: null,
+          };
+        }
+      } catch (err) {
+        manifest = { parseError: String(err?.message || err) };
+      }
+    }
+
+    // Best-effort: check if a service worker is registered for this scope,
+    // and how far its lifecycle has progressed. getRegistration() resolves
+    // even if the SW hasn't activated yet.
     let hasServiceWorker = false;
+    let serviceWorker = { registered: false, active: false, installing: false, waiting: false, controllingThisPage: false };
     if ('serviceWorker' in navigator) {
       try {
         const reg = await navigator.serviceWorker.getRegistration();
         hasServiceWorker = !!reg;
+        serviceWorker = {
+          registered: !!reg,
+          active: !!reg?.active,
+          installing: !!reg?.installing,
+          waiting: !!reg?.waiting,
+          controllingThisPage: !!navigator.serviceWorker.controller,
+        };
       } catch { /* permission error or not supported */ }
     }
 
@@ -76,9 +115,11 @@ export async function runStandards(page) {
       twitter: meta('meta[name="twitter:card"]'),
       social,
       manifestHref,
+      manifest,
       themeColor,
       appleTouchIcon,
       hasServiceWorker,
+      serviceWorker,
     };
   });
 
