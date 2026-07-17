@@ -22,6 +22,7 @@ import { runImages, createImageCollector } from './engines/images.js';
 import { runStandards } from './engines/standards.js';
 import { runSecurity } from './engines/security.js';
 import { runPublicInterest } from './engines/public-interest.js';
+import { runOfflineResilience } from './engines/offline-resilience.js';
 import { runTech } from './engines/tech.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
@@ -181,6 +182,7 @@ let sincePersist = 0;
 // the same origin-level requests per sampled page.
 let securityResult;
 let publicInterestResult;
+let offlineResilienceResult;
 
 for (const item of batch) {
   if (scanDeadlineMs && Date.now() >= scanDeadlineMs) {
@@ -313,6 +315,14 @@ for (const item of batch) {
         publicInterestResult ??= await runPublicInterest(baseOrigin, target.domain, target.user_agent);
         record.publicInterest = publicInterestResult;
         mark('public-interest');
+      }
+      // Offline/network resilience: opt-in cost (own browser context + up
+      // to 2 navigations), so it defaults off via sampling rate 0 unless a
+      // target explicitly enables it in config/targets.yml.
+      if (runs('offline-resilience')) {
+        offlineResilienceResult ??= await runOfflineResilience(browser, baseOrigin, target.user_agent, target.nav_timeout_ms);
+        record.offlineResilience = offlineResilienceResult;
+        mark('offline-resilience');
       }
       // Tech detection: identify CMS, frameworks, CDNs, analytics.
       // Runs on a small sample (default 10%) because the tech stack doesn't
