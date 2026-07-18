@@ -1,7 +1,7 @@
 {
  "domain": "www.medicare.gov",
  "week": "2026-W28",
- "generatedAt": "2026-07-17T23:07:14.454Z",
+ "generatedAt": "2026-07-18T14:47:04.474Z",
  "pagesScanned": 1591,
  "pagesAudited": 1573,
  "coverage": {
@@ -23848,7 +23848,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 33,
+    "action_score": 39.6,
     "estimated_fix_impact": {
      "findings": 11,
      "pages": 11,
@@ -23869,41 +23869,6 @@
     ]
    },
    {
-    "id": "cc-608f30ddd47b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r14",
-    "severity": "Moderate",
-    "rule_pages_affected": 9,
-    "pages_affected": 9,
-    "instances": 9,
-    "selector_path": "<button class=\"video-embed-field-lazy-play\" aria-label=\"play video\">",
-    "snippet_shape": "",
-    "representative_selector": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 18,
-    "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 9,
-     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
-    },
-    "affected_pages": [
-     "https://www.medicare.gov/prescription-payment-plan",
-     "https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties",
-     "http://medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start",
-     "https://www.medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
-     "http://medicare.gov/prescription-payment-plan",
-     "http://medicare.gov/basics/reporting-medicare-fraud-and-abuse",
-     "https://www.medicare.gov/basics/reporting-medicare-fraud-and-abuse",
-     "https://medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
-     "https://medicare.gov/basics/reporting-medicare-fraud-and-abuse"
-    ]
-   },
-   {
     "id": "cc-683dbcf35fb8",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
@@ -23920,7 +23885,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 4,
-    "action_score": 16,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 32,
      "pages": 32,
@@ -23978,7 +23943,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 16,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 8,
@@ -23993,6 +23958,41 @@
      "https://www.medicare.gov/publications/search/item/112376",
      "https://medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
      "https://www.medicare.gov/publications/search/item/112371"
+    ]
+   },
+   {
+    "id": "cc-608f30ddd47b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r14",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
+    "selector_path": "<button class=\"video-embed-field-lazy-play\" aria-label=\"play video\">",
+    "snippet_shape": "",
+    "representative_selector": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 18,
+    "estimated_fix_impact": {
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+    },
+    "affected_pages": [
+     "https://www.medicare.gov/prescription-payment-plan",
+     "https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties",
+     "http://medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start",
+     "https://www.medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
+     "http://medicare.gov/prescription-payment-plan",
+     "http://medicare.gov/basics/reporting-medicare-fraud-and-abuse",
+     "https://www.medicare.gov/basics/reporting-medicare-fraud-and-abuse",
+     "https://medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
+     "https://medicare.gov/basics/reporting-medicare-fraud-and-abuse"
     ]
    },
    {
@@ -24064,6 +24064,35 @@
      "http://medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
      "https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
      "https://www.medicare.gov/publications/search/item/112376"
+    ]
+   },
+   {
+    "id": "cc-0b92615f889d",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-one-main",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" data-react-helmet=\"lang\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
     ]
    },
    {
@@ -24763,35 +24792,6 @@
     ]
    },
    {
-    "id": "cc-0b92615f889d",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-one-main",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "html",
-    "snippet_shape": "html:",
-    "representative_selector": "html",
-    "representative_snippet": "<html lang=\"en\" data-react-helmet=\"lang\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
     "id": "cc-b72ad4466715",
     "engine_key": "alfa",
     "rule_id": "sia-r78",
@@ -25045,7 +25045,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 3,
      "pages": 3,
@@ -25055,6 +25055,95 @@
      "https://medicare.gov/account/login/help",
      "https://www.medicare.gov/account/login/help",
      "http://medicare.gov/account/login/help"
+    ]
+   },
+   {
+    "id": "cc-c5361b710ce1",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "#maincontent",
+    "snippet_shape": "h1:",
+    "representative_selector": "#maincontent",
+    "representative_snippet": "<h1 class=\"ds-text-heading--3xl my-u-mb--20\" id=\"maincontent\" tabindex=\"-1\">Medicare Complaint Form</h1>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
+    "id": "cc-213f15aefea1",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "form > p",
+    "snippet_shape": "p:",
+    "representative_selector": "form > p",
+    "representative_snippet": "<p>Complete this form to file a complaint about your Medicare health or drug plan.</p>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
+    "id": "cc-a475b9fac51a",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".ds-c-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".ds-c-alert",
+    "representative_snippet": "<div class=\"ds-c-alert ds-c-alert--hide-icon my-u-my--20\">",
+    "design_components": [
+     "ds-c-alert"
+    ],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
     ]
    },
    {
@@ -25336,95 +25425,6 @@
     ]
    },
    {
-    "id": "cc-c5361b710ce1",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "#maincontent",
-    "snippet_shape": "h1:",
-    "representative_selector": "#maincontent",
-    "representative_snippet": "<h1 class=\"ds-text-heading--3xl my-u-mb--20\" id=\"maincontent\" tabindex=\"-1\">Medicare Complaint Form</h1>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
-    "id": "cc-213f15aefea1",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "form > p",
-    "snippet_shape": "p:",
-    "representative_selector": "form > p",
-    "representative_snippet": "<p>Complete this form to file a complaint about your Medicare health or drug plan.</p>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
-    "id": "cc-a475b9fac51a",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": ".ds-c-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".ds-c-alert",
-    "representative_snippet": "<div class=\"ds-c-alert ds-c-alert--hide-icon my-u-my--20\">",
-    "design_components": [
-     "ds-c-alert"
-    ],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
     "id": "cc-0441330ab91a",
     "engine_key": "alfa",
     "rule_id": "sia-r80",
@@ -25639,7 +25639,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 4,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 3,
      "pages": 3,
@@ -25680,6 +25680,34 @@
      "https://www.medicare.gov/coverage/foot-care-for-diabetes",
      "https://www.medicare.gov/coverage/advanced-primary-care-management-services",
      "https://medicare.gov/coverage/advanced-primary-care-management-services"
+    ]
+   },
+   {
+    "id": "cc-f4dcc6a45c14",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 38,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".layout__column.ds-l-col--# > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".layout__column.ds-l-col--12 > h3",
+    "representative_snippet": "<h3>Spanish</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=10",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=10"
     ]
    },
    {
@@ -26101,34 +26129,6 @@
      "https://medicare.gov/publication-ordering/11360",
      "https://medicare.gov/publication-ordering/10050-B",
      "https://www.medicare.gov/publication-ordering/11610-S"
-    ]
-   },
-   {
-    "id": "cc-f4dcc6a45c14",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 38,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".layout__column.ds-l-col--# > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".layout__column.ds-l-col--12 > h3",
-    "representative_snippet": "<h3>Spanish</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 1,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=10",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=10"
     ]
    },
    {
@@ -26955,6 +26955,33 @@
     ]
    },
    {
+    "id": "cc-0789f141efcf",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 38,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h4",
+    "snippet_shape": "h4:",
+    "representative_selector": "h4",
+    "representative_snippet": "<h4>What can this tool do for me?</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.medicare.gov/care-compare/resources/about-this-tool"
+    ]
+   },
+   {
     "id": "cc-92943f9df18e",
     "engine_key": "alfa",
     "rule_id": "sia-r78",
@@ -27088,33 +27115,6 @@
     },
     "affected_pages": [
      "http://medicare.gov/medigap-supplemental-insurance-plans"
-    ]
-   },
-   {
-    "id": "cc-0789f141efcf",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 38,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h4",
-    "snippet_shape": "h4:",
-    "representative_selector": "h4",
-    "representative_snippet": "<h4>What can this tool do for me?</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.5,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.medicare.gov/care-compare/resources/about-this-tool"
     ]
    },
    {
@@ -37620,7 +37620,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 33,
+    "action_score": 39.6,
     "estimated_fix_impact": {
      "findings": 11,
      "pages": 11,
@@ -37641,41 +37641,6 @@
     ]
    },
    {
-    "id": "cc-608f30ddd47b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r14",
-    "severity": "Moderate",
-    "rule_pages_affected": 9,
-    "pages_affected": 9,
-    "instances": 9,
-    "selector_path": "<button class=\"video-embed-field-lazy-play\" aria-label=\"play video\">",
-    "snippet_shape": "",
-    "representative_selector": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 18,
-    "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 9,
-     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
-    },
-    "affected_pages": [
-     "https://www.medicare.gov/prescription-payment-plan",
-     "https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties",
-     "http://medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start",
-     "https://www.medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
-     "http://medicare.gov/prescription-payment-plan",
-     "http://medicare.gov/basics/reporting-medicare-fraud-and-abuse",
-     "https://www.medicare.gov/basics/reporting-medicare-fraud-and-abuse",
-     "https://medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
-     "https://medicare.gov/basics/reporting-medicare-fraud-and-abuse"
-    ]
-   },
-   {
     "id": "cc-683dbcf35fb8",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
@@ -37692,7 +37657,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 4,
-    "action_score": 16,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 32,
      "pages": 32,
@@ -37750,7 +37715,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 16,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 8,
@@ -37765,6 +37730,41 @@
      "https://www.medicare.gov/publications/search/item/112376",
      "https://medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
      "https://www.medicare.gov/publications/search/item/112371"
+    ]
+   },
+   {
+    "id": "cc-608f30ddd47b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r14",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
+    "selector_path": "<button class=\"video-embed-field-lazy-play\" aria-label=\"play video\">",
+    "snippet_shape": "",
+    "representative_selector": "<button class=\"video-embed-field-lazy-play\" aria-label=\"Play video\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 18,
+    "estimated_fix_impact": {
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+    },
+    "affected_pages": [
+     "https://www.medicare.gov/prescription-payment-plan",
+     "https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties",
+     "http://medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start",
+     "https://www.medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
+     "http://medicare.gov/prescription-payment-plan",
+     "http://medicare.gov/basics/reporting-medicare-fraud-and-abuse",
+     "https://www.medicare.gov/basics/reporting-medicare-fraud-and-abuse",
+     "https://medicare.gov/basics/get-started-with-medicare/using-medicare/how-to-get-medicare-services",
+     "https://medicare.gov/basics/reporting-medicare-fraud-and-abuse"
     ]
    },
    {

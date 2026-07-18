@@ -1,7 +1,7 @@
 {
  "domain": "data.cms.gov",
  "week": "2026-W28",
- "generatedAt": "2026-07-17T23:07:36.980Z",
+ "generatedAt": "2026-07-18T14:47:29.785Z",
  "pagesScanned": 2601,
  "pagesAudited": 2236,
  "coverage": {
@@ -36007,7 +36007,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 3906,
+    "action_score": 4687.2,
     "estimated_fix_impact": {
      "findings": 1302,
      "pages": 1302,
@@ -37335,7 +37335,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 1710,
+    "action_score": 2052,
     "estimated_fix_impact": {
      "findings": 570,
      "pages": 570,
@@ -38607,7 +38607,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 250,
+    "action_score": 300,
     "estimated_fix_impact": {
      "findings": 125,
      "pages": 125,
@@ -43639,6 +43639,40 @@
     ]
    },
    {
+    "id": "cc-f39ad48e020d",
+    "engine_key": "axe-core",
+    "rule_id": "label",
+    "severity": "Critical",
+    "rule_pages_affected": 8,
+    "pages_affected": 8,
+    "instances": 13,
+    "selector_path": "#react-select-#-input",
+    "snippet_shape": "input:aria+type",
+    "representative_selector": "#react-select-2-input",
+    "representative_snippet": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 38.4,
+    "estimated_fix_impact": {
+     "findings": 13,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~13 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
+     "https://data.cms.gov/medicare-shared-savings-program/accountable-care-organizations",
+     "https://data.cms.gov/tools/medicare-revalidation-list",
+     "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
+     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
+     "https://data.cms.gov/tools/market-saturation-utilization-core-based-statistical-areas-mapping-tool"
+    ]
+   },
+   {
     "id": "cc-4de1d783b2b3",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
@@ -44639,40 +44673,6 @@
     ]
    },
    {
-    "id": "cc-f39ad48e020d",
-    "engine_key": "axe-core",
-    "rule_id": "label",
-    "severity": "Critical",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 13,
-    "selector_path": "#react-select-#-input",
-    "snippet_shape": "input:aria+type",
-    "representative_selector": "#react-select-2-input",
-    "representative_snippet": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 32,
-    "estimated_fix_impact": {
-     "findings": 13,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~13 finding(s) on 8 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
-     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
-     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
-     "https://data.cms.gov/medicare-shared-savings-program/accountable-care-organizations",
-     "https://data.cms.gov/tools/medicare-revalidation-list",
-     "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
-     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
-     "https://data.cms.gov/tools/market-saturation-utilization-core-based-statistical-areas-mapping-tool"
-    ]
-   },
-   {
     "id": "cc-7feb70ae1410",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
@@ -45429,6 +45429,39 @@
     ]
    },
    {
+    "id": "cc-dc6fcfa3a414",
+    "engine_key": "axe-core",
+    "rule_id": "label-title-only",
+    "severity": "Serious",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 11,
+    "selector_path": "#react-select-#-input",
+    "snippet_shape": "input:aria+type",
+    "representative_selector": "#react-select-2-input",
+    "representative_snippet": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 25.2,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~11 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
+     "https://data.cms.gov/tools/medicare-revalidation-list",
+     "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
+     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
+     "https://data.cms.gov/tools/market-saturation-utilization-core-based-statistical-areas-mapping-tool"
+    ]
+   },
+   {
     "id": "cc-5eefd07293d6",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
@@ -45745,39 +45778,6 @@
     ]
    },
    {
-    "id": "cc-dc6fcfa3a414",
-    "engine_key": "axe-core",
-    "rule_id": "label-title-only",
-    "severity": "Serious",
-    "rule_pages_affected": 7,
-    "pages_affected": 7,
-    "instances": 11,
-    "selector_path": "#react-select-#-input",
-    "snippet_shape": "input:aria+type",
-    "representative_selector": "#react-select-2-input",
-    "representative_snippet": "<input class=\"InteractiveToolsSear...\" autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-2-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" aria-ex",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 21,
-    "estimated_fix_impact": {
-     "findings": 11,
-     "pages": 7,
-     "statement": "Fix one place, resolve ~11 finding(s) on 7 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/tools/medicare-part-d-prescriber-look-up-tool",
-     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
-     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
-     "https://data.cms.gov/tools/medicare-revalidation-list",
-     "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
-     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
-     "https://data.cms.gov/tools/market-saturation-utilization-core-based-statistical-areas-mapping-tool"
-    ]
-   },
-   {
     "id": "cc-d99c29edd8ef",
     "engine_key": "alfa",
     "rule_id": "sia-r111",
@@ -45874,6 +45874,48 @@
      "https://data.cms.gov/provider-data/datasets?keyword%5B%5D=Points",
      "https://data.cms.gov/provider-data/datasets?keyword%5B%5D=Intensive+Care+Unit",
      "https://data.cms.gov/provider-data/datasets?keyword%5B%5D=Clinicians"
+    ]
+   },
+   {
+    "id": "cc-83e3ed7bf88f",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 18,
+    "pages_affected": 16,
+    "instances": 16,
+    "selector_path": ".desktop",
+    "snippet_shape": "nav:aria",
+    "representative_selector": ".desktop",
+    "representative_snippet": "<nav aria-label=\"breadcrumb\" class=\"DatasetHero__breadcrumb desktop\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 19.2,
+    "estimated_fix_impact": {
+     "findings": 16,
+     "pages": 16,
+     "statement": "Fix one place, resolve ~16 finding(s) on 16 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/tools/medicare-part-d-drug-spending-dashboard",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/medicaid-managed-care-dashboard",
+     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state",
+     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county",
+     "https://data.cms.gov/tools/medicare-revalidation-list",
+     "https://data.cms.gov/tools/mapping-disparities-by-social-determinants-of-health",
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
+     "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
+     "https://data.cms.gov/tools/medicare-enrollment-dashboard",
+     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
+     "https://data.cms.gov/tools/market-saturation-utilization-core-based-statistical-areas-mapping-tool",
+     "https://data.cms.gov/tools/medicaid-drug-spending-dashboard",
+     "https://data.cms.gov/tools/medicare-part-b-drug-spending-dashboard"
     ]
    },
    {
@@ -46243,48 +46285,6 @@
     ]
    },
    {
-    "id": "cc-83e3ed7bf88f",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 18,
-    "pages_affected": 16,
-    "instances": 16,
-    "selector_path": ".desktop",
-    "snippet_shape": "nav:aria",
-    "representative_selector": ".desktop",
-    "representative_snippet": "<nav aria-label=\"breadcrumb\" class=\"DatasetHero__breadcrumb desktop\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 2,
-    "action_score": 16,
-    "estimated_fix_impact": {
-     "findings": 16,
-     "pages": 16,
-     "statement": "Fix one place, resolve ~16 finding(s) on 16 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/tools/medicare-part-d-drug-spending-dashboard",
-     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
-     "https://data.cms.gov/tools/medicaid-managed-care-dashboard",
-     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state",
-     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
-     "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
-     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county",
-     "https://data.cms.gov/tools/medicare-revalidation-list",
-     "https://data.cms.gov/tools/mapping-disparities-by-social-determinants-of-health",
-     "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
-     "https://data.cms.gov/tools/medicare-inpatient-hospital-look-up-tool",
-     "https://data.cms.gov/tools/medicare-enrollment-dashboard",
-     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
-     "https://data.cms.gov/tools/market-saturation-utilization-core-based-statistical-areas-mapping-tool",
-     "https://data.cms.gov/tools/medicaid-drug-spending-dashboard",
-     "https://data.cms.gov/tools/medicare-part-b-drug-spending-dashboard"
-    ]
-   },
-   {
     "id": "cc-fce5563cafa5",
     "engine_key": "axe-core",
     "rule_id": "listitem",
@@ -46301,7 +46301,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 12,
+    "action_score": 14.4,
     "estimated_fix_impact": {
      "findings": 24,
      "pages": 8,
@@ -46682,129 +46682,6 @@
     ]
    },
    {
-    "id": "cc-509a89d2b409",
-    "engine_key": "alfa",
-    "rule_id": "sia-r53",
-    "severity": "Moderate",
-    "rule_pages_affected": 140,
-    "pages_affected": 27,
-    "instances": 27,
-    "selector_path": "<h3 class=\"typeface-#-h5-black-regular-l articlesearchbox__label\">",
-    "snippet_shape": "",
-    "representative_selector": "<h3 class=\"typeface-05-H5-Black-Regular-L ArticleSearchBox__label\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 7,
-    "action_score": 7.71,
-    "estimated_fix_impact": {
-     "findings": 27,
-     "pages": 27,
-     "statement": "Fix one place, resolve ~27 finding(s) on 27 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-geographic-variation-by-national-state-county-data-dictionary",
-     "https://data.cms.gov/resources/aco-reach-providers-data-dictionary-2021",
-     "https://data.cms.gov/resources/county-level-aggregate-expenditure-and-risk-score-data-on-assignable-beneficiaries-data-dictionary-2016-2020",
-     "https://data.cms.gov/resources/acos-data-dictionary-2025",
-     "https://data.cms.gov/resources/restructured-betos-classification-system-data-dictionary",
-     "https://data.cms.gov/resources/next-generation-aco-model-data-dictionary-2016-2018",
-     "https://data.cms.gov/resources/advance-investment-payment-spend-plan-data-dictionary-2024",
-     "https://data.cms.gov/resources/medicare-pac-utilization-hha-by-geography-provider-and-service-data-dictionary-2014-2019",
-     "https://data.cms.gov/resources/aco-participants-data-dictionary-2023-2024",
-     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2022",
-     "https://data.cms.gov/resources/next-generation-aco-model-data-dictionary-2019",
-     "https://data.cms.gov/resources/acos-data-dictionary-2014-2022",
-     "https://data.cms.gov/resources/hospital-price-transparency-enforcement-activities-and-outcomes-data-dictionary",
-     "https://data.cms.gov/resources/chronic-pain-data-dictionary",
-     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-and-service-data-dictionary-2021",
-     "https://data.cms.gov/resources/advance-investment-payment-spend-plan-data-dictionary-2025",
-     "https://data.cms.gov/resources/payroll-based-journal-daily-non-nurse-staffing-data-dictionary-2022",
-     "https://data.cms.gov/resources/hospital-provider-cost-report-data-dictionary",
-     "https://data.cms.gov/resources/medicare-inpatient-hospitals-by-geography-and-service-data-dictionary",
-     "https://data.cms.gov/resources/diabetes-data-dictionary",
-     "https://data.cms.gov/resources/medicare-summary-reports-glossary",
-     "https://data.cms.gov/resources/acos-data-dictionary-2023",
-     "https://data.cms.gov/resources/medicare-advantage-geographic-variation-national-state-data-dictionary-0",
-     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-data-dictionary",
-     "https://data.cms.gov/resources/falls-data-dictionary",
-     "https://data.cms.gov/resources/pioneer-aco-model-performance-year-2012-2014-data-dictionary",
-     "https://data.cms.gov/resources/ascs-and-ifseds-data-dictionary"
-    ]
-   },
-   {
-    "id": "cc-056246a59a71",
-    "engine_key": "alfa",
-    "rule_id": "sia-r74",
-    "severity": "Moderate",
-    "rule_pages_affected": 33,
-    "pages_affected": 11,
-    "instances": 11,
-    "selector_path": "<p class=\"latestdateavailable\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"latestDateAvailable\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 7.33,
-    "estimated_fix_impact": {
-     "findings": 11,
-     "pages": 11,
-     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/tools/medicare-part-d-drug-spending-dashboard",
-     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
-     "https://data.cms.gov/tools/medicaid-managed-care-dashboard",
-     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state",
-     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
-     "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
-     "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
-     "https://data.cms.gov/tools/medicare-enrollment-dashboard",
-     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
-     "https://data.cms.gov/tools/medicaid-drug-spending-dashboard",
-     "https://data.cms.gov/tools/medicare-part-b-drug-spending-dashboard"
-    ]
-   },
-   {
-    "id": "cc-5ed1e1efa9d3",
-    "engine_key": "alfa",
-    "rule_id": "sia-r90",
-    "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 7,
-    "instances": 7,
-    "selector_path": "<div aria-selected=\"true\" aria-label=\"slide\" role=\"option\" class=\"slide___3-nqo slidehorizontal___1nznv carousel__slide carousel__slide--visible moretopiccarousel__slide\">",
-    "snippet_shape": "",
-    "representative_selector": "<div aria-selected=\"true\" aria-label=\"slide\" role=\"option\" class=\"slide___3-Nqo slideHorizontal___1NzNV carousel__slide carousel__slide--visible MoreTopicCarousel__slide\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 7,
-    "estimated_fix_impact": {
-     "findings": 7,
-     "pages": 7,
-     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/summary-statistics-on-beneficiary-enrollment",
-     "https://data.cms.gov/medicare-current-beneficiary-survey-mcbs",
-     "https://data.cms.gov/provider-summary-by-type-of-service",
-     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
-     "https://data.cms.gov/medicare-chronic-conditions",
-     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
-     "https://data.cms.gov/covid-19"
-    ]
-   },
-   {
     "id": "cc-f5d9b00bb501",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
@@ -46821,7 +46698,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 36,
-    "action_score": 6.94,
+    "action_score": 8.33,
     "estimated_fix_impact": {
      "findings": 125,
      "pages": 125,
@@ -46972,7 +46849,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 4,
-    "action_score": 6.75,
+    "action_score": 8.1,
     "estimated_fix_impact": {
      "findings": 9,
      "pages": 9,
@@ -46988,6 +46865,129 @@
      "https://data.cms.gov/provider-data/datasets?keyword%5B%5D=Physician+Assistant",
      "https://data.cms.gov/provider-data/datasets?keyword%5B%5D=Pulmonary+Disease",
      "https://data.cms.gov/provider-data/datasets?keyword%5B%5D=Psychiatry"
+    ]
+   },
+   {
+    "id": "cc-509a89d2b409",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 140,
+    "pages_affected": 27,
+    "instances": 27,
+    "selector_path": "<h3 class=\"typeface-#-h5-black-regular-l articlesearchbox__label\">",
+    "snippet_shape": "",
+    "representative_selector": "<h3 class=\"typeface-05-H5-Black-Regular-L ArticleSearchBox__label\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 7,
+    "action_score": 7.71,
+    "estimated_fix_impact": {
+     "findings": 27,
+     "pages": 27,
+     "statement": "Fix one place, resolve ~27 finding(s) on 27 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-geographic-variation-by-national-state-county-data-dictionary",
+     "https://data.cms.gov/resources/aco-reach-providers-data-dictionary-2021",
+     "https://data.cms.gov/resources/county-level-aggregate-expenditure-and-risk-score-data-on-assignable-beneficiaries-data-dictionary-2016-2020",
+     "https://data.cms.gov/resources/acos-data-dictionary-2025",
+     "https://data.cms.gov/resources/restructured-betos-classification-system-data-dictionary",
+     "https://data.cms.gov/resources/next-generation-aco-model-data-dictionary-2016-2018",
+     "https://data.cms.gov/resources/advance-investment-payment-spend-plan-data-dictionary-2024",
+     "https://data.cms.gov/resources/medicare-pac-utilization-hha-by-geography-provider-and-service-data-dictionary-2014-2019",
+     "https://data.cms.gov/resources/aco-participants-data-dictionary-2023-2024",
+     "https://data.cms.gov/resources/number-of-accountable-care-organization-assigned-beneficiaries-by-county-data-dictionary-2022",
+     "https://data.cms.gov/resources/next-generation-aco-model-data-dictionary-2019",
+     "https://data.cms.gov/resources/acos-data-dictionary-2014-2022",
+     "https://data.cms.gov/resources/hospital-price-transparency-enforcement-activities-and-outcomes-data-dictionary",
+     "https://data.cms.gov/resources/chronic-pain-data-dictionary",
+     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-and-service-data-dictionary-2021",
+     "https://data.cms.gov/resources/advance-investment-payment-spend-plan-data-dictionary-2025",
+     "https://data.cms.gov/resources/payroll-based-journal-daily-non-nurse-staffing-data-dictionary-2022",
+     "https://data.cms.gov/resources/hospital-provider-cost-report-data-dictionary",
+     "https://data.cms.gov/resources/medicare-inpatient-hospitals-by-geography-and-service-data-dictionary",
+     "https://data.cms.gov/resources/diabetes-data-dictionary",
+     "https://data.cms.gov/resources/medicare-summary-reports-glossary",
+     "https://data.cms.gov/resources/acos-data-dictionary-2023",
+     "https://data.cms.gov/resources/medicare-advantage-geographic-variation-national-state-data-dictionary-0",
+     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-data-dictionary",
+     "https://data.cms.gov/resources/falls-data-dictionary",
+     "https://data.cms.gov/resources/pioneer-aco-model-performance-year-2012-2014-data-dictionary",
+     "https://data.cms.gov/resources/ascs-and-ifseds-data-dictionary"
+    ]
+   },
+   {
+    "id": "cc-056246a59a71",
+    "engine_key": "alfa",
+    "rule_id": "sia-r74",
+    "severity": "Moderate",
+    "rule_pages_affected": 33,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<p class=\"latestdateavailable\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"latestDateAvailable\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/tools/medicare-part-d-drug-spending-dashboard",
+     "https://data.cms.gov/tools/provider-opt-out-affidavits-look-up-tool",
+     "https://data.cms.gov/tools/medicaid-managed-care-dashboard",
+     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state",
+     "https://data.cms.gov/tools/market-saturation-utilization-state-county-mapping-tool",
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+     "https://data.cms.gov/tools/mapping-medicare-disparities-by-hospital",
+     "https://data.cms.gov/tools/medicare-enrollment-dashboard",
+     "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
+     "https://data.cms.gov/tools/medicaid-drug-spending-dashboard",
+     "https://data.cms.gov/tools/medicare-part-b-drug-spending-dashboard"
+    ]
+   },
+   {
+    "id": "cc-5ed1e1efa9d3",
+    "engine_key": "alfa",
+    "rule_id": "sia-r90",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": "<div aria-selected=\"true\" aria-label=\"slide\" role=\"option\" class=\"slide___3-nqo slidehorizontal___1nznv carousel__slide carousel__slide--visible moretopiccarousel__slide\">",
+    "snippet_shape": "",
+    "representative_selector": "<div aria-selected=\"true\" aria-label=\"slide\" role=\"option\" class=\"slide___3-Nqo slideHorizontal___1NzNV carousel__slide carousel__slide--visible MoreTopicCarousel__slide\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 7,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/summary-statistics-on-beneficiary-enrollment",
+     "https://data.cms.gov/medicare-current-beneficiary-survey-mcbs",
+     "https://data.cms.gov/provider-summary-by-type-of-service",
+     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
+     "https://data.cms.gov/medicare-chronic-conditions",
+     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
+     "https://data.cms.gov/covid-19"
     ]
    },
    {
@@ -47254,47 +47254,6 @@
     ]
    },
    {
-    "id": "cc-91abd7e8d864",
-    "engine_key": "alfa",
-    "rule_id": "sia-r53",
-    "severity": "Moderate",
-    "rule_pages_affected": 140,
-    "pages_affected": 15,
-    "instances": 19,
-    "selector_path": "<h5 class=\"typeface-#-h5-black-regular-l articletextblock__subtitle\">",
-    "snippet_shape": "",
-    "representative_selector": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 7,
-    "action_score": 4.29,
-    "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 15,
-     "statement": "Fix one place, resolve ~19 finding(s) on 15 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
-     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology",
-     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025",
-     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology",
-     "https://data.cms.gov/resources/comprehensive-esrd-care-model-data-methodology",
-     "https://data.cms.gov/resources/skilled-nursing-facility-cost-report-methodology",
-     "https://data.cms.gov/resources/nursing-home-chain-performance-measures-methodology",
-     "https://data.cms.gov/resources/medicare-telemedicine-snapshot-methodology",
-     "https://data.cms.gov/resources/home-infusion-therapy-providers-methodology",
-     "https://data.cms.gov/resources/medicare-service-type-reports-methodology-copy",
-     "https://data.cms.gov/resources/payroll-based-journal-employee-detail-nursing-home-staffing-methodology",
-     "https://data.cms.gov/resources/medicare-fee-for-service-comprehensive-error-rate-testing-improper-payment-data-methodology",
-     "https://data.cms.gov/resources/long-term-care-facility-characteristics-methodology",
-     "https://data.cms.gov/resources/cms-program-statistics-methodology",
-     "https://data.cms.gov/resources/payroll-based-journal-methodology-0"
-    ]
-   },
-   {
     "id": "cc-a48f2765062e",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
@@ -47311,7 +47270,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 36,
-    "action_score": 3.67,
+    "action_score": 4.4,
     "estimated_fix_impact": {
      "findings": 66,
      "pages": 66,
@@ -47387,6 +47346,47 @@
     ]
    },
    {
+    "id": "cc-91abd7e8d864",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 140,
+    "pages_affected": 15,
+    "instances": 19,
+    "selector_path": "<h5 class=\"typeface-#-h5-black-regular-l articletextblock__subtitle\">",
+    "snippet_shape": "",
+    "representative_selector": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 7,
+    "action_score": 4.29,
+    "estimated_fix_impact": {
+     "findings": 19,
+     "pages": 15,
+     "statement": "Fix one place, resolve ~19 finding(s) on 15 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
+     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology",
+     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025",
+     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology",
+     "https://data.cms.gov/resources/comprehensive-esrd-care-model-data-methodology",
+     "https://data.cms.gov/resources/skilled-nursing-facility-cost-report-methodology",
+     "https://data.cms.gov/resources/nursing-home-chain-performance-measures-methodology",
+     "https://data.cms.gov/resources/medicare-telemedicine-snapshot-methodology",
+     "https://data.cms.gov/resources/home-infusion-therapy-providers-methodology",
+     "https://data.cms.gov/resources/medicare-service-type-reports-methodology-copy",
+     "https://data.cms.gov/resources/payroll-based-journal-employee-detail-nursing-home-staffing-methodology",
+     "https://data.cms.gov/resources/medicare-fee-for-service-comprehensive-error-rate-testing-improper-payment-data-methodology",
+     "https://data.cms.gov/resources/long-term-care-facility-characteristics-methodology",
+     "https://data.cms.gov/resources/cms-program-statistics-methodology",
+     "https://data.cms.gov/resources/payroll-based-journal-methodology-0"
+    ]
+   },
+   {
     "id": "cc-ba582d753794",
     "engine_key": "axe-core",
     "rule_id": "role-img-alt",
@@ -47403,7 +47403,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 6,
      "pages": 3,
@@ -47432,7 +47432,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 3,
      "pages": 3,
@@ -47461,7 +47461,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -47488,7 +47488,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -47515,7 +47515,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -47542,7 +47542,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 36,
-    "action_score": 2.94,
+    "action_score": 3.53,
     "estimated_fix_impact": {
      "findings": 53,
      "pages": 53,
@@ -48556,6 +48556,89 @@
     ]
    },
    {
+    "id": "cc-898513edb6ee",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 18,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".chartscrollablewrapper > .simplebar-wrapper > .simplebar-mask > .simplebar-offset > .simplebar-content-wrapper[role=\"region\"][aria-label=\"scrollable content\"]",
+    "snippet_shape": "div:aria+role",
+    "representative_selector": ".ChartScrollableWrapper > .simplebar-wrapper > .simplebar-mask > .simplebar-offset > .simplebar-content-wrapper[role=\"region\"][aria-label=\"scrollable content\"]",
+    "representative_snippet": "<div class=\"simplebar-content-wrapper\" tabindex=\"0\" role=\"region\" aria-label=\"scrollable content\" style=\"height: auto; overflow: hidden;\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-d-spending-by-drug",
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-b-spending-by-drug"
+    ]
+   },
+   {
+    "id": "cc-3c78b45ef8c9",
+    "engine_key": "axe-core",
+    "rule_id": "role-img-alt",
+    "severity": "Serious",
+    "rule_pages_affected": 5,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "canvas",
+    "snippet_shape": "canvas:role",
+    "representative_selector": "canvas",
+    "representative_snippet": "<canvas role=\"img\" height=\"500\" width=\"768\" style=\"display: block; box-sizing: border-box; height: 500px; width: 768px;\"></canvas>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-d-spending-by-drug",
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-b-spending-by-drug"
+    ]
+   },
+   {
+    "id": "cc-a3bf7a31a8a3",
+    "engine_key": "axe-core",
+    "rule_id": "select-name",
+    "severity": "Critical",
+    "rule_pages_affected": 126,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "select",
+    "snippet_shape": "select:",
+    "representative_selector": "select",
+    "representative_snippet": "<select tabindex=\"-1\" data-pc-section=\"select\"><option value=\"5\" data-pc-section=\"option\" selected=\"\">5 rows per page</option></select>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data/birthing-friendly-hospitals-and-health-systems"
+    ]
+   },
+   {
     "id": "cc-62e7d75ef207",
     "engine_key": "alfa",
     "rule_id": "sia-r78",
@@ -48893,62 +48976,6 @@
     ]
    },
    {
-    "id": "cc-898513edb6ee",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 18,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".chartscrollablewrapper > .simplebar-wrapper > .simplebar-mask > .simplebar-offset > .simplebar-content-wrapper[role=\"region\"][aria-label=\"scrollable content\"]",
-    "snippet_shape": "div:aria+role",
-    "representative_selector": ".ChartScrollableWrapper > .simplebar-wrapper > .simplebar-mask > .simplebar-offset > .simplebar-content-wrapper[role=\"region\"][aria-label=\"scrollable content\"]",
-    "representative_snippet": "<div class=\"simplebar-content-wrapper\" tabindex=\"0\" role=\"region\" aria-label=\"scrollable content\" style=\"height: auto; overflow: hidden;\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-d-spending-by-drug",
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-b-spending-by-drug"
-    ]
-   },
-   {
-    "id": "cc-3c78b45ef8c9",
-    "engine_key": "axe-core",
-    "rule_id": "role-img-alt",
-    "severity": "Serious",
-    "rule_pages_affected": 5,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "canvas",
-    "snippet_shape": "canvas:role",
-    "representative_selector": "canvas",
-    "representative_snippet": "<canvas role=\"img\" height=\"500\" width=\"768\" style=\"display: block; box-sizing: border-box; height: 500px; width: 768px;\"></canvas>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-d-spending-by-drug",
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-quarterly-part-b-spending-by-drug"
-    ]
-   },
-   {
     "id": "cc-6dd6702dc381",
     "engine_key": "alfa",
     "rule_id": "sia-r90",
@@ -48974,33 +49001,6 @@
     "affected_pages": [
      "https://data.cms.gov/summary-statistics-on-provider-enrollment",
      "https://data.cms.gov/medicare-value-based-payment-modifier-program"
-    ]
-   },
-   {
-    "id": "cc-a3bf7a31a8a3",
-    "engine_key": "axe-core",
-    "rule_id": "select-name",
-    "severity": "Critical",
-    "rule_pages_affected": 126,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "select",
-    "snippet_shape": "select:",
-    "representative_selector": "select",
-    "representative_snippet": "<select tabindex=\"-1\" data-pc-section=\"select\"><option value=\"5\" data-pc-section=\"option\" selected=\"\">5 rows per page</option></select>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/provider-data/birthing-friendly-hospitals-and-health-systems"
     ]
    },
    {
@@ -49366,7 +49366,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 4,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 6,
      "pages": 2,
@@ -49394,7 +49394,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -49574,6 +49574,87 @@
     ]
    },
    {
+    "id": "cc-fb5fb9db18b2",
+    "engine_key": "axe-core",
+    "rule_id": "svg-img-alt",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "path[fill=\"#7350a3\"]",
+    "snippet_shape": "path:role",
+    "representative_selector": "path[fill=\"#7350A3\"]",
+    "representative_snippet": "<path role=\"graphics-symbol\" fill=\"#7350A3\" d=\"M2,-154.154A154.167,154.167,0,0,1,115.054,-102.615L13.742,-14.589A20.042,20.042,0,0,0,2,-19.942Z\" style=\"cursor: initial;\"></path>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data"
+    ]
+   },
+   {
+    "id": "cc-4f941170af90",
+    "engine_key": "axe-core",
+    "rule_id": "svg-img-alt",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "path[fill=\"#0f8a7e\"]",
+    "snippet_shape": "path:role",
+    "representative_selector": "path[fill=\"#0F8A7E\"]",
+    "representative_snippet": "<path role=\"graphics-symbol\" fill=\"#0F8A7E\" d=\"M117.678,-99.596A154.167,154.167,0,0,1,153.432,15.03L20.041,0.214A20.042,20.042,0,0,0,16.365,-11.569Z\" style=\"cursor: initial;\"></path>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data"
+    ]
+   },
+   {
+    "id": "cc-178d462d238e",
+    "engine_key": "axe-core",
+    "rule_id": "svg-img-alt",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "path[fill=\"#9685c5\"]",
+    "snippet_shape": "path:role",
+    "representative_selector": "path[fill=\"#9685C5\"]",
+    "representative_snippet": "<path role=\"graphics-symbol\" fill=\"#9685C5\" d=\"M152.991,19.005A154.167,154.167,0,0,1,100.045,117.296L14.281,14.061A20.042,20.042,0,0,0,19.599,4.189Z\" style=\"cursor: initial;\"></path>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data"
+    ]
+   },
+   {
     "id": "cc-2959727caaba",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
@@ -49713,84 +49794,96 @@
     ]
    },
    {
-    "id": "cc-fb5fb9db18b2",
+    "id": "cc-a6c441b5b780",
     "engine_key": "axe-core",
-    "rule_id": "svg-img-alt",
+    "rule_id": "color-contrast",
     "severity": "Serious",
-    "rule_pages_affected": 1,
+    "rule_pages_affected": 12,
     "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "path[fill=\"#7350a3\"]",
-    "snippet_shape": "path:role",
-    "representative_selector": "path[fill=\"#7350A3\"]",
-    "representative_snippet": "<path role=\"graphics-symbol\" fill=\"#7350A3\" d=\"M2,-154.154A154.167,154.167,0,0,1,115.054,-102.615L13.742,-14.589A20.042,20.042,0,0,0,2,-19.942Z\" style=\"cursor: initial;\"></path>",
+    "instances": 2,
+    "selector_path": "#\\# d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__subtopics > .sitemap__subtopic:nth-child(*) > .sitemap__datasets > .sitemap__dataset:nth-child(*) > a[title=\"\"] > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\39 d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.SiteMap__topics > .SiteMap__topic:nth-child(2) > .SiteMap__subtopics > .SiteMap__subtopic:nth-child(1) > .SiteMap__datasets > .SiteMap__dataset:nth-child(2) > a[title=\"\"] > h5",
+    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Federally Qualified Health Center All Owners</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1,
+    "distinct_components_for_rule": 4,
+    "action_score": 0.9,
     "estimated_fix_impact": {
-     "findings": 1,
+     "findings": 2,
      "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/provider-data"
+     "https://data.cms.gov/sitemap"
     ]
    },
    {
-    "id": "cc-4f941170af90",
+    "id": "cc-7fc46e129502",
     "engine_key": "axe-core",
-    "rule_id": "svg-img-alt",
+    "rule_id": "color-contrast",
     "severity": "Serious",
-    "rule_pages_affected": 1,
+    "rule_pages_affected": 12,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "path[fill=\"#0f8a7e\"]",
-    "snippet_shape": "path:role",
-    "representative_selector": "path[fill=\"#0F8A7E\"]",
-    "representative_snippet": "<path role=\"graphics-symbol\" fill=\"#0F8A7E\" d=\"M117.678,-99.596A154.167,154.167,0,0,1,153.432,15.03L20.041,0.214A20.042,20.042,0,0,0,16.365,-11.569Z\" style=\"cursor: initial;\"></path>",
+    "selector_path": "#\\# d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__subtopics > .sitemap__subtopic > .sitemap__datasets > .sitemap__dataset > a[title=\"\"] > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\39 d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.SiteMap__topics > .SiteMap__topic:nth-child(1) > .SiteMap__subtopics > .SiteMap__subtopic > .SiteMap__datasets > .SiteMap__dataset > a[title=\"\"] > h5",
+    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">CMS Program Statistics - Medicare Providers</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1,
+    "distinct_components_for_rule": 4,
+    "action_score": 0.9,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/provider-data"
+     "https://data.cms.gov/sitemap"
     ]
    },
    {
-    "id": "cc-178d462d238e",
+    "id": "cc-2af2501e2fef",
     "engine_key": "axe-core",
-    "rule_id": "svg-img-alt",
-    "severity": "Serious",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "path[fill=\"#9685c5\"]",
-    "snippet_shape": "path:role",
-    "representative_selector": "path[fill=\"#9685C5\"]",
-    "representative_snippet": "<path role=\"graphics-symbol\" fill=\"#9685C5\" d=\"M152.991,19.005A154.167,154.167,0,0,1,100.045,117.296L14.281,14.061A20.042,20.042,0,0,0,19.599,4.189Z\" style=\"cursor: initial;\"></path>",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 13,
+    "instances": 13,
+    "selector_path": ".articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": ".ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Inpatient Hospital</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1,
+    "likely_source": "template",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.87,
     "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "findings": 13,
+     "pages": 13,
+     "statement": "Fix one place, resolve ~13 finding(s) on 13 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/provider-data"
+     "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
+     "https://data.cms.gov/resources/hospital-provider-cost-report-methodology",
+     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology",
+     "https://data.cms.gov/resources/skilled-nursing-facility-cost-report-methodology",
+     "https://data.cms.gov/resources/medicare-telemedicine-snapshot-methodology",
+     "https://data.cms.gov/resources/facility-level-minimum-data-set-frequency-methodology",
+     "https://data.cms.gov/resources/payroll-based-journal-methodology",
+     "https://data.cms.gov/resources/medicare-service-type-reports-methodology-copy",
+     "https://data.cms.gov/resources/payroll-based-journal-employee-detail-nursing-home-staffing-methodology",
+     "https://data.cms.gov/resources/cms-program-statistics-methodology",
+     "https://data.cms.gov/resources/payroll-based-journal-methodology-0",
+     "https://data.cms.gov/resources/home-health-agency-cost-report-methodology"
     ]
    },
    {
@@ -49828,60 +49921,6 @@
      "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool",
      "https://data.cms.gov/tools/medicaid-drug-spending-dashboard",
      "https://data.cms.gov/tools/medicare-part-b-drug-spending-dashboard"
-    ]
-   },
-   {
-    "id": "cc-a6c441b5b780",
-    "engine_key": "axe-core",
-    "rule_id": "color-contrast",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 2,
-    "selector_path": "#\\# d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__subtopics > .sitemap__subtopic:nth-child(*) > .sitemap__datasets > .sitemap__dataset:nth-child(*) > a[title=\"\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\39 d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.SiteMap__topics > .SiteMap__topic:nth-child(2) > .SiteMap__subtopics > .SiteMap__subtopic:nth-child(1) > .SiteMap__datasets > .SiteMap__dataset:nth-child(2) > a[title=\"\"] > h5",
-    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Federally Qualified Health Center All Owners</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.75,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/sitemap"
-    ]
-   },
-   {
-    "id": "cc-7fc46e129502",
-    "engine_key": "axe-core",
-    "rule_id": "color-contrast",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#\\# d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__subtopics > .sitemap__subtopic > .sitemap__datasets > .sitemap__dataset > a[title=\"\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\39 d6b8fc9-ee67-46a3-a735-a90d5f42859a > .container > .stacked.SiteMap__topics > .SiteMap__topic:nth-child(1) > .SiteMap__subtopics > .SiteMap__subtopic > .SiteMap__datasets > .SiteMap__dataset > a[title=\"\"] > h5",
-    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">CMS Program Statistics - Medicare Providers</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.75,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/sitemap"
     ]
    },
    {
@@ -49984,45 +50023,6 @@
      "https://data.cms.gov/resources/medicaid-managed-care-data-dictionary",
      "https://data.cms.gov/resources/pioneer-aco-model-performance-year-2012-2014-data-dictionary",
      "https://data.cms.gov/resources/ascs-and-ifseds-data-dictionary"
-    ]
-   },
-   {
-    "id": "cc-2af2501e2fef",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 13,
-    "instances": 13,
-    "selector_path": ".articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": ".ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Inpatient Hospital</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.72,
-    "estimated_fix_impact": {
-     "findings": 13,
-     "pages": 13,
-     "statement": "Fix one place, resolve ~13 finding(s) on 13 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-service-type-reports-methodology",
-     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology",
-     "https://data.cms.gov/resources/hospital-provider-cost-report-methodology",
-     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology",
-     "https://data.cms.gov/resources/skilled-nursing-facility-cost-report-methodology",
-     "https://data.cms.gov/resources/medicare-telemedicine-snapshot-methodology",
-     "https://data.cms.gov/resources/facility-level-minimum-data-set-frequency-methodology",
-     "https://data.cms.gov/resources/payroll-based-journal-methodology",
-     "https://data.cms.gov/resources/medicare-service-type-reports-methodology-copy",
-     "https://data.cms.gov/resources/payroll-based-journal-employee-detail-nursing-home-staffing-methodology",
-     "https://data.cms.gov/resources/cms-program-statistics-methodology",
-     "https://data.cms.gov/resources/payroll-based-journal-methodology-0",
-     "https://data.cms.gov/resources/home-health-agency-cost-report-methodology"
     ]
    },
    {
@@ -50610,6 +50610,95 @@
     ]
    },
    {
+    "id": "cc-29d43a0262f8",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 9,
+    "instances": 9,
+    "selector_path": "h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Contact information</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology",
+     "https://data.cms.gov/resources/next-generation-aco-model-data-methodology",
+     "https://data.cms.gov/provider-summary-by-type-of-service",
+     "https://data.cms.gov/resources/comprehensive-esrd-care-model-data-methodology",
+     "https://data.cms.gov/resources/nursing-home-chain-performance-measures-methodology",
+     "https://data.cms.gov/summary-statistics-on-use-and-payments",
+     "https://data.cms.gov/resources/home-infusion-therapy-providers-methodology",
+     "https://data.cms.gov/resources/medicare-fee-for-service-comprehensive-error-rate-testing-improper-payment-data-methodology",
+     "https://data.cms.gov/resources/long-term-care-facility-characteristics-methodology"
+    ]
+   },
+   {
+    "id": "cc-a591db3b9f0d",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h2:nth-child(*)",
+    "snippet_shape": "h2:",
+    "representative_selector": "h2:nth-child(27)",
+    "representative_snippet": "<h2 id=\"hospital-harm\"><span>&nbsp;</span></h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data/topics/hospitals/timely-effective-care"
+    ]
+   },
+   {
+    "id": "cc-8ed94019c897",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".articleheader__text",
+    "snippet_shape": "h2:",
+    "representative_selector": ".ArticleHeader__text",
+    "representative_snippet": "<h2 class=\"typeface-02-H2-Black-L ArticleHeader__text\"></h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-compliance/independent-dispute-resolution"
+    ]
+   },
+   {
     "id": "cc-c78a454280db",
     "engine_key": "alfa",
     "rule_id": "sia-r66",
@@ -51113,92 +51202,100 @@
     ]
    },
    {
-    "id": "cc-29d43a0262f8",
+    "id": "cc-5b38a689920b",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
     "rule_pages_affected": 293,
-    "pages_affected": 9,
+    "pages_affected": 7,
     "instances": 9,
-    "selector_path": "h5",
+    "selector_path": ".carousel__slide--visible.moretopiccarousel__slide.slide___3-nqo > .moretopiccarousel__slide-inner.slideinner___2mfx9.carousel__inner-slide > .moretopiccarouselcardgroup > .moretopiccarouselcard:nth-child(*) > .moretopiccarouselcard__inner > .moretopiccarouselcard__heading > h5",
     "snippet_shape": "h5:",
-    "representative_selector": "h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Contact information</h5>",
+    "representative_selector": ".carousel__slide--visible.MoreTopicCarousel__slide.slide___3-Nqo > .MoreTopicCarousel__slide-inner.slideInner___2mfX9.carousel__inner-slide > .MoreTopicCarouselCardGroup > .MoreTopicCarouselCard:nth-child(1) > .MoreTopicCarouselCard__inner > .MoreTopicCarouselCard__heading > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">1 Datasets</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 36,
-    "action_score": 0.5,
+    "action_score": 0.47,
     "estimated_fix_impact": {
      "findings": 9,
-     "pages": 9,
-     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+     "pages": 7,
+     "statement": "Fix one place, resolve ~9 finding(s) on 7 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/resources/nursing-home-affiliated-entity-performance-measures-methodology",
-     "https://data.cms.gov/resources/next-generation-aco-model-data-methodology",
-     "https://data.cms.gov/provider-summary-by-type-of-service",
-     "https://data.cms.gov/resources/comprehensive-esrd-care-model-data-methodology",
-     "https://data.cms.gov/resources/nursing-home-chain-performance-measures-methodology",
-     "https://data.cms.gov/summary-statistics-on-use-and-payments",
-     "https://data.cms.gov/resources/home-infusion-therapy-providers-methodology",
-     "https://data.cms.gov/resources/medicare-fee-for-service-comprehensive-error-rate-testing-improper-payment-data-methodology",
-     "https://data.cms.gov/resources/long-term-care-facility-characteristics-methodology"
+     "https://data.cms.gov/provider-characteristics",
+     "https://data.cms.gov/quality-of-care",
+     "https://data.cms.gov/cms-innovation-center-programs",
+     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
+     "https://data.cms.gov/provider-compliance",
+     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
+     "https://data.cms.gov/medicare-shared-savings-program"
     ]
    },
    {
-    "id": "cc-a591db3b9f0d",
+    "id": "cc-0941def3b137",
     "engine_key": "axe-core",
-    "rule_id": "empty-heading",
-    "severity": "Minor",
-    "rule_pages_affected": 2,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h2:nth-child(*)",
-    "snippet_shape": "h2:",
-    "representative_selector": "h2:nth-child(27)",
-    "representative_snippet": "<h2 id=\"hospital-harm\"><span>&nbsp;</span></h2>",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "div[aria-label=\"open quality of care\"] > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "div[aria-label=\"Open Quality of Care\"] > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">11 Datasets</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 0.5,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.4,
     "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/provider-data/topics/hospitals/timely-effective-care"
+     "https://data.cms.gov/provider-characteristics",
+     "https://data.cms.gov/cms-innovation-center-programs",
+     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
+     "https://data.cms.gov/provider-compliance",
+     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
+     "https://data.cms.gov/medicare-shared-savings-program"
     ]
    },
    {
-    "id": "cc-8ed94019c897",
+    "id": "cc-42c64b0963b5",
     "engine_key": "axe-core",
-    "rule_id": "empty-heading",
-    "severity": "Minor",
-    "rule_pages_affected": 2,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".articleheader__text",
-    "snippet_shape": "h2:",
-    "representative_selector": ".ArticleHeader__text",
-    "representative_snippet": "<h2 class=\"typeface-02-H2-Black-L ArticleHeader__text\"></h2>",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "div[aria-label=\"open provider characteristics\"] > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "div[aria-label=\"Open Provider Characteristics\"] > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">34 Datasets</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 0.5,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.4,
     "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/provider-compliance/independent-dispute-resolution"
+     "https://data.cms.gov/quality-of-care",
+     "https://data.cms.gov/cms-innovation-center-programs",
+     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
+     "https://data.cms.gov/provider-compliance",
+     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
+     "https://data.cms.gov/medicare-shared-savings-program"
     ]
    },
    {
@@ -51253,39 +51350,6 @@
     },
     "affected_pages": [
      "https://data.cms.gov/tools/mapping-medicare-disparities-by-population"
-    ]
-   },
-   {
-    "id": "cc-5b38a689920b",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 7,
-    "instances": 9,
-    "selector_path": ".carousel__slide--visible.moretopiccarousel__slide.slide___3-nqo > .moretopiccarousel__slide-inner.slideinner___2mfx9.carousel__inner-slide > .moretopiccarouselcardgroup > .moretopiccarouselcard:nth-child(*) > .moretopiccarouselcard__inner > .moretopiccarouselcard__heading > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": ".carousel__slide--visible.MoreTopicCarousel__slide.slide___3-Nqo > .MoreTopicCarousel__slide-inner.slideInner___2mfX9.carousel__inner-slide > .MoreTopicCarouselCardGroup > .MoreTopicCarouselCard:nth-child(1) > .MoreTopicCarouselCard__inner > .MoreTopicCarouselCard__heading > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">1 Datasets</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.39,
-    "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 7,
-     "statement": "Fix one place, resolve ~9 finding(s) on 7 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/provider-characteristics",
-     "https://data.cms.gov/quality-of-care",
-     "https://data.cms.gov/cms-innovation-center-programs",
-     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
-     "https://data.cms.gov/provider-compliance",
-     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
-     "https://data.cms.gov/medicare-shared-savings-program"
     ]
    },
    {
@@ -51348,70 +51412,6 @@
      "https://data.cms.gov/provider-characteristics/hospitals-and-other-facilities/provider-of-services-file-hospital-non-hospital-facilities",
      "https://data.cms.gov/provider-characteristics/hospitals-and-other-facilities/provider-of-services-file-clinical-laboratories",
      "https://data.cms.gov/medicare-shared-savings-program/performance-year-financial-and-quality-results"
-    ]
-   },
-   {
-    "id": "cc-0941def3b137",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "div[aria-label=\"open quality of care\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "div[aria-label=\"Open Quality of Care\"] > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">11 Datasets</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.33,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/provider-characteristics",
-     "https://data.cms.gov/cms-innovation-center-programs",
-     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
-     "https://data.cms.gov/provider-compliance",
-     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
-     "https://data.cms.gov/medicare-shared-savings-program"
-    ]
-   },
-   {
-    "id": "cc-42c64b0963b5",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "div[aria-label=\"open provider characteristics\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "div[aria-label=\"Open Provider Characteristics\"] > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">34 Datasets</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.33,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/quality-of-care",
-     "https://data.cms.gov/cms-innovation-center-programs",
-     "https://data.cms.gov/summary-statistics-on-provider-enrollment",
-     "https://data.cms.gov/provider-compliance",
-     "https://data.cms.gov/medicare-value-based-payment-modifier-program",
-     "https://data.cms.gov/medicare-shared-savings-program"
     ]
    },
    {
@@ -51613,6 +51613,114 @@
     ]
    },
    {
+    "id": "cc-82be9feea421",
+    "engine_key": "axe-core",
+    "rule_id": "empty-table-header",
+    "severity": "Minor",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 3,
+    "selector_path": ".articlesection__component-container:nth-child(*) > .dynamictable > .container > .row > .offset-lg-#.col > .dynamictable__inner > .dynamictable__table-wrapper > .dynamictable__table > thead > tr > .default-header:nth-child(*)",
+    "snippet_shape": "th:",
+    "representative_selector": ".ArticleSection__component-container:nth-child(5) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__table-wrapper > .DynamicTable__table > thead > tr > .default-header:nth-child(1)",
+    "representative_snippet": "<th class=\"CellRenderer__cell default-header\" style=\"width: 114px;\"><div id=\"RichTextField-095fa535-f549-4186-86d7-5d8d63eb3816\" class=\"RichTextField\"> </div></th>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.3,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~3 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
+    ]
+   },
+   {
+    "id": "cc-d20911887df4",
+    "engine_key": "axe-core",
+    "rule_id": "empty-table-header",
+    "severity": "Minor",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 3,
+    "selector_path": ".articlesection__component-container:nth-child(*) > .dynamictable > .container > .row > .offset-lg-#.col > .dynamictable__inner > .dynamictable__with-shadow.dynamictable__table-wrapper > table > thead > tr > th:nth-child(*)",
+    "snippet_shape": "th:",
+    "representative_selector": ".ArticleSection__component-container:nth-child(2) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__with-shadow.DynamicTable__table-wrapper > table > thead > tr > th:nth-child(1)",
+    "representative_snippet": "<th class=\"CellRenderer__cell default-header\" style=\"width: 222px;\"><div id=\"RichTextField-686d60fc-9cb7-4512-85f9-a1a33c44a146\" class=\"RichTextField\"> </div></th>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.3,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~3 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
+    ]
+   },
+   {
+    "id": "cc-ebb9df7fa0b8",
+    "engine_key": "axe-core",
+    "rule_id": "empty-table-header",
+    "severity": "Minor",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#nb",
+    "snippet_shape": "th:",
+    "representative_selector": "#nb",
+    "representative_snippet": "<th id=\"nb\" scope=\"col\"><span>&nbsp;</span></th>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.3,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data/topics/nursing-homes/quality-measures"
+    ]
+   },
+   {
+    "id": "cc-34cf28d2d28a",
+    "engine_key": "axe-core",
+    "rule_id": "empty-table-header",
+    "severity": "Minor",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "table[cellpadding=\"#\"] > thead > tr > th:nth-child(*)",
+    "snippet_shape": "th:",
+    "representative_selector": "table[cellpadding=\"0\"] > thead > tr > th:nth-child(1)",
+    "representative_snippet": "<th><span>&nbsp;</span></th>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.3,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data/topics/home-health-services/measuring-agency-performance"
+    ]
+   },
+   {
     "id": "cc-a61b9b1c6c4c",
     "engine_key": "alfa",
     "rule_id": "sia-r53",
@@ -51640,111 +51748,93 @@
     ]
    },
    {
-    "id": "cc-82be9feea421",
+    "id": "cc-0a71accf661e",
     "engine_key": "axe-core",
-    "rule_id": "empty-table-header",
-    "severity": "Minor",
-    "rule_pages_affected": 4,
-    "pages_affected": 1,
-    "instances": 3,
-    "selector_path": ".articlesection__component-container:nth-child(*) > .dynamictable > .container > .row > .offset-lg-#.col > .dynamictable__inner > .dynamictable__table-wrapper > .dynamictable__table > thead > tr > .default-header:nth-child(*)",
-    "snippet_shape": "th:",
-    "representative_selector": ".ArticleSection__component-container:nth-child(5) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__table-wrapper > .DynamicTable__table > thead > tr > .default-header:nth-child(1)",
-    "representative_snippet": "<th class=\"CellRenderer__cell default-header\" style=\"width: 114px;\"><div id=\"RichTextField-095fa535-f549-4186-86d7-5d8d63eb3816\" class=\"RichTextField\"> </div></th>",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 4,
+    "instances": 6,
+    "selector_path": ".moretopiccarouselcard:nth-child(*) > .moretopiccarouselcard__inner > .moretopiccarouselcard__heading > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": ".MoreTopicCarouselCard:nth-child(2) > .MoreTopicCarouselCard__inner > .MoreTopicCarouselCard__heading > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">4 Datasets</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.25,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.27,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~3 finding(s) on 1 page(s)."
+     "findings": 6,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~6 finding(s) on 4 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
+     "https://data.cms.gov/summary-statistics-on-beneficiary-enrollment",
+     "https://data.cms.gov/medicare-current-beneficiary-survey-mcbs",
+     "https://data.cms.gov/medicare-chronic-conditions",
+     "https://data.cms.gov/covid-19"
     ]
    },
    {
-    "id": "cc-d20911887df4",
+    "id": "cc-e8140cf04616",
     "engine_key": "axe-core",
-    "rule_id": "empty-table-header",
-    "severity": "Minor",
-    "rule_pages_affected": 4,
-    "pages_affected": 1,
-    "instances": 3,
-    "selector_path": ".articlesection__component-container:nth-child(*) > .dynamictable > .container > .row > .offset-lg-#.col > .dynamictable__inner > .dynamictable__with-shadow.dynamictable__table-wrapper > table > thead > tr > th:nth-child(*)",
-    "snippet_shape": "th:",
-    "representative_selector": ".ArticleSection__component-container:nth-child(2) > .DynamicTable > .container > .row > .offset-lg-3.col > .DynamicTable__inner > .DynamicTable__with-shadow.DynamicTable__table-wrapper > table > thead > tr > th:nth-child(1)",
-    "representative_snippet": "<th class=\"CellRenderer__cell default-header\" style=\"width: 222px;\"><div id=\"RichTextField-686d60fc-9cb7-4512-85f9-a1a33c44a146\" class=\"RichTextField\"> </div></th>",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".visualization__card > h4",
+    "snippet_shape": "h4:",
+    "representative_selector": ".Visualization__card > h4",
+    "representative_snippet": "<h4>Medicaid Opioid Prescribing Mapping Tool</h4>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.25,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.27,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~3 finding(s) on 1 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicaid-opioid-prescribing-rates-by-geography",
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-service-type-reports/medicare-telehealth-trends",
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicare-part-d-opioid-prescribing-rates-by-geography",
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county"
     ]
    },
    {
-    "id": "cc-ebb9df7fa0b8",
+    "id": "cc-1c320dc42d02",
     "engine_key": "axe-core",
-    "rule_id": "empty-table-header",
-    "severity": "Minor",
-    "rule_pages_affected": 4,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#nb",
-    "snippet_shape": "th:",
-    "representative_selector": "#nb",
-    "representative_snippet": "<th id=\"nb\" scope=\"col\"><span>&nbsp;</span></th>",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".articlesearchbox__label",
+    "snippet_shape": "h3:",
+    "representative_selector": ".ArticleSearchBox__label",
+    "representative_snippet": "<h3 class=\"typeface-05-H5-Black-Regular-L ArticleSearchBox__label\">Search for keywords</h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.25,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.27,
     "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/provider-data/topics/nursing-homes/quality-measures"
-    ]
-   },
-   {
-    "id": "cc-34cf28d2d28a",
-    "engine_key": "axe-core",
-    "rule_id": "empty-table-header",
-    "severity": "Minor",
-    "rule_pages_affected": 4,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "table[cellpadding=\"#\"] > thead > tr > th:nth-child(*)",
-    "snippet_shape": "th:",
-    "representative_selector": "table[cellpadding=\"0\"] > thead > tr > th:nth-child(1)",
-    "representative_snippet": "<th><span>&nbsp;</span></th>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.25,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/provider-data/topics/home-health-services/measuring-agency-performance"
+     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-and-service-data-dictionary-2021",
+     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy",
+     "https://data.cms.gov/resources/medicare-fee-for-service-public-provider-enrollment-data-dictionary-q1-2023-q2-2025",
+     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
     ]
    },
    {
@@ -51797,93 +51887,32 @@
     ]
    },
    {
-    "id": "cc-0a71accf661e",
+    "id": "cc-9ff7b3f62fb7",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
     "rule_pages_affected": 293,
-    "pages_affected": 4,
-    "instances": 6,
-    "selector_path": ".moretopiccarouselcard:nth-child(*) > .moretopiccarouselcard__inner > .moretopiccarouselcard__heading > h5",
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "div[aria-label=\"open covid-#\"] > h5",
     "snippet_shape": "h5:",
-    "representative_selector": ".MoreTopicCarouselCard:nth-child(2) > .MoreTopicCarouselCard__inner > .MoreTopicCarouselCard__heading > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">4 Datasets</h5>",
+    "representative_selector": "div[aria-label=\"Open COVID-19\"] > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">1 Datasets</h5>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 36,
-    "action_score": 0.22,
+    "action_score": 0.2,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~6 finding(s) on 4 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
      "https://data.cms.gov/summary-statistics-on-beneficiary-enrollment",
      "https://data.cms.gov/medicare-current-beneficiary-survey-mcbs",
-     "https://data.cms.gov/medicare-chronic-conditions",
-     "https://data.cms.gov/covid-19"
-    ]
-   },
-   {
-    "id": "cc-e8140cf04616",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": ".visualization__card > h4",
-    "snippet_shape": "h4:",
-    "representative_selector": ".Visualization__card > h4",
-    "representative_snippet": "<h4>Medicaid Opioid Prescribing Mapping Tool</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.22,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicaid-opioid-prescribing-rates-by-geography",
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-service-type-reports/medicare-telehealth-trends",
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicare-part-d-opioid-prescribing-rates-by-geography",
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county"
-    ]
-   },
-   {
-    "id": "cc-1c320dc42d02",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": ".articlesearchbox__label",
-    "snippet_shape": "h3:",
-    "representative_selector": ".ArticleSearchBox__label",
-    "representative_snippet": "<h3 class=\"typeface-05-H5-Black-Regular-L ArticleSearchBox__label\">Search for keywords</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.22,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-and-service-data-dictionary-2021",
-     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy",
-     "https://data.cms.gov/resources/medicare-fee-for-service-public-provider-enrollment-data-dictionary-q1-2023-q2-2025",
-     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
+     "https://data.cms.gov/medicare-chronic-conditions"
     ]
    },
    {
@@ -51932,32 +51961,570 @@
     ]
    },
    {
-    "id": "cc-9ff7b3f62fb7",
+    "id": "cc-a1c6e7c5879e",
     "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 3,
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
     "instances": 3,
-    "selector_path": "div[aria-label=\"open covid-#\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "div[aria-label=\"Open COVID-19\"] > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-h5-desktop-regular-white MoreTopicCarouselCard__count\">1 Datasets</h5>",
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.cms.gov/files/document/faqs-%20part-62.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">FAQs about Consolidated Appropriations Act, 2021 Implementation Part 62</a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 36,
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
     "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "pages": 1,
+     "statement": "Fix one place, resolve ~3 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://data.cms.gov/summary-statistics-on-beneficiary-enrollment",
-     "https://data.cms.gov/medicare-current-beneficiary-survey-mcbs",
-     "https://data.cms.gov/medicare-chronic-conditions"
+     "https://data.cms.gov/resources/independent-dispute-resolution-methodology"
+    ]
+   },
+   {
+    "id": "cc-154951e6e9ea",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-580d09b6-e727-4a14-88ff-4aed6a6440ef > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-580d09b6-e727-4a14-88ff-4aed6a6440ef > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeedbackProgram/Downloads/Detailed-Methodology-for-the-2018-Value-Modifier-and-2016-Quality-and-Resource-Use-Report-.pdf",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
+    ]
+   },
+   {
+    "id": "cc-859487dfedce",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"mailto:ipag_data_products@cms.hhs.gov?subject=Feedback%20for%20Physician%2FSupplier%20Procedure%20Summary\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/summary-statistics-on-use-and-payments/physiciansupplier-procedure-summary"
+    ]
+   },
+   {
+    "id": "cc-b623141c7176",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-0bbdacff-1bdd-#-#-c44294262c88 > p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-0bbdacff-1bdd-4249-8215-c44294262c88 > p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.hcup-us.ahrq.gov/toolssoftware/ccsr/ccs_refined.jsp\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
+    ]
+   },
+   {
+    "id": "cc-e4a9f541b31c",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-0ab124d2-3cdd-4e18-812a-34576eb9af43 > p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-0ab124d2-3cdd-4e18-812a-34576eb9af43 > p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.hcup-us.ahrq.gov/toolssoftware/ccsr/dxccsr.jsp#user\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
+    ]
+   },
+   {
+    "id": "cc-02ba4ee77736",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-8b2f7d79-c662-492a-8a56-b3f4efb82375 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-8b2f7d79-c662-492a-8a56-b3f4efb82375 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/esrd-facility-aggregation-group-performance-data-dictionary"
+    ]
+   },
+   {
+    "id": "cc-a2673ab65788",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-68ece6cb-264a-#-bbe2-6ab61a662b6c > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-68ece6cb-264a-4058-bbe2-6ab61a662b6c > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/esrd-facility-aggregation-group-performance-data-dictionary"
+    ]
+   },
+   {
+    "id": "cc-9c67fbf5f882",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-3697b0bd-e477-#-a967-751eee72c0a6 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-3697b0bd-e477-4002-a967-751eee72c0a6 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/esrd-facility-aggregation-group-performance-data-dictionary"
+    ]
+   },
+   {
+    "id": "cc-d02a5f638bde",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ssa.gov/OP_Home/ssact/title11/1140.htm\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/about"
+    ]
+   },
+   {
+    "id": "cc-2eb402d5cf3a",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"qpp.cms.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"qpp.cms.gov/\"]",
+    "representative_snippet": "<a href=\"https://qpp.cms.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Quality Payment Program</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/medicare-value-based-payment-modifier-program/value-modifier"
+    ]
+   },
+   {
+    "id": "cc-828782b969b9",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-e74aa04c-900b-#-8bd0-73884545a8e4 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-e74aa04c-900b-4919-8bd0-73884545a8e4 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www2.ccwdata.org/web/guest/home/\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy"
+    ]
+   },
+   {
+    "id": "cc-7768c90cf804",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-c482500c-3f2d-#-b2b0-ae0a92c56ffb > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-c482500c-3f2d-4622-b2b0-ae0a92c56ffb > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www2.ccwdata.org/web/guest/home/\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy"
+    ]
+   },
+   {
+    "id": "cc-b4f269e148d2",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-#-469b-4a0a-9ccf-134b328c3a6a > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-03009604-469b-4a0a-9ccf-134b328c3a6a > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www2.ccwdata.org/web/guest/home/\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy"
+    ]
+   },
+   {
+    "id": "cc-a9a0eacddd9a",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-44a7ad08-061e-#-8a9c-c6cbe5d574c8 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-44a7ad08-061e-4732-8a9c-c6cbe5d574c8 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/cms-data/variables/research-triangle-institute-rti-race-code\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/cms-program-statistics-methodology"
+    ]
+   },
+   {
+    "id": "cc-691fa73bb1d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"resdac.org/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"resdac.org/\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/collection/synthetic-medicare-enrollment-fee-for-service-claims-and-prescription-drug-event"
+    ]
+   },
+   {
+    "id": "cc-a4aeeea64b87",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-44852a13-f751-#-981e-2e3da8361ed1 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-44852a13-f751-4474-981e-2e3da8361ed1 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www2.ccwdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
+    ]
+   },
+   {
+    "id": "cc-c2703499f023",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-fef0c40b-78b4-#-84ee-a0ca0a8fdbc2 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-fef0c40b-78b4-4525-84ee-a0ca0a8fdbc2 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www2.ccwdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
+    ]
+   },
+   {
+    "id": "cc-dc080815cf3e",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-b33aed26-cce3-4d38-97bb-29df80dad66c > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-b33aed26-cce3-4d38-97bb-29df80dad66c > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www2.ccwdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
+    ]
+   },
+   {
+    "id": "cc-8c4332f3ed5c",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-a6645484-4a7a-456c-864e-accef32a6fe7 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-a6645484-4a7a-456c-864e-accef32a6fe7 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/managing-clinician-aggregation-group-performance-data-dictionary"
+    ]
+   },
+   {
+    "id": "cc-8023dfb275db",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-3bad53f9-#-4f68-bc9e-bc4b0ce6853b > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-3bad53f9-1817-4f68-bc9e-bc4b0ce6853b > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/managing-clinician-aggregation-group-performance-data-dictionary"
+    ]
+   },
+   {
+    "id": "cc-3ca3f3079bfa",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#richtextfield-6ff38451-#-4f4f-9f5f-febc20ec3252 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "#RichTextField-6ff38451-5082-4f4f-9f5f-febc20ec3252 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
+    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/managing-clinician-aggregation-group-performance-data-dictionary"
     ]
    },
    {
@@ -52171,573 +52738,6 @@
      "https://data.cms.gov/provider-characteristics/hospitals-and-other-facilities/provider-of-services-file-hospital-non-hospital-facilities",
      "https://data.cms.gov/provider-characteristics/hospitals-and-other-facilities/provider-of-services-file-internet-quality-improvement-and-evaluation-system",
      "https://data.cms.gov/provider-characteristics/hospitals-and-other-facilities/skilled-nursing-facility-change-of-ownership"
-    ]
-   },
-   {
-    "id": "cc-a1c6e7c5879e",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 3,
-    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.cms.gov/files/document/faqs-%20part-62.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">FAQs about Consolidated Appropriations Act, 2021 Implementation Part 62</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~3 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/independent-dispute-resolution-methodology"
-    ]
-   },
-   {
-    "id": "cc-154951e6e9ea",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-580d09b6-e727-4a14-88ff-4aed6a6440ef > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-580d09b6-e727-4a14-88ff-4aed6a6440ef > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeedbackProgram/Downloads/Detailed-Methodology-for-the-2018-Value-Modifier-and-2016-Quality-and-Resource-Use-Report-.pdf",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
-    ]
-   },
-   {
-    "id": "cc-859487dfedce",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"mailto:ipag_data_products@cms.hhs.gov?subject=Feedback%20for%20Physician%2FSupplier%20Procedure%20Summary\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/summary-statistics-on-use-and-payments/physiciansupplier-procedure-summary"
-    ]
-   },
-   {
-    "id": "cc-b623141c7176",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-0bbdacff-1bdd-#-#-c44294262c88 > p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-0bbdacff-1bdd-4249-8215-c44294262c88 > p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.hcup-us.ahrq.gov/toolssoftware/ccsr/ccs_refined.jsp\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
-    ]
-   },
-   {
-    "id": "cc-e4a9f541b31c",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-0ab124d2-3cdd-4e18-812a-34576eb9af43 > p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-0ab124d2-3cdd-4e18-812a-34576eb9af43 > p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.hcup-us.ahrq.gov/toolssoftware/ccsr/dxccsr.jsp#user\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
-    ]
-   },
-   {
-    "id": "cc-02ba4ee77736",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-8b2f7d79-c662-492a-8a56-b3f4efb82375 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-8b2f7d79-c662-492a-8a56-b3f4efb82375 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/esrd-facility-aggregation-group-performance-data-dictionary"
-    ]
-   },
-   {
-    "id": "cc-a2673ab65788",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-68ece6cb-264a-#-bbe2-6ab61a662b6c > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-68ece6cb-264a-4058-bbe2-6ab61a662b6c > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/esrd-facility-aggregation-group-performance-data-dictionary"
-    ]
-   },
-   {
-    "id": "cc-9c67fbf5f882",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-3697b0bd-e477-#-a967-751eee72c0a6 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-3697b0bd-e477-4002-a967-751eee72c0a6 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/esrd-facility-aggregation-group-performance-data-dictionary"
-    ]
-   },
-   {
-    "id": "cc-d02a5f638bde",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(2) > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.ssa.gov/OP_Home/ssact/title11/1140.htm\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/about"
-    ]
-   },
-   {
-    "id": "cc-2eb402d5cf3a",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "a[href$=\"qpp.cms.gov/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "a[href$=\"qpp.cms.gov/\"]",
-    "representative_snippet": "<a href=\"https://qpp.cms.gov/\" target=\"_blank\" rel=\"noopener noreferrer\">Quality Payment Program</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/medicare-value-based-payment-modifier-program/value-modifier"
-    ]
-   },
-   {
-    "id": "cc-828782b969b9",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-e74aa04c-900b-#-8bd0-73884545a8e4 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-e74aa04c-900b-4919-8bd0-73884545a8e4 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www2.ccwdata.org/web/guest/home/\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy"
-    ]
-   },
-   {
-    "id": "cc-7768c90cf804",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-c482500c-3f2d-#-b2b0-ae0a92c56ffb > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-c482500c-3f2d-4622-b2b0-ae0a92c56ffb > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www2.ccwdata.org/web/guest/home/\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy"
-    ]
-   },
-   {
-    "id": "cc-b4f269e148d2",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-#-469b-4a0a-9ccf-134b328c3a6a > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-03009604-469b-4a0a-9ccf-134b328c3a6a > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www2.ccwdata.org/web/guest/home/\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-data-dictionary-legacy"
-    ]
-   },
-   {
-    "id": "cc-a9a0eacddd9a",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-44a7ad08-061e-#-8a9c-c6cbe5d574c8 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-44a7ad08-061e-4732-8a9c-c6cbe5d574c8 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/cms-data/variables/research-triangle-institute-rti-race-code\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/cms-program-statistics-methodology"
-    ]
-   },
-   {
-    "id": "cc-691fa73bb1d5",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "a[href$=\"resdac.org/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "a[href$=\"resdac.org/\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/collection/synthetic-medicare-enrollment-fee-for-service-claims-and-prescription-drug-event"
-    ]
-   },
-   {
-    "id": "cc-a4aeeea64b87",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-44852a13-f751-#-981e-2e3da8361ed1 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-44852a13-f751-4474-981e-2e3da8361ed1 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www2.ccwdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
-    ]
-   },
-   {
-    "id": "cc-c2703499f023",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-fef0c40b-78b4-#-84ee-a0ca0a8fdbc2 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-fef0c40b-78b4-4525-84ee-a0ca0a8fdbc2 > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www2.ccwdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
-    ]
-   },
-   {
-    "id": "cc-dc080815cf3e",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-b33aed26-cce3-4d38-97bb-29df80dad66c > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-b33aed26-cce3-4d38-97bb-29df80dad66c > p > a[href$=\"www2.ccwdata.org/\"][target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www2.ccwdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-durable-medical-equipment-devices-supplies-by-referring-provider-data-dictionary-legacy"
-    ]
-   },
-   {
-    "id": "cc-8c4332f3ed5c",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-a6645484-4a7a-456c-864e-accef32a6fe7 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-a6645484-4a7a-456c-864e-accef32a6fe7 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/managing-clinician-aggregation-group-performance-data-dictionary"
-    ]
-   },
-   {
-    "id": "cc-8023dfb275db",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-3bad53f9-#-4f68-bc9e-bc4b0ce6853b > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-3bad53f9-1817-4f68-bc9e-bc4b0ce6853b > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/managing-clinician-aggregation-group-performance-data-dictionary"
-    ]
-   },
-   {
-    "id": "cc-3ca3f3079bfa",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#richtextfield-6ff38451-#-4f4f-9f5f-febc20ec3252 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "#RichTextField-6ff38451-5082-4f4f-9f5f-febc20ec3252 > p > a[target=\"_blank\"][rel=\"noopener noreferrer\"]",
-    "representative_snippet": "<a href=\"https://resdac.org/articles/cms-cell-size-suppression-policy\" target=\"_blank\" rel=\"noopener noreferrer\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.14,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/managing-clinician-aggregation-group-performance-data-dictionary"
     ]
    },
    {
@@ -53648,6 +53648,654 @@
     ]
    },
    {
+    "id": "cc-a0344f55fbea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "h4:nth-child(*)",
+    "snippet_shape": "h4:",
+    "representative_selector": "h4:nth-child(9)",
+    "representative_snippet": "<h4><span>What does this show you?</span></h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/provider-data/topics/dialysis-facilities/measures"
+    ]
+   },
+   {
+    "id": "cc-a3433dac567c",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#bc767577-36ee-4b23-b820-fac02cc1ba33 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#bc767577-36ee-4b23-b820-fac02cc1ba33 > .ArticleSection > .ArticleSection__component-container:nth-child(10) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Category 2 TINs</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
+    ]
+   },
+   {
+    "id": "cc-321eaccafb0a",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#\\# aa18a5c-f8ec-#-b335-9849352fb762 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\36 aa18a5c-f8ec-4772-b335-9849352fb762 > .ArticleSection > .ArticleSection__component-container:nth-child(3) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">How is measure performance calculated?</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
+    ]
+   },
+   {
+    "id": "cc-5102f498919a",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#f21c83bd-c669-46f9-a0ad-6628f5a3eab7 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#f21c83bd-c669-46f9-a0ad-6628f5a3eab7 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Policy Context</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025"
+    ]
+   },
+   {
+    "id": "cc-e48e2fa0ee10",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#f15b9f7f-a905-#-b771-3db0771fdb25 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#f15b9f7f-a905-4846-b771-3db0771fdb25 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Population</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025"
+    ]
+   },
+   {
+    "id": "cc-6a497c526c40",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#\\# 063fdfd-ecca-400b-9a3f-d7f4070b53d5 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\39 063fdfd-ecca-400b-9a3f-d7f4070b53d5 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Identifying All Enrollments For a Provider</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025"
+    ]
+   },
+   {
+    "id": "cc-8e33f392c5af",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#\\# 8681cc2-acc8-4db0-94d0-c7350418073c > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\30 8681cc2-acc8-4db0-94d0-c7350418073c > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Provider of Services</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
+    ]
+   },
+   {
+    "id": "cc-e858549f42b3",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#cb3f744d-#-404a-961d-f3d8a127268d > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#cb3f744d-3111-404a-961d-f3d8a127268d > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Home Health</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
+    ]
+   },
+   {
+    "id": "cc-6e40d0a9a4d5",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".typeface-#-black-semibold-l",
+    "snippet_shape": "h5:",
+    "representative_selector": ".typeface-05-Black-Semibold-L",
+    "representative_snippet": "<h5 class=\"typeface-05-Black-Semibold-L ArticleCitation-numeral\">1</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/mcbs-summary-tables-methodology"
+    ]
+   },
+   {
+    "id": "cc-8653b788a41c",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".visualization:nth-child(*) > .visualization__card > h4",
+    "snippet_shape": "h4:",
+    "representative_selector": ".Visualization:nth-child(1) > .Visualization__card > h4",
+    "representative_snippet": "<h4>Medicare Geographic Variation Dashboards</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/summary-statistics-on-use-and-payments"
+    ]
+   },
+   {
+    "id": "cc-366dc2e51bc5",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".toolslist__lookuptools > .tool:nth-child(*) > h4",
+    "snippet_shape": "h4:",
+    "representative_selector": ".ToolsList__LookupTools > .Tool:nth-child(1) > h4",
+    "representative_snippet": "<h4>Medicare Inpatient Hospital Look-up Tool</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/tools"
+    ]
+   },
+   {
+    "id": "cc-fbb98b819e54",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".toolslist__maptools > .tool:nth-child(*) > h4",
+    "snippet_shape": "h4:",
+    "representative_selector": ".ToolsList__MapTools > .Tool:nth-child(1) > h4",
+    "representative_snippet": "<h4>Medicare Enrollment Dashboard</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/tools"
+    ]
+   },
+   {
+    "id": "cc-d50843fce86a",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".visualizationtools:nth-child(*) > h4",
+    "snippet_shape": "h4:",
+    "representative_selector": ".VisualizationTools:nth-child(1) > h4",
+    "representative_snippet": "<h4>Medicare Geographic Variation Dashboards</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/tools"
+    ]
+   },
+   {
+    "id": "cc-04c81e1bd560",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__datasets > .sitemap__dataset > a[title=\"\"] > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": ".stacked.SiteMap__topics > .SiteMap__topic:nth-child(1) > .SiteMap__datasets > .SiteMap__dataset > a[title=\"\"] > h5",
+    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Physician/Supplier Procedure Summary</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/sitemap"
+    ]
+   },
+   {
+    "id": "cc-353fff6076b6",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__datasets > .sitemap__dataset:nth-child(*) > a[title=\"\"] > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": ".stacked.SiteMap__topics > .SiteMap__topic:nth-child(3) > .SiteMap__datasets > .SiteMap__dataset:nth-child(2) > a[title=\"\"] > h5",
+    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/sitemap"
+    ]
+   },
+   {
+    "id": "cc-6093e1de5951",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".sitemap__topic:nth-child(*) > .sitemap__datasets > .sitemap__dataset:nth-child(*) > a[title=\"\"] > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": ".SiteMap__topic:nth-child(4) > .SiteMap__datasets > .SiteMap__dataset:nth-child(2) > a[title=\"\"] > h5",
+    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Accountable Care Organization Participants</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/sitemap"
+    ]
+   },
+   {
+    "id": "cc-b9a32e26402c",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#\\# f1a859c-56eb-41ad-b43e-965e2bf7eee7 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\31 f1a859c-56eb-41ad-b43e-965e2bf7eee7 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Policy Context</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology"
+    ]
+   },
+   {
+    "id": "cc-9ce27a24a1b2",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#f23f3542-f25e-46d2-ba19-55287d945d65 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#f23f3542-f25e-46d2-ba19-55287d945d65 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Population</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology"
+    ]
+   },
+   {
+    "id": "cc-b1078b9813a6",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#b5dc0e83-3af1-4a68-ba82-3b60c4f77cdd > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#b5dc0e83-3af1-4a68-ba82-3b60c4f77cdd > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Identifying All Enrollments For a Provider</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology"
+    ]
+   },
+   {
+    "id": "cc-92caa2eec957",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > .articletextblock__subtitle.typeface-#-h5-black-regular-l",
+    "snippet_shape": "h5:",
+    "representative_selector": ".ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > .ArticleTextBlock__subtitle.typeface-05-H5-Black-Regular-L",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Risk adjustment</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
+    ]
+   },
+   {
+    "id": "cc-6826d3593ef4",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".articlecitation:nth-child(*) > .articlecitation-top > .typeface-#-black-semibold-l.articlecitation-numeral",
+    "snippet_shape": "h5:",
+    "representative_selector": ".ArticleCitation:nth-child(1) > .ArticleCitation-top > .typeface-05-Black-Semibold-L.ArticleCitation-numeral",
+    "representative_snippet": "<h5 class=\"typeface-05-Black-Semibold-L ArticleCitation-numeral\">1</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
+    ]
+   },
+   {
+    "id": "cc-39742d12f79b",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#def16f89-ea50-40b4-9f98-a24178eac05a > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#def16f89-ea50-40b4-9f98-a24178eac05a > .ArticleSection > .ArticleSection__component-container:nth-child(1) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Data Source</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/preliminary-medicare-covid-19-data-snapshot-methodology"
+    ]
+   },
+   {
+    "id": "cc-1e93f0ba51c5",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#\\# da0c881-5f6f-49bc-ae5a-42d4e3504b3b > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\35 da0c881-5f6f-49bc-ae5a-42d4e3504b3b > .ArticleSection > .ArticleSection__component-container:nth-child(1) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">COVID-19 Case Rates per 100,000: Ever-Enrolled vs. Average Monthly Enrollment</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/preliminary-medicare-covid-19-data-snapshot-methodology"
+    ]
+   },
+   {
+    "id": "cc-6e6c42bc8f6a",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 293,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#\\# 74e0ead-#-4e13-b0fd-d179f97fe348 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
+    "snippet_shape": "h5:",
+    "representative_selector": "#\\31 74e0ead-4340-4e13-b0fd-d179f97fe348 > .ArticleSection > .ArticleSection__component-container:nth-child(1) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
+    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">COVID-19 Hospitalization Rates per 100,000: Ever-Enrolled vs. Average Monthly Enrollment</h5>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 36,
+    "action_score": 0.07,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.cms.gov/resources/preliminary-medicare-covid-19-data-snapshot-methodology"
+    ]
+   },
+   {
     "id": "cc-f165cf9d683b",
     "engine_key": "alfa",
     "rule_id": "sia-r66",
@@ -54071,654 +54719,6 @@
      "https://data.cms.gov/resources/medicare-physician-other-practitioners-methodology",
      "https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-geography-and-service",
      "https://data.cms.gov/tools/medicare-physician-other-practitioner-look-up-tool"
-    ]
-   },
-   {
-    "id": "cc-a0344f55fbea",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 2,
-    "selector_path": "h4:nth-child(*)",
-    "snippet_shape": "h4:",
-    "representative_selector": "h4:nth-child(9)",
-    "representative_snippet": "<h4><span>What does this show you?</span></h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/provider-data/topics/dialysis-facilities/measures"
-    ]
-   },
-   {
-    "id": "cc-a3433dac567c",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#bc767577-36ee-4b23-b820-fac02cc1ba33 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#bc767577-36ee-4b23-b820-fac02cc1ba33 > .ArticleSection > .ArticleSection__component-container:nth-child(10) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Category 2 TINs</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
-    ]
-   },
-   {
-    "id": "cc-321eaccafb0a",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#\\# aa18a5c-f8ec-#-b335-9849352fb762 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\36 aa18a5c-f8ec-4772-b335-9849352fb762 > .ArticleSection > .ArticleSection__component-container:nth-child(3) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">How is measure performance calculated?</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
-    ]
-   },
-   {
-    "id": "cc-5102f498919a",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#f21c83bd-c669-46f9-a0ad-6628f5a3eab7 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#f21c83bd-c669-46f9-a0ad-6628f5a3eab7 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Policy Context</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025"
-    ]
-   },
-   {
-    "id": "cc-e48e2fa0ee10",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#f15b9f7f-a905-#-b771-3db0771fdb25 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#f15b9f7f-a905-4846-b771-3db0771fdb25 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Population</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025"
-    ]
-   },
-   {
-    "id": "cc-6a497c526c40",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#\\# 063fdfd-ecca-400b-9a3f-d7f4070b53d5 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\39 063fdfd-ecca-400b-9a3f-d7f4070b53d5 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Identifying All Enrollments For a Provider</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology-q1-2023-q2-2025"
-    ]
-   },
-   {
-    "id": "cc-8e33f392c5af",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#\\# 8681cc2-acc8-4db0-94d0-c7350418073c > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\30 8681cc2-acc8-4db0-94d0-c7350418073c > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Provider of Services</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
-    ]
-   },
-   {
-    "id": "cc-e858549f42b3",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#cb3f744d-#-404a-961d-f3d8a127268d > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#cb3f744d-3111-404a-961d-f3d8a127268d > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Home Health</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/medicare-post-acute-care-hospice-by-provider-and-service-methodology"
-    ]
-   },
-   {
-    "id": "cc-6e40d0a9a4d5",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".typeface-#-black-semibold-l",
-    "snippet_shape": "h5:",
-    "representative_selector": ".typeface-05-Black-Semibold-L",
-    "representative_snippet": "<h5 class=\"typeface-05-Black-Semibold-L ArticleCitation-numeral\">1</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/mcbs-summary-tables-methodology"
-    ]
-   },
-   {
-    "id": "cc-8653b788a41c",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".visualization:nth-child(*) > .visualization__card > h4",
-    "snippet_shape": "h4:",
-    "representative_selector": ".Visualization:nth-child(1) > .Visualization__card > h4",
-    "representative_snippet": "<h4>Medicare Geographic Variation Dashboards</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/summary-statistics-on-use-and-payments"
-    ]
-   },
-   {
-    "id": "cc-366dc2e51bc5",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".toolslist__lookuptools > .tool:nth-child(*) > h4",
-    "snippet_shape": "h4:",
-    "representative_selector": ".ToolsList__LookupTools > .Tool:nth-child(1) > h4",
-    "representative_snippet": "<h4>Medicare Inpatient Hospital Look-up Tool</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/tools"
-    ]
-   },
-   {
-    "id": "cc-fbb98b819e54",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".toolslist__maptools > .tool:nth-child(*) > h4",
-    "snippet_shape": "h4:",
-    "representative_selector": ".ToolsList__MapTools > .Tool:nth-child(1) > h4",
-    "representative_snippet": "<h4>Medicare Enrollment Dashboard</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/tools"
-    ]
-   },
-   {
-    "id": "cc-d50843fce86a",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".visualizationtools:nth-child(*) > h4",
-    "snippet_shape": "h4:",
-    "representative_selector": ".VisualizationTools:nth-child(1) > h4",
-    "representative_snippet": "<h4>Medicare Geographic Variation Dashboards</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/tools"
-    ]
-   },
-   {
-    "id": "cc-04c81e1bd560",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__datasets > .sitemap__dataset > a[title=\"\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": ".stacked.SiteMap__topics > .SiteMap__topic:nth-child(1) > .SiteMap__datasets > .SiteMap__dataset > a[title=\"\"] > h5",
-    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Physician/Supplier Procedure Summary</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/sitemap"
-    ]
-   },
-   {
-    "id": "cc-353fff6076b6",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".stacked.sitemap__topics > .sitemap__topic:nth-child(*) > .sitemap__datasets > .sitemap__dataset:nth-child(*) > a[title=\"\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": ".stacked.SiteMap__topics > .SiteMap__topic:nth-child(3) > .SiteMap__datasets > .SiteMap__dataset:nth-child(2) > a[title=\"\"] > h5",
-    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/sitemap"
-    ]
-   },
-   {
-    "id": "cc-6093e1de5951",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".sitemap__topic:nth-child(*) > .sitemap__datasets > .sitemap__dataset:nth-child(*) > a[title=\"\"] > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": ".SiteMap__topic:nth-child(4) > .SiteMap__datasets > .SiteMap__dataset:nth-child(2) > a[title=\"\"] > h5",
-    "representative_snippet": "<h5 class=\"SiteMap__datasetName\">Accountable Care Organization Participants</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/sitemap"
-    ]
-   },
-   {
-    "id": "cc-b9a32e26402c",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#\\# f1a859c-56eb-41ad-b43e-965e2bf7eee7 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\31 f1a859c-56eb-41ad-b43e-965e2bf7eee7 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Policy Context</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology"
-    ]
-   },
-   {
-    "id": "cc-9ce27a24a1b2",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#f23f3542-f25e-46d2-ba19-55287d945d65 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#f23f3542-f25e-46d2-ba19-55287d945d65 > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Population</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology"
-    ]
-   },
-   {
-    "id": "cc-b1078b9813a6",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#b5dc0e83-3af1-4a68-ba82-3b60c4f77cdd > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#b5dc0e83-3af1-4a68-ba82-3b60c4f77cdd > .ArticleSection > .ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Identifying All Enrollments For a Provider</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/fee-for-service-public-provider-enrollment-methodology"
-    ]
-   },
-   {
-    "id": "cc-92caa2eec957",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > .articletextblock__subtitle.typeface-#-h5-black-regular-l",
-    "snippet_shape": "h5:",
-    "representative_selector": ".ArticleSection__component-container:nth-child(2) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > .ArticleTextBlock__subtitle.typeface-05-H5-Black-Regular-L",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Risk adjustment</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
-    ]
-   },
-   {
-    "id": "cc-6826d3593ef4",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".articlecitation:nth-child(*) > .articlecitation-top > .typeface-#-black-semibold-l.articlecitation-numeral",
-    "snippet_shape": "h5:",
-    "representative_selector": ".ArticleCitation:nth-child(1) > .ArticleCitation-top > .typeface-05-Black-Semibold-L.ArticleCitation-numeral",
-    "representative_snippet": "<h5 class=\"typeface-05-Black-Semibold-L ArticleCitation-numeral\">1</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/geographic-variation-methodology-2018"
-    ]
-   },
-   {
-    "id": "cc-39742d12f79b",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#def16f89-ea50-40b4-9f98-a24178eac05a > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#def16f89-ea50-40b4-9f98-a24178eac05a > .ArticleSection > .ArticleSection__component-container:nth-child(1) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">Data Source</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/preliminary-medicare-covid-19-data-snapshot-methodology"
-    ]
-   },
-   {
-    "id": "cc-1e93f0ba51c5",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#\\# da0c881-5f6f-49bc-ae5a-42d4e3504b3b > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\35 da0c881-5f6f-49bc-ae5a-42d4e3504b3b > .ArticleSection > .ArticleSection__component-container:nth-child(1) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">COVID-19 Case Rates per 100,000: Ever-Enrolled vs. Average Monthly Enrollment</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/preliminary-medicare-covid-19-data-snapshot-methodology"
-    ]
-   },
-   {
-    "id": "cc-6e6c42bc8f6a",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 293,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#\\# 74e0ead-#-4e13-b0fd-d179f97fe348 > .articlesection > .articlesection__component-container:nth-child(*) > .articletextblock > .container > .row > .offset-lg-#.col > h5",
-    "snippet_shape": "h5:",
-    "representative_selector": "#\\31 74e0ead-4340-4e13-b0fd-d179f97fe348 > .ArticleSection > .ArticleSection__component-container:nth-child(1) > .ArticleTextBlock > .container > .row > .offset-lg-3.col > h5",
-    "representative_snippet": "<h5 class=\"typeface-05-H5-Black-Regular-L ArticleTextBlock__subtitle\">COVID-19 Hospitalization Rates per 100,000: Ever-Enrolled vs. Average Monthly Enrollment</h5>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 36,
-    "action_score": 0.06,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.cms.gov/resources/preliminary-medicare-covid-19-data-snapshot-methodology"
     ]
    },
    {
@@ -68490,7 +68490,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 3906,
+    "action_score": 4687.2,
     "estimated_fix_impact": {
      "findings": 1302,
      "pages": 1302,
@@ -69818,7 +69818,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 1710,
+    "action_score": 2052,
     "estimated_fix_impact": {
      "findings": 570,
      "pages": 570,
@@ -71090,7 +71090,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 250,
+    "action_score": 300,
     "estimated_fix_impact": {
      "findings": 125,
      "pages": 125,

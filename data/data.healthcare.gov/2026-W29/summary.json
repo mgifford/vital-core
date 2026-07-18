@@ -1,7 +1,7 @@
 {
  "domain": "data.healthcare.gov",
  "week": "2026-W29",
- "generatedAt": "2026-07-17T23:07:29.725Z",
+ "generatedAt": "2026-07-18T14:47:22.211Z",
  "pagesScanned": 1982,
  "pagesAudited": 1389,
  "coverage": {
@@ -23490,7 +23490,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 14,
+    "action_score": 16.8,
     "estimated_fix_impact": {
      "findings": 7,
      "pages": 7,
@@ -23554,7 +23554,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 6,
+    "action_score": 7.2,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -23582,7 +23582,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 5,
+    "action_score": 6,
     "estimated_fix_impact": {
      "findings": 5,
      "pages": 5,
@@ -23594,6 +23594,33 @@
      "https://data.healthcare.gov/",
      "https://data.healthcare.gov/home",
      "https://data.healthcare.gov/?page=2"
+    ]
+   },
+   {
+    "id": "cc-30850ec2dc28",
+    "engine_key": "axe-core",
+    "rule_id": "aria-input-field-name",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".select2-selection",
+    "snippet_shape": "span:aria+role",
+    "representative_selector": ".select2-selection",
+    "representative_snippet": "<span class=\"select2-selection select2-selection--multiple\" role=\"combobox\" aria-haspopup=\"true\" aria-expanded=\"false\" tabindex=\"-1\" aria-disabled=\"false\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.healthcare.gov/de-intake-form"
     ]
    },
    {
@@ -23701,30 +23728,30 @@
     ]
    },
    {
-    "id": "cc-30850ec2dc28",
+    "id": "cc-8cbe4219c5ad",
     "engine_key": "axe-core",
-    "rule_id": "aria-input-field-name",
-    "severity": "Serious",
+    "rule_id": "page-has-heading-one",
+    "severity": "Moderate",
     "rule_pages_affected": 1,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": ".select2-selection",
-    "snippet_shape": "span:aria+role",
-    "representative_selector": ".select2-selection",
-    "representative_snippet": "<span class=\"select2-selection select2-selection--multiple\" role=\"combobox\" aria-haspopup=\"true\" aria-expanded=\"false\" tabindex=\"-1\" aria-disabled=\"false\">",
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\" data-react-helmet=\"lang\" data-once=\"apfsCard ecpFAQDrawer ecpBehavior\">",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 2.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://data.healthcare.gov/de-intake-form"
+     "https://data.healthcare.gov/ab-registration-tracker/status"
     ]
    },
    {
@@ -23842,33 +23869,6 @@
     ]
    },
    {
-    "id": "cc-8cbe4219c5ad",
-    "engine_key": "axe-core",
-    "rule_id": "page-has-heading-one",
-    "severity": "Moderate",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "html",
-    "snippet_shape": "html:",
-    "representative_selector": "html",
-    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\" data-react-helmet=\"lang\" data-once=\"apfsCard ecpFAQDrawer ecpBehavior\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.healthcare.gov/ab-registration-tracker/status"
-    ]
-   },
-   {
     "id": "cc-a8b491f84d7c",
     "engine_key": "axe-core",
     "rule_id": "color-contrast",
@@ -23885,7 +23885,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -23912,7 +23912,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -23939,7 +23939,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1,
+    "action_score": 1.2,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -23947,6 +23947,33 @@
     },
     "affected_pages": [
      "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority"
+    ]
+   },
+   {
+    "id": "cc-1a20935e728b",
+    "engine_key": "axe-core",
+    "rule_id": "aria-allowed-role",
+    "severity": "Minor",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".select2-search__field",
+    "snippet_shape": "textarea:aria+role+type",
+    "representative_selector": ".select2-search__field",
+    "representative_snippet": "<textarea class=\"select2-search__field\" type=\"search\" tabindex=\"0\" autocorrect=\"off\" autocapitalize=\"none\" spellcheck=\"false\" role=\"searchbox\" aria-autocomplete=\"list\" autocomplete=\"off\" aria-label=\"S",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.healthcare.gov/de-intake-form"
     ]
    },
    {
@@ -23974,33 +24001,6 @@
     },
     "affected_pages": [
      "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority"
-    ]
-   },
-   {
-    "id": "cc-1a20935e728b",
-    "engine_key": "axe-core",
-    "rule_id": "aria-allowed-role",
-    "severity": "Minor",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".select2-search__field",
-    "snippet_shape": "textarea:aria+role+type",
-    "representative_selector": ".select2-search__field",
-    "representative_snippet": "<textarea class=\"select2-search__field\" type=\"search\" tabindex=\"0\" autocorrect=\"off\" autocapitalize=\"none\" spellcheck=\"false\" role=\"searchbox\" aria-autocomplete=\"list\" autocomplete=\"off\" aria-label=\"S",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 1,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.healthcare.gov/de-intake-form"
     ]
    },
    {
