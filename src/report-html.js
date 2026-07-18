@@ -1461,7 +1461,7 @@ function nextActionsScript() {
     out.push('### Manual testing follow-up');
     out.push('- Verify with keyboard only and at least one screen reader.');
     out.push('- Confirm no regression in the design-system component variant(s).');
-    return out.join('\n');
+    return out.join('\\n');
   }
 
   function jiraFromRow(row) {
@@ -1524,7 +1524,7 @@ function nextActionsScript() {
     out.push('h4. Manual testing');
     out.push('* Keyboard-only verification required');
     out.push('* Screen reader verification required');
-    return out.join('\n');
+    return out.join('\\n');
   }
 
   function parseJsonAttr(row, name) {

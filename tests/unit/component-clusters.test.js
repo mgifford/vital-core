@@ -48,6 +48,36 @@ test('component clusters: detects possible lookalike drift outside design-system
   assert.ok(out.drift_pages[0].tokens.includes('alert-card__body'));
 });
 
+test('component clusters: axe-core findings outrank equal-severity/equal-page Alfa findings (issue #210)', () => {
+  const tracker = createClusterTracker({ design_system: 'none' });
+
+  tracker.observe('axe-core', 'link-name', 'serious', 'https://example.gov/a', [
+    { target: 'nav a.axe-link', html: '<a class="axe-link">Read more</a>' },
+  ]);
+  tracker.observe('axe-core', 'link-name', 'serious', 'https://example.gov/b', [
+    { target: 'nav a.axe-link', html: '<a class="axe-link">Read more</a>' },
+  ]);
+
+  tracker.observe('alfa', 'sia-r61', 'serious', 'https://example.gov/a', [
+    { target: 'nav a.alfa-link', html: '<a class="alfa-link">Read more</a>' },
+  ]);
+  tracker.observe('alfa', 'sia-r61', 'serious', 'https://example.gov/b', [
+    { target: 'nav a.alfa-link', html: '<a class="alfa-link">Read more</a>' },
+  ]);
+
+  const out = tracker.finalize(20, 10);
+  const axeCluster = out.clusters.find((c) => c.engine_key === 'axe-core');
+  const alfaCluster = out.clusters.find((c) => c.engine_key === 'alfa');
+
+  assert.equal(axeCluster.severity, alfaCluster.severity, 'both clusters have equal severity');
+  assert.equal(axeCluster.pages_affected, alfaCluster.pages_affected, 'both clusters affect equal pages');
+  assert.ok(
+    axeCluster.action_score > alfaCluster.action_score,
+    'axe-core cluster must outrank an otherwise-equal alfa cluster',
+  );
+  assert.equal(out.top_actions[0].engine_key, 'axe-core', 'axe-core cluster is ranked first');
+});
+
 test('writeComponentClusterCsvs: writes one CSV per cluster with affected URLs', () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-clusters-'));
   const summary = {
