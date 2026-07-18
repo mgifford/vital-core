@@ -68,6 +68,52 @@ test('webmcp bridge: absent from the fleet index (no single target to scope tool
   assert.doesNotMatch(html, /registerTool/);
 });
 
+// Regression: the fleet-wide "Median axe violations per page, all domains"
+// overlay chart was the one remaining hand-rolled SVG chart with no
+// data-parachart manifest — every other trend chart had already been
+// converted to mount an accessible <para-chart> (distinct color per series,
+// interactive legend) via the same ParaCharts loader. Dash patterns alone
+// don't distinguish many overlapping domains.
+test('cross-domain axe chart emits a per-domain ParaCharts manifest, not just dash patterns', () => {
+  const wk = (week, medianViolations) => ({
+    week, pagesScanned: 5, pagesAudited: 5,
+    axe: { medianViolations, pagesWithViolations: 1, pagesScanned: 5 },
+    alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 5 },
+  });
+  const dashboard = [
+    {
+      target: { domain: 'alpha.gov', key: 'alpha.gov' },
+      series: [wk('2026-W24', 8), wk('2026-W25', 5)],
+      diffs: {}, bugs: [], windowSummary: wk('2026-W25', 5),
+    },
+    {
+      target: { domain: 'beta.gov', key: 'beta.gov' },
+      series: [wk('2026-W24', 3), wk('2026-W25', 2)],
+      diffs: {}, bugs: [], windowSummary: wk('2026-W25', 2),
+    },
+  ];
+  const html = renderIndex(dashboard);
+
+  const start = html.indexOf('Median axe violations per page, all domains');
+  assert.ok(start > -1, 'fleet overlay chart caption present');
+  const figStart = html.lastIndexOf('<figure', start);
+  assert.ok(figStart > -1, 'chart is wrapped in a <figure>');
+
+  const figTag = html.slice(figStart, html.indexOf('>', figStart) + 1);
+  assert.match(figTag, /data-parachart="/, 'figure carries a ParaCharts manifest, mountable as an accessible <para-chart>');
+
+  const manifestMatch = figTag.match(/data-parachart="([^"]*)"/);
+  const manifest = JSON.parse(manifestMatch[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&'));
+  const seriesKeys = manifest.datasets[0].series.map((s) => s.key);
+  assert.deepEqual(seriesKeys.sort(), ['alpha.gov', 'beta.gov'], 'one manifest series per domain, so the runtime can color/legend each independently');
+
+  // The SVG fallback must still carry chart-fallback so the loader hides it
+  // once <para-chart> mounts (matching every other converted chart).
+  const svgStart = html.indexOf('<svg', figStart);
+  const svgTag = html.slice(svgStart, html.indexOf('>', svgStart) + 1);
+  assert.match(svgTag, /class="linechart chart-fallback"/);
+});
+
 test('related-links: a visible footer sentence links the JSON API and MCP server on a domain page', () => {
   const target = { key: 'd', domain: 'd' };
   const summary = {
