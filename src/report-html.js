@@ -2813,7 +2813,7 @@ ${gaps}
 </section>`;
 }
 
-export function renderLighthousePage(target, summary, csvHref, jsonHref) {
+export function renderLighthousePage(target, summary, csvHref, jsonHref, series = []) {
   const lh = summary.lighthouse;
   if (!lh || !lh.pageDetail?.length) {
     return emptyCriterionPage(target, summary, { active: 'lighthouse', label: 'Lighthouse', message: 'No Lighthouse audits ran on this week\'s sampled pages (Lighthouse is sampled at a low rate; some weeks have none).' });
@@ -2857,6 +2857,11 @@ export function renderLighthousePage(target, summary, csvHref, jsonHref) {
 <h1>${esc(target.domain)}: ${t("Lighthouse")} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('lighthouse')}
 <p class="meta">${t('@n pages sampled by Google Lighthouse (its own headless Chrome). Scores are 0–100 (higher is better); metrics are Core Web Vitals.', { '@n': lh.pageDetail.length })}${dlLinks.length ? ` ${t('Download:')} ${dlLinks.join(' · ')}.` : ''}</p>
+${series.length > 1 ? `<section aria-labelledby="h-lh-trend">
+${heading('h-lh-trend', t('Trend'))}
+${lighthouseCategoryTrendChart(series)}
+<p class="meta see-history"><a href="${esc(pageHref('history'))}"><strong>${esc(t('History & Trends'))} →</strong></a> ${t('Severity, Lighthouse and other measures across @n weeks.', { '@n': nf(series.length) })}</p>
+</section>` : ''}
 ${impact ? perfImpactSection(impact) : ''}
 <section aria-labelledby="h-lh-medians">
 ${heading('h-lh-medians', t('Medians across sampled pages'))}
