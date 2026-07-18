@@ -246,6 +246,8 @@ targets:
     design_system: cms-ds
     design_system_theme: default
     webmcp: true
+    sampling:
+      alfa: 25   # Alfa creates large in-memory DOM snapshots; at 50% with 150 pages/run the heap exceeds the runner's 7 GB RAM
   - domain: www.medicare.gov
     importance: 5
 
@@ -257,6 +259,8 @@ targets:
     design_system: cms-ds
     design_system_theme: medicare
     webmcp: true
+    sampling:
+      alfa: 25   # same memory guard as www.cms.gov (importance 5, 150 pages/run)
   - domain: www.medicaid.gov
     importance: 5
   - domain: data.healthcare.gov
