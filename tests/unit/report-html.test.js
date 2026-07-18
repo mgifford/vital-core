@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import vm from 'node:vm';
 import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
@@ -559,6 +560,59 @@ test('renderAccessibilityPage includes expanded next-actions copy payload attrib
   // The accessibility page link must be baked in at render time instead.
   assert.doesNotMatch(html, /\bPAGES\./);
   assert.match(html, /Full scanner detail: accessible\.html/);
+});
+
+// Regression for issue #210: the Next 10 actions "Decision"/"Assigned to"/
+// "Notes" fields and "Copy as issue"/"Copy for JIRA" buttons all silently did
+// nothing. Root cause was `out.join('\n')` inside nextActionsScript()'s
+// template literal — the outer JS engine collapsed `\n` to a real newline
+// character *inside* the generated single-quoted string literal, which is a
+// syntax error in a browser (only template literals allow raw newlines). The
+// whole inline <script> failed to parse, so *no* listeners in it were ever
+// attached — nothing was saved, and nothing was copied. Escaping to `\\n` in
+// the source keeps the two characters `\` + `n` intact for the browser.
+// A regex check for the literal string would not have caught this: it only
+// surfaces by actually parsing the emitted script as JavaScript.
+test('nextActionsSection emits a syntactically valid inline <script>', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 4,
+    componentClusters: {
+      design_system: 'none',
+      top_actions: [
+        {
+          id: 'cc-abc',
+          rule_id: 'color-contrast',
+          engine_key: 'axe-core',
+          severity: 'Serious',
+          pages_affected: 2,
+          instances: 3,
+          selector_path: 'main a',
+          representative_selector: 'main a',
+          representative_snippet: '<a>Read more</a>',
+          design_components: [],
+          estimated_fix_impact: { statement: 'Fix one place, resolve ~3 finding(s) on 2 page(s).' },
+          affected_pages: ['https://example.gov/a'],
+          affected_pages_csv: null,
+        },
+      ],
+      design_component_usage: [],
+      drift_clusters: [],
+    },
+    axe: { rules: {} },
+    alfa: { rules: {} },
+    deprecatedHtml: { rules: {} },
+  };
+  const html = renderAccessibilityPage(target, summary, [], { byRule: {}, bugsAll: null }, { keyPages: [] });
+
+  const start = html.indexOf('<script>', html.indexOf('id="action-io"'));
+  const end = html.indexOf('</script>', start);
+  assert.ok(start > -1 && end > start, 'expected the next-actions <script> block');
+  const body = html.slice(start + '<script>'.length, end).replace(/<\\\//g, '</');
+
+  // A syntax error throws when the Script is constructed, before any code runs.
+  assert.doesNotThrow(() => new vm.Script(body), 'next-actions inline script must be valid JavaScript');
 });
 
 test('statTile renders a ledger cell with localized label and preformatted value', () => {
