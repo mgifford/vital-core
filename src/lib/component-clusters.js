@@ -5,6 +5,11 @@ const MAX_AFFECTED_PAGES = 5000;
 
 const SEVERITY_WEIGHT = { Critical: 4, Serious: 3, Moderate: 2, Minor: 1 };
 
+// axe-core findings are rule-based against the live DOM and have a materially
+// lower false-positive rate than Alfa's heuristic checks, so they outrank an
+// otherwise-equal Alfa cluster in the Next 10 actions queue (issue #210).
+const ENGINE_WEIGHT = { 'axe-core': 1.2, alfa: 1, 'deprecated-html': 1 };
+
 const DESIGN_SYSTEMS = {
 	'cms-ds': {
 		label: 'CMS Design System',
@@ -202,7 +207,8 @@ export function createClusterTracker(target = {}) {
 			const pagesAffected = rulePages.get(ruleKey)?.size ?? c.pages.size;
 			const severity = severityFor(ruleImpact.get(ruleKey) ?? null, pagesAffected, totalPages);
 			const distinctComponents = perRuleComponentCount.get(ruleKey) ?? 1;
-			const score = Math.round(((SEVERITY_WEIGHT[severity] ?? 1) * c.pages.size / Math.max(1, distinctComponents)) * 100) / 100;
+			const engineWeight = ENGINE_WEIGHT[c.engine_key] ?? 1;
+			const score = Math.round(((SEVERITY_WEIGHT[severity] ?? 1) * engineWeight * c.pages.size / Math.max(1, distinctComponents)) * 100) / 100;
 
 			return {
 				id: c.id,
