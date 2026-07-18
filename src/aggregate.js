@@ -48,6 +48,7 @@ const DIFF_TOLERANCE_PP = 0.02;
 
 const MAX_RULE_INSTANCES = 5; // representative failing instances kept per rule
 const MAX_AFFECTED_PAGES = 5000; // full affected-page list cap per rule (for CSV)
+const MAX_RESOURCE_EXAMPLE_PAGES = 5; // source pages kept per resource (issue #217)
 
 // VITAL_PROFILE (optional) scopes the build to one deployment profile —
 // a subset of targets + report branding (config/profiles/<name>.yml). Unset
@@ -972,9 +973,17 @@ function summarizeRecords(target, week, records, brokenLinks) {
       ? {
           total: resourceMap.size,
           byType: countBy([...resourceMap.values()], (r) => r.type),
-          // Full list (url, type, count of pages it appears on) for the
-          // ledger, inventory, and CSV. foundOn Set -> count.
-          list: [...resourceMap.values()].map((r) => ({ url: r.url, type: r.type, pages: r.foundOn.size })),
+          // Full list (url, type, count of pages it appears on, and a
+          // sample of the source pages it was found on — issue #217:
+          // without this, a site owner can see "5979 PDFs" but not which
+          // HTML page to edit to remove or fix one) for the ledger,
+          // inventory, and CSV. foundOn Set -> count + capped sample.
+          list: [...resourceMap.values()].map((r) => ({
+            url: r.url,
+            type: r.type,
+            pages: r.foundOn.size,
+            examplePages: [...r.foundOn].slice(0, MAX_RESOURCE_EXAMPLE_PAGES),
+          })),
         }
       : null,
     standards: standardsPages
