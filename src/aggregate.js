@@ -397,7 +397,7 @@ for (const target of config.targets) {
       fs.writeFileSync(path.join(repDir, `standards${sfx}.html`), renderStandardsPage(target, summary));
       fs.writeFileSync(path.join(repDir, `security${sfx}.html`), renderSecurityPage(target, summary));
       fs.writeFileSync(path.join(repDir, `errors${sfx}.html`), renderErrorsPage(target, summary, csvLinks.errorsAll ?? null));
-      fs.writeFileSync(path.join(repDir, `fast${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson));
+      fs.writeFileSync(path.join(repDir, `fast${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson, series));
       fs.writeFileSync(path.join(repDir, `findable${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));
       fs.writeFileSync(path.join(repDir, `tech${sfx}.html`), renderTechPage(target, summary, techCsv));
       fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary));
