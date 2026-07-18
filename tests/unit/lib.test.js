@@ -577,6 +577,28 @@ test('resource ledger: tracks first/last-seen and flags new-this-week', () => {
   assert.equal(ledger.resources['https://x/b.pdf'].weeksSeen, 1, 're-run does not inflate weeksSeen');
 });
 
+// Issue #217: a site owner needs to know *which page* links/embeds a
+// resource to fix or remove it, not just that it exists. Confirms the
+// ledger persists the source-page sample (not just a page count) and
+// keeps it current as the sample changes week to week.
+test('resource ledger: persists a source-page sample (examplePages) alongside the count', () => {
+  const ledger = { domain: 'x', resources: {} };
+  updateResourceLedger(ledger, '2026-W23', [
+    { url: 'https://x/a.pdf', type: 'pdf', pages: 2, examplePages: ['https://x/about', 'https://x/contact'] },
+  ]);
+  assert.deepEqual(ledger.resources['https://x/a.pdf'].lastExamplePages, ['https://x/about', 'https://x/contact']);
+
+  // Next week the sample changes (different pages now link it) — ledger tracks the latest.
+  updateResourceLedger(ledger, '2026-W24', [
+    { url: 'https://x/a.pdf', type: 'pdf', pages: 3, examplePages: ['https://x/news'] },
+  ]);
+  assert.deepEqual(ledger.resources['https://x/a.pdf'].lastExamplePages, ['https://x/news'], 'sample refreshes with the latest week');
+
+  // Missing examplePages (e.g. older data before this field existed) degrades to empty, not a crash.
+  updateResourceLedger(ledger, '2026-W25', [{ url: 'https://x/b.pdf', type: 'pdf', pages: 1 }]);
+  assert.deepEqual(ledger.resources['https://x/b.pdf'].lastExamplePages, []);
+});
+
 test('act + consensus: axe and alfa for the same ACT rule are one issue', async () => {
   const { canonicalRuleKey, actRuleIdsFor } = await import('../../src/lib/act.js');
   const { buildConsensus } = await import('../../src/lib/consensus.js');
