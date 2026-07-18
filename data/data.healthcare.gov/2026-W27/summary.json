@@ -1,7 +1,7 @@
 {
  "domain": "data.healthcare.gov",
  "week": "2026-W27",
- "generatedAt": "2026-07-17T23:07:29.490Z",
+ "generatedAt": "2026-07-18T14:47:21.961Z",
  "pagesScanned": 1919,
  "pagesAudited": 1354,
  "coverage": {
@@ -24213,6 +24213,39 @@
     ]
    },
    {
+    "id": "cc-b20fd165bcbc",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": ".dkan-c-main-nav",
+    "snippet_shape": "nav:",
+    "representative_selector": ".dkan-c-main-nav",
+    "representative_snippet": "<nav class=\"dkan-c-main-nav\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 16.8,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://data.healthcare.gov/about",
+     "https://data.healthcare.gov/about/faq",
+     "https://data.healthcare.gov/api",
+     "https://data.healthcare.gov/about/software-specs-and-limits",
+     "https://data.healthcare.gov/about/api",
+     "https://data.healthcare.gov/about/program-overview",
+     "https://data.healthcare.gov/about/contact-us"
+    ]
+   },
+   {
     "id": "cc-607b6297b5a3",
     "engine_key": "alfa",
     "rule_id": "sia-r17",
@@ -24392,39 +24425,6 @@
     ]
    },
    {
-    "id": "cc-b20fd165bcbc",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 7,
-    "instances": 7,
-    "selector_path": ".dkan-c-main-nav",
-    "snippet_shape": "nav:",
-    "representative_selector": ".dkan-c-main-nav",
-    "representative_snippet": "<nav class=\"dkan-c-main-nav\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 14,
-    "estimated_fix_impact": {
-     "findings": 7,
-     "pages": 7,
-     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
-    },
-    "affected_pages": [
-     "https://data.healthcare.gov/about",
-     "https://data.healthcare.gov/about/faq",
-     "https://data.healthcare.gov/api",
-     "https://data.healthcare.gov/about/software-specs-and-limits",
-     "https://data.healthcare.gov/about/api",
-     "https://data.healthcare.gov/about/program-overview",
-     "https://data.healthcare.gov/about/contact-us"
-    ]
-   },
-   {
     "id": "cc-08591e087c5b",
     "engine_key": "alfa",
     "rule_id": "sia-r111",
@@ -24538,6 +24538,65 @@
     ]
    },
    {
+    "id": "cc-264093d95b27",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "ol[data-testid]",
+    "snippet_shape": "ol:",
+    "representative_selector": "ol[data-testid=\"results-list\"]",
+    "representative_snippet": "<ol class=\"dc-dataset-search-list ds-u-padding--0 ds-u-margin-top--0 ds-u-margin-bottom--4 ds-u-display--block\" data-testid=\"results-list\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://data.healthcare.gov/datasets?keyword%5B%5D=2025",
+     "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP"
+    ]
+   },
+   {
+    "id": "cc-d4448a1ba382",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": ".ds-u-lg-padding-top--# > h4",
+    "snippet_shape": "h4:",
+    "representative_selector": ".ds-u-lg-padding-top--0 > h4",
+    "representative_snippet": "<h4 class=\"ds-text-heading--2xl\">Find and download Healthcare.gov datasets</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 6,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://data.healthcare.gov/?page=3",
+     "https://data.healthcare.gov/?page=4",
+     "https://data.healthcare.gov/",
+     "https://data.healthcare.gov/home",
+     "https://data.healthcare.gov/?page=2"
+    ]
+   },
+   {
     "id": "cc-610d787a4ad9",
     "engine_key": "alfa",
     "rule_id": "sia-r53",
@@ -24567,65 +24626,6 @@
     ]
    },
    {
-    "id": "cc-264093d95b27",
-    "engine_key": "axe-core",
-    "rule_id": "list",
-    "severity": "Serious",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "ol[data-testid]",
-    "snippet_shape": "ol:",
-    "representative_selector": "ol[data-testid=\"results-list\"]",
-    "representative_snippet": "<ol class=\"dc-dataset-search-list ds-u-padding--0 ds-u-margin-top--0 ds-u-margin-bottom--4 ds-u-display--block\" data-testid=\"results-list\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://data.healthcare.gov/datasets?keyword%5B%5D=2025",
-     "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP"
-    ]
-   },
-   {
-    "id": "cc-d4448a1ba382",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 5,
-    "instances": 5,
-    "selector_path": ".ds-u-lg-padding-top--# > h4",
-    "snippet_shape": "h4:",
-    "representative_selector": ".ds-u-lg-padding-top--0 > h4",
-    "representative_snippet": "<h4 class=\"ds-text-heading--2xl\">Find and download Healthcare.gov datasets</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 5,
-    "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
-    },
-    "affected_pages": [
-     "https://data.healthcare.gov/?page=3",
-     "https://data.healthcare.gov/?page=4",
-     "https://data.healthcare.gov/",
-     "https://data.healthcare.gov/home",
-     "https://data.healthcare.gov/?page=2"
-    ]
-   },
-   {
     "id": "cc-30850ec2dc28",
     "engine_key": "axe-core",
     "rule_id": "aria-input-field-name",
@@ -24642,7 +24642,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -24723,6 +24723,33 @@
      "https://data.healthcare.gov/ab-registration-completion-list?page=39479",
      "https://data.healthcare.gov/ab-suspension-and-termination-list?page=311",
      "https://data.healthcare.gov/ab-registration-completion-list?page=39501"
+    ]
+   },
+   {
+    "id": "cc-8cbe4219c5ad",
+    "engine_key": "axe-core",
+    "rule_id": "page-has-heading-one",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\" data-react-helmet=\"lang\" data-once=\"apfsCard ecpFAQDrawer ecpBehavior\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://data.healthcare.gov/ab-registration-tracker/status"
     ]
    },
    {
@@ -24894,33 +24921,6 @@
     ]
    },
    {
-    "id": "cc-8cbe4219c5ad",
-    "engine_key": "axe-core",
-    "rule_id": "page-has-heading-one",
-    "severity": "Moderate",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "html",
-    "snippet_shape": "html:",
-    "representative_selector": "html",
-    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\" data-react-helmet=\"lang\" data-once=\"apfsCard ecpFAQDrawer ecpBehavior\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://data.healthcare.gov/ab-registration-tracker/status"
-    ]
-   },
-   {
     "id": "cc-04800433c81f",
     "engine_key": "alfa",
     "rule_id": "sia-r78",
@@ -24964,7 +24964,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -24991,7 +24991,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -25018,7 +25018,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1,
+    "action_score": 1.2,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -25045,7 +25045,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 1,
+    "action_score": 1.2,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -31526,100 +31526,36 @@
     ]
    },
    {
-    "id": "cc-607b6297b5a3",
-    "engine_key": "alfa",
-    "rule_id": "sia-r17",
+    "id": "cc-b20fd165bcbc",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 603,
-    "pages_affected": 71,
-    "instances": 71,
-    "selector_path": "<div aria-labelledby=\"api__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"api\">",
-    "snippet_shape": "",
-    "representative_selector": "<div aria-labelledby=\"api__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"api\">",
-    "representative_snippet": null,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": ".dkan-c-main-nav",
+    "snippet_shape": "nav:",
+    "representative_selector": ".dkan-c-main-nav",
+    "representative_snippet": "<nav class=\"dkan-c-main-nav\">",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 9,
-    "action_score": 15.78,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 71,
-     "pages": 71,
-     "statement": "Fix one place, resolve ~71 finding(s) on 71 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
-     "https://data.healthcare.gov/dataset/8dcm-4bzw",
-     "https://data.healthcare.gov/dataset/731b5a4b-02ce-4e87-91fc-18854d3f3301",
-     "https://data.healthcare.gov/dataset/n2pf-y4nw",
-     "https://data.healthcare.gov/dataset/66b55b41-152e-44c2-9727-158401c2e526",
-     "https://data.healthcare.gov/dataset/v3zc-mkgu",
-     "https://data.healthcare.gov/dataset/yupm-u9bv",
-     "https://data.healthcare.gov/dataset/2ffb5a20-8b08-48cb-b0ba-115de4381ca1",
-     "https://data.healthcare.gov/dataset/3ped-rtwb",
-     "https://data.healthcare.gov/dataset/5s8w-8rjc",
-     "https://data.healthcare.gov/dataset/57n9-x7ym",
-     "https://data.healthcare.gov/dataset/tsvh-2fbc",
-     "https://data.healthcare.gov/dataset/2cfb30f4-7c65-42bd-bc4c-a3fbcf1cb2cd",
-     "https://data.healthcare.gov/dataset/7322f647-1be7-4e61-a91f-f5bced1d7795",
-     "https://data.healthcare.gov/dataset/itre-68bw",
-     "https://data.healthcare.gov/dataset/uwvd-ermr",
-     "https://data.healthcare.gov/dataset/3r5z-rcc4",
-     "https://data.healthcare.gov/dataset/iqae-s8gw",
-     "https://data.healthcare.gov/dataset/mudy-c8dk",
-     "https://data.healthcare.gov/dataset/n5rn-769d",
-     "https://data.healthcare.gov/dataset/c4b9735c-68d0-4f8e-9563-cba97783618e",
-     "https://data.healthcare.gov/dataset/wx9m-cnxp",
-     "https://data.healthcare.gov/dataset/5eb5f179-5e8c-433e-85a3-2a38d2c75ba2",
-     "https://data.healthcare.gov/dataset/ebbf57d1-2e47-4289-9799-d251e79b2ff6",
-     "https://data.healthcare.gov/dataset/dmk4-diif",
-     "https://data.healthcare.gov/dataset/cfbbddd9-b405-4c4a-b679-fd2986945b88",
-     "https://data.healthcare.gov/dataset/t2q5-smmd",
-     "https://data.healthcare.gov/dataset/x2qq-i82p",
-     "https://data.healthcare.gov/dataset/vcra-66c2",
-     "https://data.healthcare.gov/dataset/6fe7fb77-7291-4104-952f-7c7e2c5d0c45",
-     "https://data.healthcare.gov/dataset/y75b-i9bb",
-     "https://data.healthcare.gov/dataset/geqt-h5st",
-     "https://data.healthcare.gov/dataset/h2n2-f3vs",
-     "https://data.healthcare.gov/dataset/8iqs-tvaj",
-     "https://data.healthcare.gov/dataset/fb97ce4a-5e5b-4e18-bab8-27299e56d5cf",
-     "https://data.healthcare.gov/dataset/qujg-gtme",
-     "https://data.healthcare.gov/dataset/ed2e896a-d54c-48a3-b617-e26931b7a6eb",
-     "https://data.healthcare.gov/dataset/srdt-wkat",
-     "https://data.healthcare.gov/dataset/szvd-caa9",
-     "https://data.healthcare.gov/dataset/f6am-7dvb",
-     "https://data.healthcare.gov/dataset/q3bc-76k2",
-     "https://data.healthcare.gov/dataset/77bae5d1-43da-4348-9679-82b7d1ce3eb8",
-     "https://data.healthcare.gov/dataset/axtm-2c9r",
-     "https://data.healthcare.gov/dataset/116335a2-6251-4576-96d0-c5919817381f",
-     "https://data.healthcare.gov/dataset/4605f9bd-2d2c-46d5-9568-973545baf6e1",
-     "https://data.healthcare.gov/dataset/mrnm-biu5",
-     "https://data.healthcare.gov/dataset/b2b221ae-4285-4e05-b70b-13e09e7d65cf",
-     "https://data.healthcare.gov/dataset/auys-8mdg",
-     "https://data.healthcare.gov/dataset/253ecd82-4a43-4150-bd1e-3de6de1e2953",
-     "https://data.healthcare.gov/dataset/752w-f3nq",
-     "https://data.healthcare.gov/dataset/2qsb-qitj",
-     "https://data.healthcare.gov/dataset/q5zh-26b2",
-     "https://data.healthcare.gov/dataset/1e4852dd-a489-4ef0-ab71-b424bfca516e",
-     "https://data.healthcare.gov/dataset/eyjq-bpgy",
-     "https://data.healthcare.gov/dataset/bb74019a-af2a-4eba-a88e-190c9241080b",
-     "https://data.healthcare.gov/dataset/kty9-8vvq",
-     "https://data.healthcare.gov/dataset/gvyn-pfdi",
-     "https://data.healthcare.gov/dataset/d722880d-4526-4f54-a87d-e25bdf7891d2",
-     "https://data.healthcare.gov/dataset/pwzx-pjmx",
-     "https://data.healthcare.gov/dataset/m9db-u5fp",
-     "https://data.healthcare.gov/dataset/b0b89edb-c6a6-41ab-acec-deb829b8b002",
-     "https://data.healthcare.gov/dataset/3r89-dc9s",
-     "https://data.healthcare.gov/dataset/t5rn-h86n",
-     "https://data.healthcare.gov/dataset/da3fb89d-6de1-4ece-9ff1-8ff119e22cc4",
-     "https://data.healthcare.gov/dataset/pwv8-ad2e",
-     "https://data.healthcare.gov/dataset/pmci-fk93",
-     "https://data.healthcare.gov/dataset/kir8-ychy",
-     "https://data.healthcare.gov/dataset/d1241e9c-2a73-435c-afb0-f231645b63c8",
-     "https://data.healthcare.gov/dataset/8q2a-a5s7",
-     "https://data.healthcare.gov/dataset/g27k-9fm5",
-     "https://data.healthcare.gov/dataset/fade0e37-50d8-418b-92a0-46828980a384",
-     "https://data.healthcare.gov/dataset/5gqy-8jnf"
+     "https://data.healthcare.gov/about",
+     "https://data.healthcare.gov/about/faq",
+     "https://data.healthcare.gov/api",
+     "https://data.healthcare.gov/about/software-specs-and-limits",
+     "https://data.healthcare.gov/about/api",
+     "https://data.healthcare.gov/about/program-overview",
+     "https://data.healthcare.gov/about/contact-us"
     ]
    }
   ],

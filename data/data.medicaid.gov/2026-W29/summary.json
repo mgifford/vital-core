@@ -1,7 +1,7 @@
 {
  "domain": "data.medicaid.gov",
  "week": "2026-W29",
- "generatedAt": "2026-07-17T23:07:39.510Z",
+ "generatedAt": "2026-07-18T14:47:32.441Z",
  "pagesScanned": 2999,
  "pagesAudited": 2326,
  "coverage": {
@@ -29355,7 +29355,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 176,
+    "action_score": 211.2,
     "estimated_fix_impact": {
      "findings": 88,
      "pages": 88,
@@ -29770,7 +29770,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 24,
+    "action_score": 28.8,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 8,
@@ -29862,6 +29862,38 @@
     ]
    },
    {
+    "id": "cc-b20fd165bcbc",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": ".dkan-c-main-nav",
+    "snippet_shape": "nav:",
+    "representative_selector": ".dkan-c-main-nav",
+    "representative_snippet": "<nav class=\"dkan-c-main-nav\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14.4,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://data.medicaid.gov/about/software-specs-and-limits",
+     "https://data.medicaid.gov/about/api",
+     "https://data.medicaid.gov/about/program-overview",
+     "https://data.medicaid.gov/api",
+     "https://data.medicaid.gov/about/faq",
+     "https://data.medicaid.gov/about/contact-us"
+    ]
+   },
+   {
     "id": "cc-35e189f07c09",
     "engine_key": "alfa",
     "rule_id": "sia-r14",
@@ -29892,38 +29924,6 @@
      "https://data.medicaid.gov/eligibility-enrollment-snapshot-data?page=5",
      "https://data.medicaid.gov/medicaid-chip-eligibility-enrollment-snapshot-data?page=4",
      "https://data.medicaid.gov/eligibility-enrollment-snapshot-data?page=4"
-    ]
-   },
-   {
-    "id": "cc-b20fd165bcbc",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": ".dkan-c-main-nav",
-    "snippet_shape": "nav:",
-    "representative_selector": ".dkan-c-main-nav",
-    "representative_snippet": "<nav class=\"dkan-c-main-nav\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 12,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://data.medicaid.gov/about/software-specs-and-limits",
-     "https://data.medicaid.gov/about/api",
-     "https://data.medicaid.gov/about/program-overview",
-     "https://data.medicaid.gov/api",
-     "https://data.medicaid.gov/about/faq",
-     "https://data.medicaid.gov/about/contact-us"
     ]
    },
    {
@@ -30049,7 +30049,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 2.4,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -30077,7 +30077,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 2.4,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -30105,7 +30105,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 2.4,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -38948,7 +38948,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 176,
+    "action_score": 211.2,
     "estimated_fix_impact": {
      "findings": 88,
      "pages": 88,

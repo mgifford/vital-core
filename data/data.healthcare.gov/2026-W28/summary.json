@@ -1,7 +1,7 @@
 {
  "domain": "data.healthcare.gov",
  "week": "2026-W28",
- "generatedAt": "2026-07-17T23:07:29.605Z",
+ "generatedAt": "2026-07-18T14:47:22.092Z",
  "pagesScanned": 1943,
  "pagesAudited": 1364,
  "coverage": {
@@ -23624,7 +23624,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 14,
+    "action_score": 16.8,
     "estimated_fix_impact": {
      "findings": 7,
      "pages": 7,
@@ -23688,7 +23688,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 6,
+    "action_score": 7.2,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -23716,7 +23716,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 5,
+    "action_score": 6,
     "estimated_fix_impact": {
      "findings": 5,
      "pages": 5,
@@ -23868,7 +23868,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -23929,7 +23929,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 2,
+    "action_score": 2.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -23983,7 +23983,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -24010,7 +24010,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1.5,
+    "action_score": 1.8,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -24105,34 +24105,6 @@
     ]
    },
    {
-    "id": "cc-2ed1fcbbec48",
-    "engine_key": "alfa",
-    "rule_id": "sia-r17",
-    "severity": "Moderate",
-    "rule_pages_affected": 586,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<div aria-labelledby=\"data-dictionary__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"data-dictionary\">",
-    "snippet_shape": "",
-    "representative_selector": "<div aria-labelledby=\"data-dictionary__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"data-dictionary\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 1,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://data.healthcare.gov/dataset/147e50d3-7710-4706-a7c8-796413ef459d",
-     "https://data.healthcare.gov/dataset/da3fb89d-6de1-4ece-9ff1-8ff119e22cc4"
-    ]
-   },
-   {
     "id": "cc-58818a53a569",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
@@ -24149,7 +24121,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 1,
+    "action_score": 1.2,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -24176,7 +24148,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 1,
+    "action_score": 1.2,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -24184,6 +24156,34 @@
     },
     "affected_pages": [
      "https://data.healthcare.gov/de-intake-form"
+    ]
+   },
+   {
+    "id": "cc-2ed1fcbbec48",
+    "engine_key": "alfa",
+    "rule_id": "sia-r17",
+    "severity": "Moderate",
+    "rule_pages_affected": 586,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<div aria-labelledby=\"data-dictionary__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"data-dictionary\">",
+    "snippet_shape": "",
+    "representative_selector": "<div aria-labelledby=\"data-dictionary__tab\" aria-hidden=\"true\" class=\"ds-c-tabs__panel\" id=\"data-dictionary\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://data.healthcare.gov/dataset/147e50d3-7710-4706-a7c8-796413ef459d",
+     "https://data.healthcare.gov/dataset/da3fb89d-6de1-4ece-9ff1-8ff119e22cc4"
     ]
    }
   ],

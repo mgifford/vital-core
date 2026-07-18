@@ -1,7 +1,7 @@
 {
  "domain": "www.healthcare.gov",
  "week": "2026-W28",
- "generatedAt": "2026-07-17T23:07:40.986Z",
+ "generatedAt": "2026-07-18T14:47:34.025Z",
  "pagesScanned": 570,
  "pagesAudited": 570,
  "coverage": {
@@ -12297,7 +12297,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 2208,
+    "action_score": 2649.6,
     "estimated_fix_impact": {
      "findings": 552,
      "pages": 552,
@@ -14368,7 +14368,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 16,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 4,
@@ -14398,7 +14398,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 15,
+    "action_score": 18,
     "estimated_fix_impact": {
      "findings": 5,
      "pages": 5,
@@ -14429,7 +14429,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 8,
+    "action_score": 9.6,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 4,
@@ -14440,6 +14440,34 @@
      "https://www.healthcare.gov/american-indians-alaska-natives/medicaid-chip",
      "https://www.healthcare.gov/glossary/self-employment-income",
      "https://www.healthcare.gov/glossary/total-cost-estimate"
+    ]
+   },
+   {
+    "id": "cc-04e2a59c75e7",
+    "engine_key": "axe-core",
+    "rule_id": "definition-list",
+    "severity": "Serious",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 4,
+    "selector_path": "dl:nth-child(*)",
+    "snippet_shape": "dl:",
+    "representative_selector": "dl:nth-child(4)",
+    "representative_snippet": "<dl>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~4 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/medicaid-chip/getting-medicaid-chip",
+     "https://www.healthcare.gov/medicaid-chip"
     ]
    },
    {
@@ -14481,34 +14509,6 @@
      "https://www.healthcare.gov/glossary/investment-income",
      "https://www.healthcare.gov/glossary/accountable-care-organization",
      "https://www.healthcare.gov/glossary/family-and-medical-leave-act-fmla"
-    ]
-   },
-   {
-    "id": "cc-04e2a59c75e7",
-    "engine_key": "axe-core",
-    "rule_id": "definition-list",
-    "severity": "Serious",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 4,
-    "selector_path": "dl:nth-child(*)",
-    "snippet_shape": "dl:",
-    "representative_selector": "dl:nth-child(4)",
-    "representative_snippet": "<dl>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~4 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/medicaid-chip/getting-medicaid-chip",
-     "https://www.healthcare.gov/medicaid-chip"
     ]
    },
    {
@@ -14660,7 +14660,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -14687,7 +14687,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -14714,7 +14714,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 3,
+    "action_score": 3.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -15180,6 +15180,35 @@
     ]
    },
    {
+    "id": "cc-a591db3b9f0d",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 4,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "h2:nth-child(*)",
+    "snippet_shape": "h2:",
+    "representative_selector": "h2:nth-child(10)",
+    "representative_snippet": "<h2>&nbsp;</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 1.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/taxes-2023/no-health-coverage",
+     "https://www.healthcare.gov/taxes-2023/other-health-coverage",
+     "https://www.healthcare.gov/choose-a-plan/catastrophic-health-plans"
+    ]
+   },
+   {
     "id": "cc-c26cbb73fc76",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
@@ -15208,35 +15237,6 @@
      "https://www.healthcare.gov/job-based-help/coverage",
      "https://www.healthcare.gov/find-local-help",
      "https://www.healthcare.gov/subscribe"
-    ]
-   },
-   {
-    "id": "cc-a591db3b9f0d",
-    "engine_key": "axe-core",
-    "rule_id": "empty-heading",
-    "severity": "Minor",
-    "rule_pages_affected": 4,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "h2:nth-child(*)",
-    "snippet_shape": "h2:",
-    "representative_selector": "h2:nth-child(10)",
-    "representative_snippet": "<h2>&nbsp;</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 1.5,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/taxes-2023/no-health-coverage",
-     "https://www.healthcare.gov/taxes-2023/other-health-coverage",
-     "https://www.healthcare.gov/choose-a-plan/catastrophic-health-plans"
     ]
    },
    {
@@ -15484,7 +15484,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 7,
-    "action_score": 1.14,
+    "action_score": 1.37,
     "estimated_fix_impact": {
      "findings": 4,
      "pages": 4,
@@ -15495,6 +15495,35 @@
      "https://www.healthcare.gov/marketplace-in-your-state",
      "https://www.healthcare.gov/shop-dental-plan-information",
      "https://www.healthcare.gov/dental-plan-information"
+    ]
+   },
+   {
+    "id": "cc-718e0bc9f4a4",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 12,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3",
+    "representative_snippet": "<h3>Other health &amp; dental plan datasets</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 7,
+    "action_score": 1.03,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/shop-health-plan-information",
+     "https://www.healthcare.gov/glossary/federal-poverty-level-fpl",
+     "https://www.healthcare.gov/taxes/no-health-coverage"
     ]
    },
    {
@@ -15662,35 +15691,6 @@
     ]
    },
    {
-    "id": "cc-718e0bc9f4a4",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "h3",
-    "snippet_shape": "h3:",
-    "representative_selector": "h3",
-    "representative_snippet": "<h3>Other health &amp; dental plan datasets</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.86,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/shop-health-plan-information",
-     "https://www.healthcare.gov/glossary/federal-poverty-level-fpl",
-     "https://www.healthcare.gov/taxes/no-health-coverage"
-    ]
-   },
-   {
     "id": "cc-a8c6417f70fc",
     "engine_key": "alfa",
     "rule_id": "sia-r113",
@@ -15735,7 +15735,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 2,
-    "action_score": 0.5,
+    "action_score": 0.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -15762,7 +15762,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.4,
+    "action_score": 0.48,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -15798,6 +15798,141 @@
     },
     "affected_pages": [
      "https://www.healthcare.gov/login"
+    ]
+   },
+   {
+    "id": "cc-a0344f55fbea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h4:nth-child(*)",
+    "snippet_shape": "h4:",
+    "representative_selector": "h4:nth-child(1)",
+    "representative_snippet": "<h4>Apply &amp; enroll in SHOP insurance at any time</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/small-businesses/get-answers"
+    ]
+   },
+   {
+    "id": "cc-301babb0add3",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:href",
+    "representative_selector": "h3:nth-child(2)",
+    "representative_snippet": "<h3><a href=\"/tips-and-troubleshooting/browsers-and-settings/\" data-listener-attached=\"true\">Browser compatibility</a></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/using-this-site"
+    ]
+   },
+   {
+    "id": "cc-99dcc374f75d",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".ds-u-margin-y--# > h4",
+    "snippet_shape": "h4:",
+    "representative_selector": ".ds-u-margin-y--3 > h4",
+    "representative_snippet": "<h4 style=\"text-transform: uppercase;\">Include:</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/shop-calculators-fte"
+    ]
+   },
+   {
+    "id": "cc-214574e9c7ec",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#exceptionalcircumstance",
+    "snippet_shape": "h3:",
+    "representative_selector": "#exceptionalcircumstance",
+    "representative_snippet": "<h3 id=\"exceptionalcircumstance\">Unexpected situations</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/sep-list"
+    ]
+   },
+   {
+    "id": "cc-0789f141efcf",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 12,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h4",
+    "snippet_shape": "h4:",
+    "representative_selector": "h4",
+    "representative_snippet": "<h4>Still have questions?</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.healthcare.gov/get-answers"
     ]
    },
    {
@@ -16038,141 +16173,6 @@
     ]
    },
    {
-    "id": "cc-a0344f55fbea",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h4:nth-child(*)",
-    "snippet_shape": "h4:",
-    "representative_selector": "h4:nth-child(1)",
-    "representative_snippet": "<h4>Apply &amp; enroll in SHOP insurance at any time</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.29,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/small-businesses/get-answers"
-    ]
-   },
-   {
-    "id": "cc-301babb0add3",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h3:nth-child(*)",
-    "snippet_shape": "h3:href",
-    "representative_selector": "h3:nth-child(2)",
-    "representative_snippet": "<h3><a href=\"/tips-and-troubleshooting/browsers-and-settings/\" data-listener-attached=\"true\">Browser compatibility</a></h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.29,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/using-this-site"
-    ]
-   },
-   {
-    "id": "cc-99dcc374f75d",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".ds-u-margin-y--# > h4",
-    "snippet_shape": "h4:",
-    "representative_selector": ".ds-u-margin-y--3 > h4",
-    "representative_snippet": "<h4 style=\"text-transform: uppercase;\">Include:</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.29,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/shop-calculators-fte"
-    ]
-   },
-   {
-    "id": "cc-214574e9c7ec",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#exceptionalcircumstance",
-    "snippet_shape": "h3:",
-    "representative_selector": "#exceptionalcircumstance",
-    "representative_snippet": "<h3 id=\"exceptionalcircumstance\">Unexpected situations</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.29,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/sep-list"
-    ]
-   },
-   {
-    "id": "cc-0789f141efcf",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h4",
-    "snippet_shape": "h4:",
-    "representative_selector": "h4",
-    "representative_snippet": "<h4>Still have questions?</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.29,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.healthcare.gov/get-answers"
-    ]
-   },
-   {
     "id": "cc-78db8482a7df",
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
@@ -16189,7 +16189,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16216,7 +16216,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16243,7 +16243,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16270,7 +16270,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16297,7 +16297,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16324,7 +16324,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16351,7 +16351,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16378,7 +16378,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -16405,7 +16405,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 10,
-    "action_score": 0.2,
+    "action_score": 0.24,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -24578,7 +24578,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 2208,
+    "action_score": 2649.6,
     "estimated_fix_impact": {
      "findings": 552,
      "pages": 552,
@@ -26649,7 +26649,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 16,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 4,
@@ -26679,7 +26679,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 15,
+    "action_score": 18,
     "estimated_fix_impact": {
      "findings": 5,
      "pages": 5,
@@ -26710,7 +26710,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 8,
+    "action_score": 9.6,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 4,
@@ -26724,44 +26724,31 @@
     ]
    },
    {
-    "id": "cc-425ba50d261d",
-    "engine_key": "alfa",
-    "rule_id": "sia-r113",
-    "severity": "Moderate",
-    "rule_pages_affected": 40,
-    "pages_affected": 15,
-    "instances": 15,
-    "selector_path": "<a class=\"megamenu-module--topic-link--97a32\" href=\"/keep-or-change-plan/\">",
-    "snippet_shape": "",
-    "representative_selector": "<a class=\"megaMenu-module--topic-link--97a32\" href=\"/keep-or-change-plan/\">",
-    "representative_snippet": null,
+    "id": "cc-04e2a59c75e7",
+    "engine_key": "axe-core",
+    "rule_id": "definition-list",
+    "severity": "Serious",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 4,
+    "selector_path": "dl:nth-child(*)",
+    "snippet_shape": "dl:",
+    "representative_selector": "dl:nth-child(4)",
+    "representative_snippet": "<dl>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 5,
-    "action_score": 6,
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 7.2,
     "estimated_fix_impact": {
-     "findings": 15,
-     "pages": 15,
-     "statement": "Fix one place, resolve ~15 finding(s) on 15 page(s)."
+     "findings": 4,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~4 finding(s) on 2 page(s)."
     },
     "affected_pages": [
-     "https://www.healthcare.gov/glossary/generic-drugs",
-     "https://www.healthcare.gov/glossary/tty",
-     "https://www.healthcare.gov/glossary/employer-shared-responsibility-payment",
-     "https://www.healthcare.gov/glossary/rehabilitative-rehabilitation-services",
-     "https://www.healthcare.gov/glossary/certified-applicant-counselor",
-     "https://www.healthcare.gov/glossary/out-of-network-coinsurance",
-     "https://www.healthcare.gov/glossary/chronic-disease-management",
-     "https://www.healthcare.gov/glossary/well-baby-and-well-child-visits",
-     "https://www.healthcare.gov/glossary/plan-year",
-     "https://www.healthcare.gov/glossary/nondiscrimination",
-     "https://www.healthcare.gov/glossary/hospital-readmissions",
-     "https://www.healthcare.gov/glossary/in-person-assistance-personnel-program",
-     "https://www.healthcare.gov/glossary/investment-income",
-     "https://www.healthcare.gov/glossary/accountable-care-organization",
-     "https://www.healthcare.gov/glossary/family-and-medical-leave-act-fmla"
+     "https://www.healthcare.gov/medicaid-chip/getting-medicaid-chip",
+     "https://www.healthcare.gov/medicaid-chip"
     ]
    }
   ],

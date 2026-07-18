@@ -1,7 +1,7 @@
 {
  "domain": "www.medicare.gov",
  "week": "2026-W29",
- "generatedAt": "2026-07-17T23:07:14.630Z",
+ "generatedAt": "2026-07-18T14:47:04.652Z",
  "pagesScanned": 1913,
  "pagesAudited": 1867,
  "coverage": {
@@ -27653,6 +27653,46 @@
     ]
    },
    {
+    "id": "cc-3905bf8ee36e",
+    "engine_key": "axe-core",
+    "rule_id": "frame-title",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
+    "selector_path": "iframe[height=\"#%\"]",
+    "snippet_shape": "iframe:",
+    "representative_selector": "iframe[height=\"100%\"]",
+    "representative_snippet": "<iframe data-src=\"https://surveys.cms.gov/jfe/form/SV_9LbdFueyKSYZ2nk?Q_CHL=si&amp;Q_CanScreenCapture=1\" width=\"100%\" height=\"100%\" frameborder=\"0\" name=\"survey-iframe-SI_6tbIx8xW9ShoDfU\" data-name=\"e",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 1,
+    "action_score": 50.4,
+    "estimated_fix_impact": {
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
+    },
+    "affected_pages": [
+     "http://medicare.gov/health-apps/welldoc",
+     "http://medicare.gov/publication-ordering/12200",
+     "http://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/upcoming-plan-changes",
+     "http://medicare.gov/publications/search/all-non-english-pubs?page=10",
+     "http://medicare.gov/basics/forms-publications-mailings/forms/enrollment",
+     "https://medicare.gov/publication-ordering/11472",
+     "http://medicare.gov/basics/forms-publications-mailings/mailings/signing-up/welcome-to-medicare-package",
+     "http://medicare.gov/providers-services/coordinating-care/accountable-care-organizations-ACOs",
+     "http://medicare.gov/basics/forms-publications-mailings/mailings/other-mailings/beneficiary-survey-letter",
+     "https://www.medicare.gov/publication-ordering/11392-S",
+     "http://medicare.gov/publication-ordering/11360-S",
+     "https://medicare.gov/publication-ordering/11022-LE",
+     "https://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/change-in-social-security-payment",
+     "http://medicare.gov/publication-ordering/12181-S"
+    ]
+   },
+   {
     "id": "cc-43f29669ff56",
     "engine_key": "alfa",
     "rule_id": "sia-r87",
@@ -27701,46 +27741,6 @@
      "https://www.medicare.gov/care-compare?guidedSearch=Hospice",
      "https://www.medicare.gov/care-compare?providerType=Hospital",
      "https://medicare.gov/care-compare?guidedSearch=NursingHome"
-    ]
-   },
-   {
-    "id": "cc-3905bf8ee36e",
-    "engine_key": "axe-core",
-    "rule_id": "frame-title",
-    "severity": "Serious",
-    "rule_pages_affected": 14,
-    "pages_affected": 14,
-    "instances": 14,
-    "selector_path": "iframe[height=\"#%\"]",
-    "snippet_shape": "iframe:",
-    "representative_selector": "iframe[height=\"100%\"]",
-    "representative_snippet": "<iframe data-src=\"https://surveys.cms.gov/jfe/form/SV_9LbdFueyKSYZ2nk?Q_CHL=si&amp;Q_CanScreenCapture=1\" width=\"100%\" height=\"100%\" frameborder=\"0\" name=\"survey-iframe-SI_6tbIx8xW9ShoDfU\" data-name=\"e",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 1,
-    "action_score": 42,
-    "estimated_fix_impact": {
-     "findings": 14,
-     "pages": 14,
-     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
-    },
-    "affected_pages": [
-     "http://medicare.gov/health-apps/welldoc",
-     "http://medicare.gov/publication-ordering/12200",
-     "http://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/upcoming-plan-changes",
-     "http://medicare.gov/publications/search/all-non-english-pubs?page=10",
-     "http://medicare.gov/basics/forms-publications-mailings/forms/enrollment",
-     "https://medicare.gov/publication-ordering/11472",
-     "http://medicare.gov/basics/forms-publications-mailings/mailings/signing-up/welcome-to-medicare-package",
-     "http://medicare.gov/providers-services/coordinating-care/accountable-care-organizations-ACOs",
-     "http://medicare.gov/basics/forms-publications-mailings/mailings/other-mailings/beneficiary-survey-letter",
-     "https://www.medicare.gov/publication-ordering/11392-S",
-     "http://medicare.gov/publication-ordering/11360-S",
-     "https://medicare.gov/publication-ordering/11022-LE",
-     "https://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/change-in-social-security-payment",
-     "http://medicare.gov/publication-ordering/12181-S"
     ]
    },
    {
@@ -27846,7 +27846,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 18,
+    "action_score": 21.6,
     "estimated_fix_impact": {
      "findings": 9,
      "pages": 9,
@@ -27881,7 +27881,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 4,
-    "action_score": 16.5,
+    "action_score": 19.8,
     "estimated_fix_impact": {
      "findings": 33,
      "pages": 33,
@@ -28950,6 +28950,35 @@
     ]
    },
    {
+    "id": "cc-0b92615f889d",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-one-main",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" data-react-helmet=\"lang\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
     "id": "cc-557be0227f20",
     "engine_key": "alfa",
     "rule_id": "sia-r17",
@@ -28982,35 +29011,6 @@
      "https://medicare.gov/publications/search?page=1",
      "http://medicare.gov/publications/search?page=3",
      "http://medicare.gov/publications/search?page=0"
-    ]
-   },
-   {
-    "id": "cc-0b92615f889d",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-one-main",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "html",
-    "snippet_shape": "html:",
-    "representative_selector": "html",
-    "representative_snippet": "<html lang=\"en\" data-react-helmet=\"lang\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
     ]
    },
    {
@@ -29099,6 +29099,35 @@
      "http://medicare.gov/basics/get-started-with-medicare/sign-up/ready-to-sign-up-for-part-a-part-b",
      "http://medicare.gov/prescription-payment-plan/before-payment-option",
      "http://medicare.gov/health-drug-plans/coordination"
+    ]
+   },
+   {
+    "id": "cc-c1599a126889",
+    "engine_key": "axe-core",
+    "rule_id": "empty-table-header",
+    "severity": "Minor",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "thead > tr > th:nth-child(*)",
+    "snippet_shape": "th:",
+    "representative_selector": "thead > tr > th:nth-child(1)",
+    "representative_snippet": "<th class=\"\">&nbsp;</th>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 3.6,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/account/login/help",
+     "https://www.medicare.gov/account/login/help",
+     "http://medicare.gov/account/login/help"
     ]
    },
    {
@@ -29992,35 +30021,6 @@
     ]
    },
    {
-    "id": "cc-c1599a126889",
-    "engine_key": "axe-core",
-    "rule_id": "empty-table-header",
-    "severity": "Minor",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "thead > tr > th:nth-child(*)",
-    "snippet_shape": "th:",
-    "representative_selector": "thead > tr > th:nth-child(1)",
-    "representative_snippet": "<th class=\"\">&nbsp;</th>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 3,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/account/login/help",
-     "https://www.medicare.gov/account/login/help",
-     "http://medicare.gov/account/login/help"
-    ]
-   },
-   {
     "id": "cc-9d81278c4337",
     "engine_key": "alfa",
     "rule_id": "sia-r18",
@@ -30095,6 +30095,95 @@
      "https://www.medicare.gov/care-compare?guidedSearch=Hospice",
      "https://www.medicare.gov/care-compare?providerType=Hospital",
      "https://medicare.gov/care-compare?guidedSearch=NursingHome"
+    ]
+   },
+   {
+    "id": "cc-c5361b710ce1",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "#maincontent",
+    "snippet_shape": "h1:",
+    "representative_selector": "#maincontent",
+    "representative_snippet": "<h1 class=\"ds-text-heading--3xl my-u-mb--20\" id=\"maincontent\" tabindex=\"-1\">Medicare Complaint Form</h1>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
+    "id": "cc-213f15aefea1",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "form > p",
+    "snippet_shape": "p:",
+    "representative_selector": "form > p",
+    "representative_snippet": "<p>Complete this form to file a complaint about your Medicare health or drug plan.</p>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
+    "id": "cc-a475b9fac51a",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".ds-c-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".ds-c-alert",
+    "representative_snippet": "<div class=\"ds-c-alert ds-c-alert--hide-icon my-u-my--20\">",
+    "design_components": [
+     "ds-c-alert"
+    ],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "http://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
     ]
    },
    {
@@ -30301,95 +30390,6 @@
     ]
    },
    {
-    "id": "cc-c5361b710ce1",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "#maincontent",
-    "snippet_shape": "h1:",
-    "representative_selector": "#maincontent",
-    "representative_snippet": "<h1 class=\"ds-text-heading--3xl my-u-mb--20\" id=\"maincontent\" tabindex=\"-1\">Medicare Complaint Form</h1>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
-    "id": "cc-213f15aefea1",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "form > p",
-    "snippet_shape": "p:",
-    "representative_selector": "form > p",
-    "representative_snippet": "<p>Complete this form to file a complaint about your Medicare health or drug plan.</p>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
-    "id": "cc-a475b9fac51a",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": ".ds-c-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".ds-c-alert",
-    "representative_snippet": "<div class=\"ds-c-alert ds-c-alert--hide-icon my-u-my--20\">",
-    "design_components": [
-     "ds-c-alert"
-    ],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "http://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
     "id": "cc-0441330ab91a",
     "engine_key": "alfa",
     "rule_id": "sia-r80",
@@ -30474,6 +30474,64 @@
     ]
    },
    {
+    "id": "cc-23a2f0b3ce41",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 40,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".ds-l-md-col--#.layout__column.ds-l-col--#:nth-child(*) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".ds-l-md-col--6.layout__column.ds-l-col--12:nth-child(1) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
+    "representative_snippet": "<h3>Related resources</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 1.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "http://medicare.gov/basics/end-stage-renal-disease",
+     "https://medicare.gov/basics/end-stage-renal-disease",
+     "https://www.medicare.gov/basics/end-stage-renal-disease"
+    ]
+   },
+   {
+    "id": "cc-f4dcc6a45c14",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 40,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".layout__column.ds-l-col--# > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".layout__column.ds-l-col--12 > h3",
+    "representative_snippet": "<h3>Spanish</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 1.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=10",
+     "http://medicare.gov/publications/search/all-non-english-pubs?page=10",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=10"
+    ]
+   },
+   {
     "id": "cc-12a369e66ce3",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
@@ -30509,64 +30567,6 @@
      "http://medicare.gov/health-drug-plans/part-d",
      "http://medicare.gov/health-drug-plans",
      "http://medicare.gov/providers-services"
-    ]
-   },
-   {
-    "id": "cc-23a2f0b3ce41",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 40,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": ".ds-l-md-col--#.layout__column.ds-l-col--#:nth-child(*) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".ds-l-md-col--6.layout__column.ds-l-col--12:nth-child(1) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
-    "representative_snippet": "<h3>Related resources</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 4,
-    "action_score": 1.5,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "http://medicare.gov/basics/end-stage-renal-disease",
-     "https://medicare.gov/basics/end-stage-renal-disease",
-     "https://www.medicare.gov/basics/end-stage-renal-disease"
-    ]
-   },
-   {
-    "id": "cc-f4dcc6a45c14",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 40,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": ".layout__column.ds-l-col--# > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".layout__column.ds-l-col--12 > h3",
-    "representative_snippet": "<h3>Spanish</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 4,
-    "action_score": 1.5,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=10",
-     "http://medicare.gov/publications/search/all-non-english-pubs?page=10",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=10"
     ]
    },
    {
@@ -31672,6 +31672,33 @@
     ]
    },
    {
+    "id": "cc-0789f141efcf",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 40,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h4",
+    "snippet_shape": "h4:",
+    "representative_selector": "h4",
+    "representative_snippet": "<h4>What can this tool do for me?</h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.medicare.gov/care-compare/resources/about-this-tool"
+    ]
+   },
+   {
     "id": "cc-a4cb184b42b3",
     "engine_key": "alfa",
     "rule_id": "sia-r111",
@@ -31766,33 +31793,6 @@
     "affected_pages": [
      "https://medicare.gov/talk-to-someone",
      "http://medicare.gov/talk-to-someone"
-    ]
-   },
-   {
-    "id": "cc-0789f141efcf",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 40,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h4",
-    "snippet_shape": "h4:",
-    "representative_selector": "h4",
-    "representative_snippet": "<h4>What can this tool do for me?</h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.5,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.medicare.gov/care-compare/resources/about-this-tool"
     ]
    },
    {
@@ -42838,6 +42838,46 @@
     ]
    },
    {
+    "id": "cc-3905bf8ee36e",
+    "engine_key": "axe-core",
+    "rule_id": "frame-title",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
+    "selector_path": "iframe[height=\"#%\"]",
+    "snippet_shape": "iframe:",
+    "representative_selector": "iframe[height=\"100%\"]",
+    "representative_snippet": "<iframe data-src=\"https://surveys.cms.gov/jfe/form/SV_9LbdFueyKSYZ2nk?Q_CHL=si&amp;Q_CanScreenCapture=1\" width=\"100%\" height=\"100%\" frameborder=\"0\" name=\"survey-iframe-SI_6tbIx8xW9ShoDfU\" data-name=\"e",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 1,
+    "action_score": 50.4,
+    "estimated_fix_impact": {
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
+    },
+    "affected_pages": [
+     "http://medicare.gov/health-apps/welldoc",
+     "http://medicare.gov/publication-ordering/12200",
+     "http://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/upcoming-plan-changes",
+     "http://medicare.gov/publications/search/all-non-english-pubs?page=10",
+     "http://medicare.gov/basics/forms-publications-mailings/forms/enrollment",
+     "https://medicare.gov/publication-ordering/11472",
+     "http://medicare.gov/basics/forms-publications-mailings/mailings/signing-up/welcome-to-medicare-package",
+     "http://medicare.gov/providers-services/coordinating-care/accountable-care-organizations-ACOs",
+     "http://medicare.gov/basics/forms-publications-mailings/mailings/other-mailings/beneficiary-survey-letter",
+     "https://www.medicare.gov/publication-ordering/11392-S",
+     "http://medicare.gov/publication-ordering/11360-S",
+     "https://medicare.gov/publication-ordering/11022-LE",
+     "https://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/change-in-social-security-payment",
+     "http://medicare.gov/publication-ordering/12181-S"
+    ]
+   },
+   {
     "id": "cc-43f29669ff56",
     "engine_key": "alfa",
     "rule_id": "sia-r87",
@@ -42886,46 +42926,6 @@
      "https://www.medicare.gov/care-compare?guidedSearch=Hospice",
      "https://www.medicare.gov/care-compare?providerType=Hospital",
      "https://medicare.gov/care-compare?guidedSearch=NursingHome"
-    ]
-   },
-   {
-    "id": "cc-3905bf8ee36e",
-    "engine_key": "axe-core",
-    "rule_id": "frame-title",
-    "severity": "Serious",
-    "rule_pages_affected": 14,
-    "pages_affected": 14,
-    "instances": 14,
-    "selector_path": "iframe[height=\"#%\"]",
-    "snippet_shape": "iframe:",
-    "representative_selector": "iframe[height=\"100%\"]",
-    "representative_snippet": "<iframe data-src=\"https://surveys.cms.gov/jfe/form/SV_9LbdFueyKSYZ2nk?Q_CHL=si&amp;Q_CanScreenCapture=1\" width=\"100%\" height=\"100%\" frameborder=\"0\" name=\"survey-iframe-SI_6tbIx8xW9ShoDfU\" data-name=\"e",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 1,
-    "action_score": 42,
-    "estimated_fix_impact": {
-     "findings": 14,
-     "pages": 14,
-     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
-    },
-    "affected_pages": [
-     "http://medicare.gov/health-apps/welldoc",
-     "http://medicare.gov/publication-ordering/12200",
-     "http://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/upcoming-plan-changes",
-     "http://medicare.gov/publications/search/all-non-english-pubs?page=10",
-     "http://medicare.gov/basics/forms-publications-mailings/forms/enrollment",
-     "https://medicare.gov/publication-ordering/11472",
-     "http://medicare.gov/basics/forms-publications-mailings/mailings/signing-up/welcome-to-medicare-package",
-     "http://medicare.gov/providers-services/coordinating-care/accountable-care-organizations-ACOs",
-     "http://medicare.gov/basics/forms-publications-mailings/mailings/other-mailings/beneficiary-survey-letter",
-     "https://www.medicare.gov/publication-ordering/11392-S",
-     "http://medicare.gov/publication-ordering/11360-S",
-     "https://medicare.gov/publication-ordering/11022-LE",
-     "https://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/change-in-social-security-payment",
-     "http://medicare.gov/publication-ordering/12181-S"
     ]
    },
    {
@@ -43031,7 +43031,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 18,
+    "action_score": 21.6,
     "estimated_fix_impact": {
      "findings": 9,
      "pages": 9,
@@ -43066,7 +43066,7 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 4,
-    "action_score": 16.5,
+    "action_score": 19.8,
     "estimated_fix_impact": {
      "findings": 33,
      "pages": 33,

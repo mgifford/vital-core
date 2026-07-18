@@ -1,7 +1,7 @@
 {
  "domain": "www.medicare.gov",
  "week": "2026-W27",
- "generatedAt": "2026-07-17T23:07:14.286Z",
+ "generatedAt": "2026-07-18T14:47:04.335Z",
  "pagesScanned": 1175,
  "pagesAudited": 1162,
  "coverage": {
@@ -18636,7 +18636,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 27,
+    "action_score": 32.4,
     "estimated_fix_impact": {
      "findings": 9,
      "pages": 9,
@@ -18690,6 +18690,86 @@
     ]
    },
    {
+    "id": "cc-8cbe4219c5ad",
+    "engine_key": "axe-core",
+    "rule_id": "page-has-heading-one",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14.4,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/publications/search/item/112376",
+     "https://medicare.gov/publications/search/item/112371",
+     "https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
+     "https://www.medicare.gov/publications/search/item/112376",
+     "https://medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
+     "https://www.medicare.gov/publications/search/item/112371"
+    ]
+   },
+   {
+    "id": "cc-683dbcf35fb8",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 27,
+    "pages_affected": 22,
+    "instances": 22,
+    "selector_path": ".layout__column.ds-l-col--# > h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": ".layout__column.ds-l-col--12 > h3:nth-child(1)",
+    "representative_snippet": "<h3>Polish</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 4,
+    "action_score": 13.2,
+    "estimated_fix_impact": {
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=4",
+     "https://medicare.gov/publications/search/all-non-english-pubs",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=5",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=1",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=1",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=8",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=6",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=7",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=0",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=2",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=0",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=2",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=9",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=8",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=4",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=6",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=9",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=7",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=3",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=5"
+    ]
+   },
+   {
     "id": "cc-990743262834",
     "engine_key": "alfa",
     "rule_id": "sia-r53",
@@ -18726,86 +18806,6 @@
      "https://www.medicare.gov/publications/search/all-non-english-pubs",
      "https://www.medicare.gov/publications/search/all-non-english-pubs?page=7",
      "https://www.medicare.gov/publications/search/all-non-english-pubs?page=3"
-    ]
-   },
-   {
-    "id": "cc-8cbe4219c5ad",
-    "engine_key": "axe-core",
-    "rule_id": "page-has-heading-one",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "html",
-    "snippet_shape": "html:",
-    "representative_selector": "html",
-    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 12,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/publications/search/item/112376",
-     "https://medicare.gov/publications/search/item/112371",
-     "https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
-     "https://www.medicare.gov/publications/search/item/112376",
-     "https://medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
-     "https://www.medicare.gov/publications/search/item/112371"
-    ]
-   },
-   {
-    "id": "cc-683dbcf35fb8",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 27,
-    "pages_affected": 22,
-    "instances": 22,
-    "selector_path": ".layout__column.ds-l-col--# > h3:nth-child(*)",
-    "snippet_shape": "h3:",
-    "representative_selector": ".layout__column.ds-l-col--12 > h3:nth-child(1)",
-    "representative_snippet": "<h3>Polish</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 4,
-    "action_score": 11,
-    "estimated_fix_impact": {
-     "findings": 22,
-     "pages": 22,
-     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=4",
-     "https://medicare.gov/publications/search/all-non-english-pubs",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=5",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=1",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=1",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=8",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=6",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=7",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=0",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=2",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=0",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=2",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=9",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=8",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=4",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=6",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=9",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=7",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=3",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=5"
     ]
    },
    {
@@ -19422,6 +19422,34 @@
     ]
    },
    {
+    "id": "cc-0b92615f889d",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-one-main",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" data-react-helmet=\"lang\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
     "id": "cc-f8e079cd687f",
     "engine_key": "alfa",
     "rule_id": "sia-r78",
@@ -19528,34 +19556,6 @@
     ]
    },
    {
-    "id": "cc-0b92615f889d",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-one-main",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "html",
-    "snippet_shape": "html:",
-    "representative_selector": "html",
-    "representative_snippet": "<html lang=\"en\" data-react-helmet=\"lang\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
     "id": "cc-c1599a126889",
     "engine_key": "axe-core",
     "rule_id": "empty-table-header",
@@ -19572,7 +19572,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 1,
-    "action_score": 2,
+    "action_score": 2.4,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -19940,6 +19940,92 @@
     ]
    },
    {
+    "id": "cc-c5361b710ce1",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "#maincontent",
+    "snippet_shape": "h1:",
+    "representative_selector": "#maincontent",
+    "representative_snippet": "<h1 class=\"ds-text-heading--3xl my-u-mb--20\" id=\"maincontent\" tabindex=\"-1\">Medicare Complaint Form</h1>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
+    "id": "cc-213f15aefea1",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "form > p",
+    "snippet_shape": "p:",
+    "representative_selector": "form > p",
+    "representative_snippet": "<p>Complete this form to file a complaint about your Medicare health or drug plan.</p>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
+    "id": "cc-a475b9fac51a",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".ds-c-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".ds-c-alert",
+    "representative_snippet": "<div class=\"ds-c-alert ds-c-alert--hide-icon my-u-my--20\">",
+    "design_components": [
+     "ds-c-alert"
+    ],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/my/medicare-complaint",
+     "https://www.medicare.gov/my/medicare-complaint"
+    ]
+   },
+   {
     "id": "cc-19c608daabd2",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
@@ -19983,89 +20069,59 @@
     ]
    },
    {
-    "id": "cc-c5361b710ce1",
+    "id": "cc-f4dcc6a45c14",
     "engine_key": "axe-core",
-    "rule_id": "region",
+    "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 27,
     "pages_affected": 2,
     "instances": 2,
-    "selector_path": "#maincontent",
-    "snippet_shape": "h1:",
-    "representative_selector": "#maincontent",
-    "representative_snippet": "<h1 class=\"ds-text-heading--3xl my-u-mb--20\" id=\"maincontent\" tabindex=\"-1\">Medicare Complaint Form</h1>",
+    "selector_path": ".layout__column.ds-l-col--# > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".layout__column.ds-l-col--12 > h3",
+    "representative_snippet": "<h3>Spanish</h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
+    "distinct_components_for_rule": 4,
+    "action_score": 1.2,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
      "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
     },
     "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=10",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=10"
     ]
    },
    {
-    "id": "cc-213f15aefea1",
+    "id": "cc-23a2f0b3ce41",
     "engine_key": "axe-core",
-    "rule_id": "region",
+    "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 27,
     "pages_affected": 2,
     "instances": 2,
-    "selector_path": "form > p",
-    "snippet_shape": "p:",
-    "representative_selector": "form > p",
-    "representative_snippet": "<p>Complete this form to file a complaint about your Medicare health or drug plan.</p>",
+    "selector_path": ".ds-l-md-col--#.layout__column.ds-l-col--#:nth-child(*) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".ds-l-md-col--6.layout__column.ds-l-col--12:nth-child(1) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
+    "representative_snippet": "<h3>Related resources</h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
+    "distinct_components_for_rule": 4,
+    "action_score": 1.2,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
      "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
     },
     "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
-    ]
-   },
-   {
-    "id": "cc-a475b9fac51a",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".ds-c-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".ds-c-alert",
-    "representative_snippet": "<div class=\"ds-c-alert ds-c-alert--hide-icon my-u-my--20\">",
-    "design_components": [
-     "ds-c-alert"
-    ],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/my/medicare-complaint",
-     "https://www.medicare.gov/my/medicare-complaint"
+     "https://medicare.gov/basics/end-stage-renal-disease",
+     "https://www.medicare.gov/basics/end-stage-renal-disease"
     ]
    },
    {
@@ -20563,62 +20619,6 @@
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/eligibility-help-with-costs-November",
      "https://medicare.gov/basics/report-a-death",
      "https://medicare.gov/basics/get-started-with-medicare/medicare-basics/what-does-medicare-cost"
-    ]
-   },
-   {
-    "id": "cc-f4dcc6a45c14",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 27,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".layout__column.ds-l-col--# > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".layout__column.ds-l-col--12 > h3",
-    "representative_snippet": "<h3>Spanish</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 1,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=10",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=10"
-    ]
-   },
-   {
-    "id": "cc-23a2f0b3ce41",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 27,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".ds-l-md-col--#.layout__column.ds-l-col--#:nth-child(*) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".ds-l-md-col--6.layout__column.ds-l-col--12:nth-child(1) > .basic-block[data-track-component=\"basic block\"] > .ds-content.ds-content--m-evo.clearfix > h3",
-    "representative_snippet": "<h3>Related resources</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 1,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/basics/end-stage-renal-disease",
-     "https://www.medicare.gov/basics/end-stage-renal-disease"
     ]
    },
    {
@@ -21228,7 +21228,7 @@
     "drift_tokens": [],
     "likely_source": "content",
     "distinct_components_for_rule": 4,
-    "action_score": 0.5,
+    "action_score": 0.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -29163,7 +29163,7 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 27,
+    "action_score": 32.4,
     "estimated_fix_impact": {
      "findings": 9,
      "pages": 9,
@@ -29217,6 +29217,86 @@
     ]
    },
    {
+    "id": "cc-8cbe4219c5ad",
+    "engine_key": "axe-core",
+    "rule_id": "page-has-heading-one",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14.4,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/publications/search/item/112376",
+     "https://medicare.gov/publications/search/item/112371",
+     "https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
+     "https://www.medicare.gov/publications/search/item/112376",
+     "https://medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
+     "https://www.medicare.gov/publications/search/item/112371"
+    ]
+   },
+   {
+    "id": "cc-683dbcf35fb8",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 27,
+    "pages_affected": 22,
+    "instances": 22,
+    "selector_path": ".layout__column.ds-l-col--# > h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": ".layout__column.ds-l-col--12 > h3:nth-child(1)",
+    "representative_snippet": "<h3>Polish</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 4,
+    "action_score": 13.2,
+    "estimated_fix_impact": {
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
+    },
+    "affected_pages": [
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=4",
+     "https://medicare.gov/publications/search/all-non-english-pubs",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=5",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=1",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=1",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=8",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=6",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=7",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=0",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=2",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=0",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=2",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=9",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=8",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=4",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=6",
+     "https://medicare.gov/publications/search/all-non-english-pubs?page=9",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=7",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=3",
+     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=5"
+    ]
+   },
+   {
     "id": "cc-990743262834",
     "engine_key": "alfa",
     "rule_id": "sia-r53",
@@ -29253,86 +29333,6 @@
      "https://www.medicare.gov/publications/search/all-non-english-pubs",
      "https://www.medicare.gov/publications/search/all-non-english-pubs?page=7",
      "https://www.medicare.gov/publications/search/all-non-english-pubs?page=3"
-    ]
-   },
-   {
-    "id": "cc-8cbe4219c5ad",
-    "engine_key": "axe-core",
-    "rule_id": "page-has-heading-one",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "html",
-    "snippet_shape": "html:",
-    "representative_selector": "html",
-    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 12,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/publications/search/item/112376",
-     "https://medicare.gov/publications/search/item/112371",
-     "https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
-     "https://www.medicare.gov/publications/search/item/112376",
-     "https://medicare.gov/health-drug-plans/medigap/ready-to-buy/spanish-medigap-open-enrollment",
-     "https://www.medicare.gov/publications/search/item/112371"
-    ]
-   },
-   {
-    "id": "cc-683dbcf35fb8",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 27,
-    "pages_affected": 22,
-    "instances": 22,
-    "selector_path": ".layout__column.ds-l-col--# > h3:nth-child(*)",
-    "snippet_shape": "h3:",
-    "representative_selector": ".layout__column.ds-l-col--12 > h3:nth-child(1)",
-    "representative_snippet": "<h3>Polish</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 4,
-    "action_score": 11,
-    "estimated_fix_impact": {
-     "findings": 22,
-     "pages": 22,
-     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
-    },
-    "affected_pages": [
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=4",
-     "https://medicare.gov/publications/search/all-non-english-pubs",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=5",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=1",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=1",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=8",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=6",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=7",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=0",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=2",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=0",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=2",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=9",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=8",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=4",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=6",
-     "https://medicare.gov/publications/search/all-non-english-pubs?page=9",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=7",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=3",
-     "https://www.medicare.gov/publications/search/all-non-english-pubs?page=5"
     ]
    },
    {
