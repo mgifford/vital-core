@@ -3801,8 +3801,12 @@ function fleetSustainabilityChart(ranked) {
 
 /**
  * Overlay line chart: every domain's median axe violations/page over the
- * weeks they share. Accessible (role=img + aria-label + a data-table
- * fallback). Each domain gets a distinct dash pattern (not color alone).
+ * weeks they share. Progressive enhancement: the SVG + table below are the
+ * no-JS baseline (dash-distinguished, not color alone); the data-parachart
+ * manifest lets the loader mount an accessible <para-chart> with a distinct
+ * color per domain and an interactive legend (hover/focus highlights the
+ * matching line) — see PARACHART_LOADER. If JS is off or the runtime fails
+ * to load, the SVG + table remain and nothing regresses.
  */
 function crossDomainChart(ranked) {
   const withSeries = ranked.filter((d) => d.series.length > 1);
@@ -3842,9 +3846,18 @@ function crossDomainChart(ranked) {
 <thead><tr><th scope="col">Domain</th>${allWeeks.map((w) => `<th scope="col">${esc(w)}</th>`).join('')}</tr></thead>
 <tbody>${withSeries.map((d) => `<tr><th scope="row">${esc(d.target.domain)}</th>${allWeeks.map((w) => `<td>${valAt(d, w) ?? '—'}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 
-  return `<figure class="chart">
+  const manifest = buildMultiLineManifest(
+    'Median axe violations per page',
+    'Median axe violations',
+    withSeries.map((d) => ({
+      key: d.target.domain,
+      points: allWeeks.map((w) => ({ week: w, value: valAt(d, w) })),
+    }))
+  );
+
+  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
 <figcaption>Median axe violations per page, all domains — lower is better</figcaption>
-<svg viewBox="0 0 ${W} ${H}" class="linechart" role="img" aria-label="Median axe violations per page over time, compared across ${withSeries.length} domains" preserveAspectRatio="xMidYMid meet">
+<svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="Median axe violations per page over time, compared across ${withSeries.length} domains" preserveAspectRatio="xMidYMid meet">
   ${lines.map((l) => l.line).join('')}${lines.map((l) => l.legend).join('')}${xlabels}
   <text x="4" y="${(y(max) + 4).toFixed(1)}" class="axis">${max}</text><text x="4" y="${(y(0) + 4).toFixed(1)}" class="axis">0</text>
 </svg>
