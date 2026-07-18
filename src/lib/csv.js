@@ -189,10 +189,13 @@ export function writeAcronymsCsv(repDir, domain, week, acronymRows) {
 export function writeResourceCsv(repDir, domain, week, resources, ledger) {
   const rows = resources.list.map((r) => {
     const led = ledger.resources[r.url];
-    return [r.url, r.type, r.pages, led?.firstSeen ?? '', led?.lastSeen ?? ''];
+    // issue #217: example_pages is where this resource is linked/embedded
+    // from, so a site owner can find the HTML to fix without guessing.
+    const examplePages = r.examplePages ?? [];
+    return [r.url, r.type, r.pages, led?.firstSeen ?? '', led?.lastSeen ?? '', examplePages.join(' ')];
   });
   const name = `${filePrefix(domain, week)}_resources.csv`;
-  fs.writeFileSync(path.join(repDir, name), toCsv(['url', 'type', 'pages', 'first_seen', 'last_seen'], rows));
+  fs.writeFileSync(path.join(repDir, name), toCsv(['url', 'type', 'pages', 'first_seen', 'last_seen', 'example_pages'], rows));
   return name;
 }
 

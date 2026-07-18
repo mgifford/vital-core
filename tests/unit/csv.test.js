@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { bugsCsvTable, toCsv } from '../../src/lib/csv.js';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { bugsCsvTable, toCsv, writeResourceCsv } from '../../src/lib/csv.js';
 
 const sampleBug = (over = {}) => ({
   instance_id: 'VS-abc123',
@@ -64,4 +67,31 @@ test('bugsCsvTable + toCsv: CSV escaping of commas and quotes', () => {
   // A field containing a comma is wrapped in quotes; embedded quotes are doubled.
   assert.match(lines[1], /"Alt text, please"/);
   assert.match(lines[1], /"He said ""hi"""/);
+});
+
+// Issue #217: resources.csv must carry the source page(s) a resource is
+// linked/embedded from, not just a count — otherwise a site owner sees
+// "5979 PDFs" with no way to find the HTML to fix.
+test('writeResourceCsv: includes an example_pages column sourced from the resource sample', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-resources-'));
+  const resources = {
+    list: [
+      { url: 'https://x.gov/report.pdf', type: 'pdf', pages: 2, examplePages: ['https://x.gov/about', 'https://x.gov/news'] },
+      { url: 'https://x.gov/no-samples.pdf', type: 'pdf', pages: 1 }, // no examplePages field at all
+    ],
+  };
+  const ledger = {
+    resources: {
+      'https://x.gov/report.pdf': { firstSeen: '2026-W20', lastSeen: '2026-W25' },
+    },
+  };
+
+  const name = writeResourceCsv(tmp, 'x.gov', '2026-W25', resources, ledger);
+  const csv = fs.readFileSync(path.join(tmp, name), 'utf8');
+  const lines = csv.trimEnd().split('\n');
+
+  assert.equal(lines[0], 'url,type,pages,first_seen,last_seen,example_pages');
+  assert.equal(lines[1], 'https://x.gov/report.pdf,pdf,2,2026-W20,2026-W25,https://x.gov/about https://x.gov/news');
+  // Missing examplePages degrades to an empty cell, not a crash.
+  assert.equal(lines[2], 'https://x.gov/no-samples.pdf,pdf,1,,,');
 });
