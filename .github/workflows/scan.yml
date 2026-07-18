@@ -266,7 +266,7 @@ jobs:
 
       - name: Scan
         env:
-          NODE_OPTIONS: --max-old-space-size=8192
+          NODE_OPTIONS: --max-old-space-size=4096
           VITAL_SCAN_TIME_BUDGET_MINUTES: 95
           DISPATCH_BUDGET: ${{ github.event.inputs.budget }}
         run: |
