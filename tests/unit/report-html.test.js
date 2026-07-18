@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
   const target = { key: 'd', domain: 'd' };
@@ -228,6 +228,40 @@ test('renderDomainReport links to History & Trends instead of embedding trend ch
   assert.doesNotMatch(html, /Google Lighthouse score \(median\)/);
   assert.doesNotMatch(html, /Largest Contentful Paint \(median\)/);
   assert.doesNotMatch(html, /Median page weight \(KB\)/);
+});
+
+// Issue #177 (reopened scope): visitors look for the Lighthouse trend on the
+// Lighthouse page itself (fast.html), not buried on the separate History &
+// Trends page. renderLighthousePage should embed the same multi-category
+// chart history.html already builds, when given multi-week series.
+test('renderLighthousePage embeds the Lighthouse category trend chart when multi-week series is available', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const lh = {
+    medianPerformance: 76, medianAccessibility: 79, medianBestPractices: 73, medianSeo: 78,
+    metrics: { firstContentfulPaintMs: 1180, largestContentfulPaintMs: 2210, speedIndexMs: 2800, totalBlockingTimeMs: 120, cumulativeLayoutShift: 0.11 },
+    pageDetail: [{
+      url: 'https://www.example.gov/a',
+      scores: { performance: 76, accessibility: 79, bestPractices: 73, seo: 78, agentic: null },
+      metrics: { firstContentfulPaintMs: 1180, largestContentfulPaintMs: 2210, speedIndexMs: 2800, totalBlockingTimeMs: 120, cumulativeLayoutShift: 0.11 },
+    }],
+  };
+  const summary = { week: '2026-W25', lighthouse: lh };
+  const series = [
+    { week: '2026-W24', lighthouse: { medianPerformance: 71, medianAccessibility: 76, medianBestPractices: 68, medianSeo: 74 } },
+    { week: '2026-W25', lighthouse: lh },
+  ];
+
+  const withHistory = renderLighthousePage(target, summary, null, null, series);
+  assert.match(withHistory, /Lighthouse category scores over 2 weeks/, 'trend chart embedded with 2+ weeks of series data');
+  assert.match(withHistory, /History &amp; Trends →/, 'still links to the full History \\& Trends page');
+  assert.match(withHistory, /data-parachart="/, 'chart carries a ParaCharts manifest, same as every other trend chart');
+
+  // Single-week (or omitted) series: no trend section, no crash, no dangling heading.
+  const singleWeek = renderLighthousePage(target, summary, null, null, [series[1]]);
+  assert.doesNotMatch(singleWeek, /Lighthouse category scores over/, 'no trend chart with fewer than 2 weeks');
+
+  const omitted = renderLighthousePage(target, summary, null, null);
+  assert.doesNotMatch(omitted, /Lighthouse category scores over/, 'no trend chart when series is omitted entirely (back-compat default)');
 });
 
 test('renderDomainReport surfaces the viewer exclusion control under the inventory line (issue #209)', () => {
