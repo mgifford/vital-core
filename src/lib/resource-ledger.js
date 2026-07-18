@@ -31,9 +31,9 @@ export function saveResourceLedger(domainKey, ledger) {
 
 /**
  * Merge one week's resource list into the ledger. `list` is
- * [{ url, type, pages }]. Returns the set of URLs that are new this week
- * (firstSeen === week) so the report can show "added this week".
- * Idempotent per week.
+ * [{ url, type, pages, examplePages }]. Returns the set of URLs that are
+ * new this week (firstSeen === week) so the report can show "added this
+ * week". Idempotent per week.
  */
 export function updateResourceLedger(ledger, week, list) {
   const newThisWeek = [];
@@ -47,6 +47,7 @@ export function updateResourceLedger(ledger, week, list) {
         _weeks: [week],
         weeksSeen: 1,
         lastPages: r.pages,
+        lastExamplePages: r.examplePages ?? [],
       };
       newThisWeek.push({ url: r.url, type: r.type });
     } else {
@@ -58,6 +59,7 @@ export function updateResourceLedger(ledger, week, list) {
       if (week >= existing.lastSeen) {
         existing.lastSeen = week;
         existing.lastPages = r.pages;
+        existing.lastExamplePages = r.examplePages ?? [];
         existing.type = r.type;
       }
       if (existing.firstSeen === week) newThisWeek.push({ url: r.url, type: r.type });
