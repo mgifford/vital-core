@@ -663,8 +663,10 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const freList = [];
   const gradeList = [];
   let plPagesScored = 0;
-  const acronymCounts = {}; // acronym -> { pages, examplePages[] }
-  const misspellingCounts = {}; // word -> { pages, examplePages[] }
+  // Object.create(null): keys come from arbitrary page prose (acronyms/misspellings),
+  // so a scraped word like "constructor" must not resolve through Object.prototype.
+  const acronymCounts = Object.create(null); // acronym -> { pages, examplePages[] }
+  const misspellingCounts = Object.create(null); // word -> { pages, examplePages[] }
   const plRows = []; // per-page readability rows (for CSV)
   let plPagesChecked = 0; // pages plain-language ran on (for words/page)
   const wordCounts = []; // per-page main-content word counts
