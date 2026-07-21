@@ -1,6 +1,6 @@
 {
  "domain": "www.healthcare.gov",
- "updatedAt": "2026-07-13T22:45:22.925Z",
+ "updatedAt": "2026-07-21T13:06:20.744Z",
  "links": {
   "https://portal.cms.gov/wps/portal/unauthportal/home/": {
    "status": 503,
@@ -22,34 +22,34 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W29",
+   "lastSeen": "2026-W30",
    "_weeks": [
     "2026-W24",
     "2026-W25",
     "2026-W26",
     "2026-W28",
-    "2026-W29"
+    "2026-W29",
+    "2026-W30"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers/register-for-the-shop-marketplace",
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers/sell-health-insurance-through-shop",
-    "https://www.healthcare.gov/agent-broker-quick-start",
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers"
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers",
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers/sell-health-insurance-through-shop"
    ]
   },
   "https://www.agentbrokerfaq.cms.gov/s/topic/0TOt0000000TUeNGAW/small-business-health-options-program/": {
    "status": 0,
    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
    "firstSeen": "2026-W26",
-   "lastSeen": "2026-W29",
+   "lastSeen": "2026-W30",
    "_weeks": [
     "2026-W26",
     "2026-W27",
     "2026-W28",
-    "2026-W29"
+    "2026-W29",
+    "2026-W30"
    ],
-   "weeksBroken": 4,
+   "weeksBroken": 5,
    "foundOn": [
     "https://www.healthcare.gov/small-businesses/agents-and-brokers/guides-tools-resources-for-agents-and-brokers"
    ]
@@ -383,6 +383,32 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://www.healthcare.gov/preventive-care-children"
+   ]
+  },
+  "https://support.google.com/analytics/answer/6004245": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W30",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W30"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/third-party-privacy-policies"
+   ]
+  },
+  "http://choice.microsoft.com/en-us/opt-out": {
+   "status": 0,
+   "reason": "timeout",
+   "firstSeen": "2026-W30",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W30"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/third-party-privacy-policies"
    ]
   }
  }
