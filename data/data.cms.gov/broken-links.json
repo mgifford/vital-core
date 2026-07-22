@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-07-21T13:06:17.765Z",
+ "updatedAt": "2026-07-22T13:09:11.459Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -189,14 +189,15 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W29",
+   "lastSeen": "2026-W30",
    "_weeks": [
     "2026-W25",
     "2026-W26",
     "2026-W28",
-    "2026-W29"
+    "2026-W29",
+    "2026-W30"
    ],
-   "weeksBroken": 4,
+   "weeksBroken": 5,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/nursing-homes/quality-measures"
    ]
@@ -703,7 +704,8 @@
    ],
    "weeksBroken": 4,
    "foundOn": [
-    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county"
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county",
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state"
    ]
   },
   "https://www.cms.gov/marketplace/resources/data/archive": {
@@ -778,7 +780,9 @@
    ],
    "weeksBroken": 1,
    "foundOn": [
-    "https://data.cms.gov/resources/cms-program-statistics-methodology"
+    "https://data.cms.gov/resources/cms-program-statistics-methodology",
+    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-service-type-reports/cms-program-statistics-medicare-advantage-physician-non-physician-practitioner-supplier",
+    "https://data.cms.gov/resources/medicare-service-type-reports-methodology-copy"
    ]
   }
  }
