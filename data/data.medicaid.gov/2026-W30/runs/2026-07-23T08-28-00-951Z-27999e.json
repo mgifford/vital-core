@@ -1,0 +1,80 @@
+{
+ "runId": "2026-07-23T08-28-00-951Z-27999e",
+ "week": "2026-W30",
+ "domain": "data.medicaid.gov",
+ "startedAt": "2026-07-23T08:28:02.993Z",
+ "scanned": [
+  "170b9ddb553f063a",
+  "9f8361342193e0c0",
+  "98b42f9aebdd5d10",
+  "d931351db5a655d4",
+  "ce2361efdd5af979",
+  "b2e8fffacb466d43",
+  "2b9522c20c9a50da",
+  "d30f83d7ad1d5038",
+  "46dcf2ba892384e6"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 139,
+  "checked": 139,
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "https://data.medicaid.gov/whats-new",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.medicaid.gov/datasets?keyword%5B0%5D=DQ+Atlas",
+     "https://data.medicaid.gov/dataset/2aa0ed3d-6ef8-47a8-90b0-06b6d2fa3953?page=5",
+     "https://data.medicaid.gov/dataset/1b03ec9b-07dd-4547-99a5-aacf206162d5?page=6",
+     "https://data.medicaid.gov/dataset/61729e5a-7aa8-448c-8903-ba3e0cd0ea3c",
+     "https://data.medicaid.gov/dataset/ef16c490-861a-4b1f-9e6d-f321abdcaab1",
+     "https://data.medicaid.gov/dataset/1c5d0fc9-693a-534a-8240-4627d9362b0d?page=4",
+     "https://data.medicaid.gov/dataset/79692ea5-21e1-56bf-8149-97d437120c4b?page=4",
+     "https://data.medicaid.gov/dataset/fbbe1734-b448-4e5a-bc94-3f8688534741?page=138"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 8,
+  "plain-language": 2,
+  "resources": 8,
+  "images": 8,
+  "link-check": 8,
+  "alfa": 5,
+  "standards": 4,
+  "lighthouse": 1,
+  "public-interest": 1,
+  "third-party": 1,
+  "sustainability": 1
+ },
+ "tally": {
+  "ok": 8,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 1,
+  "error": 0
+ },
+ "finishedAt": "2026-07-23T08:29:33.716Z"
+}
