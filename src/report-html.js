@@ -977,7 +977,9 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', a
   const apiLink = apiFinding
     ? `<link rel="alternate" type="application/json" href="${esc(`${base}api/v1/${apiFinding.key}/${apiFinding.week}/findings.json`)}" title="This page's findings as JSON">\n`
     : '';
-  const relatedLinks = `${apiLink}<link rel="help" href="https://github.com/mgifford/vital-core/blob/main/API.md" title="JSON API documentation">
+  const relatedLinks = `${apiLink}<link rel="alternate" type="application/json" href="${esc(`${base}.well-known/api-catalog`)}" title="API catalog">
+<link rel="alternate" type="application/json" href="${esc(`${base}.well-known/api-catalog.json`)}" title="API catalog (JSON)">
+<link rel="help" href="https://github.com/mgifford/vital-core/blob/main/API.md" title="JSON API documentation">
 <link rel="help" href="https://github.com/mgifford/vital-core/blob/main/MCP.md" title="Local MCP server documentation">`;
   return `<!DOCTYPE html>
 <html lang="${esc(getLocale())}">
@@ -4116,7 +4118,7 @@ ${heading('h-tools', t('Tools'))}
 <section aria-labelledby="h-why">
 ${heading('h-why', t('Why this exists'))}
 <p>${t('Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more accessible and lighter over time, using <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (the open source engine behind Siteimprove) for accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.')}</p>
-<p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="https://github.com/mgifford/vital-core/blob/main/MCP.md">MCP server</a>.')}</p>
+<p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), a machine-discovery <a href=".well-known/api-catalog">API catalog</a>, and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="https://github.com/mgifford/vital-core/blob/main/MCP.md">MCP server</a>.')}</p>
 </section>`;
   return layout({ title: pageTitle, breadcrumb: '', body, depth: 0, page: 'index' });
 }

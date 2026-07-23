@@ -33,7 +33,9 @@ test('related-links: help links appear on every domain sub-page (Standards, Secu
 
 test('related-links: the fleet index has no domain-specific JSON alternate (no single domain+week)', () => {
   const html = renderIndex([]);
-  assert.doesNotMatch(html, /rel="alternate" type="application\/json"/);
+  assert.doesNotMatch(html, /\/api\/v1\/[^"\s]+\/\d{4}-W\d{2}\/findings\.json/);
+  assert.match(html, /rel="alternate" type="application\/json" href="\.well-known\/api-catalog"/);
+  assert.match(html, /rel="alternate" type="application\/json" href="\.well-known\/api-catalog\.json"/);
   // The help links (API.md/MCP.md) are unconditional, unlike the JSON alternate.
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md"/);
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);

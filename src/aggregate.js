@@ -25,6 +25,8 @@ import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { buildLlmsTxt } from './lib/llms-txt.js';
+import { writeApiCatalog } from './lib/api-catalog.js';
+import { summarizeDistribution } from './lib/distribution.js';
 import { writeAcrYaml } from './lib/acr.js';
 import { computeTrainingPriorities } from './lib/training-priorities.js';
 import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
@@ -512,6 +514,7 @@ setLocale(config.defaultLanguage);
 writeAsset(DIRS.docs);
 writeApiFiles(DIRS.docs, apiIndexEntries, apiSnapshots, apiWeekFindings);
 fs.writeFileSync(path.join(DIRS.docs, 'llms.txt'), buildLlmsTxt(config, apiIndexEntries));
+writeApiCatalog(DIRS.docs, config, apiIndexEntries);
 console.log('docs/ written');
 
 // ---------------------------------------------------------------------
@@ -1047,6 +1050,14 @@ function summarizeRecords(target, week, records, brokenLinks) {
           medianSeo: lhScores.seo.length ? median(lhScores.seo) : null,
           medianPwa: null,
           medianAgentic: lhScores.agentic.length ? median(lhScores.agentic) : null,
+          // Distribution bands help downstream analyses track variance, not just medians.
+          distributions: {
+            performance: summarizeDistribution(lhScores.performance),
+            accessibility: summarizeDistribution(lhScores.accessibility),
+            bestPractices: summarizeDistribution(lhScores.bestPractices),
+            seo: summarizeDistribution(lhScores.seo),
+            agentic: summarizeDistribution(lhScores.agentic),
+          },
           metrics: {
             firstContentfulPaintMs: lhMetrics.firstContentfulPaintMs.length ? median(lhMetrics.firstContentfulPaintMs) : null,
             largestContentfulPaintMs: lhMetrics.largestContentfulPaintMs.length ? median(lhMetrics.largestContentfulPaintMs) : null,

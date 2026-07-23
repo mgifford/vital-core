@@ -20,6 +20,7 @@ describe('buildLlmsTxt', () => {
   test('links the API index and every domain snapshot as absolute URLs', () => {
     const text = buildLlmsTxt(CONFIG, INDEX_ENTRIES);
     assert.match(text, /\[JSON API index\]\(https:\/\/mgifford\.github\.io\/vital-core\/api\/v1\/index\.json\)/);
+    assert.match(text, /\[API catalog\]\(https:\/\/mgifford\.github\.io\/vital-core\/\.well-known\/api-catalog\)/);
     assert.match(text, /\[www\.cms\.gov snapshot\]\(https:\/\/mgifford\.github\.io\/vital-core\/api\/v1\/www\.cms\.gov\/snapshot\.json\)/);
     assert.match(text, /\[nih\.gov snapshot\]\(https:\/\/mgifford\.github\.io\/vital-core\/api\/v1\/nih\.gov\/snapshot\.json\)/);
   });

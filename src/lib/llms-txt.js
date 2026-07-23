@@ -28,6 +28,10 @@ export function buildLlmsTxt(config, indexEntries) {
     `- [JSON API index](${abs('/api/v1/index.json')}): all tracked domains, ` +
       'latest week, severity counts, and per-domain links. Static, read-only, no auth.',
   );
+  lines.push(
+    `- [API catalog](${abs('/.well-known/api-catalog')}): machine-discovery ` +
+      'catalog of endpoints, schemas, and agent-oriented entry points.',
+  );
   for (const entry of indexEntries) {
     lines.push(
       `- [${entry.key} snapshot](${abs(entry.snapshot_url)}): full history — ` +
