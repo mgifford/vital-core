@@ -1,0 +1,413 @@
+{
+ "runId": "2026-07-23T04-18-36-166Z-e238d9",
+ "week": "2026-W30",
+ "domain": "www.cdc.gov",
+ "startedAt": "2026-07-23T04:18:37.233Z",
+ "scanned": [
+  "42bb76306e2572ec",
+  "8a3762f274e0575a",
+  "233995e79c979e07",
+  "2b5042887b9a2af2",
+  "0de99a61776dce7f",
+  "3714cf1affa6ace7",
+  "97d4774f38263e5b",
+  "913c7a1beafe2ec9",
+  "ff42249ff20a25a9",
+  "9ddeea7ba9005af4",
+  "2e9a6431d92c06b7",
+  "100bd3eb27dc52c5",
+  "99151bd6a3a5922e",
+  "32a0282e4ab7f396",
+  "10cc322f2f887bbe",
+  "b5f9d162dfa4353c",
+  "bc374f4d692b48c4",
+  "96751034afa0b648",
+  "9b8497040111997b",
+  "f741615a6588fbb8",
+  "04e155e07e2a1a8c",
+  "a4f5fe4de1c2b080",
+  "8bfc71d20dbcfe34",
+  "e1e651ac7d400f26",
+  "0d53a79a7182cde2",
+  "051bd642f3ed610d",
+  "1cb29ce91f4720bb"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 878,
+  "checked": 500,
+  "brokenCount": 35,
+  "broken": [
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fvaccines%2Fhcp%2Fcurrent-vis%2Fmmr.html&text=MMR%20Vaccine%20VIS",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/vaccines/hcp/current-vis/mmr.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/medialibrary/index.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/vaccines/hcp/current-vis/mmr.html",
+     "https://www.cdc.gov/patient-safety/stories/asking-your-healthcare-provider-the-hard-questions.html",
+     "http://www.cdc.gov/hiv-data/nhss/estimated-hiv-incidence-and-prevalence.html",
+     "https://www.cdc.gov/forecast-outbreak-analytics/our-work/outbreak-response-modeling.html",
+     "https://www.cdc.gov/patient-safety/stories/clean-hands-may-have-saved-my-sons-life.html",
+     "https://www.cdc.gov/patient-safety/stories/a-back-to-basics-approach-to-prevent-infection.html",
+     "http://www.cdc.gov/vaccines/hcp/current-vis/meningococcal-acwy.html",
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy",
+     "http://www.cdc.gov/mmwr/volumes/73/wr/mm7340a2.htm?s_cid=mm7340a2_w",
+     "https://www.cdc.gov/pcd/issues/2017/17_0106.htm",
+     "https://www.cdc.gov/ncezid/dfwed/BEAM-dashboard.html",
+     "http://www.cdc.gov/national-program-cancer-registries/registry-plus/index.html",
+     "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/index.html",
+     "https://www.cdc.gov/mental-health/es/about/acerca-de-la-salud-mental.html",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm59e0803a1.htm",
+     "https://www.cdc.gov/niosh/substance-use/tobacco/index.html",
+     "https://www.cdc.gov/tobacco/data_statistics/surveys/nyts/index.htm",
+     "http://www.cdc.gov/mmwr/volumes/65/ss/ss6506a1.htm?s_cid=ss6506_w",
+     "https://www.cdc.gov/active-people-healthy-nation/php/multimedia-tools/index.html",
+     "https://www.cdc.gov/fluview/surveillance/2025-week-45.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/vaccines/hcp/current-vis/mmr.html",
+     "http://www.cdc.gov/hiv-data/nhss/estimated-hiv-incidence-and-prevalence.html",
+     "https://www.cdc.gov/forecast-outbreak-analytics/our-work/outbreak-response-modeling.html",
+     "http://www.cdc.gov/vaccines/hcp/current-vis/meningococcal-acwy.html",
+     "https://www.cdc.gov/lyme/site.html",
+     "https://www.cdc.gov/ncezid/dfwed/BEAM-dashboard.html",
+     "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/rss",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/vaccines/hcp/current-vis/mmr.html",
+     "https://www.cdc.gov/patient-safety/stories/asking-your-healthcare-provider-the-hard-questions.html",
+     "http://www.cdc.gov/hiv-data/nhss/estimated-hiv-incidence-and-prevalence.html",
+     "https://www.cdc.gov/forecast-outbreak-analytics/our-work/outbreak-response-modeling.html",
+     "https://www.cdc.gov/patient-safety/stories/clean-hands-may-have-saved-my-sons-life.html",
+     "https://www.cdc.gov/patient-safety/stories/a-back-to-basics-approach-to-prevent-infection.html",
+     "http://www.cdc.gov/vaccines/hcp/current-vis/meningococcal-acwy.html",
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy",
+     "http://www.cdc.gov/mmwr/volumes/73/wr/mm7340a2.htm?s_cid=mm7340a2_w",
+     "https://www.cdc.gov/pcd/issues/2017/17_0106.htm",
+     "https://www.cdc.gov/lyme/site.html",
+     "https://www.cdc.gov/ncezid/dfwed/BEAM-dashboard.html",
+     "http://www.cdc.gov/national-program-cancer-registries/registry-plus/index.html",
+     "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/index.html",
+     "https://www.cdc.gov/mental-health/es/about/acerca-de-la-salud-mental.html",
+     "https://www.cdc.gov/niosh/substance-use/tobacco/index.html",
+     "https://www.cdc.gov/tobacco/data_statistics/surveys/nyts/index.htm",
+     "http://www.cdc.gov/mmwr/volumes/65/ss/ss6506a1.htm?s_cid=ss6506_w",
+     "https://www.cdc.gov/active-people-healthy-nation/php/multimedia-tools/index.html",
+     "https://www.cdc.gov/fluview/surveillance/2025-week-45.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fpatient-safety%2Fstories%2Fasking-your-healthcare-provider-the-hard-questions.html&text=Asking%20Your%20Healthcare%20Provider%20the%20Hard%20Questions",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/patient-safety/stories/asking-your-healthcare-provider-the-hard-questions.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_493",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/patient-safety/stories/asking-your-healthcare-provider-the-hard-questions.html",
+     "https://www.cdc.gov/patient-safety/stories/clean-hands-may-have-saved-my-sons-life.html",
+     "https://www.cdc.gov/patient-safety/stories/a-back-to-basics-approach-to-prevent-infection.html"
+    ]
+   },
+   {
+    "url": "https://stacks.cdc.gov/view/cdc/156513",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/hiv-data/nhss/estimated-hiv-incidence-and-prevalence.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fhiv-data%2Fnhss%2Festimated-hiv-incidence-and-prevalence.html&text=Estimated%20HIV%20Incidence%20and%20Prevalence",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/hiv-data/nhss/estimated-hiv-incidence-and-prevalence.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fforecast-outbreak-analytics%2Four-work%2Foutbreak-response-modeling.html&text=Outbreak%20Response%20Modeling",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/forecast-outbreak-analytics/our-work/outbreak-response-modeling.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.do",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2008/jan/07_0142a.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/ncidod/EID/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2008/jan/07_0142a.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/doc.do?id=0900f3ec80093c90",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2008/jan/07_0142a.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fpatient-safety%2Fstories%2Fclean-hands-may-have-saved-my-sons-life.html&text=Clean%20Hands%20May%20Have%20Saved%20My%20Son%27s%20Life",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/patient-safety/stories/clean-hands-may-have-saved-my-sons-life.html"
+    ]
+   },
+   {
+    "url": "http://www.dhhs.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2008/jan/07_0142a.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fpatient-safety%2Fstories%2Fa-back-to-basics-approach-to-prevent-infection.html&text=A%20Back%20to%20Basics%20Approach%20to%20Prevent%20Infection",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/patient-safety/stories/a-back-to-basics-approach-to-prevent-infection.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fvaccines%2Fhcp%2Fcurrent-vis%2Fmeningococcal-acwy.html&text=Meningococcal%20ACWY%20Vaccine%20VIS",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/vaccines/hcp/current-vis/meningococcal-acwy.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/early-care-education/php/farm-to-ece/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy"
+    ]
+   },
+   {
+    "url": "https://www.atsdr.cdc.gov/placeandhealth/svi/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/dnpao-state-local-programs/php/data-research/health-equity-resources.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fearly-care-education%2Fphp%2Fpublic-health-strategy%2Findex.html&text=Strategies%20for%20Early%20Care%20and%20Education",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_1296",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy"
+    ]
+   },
+   {
+    "url": "http://new.diversitydatakids.org/child-opportunity-index",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "http://www.cdc.gov/early-care-education/php/public-health-strategy"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mpox/hcp/clinical-signs/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/volumes/73/wr/mm7340a2.htm?s_cid=mm7340a2_w"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/poxvirus/mpox/vaccines/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/volumes/73/wr/mm7340a2.htm?s_cid=mm7340a2_w"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mpox/prevention/safer-sex-social-gatherings-and-mpox.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/volumes/73/wr/mm7340a2.htm?s_cid=mm7340a2_w"
+    ]
+   },
+   {
+    "url": "http://doi.org/10.4269/ajtmh.15-0168",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/volumes/73/wr/mm7340a2.htm?s_cid=mm7340a2_w"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fmmwr%2Fvolumes%2F73%2Fwr%2Fmm7340a2.htm&text=Risk%20of%20Clade%20II%20Mpox%20Associated%20with%20Intimate%20and%20Nonintimate%20Close%20Contact%20Among%20Men%20Who%20Have%20Sex%20with%20Men%20and%20Transgender%20Adults%20%E2%80%94%20United%20States%2C%20August%202022%E2%80%93July%202023",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/volumes/73/wr/mm7340a2.htm?s_cid=mm7340a2_w"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/pcd/issues/2017/pdf/17_0106.pdf",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2017/17_0106.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/pcd/issues/2017/citations/17_0106.ris",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2017/17_0106.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fpcd%2Fissues%2F2017%2F17_0106.htm&text=Early%20Outcomes%20of%20State%20Public%20Health%20Actions%E2%80%99%20School%20Nutrition%20Strategies",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2017/17_0106.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fbeam%2Fdashboard%2Findex.html&text=BEAM%20Dashboard",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/ncezid/dfwed/BEAM-dashboard.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_9_13",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/national-program-cancer-registries/registry-plus/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnational-program-cancer-registries%2Fregistry-plus%2Findex.html&text=Registry%20Plus%20Software",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/national-program-cancer-registries/registry-plus/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fyellow-book%2Fhcp%2Fhealth-care-abroad%2Findex.html&text=Health%20Care%20Abroad",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/moving-matters/es/about/movernos.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mental-health/es/about/acerca-de-la-salud-mental.html",
+     "https://www.cdc.gov/active-people-healthy-nation/php/multimedia-tools/index.html"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "sustainability": 4,
+  "axe": 24,
+  "plain-language": 14,
+  "resources": 24,
+  "images": 24,
+  "standards": 13,
+  "link-check": 24,
+  "alfa": 12,
+  "deprecated-html": 3,
+  "security": 3,
+  "tech": 4,
+  "third-party": 7,
+  "lighthouse": 4,
+  "public-interest": 1
+ },
+ "tally": {
+  "ok": 24,
+  "blocked": 2,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 1,
+  "error": 0
+ },
+ "finishedAt": "2026-07-23T05:55:01.556Z"
+}
