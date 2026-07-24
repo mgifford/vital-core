@@ -1,7 +1,7 @@
 {
  "domain": "data.healthcare.gov",
  "week": "2026-W29",
- "generatedAt": "2026-07-18T16:31:10.105Z",
+ "generatedAt": "2026-07-24T13:07:14.943Z",
  "pagesScanned": 1982,
  "pagesAudited": 1389,
  "coverage": {
@@ -15530,6 +15530,68 @@
   "medianSeo": 100,
   "medianPwa": null,
   "medianAgentic": 54,
+  "distributions": {
+   "performance": {
+    "min": 1,
+    "max": 55,
+    "p10": 3.1,
+    "p25": 5,
+    "p50": 17.5,
+    "p75": 53,
+    "p90": 55,
+    "range": 54,
+    "spreadP10toP90": 51.9,
+    "iqr": 48
+   },
+   "accessibility": {
+    "min": 95,
+    "max": 100,
+    "p10": 97,
+    "p25": 97,
+    "p50": 97,
+    "p75": 97,
+    "p90": 97,
+    "range": 5,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "bestPractices": {
+    "min": 77,
+    "max": 100,
+    "p10": 79.3,
+    "p25": 100,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 23,
+    "spreadP10toP90": 20.7,
+    "iqr": 0
+   },
+   "seo": {
+    "min": 83,
+    "max": 100,
+    "p10": 100,
+    "p25": 100,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 17,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "agentic": {
+    "min": 16,
+    "max": 100,
+    "p10": 50,
+    "p25": 51,
+    "p50": 54,
+    "p75": 100,
+    "p90": 100,
+    "range": 84,
+    "spreadP10toP90": 50,
+    "iqr": 49
+   }
+  },
   "metrics": {
    "firstContentfulPaintMs": 12477,
    "largestContentfulPaintMs": 15955,
