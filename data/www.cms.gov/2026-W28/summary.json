@@ -1,7 +1,7 @@
 {
  "domain": "www.cms.gov",
  "week": "2026-W28",
- "generatedAt": "2026-07-18T16:30:44.228Z",
+ "generatedAt": "2026-07-24T13:06:44.600Z",
  "pagesScanned": 8594,
  "pagesAudited": 7459,
  "coverage": {
@@ -235502,6 +235502,68 @@
   "medianSeo": 100,
   "medianPwa": null,
   "medianAgentic": 98,
+  "distributions": {
+   "performance": {
+    "min": 4,
+    "max": 100,
+    "p10": 35,
+    "p25": 48,
+    "p50": 57,
+    "p75": 70,
+    "p90": 79,
+    "range": 96,
+    "spreadP10toP90": 44,
+    "iqr": 22
+   },
+   "accessibility": {
+    "min": 75,
+    "max": 100,
+    "p10": 97,
+    "p25": 97,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 25,
+    "spreadP10toP90": 3,
+    "iqr": 3
+   },
+   "bestPractices": {
+    "min": 59,
+    "max": 100,
+    "p10": 81,
+    "p25": 96,
+    "p50": 96,
+    "p75": 100,
+    "p90": 100,
+    "range": 41,
+    "spreadP10toP90": 19,
+    "iqr": 4
+   },
+   "seo": {
+    "min": 61,
+    "max": 100,
+    "p10": 61,
+    "p25": 92,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 39,
+    "spreadP10toP90": 39,
+    "iqr": 8
+   },
+   "agentic": {
+    "min": 48,
+    "max": 100,
+    "p10": 53,
+    "p25": 75,
+    "p50": 97.5,
+    "p75": 99,
+    "p90": 100,
+    "range": 52,
+    "spreadP10toP90": 47,
+    "iqr": 24
+   }
+  },
   "metrics": {
    "firstContentfulPaintMs": 2563,
    "largestContentfulPaintMs": 6051,

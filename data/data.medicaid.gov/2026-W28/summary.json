@@ -1,7 +1,7 @@
 {
  "domain": "data.medicaid.gov",
  "week": "2026-W28",
- "generatedAt": "2026-07-18T16:31:19.810Z",
+ "generatedAt": "2026-07-24T13:07:27.804Z",
  "pagesScanned": 2969,
  "pagesAudited": 2298,
  "coverage": {
@@ -21332,6 +21332,68 @@
   "medianSeo": 100,
   "medianPwa": null,
   "medianAgentic": 53,
+  "distributions": {
+   "performance": {
+    "min": 3,
+    "max": 56,
+    "p10": 9,
+    "p25": 10,
+    "p50": 12,
+    "p75": 32,
+    "p90": 40.6,
+    "range": 53,
+    "spreadP10toP90": 31.6,
+    "iqr": 22
+   },
+   "accessibility": {
+    "min": 91,
+    "max": 100,
+    "p10": 97,
+    "p25": 97,
+    "p50": 97,
+    "p75": 97,
+    "p90": 97,
+    "range": 9,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "bestPractices": {
+    "min": 73,
+    "max": 100,
+    "p10": 96,
+    "p25": 100,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 27,
+    "spreadP10toP90": 4,
+    "iqr": 0
+   },
+   "seo": {
+    "min": 83,
+    "max": 100,
+    "p10": 100,
+    "p25": 100,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 17,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "agentic": {
+    "min": 10,
+    "max": 100,
+    "p10": 50,
+    "p25": 51,
+    "p50": 53,
+    "p75": 65,
+    "p90": 100,
+    "range": 90,
+    "spreadP10toP90": 50,
+    "iqr": 14
+   }
+  },
   "metrics": {
    "firstContentfulPaintMs": 6789,
    "largestContentfulPaintMs": 10167,

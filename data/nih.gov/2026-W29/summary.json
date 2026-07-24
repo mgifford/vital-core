@@ -1,7 +1,7 @@
 {
  "domain": "nih.gov",
  "week": "2026-W29",
- "generatedAt": "2026-07-18T16:31:22.737Z",
+ "generatedAt": "2026-07-24T13:07:31.484Z",
  "pagesScanned": 3333,
  "pagesAudited": 3136,
  "coverage": {
@@ -125336,6 +125336,68 @@
   "medianSeo": 100,
   "medianPwa": null,
   "medianAgentic": 100,
+  "distributions": {
+   "performance": {
+    "min": 21,
+    "max": 88,
+    "p10": 39.1,
+    "p25": 49,
+    "p50": 61,
+    "p75": 71,
+    "p90": 78.9,
+    "range": 67,
+    "spreadP10toP90": 39.8,
+    "iqr": 22
+   },
+   "accessibility": {
+    "min": 89,
+    "max": 96,
+    "p10": 95,
+    "p25": 95,
+    "p50": 95,
+    "p75": 95.8,
+    "p90": 96,
+    "range": 7,
+    "spreadP10toP90": 1,
+    "iqr": 0.8
+   },
+   "bestPractices": {
+    "min": 59,
+    "max": 96,
+    "p10": 77,
+    "p25": 93,
+    "p50": 96,
+    "p75": 96,
+    "p90": 96,
+    "range": 37,
+    "spreadP10toP90": 19,
+    "iqr": 3
+   },
+   "seo": {
+    "min": 92,
+    "max": 100,
+    "p10": 100,
+    "p25": 100,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 8,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "agentic": {
+    "min": 7,
+    "max": 100,
+    "p10": 56,
+    "p25": 60,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 93,
+    "spreadP10toP90": 44,
+    "iqr": 40
+   }
+  },
   "metrics": {
    "firstContentfulPaintMs": 2433,
    "largestContentfulPaintMs": 5216,
