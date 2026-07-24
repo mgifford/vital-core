@@ -1,0 +1,556 @@
+{
+ "runId": "2026-07-24T04-18-58-385Z-96086e",
+ "week": "2026-W30",
+ "domain": "nih.gov",
+ "startedAt": "2026-07-24T04:18:59.975Z",
+ "scanned": [
+  "0b9d8b3bd3820932",
+  "d6d4ac001bb3a140",
+  "780c12c88abc49c5",
+  "c6a1f381ac78ffea",
+  "075d8a047d6ba74b",
+  "fa12f8b6b5c02384",
+  "355d808101c429a8",
+  "31cbddeaae814dcd",
+  "9dded64f54c0c6cf",
+  "c26a9f6c7b7eaa48",
+  "f5e8bfd7b8334b63",
+  "882c6d40ca3505da",
+  "af5756dac70ed15f",
+  "4fb7ad59641d9fc2",
+  "3882f6bb637703eb",
+  "31de40070f53df0c",
+  "91016c514906d60b",
+  "e04e751ca4b0620a",
+  "d4b970ca5537c5fc",
+  "dc7ec971bf1501bf",
+  "9715fb0d8368acea",
+  "2ad85621ec186d3d",
+  "a57cf2158566c334",
+  "b80b809bb4b91a26",
+  "5600fc1963cfe85a",
+  "9b57b11bfbb46dd3",
+  "800a6d701478af7d",
+  "bf83fcd8d7153132",
+  "746441dddb5abb92",
+  "3b48d0acfe80bad3",
+  "2761b69f92d37f12",
+  "d5aae358ca362a5e",
+  "05dd8e05b776dbda",
+  "c9c8f7155e1baa09",
+  "f162e5b348986428",
+  "2c49f5d8b16f71a9",
+  "c8115d364d165338",
+  "54bbad6c2d47a040",
+  "a964146cda2a2874",
+  "80a5190c934ca831",
+  "bb04bf86bb0db782"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 747,
+  "checked": 500,
+  "brokenCount": 57,
+  "broken": [
+   {
+    "url": "https://www.cdc.gov/coronavirus/2019-ncov/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/mandatory-masking-schools-reduced-covid-19-cases"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/alzheimers",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/blocking-cellular-receptor-stops-spread-tau-mouse-brains"
+    ]
+   },
+   {
+    "url": "https://directorsblog.nih.gov/",
+    "status": 0,
+    "reason": "ENOTFOUND",
+    "foundOn": [
+     "https://nih.gov/about-nih/nih-pio-network/pio-toolbox"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/parkinsons-disease",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/night-breathing-patterns-identify-people-parkinson-s-disease"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/about-nih/who-we-are/nih-director/articles/celebration-science-nih",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/impact-nih-research"
+    ]
+   },
+   {
+    "url": "http://report.nih.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/impact-nih-research"
+    ]
+   },
+   {
+    "url": "https://nihpublications.od.nih.gov/search.aspx",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://nih.gov/about-nih/nih-pio-network/pio-toolbox"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/web-modernization",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/health-information",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/health-information/nih-clinical-research-trials-you",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/health-information/your-healthiest-self-wellness-toolkits",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/institutes-nih/office-communications-public-liaison/clear-communication/talking-your-doctor-or-health-care-provider",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/grants-funding",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-events",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-events/media-inquiries",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-events/nih-social-media",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-events/images-b-roll",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-events/nih-news-publications",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/medical-research-initiatives",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/science-highlights",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/research-nih-labs-clinics",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/training-opportunities",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/library-resources",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/research-resources",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/clinical-research-resources",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/safety-regulation-guidance",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/research-training/lasker-clinical-research-scholars",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/institutes-nih",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/institutes-nih/list-institutes-centers",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/institutes-nih/nih-office-director",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/institutes-nih/directors-nih-institutes-centers",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/mission-goals",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/organization",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/nih-director",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/nih-almanac",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/nih-turning-discovery-into-health",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/impact-nih-research",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/science-health-public-trust",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/visitor-information",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/get-involved-nih",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/contact-us",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/virtual-tour",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/about-nih/frequently-asked-questions",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/press-room",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/nih-website-archives",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/privacy-policy",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/news-releases/feed.xml",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/disclaimers",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/accessibility",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "http://mailto:RADxInfo@nih.gov/nondiscrimination-notice",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: http://mailt",
+    "foundOn": [
+     "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-researchers-identify-regulatory-cells-shield-against-inflammatory-bowel-disease"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/exercise-and-physical-activity-getting-fit-life",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/light-activity-may-lower-harmful-effects-sitting"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 39,
+  "alfa": 25,
+  "plain-language": 21,
+  "resources": 39,
+  "images": 39,
+  "standards": 16,
+  "link-check": 39,
+  "lighthouse": 1,
+  "security": 6,
+  "public-interest": 5,
+  "third-party": 10,
+  "tech": 1,
+  "sustainability": 5,
+  "deprecated-html": 1
+ },
+ "tally": {
+  "ok": 39,
+  "blocked": 2,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-07-24T04:24:12.685Z"
+}
