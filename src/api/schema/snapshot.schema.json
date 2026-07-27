@@ -34,6 +34,10 @@
     },
     "tech_findings": { "type": ["array", "object", "null"] },
     "top_actions": { "type": ["object", "null"] },
+    "policy": {
+      "type": ["object", "null"],
+      "description": "Optional policy disclosures, including suppression summary where configured."
+    },
     "weekly": {
       "type": "object",
       "required": ["series"],

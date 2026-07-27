@@ -35,6 +35,28 @@ defaults:
     # both    — letter grade and numeric score (default)
     # none    — suppress the score section entirely
     score_format: both
+  finding_policy:
+    conformance:
+      standard: WCAG
+      version: "2.2"
+      level: AA
+    defaults:
+      wcag_a_aa:
+        obligation: required
+        handling: report
+      wcag_aaa:
+        obligation: advisory
+        handling: report
+      best_practice:
+        obligation: advisory
+        handling: report
+      not_required_for_conformance:
+        obligation: advisory
+        handling: report
+      unmapped:
+        obligation: unmapped
+        handling: review
+    rules: []
 
 # Which sustainability figure the reports headline: "co2" (grams CO2 per
 # page) or "energy" (watt-hours per page). Both are always recorded in the
@@ -263,6 +285,18 @@ targets:
       alfa: 25   # same memory guard as www.cms.gov (importance 5, 150 pages/run)
   - domain: www.medicaid.gov
     importance: 5
+    finding_policy:
+      rules:
+        - match:
+            engine: alfa
+            rule_id: sia-r113
+          obligation: required
+          handling: review
+          reason: >-
+            WCAG 2.5.8 target-size results can require manual verification of
+            spacing, equivalent controls, and essential-size exceptions.
+          evidence:
+            - https://alfa.siteimprove.com/rules/sia-r113
   - domain: data.healthcare.gov
     importance: 3                  # open-data site; pages are template-similar
   - domain: openpaymentsdata.cms.gov

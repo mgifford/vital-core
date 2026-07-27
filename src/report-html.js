@@ -1584,7 +1584,17 @@ function nextActionsScript() {
  */
 function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}, excludePatterns = []) {
   const filteredBugs = filterBugsByExclusion(bugs, excludePatterns);
-  const view = prioritizeAccessibilityBugs(summary, filteredBugs, { keyPages: reporting.keyPages ?? [], reporting });
+  const laneRank = (b) => {
+    if (b.obligation === 'required' && b.handling === 'report') return 0;
+    if (b.handling === 'review') return 1;
+    if (b.obligation === 'advisory' && b.handling === 'report') return 2;
+    return 3;
+  };
+  const view = prioritizeAccessibilityBugs(
+    summary,
+    [...filteredBugs].sort((a, b) => laneRank(a) - laneRank(b)),
+    { keyPages: reporting.keyPages ?? [], reporting }
+  );
   const ordered = view.bugs;
   if (!ordered || ordered.length === 0) {
     return `<section aria-labelledby="h-bugs">
@@ -1618,8 +1628,36 @@ ${heading('h-bugs', t('Bug reports'))}
   const fullSevCount = fullBugs.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
   const fullCatCount = fullBugs.reduce((m, b) => ((m[b.wcag_category ?? 'Undetermined'] = (m[b.wcag_category ?? 'Undetermined'] ?? 0) + 1), m), {});
 
-  const blocks = fullBugs
-    .map((b) => {
+  const laneMeta = (b) => {
+    if (b.obligation === 'required' && b.handling === 'report') {
+      return {
+        key: 'required-report',
+        heading: t('Standards and policy requirements'),
+        desc: t('Automated findings related to applicable requirements. These are indicators to prioritize, not by themselves a full conformance determination.'),
+      };
+    }
+    if (b.handling === 'review') {
+      return {
+        key: 'verification',
+        heading: t('Verification required'),
+        desc: t('These findings need manual verification before they can be treated as confirmed failures. Obligation remains visible for each finding.'),
+      };
+    }
+    if (b.obligation === 'advisory' && b.handling === 'report') {
+      return {
+        key: 'advisory',
+        heading: t('Best practices and enhanced accessibility'),
+        desc: t('These findings go beyond the configured WCAG conformance target. They can improve accessibility and user experience.'),
+      };
+    }
+    return {
+      key: 'other',
+      heading: t('Other findings'),
+      desc: t('Findings that do not fit the standard reporting lanes.'),
+    };
+  };
+
+  const renderBug = (b) => {
       const wcagDetail = b.wcag_sc
         ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (${t('Level @level, WCAG @version', { '@level': esc(b.wcag_level), '@version': esc(b.wcag_version ?? '2.x') })})`
         : b.wcag_category === 'Best Practice' ? t('Best Practice — not a WCAG requirement') : t('undetermined');
@@ -1632,7 +1670,7 @@ ${heading('h-bugs', t('Bug reports'))}
       const dupNote = b.possible_duplicate_of
         ? `<div><dt>${t('Possible duplicate')}</dt><dd>${t('Same WCAG SC covered by axe report <code>@id</code> (pattern <code>@pattern</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.', { '@id': esc(b.possible_duplicate_of), '@pattern': esc(b.possible_duplicate_pattern) })}</dd></div>`
         : '';
-      return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
+      return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-obligation="${esc(b.obligation ?? '')}" data-handling="${esc(b.handling ?? '')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
 <summary id="${esc(b.instance_id)}" tabindex="-1"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
@@ -1640,6 +1678,8 @@ ${heading('h-bugs', t('Bug reports'))}
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
+  <div><dt>${t('Obligation')}</dt><dd>${esc(b.obligation ?? 'unmapped')}</dd></div>
+  <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
   <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
   <div><dt>${t('Rule')}</dt><dd>${ruleLink}</dd></div>
   <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
@@ -1665,8 +1705,22 @@ ${affectedPagesBlock(b)}
 <label class="triage-label triage-notes-label">${t('Notes')}<textarea class="triage-notes" rows="2" placeholder="${esc(t('Add notes…'))}" data-triage-id="${esc(b.instance_id)}"></textarea></label>
 </div>
 </details>`;
-    })
-    .join('\n');
+    };
+
+  const grouped = new Map();
+  for (const b of fullBugs) {
+    const lane = laneMeta(b);
+    const entry = grouped.get(lane.key) ?? { lane, bugs: [] };
+    entry.bugs.push(b);
+    grouped.set(lane.key, entry);
+  }
+
+  const blocks = [...grouped.values()].map(({ lane, bugs: laneBugs }) => `
+<section class="finding-lane" data-lane="${esc(lane.key)}">
+  <h3>${esc(lane.heading)}</h3>
+  <p class="meta">${esc(lane.desc)}</p>
+  <div class="bug-list">${laneBugs.map(renderBug).join('\n')}</div>
+</section>`).join('\n');
 
   // Progressive-enhancement filter. Without JS every bug is visible; the
   // script below reveals the controls and filters the <details> blocks by
@@ -1704,6 +1758,27 @@ ${keyPageFilter}<button type="button" id="filter-reset">${t('Reset')}</button>
   const dupLine = dupCount > 0
     ? `<p class="note">${t('@n finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.', { '@n': dupCount })}</p>`
     : '';
+  const suppression = reporting.policySummary ?? null;
+  const suppressionBlock = suppression && suppression.patterns > 0
+    ? `<details class="suppression-disclosure"><summary>${t('Suppressed findings')} (${suppression.patterns})</summary>
+<p class="meta">${t('@patterns suppressed pattern(s), @pages affected pages, @occurrences suppressed occurrences.', {
+      '@patterns': suppression.patterns,
+      '@pages': suppression.pages,
+      '@occurrences': suppression.occurrences,
+    })}</p>
+<table>
+<thead><tr><th>${t('Pattern')}</th><th>${t('Rule')}</th><th>${t('Reason')}</th><th>${t('Evidence')}</th><th>${t('Expires')}</th><th class="num">${t('Occurrences')}</th></tr></thead>
+<tbody>${(suppression.entries ?? []).map((s) => `<tr>
+  <td><code>${esc(s.pattern_id)}</code></td>
+  <td>${esc(s.engine_key)}:${esc(s.rule_id)}</td>
+  <td>${esc(s.reason ?? '')}</td>
+  <td>${(s.evidence ?? []).map((e) => `<a href="${esc(e)}">${esc(e)}</a>`).join('<br>')}</td>
+  <td>${esc(s.expires ?? '')}</td>
+  <td class="num">${nf(s.occurrences ?? 0)}</td>
+</tr>`).join('')}</tbody>
+</table>
+</details>`
+    : '';
   const exclusionBanner = formatExclusionBanner(excludePatterns);
 
   return `<section aria-labelledby="h-bugs">
@@ -1714,9 +1789,10 @@ ${exclusionBox(target, { bugsJson: reporting.bugsJson ?? 'bugs.json' })}
 <p class="meta">${t('@count issue type(s) are shown by default out of @total total. Prioritized by severity, key pages, WCAG level, and prevalence; use the toggle to show everything.', { '@count': fullVisibleCount, '@total': ordered.length })}</p>
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
 ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
-<p class="note">${t('Fields marked "requires manual testing" cannot be observed by an automated scan. Manual AT verification is required before filing in JIRA. Best Practice findings are axe rules not tied to a WCAG criterion — address WCAG requirements first.')}</p>
+<p class="note">${t('Automated testing does not establish full WCAG conformance. Findings in the verification lane require manual testing before they are treated as confirmed failures.')}</p>
 ${priorityLine}
 ${dupLine}
+${suppressionBlock}
 <div class="triage-io" hidden id="triage-io">
 <span class="triage-io-label">${t('Triage decisions:')}</span>
 <button type="button" id="triage-export" class="triage-btn">${t('Export (.json)')}</button>
@@ -3514,6 +3590,7 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
   const prog = progress ?? { new: [], fixed: [], regressed: [] };
+  const lanes = policyLaneCounts(bugs);
   // The single highest-leverage finding, surfaced as the one thing to do next.
   const win = bugs.length ? rankBugs(bugs, 1)[0] : null;
   const changeCount = diff
@@ -3564,6 +3641,13 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
 </aside>
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
+<p class="meta">${t('Primary standards queue: @n required finding type(s) (handling: report). Verification queue: @r required finding type(s) (handling: review). Advisory queue: @a finding type(s). Unmapped review queue: @u finding type(s).', {
+  '@n': lanes.requiredReport,
+  '@r': lanes.requiredReview,
+  '@a': lanes.advisoryReport,
+  '@u': lanes.unmappedReview,
+})}</p>
+
 <section aria-labelledby="h-deltas">
 <h2 id="h-deltas" class="visually-hidden">${t('Change this week')}</h2>
 <dl class="ledger deltas">
@@ -3610,6 +3694,22 @@ ${exclusionFilterScript()}
     apiFinding: { key: target.key, week: summary.week },
     target,
   });
+}
+
+function policyLaneCounts(bugs) {
+  const out = {
+    requiredReport: 0,
+    requiredReview: 0,
+    advisoryReport: 0,
+    unmappedReview: 0,
+  };
+  for (const b of bugs ?? []) {
+    if (b.obligation === 'required' && b.handling === 'report') out.requiredReport++;
+    else if (b.obligation === 'required' && b.handling === 'review') out.requiredReview++;
+    else if (b.obligation === 'advisory' && b.handling === 'report') out.advisoryReport++;
+    else if (b.obligation === 'unmapped' && b.handling === 'review') out.unmappedReview++;
+  }
+  return out;
 }
 
 function renderTrainingPriorities(priorities, advice) {

@@ -20,6 +20,7 @@ import { buildCooccurrence, rankAssociations } from './lib/tech-findings.js';
 import { rollupThirdParty } from './lib/third-party-rollup.js';
 import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } from './lib/third-party-ledger.js';
 import { buildAiFindings } from './lib/ai-findings.js';
+import { applyFindingPolicy } from './lib/finding-policy.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
@@ -162,10 +163,14 @@ for (const target of config.targets) {
 
   // Human reports + structured bug reports (Markdown, JSON, and inline HTML).
   let latestBugs = []; // latest week's bugs, for the fleet-wide worst-offenders view
+  let latestPolicySummary = null;
   for (let i = 0; i < series.length; i++) {
     const summary = series[i];
     const prev = i > 0 ? series[i - 1] : null;
-    const bugs = buildBugReports(target, summary);
+    const rawBugs = buildBugReports(target, summary);
+    const policyResult = applyFindingPolicy(target.findingPolicy, rawBugs);
+    const bugs = policyResult.bugs;
+    const reportBugs = policyResult.reportBugs;
 
     // Build the set of page URLs covered by any engine in the PREVIOUS week.
     // Used by updateFindings() to detect coverage-expansion false positives: a
@@ -208,8 +213,8 @@ for (const target of config.targets) {
 
     // Update the ledger for this week and annotate each bug with its
     // first/last-seen history.
-    const history = updateFindings(ledger, summary.week, bugs, { prevCoveredUrls, thisWeekCoveredUrls, prevWeek: prev?.week ?? null });
-    for (const b of bugs) {
+    const history = updateFindings(ledger, summary.week, reportBugs, { prevCoveredUrls, thisWeekCoveredUrls, prevWeek: prev?.week ?? null });
+    for (const b of reportBugs) {
       const h = history[b.pattern_id];
       if (h) {
         b.first_seen = h.firstSeen;
@@ -226,8 +231,8 @@ for (const target of config.targets) {
     progress.burndown = severityBurndown(ledger, weeksSoFar);
     progress.streaks = streaks(progress.burndown);
     progress.deltaSeries = deltaSeries(ledger, weeksSoFar);
-    if (bugs.length) {
-      const apiBugs = apiBugsFor(target, bugs);
+    if (reportBugs.length) {
+      const apiBugs = apiBugsFor(target, reportBugs);
       if (apiBugs.length) {
         apiWeekFindings.push({ key: target.key, week: summary.week, data: buildWeekFindings(target, summary, apiBugs, ledger.findings) });
       }
@@ -239,13 +244,13 @@ for (const target of config.targets) {
     // CSVs of affected pages, then link each bug to its per-rule CSV.
     const csvLinks = writeCsvs(repDir, summary);
     const clusterCsvLinks = writeComponentClusterCsvs(repDir, summary);
-    for (const b of bugs) {
+    for (const b of reportBugs) {
       b.affected_pages_csv = csvLinks.byRule[`${b.engine_key}:${b.rule_id}`] ?? null;
     }
 
     // Flat bugs.csv: all findings in one spreadsheet-friendly file.
     // Written after affected_pages_csv is set on each bug so the links are included.
-    csvLinks.bugsAll = writeBugsCsv(repDir, target.domain, summary.week, bugs);
+    csvLinks.bugsAll = writeBugsCsv(repDir, target.domain, summary.week, reportBugs);
     // Broken-link ledger: track first/last-seen and weeks-broken per URL,
     // then annotate summary entries so the errors page can show history.
     if (summary.linkCheck?.broken?.length) {
@@ -285,7 +290,7 @@ for (const target of config.targets) {
     // Priority pages: cross-engine view ranked by composite a11y+perf score.
     const priorityPages = writePriorityPages(
       repDir, target.domain, summary.week, summary.generatedAt,
-      bugs, summary.lighthouse?.pageDetail ?? [], summary.pagesScanned
+      reportBugs, summary.lighthouse?.pageDetail ?? [], summary.pagesScanned
     );
     if (priorityPages.csv) summary.priorityPagesCsv = priorityPages.csv;
     if (priorityPages.json) summary.priorityPagesJson = priorityPages.json;
@@ -324,7 +329,7 @@ for (const target of config.targets) {
     const acrResult = writeAcrYaml(repDir, target, summary, summary.week);
 
     // Training priorities: top WCAG SCs by pages affected, with optional Ollama advice.
-    const trainingPriorities = computeTrainingPriorities(bugs);
+    const trainingPriorities = computeTrainingPriorities(reportBugs);
     let trainingAdvice = null;
     if (trainingPriorities.length > 0 && await ollamaAvailable()) {
       const model = await ollamaDetectModel();
@@ -361,7 +366,10 @@ for (const target of config.targets) {
 
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
-    if (isLatest) latestBugs = bugs.map((b) => ({ ...b, _week: summary.week }));
+    if (isLatest) {
+      latestBugs = reportBugs.map((b) => ({ ...b, _week: summary.week }));
+      latestPolicySummary = policyResult.suppressionSummary;
+    }
 
     // Render the configured languages. Sustainability (sustainable-web-output):
     // non-default languages are built only for the LATEST week — the most-viewed
@@ -385,12 +393,13 @@ for (const target of config.targets) {
       // Filenames are outcome-aligned (accessible/fast/findable/third-parties);
       // a redirect stub is written at each old basename below so existing deep
       // links keep working.
-      fs.writeFileSync(path.join(repDir, `accessible${sfx}.html`), renderAccessibilityPage(target, summary, bugs, csvLinks, {
+      fs.writeFileSync(path.join(repDir, `accessible${sfx}.html`), renderAccessibilityPage(target, summary, reportBugs, csvLinks, {
         ...reporting, keyPages,
         priorityPagesCsv: priorityPages.csv,
         priorityPagesJson: priorityPages.json,
         bugsJson: bugsJsonName,
         aiJson: aiJsonName,
+        policySummary: policyResult.suppressionSummary,
         clusterCsvLinks,
         acrYaml: acrResult.path,
         trainingPriorities,
@@ -413,7 +422,7 @@ for (const target of config.targets) {
       const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
       if (archiveHtml) fs.writeFileSync(path.join(repDir, `archive${sfx}.html`), archiveHtml);
       fs.writeFileSync(path.join(repDir, `index${sfx}.html`),
-        renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, bugs, csvLinks, isLatest ? invSummary : null, progress));
+        renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, reportBugs, csvLinks, isLatest ? invSummary : null, progress));
       // Redirect stubs at the pre-rename basenames (hash-preserving), for this
       // locale's suffix, so old bookmarks/pinned-issue links resolve.
       for (const [oldName, newName] of Object.entries(PAGE_REDIRECTS)) {
@@ -421,17 +430,23 @@ for (const target of config.targets) {
       }
     }
     setLocale(target.defaultLanguage);
-    fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, bugs));
+    fs.writeFileSync(path.join(repDir, 'bugs.md'), bugReportsMarkdown(target, summary, reportBugs));
     fs.writeFileSync(
       path.join(repDir, bugsJsonName),
-      JSON.stringify({ domain: target.domain, week: summary.week, generatedAt: summary.generatedAt, reports: bugs }, null, 1)
+      JSON.stringify({
+        domain: target.domain,
+        week: summary.week,
+        generatedAt: summary.generatedAt,
+        reports: bugs,
+        policy: { suppression: policyResult.suppressionSummary },
+      }, null, 1)
     );
 
     // AI-oriented findings summary: compact, problem-focused, LLM-ready.
     // Intentionally excludes healthy pages; uses representative examples rather
     // than exhaustive lists. The existing bugs.json and domain.json are the
     // archival sources of truth and are not replaced.
-    const aiDoc = await buildAiFindings(target, summary, bugs, ledger, series, invSummary, repDir);
+    const aiDoc = await buildAiFindings(target, summary, reportBugs, ledger, series, invSummary, repDir);
     if (aiDoc) {
       const aiJson = JSON.stringify(aiDoc, null, 1);
       fs.writeFileSync(path.join(repDir, aiJsonName), aiJson);
@@ -449,7 +464,7 @@ for (const target of config.targets) {
   const latestSummary = series[series.length - 1];
   const latestBugsOnly = apiBugsFor(target, latestBugs.map(({ _week, ...b }) => b));
   apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
-  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, series, diffs, ledger, invSummary, latestBugsOnly) });
+  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, series, diffs, ledger, invSummary, latestBugsOnly, latestPolicySummary) });
 
   const urlIdx = buildUrlIndex(domainDir, target.domain, latestSummary.week);
   if (urlIdx) {
