@@ -206,7 +206,7 @@ export function writeResourceCsv(repDir, domain, week, resources, ledger) {
  *
  * Identity: bug_id, pattern_id, combined_id (JIRA filter format)
  * Classification: engine, rule_id, wcag_category, wcag_sc, wcag_name,
- *   wcag_level, wcag_version, severity
+ *   wcag_level, wcag_version, severity, obligation, handling
  * Frequency: pages_affected, instances, total_pages_scanned
  * Reproduction: example_url, xpath, html_snippet
  * Narrative: summary, description, steps_to_reproduce, suggested_fix,
@@ -229,7 +229,8 @@ export function bugsCsvTable(bugs) {
     'bug_id', 'pattern_id', 'combined_id',
     'engine', 'rule_id', 'rule_url',
     'wcag_category', 'wcag_sc', 'wcag_name', 'wcag_level', 'wcag_version',
-    'severity', 'pages_affected', 'instances', 'total_pages_scanned',
+    'severity', 'obligation', 'handling', 'included_in_primary_score',
+    'pages_affected', 'instances', 'total_pages_scanned',
     'example_url', 'xpath', 'html_snippet',
     'summary', 'description', 'steps_to_reproduce', 'suggested_fix',
     'remediation_tip', 'testing_environment',
@@ -255,6 +256,9 @@ export function bugsCsvTable(bugs) {
       b.wcag_level ?? '',
       b.wcag_version ?? '',
       b.severity,
+      b.obligation ?? '',
+      b.handling ?? '',
+      b.included_in_primary_score === true ? 'true' : 'false',
       b.frequency.pages_affected,
       b.frequency.instances,
       b.frequency.total_pages_scanned,

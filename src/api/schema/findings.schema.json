@@ -49,6 +49,20 @@
           "description": "axe-core impact taxonomy, verbatim.",
           "enum": ["Critical", "Serious", "Moderate", "Minor"]
         },
+        "obligation": {
+          "type": ["string", "null"],
+          "enum": ["required", "advisory", "unmapped", null],
+          "description": "Policy obligation classification for this finding."
+        },
+        "handling": {
+          "type": ["string", "null"],
+          "enum": ["report", "review", "suppress", null],
+          "description": "Policy handling lane for this finding."
+        },
+        "included_in_primary_score": {
+          "type": "boolean",
+          "description": "True when this finding contributes to the primary standards indicator."
+        },
         "wcag_sc": { "type": ["string", "null"] },
         "wcag_level": { "type": ["string", "null"] },
         "pages_affected": { "type": "integer", "minimum": 0 },

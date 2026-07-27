@@ -110,3 +110,27 @@ test('config: loadConfig surfaces reportBaseUrl with no trailing slash', () => {
   assert.equal(typeof c.reportBaseUrl, 'string');
   assert.ok(!c.reportBaseUrl.endsWith('/'), 'reportBaseUrl should have its trailing slash stripped');
 });
+
+test('config: findingPolicy is available on every target', () => {
+  const c = loadConfig();
+  for (const t of c.targets) {
+    assert.ok(t.findingPolicy, `missing findingPolicy for ${t.domain}`);
+    assert.ok(t.findingPolicy.defaults);
+  }
+});
+
+test('config: rejects invalid finding policy entries', () => {
+  assert.throws(
+    () => loadConfig(`
+defaults:
+  finding_policy:
+    rules:
+      - match: { engine: alfa, rule_id: sia-r113 }
+        obligation: invalid
+        handling: report
+targets:
+  - domain: example.gov
+`),
+    /unknown obligation/
+  );
+});
