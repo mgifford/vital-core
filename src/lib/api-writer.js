@@ -85,7 +85,7 @@ export function buildIndexEntry(target, latestSummary, bugs) {
   };
 }
 
-export function buildSnapshot(target, series, diffs, ledger, invSummary, latestBugs) {
+export function buildSnapshot(target, series, diffs, ledger, invSummary, latestBugs, policySummary = null) {
   const latest = series[series.length - 1];
   const counts = severityCounts(latestBugs);
   const opts = { denyParams: target.api_redact_params ?? [] };
@@ -107,6 +107,7 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
     findings: ledger.findings ?? {},
     tech_findings: latest.techFindings?.associations ?? null,
     top_actions: apiTopActions(latest, opts.denyParams),
+    policy: policySummary ? { suppression: policySummary } : null,
     weekly,
   };
 }
@@ -127,6 +128,9 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         rule_label:     b.rule_label,
         engine:         b.engine_key,
         severity:       b.severity,
+        obligation:     b.obligation ?? null,
+        handling:       b.handling ?? null,
+        included_in_primary_score: b.included_in_primary_score === true,
         wcag_sc:        b.wcag_sc ?? null,
         wcag_level:     b.wcag_level ?? null,
         pages_affected: b.frequency.pages_affected,
