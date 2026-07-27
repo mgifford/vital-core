@@ -1,59 +1,11 @@
 {
  "domain": "data.healthcare.gov",
- "updatedAt": "2026-07-27T13:32:46.151Z",
+ "updatedAt": "2026-07-27T13:34:18.422Z",
  "findings": {
-  "VS-cb53cc4d": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r111",
-   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.5.8)",
-   "wcag": "2.5.8",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 346,
-   "lastAffectedPages": [
-    "https://data.healthcare.gov/dataset/8dcm-4bzw",
-    "https://data.healthcare.gov/dataset/n2pf-y4nw",
-    "https://data.healthcare.gov/dataset/kxde-2cd8?page=4",
-    "https://data.healthcare.gov/dataset/gtdq-nxgh",
-    "https://data.healthcare.gov/ab-registration-completion-list?page=39556",
-    "https://data.healthcare.gov/dataset/gmjp-zpzt?page=2",
-    "https://data.healthcare.gov/dataset/g6ja-xx6f?page=4",
-    "https://data.healthcare.gov/dataset/5w58-urjn?page=4",
-    "https://data.healthcare.gov/datasets?keyword%5B%5D=consumer+type",
-    "https://data.healthcare.gov/dataset/nbg4-75xg?page=4",
-    "https://data.healthcare.gov/dataset/a2km-i629",
-    "https://data.healthcare.gov/dataset/kb8w-qg77?page=266",
-    "https://data.healthcare.gov/dataset/kb8w-qg77?page=4",
-    "https://data.healthcare.gov/dataset/66b55b41-152e-44c2-9727-158401c2e526",
-    "https://data.healthcare.gov/dataset/yaaf-rjhy?page=3",
-    "https://data.healthcare.gov/datasets?keyword%5B0%5D=qhp&page=3",
-    "https://data.healthcare.gov/dataset/cbfda538-6b7b-476a-a667-19212b853629?page=2",
-    "https://data.healthcare.gov/dataset/e4rr-zk4i?page=3",
-    "https://data.healthcare.gov/dataset/8060e816-b052-42b3-ad60-9eac699d7c8b?page=5",
-    "https://data.healthcare.gov/dataset/sm8s-t6mi?page=1131",
-    "https://data.healthcare.gov/about",
-    "https://data.healthcare.gov/dataset/kz5p-dvnx?page=1313",
-    "https://data.healthcare.gov/datasets?keyword%5B%5D=metal+level",
-    "https://data.healthcare.gov/dataset/AB-Suspension-and-Termination-List/e8uy-7rnp/data?page=316",
-    "https://data.healthcare.gov/dataset/a2km-i629?page=3"
-   ]
-  },
   "VS-179ad9b3": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r113",
-   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.2) (WCAG 2.5.8)",
+   "summary": "Target size is at least 24×24 CSS pixels or has spacing (Minimum) (WCAG 2.5.8)",
    "wcag": "2.5.8",
    "severity": "Moderate",
    "firstSeen": "2026-W24",
@@ -95,27 +47,6 @@
     "https://data.healthcare.gov/?page=2"
    ]
   },
-  "VS-3fb891c5": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r60",
-   "summary": "Input purpose can be determined (WCAG 1.3.5)",
-   "wcag": "1.3.5",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W24",
-    "2026-W26",
-    "2026-W27",
-    "2026-W30"
-   ],
-   "weeksSeen": 4,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "https://data.healthcare.gov/ab-registration-tracker"
-   ],
-   "_coverageLost": true
-  },
   "VS-a0bdbdf6": {
    "engine": "axe-core",
    "ruleId": "list",
@@ -141,59 +72,6 @@
     "https://data.healthcare.gov/datasets?keyword%5B%5D=ECP"
    ]
   },
-  "VS-7118fead": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r61",
-   "summary": "Form field label is visible (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 4,
-   "lastAffectedPages": [
-    "https://data.healthcare.gov/about",
-    "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
-    "https://data.healthcare.gov/about/program-overview",
-    "https://data.healthcare.gov/about/contact-us"
-   ]
-  },
-  "VS-f054f4a4": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r53",
-   "summary": "Headings are structured hierarchically (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30"
-   ],
-   "weeksSeen": 7,
-   "lastPagesAffected": 4,
-   "lastAffectedPages": [
-    "https://data.healthcare.gov/?page=3",
-    "https://data.healthcare.gov/?page=4",
-    "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
-    "https://data.healthcare.gov/?page=2"
-   ]
-  },
   "VS-d6097011": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r68",
@@ -214,47 +92,6 @@
    "lastPagesAffected": 1,
    "lastAffectedPages": [
     "https://data.healthcare.gov/de-intake-form"
-   ]
-  },
-  "VS-f2542d87": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r79",
-   "summary": "Duplicate role landmark is labeled (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W24",
-    "2026-W29",
-    "2026-W30"
-   ],
-   "weeksSeen": 3,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority"
-   ],
-   "_coverageLost": true
-  },
-  "VS-2cd767ca": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r78",
-   "summary": "Table header has scope (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W24",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W30"
-   ],
-   "weeksSeen": 5,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "https://data.healthcare.gov/datasets?keyword%5B%5D=2025"
    ]
   },
   "VS-0841abc2": {
@@ -329,30 +166,6 @@
     "https://data.healthcare.gov/dataset/pszf-56pp?page=2"
    ]
   },
-  "VS-e05344b9": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r18",
-   "summary": "aria attribute is permitted for element role (WCAG 4.1.2)",
-   "wcag": "4.1.2",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 7,
-   "lastPagesAffected": 2,
-   "lastAffectedPages": [
-    "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
-    "https://data.healthcare.gov/de-intake-form"
-   ]
-  },
   "VS-a48e6078": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r8",
@@ -400,8 +213,8 @@
   "VS-646b1e0b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r66",
-   "summary": "Text has sufficient color contrast (WCAG 1.4.3)",
-   "wcag": "1.4.3",
+   "summary": "Text has enhanced contrast (WCAG 1.4.6)",
+   "wcag": "1.4.6",
    "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W31",
@@ -445,11 +258,11 @@
     "https://data.healthcare.gov/dataset/a2km-i629?page=3"
    ]
   },
-  "VS-2208081b": {
+  "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r73",
-   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG 1.4.3)",
-   "wcag": "1.4.3",
+   "ruleId": "sia-r111",
+   "summary": "Target size is at least 44×44 CSS pixels (Enhanced) (WCAG 2.5.5)",
+   "wcag": "2.5.5",
    "severity": "Moderate",
    "firstSeen": "2026-W24",
    "lastSeen": "2026-W31",
@@ -593,6 +406,193 @@
    "lastPagesAffected": 1,
    "lastAffectedPages": [
     "https://data.healthcare.gov/de-intake-form"
+   ]
+  },
+  "VS-2208081b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r73",
+   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 346,
+   "lastAffectedPages": [
+    "https://data.healthcare.gov/dataset/8dcm-4bzw",
+    "https://data.healthcare.gov/dataset/n2pf-y4nw",
+    "https://data.healthcare.gov/dataset/kxde-2cd8?page=4",
+    "https://data.healthcare.gov/dataset/gtdq-nxgh",
+    "https://data.healthcare.gov/ab-registration-completion-list?page=39556",
+    "https://data.healthcare.gov/dataset/gmjp-zpzt?page=2",
+    "https://data.healthcare.gov/dataset/g6ja-xx6f?page=4",
+    "https://data.healthcare.gov/dataset/5w58-urjn?page=4",
+    "https://data.healthcare.gov/datasets?keyword%5B%5D=consumer+type",
+    "https://data.healthcare.gov/dataset/nbg4-75xg?page=4",
+    "https://data.healthcare.gov/dataset/a2km-i629",
+    "https://data.healthcare.gov/dataset/kb8w-qg77?page=266",
+    "https://data.healthcare.gov/dataset/kb8w-qg77?page=4",
+    "https://data.healthcare.gov/dataset/66b55b41-152e-44c2-9727-158401c2e526",
+    "https://data.healthcare.gov/dataset/yaaf-rjhy?page=3",
+    "https://data.healthcare.gov/datasets?keyword%5B0%5D=qhp&page=3",
+    "https://data.healthcare.gov/dataset/cbfda538-6b7b-476a-a667-19212b853629?page=2",
+    "https://data.healthcare.gov/dataset/e4rr-zk4i?page=3",
+    "https://data.healthcare.gov/dataset/8060e816-b052-42b3-ad60-9eac699d7c8b?page=5",
+    "https://data.healthcare.gov/dataset/sm8s-t6mi?page=1131",
+    "https://data.healthcare.gov/about",
+    "https://data.healthcare.gov/dataset/kz5p-dvnx?page=1313",
+    "https://data.healthcare.gov/datasets?keyword%5B%5D=metal+level",
+    "https://data.healthcare.gov/dataset/AB-Suspension-and-Termination-List/e8uy-7rnp/data?page=316",
+    "https://data.healthcare.gov/dataset/a2km-i629?page=3"
+   ]
+  },
+  "VS-7118fead": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r61",
+   "summary": "Form field label is visible (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 4,
+   "lastAffectedPages": [
+    "https://data.healthcare.gov/about",
+    "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
+    "https://data.healthcare.gov/about/program-overview",
+    "https://data.healthcare.gov/about/contact-us"
+   ]
+  },
+  "VS-f054f4a4": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r53",
+   "summary": "Headings are structured hierarchically (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30"
+   ],
+   "weeksSeen": 7,
+   "lastPagesAffected": 4,
+   "lastAffectedPages": [
+    "https://data.healthcare.gov/?page=3",
+    "https://data.healthcare.gov/?page=4",
+    "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority",
+    "https://data.healthcare.gov/?page=2"
+   ]
+  },
+  "VS-e05344b9": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r18",
+   "summary": "aria attribute is permitted for element role (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 7,
+   "lastPagesAffected": 2,
+   "lastAffectedPages": [
+    "https://data.healthcare.gov/cciio/ecp_form?faq=how+do+i+download+csv+files+in+excel%3F",
+    "https://data.healthcare.gov/de-intake-form"
+   ]
+  },
+  "VS-f2542d87": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r79",
+   "summary": "Duplicate role landmark is labeled (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W24",
+    "2026-W29",
+    "2026-W30"
+   ],
+   "weeksSeen": 3,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "https://data.healthcare.gov/AB-NIPR-Health-Line-Of-Authority"
+   ],
+   "_coverageLost": true
+  },
+  "VS-3fb891c5": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r60",
+   "summary": "Input purpose can be determined (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W24",
+    "2026-W26",
+    "2026-W27",
+    "2026-W30"
+   ],
+   "weeksSeen": 4,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "https://data.healthcare.gov/ab-registration-tracker"
+   ],
+   "_coverageLost": true
+  },
+  "VS-2cd767ca": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r78",
+   "summary": "Table header has scope (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W24",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W30"
+   ],
+   "weeksSeen": 5,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "https://data.healthcare.gov/datasets?keyword%5B%5D=2025"
    ]
   }
  }
