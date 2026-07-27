@@ -36,9 +36,15 @@ export function validateAlfaMetadata({ labels, mapping, installedRuleIds }) {
     'sia-r111': { scs: ['2.5.5'], labelContains: '44×44' },
     'sia-r113': { scs: ['2.5.8'], labelContains: '24×24' },
     'sia-r66': { scs: ['1.4.6'], labelContains: 'enhanced contrast' },
-    'sia-r54': { scs: ['3.3.1', '4.1.3'], labelContains: 'live region' },
+    // sia-r54 declares no WCAG requirement in its own source (verified
+    // against @siteimprove/alfa-rules 0.117.0); it is intentionally absent
+    // from ALFA_RULE_METADATA_OVERRIDES and from alfa-wcag-rules.json.
+    'sia-r54': { scs: [], labelContains: 'live region' },
     'sia-r70': { scs: [], labelContains: 'obsolete' },
-    'sia-r50': { scs: [], labelContains: 'audio' },
+    // sia-r50 (autoplaying audio) declares Criterion.of("1.4.2") in its own
+    // source and is mapped via the regenerated alfa-wcag-rules.json, not
+    // an override -- see ALFA_RULE_METADATA_OVERRIDES's comment in wcag.js.
+    'sia-r50': { scs: ['1.4.2'], labelContains: 'audio' },
   };
 
   const ruleToScs = new Map();

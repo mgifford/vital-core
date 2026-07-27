@@ -913,3 +913,106 @@ test('renderHistoryPage (WP1): single week shows an empty state, not a broken ch
   assert.match(html, /Only one week has been scanned so far/);
   assert.doesNotMatch(html, /weeks recorded/);
 });
+
+test('policy lanes: required, review, aspirational, and advisory findings render in distinct labeled lanes', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 4,
+    axe: { rules: { 'label': {}, 'color-contrast': {}, 'target-size': {}, 'heading-order': {} } },
+    alfa: { rules: {} },
+    consensus: null,
+  };
+  const base = {
+    url: 'https://example.gov/a', xpath: 'input',
+    engine_key: 'axe-core', tool: 'axe-core 4.11.0', rule_url: 'https://example.gov/axe/rule',
+    severity: 'Serious',
+    frequency: { instances: 1, pages_affected: 1, total_pages_scanned: 4 },
+    examples: [], example_pages: ['https://example.gov/a'], affected_pages: ['https://example.gov/a'],
+    impact: { groups: [], summary: '' },
+    testing_environment: 'Automated: axe-core 4.11.0.',
+    steps_to_reproduce: ['Open https://example.gov/a.'],
+    remediation_tip: null,
+    suggested_fix: 'See remediation guidance.',
+    default_visible: true,
+    priority_tier: 0,
+  };
+  const bugs = [
+    { ...base, instance_id: 'VS-req1', pattern_id: 'VS-preq1', rule_id: 'label', rule_label: 'Form field labels', summary: 'Required finding', description: 'Required finding.', wcag_sc: '4.1.2', wcag_name: 'Name, Role, Value', wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A', obligation: 'required', handling: 'report' },
+    { ...base, instance_id: 'VS-rev1', pattern_id: 'VS-prev1', rule_id: 'color-contrast', rule_label: 'Contrast', summary: 'Needs review finding', description: 'Needs review finding.', wcag_sc: '1.4.3', wcag_name: 'Contrast (Minimum)', wcag_level: 'AA', wcag_version: '2.0', wcag_category: 'WCAG 2.0 AA', obligation: 'required', handling: 'review' },
+    { ...base, instance_id: 'VS-asp1', pattern_id: 'VS-pasp1', rule_id: 'target-size', rule_label: 'Target size', summary: 'Aspirational finding', description: 'Aspirational finding.', wcag_sc: '2.5.5', wcag_name: 'Target Size (Enhanced)', wcag_level: 'AAA', wcag_version: '2.1', wcag_category: 'WCAG 2.x AAA', obligation: 'aspirational', handling: 'report' },
+    { ...base, instance_id: 'VS-adv1', pattern_id: 'VS-padv1', rule_id: 'heading-order', rule_label: 'Heading order', summary: 'Advisory finding', description: 'Advisory finding.', wcag_sc: null, wcag_category: 'Best Practice', obligation: 'advisory', handling: 'report' },
+  ];
+
+  const html = renderAccessibilityPage(target, summary, bugs, { byRule: {}, bugsAll: null }, { keyPages: [] });
+
+  // Each lane has its own labeled, machine-readable section, in priority order.
+  assert.match(html, /data-lane="required-report"/);
+  assert.match(html, /data-lane="verification"/);
+  assert.match(html, /data-lane="aspirational"/);
+  assert.match(html, /data-lane="advisory"/);
+  assert.match(html, /<h3>Findings needing review<\/h3>/);
+  assert.match(html, /<h3>Aspirational improvements<\/h3>/);
+  assert.match(html, /<h3>Advisory best practices<\/h3>/);
+
+  // Each finding renders under its own lane's data-obligation/data-handling, not a shared catch-all.
+  assert.match(html, /data-bug-id="VS-req1"[^>]*data-obligation="required"[^>]*data-handling="report"/);
+  assert.match(html, /data-bug-id="VS-asp1"[^>]*data-obligation="aspirational"[^>]*data-handling="report"/);
+  assert.match(html, /data-bug-id="VS-adv1"[^>]*data-obligation="advisory"[^>]*data-handling="report"/);
+});
+
+test('policy lanes: approved suppressions render as their own labeled, non-deleting lane', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W24',
+    pagesScanned: 4,
+    axe: { rules: { 'label': {} } },
+    alfa: { rules: {} },
+    consensus: null,
+  };
+  const bug = {
+    instance_id: 'VS-req1', pattern_id: 'VS-preq1', url: 'https://example.gov/a', xpath: 'input',
+    engine_key: 'axe-core', tool: 'axe-core 4.11.0', rule_url: 'https://example.gov/axe/label', rule_id: 'label', rule_label: 'Form field labels',
+    summary: 'Required finding', description: 'Required finding.', severity: 'Serious',
+    wcag_sc: '4.1.2', wcag_name: 'Name, Role, Value', wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A',
+    obligation: 'required', handling: 'report',
+    frequency: { instances: 1, pages_affected: 1, total_pages_scanned: 4 },
+    examples: [], example_pages: ['https://example.gov/a'], affected_pages: ['https://example.gov/a'],
+    impact: { groups: [], summary: '' },
+    testing_environment: 'Automated: axe-core 4.11.0.',
+    steps_to_reproduce: ['Open https://example.gov/a.'],
+    remediation_tip: null,
+    suggested_fix: 'See remediation guidance.',
+    default_visible: true,
+    priority_tier: 0,
+  };
+  const reporting = {
+    keyPages: [],
+    policySummary: {
+      patterns: 1,
+      pages: 4,
+      occurrences: 7,
+      entries: [
+        {
+          pattern_id: 'VS-psup1',
+          rule_id: 'sia-r113',
+          engine_key: 'alfa',
+          reason: 'Known non-reproducible subtree pending vendor fix',
+          evidence: ['https://example.gov/tickets/VEND-42'],
+          owner: 'checkout-team',
+          expires: '2026-09-01',
+          pages_affected: 4,
+          occurrences: 7,
+        },
+      ],
+    },
+  };
+
+  const html = renderAccessibilityPage(target, summary, [bug], { byRule: {}, bugsAll: null }, reporting);
+
+  assert.match(html, /data-lane="suppressed"/);
+  assert.match(html, /Approved suppressions/);
+  assert.match(html, /Suppression is not resolution/);
+  assert.match(html, /checkout-team/);
+  assert.match(html, /2026-09-01/);
+});
