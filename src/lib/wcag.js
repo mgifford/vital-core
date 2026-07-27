@@ -39,6 +39,7 @@ const WCAG_CRITERIA = {
   '1.4.3': ['Contrast (Minimum)', 'AA', '2.0'],
   '1.4.4': ['Resize Text', 'AA', '2.0'],
   '1.4.5': ['Images of Text', 'AA', '2.0'],
+  '1.4.6': ['Contrast (Enhanced)', 'AAA', '2.0'],
   '2.1.1': ['Keyboard', 'A', '2.0'],
   '2.1.2': ['No Keyboard Trap', 'A', '2.0'],
   '2.2.1': ['Timing Adjustable', 'A', '2.0'],
@@ -76,6 +77,7 @@ const WCAG_CRITERIA = {
   '2.5.2': ['Pointer Cancellation', 'A', '2.1'],
   '2.5.3': ['Label in Name', 'A', '2.1'],
   '2.5.4': ['Motion Actuation', 'A', '2.1'],
+  '2.5.5': ['Target Size (Enhanced)', 'AAA', '2.1'],
   // --- WCAG 2.2 additions ---
   '2.4.11': ['Focus Not Obscured (Minimum)', 'AA', '2.2'],
   '2.4.12': ['Focus Not Obscured (Enhanced)', 'AAA', '2.2'],
@@ -100,63 +102,30 @@ function scFromAxeTag(tag) {
 }
 
 /**
- * Fallback WCAG SC mapping for Siteimprove Alfa rule ids (sia-rN).
- *
- * Primary mapping is loaded from src/data/alfa-wcag-rules.json, which tracks
- * SI rule-number coverage across WCAG criteria. This fallback preserves older
- * hand-curated mappings for any rule ids not present in that dataset.
+ * Curated Alfa metadata corrections where historical mappings drifted or where
+ * a rule intentionally isn't a direct conformance criterion.
  */
-const ALFA_SC_FALLBACK = {
-  'sia-r2': '1.1.1',   // img has accessible name
-  'sia-r3': '4.1.1',   // id attribute unique
-  'sia-r4': '3.1.1',   // lang of page
-  'sia-r5': '3.1.1',   // valid lang attribute
-  'sia-r7': '3.1.2',   // element lang attribute has correct language
-  'sia-r8': '4.1.2',   // form field has accessible name
-  'sia-r9': '2.2.1',   // meta refresh no delay
-  'sia-r10': '1.3.5',  // autocomplete valid
-  'sia-r11': '4.1.2',  // link has accessible name
-  'sia-r12': '4.1.2',  // button has accessible name
-  'sia-r13': '1.1.1',  // iframe has accessible name
-  'sia-r14': '2.5.3',  // visible label in accessible name
-  'sia-r15': '4.1.2',  // iframes with same name same content
-  'sia-r16': '4.1.2',  // role has required states/properties
-  'sia-r17': '1.3.1',  // aria-hidden no focusable content
-  'sia-r18': '4.1.2',  // aria states/properties allowed
-  'sia-r19': '4.1.2',  // aria attribute has valid value
-  'sia-r20': '4.1.2',  // aria attribute is defined
-  'sia-r21': '4.1.2',  // role is valid
-  'sia-r28': '1.1.1',  // image button has accessible name
-  'sia-r40': '1.3.1',  // tables for tabular data (info and relationships)
-  'sia-r41': '4.1.2',  // links with same name same purpose
-  'sia-r42': '1.3.1',  // element required context role
-  'sia-r43': '1.1.1',  // svg has accessible name
-  'sia-r48': '1.4.2',  // audio no autoplay
-  'sia-r53': '1.3.1',  // heading hierarchy
-  'sia-r54': '2.4.6',  // heading is descriptive
-  'sia-r57': '2.1.1',  // scrolling content keyboard accessible
-  'sia-r59': '1.3.4',  // orientation not locked
-  'sia-r60': '1.3.5',  // input purpose can be determined
-  'sia-r61': '1.3.1',  // form field label is visible
-  'sia-r62': '1.4.1',  // links distinguishable from text
-  'sia-r66': '1.4.3',  // text contrast (AA)
-  'sia-r69': '1.4.3',  // text has sufficient contrast
-  'sia-r70': '2.4.4',  // link text is descriptive
-  'sia-r71': '4.1.2',  // iframe is not empty
-  'sia-r72': '1.3.1',  // element role consistent with landmark
-  'sia-r73': '1.4.3',  // text minimum contrast 4.5:1
-  'sia-r74': '1.4.1',  // link distinguishable without color
-  'sia-r75': '3.3.1',  // form field error identified and described
-  'sia-r77': '1.3.1',  // table cell has header
-  'sia-r78': '1.3.1',  // table header has scope
-  'sia-r79': '1.3.1',  // duplicate landmark labeled
-  'sia-r80': '2.1.1',  // scrollable element keyboard accessible
-  'sia-r85': '2.1.2',  // no keyboard trap
-  'sia-r86': '2.4.3',  // focus not lost after interaction
-  'sia-r87': '3.2.1',  // no unexpected context change on focus
-  'sia-r90': '3.2.4',  // components with same name same purpose
-  'sia-r111': '2.5.8', // target size minimum
-  'sia-r113': '2.5.8', // target size (WCAG 2.2)
+const ALFA_RULE_METADATA_OVERRIDES = {
+  'sia-r50': {
+    wcagScs: [],
+    notRequiredForConformance: true,
+  },
+  'sia-r54': {
+    wcagScs: ['3.3.1', '4.1.3'],
+  },
+  'sia-r66': {
+    wcagScs: ['1.4.6'],
+  },
+  'sia-r70': {
+    wcagScs: [],
+    notRequiredForConformance: true,
+  },
+  'sia-r111': {
+    wcagScs: ['2.5.5'],
+  },
+  'sia-r113': {
+    wcagScs: ['2.5.8'],
+  },
 };
 
 let alfaRuleToSc = null;
@@ -211,14 +180,31 @@ function loadAlfaRuleToSc() {
 function alfaScForRule(ruleId) {
   const normalized = normalizeAlfaRuleId(ruleId);
   if (!normalized) return null;
+  const override = ALFA_RULE_METADATA_OVERRIDES[normalized];
+  if (override) return override.wcagScs;
   const mapped = loadAlfaRuleToSc()[normalized];
   if (Array.isArray(mapped) && mapped.length > 0) {
-    // Some SI rules map to multiple SCs; choose the lowest SC for a stable,
-    // deterministic primary category while retaining "Undetermined" for rules
-    // with no known mapping.
-    return mapped[0];
+    return mapped;
   }
-  return ALFA_SC_FALLBACK[normalized] ?? null;
+  return null;
+}
+
+export function alfaRuleMetadata(ruleId) {
+  const normalized = normalizeAlfaRuleId(ruleId);
+  if (!normalized) {
+    return {
+      ruleId: null,
+      wcagScs: [],
+      notRequiredForConformance: false,
+    };
+  }
+  const override = ALFA_RULE_METADATA_OVERRIDES[normalized] ?? null;
+  const wcagScs = override?.wcagScs ?? (loadAlfaRuleToSc()[normalized] ?? []);
+  return {
+    ruleId: normalized,
+    wcagScs: Array.isArray(wcagScs) ? [...wcagScs] : [],
+    notRequiredForConformance: !!override?.notRequiredForConformance,
+  };
 }
 
 /**
@@ -230,6 +216,7 @@ function alfaScForRule(ruleId) {
  */
 export function resolveWcag(engine, { tags = [], ruleId } = {}) {
   let sc = null;
+  let scs = null;
   if (engine === 'axe-core') {
     for (const t of tags) {
       const c = scFromAxeTag(t);
@@ -239,11 +226,14 @@ export function resolveWcag(engine, { tags = [], ruleId } = {}) {
       }
     }
   } else if (engine === 'alfa') {
-    sc = alfaScForRule(ruleId);
+    scs = alfaScForRule(ruleId);
+    sc = Array.isArray(scs) && scs.length > 0 ? scs[0] : null;
   }
   if (!sc || !WCAG_CRITERIA[sc]) return null;
   const [name, level, wcag_version] = WCAG_CRITERIA[sc];
-  return { sc, name, level, wcag_version };
+  const out = { sc, name, level, wcag_version };
+  if (Array.isArray(scs) && scs.length > 1) out.scs = [...scs];
+  return out;
 }
 
 /**

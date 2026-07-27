@@ -17,6 +17,9 @@ const sampleBug = (over = {}) => ({
   wcag_level: 'A',
   wcag_version: '2.0',
   severity: 'Critical',
+  obligation: 'required',
+  handling: 'report',
+  included_in_primary_score: true,
   frequency: { pages_affected: 2, instances: 3, total_pages_scanned: 10 },
   url: 'https://example.gov/a',
   xpath: 'img',
@@ -40,10 +43,12 @@ const sampleBug = (over = {}) => ({
 test('bugsCsvTable: stable header order (schema is the single source of truth)', () => {
   const { headers } = bugsCsvTable([]);
   assert.equal(headers[0], 'bug_id');
-  assert.equal(headers[12], 'pages_affected');
-  assert.equal(headers[15], 'example_url');
+  assert.equal(headers[headers.indexOf('obligation') + 1], 'handling');
+  assert.equal(headers.includes('included_in_primary_score'), true);
+  assert.equal(headers.includes('pages_affected'), true);
+  assert.equal(headers.includes('example_url'), true);
   assert.equal(headers[headers.length - 1], 'affected_pages_csv');
-  assert.equal(headers.length, 32);
+  assert.equal(headers.length, 35);
 });
 
 test('bugsCsvTable: row maps bug fields in header order', () => {
