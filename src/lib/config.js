@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { SUPPORTED_LOCALES } from './i18n.js';
+import { DEFAULT_FINDING_POLICY, mergeFindingPolicy, validateFindingPolicy } from './finding-policy.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
@@ -29,6 +30,14 @@ export function loadConfig(rawYaml) {
   const raw = rawYaml ?? fs.readFileSync(path.join(DIRS.config, 'targets.yml'), 'utf8');
   const cfg = YAML.parse(raw);
   const defaults = cfg.defaults ?? {};
+  const globalFindingPolicy = defaults.finding_policy ?? cfg.finding_policy ?? DEFAULT_FINDING_POLICY;
+  const globalPolicyValidation = validateFindingPolicy(mergeFindingPolicy(globalFindingPolicy, {}), { scope: 'global defaults' });
+  if (globalPolicyValidation.errors.length > 0) {
+    throw new Error(globalPolicyValidation.errors.join('\n'));
+  }
+  for (const warning of globalPolicyValidation.warnings) {
+    console.warn(`[config] ${warning}`);
+  }
   // Per-engine weekly sampling rates live at the top level so a target
   // can override individual rates without restating the whole block
   // (ratesFor merges these defaults with target.sampling).
@@ -60,6 +69,14 @@ export function loadConfig(rawYaml) {
     // language switcher above — only a literal `true` enables it, so an
     // unset or misconfigured flag never silently ships client-side JS.
     t.webmcpEnabled = t.webmcp === true;
+    t.findingPolicy = mergeFindingPolicy(globalFindingPolicy, t.finding_policy ?? {});
+    const policyValidation = validateFindingPolicy(t.findingPolicy, { scope: `target ${t.domain}` });
+    if (policyValidation.errors.length > 0) {
+      throw new Error(policyValidation.errors.join('\n'));
+    }
+    for (const warning of policyValidation.warnings) {
+      console.warn(`[config] ${warning}`);
+    }
     if (t.design_system != null) {
       const ds = String(t.design_system).toLowerCase();
       if (!DESIGN_SYSTEMS.has(ds)) {
@@ -70,6 +87,7 @@ export function loadConfig(rawYaml) {
   }
   return {
     defaults,
+    findingPolicy: mergeFindingPolicy(globalFindingPolicy, {}),
     sampling,
     sustainabilityMetric,
     languages: globalLangs.languages,
