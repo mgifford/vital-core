@@ -4,6 +4,7 @@ import { impactFor, estimateExcluded, pct } from './fpc.js';
 import { remediationTip } from './remediation.js';
 import { techRemediationTip } from './remediation-prompts.js';
 import { rulePlainLabel } from './rule-label.js';
+import { computeA11yPatternFingerprint, computeA11yOccurrenceFingerprint } from './fingerprint-core.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -52,6 +53,15 @@ export function buildBugReports(target, summary) {
     const scLabel = wcag ? `WCAG ${wcag.sc}` : 'WCAG criterion undetermined';
     const component = componentLabel(engine, ruleId, rule.help, wcag);
 
+    // Dual-write: the versioned, cross-project a11y/pattern/v1 /
+    // a11y/occurrence/v1 fingerprints alongside pattern_id/instance_id
+    // above. Unlike pattern_id, these are scoped to this scanned domain
+    // (site-origin) — see fingerprint-core.js for why that is deliberately
+    // NOT a replacement for pattern_id's cross-domain identity, which
+    // mergeFleetPatterns() (src/lib/priority.js) still relies on.
+    const a11yPattern = computeA11yPatternFingerprint(target.domain, engine, ruleId, first?.target ?? '');
+    const a11yOccurrence = computeA11yOccurrenceFingerprint(a11yPattern.fingerprint, first?.url ?? summary.domain);
+
     // Human impact: disability groups affected (via WCAG SC -> Section 508
     // FPC) with US prevalence. If the target supplies page_loads_per_week,
     // also estimate excluded users, scaled by the share of pages affected.
@@ -77,6 +87,13 @@ export function buildBugReports(target, summary) {
     return {
       instance_id: instanceId,
       pattern_id: patternId,
+      // Dual-write only — see the comment above where these are computed.
+      // Never read by mergeFleetPatterns()/rankFleetPatterns(); those
+      // continue to group by pattern_id, unchanged.
+      a11y_pattern_fingerprint: a11yPattern.fingerprint,
+      a11y_pattern_display_id: a11yPattern.displayId,
+      a11y_occurrence_fingerprint: a11yOccurrence.fingerprint,
+      a11y_occurrence_display_id: a11yOccurrence.displayId,
       url: first?.url ?? summary.domain,
       xpath: first?.target ?? null,
       html_snippet: first?.html ?? null,
