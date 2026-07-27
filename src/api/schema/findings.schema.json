@@ -51,13 +51,18 @@
         },
         "obligation": {
           "type": ["string", "null"],
-          "enum": ["required", "advisory", "unmapped", null],
-          "description": "Policy obligation classification for this finding."
+          "enum": ["required", "aspirational", "advisory", "unmapped", "not-applicable", null],
+          "description": "Policy obligation classification for this finding, per ACCESSIBILITY.md finding schema 2.1's policy vocabulary. 'aspirational' is a WCAG AAA finding under a lower conformance target (a stretch goal, not a baseline requirement, and not merely 'advisory'). 'not-applicable' means the finding was reviewed and determined not to apply."
         },
         "handling": {
           "type": ["string", "null"],
           "enum": ["report", "review", "suppress", null],
           "description": "Policy handling lane for this finding."
+        },
+        "evidence_status": {
+          "type": ["string", "null"],
+          "enum": ["automated-indicator", "reproducible-finding", "confirmed-user-facing-barrier", "confirmed-standards-failure", "rejected-false-positive", "verified-resolution", null],
+          "description": "How strong the evidence behind this finding is, per ACCESSIBILITY.md finding schema 2.1's policy vocabulary. Every finding this scanner produces is currently 'automated-indicator' -- there is no human-in-the-loop confirmation step in this pipeline yet."
         },
         "included_in_primary_score": {
           "type": "boolean",

@@ -31,6 +31,7 @@ const WCAG_CRITERIA = {
   '1.2.3': ['Audio Description or Media Alternative (Prerecorded)', 'A', '2.0'],
   '1.2.4': ['Captions (Live)', 'AA', '2.0'],
   '1.2.5': ['Audio Description (Prerecorded)', 'AA', '2.0'],
+  '1.2.8': ['Media Alternative (Prerecorded)', 'AAA', '2.0'],
   '1.3.1': ['Info and Relationships', 'A', '2.0'],
   '1.3.2': ['Meaningful Sequence', 'A', '2.0'],
   '1.3.3': ['Sensory Characteristics', 'A', '2.0'],
@@ -40,10 +41,13 @@ const WCAG_CRITERIA = {
   '1.4.4': ['Resize Text', 'AA', '2.0'],
   '1.4.5': ['Images of Text', 'AA', '2.0'],
   '1.4.6': ['Contrast (Enhanced)', 'AAA', '2.0'],
+  '1.4.8': ['Visual Presentation', 'AAA', '2.0'],
   '2.1.1': ['Keyboard', 'A', '2.0'],
   '2.1.2': ['No Keyboard Trap', 'A', '2.0'],
+  '2.1.3': ['Keyboard (No Exception)', 'AAA', '2.0'],
   '2.2.1': ['Timing Adjustable', 'A', '2.0'],
   '2.2.2': ['Pause, Stop, Hide', 'A', '2.0'],
+  '2.2.4': ['Interruptions', 'AAA', '2.0'],
   '2.3.1': ['Three Flashes or Below Threshold', 'A', '2.0'],
   '2.4.1': ['Bypass Blocks', 'A', '2.0'],
   '2.4.2': ['Page Titled', 'A', '2.0'],
@@ -52,12 +56,14 @@ const WCAG_CRITERIA = {
   '2.4.5': ['Multiple Ways', 'AA', '2.0'],
   '2.4.6': ['Headings and Labels', 'AA', '2.0'],
   '2.4.7': ['Focus Visible', 'AA', '2.0'],
+  '2.4.9': ['Link Purpose (Link Only)', 'AAA', '2.0'],
   '3.1.1': ['Language of Page', 'A', '2.0'],
   '3.1.2': ['Language of Parts', 'AA', '2.0'],
   '3.2.1': ['On Focus', 'A', '2.0'],
   '3.2.2': ['On Input', 'A', '2.0'],
   '3.2.3': ['Consistent Navigation', 'AA', '2.0'],
   '3.2.4': ['Consistent Identification', 'AA', '2.0'],
+  '3.2.5': ['Change on Request', 'AAA', '2.0'],
   '3.3.1': ['Error Identification', 'A', '2.0'],
   '3.3.2': ['Labels or Instructions', 'A', '2.0'],
   '3.3.3': ['Error Suggestion', 'AA', '2.0'],
@@ -104,15 +110,23 @@ function scFromAxeTag(tag) {
 /**
  * Curated Alfa metadata corrections where historical mappings drifted or where
  * a rule intentionally isn't a direct conformance criterion.
+ *
+ * Verified 2026-07-27 against @siteimprove/alfa-rules 0.117.0's own
+ * requirements[] declarations (see scripts/generate-alfa-wcag-rules.mjs,
+ * which regenerates src/data/alfa-wcag-rules.json from the same source).
+ * Two prior overrides were factually wrong and have been corrected:
+ *   - sia-r50 (autoplaying audio duration) DOES declare Criterion.of("1.4.2")
+ *     in its own source; it is not a notRequiredForConformance rule and is
+ *     removed from this table so it falls through to the regenerated
+ *     alfa-wcag-rules.json mapping instead.
+ *   - sia-r54 (assertive live region atomicity) declares NO WCAG criterion
+ *     at all in its own source (no `requirements` field); the prior
+ *     ['3.3.1', '4.1.3'] mapping was unsupported and has been removed.
+ * sia-r70 (deprecated HTML elements) was re-verified and is correctly
+ * notRequiredForConformance: its own source declares only
+ * BestPractice.of("no-deprecated-elements"), no WCAG criterion.
  */
 const ALFA_RULE_METADATA_OVERRIDES = {
-  'sia-r50': {
-    wcagScs: [],
-    notRequiredForConformance: true,
-  },
-  'sia-r54': {
-    wcagScs: ['3.3.1', '4.1.3'],
-  },
   'sia-r66': {
     wcagScs: ['1.4.6'],
   },
