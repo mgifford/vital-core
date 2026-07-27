@@ -1,6 +1,14 @@
 import { alfaRuleMetadata } from './wcag.js';
 
-export const POLICY_OBLIGATIONS = new Set(['required', 'advisory', 'unmapped']);
+// Vocabulary matches ACCESSIBILITY.md finding schema 2.1's policy
+// classification (obligation / handling) -- see
+// https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_FINDING_TRACKING.html#policy-classification.
+// 'not-applicable' is reviewed-and-does-not-apply, distinct from 'unmapped'
+// (no authoritative obligation established yet); it is only ever assigned
+// by an explicit policy rule (see selectRule), never by classifyBaseLane,
+// because determining non-applicability requires a human decision this
+// module cannot make on its own.
+export const POLICY_OBLIGATIONS = new Set(['required', 'aspirational', 'advisory', 'unmapped', 'not-applicable']);
 export const POLICY_HANDLINGS = new Set(['report', 'review', 'suppress']);
 export const KNOWN_POLICY_ENGINES = new Set(['axe-core', 'alfa', 'deprecated-html']);
 
@@ -12,7 +20,13 @@ export const DEFAULT_FINDING_POLICY = {
   },
   defaults: {
     wcag_a_aa: { obligation: 'required', handling: 'report' },
-    wcag_aaa: { obligation: 'advisory', handling: 'report' },
+    // A confirmed AAA finding under an AA (or lower) target is a visible,
+    // non-blocking stretch goal, not an arbitrary best-practice suggestion.
+    // See ACCESSIBILITY_FINDING_TRACKING.md, "Policy Classification": AAA
+    // criteria under an AA target must normally be aspirational, not
+    // advisory. A project may elevate a specific AAA criterion to
+    // 'required' via finding_policy.rules.
+    wcag_aaa: { obligation: 'aspirational', handling: 'report' },
     best_practice: { obligation: 'advisory', handling: 'report' },
     not_required_for_conformance: { obligation: 'advisory', handling: 'report' },
     unmapped: { obligation: 'unmapped', handling: 'review' },
@@ -157,8 +171,25 @@ export function validateFindingPolicy(policy, { scope = 'config', knownRuleIds =
     if (!POLICY_HANDLINGS.has(rule.handling)) {
       errors.push(`${where} has unknown handling "${rule.handling}"`);
     }
-    if (rule.handling === 'suppress' && !String(rule.reason ?? '').trim()) {
-      errors.push(`${where} uses handling:suppress but has no reason`);
+    if (rule.handling === 'suppress') {
+      // A scoped suppression record requires a reason, supporting evidence,
+      // an accountable owner, and a review/expiry date -- see
+      // ACCESSIBILITY_FINDING_TRACKING.md, "Policy Classification": suppression
+      // requires narrow scope, reason, evidence, owner, and review or expiry
+      // date. The matcher itself (checked by supportsMatcherKey below) is
+      // the "narrow scope" requirement.
+      if (!String(rule.reason ?? '').trim()) {
+        errors.push(`${where} uses handling:suppress but has no reason`);
+      }
+      if (!Array.isArray(rule.evidence) || rule.evidence.length === 0 || !rule.evidence.some((e) => String(e ?? '').trim())) {
+        errors.push(`${where} uses handling:suppress but has no evidence`);
+      }
+      if (!String(rule.owner ?? '').trim()) {
+        errors.push(`${where} uses handling:suppress but has no owner`);
+      }
+      if (!rule.expires) {
+        errors.push(`${where} uses handling:suppress but has no expires (review or expiry date)`);
+      }
     }
     if (!supportsMatcherKey(rule.match ?? {})) {
       errors.push(`${where} must include at least one matcher key`);
@@ -299,14 +330,28 @@ export function applyFindingPolicy(policy, bugs) {
           policy_source: matchedRule.source,
           policy_reason: matchedRule.reason ?? null,
           policy_evidence: Array.isArray(matchedRule.evidence) ? matchedRule.evidence : [],
+          policy_owner: matchedRule.owner ?? null,
           policy_expires: matchedRule.expires ?? null,
         }
       : {
+          // An unresolved automated indicator defaults to handling:
+          // "review", never straight to "report", regardless of WCAG
+          // level or obligation -- see ACCESSIBILITY_FINDING_TRACKING.md,
+          // "Policy Classification": "An automated result is evidence,
+          // not a conformance decision. ... An unconfirmed result
+          // normally goes to review, not suppress" (and, by the same
+          // reasoning, not silently straight to report either). This
+          // only applies to the *default* lane: an explicit
+          // finding_policy.rules match (above) can still deliberately
+          // set handling: "report" for a specific engine/rule a project
+          // has decided is trustworthy enough not to need per-finding
+          // review.
           obligation: base.obligation,
-          handling: base.handling,
+          handling: bug.evidence_status === 'automated-indicator' && base.handling === 'report' ? 'review' : base.handling,
           policy_source: 'default',
           policy_reason: null,
           policy_evidence: [],
+          policy_owner: null,
           policy_expires: null,
         };
 
@@ -317,6 +362,7 @@ export function applyFindingPolicy(policy, bugs) {
       policy_source: chosen.policy_source,
       policy_reason: chosen.policy_reason,
       policy_evidence: chosen.policy_evidence,
+      policy_owner: chosen.policy_owner,
       policy_expires: chosen.policy_expires,
       included_in_primary_score: chosen.obligation === 'required' && chosen.handling === 'report',
     };
@@ -335,6 +381,7 @@ export function applyFindingPolicy(policy, bugs) {
       engine_key: b.engine_key,
       reason: b.policy_reason,
       evidence: b.policy_evidence ?? [],
+      owner: b.policy_owner ?? null,
       expires: b.policy_expires ?? null,
       pages_affected: 0,
       occurrences: 0,

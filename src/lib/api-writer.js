@@ -130,6 +130,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         severity:       b.severity,
         obligation:     b.obligation ?? null,
         handling:       b.handling ?? null,
+        evidence_status: b.evidence_status ?? null,
         included_in_primary_score: b.included_in_primary_score === true,
         wcag_sc:        b.wcag_sc ?? null,
         wcag_level:     b.wcag_level ?? null,

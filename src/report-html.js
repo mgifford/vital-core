@@ -1587,8 +1587,9 @@ function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting 
   const laneRank = (b) => {
     if (b.obligation === 'required' && b.handling === 'report') return 0;
     if (b.handling === 'review') return 1;
-    if (b.obligation === 'advisory' && b.handling === 'report') return 2;
-    return 3;
+    if (b.obligation === 'aspirational' && b.handling === 'report') return 2;
+    if (b.obligation === 'advisory' && b.handling === 'report') return 3;
+    return 4;
   };
   const view = prioritizeAccessibilityBugs(
     summary,
@@ -1639,15 +1640,22 @@ ${heading('h-bugs', t('Bug reports'))}
     if (b.handling === 'review') {
       return {
         key: 'verification',
-        heading: t('Verification required'),
+        heading: t('Findings needing review'),
         desc: t('These findings need manual verification before they can be treated as confirmed failures. Obligation remains visible for each finding.'),
+      };
+    }
+    if (b.obligation === 'aspirational' && b.handling === 'report') {
+      return {
+        key: 'aspirational',
+        heading: t('Aspirational improvements'),
+        desc: t('WCAG AAA findings under the configured conformance target. These are recognized stretch goals, visible for prioritization, and non-blocking by default. A project may elevate a specific criterion to required.'),
       };
     }
     if (b.obligation === 'advisory' && b.handling === 'report') {
       return {
         key: 'advisory',
-        heading: t('Best practices and enhanced accessibility'),
-        desc: t('These findings go beyond the configured WCAG conformance target. They can improve accessibility and user experience.'),
+        heading: t('Advisory best practices'),
+        desc: t('Best-practice findings outside the configured WCAG conformance target and not a declared stretch goal. They can improve accessibility and user experience but are non-blocking by default.'),
       };
     }
     return {
@@ -1760,24 +1768,25 @@ ${keyPageFilter}<button type="button" id="filter-reset">${t('Reset')}</button>
     : '';
   const suppression = reporting.policySummary ?? null;
   const suppressionBlock = suppression && suppression.patterns > 0
-    ? `<details class="suppression-disclosure"><summary>${t('Suppressed findings')} (${suppression.patterns})</summary>
-<p class="meta">${t('@patterns suppressed pattern(s), @pages affected pages, @occurrences suppressed occurrences.', {
+    ? `<section class="finding-lane" data-lane="suppressed"><details class="suppression-disclosure"><summary>${t('Approved suppressions')} (${suppression.patterns})</summary>
+<p class="meta">${t('@patterns suppressed pattern(s), @pages affected pages, @occurrences suppressed occurrences. Suppression is not resolution: each entry below is retained and excluded only from the lanes above, under the scoped, dated exception recorded here.', {
       '@patterns': suppression.patterns,
       '@pages': suppression.pages,
       '@occurrences': suppression.occurrences,
     })}</p>
 <table>
-<thead><tr><th>${t('Pattern')}</th><th>${t('Rule')}</th><th>${t('Reason')}</th><th>${t('Evidence')}</th><th>${t('Expires')}</th><th class="num">${t('Occurrences')}</th></tr></thead>
+<thead><tr><th>${t('Pattern')}</th><th>${t('Rule')}</th><th>${t('Reason')}</th><th>${t('Evidence')}</th><th>${t('Owner')}</th><th>${t('Expires')}</th><th class="num">${t('Occurrences')}</th></tr></thead>
 <tbody>${(suppression.entries ?? []).map((s) => `<tr>
   <td><code>${esc(s.pattern_id)}</code></td>
   <td>${esc(s.engine_key)}:${esc(s.rule_id)}</td>
   <td>${esc(s.reason ?? '')}</td>
   <td>${(s.evidence ?? []).map((e) => `<a href="${esc(e)}">${esc(e)}</a>`).join('<br>')}</td>
+  <td>${esc(s.owner ?? '')}</td>
   <td>${esc(s.expires ?? '')}</td>
   <td class="num">${nf(s.occurrences ?? 0)}</td>
 </tr>`).join('')}</tbody>
 </table>
-</details>`
+</details></section>`
     : '';
   const exclusionBanner = formatExclusionBanner(excludePatterns);
 
@@ -3641,9 +3650,10 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
 </aside>
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
-<p class="meta">${t('Primary standards queue: @n required finding type(s) (handling: report). Verification queue: @r required finding type(s) (handling: review). Advisory queue: @a finding type(s). Unmapped review queue: @u finding type(s).', {
+<p class="meta">${t('Primary standards queue: @n required finding type(s) (handling: report). Verification queue: @r required finding type(s) (handling: review). Aspirational queue: @asp finding type(s). Advisory queue: @a finding type(s). Unmapped review queue: @u finding type(s).', {
   '@n': lanes.requiredReport,
   '@r': lanes.requiredReview,
+  '@asp': lanes.aspirationalReport,
   '@a': lanes.advisoryReport,
   '@u': lanes.unmappedReview,
 })}</p>
@@ -3700,12 +3710,14 @@ function policyLaneCounts(bugs) {
   const out = {
     requiredReport: 0,
     requiredReview: 0,
+    aspirationalReport: 0,
     advisoryReport: 0,
     unmappedReview: 0,
   };
   for (const b of bugs ?? []) {
     if (b.obligation === 'required' && b.handling === 'report') out.requiredReport++;
     else if (b.obligation === 'required' && b.handling === 'review') out.requiredReview++;
+    else if (b.obligation === 'aspirational' && b.handling === 'report') out.aspirationalReport++;
     else if (b.obligation === 'advisory' && b.handling === 'report') out.advisoryReport++;
     else if (b.obligation === 'unmapped' && b.handling === 'review') out.unmappedReview++;
   }

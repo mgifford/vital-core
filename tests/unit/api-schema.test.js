@@ -58,6 +58,15 @@ describe('generated API resources validate against their schemas', () => {
     const { valid, errors } = validate(loadSchema('findings.schema.json'), doc);
     assert.ok(valid, errors.join('\n'));
   });
+
+  test('all ACCESSIBILITY.md 2.1 obligation values validate', () => {
+    const doc = buildWeekFindings(target, summary, bugs, ledger.findings);
+    for (const obligation of ['required', 'aspirational', 'advisory', 'unmapped', 'not-applicable']) {
+      doc.findings[0].obligation = obligation;
+      const { valid, errors } = validate(loadSchema('findings.schema.json'), doc);
+      assert.ok(valid, `obligation "${obligation}": ${errors.join('\n')}`);
+    }
+  });
 });
 
 describe('validator rejects malformed resources (guards against false-positive passes)', () => {

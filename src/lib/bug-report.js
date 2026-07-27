@@ -102,6 +102,15 @@ export function buildBugReports(target, summary) {
       wcag_level: wcag?.level ?? null,
       wcag_version: wcag?.wcag_version ?? null,
       wcag_category,
+      // Every finding this function produces comes straight from an
+      // automated scan with no human review step yet -- see
+      // ACCESSIBILITY.md's ACCESSIBILITY_FINDING_TRACKING.md, "Policy
+      // Classification". finding-policy.js's default policy routes
+      // evidence_status "automated-indicator" findings to handling:
+      // "review" rather than "report", regardless of WCAG level, unless a
+      // project's finding_policy.rules explicitly marks a specific
+      // engine/rule as reproduced/confirmed.
+      evidence_status: 'automated-indicator',
       rule_id: ruleId,
       rule_label: component,
       engine_key: engine, // 'axe-core' | 'alfa' | 'deprecated-html' (stable; for CSV lookup)
