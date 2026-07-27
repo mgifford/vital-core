@@ -1,59 +1,11 @@
 {
  "domain": "www.cms.gov",
- "updatedAt": "2026-07-27T13:32:23.188Z",
+ "updatedAt": "2026-07-27T13:33:51.773Z",
  "findings": {
-  "VS-cb53cc4d": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r111",
-   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.5.8)",
-   "wcag": "2.5.8",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 229,
-   "lastAffectedPages": [
-    "https://www.cms.gov/priorities/innovation-center/value-based-care-spotlight/patient-provider-voices/whole-person-care-stories/improving-health-access-care-rural-areas-one-pennsylvania-couples-story",
-    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
-    "http://www.cms.gov/newsroom/press-releases/recovery-act-fund-12-state-efforts-improve-care-ambulatory-surgical-centers",
-    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
-    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
-    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
-    "https://cms.gov/vbid-cy2025-rfa-webinar",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/about-cms/who-we-are/leadership/office-human-capital",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A51&f%5B1%5D=topic%3A81&items_per_page=10&page=3&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/training-education/medicare-learning-networkr-mln/resources-training/mln-publications-multimedia",
-    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
-    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC"
-   ]
-  },
   "VS-179ad9b3": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r113",
-   "summary": "Target size is at least 24×24 CSS pixels (WCAG 2.2) (WCAG 2.5.8)",
+   "summary": "Target size is at least 24×24 CSS pixels or has spacing (Minimum) (WCAG 2.5.8)",
    "wcag": "2.5.8",
    "severity": "Moderate",
    "firstSeen": "2026-W24",
@@ -255,140 +207,6 @@
     "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?ncaid=305&proposed=N"
    ]
   },
-  "VS-7118fead": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r61",
-   "summary": "Form field label is visible (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 227,
-   "lastAffectedPages": [
-    "https://www.cms.gov/priorities/innovation-center/value-based-care-spotlight/patient-provider-voices/whole-person-care-stories/improving-health-access-care-rural-areas-one-pennsylvania-couples-story",
-    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
-    "http://www.cms.gov/newsroom/press-releases/recovery-act-fund-12-state-efforts-improve-care-ambulatory-surgical-centers",
-    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
-    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
-    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
-    "https://cms.gov/vbid-cy2025-rfa-webinar",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/about-cms/who-we-are/leadership/office-human-capital",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A51&f%5B1%5D=topic%3A81&items_per_page=10&page=3&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/training-education/medicare-learning-networkr-mln/resources-training/mln-publications-multimedia",
-    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
-    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC"
-   ]
-  },
-  "VS-f054f4a4": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r53",
-   "summary": "Headings are structured hierarchically (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 44,
-   "lastAffectedPages": [
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40140&proposedStatus=all&sortBy=title&ver=6",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=34076&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58912&articleStatus=all&bc=3&sortBy=title&ver=7",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35132&lcdStatus=all&sortBy=title&ver=54",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35170&lcdStatus=all&sortBy=title&ver=60",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34636&lcdStatus=all&sortBy=title&ver=38",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
-    "https://www.cms.gov/license/aha",
-    "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=59605&articleStatus=all&bc=4&contractorName=all&contractorNumber=all&sortBy=title&ver=3",
-    "http://www.cms.gov/center/special-topic/ombudsman/medicare-pharmaceutical-and-technology-ombudsman",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=6&lcdid=36241&lcdStatus=all&sortBy=title&ver=98",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=34623&ver=38",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
-    "https://www.cms.gov/COVIDvax"
-   ]
-  },
-  "VS-2cd767ca": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r78",
-   "summary": "Table header has scope (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 15,
-   "lastAffectedPages": [
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
-    "https://cms.gov/icd10m/version38-fullcode-cms/fullcode_cms/P0338.html",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
-    "http://www.cms.gov/medicare-coverage-database/reports/national-coverage-annual-report.aspx?docType=all&year=2026",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57587&articleStatus=all&bc=3&sortBy=title&ver=9",
-    "https://www.cms.gov/medicare-coverage-database/reports/local-coverage-final-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&lcdid=34998&lcdStatus=all&sortBy=title",
-    "https://cms.gov/icd10m/version38-0-R1-fullcode-cms/fullcode_cms/P0363.html",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56938&articleStatus=all&bc=3&sortBy=title&ver=46"
-   ]
-  },
   "VS-d6097011": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r68",
@@ -446,31 +264,6 @@
     "https://cms.gov/icd10m/version38-fullcode-cms/fullcode_cms/P0338.html",
     "https://cms.gov/icd10m/version38-0-R1-fullcode-cms/fullcode_cms/P0363.html"
    ]
-  },
-  "VS-f2542d87": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r79",
-   "summary": "Duplicate role landmark is labeled (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30"
-   ],
-   "weeksSeen": 7,
-   "lastPagesAffected": 2,
-   "lastAffectedPages": [
-    "https://www.cms.gov/medicare-coverage-database/details/nca-decision-memo.aspx?NCAId=265",
-    "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?ncaid=311&proposed=Y"
-   ],
-   "_coverageLost": true
   },
   "VS-0ddc2ac6": {
    "engine": "Siteimprove Alfa",
@@ -566,54 +359,6 @@
     "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=33942&lcdStatus=all&sortBy=title&ver=49"
    ]
   },
-  "VS-fbf54eba": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r74",
-   "summary": "Link is distinguishable without relying on color (WCAG 1.4.1)",
-   "wcag": "1.4.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 39,
-   "lastAffectedPages": [
-    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "http://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=11&contractorNumber=all&lcdid=40180&proposedStatus=all&sortBy=title&stateRegion=all&ver=6",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40140&proposedStatus=all&sortBy=title&ver=6",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=34076&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58912&articleStatus=all&bc=3&sortBy=title&ver=7",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35132&lcdStatus=all&sortBy=title&ver=54",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35170&lcdStatus=all&sortBy=title&ver=60",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34636&lcdStatus=all&sortBy=title&ver=38",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
-    "https://www.cms.gov/sf5510-authorization-agreement-preauthorized-payments",
-    "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=59605&articleStatus=all&bc=4&contractorName=all&contractorNumber=all&sortBy=title&ver=3",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=6&lcdid=36241&lcdStatus=all&sortBy=title&ver=98",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=34623&ver=38",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
-    "http://www.cms.gov/medicare-coverage-database/reports/national-coverage-annual-report.aspx?docType=all&year=2026"
-   ]
-  },
   "VS-efd91fdd": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r62",
@@ -635,54 +380,6 @@
    "lastPagesAffected": 1,
    "lastAffectedPages": [
     "http://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=11&contractorNumber=all&lcdid=40180&proposedStatus=all&sortBy=title&stateRegion=all&ver=6"
-   ]
-  },
-  "VS-c18be945": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r57",
-   "summary": "Scrolling content can be accessed by keyboard (WCAG 2.1.1)",
-   "wcag": "2.1.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 135,
-   "lastAffectedPages": [
-    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
-    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
-    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
-    "https://cms.gov/vbid-cy2025-rfa-webinar",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
-    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/regulations-and-guidance/guidance/transmittals/2017-transmittals-items/r1928otn",
-    "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/critical-access-hospitals-center",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A71&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A176&f%5B4%5D=topic%3A186&f%5B5%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/medicare/physician-fee-schedule/search/overview",
-    "https://www.cms.gov/medicare/regulations-guidance/transmittals/2025-transmittals/r232soma",
-    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A66&f%5B1%5D=topic%3A426&f%5B2%5D=topic%3A436&f%5B3%5D=topic%3A6076&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=newsroom_article_type%3A33316&f%5B2%5D=topic%3A61&f%5B3%5D=topic%3A161&f%5B4%5D=topic%3A181&f%5B5%5D=topic%3A841&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A116&f%5B2%5D=topic%3A136&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A66&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A161&f%5B4%5D=topic%3A221&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/about-cms/who-we-are/leadership/office-strategic-operations-regulatory-affairs"
    ]
   },
   "VS-e9fe47ac": {
@@ -839,102 +536,6 @@
     "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=52465&ver=60"
    ]
   },
-  "VS-2208081b": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r73",
-   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG 1.4.3)",
-   "wcag": "1.4.3",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 229,
-   "lastAffectedPages": [
-    "https://www.cms.gov/priorities/innovation-center/value-based-care-spotlight/patient-provider-voices/whole-person-care-stories/improving-health-access-care-rural-areas-one-pennsylvania-couples-story",
-    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
-    "http://www.cms.gov/newsroom/press-releases/recovery-act-fund-12-state-efforts-improve-care-ambulatory-surgical-centers",
-    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
-    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
-    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
-    "https://cms.gov/vbid-cy2025-rfa-webinar",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/about-cms/who-we-are/leadership/office-human-capital",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A51&f%5B1%5D=topic%3A81&items_per_page=10&page=3&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
-    "https://www.cms.gov/training-education/medicare-learning-networkr-mln/resources-training/mln-publications-multimedia",
-    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
-    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC"
-   ]
-  },
-  "VS-646b1e0b": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r66",
-   "summary": "Text has sufficient color contrast (WCAG 1.4.3)",
-   "wcag": "1.4.3",
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 37,
-   "lastAffectedPages": [
-    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "http://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=11&contractorNumber=all&lcdid=40180&proposedStatus=all&sortBy=title&stateRegion=all&ver=6",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40140&proposedStatus=all&sortBy=title&ver=6",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=34076&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58912&articleStatus=all&bc=3&sortBy=title&ver=7",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35132&lcdStatus=all&sortBy=title&ver=54",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35170&lcdStatus=all&sortBy=title&ver=60",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
-    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34636&lcdStatus=all&sortBy=title&ver=38",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
-    "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=59605&articleStatus=all&bc=4&contractorName=all&contractorNumber=all&sortBy=title&ver=3",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=6&lcdid=36241&lcdStatus=all&sortBy=title&ver=98",
-    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=34623&ver=38",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
-    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
-    "http://www.cms.gov/medicare-coverage-database/reports/national-coverage-annual-report.aspx?docType=all&year=2026",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35073&lcdStatus=all&sortBy=title&ver=51"
-   ]
-  },
   "VS-f7e99f4b": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r69",
@@ -1012,6 +613,102 @@
    "lastAffectedPages": [
     "https://www.cms.gov/data-research/monitoring-programs/improper-payment-measurement-programs/exchange-improper-payment-measurement-eipm/improper-payment-findings",
     "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=6&lcdid=33609&lcdStatus=all&sortBy=title&ver=14"
+   ]
+  },
+  "VS-646b1e0b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r66",
+   "summary": "Text has enhanced contrast (WCAG 1.4.6)",
+   "wcag": "1.4.6",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 37,
+   "lastAffectedPages": [
+    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "http://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=11&contractorNumber=all&lcdid=40180&proposedStatus=all&sortBy=title&stateRegion=all&ver=6",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40140&proposedStatus=all&sortBy=title&ver=6",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=34076&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58912&articleStatus=all&bc=3&sortBy=title&ver=7",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35132&lcdStatus=all&sortBy=title&ver=54",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35170&lcdStatus=all&sortBy=title&ver=60",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34636&lcdStatus=all&sortBy=title&ver=38",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
+    "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=59605&articleStatus=all&bc=4&contractorName=all&contractorNumber=all&sortBy=title&ver=3",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=6&lcdid=36241&lcdStatus=all&sortBy=title&ver=98",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=34623&ver=38",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
+    "http://www.cms.gov/medicare-coverage-database/reports/national-coverage-annual-report.aspx?docType=all&year=2026",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35073&lcdStatus=all&sortBy=title&ver=51"
+   ]
+  },
+  "VS-cb53cc4d": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r111",
+   "summary": "Target size is at least 44×44 CSS pixels (Enhanced) (WCAG 2.5.5)",
+   "wcag": "2.5.5",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 229,
+   "lastAffectedPages": [
+    "https://www.cms.gov/priorities/innovation-center/value-based-care-spotlight/patient-provider-voices/whole-person-care-stories/improving-health-access-care-rural-areas-one-pennsylvania-couples-story",
+    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
+    "http://www.cms.gov/newsroom/press-releases/recovery-act-fund-12-state-efforts-improve-care-ambulatory-surgical-centers",
+    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
+    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
+    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
+    "https://cms.gov/vbid-cy2025-rfa-webinar",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/about-cms/who-we-are/leadership/office-human-capital",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A51&f%5B1%5D=topic%3A81&items_per_page=10&page=3&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/training-education/medicare-learning-networkr-mln/resources-training/mln-publications-multimedia",
+    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
+    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC"
    ]
   },
   "VS-d25f622d": {
@@ -1304,6 +1001,284 @@
    ],
    "_coverageLost": true
   },
+  "VS-2208081b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r73",
+   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 229,
+   "lastAffectedPages": [
+    "https://www.cms.gov/priorities/innovation-center/value-based-care-spotlight/patient-provider-voices/whole-person-care-stories/improving-health-access-care-rural-areas-one-pennsylvania-couples-story",
+    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
+    "http://www.cms.gov/newsroom/press-releases/recovery-act-fund-12-state-efforts-improve-care-ambulatory-surgical-centers",
+    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
+    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
+    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
+    "https://cms.gov/vbid-cy2025-rfa-webinar",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/about-cms/who-we-are/leadership/office-human-capital",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A51&f%5B1%5D=topic%3A81&items_per_page=10&page=3&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/training-education/medicare-learning-networkr-mln/resources-training/mln-publications-multimedia",
+    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
+    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC"
+   ]
+  },
+  "VS-7118fead": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r61",
+   "summary": "Form field label is visible (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 227,
+   "lastAffectedPages": [
+    "https://www.cms.gov/priorities/innovation-center/value-based-care-spotlight/patient-provider-voices/whole-person-care-stories/improving-health-access-care-rural-areas-one-pennsylvania-couples-story",
+    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
+    "http://www.cms.gov/newsroom/press-releases/recovery-act-fund-12-state-efforts-improve-care-ambulatory-surgical-centers",
+    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
+    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
+    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
+    "https://cms.gov/vbid-cy2025-rfa-webinar",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/about-cms/who-we-are/leadership/office-human-capital",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A51&f%5B1%5D=topic%3A81&items_per_page=10&page=3&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/training-education/medicare-learning-networkr-mln/resources-training/mln-publications-multimedia",
+    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
+    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC"
+   ]
+  },
+  "VS-c18be945": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r57",
+   "summary": "Scrolling content can be accessed by keyboard (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 135,
+   "lastAffectedPages": [
+    "http://cms.gov/priorities/burden-reduction/overview/interoperability/learn-about-fhir",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A51&f%5B2%5D=topic%3A56&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&f%5B2%5D=topic%3A181&f%5B3%5D=topic%3A436&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical",
+    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A111&f%5B2%5D=topic%3A231&f%5B3%5D=topic%3A841&items_per_page=10&sort_by=search_api_relevance&sort_order=DESC",
+    "https://www.cms.gov/data-research/cms-information-technology/section-508-cms/contractors-developers/section-508-exceptions",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A56&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A126&f%5B4%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/fact-sheets/cms-finalizes-hospital-outpatient-and-ambulatory-surgical-centers-policy-and-payment-changes-2015",
+    "https://cms.gov/vbid-cy2025-rfa-webinar",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A126&f%5B1%5D=topic%3A176&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/newsroom/search?f%5B0%5D=topic%3A76&f%5B1%5D=topic%3A101&f%5B2%5D=topic%3A176&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A671&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A46&f%5B2%5D=topic%3A51&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A436&f%5B5%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A61&f%5B2%5D=topic%3A111&f%5B3%5D=topic%3A231&f%5B4%5D=topic%3A441&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
+    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A446&f%5B2%5D=topic%3A33506&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/regulations-and-guidance/guidance/transmittals/2017-transmittals-items/r1928otn",
+    "https://www.cms.gov/medicare/enrollment-renewal/providers-suppliers/critical-access-hospitals-center",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A21&f%5B1%5D=topic%3A71&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A176&f%5B4%5D=topic%3A186&f%5B5%5D=topic%3A231&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/medicare/physician-fee-schedule/search/overview",
+    "https://www.cms.gov/medicare/regulations-guidance/transmittals/2025-transmittals/r232soma",
+    "http://www.cms.gov/newsroom/search?f%5B0%5D=topic%3A66&f%5B1%5D=topic%3A426&f%5B2%5D=topic%3A436&f%5B3%5D=topic%3A6076&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=newsroom_article_type%3A33316&f%5B2%5D=topic%3A61&f%5B3%5D=topic%3A161&f%5B4%5D=topic%3A181&f%5B5%5D=topic%3A841&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29586&f%5B1%5D=topic%3A116&f%5B2%5D=topic%3A136&f%5B3%5D=topic%3A161&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://cms.gov/newsroom/search?f%5B0%5D=newsroom_article_type%3A29581&f%5B1%5D=topic%3A66&f%5B2%5D=topic%3A76&f%5B3%5D=topic%3A161&f%5B4%5D=topic%3A221&items_per_page=10&search_api_language=en&sort_by=field_date&sort_order=DESC",
+    "https://www.cms.gov/about-cms/who-we-are/leadership/office-strategic-operations-regulatory-affairs"
+   ]
+  },
+  "VS-f054f4a4": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r53",
+   "summary": "Headings are structured hierarchically (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 44,
+   "lastAffectedPages": [
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-procedure-procedure-ptp-edits",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40140&proposedStatus=all&sortBy=title&ver=6",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=34076&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58912&articleStatus=all&bc=3&sortBy=title&ver=7",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35132&lcdStatus=all&sortBy=title&ver=54",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35170&lcdStatus=all&sortBy=title&ver=60",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34636&lcdStatus=all&sortBy=title&ver=38",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
+    "https://www.cms.gov/license/aha",
+    "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=59605&articleStatus=all&bc=4&contractorName=all&contractorNumber=all&sortBy=title&ver=3",
+    "http://www.cms.gov/center/special-topic/ombudsman/medicare-pharmaceutical-and-technology-ombudsman",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=6&lcdid=36241&lcdStatus=all&sortBy=title&ver=98",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=34623&ver=38",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
+    "https://www.cms.gov/COVIDvax"
+   ]
+  },
+  "VS-2cd767ca": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r78",
+   "summary": "Table header has scope (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 15,
+   "lastAffectedPages": [
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
+    "https://cms.gov/icd10m/version38-fullcode-cms/fullcode_cms/P0338.html",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
+    "http://www.cms.gov/medicare-coverage-database/reports/national-coverage-annual-report.aspx?docType=all&year=2026",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57587&articleStatus=all&bc=3&sortBy=title&ver=9",
+    "https://www.cms.gov/medicare-coverage-database/reports/local-coverage-final-lcds-contractor-report.aspx?contractorName=all&contractorNumber=all&lcdid=34998&lcdStatus=all&sortBy=title",
+    "https://cms.gov/icd10m/version38-0-R1-fullcode-cms/fullcode_cms/P0363.html",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56938&articleStatus=all&bc=3&sortBy=title&ver=46"
+   ]
+  },
+  "VS-fbf54eba": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r74",
+   "summary": "Link is distinguishable without relying on color (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 39,
+   "lastAffectedPages": [
+    "https://www.cms.gov/medicare-coverage-database/view/ncd.aspx?NCDId=356&NCDver=2",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=52499&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=23",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56985&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=38333&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "http://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=11&contractorNumber=all&lcdid=40180&proposedStatus=all&sortBy=title&stateRegion=all&ver=6",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=10&contractorName=all&contractorNumber=all&lcdid=40140&proposedStatus=all&sortBy=title&ver=6",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=8&contractorNumber=all&lcdid=34076&lcdStatus=all&sortBy=title&stateRegion=all&ver=20",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56973&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=67",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58912&articleStatus=all&bc=3&sortBy=title&ver=7",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35132&lcdStatus=all&sortBy=title&ver=54",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=35170&lcdStatus=all&sortBy=title&ver=60",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56983&articleStatus=all&bc=3&sortBy=title&ver=12",
+    "http://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=34636&lcdStatus=all&sortBy=title&ver=38",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58577&articleStatus=all&bc=3&sortBy=title&ver=33",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=53793&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=38",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
+    "https://www.cms.gov/sf5510-authorization-agreement-preauthorized-payments",
+    "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=59605&articleStatus=all&bc=4&contractorName=all&contractorNumber=all&sortBy=title&ver=3",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?bc=6&lcdid=36241&lcdStatus=all&sortBy=title&ver=98",
+    "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdId=34623&ver=38",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=56505&articleStatus=all&bc=3&sortBy=title&ver=37",
+    "https://cms.gov/medicare-coverage-database/view/article.aspx?articleid=59040&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=12",
+    "http://www.cms.gov/medicare-coverage-database/reports/national-coverage-annual-report.aspx?docType=all&year=2026"
+   ]
+  },
   "VS-04a9d28c": {
    "engine": "deprecated-html",
    "ruleId": "presentational-attr",
@@ -1329,6 +1304,31 @@
     "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0379.html",
     "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0104.html"
    ]
+  },
+  "VS-f2542d87": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r79",
+   "summary": "Duplicate role landmark is labeled (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30"
+   ],
+   "weeksSeen": 7,
+   "lastPagesAffected": 2,
+   "lastAffectedPages": [
+    "https://www.cms.gov/medicare-coverage-database/details/nca-decision-memo.aspx?NCAId=265",
+    "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?ncaid=311&proposed=Y"
+   ],
+   "_coverageLost": true
   },
   "VS-91d2294a": {
    "engine": "deprecated-html",
@@ -1481,103 +1481,6 @@
     "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?fromTracking=Y&ncaid=296&proposed=Y"
    ]
   },
-  "VS-388b5438": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r80",
-   "summary": "Scrollable element is keyboard accessible (WCAG 2.1.1)",
-   "wcag": "2.1.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 7,
-   "lastPagesAffected": 5,
-   "lastAffectedPages": [
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
-    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
-    "https://www.cms.gov/sf5510-authorization-agreement-preauthorized-payments",
-    "https://www.cms.gov/sf5510-acuerdo-de-autorizacion-para-pagos-preautorizados"
-   ]
-  },
-  "VS-4c341c77": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r85",
-   "summary": "Keyboard trap does not exist (WCAG 2.1.2)",
-   "wcag": "2.1.2",
-   "severity": "Moderate",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30"
-   ],
-   "weeksSeen": 6,
-   "lastPagesAffected": 3,
-   "lastAffectedPages": [
-    "http://www.cms.gov/medicare-coverage-database/view/medcac-meeting.aspx?bc=15&medcacid=45&sortBy=meetingdate&year=all",
-    "https://www.cms.gov/medicare-coverage-database/details/nca-decision-memo.aspx?NCAId=265",
-    "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?ncaid=311&proposed=Y"
-   ],
-   "_coverageLost": true
-  },
-  "VS-3d033717": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r70",
-   "summary": "Link text is descriptive (WCAG 2.4.4)",
-   "wcag": "2.4.4",
-   "severity": "Moderate",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30"
-   ],
-   "weeksSeen": 6,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?ncaid=311&proposed=Y"
-   ],
-   "_coverageLost": true
-  },
-  "VS-aa242c2d": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r87",
-   "summary": "First focusable element is link to main content (WCAG 3.2.1)",
-   "wcag": "3.2.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W29",
-   "_weeks": [
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29"
-   ],
-   "weeksSeen": 5,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "https://www.cms.gov/research-statistics-data-and-systems/statistics-trends-and-reports/medicare-geographic-variation"
-   ],
-   "_coverageLost": true
-  },
   "VS-1467ea8a": {
    "engine": "axe-core",
    "ruleId": "aria-allowed-attr",
@@ -1599,29 +1502,6 @@
    ],
    "_coverageLost": true
   },
-  "VS-48291402": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r71",
-   "summary": "iframe element is not empty (WCAG 4.1.2)",
-   "wcag": "4.1.2",
-   "severity": "Moderate",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 7,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24"
-   ]
-  },
   "VS-29f9f921": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r12",
@@ -1639,47 +1519,6 @@
    "lastAffectedPages": [
     "https://www.cms.gov/Outreach-and-Education/MLN/WBT/MedicareFraudandAbuse/FraudandAbuse/story.html"
    ],
-   "_coverageLost": true
-  },
-  "VS-e05344b9": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r18",
-   "summary": "aria attribute is permitted for element role (WCAG 4.1.2)",
-   "wcag": "4.1.2",
-   "severity": "Moderate",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W29",
-   "_weeks": [
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29"
-   ],
-   "weeksSeen": 5,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "https://www.cms.gov/research-statistics-data-and-systems/statistics-trends-and-reports/medicare-geographic-variation"
-   ],
-   "_coverageLost": true
-  },
-  "VS-66d5b8b4": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r21",
-   "summary": "Element has valid WAI-ARIA role (WCAG 4.1.2)",
-   "wcag": "4.1.2",
-   "severity": "Moderate",
-   "firstSeen": "2026-W25",
-   "lastSeen": "2026-W25",
-   "_weeks": [
-    "2026-W25"
-   ],
-   "weeksSeen": 1,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "http://cms.gov/priorities/innovation/files/access-api-impl-data-access-video"
-   ],
-   "_coverageNew": true,
    "_coverageLost": true
   },
   "VS-a48e6078": {
@@ -1789,35 +1628,164 @@
    ],
    "_coverageLost": true
   },
-  "VS-7fbb8b20": {
+  "VS-388b5438": {
    "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r59",
-   "summary": "Element with orientation is not locked (WCAG 1.3.4)",
-   "wcag": "1.3.4",
+   "ruleId": "sia-r80",
+   "summary": "Scrollable element is keyboard accessible (WCAG criterion undetermined)",
+   "wcag": null,
    "severity": "Moderate",
-   "firstSeen": "2026-W26",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 7,
+   "lastPagesAffected": 5,
+   "lastAffectedPages": [
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=57472&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=15",
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24",
+    "https://cms.gov/medicare-coverage-database/view/lcd.aspx?bc=7&contractorName=all&contractorNumber=all&lcdid=39023&lcdStatus=all&sortBy=title&ver=23",
+    "https://www.cms.gov/sf5510-authorization-agreement-preauthorized-payments",
+    "https://www.cms.gov/sf5510-acuerdo-de-autorizacion-para-pagos-preautorizados"
+   ]
+  },
+  "VS-48291402": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r71",
+   "summary": "iframe element is not empty (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 7,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "http://cms.gov/medicare-coverage-database/view/article.aspx?articleid=58350&articleStatus=all&bc=5&contractorNumber=all&sortBy=title&stateRegion=all&ver=24"
+   ]
+  },
+  "VS-3d033717": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r70",
+   "summary": "No obsolete or deprecated elements are used (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
    "lastSeen": "2026-W30",
    "_weeks": [
+    "2026-W25",
     "2026-W26",
     "2026-W27",
     "2026-W28",
     "2026-W29",
     "2026-W30"
    ],
-   "weeksSeen": 5,
-   "lastPagesAffected": 11,
+   "weeksSeen": 6,
+   "lastPagesAffected": 1,
    "lastAffectedPages": [
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1572.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0328.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1515.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0419.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0261.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0756.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0439.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0262.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1724.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1723.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0514.html"
+    "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?ncaid=311&proposed=Y"
+   ],
+   "_coverageLost": true
+  },
+  "VS-4c341c77": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r85",
+   "summary": "Keyboard trap does not exist (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30"
+   ],
+   "weeksSeen": 6,
+   "lastPagesAffected": 3,
+   "lastAffectedPages": [
+    "http://www.cms.gov/medicare-coverage-database/view/medcac-meeting.aspx?bc=15&medcacid=45&sortBy=meetingdate&year=all",
+    "https://www.cms.gov/medicare-coverage-database/details/nca-decision-memo.aspx?NCAId=265",
+    "https://www.cms.gov/medicare-coverage-database/view/ncacal-decision-memo.aspx?ncaid=311&proposed=Y"
+   ],
+   "_coverageLost": true
+  },
+  "VS-e05344b9": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r18",
+   "summary": "aria attribute is permitted for element role (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W29",
+   "_weeks": [
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29"
+   ],
+   "weeksSeen": 5,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "https://www.cms.gov/research-statistics-data-and-systems/statistics-trends-and-reports/medicare-geographic-variation"
+   ],
+   "_coverageLost": true
+  },
+  "VS-66d5b8b4": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r21",
+   "summary": "Element has valid WAI-ARIA role (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W25",
+   "_weeks": [
+    "2026-W25"
+   ],
+   "weeksSeen": 1,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "http://cms.gov/priorities/innovation/files/access-api-impl-data-access-video"
+   ],
+   "_coverageNew": true,
+   "_coverageLost": true
+  },
+  "VS-aa242c2d": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r87",
+   "summary": "First focusable element is link to main content (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W25",
+   "lastSeen": "2026-W29",
+   "_weeks": [
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29"
+   ],
+   "weeksSeen": 5,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "https://www.cms.gov/research-statistics-data-and-systems/statistics-trends-and-reports/medicare-geographic-variation"
    ],
    "_coverageLost": true
   },
@@ -1859,38 +1827,6 @@
     "https://www.cms.gov/Outreach-and-Education/MLN/WBT/MedicareFraudandAbuse/FraudandAbuse/story.html"
    ],
    "_coverageNew": true,
-   "_coverageLost": true
-  },
-  "VS-e43903a1": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r75",
-   "summary": "Form field error is identified and described (WCAG 3.3.1)",
-   "wcag": "3.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W26",
-   "lastSeen": "2026-W30",
-   "_weeks": [
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30"
-   ],
-   "weeksSeen": 5,
-   "lastPagesAffected": 11,
-   "lastAffectedPages": [
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1572.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0328.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1515.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0419.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0261.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0756.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0439.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0262.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1724.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1723.html",
-    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0514.html"
-   ],
    "_coverageLost": true
   },
   "VS-fafffee0": {
@@ -1958,25 +1894,6 @@
    ],
    "_coverageLost": true
   },
-  "VS-7f897be7": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r20",
-   "summary": "aria attribute is defined in WAI-ARIA (WCAG 4.1.2)",
-   "wcag": "4.1.2",
-   "severity": "Moderate",
-   "firstSeen": "2026-W26",
-   "lastSeen": "2026-W27",
-   "_weeks": [
-    "2026-W26",
-    "2026-W27"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 1,
-   "lastAffectedPages": [
-    "https://www.cms.gov/Outreach-and-Education/MLN/WBT/MLN4151758-ICD-10-PCS/ICD10PCS/story.html"
-   ],
-   "_coverageLost": true
-  },
   "VS-3a9437f7": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r47",
@@ -2016,6 +1933,89 @@
     "https://www.cms.gov/data-research/monitoring-programs/improper-payment-measurement-programs/exchange-improper-payment-measurement-eipm/improper-payment-findings"
    ]
   },
+  "VS-7fbb8b20": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r59",
+   "summary": "Element with orientation is not locked (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30"
+   ],
+   "weeksSeen": 5,
+   "lastPagesAffected": 11,
+   "lastAffectedPages": [
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1572.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0328.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1515.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0419.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0261.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0756.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0439.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0262.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1724.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1723.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0514.html"
+   ],
+   "_coverageLost": true
+  },
+  "VS-e43903a1": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r75",
+   "summary": "Form field error is identified and described (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W30",
+   "_weeks": [
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30"
+   ],
+   "weeksSeen": 5,
+   "lastPagesAffected": 11,
+   "lastAffectedPages": [
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1572.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0328.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1515.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0419.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0261.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0756.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0439.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0262.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1724.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P1723.html",
+    "https://www.cms.gov/icd10m/version33-fullcode-cms/fullcode_cms/P0514.html"
+   ],
+   "_coverageLost": true
+  },
+  "VS-7f897be7": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r20",
+   "summary": "aria attribute is defined in WAI-ARIA (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W26",
+   "lastSeen": "2026-W27",
+   "_weeks": [
+    "2026-W26",
+    "2026-W27"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 1,
+   "lastAffectedPages": [
+    "https://www.cms.gov/Outreach-and-Education/MLN/WBT/MLN4151758-ICD-10-PCS/ICD10PCS/story.html"
+   ],
+   "_coverageLost": true
+  },
   "VS-f7280372": {
    "engine": "axe-core",
    "ruleId": "aria-progressbar-name",
@@ -2032,27 +2032,6 @@
    "lastPagesAffected": 1,
    "lastAffectedPages": [
     "https://www.cms.gov/medicare-coverage-database/search-results.aspx?areaId=all&contractOption=all&docType=F&keyword=psych&keywordType=all&sortBy=relevance"
-   ],
-   "_coverageLost": true
-  },
-  "VS-3d3b2245": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r40",
-   "summary": "Tables are used for tabular data, not layout (WCAG 1.3.1)",
-   "wcag": "1.3.1",
-   "severity": "Moderate",
-   "firstSeen": "2026-W27",
-   "lastSeen": "2026-W28",
-   "_weeks": [
-    "2026-W27",
-    "2026-W28"
-   ],
-   "weeksSeen": 2,
-   "lastPagesAffected": 3,
-   "lastAffectedPages": [
-    "http://cms.gov/priorities/health-equity/minority-health/research-data/research-data/tools",
-    "https://www.cms.gov/priorities/health-equity/minority-health/resource-center/webinars-trainings/coverage-care-c2c-webinars",
-    "https://www.cms.gov/data-tools"
    ],
    "_coverageLost": true
   },
@@ -2073,6 +2052,27 @@
     "https://www.cms.gov/files/linked-video-files/long-term-care-indian-country-oneida-nation-wisconsin"
    ],
    "_coverageNew": true,
+   "_coverageLost": true
+  },
+  "VS-3d3b2245": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r40",
+   "summary": "Tables are used for tabular data, not layout (WCAG criterion undetermined)",
+   "wcag": null,
+   "severity": "Moderate",
+   "firstSeen": "2026-W27",
+   "lastSeen": "2026-W28",
+   "_weeks": [
+    "2026-W27",
+    "2026-W28"
+   ],
+   "weeksSeen": 2,
+   "lastPagesAffected": 3,
+   "lastAffectedPages": [
+    "http://cms.gov/priorities/health-equity/minority-health/research-data/research-data/tools",
+    "https://www.cms.gov/priorities/health-equity/minority-health/resource-center/webinars-trainings/coverage-care-c2c-webinars",
+    "https://www.cms.gov/data-tools"
+   ],
    "_coverageLost": true
   },
   "VS-9429bb8d": {
