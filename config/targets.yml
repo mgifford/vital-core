@@ -272,6 +272,8 @@ targets:
       lighthouse: 0
   - domain: www.cdc.gov
     importance: 1
+    sampling:
+      alfa: 25   # memory guard: keeps Alfa's in-memory DOM snapshots below the runner heap limit
   - domain: data.cms.gov
     importance: 3                  # open-data site
   - domain: data.medicaid.gov
