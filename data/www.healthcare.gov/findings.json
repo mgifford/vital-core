@@ -1,6 +1,6 @@
 {
  "domain": "www.healthcare.gov",
- "updatedAt": "2026-07-27T13:34:33.445Z",
+ "updatedAt": "2026-07-28T13:12:51.407Z",
  "findings": {
   "VS-179ad9b3": {
    "engine": "Siteimprove Alfa",
@@ -376,6 +376,54 @@
     "https://www.healthcare.gov/have-coverage"
    ]
   },
+  "VS-2208081b": {
+   "engine": "Siteimprove Alfa",
+   "ruleId": "sia-r73",
+   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG 1.4.8)",
+   "wcag": "1.4.8",
+   "severity": "Moderate",
+   "firstSeen": "2026-W24",
+   "lastSeen": "2026-W31",
+   "_weeks": [
+    "2026-W24",
+    "2026-W25",
+    "2026-W26",
+    "2026-W27",
+    "2026-W28",
+    "2026-W29",
+    "2026-W30",
+    "2026-W31"
+   ],
+   "weeksSeen": 8,
+   "lastPagesAffected": 281,
+   "lastAffectedPages": [
+    "https://www.healthcare.gov/glossary/tty",
+    "https://www.healthcare.gov/unemployed/cobra-coverage",
+    "https://www.healthcare.gov/glossary/employer-or-union-retiree-plans",
+    "https://www.healthcare.gov/glossary/primary-care-physician",
+    "https://www.healthcare.gov/private-plan-exceptions-outside-open-enrollment",
+    "https://www.healthcare.gov/lower-costs/save-on-out-of-pocket-costs",
+    "https://www.healthcare.gov/health-coverage-exemptions/exemptions-from-the-fee",
+    "https://www.healthcare.gov/people-with-disabilities/coverage-options",
+    "https://www.healthcare.gov/taxes/marketplace-plan-without-savings",
+    "https://www.healthcare.gov/glossary/agent",
+    "https://www.healthcare.gov/small-businesses/choose-and-enroll/qualify-for-shop-marketplace",
+    "https://www.healthcare.gov/small-businesses",
+    "https://www.healthcare.gov/taxes-2022/job-based-coverage",
+    "https://www.healthcare.gov/glossary/medically-necessary",
+    "https://www.healthcare.gov/glossary/retirement-benefit",
+    "https://www.healthcare.gov/glossary/health-care-workforce-incentive",
+    "https://www.healthcare.gov/glossary/patient-protection-and-affordable-care-act",
+    "https://www.healthcare.gov/glossary/brand-name-drugs",
+    "https://www.healthcare.gov/self-employed",
+    "https://www.healthcare.gov/glossary/cost-sharing-reduction",
+    "https://www.healthcare.gov/glossary/reconcile",
+    "https://www.healthcare.gov/income-and-household-information",
+    "https://www.healthcare.gov/glossary/platinum-health-plan",
+    "https://www.healthcare.gov/glossary/catastrophic-health-plan",
+    "https://www.healthcare.gov/have-job-based-coverage/if-you-lose-job-based-coverage"
+   ]
+  },
   "VS-cb53cc4d": {
    "engine": "Siteimprove Alfa",
    "ruleId": "sia-r111",
@@ -544,54 +592,6 @@
     "https://www.healthcare.gov/taxes-2023/no-health-coverage",
     "https://www.healthcare.gov/taxes-2023/other-health-coverage",
     "https://www.healthcare.gov/choose-a-plan/catastrophic-health-plans"
-   ]
-  },
-  "VS-2208081b": {
-   "engine": "Siteimprove Alfa",
-   "ruleId": "sia-r73",
-   "summary": "Text has minimum contrast ratio of 4.5:1 (WCAG criterion undetermined)",
-   "wcag": null,
-   "severity": "Moderate",
-   "firstSeen": "2026-W24",
-   "lastSeen": "2026-W31",
-   "_weeks": [
-    "2026-W24",
-    "2026-W25",
-    "2026-W26",
-    "2026-W27",
-    "2026-W28",
-    "2026-W29",
-    "2026-W30",
-    "2026-W31"
-   ],
-   "weeksSeen": 8,
-   "lastPagesAffected": 281,
-   "lastAffectedPages": [
-    "https://www.healthcare.gov/glossary/tty",
-    "https://www.healthcare.gov/unemployed/cobra-coverage",
-    "https://www.healthcare.gov/glossary/employer-or-union-retiree-plans",
-    "https://www.healthcare.gov/glossary/primary-care-physician",
-    "https://www.healthcare.gov/private-plan-exceptions-outside-open-enrollment",
-    "https://www.healthcare.gov/lower-costs/save-on-out-of-pocket-costs",
-    "https://www.healthcare.gov/health-coverage-exemptions/exemptions-from-the-fee",
-    "https://www.healthcare.gov/people-with-disabilities/coverage-options",
-    "https://www.healthcare.gov/taxes/marketplace-plan-without-savings",
-    "https://www.healthcare.gov/glossary/agent",
-    "https://www.healthcare.gov/small-businesses/choose-and-enroll/qualify-for-shop-marketplace",
-    "https://www.healthcare.gov/small-businesses",
-    "https://www.healthcare.gov/taxes-2022/job-based-coverage",
-    "https://www.healthcare.gov/glossary/medically-necessary",
-    "https://www.healthcare.gov/glossary/retirement-benefit",
-    "https://www.healthcare.gov/glossary/health-care-workforce-incentive",
-    "https://www.healthcare.gov/glossary/patient-protection-and-affordable-care-act",
-    "https://www.healthcare.gov/glossary/brand-name-drugs",
-    "https://www.healthcare.gov/self-employed",
-    "https://www.healthcare.gov/glossary/cost-sharing-reduction",
-    "https://www.healthcare.gov/glossary/reconcile",
-    "https://www.healthcare.gov/income-and-household-information",
-    "https://www.healthcare.gov/glossary/platinum-health-plan",
-    "https://www.healthcare.gov/glossary/catastrophic-health-plan",
-    "https://www.healthcare.gov/have-job-based-coverage/if-you-lose-job-based-coverage"
    ]
   },
   "VS-e05344b9": {
