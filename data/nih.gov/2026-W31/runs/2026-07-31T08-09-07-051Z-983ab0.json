@@ -1,0 +1,42 @@
+{
+ "runId": "2026-07-31T08-09-07-051Z-983ab0",
+ "week": "2026-W31",
+ "domain": "nih.gov",
+ "startedAt": "2026-07-31T08:09:07.766Z",
+ "scanned": [],
+ "errors": [
+  {
+   "pageId": "d696583a67bb89c9",
+   "url": "http://mailto:RADxInfo@nih.gov/virtual-tour",
+   "error": "Error: page.goto: net::ERR_EMPTY_RESPONSE at http://mailto:RADxInfo@nih.gov/virtual-tour\nCall log:\n  - navigating to \"http://mailto:RADxInfo@nih.gov/virtual-tour\", waiting until \"load\"\n"
+  }
+ ],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "enginesRun": {},
+ "tally": {
+  "ok": 0,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 1
+ },
+ "finishedAt": "2026-07-31T08:09:10.487Z"
+}
