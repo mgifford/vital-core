@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-08-03T13:33:28.033Z",
+ "updatedAt": "2026-08-04T13:15:27.719Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -254,16 +254,17 @@
   },
   "https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes.aspx": {
    "status": 0,
-   "reason": "EAI_AGAIN",
+   "reason": "timeout",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W31",
+   "lastSeen": "2026-W32",
    "_weeks": [
     "2026-W25",
-    "2026-W31"
+    "2026-W31",
+    "2026-W32"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
-    "https://data.cms.gov/resources/medicare-physician-other-practitioners-by-provider-and-service-data-dictionary"
+    "https://data.cms.gov/resources/medicare-part-d-prescribers-by-provider-data-dictionary"
    ]
   },
   "http://www.hss.state.ak.us/": {
@@ -841,6 +842,19 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://data.cms.gov/resources/nursing-home-chain-performance-measures-methodology"
+   ]
+  },
+  "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/tps/docs?": {
+   "status": 0,
+   "reason": "timeout",
+   "firstSeen": "2026-W32",
+   "lastSeen": "2026-W32",
+   "_weeks": [
+    "2026-W32"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://data.cms.gov/provider-data/dataset/tps?page=4"
    ]
   }
  }
