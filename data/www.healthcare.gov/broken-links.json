@@ -1,6 +1,6 @@
 {
  "domain": "www.healthcare.gov",
- "updatedAt": "2026-08-10T14:04:21.000Z",
+ "updatedAt": "2026-08-11T14:02:37.764Z",
  "links": {
   "https://portal.cms.gov/wps/portal/unauthportal/home/": {
    "status": 503,
@@ -37,14 +37,15 @@
    ],
    "weeksBroken": 9,
    "foundOn": [
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers/register-for-the-shop-marketplace"
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers/register-for-the-shop-marketplace",
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers/sell-health-insurance-through-shop"
    ]
   },
   "https://www.agentbrokerfaq.cms.gov/s/topic/0TOt0000000TUeNGAW/small-business-health-options-program/": {
    "status": 0,
    "reason": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
    "firstSeen": "2026-W26",
-   "lastSeen": "2026-W32",
+   "lastSeen": "2026-W33",
    "_weeks": [
     "2026-W26",
     "2026-W27",
@@ -52,9 +53,10 @@
     "2026-W29",
     "2026-W30",
     "2026-W31",
-    "2026-W32"
+    "2026-W32",
+    "2026-W33"
    ],
-   "weeksBroken": 7,
+   "weeksBroken": 8,
    "foundOn": [
     "https://www.healthcare.gov/small-businesses/agents-and-brokers/guides-tools-resources-for-agents-and-brokers"
    ]
@@ -446,6 +448,19 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://www.healthcare.gov/third-party-privacy-policies"
+   ]
+  },
+  "http://www.opm.gov/healthcare-insurance/multi-state-plan-program": {
+   "status": 0,
+   "reason": "timeout",
+   "firstSeen": "2026-W33",
+   "lastSeen": "2026-W33",
+   "_weeks": [
+    "2026-W33"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/glossary/multi-state-plan"
    ]
   }
  }
