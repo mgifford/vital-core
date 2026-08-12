@@ -1,0 +1,202 @@
+{
+ "runId": "2026-08-12T08-26-22-004Z-3d0255",
+ "week": "2026-W33",
+ "domain": "www.medicare.gov",
+ "startedAt": "2026-08-12T08:26:23.990Z",
+ "scanned": [
+  "75e934cc9f7e43f8",
+  "6a071be001e8a0cd",
+  "54dad50b0f23207e",
+  "eb63ece580e0986d",
+  "fcd0348478e92172",
+  "f49ec773633a329f",
+  "fd3e3d7adbaf0a94",
+  "c81becd47283aae3",
+  "0438a97c7c8be5b9",
+  "be2c3425e8192db7",
+  "2ea5d9d2c83d9da9",
+  "b2810ccbe97d7f2a",
+  "6b040a943ac57e0b",
+  "2d3e981c11644b04",
+  "7ad4a1e4b301890c",
+  "c70553a51799d80b",
+  "1f89d8bb3ee4268d",
+  "4d9ffd783419964a",
+  "b505b3512ed98bdc",
+  "4f680045e65f624e",
+  "8504c755f6bfbd2e",
+  "e448148df2ba3703",
+  "3bf3214ed61667ba",
+  "e04e73915fce5c32",
+  "32cc900e4021d022",
+  "eacbe168ad94ba5d",
+  "9e0477b4ce59f567",
+  "4fccb8b96842b148",
+  "622618c384adaf6b",
+  "d1f04facb751bf4e",
+  "d55d782b83ef7531",
+  "916deb6190f5ec3e",
+  "c64521eb5292915b",
+  "b0fc3af2bdfb70e4",
+  "ed835391d60973c2",
+  "e1966b6cd1d563e7",
+  "2dde3803f9ba8dd8",
+  "b0496851f67cc058",
+  "74b63885bc81cc38",
+  "9ef4bee745d491ee",
+  "722790d5b3e2a4e1",
+  "cf80ce9d722799c0",
+  "51b936125c00d1ba",
+  "077f32cc3ab8ebee",
+  "bb0be7f3a36ffc87",
+  "373dd0b7f7672921",
+  "0fa7421e8ea210bd",
+  "90d235640d76bac3",
+  "e977b3304fe91f78",
+  "7bcca058d5c4f8a7",
+  "87bee6093f3bda6d",
+  "9d01932d091c818b",
+  "9c94f8287be999bc",
+  "03593829f4f4b3be",
+  "a70297a4d94126a1",
+  "2dba1d5aeab591ea",
+  "b4fd6025d208af18",
+  "5eddb4a98b84c1c2",
+  "aba459ab6eac8eb8",
+  "16dae140c2eb79db",
+  "71f153300da6f240",
+  "3bbf2944c906c70e",
+  "e8b8c19d6c491ddc",
+  "e5089e2ea6067748",
+  "dd58ce24f2eafe56",
+  "aff6af3aff435150",
+  "33923a5d80d160ea",
+  "5e3dadd6a3ff2784",
+  "8bbc85714906e143",
+  "21f0b20c6d509d66",
+  "d29eeb3dffe15695",
+  "31571ba637b40c4f",
+  "2ee0c5a6baea0293",
+  "4e6df3e9632c12aa",
+  "b56653a27ac82a3a",
+  "e48993b7a149fde1",
+  "4aa02866b2f4f1b7",
+  "789333cae26ab283",
+  "e2fa7eafea22c7a3",
+  "54bc2c03a41176d6",
+  "cdbd8d25507f97f1",
+  "15013e0bd9dfa2c9",
+  "b9236aa657aff665",
+  "d5cb7a101e9a66f7",
+  "890b32fba1b65c06"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 705,
+  "checked": 500,
+  "brokenCount": 7,
+  "broken": [
+   {
+    "url": "https://www.january.ai/app",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://medicare.gov/health-apps/january.ai"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/node/26446",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.medicare.gov/basics/get-started-with-medicare/whats-next"
+    ]
+   },
+   {
+    "url": "https://www.alzheimers.gov/",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "http://medicare.gov/coverage/cognitive-assessment-care-plan-services",
+     "https://medicare.gov/coverage/cognitive-assessment-care-plan-services"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/alzheimers-and-dementia",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "http://medicare.gov/coverage/cognitive-assessment-care-plan-services",
+     "https://medicare.gov/coverage/cognitive-assessment-care-plan-services"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/sso/authorize?client_id=mct&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D&Lang=en-us",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+    ]
+   },
+   {
+    "url": "https://communicare.gopatientportal.com/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 83,
+  "plain-language": 39,
+  "resources": 83,
+  "images": 83,
+  "public-interest": 6,
+  "link-check": 83,
+  "alfa": 26,
+  "standards": 44,
+  "third-party": 29,
+  "security": 9,
+  "lighthouse": 6,
+  "tech": 16,
+  "sustainability": 8,
+  "deprecated-html": 8
+ },
+ "tally": {
+  "ok": 83,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 2,
+  "url_filtered": 0,
+  "non_html": 2,
+  "error": 0
+ },
+ "finishedAt": "2026-08-12T08:46:50.684Z"
+}
