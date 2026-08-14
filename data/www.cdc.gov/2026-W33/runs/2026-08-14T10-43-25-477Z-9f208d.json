@@ -1,0 +1,908 @@
+{
+ "runId": "2026-08-14T10-43-25-477Z-9f208d",
+ "week": "2026-W33",
+ "domain": "www.cdc.gov",
+ "startedAt": "2026-08-14T10:43:26.800Z",
+ "scanned": [
+  "2af64bd9a9ee0856",
+  "2e39b17fb5671ed5",
+  "bc12e07bbbbffe43",
+  "6ea6b11494fbd11c",
+  "d2e85f683d46a6c0",
+  "bda40fa378a88276",
+  "4aa851bc0109c5ff",
+  "b50b8c931a04110a",
+  "76c52919d73d4eb1",
+  "005fa23560068cb8",
+  "e12aa1f4688ac49a",
+  "7e1de94c6635421d",
+  "2302f5b7b7d45e3a",
+  "da35fd52df6be8e5",
+  "cdf586d8308e7657",
+  "98e4e014c655fa69",
+  "9f7953e678cb3221",
+  "3d9537eced2d40c3",
+  "ebdd721f1aa56778",
+  "dfe55d527a7ce326",
+  "ed82dea6768227ea",
+  "c525cd0ed8f24ee9",
+  "9725a8a1dc2b2e44",
+  "1040365f658442d0",
+  "5807789435d6f5fa",
+  "99d123e4ab2bb23c",
+  "6c05b858b16e7395",
+  "dd6836954c9f8e6a",
+  "f4218550ba2b108e",
+  "81d5c22014179223",
+  "6d0d2587990945d9",
+  "f3d3976790aceaeb",
+  "097429f0b0742bf2",
+  "cabbebbda7b7a9e4",
+  "89d1a1f7998f2982",
+  "f4143e555ab22beb"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 950,
+  "checked": 500,
+  "brokenCount": 91,
+  "broken": [
+   {
+    "url": "https://cdc-cars-helpdesk.my.site.com/cdcwebform",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/documenting-vaccinations-clinics.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fvams%2Fhcp%2Fresources%2Fdocumenting-vaccinations-clinics.html&text=Document%20Vaccinations%20at%20Standard%20and%20Mobile%20Clinics%20in%20VAMS",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/documenting-vaccinations-clinics.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/medialibrary/index.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/documenting-vaccinations-clinics.html",
+     "http://www.cdc.gov/nchs/state-stats/states/index.html",
+     "https://www.cdc.gov/vams/hcp/resources/user-access-troubleshooting.html",
+     "https://www.cdc.gov/vams/hcp/resources/front-desk-user-manual.html",
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/testing-handout.html",
+     "https://www.cdc.gov/health-disparities-hiv-std-tb-hepatitis/about/hiv.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html",
+     "https://www.cdc.gov/niosh/publications/es/numbered/2017-128sp.html",
+     "http://www.cdc.gov/colorectal-cancer-hereditary/about/index.html",
+     "http://www.cdc.gov/infrastructure/performance-management-quality-improvement/resources.html",
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/rsv-parents-social.html",
+     "http://www.cdc.gov/listeria/es/causes/dairy.html",
+     "https://www.cdc.gov/anthrax/php/lab-testing/index.html",
+     "https://www.cdc.gov/cannabis/health-effects/index.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups",
+     "https://www.cdc.gov/spanish/mediosdecomunicacion/comunicados/d_vs-flu-vaccine_101822.html",
+     "http://www.cdc.gov/shigella/data-research/surveillance/index.html",
+     "https://www.cdc.gov/hiv/guidelines/recommendations/personswithhiv.html",
+     "https://www.cdc.gov/scientific-integrity/php/public-health-ethics",
+     "https://www.cdc.gov/dengue/stories/unwanted-mosquitoes.html",
+     "http://www.cdc.gov/ccindex/everydaywords/index.html",
+     "https://www.cdc.gov/niosh-rtecs/IM3D6AA8.html",
+     "https://www.cdc.gov/mmwr/volumes/69/wr/mm6935a6.htm?s_cid=mm6935a6_w",
+     "https://www.cdc.gov/tb/stories/advice.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/media/releases/2025/2025-cdc-warns-of-listeria-outbreak-linked-to-recalled-chicken-fettuccine-alfredo-meals.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/documenting-vaccinations-clinics.html",
+     "http://www.cdc.gov/nchs/state-stats/states/index.html",
+     "https://www.cdc.gov/vams/hcp/resources/user-access-troubleshooting.html",
+     "https://www.cdc.gov/vams/hcp/resources/front-desk-user-manual.html",
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/testing-handout.html",
+     "https://www.cdc.gov/health-disparities-hiv-std-tb-hepatitis/about/hiv.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html",
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/rsv-parents-social.html",
+     "http://www.cdc.gov/listeria/es/causes/dairy.html",
+     "https://www.cdc.gov/anthrax/php/lab-testing/index.html",
+     "https://www.cdc.gov/cannabis/health-effects/index.html",
+     "http://www.cdc.gov/shigella/data-research/surveillance/index.html",
+     "https://www.cdc.gov/hiv/guidelines/recommendations/personswithhiv.html",
+     "https://www.cdc.gov/scientific-integrity/php/public-health-ethics",
+     "https://www.cdc.gov/dengue/stories/unwanted-mosquitoes.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/rss",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/documenting-vaccinations-clinics.html",
+     "http://www.cdc.gov/nchs/state-stats/states/index.html",
+     "https://www.cdc.gov/vams/hcp/resources/user-access-troubleshooting.html",
+     "https://www.cdc.gov/vams/hcp/resources/front-desk-user-manual.html",
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/testing-handout.html",
+     "https://www.cdc.gov/health-disparities-hiv-std-tb-hepatitis/about/hiv.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html",
+     "https://www.cdc.gov/niosh/publications/es/numbered/2017-128sp.html",
+     "http://www.cdc.gov/colorectal-cancer-hereditary/about/index.html",
+     "http://www.cdc.gov/infrastructure/performance-management-quality-improvement/resources.html",
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/rsv-parents-social.html",
+     "http://www.cdc.gov/listeria/es/causes/dairy.html",
+     "https://www.cdc.gov/anthrax/php/lab-testing/index.html",
+     "https://www.cdc.gov/cannabis/health-effects/index.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups",
+     "https://www.cdc.gov/spanish/mediosdecomunicacion/comunicados/d_vs-flu-vaccine_101822.html",
+     "http://www.cdc.gov/shigella/data-research/surveillance/index.html",
+     "https://www.cdc.gov/hiv/guidelines/recommendations/personswithhiv.html",
+     "https://www.cdc.gov/scientific-integrity/php/public-health-ethics",
+     "https://www.cdc.gov/dengue/stories/unwanted-mosquitoes.html",
+     "http://www.cdc.gov/ccindex/everydaywords/index.html",
+     "https://www.cdc.gov/niosh-rtecs/IM3D6AA8.html",
+     "https://www.cdc.gov/mmwr/volumes/69/wr/mm6935a6.htm?s_cid=mm6935a6_w",
+     "https://www.cdc.gov/tb/stories/advice.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/media/releases/2025/2025-cdc-warns-of-listeria-outbreak-linked-to-recalled-chicken-fettuccine-alfredo-meals.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.do",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/may/toc.htm",
+     "http://www.cdc.gov/pcd/issues/2008/jan/06_0158.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/ncidod/EID/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/may/toc.htm",
+     "http://www.cdc.gov/pcd/issues/2008/jan/06_0158.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/nccdphp/shared/pdfinfo.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/may/toc.htm",
+     "http://www.cdc.gov/pcd/issues/2008/jan/06_0158.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/doc.do?id=0900f3ec80093c90",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/may/toc.htm",
+     "http://www.cdc.gov/pcd/issues/2008/jan/06_0158.htm"
+    ]
+   },
+   {
+    "url": "http://www.dhhs.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/may/toc.htm",
+     "http://www.cdc.gov/pcd/issues/2008/jan/06_0158.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnchs%2Fstate-stats%2Fstates%2Findex.html&text=Statistics%20by%20State",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/nchs/state-stats/states/index.html"
+    ]
+   },
+   {
+    "url": "https://maximushelpdeskcdc.my.salesforce-sites.com/VAMS",
+    "status": 0,
+    "reason": "ENOTFOUND",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/user-access-troubleshooting.html"
+    ]
+   },
+   {
+    "url": "https://cdc-cars-helpdesk.my.site.com/cdcwebform/s/",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/user-access-troubleshooting.html",
+     "https://www.cdc.gov/vams/hcp/resources/front-desk-user-manual.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fvams%2Fhcp%2Fresources%2Fuser-access-troubleshooting.html&text=User%20Access%20Troubleshooting%20Tips",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/user-access-troubleshooting.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/vaccines/covid-19/downloads/pre-vaccination-screening-form.pdf",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/front-desk-user-manual.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/vaccines/covid-19/reporting/vams/professional/front-desk-user-manual.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/front-desk-user-manual.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fvams%2Fhcp%2Fresources%2Ffront-desk-user-manual.html&text=Front%20Desk%20User%20Manual",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/vams/hcp/resources/front-desk-user-manual.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Frespiratory-viruses%2Fphp%2Ftoolkit%2Ftesting-handout.html&text=Handout%3A%20Testing%20for%20Respiratory%20Viruses",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/testing-handout.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fhealth-disparities-hiv-std-tb-hepatitis%2Fabout%2Fhiv.html&text=Health%20Equity%20in%20HIV",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/health-disparities-hiv-std-tb-hepatitis/about/hiv.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/respiratory-illnesses.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/about/acerca-de-las-enfermedades-respiratorias.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/risk-factors/personas-con-mayor-riesgo-de-tener-enfermedades-respiratorias-graves.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/prevencion-de-las-enfermedades-respiratorias.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/treatment/tratamiento-de-virus-respiratorios.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/data/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/communication-resources/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/site.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/hcp/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/hcp/clinical-overview/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/hcp/conversation-tips/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/php/toolkit/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/covid/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/flu/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/rsv/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/prevention/hygiene.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/hygiene/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/hygiene/about/coughing-and-sneezing.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/clean-hands/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/clean-hands/prevention",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/clean-hands/communication-resources/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/prevencion-de-la-propagacion-de-virus-respiratorios-si-esta-enfermo.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/inmunizaciones-para-la-prevencion-de-virus-respiratorios.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/tomar-medidas-para-tener-aire-limpio-y-prevenir-los-virus-respiratorios.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/las-mascarillas-y-la-prevencion-de-virus-respiratorios.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/acerca-del-distanciamiento-fisico-y-los-virus-respiratorios.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Frespiratory-viruses%2Fes%2Fprevention%2Fla-higiene-y-prevencion-de-virus-respiratorios.html&text=La%20higiene%20y%20prevenci%C3%B3n%20de%20virus%20respiratorios",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/ncird/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/es/prevention/la-higiene-y-prevencion-de-virus-respiratorios.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fniosh%2Fpublications%2Fes%2Fnumbered%2F2017-128sp.html&text=Estr%C3%A9s%20por%20calor%3A%20primeros%20auxilios%20para%20la%20enfermedad%20por%20calor",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/niosh/publications/es/numbered/2017-128sp.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_10_4",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/niosh/publications/es/numbered/2017-128sp.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fcolorectal-cancer-hereditary%2Fabout%2Findex.html&text=About%20Hereditary%20Colorectal%20(Colon)%20Cancer",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/colorectal-cancer-hereditary/about/index.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_9_13",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/colorectal-cancer-hereditary/about/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Finfrastructure%2Fperformance-management-quality-improvement%2Fresources.html&text=Resources",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/infrastructure/performance-management-quality-improvement/resources.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_2159",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/infrastructure/performance-management-quality-improvement/resources.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Frespiratory-viruses%2Fphp%2Ftoolkit%2Frsv-parents-social.html&text=Social%20Media%3A%20For%20Parents%20(RSV)",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/respiratory-viruses/php/toolkit/rsv-parents-social.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/listeria/es/site.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "https://www.fda.gov/food/people-risk-foodborne-illness/personas-con-riesgo-de-contraer-enfermedades-transmitidas-por-los-alimentos",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/listeria/outbreaks/cheese-02-24.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/medialibrary/index.aspx%23/results/language/spanish/page/1/sort/desc/group/0",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/listeria/outbreaks/raw-milk-03-16/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/foodsafety/rawmilk/raw-milk-resources.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/listeria/publications.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Flisteria%2Fes%2Fcauses%2Fdairy.html&text=C%C3%B3mo%20se%20propaga%20la%20Listeria%3A%20quesos%20blandos%20y%20leche%20cruda",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/listeria/es/causes/dairy.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/labs/bmbl.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/anthrax/php/lab-testing/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/laboratory/specimen-submission/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/anthrax/php/lab-testing/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/ncezid/dhcpp/idpb/epathology/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/anthrax/php/lab-testing/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fanthrax%2Fhcp%2Flaboratories%2Findex.html&text=Laboratory%20Information%20for%20Anthrax%20Testing",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/anthrax/php/lab-testing/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/ore/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/cannabis/health-effects/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fcannabis%2Fhealth-effects%2Findex.html&text=Cannabis%20Health%20Effects",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/cannabis/health-effects/index.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/health/diseases.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026209.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001110.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/00049839.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014514.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026209.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001110.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/00049839.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014514.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/mmwrsrch.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026209.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001110.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014514.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/help.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026209.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001110.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014514.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/privacy.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026209.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001110.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/00049839.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014514.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/disclaimer.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026209.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001110.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/00049839.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014514.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/contact.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00026209.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001110.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00014514.htm"
+    ]
+   },
+   {
+    "url": "http://service.govdelivery.com/service/subscribe.html?code=USCDC_921",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6039a9.htm?s_cid=mm6039a9_w"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/mmwr/author_guide_ce.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6039a9.htm?s_cid=mm6039a9_w"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/emailupdates/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6039a9.htm?s_cid=mm6039a9_w"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/situation-summary/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/virus-transmission/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/signs-symptoms/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/risk-factors/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/testing/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/prevention/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/treatment/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/site.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/groups"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 32,
+  "resources": 32,
+  "images": 32,
+  "security": 1,
+  "link-check": 32,
+  "deprecated-html": 5,
+  "sustainability": 4,
+  "alfa": 10,
+  "standards": 14,
+  "third-party": 8,
+  "public-interest": 2,
+  "plain-language": 11,
+  "lighthouse": 3
+ },
+ "tally": {
+  "ok": 32,
+  "blocked": 4,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-08-14T10:54:31.960Z"
+}
