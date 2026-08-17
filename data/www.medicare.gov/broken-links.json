@@ -1,6 +1,6 @@
 {
  "domain": "www.medicare.gov",
- "updatedAt": "2026-08-12T14:03:10.773Z",
+ "updatedAt": "2026-08-17T13:25:04.756Z",
  "links": {
   "https://www.cms.gov/medicare-coverage-database/search.aspx": {
    "status": 503,
@@ -303,24 +303,26 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W25",
     "2026-W27",
     "2026-W28",
     "2026-W32",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
-    "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+    "https://www.medicare.gov/sso/authorize?client_id=mct&lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
+    "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
    ]
   },
   "https://www.medicare.gov/sso/authorize?client_id=mct&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&lang=en-us&relay=eyJsYW5nIjoiZW4ifQ%3D%3D": {
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W25",
     "2026-W26",
@@ -330,10 +332,12 @@
     "2026-W30",
     "2026-W31",
     "2026-W32",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 9,
+   "weeksBroken": 10,
    "foundOn": [
+    "https://medicare.gov/medigap-supplemental-insurance-plans",
     "https://www.medicare.gov/medigap-supplemental-insurance-plans"
    ]
   },
@@ -414,15 +418,16 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W25",
     "2026-W26",
     "2026-W28",
     "2026-W31",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
     "https://www.medicare.gov/coverage/monoclonal-antibodies-for-treating-early-alzheimers-disease"
    ]
@@ -515,15 +520,16 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W26",
-   "lastSeen": "2026-W31",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W26",
     "2026-W27",
     "2026-W29",
     "2026-W30",
-    "2026-W31"
+    "2026-W31",
+    "2026-W34"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
     "https://www.medicare.gov/coverage/popular-topics"
    ]
@@ -532,7 +538,7 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W27",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W27",
     "2026-W28",
@@ -540,11 +546,13 @@
     "2026-W30",
     "2026-W31",
     "2026-W32",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 7,
+   "weeksBroken": 8,
    "foundOn": [
-    "http://medicare.gov/coverage/cardiovascular-disease-screenings"
+    "http://medicare.gov/coverage/cardiovascular-disease-screenings",
+    "https://medicare.gov/coverage/cardiovascular-disease-screenings"
    ]
   },
   "http://www.cdc.gov/chronicdisease/index.htm": {
@@ -730,14 +738,15 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W27",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W27",
     "2026-W31",
     "2026-W32",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 4,
+   "weeksBroken": 5,
    "foundOn": [
     "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
    ]
@@ -746,13 +755,14 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W27",
-   "lastSeen": "2026-W32",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W27",
     "2026-W28",
-    "2026-W32"
+    "2026-W32",
+    "2026-W34"
    ],
-   "weeksBroken": 3,
+   "weeksBroken": 4,
    "foundOn": [
     "https://www.medicare.gov/sso/authorize?client_id=mct&lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
    ]
