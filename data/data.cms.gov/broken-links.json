@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-08-17T13:25:35.847Z",
+ "updatedAt": "2026-08-18T13:29:21.124Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -127,15 +127,16 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W25",
     "2026-W27",
     "2026-W28",
     "2026-W31",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
     "https://data.cms.gov/resources/2018-value-modifier-performance-year-2016-methodology"
    ]
@@ -194,7 +195,7 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W25",
     "2026-W26",
@@ -203,11 +204,13 @@
     "2026-W30",
     "2026-W31",
     "2026-W32",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 8,
+   "weeksBroken": 9,
    "foundOn": [
-    "https://data.cms.gov/provider-data/topics/nursing-homes/technical-details"
+    "https://data.cms.gov/provider-data/topics/nursing-homes/technical-details",
+    "https://data.cms.gov/provider-data/topics/nursing-homes/quality-measures"
    ]
   },
   "http://www.nucc.org/index.php?option=com_content&view=article&id=107&Itemid=132.": {
@@ -849,15 +852,16 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W30",
-   "lastSeen": "2026-W30",
+   "lastSeen": "2026-W34",
    "_weeks": [
-    "2026-W30"
+    "2026-W30",
+    "2026-W34"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
+    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-service-type-reports/cms-program-statistics-medicare-advantage-outpatient-facility",
     "https://data.cms.gov/resources/cms-program-statistics-methodology",
-    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-service-type-reports/cms-program-statistics-medicare-advantage-physician-non-physician-practitioner-supplier",
-    "https://data.cms.gov/resources/medicare-service-type-reports-methodology-copy"
+    "https://data.cms.gov/resources/medicare-service-type-reports-methodology"
    ]
   },
   "http://dhhs.ne.gov/": {
