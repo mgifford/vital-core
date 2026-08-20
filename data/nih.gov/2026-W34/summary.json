@@ -1,31 +1,31 @@
 {
  "domain": "nih.gov",
  "week": "2026-W34",
- "generatedAt": "2026-08-19T13:29:19.590Z",
- "pagesScanned": 1941,
- "pagesAudited": 12,
+ "generatedAt": "2026-08-20T13:31:25.557Z",
+ "pagesScanned": 2833,
+ "pagesAudited": 18,
  "coverage": {
-  "sustainability": 205,
-  "axe": 12,
-  "resources": 12,
-  "alfa": 4,
-  "standards": 6,
-  "plain-language": 5,
+  "sustainability": 283,
+  "axe": 18,
+  "resources": 18,
+  "alfa": 9,
+  "deprecated-html": 3,
+  "standards": 7,
+  "plain-language": 9,
   "tech": 2,
-  "deprecated-html": 1,
-  "security": 1,
+  "security": 2,
   "lighthouse": 2
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 219,
-  "pagesWithViolations": 12,
-  "pagesScanned": 12,
+  "violationTotal": 274,
+  "pagesWithViolations": 18,
+  "pagesScanned": 18,
   "medianViolations": 10,
   "rules": {
    "heading-order": {
-    "count": 11,
-    "pages": 11,
+    "count": 16,
+    "pages": 16,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -34,12 +34,16 @@
     ],
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/nih-almanac/about-nih-almanac"
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized"
     ],
     "affectedPages": [
      {
       "url": "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "instances": 1
      },
      {
@@ -63,7 +67,15 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
       "instances": 1
      },
      {
@@ -75,7 +87,15 @@
       "instances": 1
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
       "instances": 1
      },
      {
@@ -86,6 +106,11 @@
     "instances": [
      {
       "url": "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      },
@@ -103,17 +128,12 @@
       "url": "https://www.nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/cancer",
       "target": "h3",
       "html": "<h3 class=\"callout__heading\">Good Health for All</h3>"
-     },
-     {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-      "target": ".text-formatted.field--name-field-uswds-body.field--type-text-long > h3",
-      "html": "<h3>Transcript</h3>"
      }
     ]
    },
    "landmark-unique": {
-    "count": 5,
-    "pages": 5,
+    "count": 9,
+    "pages": 9,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -122,12 +142,16 @@
     ],
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized"
     ],
     "affectedPages": [
      {
       "url": "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "instances": 1
      },
      {
@@ -139,7 +163,19 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 1
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
       "instances": 1
      },
      {
@@ -154,6 +190,11 @@
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
@@ -164,20 +205,15 @@
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
-      "target": "#block-nih2-uswds-search",
-      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines",
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      }
     ]
    },
    "link-in-text-block": {
-    "count": 174,
-    "pages": 12,
+    "count": 206,
+    "pages": 18,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -187,13 +223,17 @@
     ],
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/nih-almanac/about-nih-almanac"
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized"
     ],
     "affectedPages": [
      {
       "url": "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
       "instances": 6
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 3
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
@@ -216,12 +256,24 @@
       "instances": 6
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 3
+     },
+     {
       "url": "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
       "instances": 109
      },
      {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 8
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
       "instances": 6
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
+      "instances": 8
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
@@ -232,8 +284,16 @@
       "instances": 9
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 5
+     },
+     {
       "url": "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
       "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
+      "instances": 5
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines",
@@ -257,20 +317,20 @@
       "html": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/30352937\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">BacCapSeq: a Platform for Diagnosi"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-      "target": "article[data-history-node-id=\"10791\"] > div > p:nth-child(5) > a",
-      "html": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/new-inflammatory-disease-discovered\">reported the discovery</a>"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "p:nth-child(4) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-      "target": "li:nth-child(4) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-      "html": "<a href=\"https://www.niehs.nih.gov/health/topics/conditions/inflammation/index.cfm\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Infla"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "p:nth-child(4) > a:nth-child(3)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
      }
     ]
    },
    "region": {
-    "count": 24,
-    "pages": 12,
+    "count": 36,
+    "pages": 18,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -279,12 +339,16 @@
     ],
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/nih-almanac/about-nih-almanac"
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized"
     ],
     "affectedPages": [
      {
       "url": "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "instances": 2
      },
      {
@@ -308,11 +372,23 @@
       "instances": 2
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
       "instances": 2
      },
      {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
       "instances": 2
      },
      {
@@ -324,7 +400,15 @@
       "instances": 2
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
       "instances": 2
      },
      {
@@ -344,25 +428,25 @@
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "#system-breadcrumb",
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      }
     ]
    },
    "empty-heading": {
-    "count": 3,
-    "pages": 3,
+    "count": 4,
+    "pages": 4,
     "impact": "minor",
     "help": "Headings should not be empty",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-heading?application=axeAPI",
@@ -372,7 +456,7 @@
     "examplePages": [
      "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
      "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin"
     ],
     "affectedPages": [
      {
@@ -381,6 +465,10 @@
      },
      {
       "url": "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
       "instances": 1
      },
      {
@@ -400,9 +488,41 @@
       "html": "<h3></h3>"
      },
      {
+      "url": "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
+      "target": "article[data-history-node-id=\"9216\"] > div > h3",
+      "html": "<h3></h3>"
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
       "target": "article > div > h3",
       "html": "<h3></h3>"
+     }
+    ]
+   },
+   "list": {
+    "count": 1,
+    "pages": 1,
+    "impact": "serious",
+    "help": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/list?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag131"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "target": ".usa-pagination__list",
+      "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
      }
     ]
    },
@@ -441,21 +561,25 @@
   }
  },
  "alfa": {
-  "failedTotal": 366,
-  "pagesWithFailures": 4,
-  "pagesScanned": 4,
-  "medianFailures": 94,
+  "failedTotal": 812,
+  "pagesWithFailures": 9,
+  "pagesScanned": 9,
+  "medianFailures": 91,
   "rules": {
    "sia-r66": {
-    "count": 194,
-    "pages": 4,
+    "count": 446,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 52
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 50
@@ -469,48 +593,68 @@
       "instances": 55
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 62
+     },
+     {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 37
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
       "instances": 39
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 49
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
+      "instances": 52
      }
     ],
     "instances": [
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "text: \"Health Information\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "text: \"Grants & Funding\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "text: \"Health Information\"",
       "html": null
      }
     ]
    },
    "sia-r53": {
-    "count": 4,
-    "pages": 4,
+    "count": 8,
+    "pages": 8,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 1
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 1
@@ -524,12 +668,29 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
       "instances": 1
      }
     ],
     "instances": [
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "<h3>",
+      "html": null
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "<h3>",
       "html": null
@@ -545,22 +706,26 @@
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+      "url": "https://www.nih.gov/accessibility",
       "target": "<h3>",
       "html": null
      }
     ]
    },
    "sia-r73": {
-    "count": 12,
-    "pages": 4,
+    "count": 27,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 3
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 3
@@ -574,48 +739,68 @@
       "instances": 3
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 3
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
       "instances": 3
      }
     ],
     "instances": [
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      }
     ]
    },
    "sia-r62": {
-    "count": 14,
-    "pages": 4,
+    "count": 28,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 2
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 3
@@ -629,11 +814,37 @@
       "instances": 3
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 7
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
       "instances": 6
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
+      "instances": 2
      }
     ],
     "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/42564014/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/36692560/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -648,29 +859,23 @@
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/new-inflammatory-disease-discovered\">",
       "html": null
-     },
-     {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-      "target": "<a href=\"https://www.storycorps.org/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-      "html": null
      }
     ]
    },
    "sia-r18": {
-    "count": 8,
-    "pages": 4,
+    "count": 18,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 2
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 2
@@ -681,15 +886,41 @@
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/accessibility",
       "instances": 2
      },
      {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
       "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
+      "instances": 2
      }
     ],
     "instances": [
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
@@ -701,31 +932,25 @@
      },
      {
       "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-      "target": "@aria-label=\"Descripción de la agencia\"",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
-      "html": null
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
      }
     ]
    },
    "sia-r61": {
-    "count": 4,
-    "pages": 4,
+    "count": 9,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 1
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 1
@@ -739,12 +964,33 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
       "instances": 1
      }
     ],
     "instances": [
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
@@ -760,22 +1006,26 @@
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      }
     ]
    },
    "sia-r57": {
-    "count": 16,
-    "pages": 4,
+    "count": 36,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 4
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 4
@@ -789,48 +1039,68 @@
       "instances": 4
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 4
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
       "instances": 4
      }
     ],
     "instances": [
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      }
     ]
    },
    "sia-r111": {
-    "count": 111,
-    "pages": 4,
+    "count": 237,
+    "pages": 9,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 28
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "instances": 25
@@ -844,33 +1114,49 @@
       "instances": 30
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=81",
+      "instances": 29
+     },
+     {
+      "url": "https://www.nih.gov/accessibility",
+      "instances": 18
+     },
+     {
       "url": "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
       "instances": 20
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+      "instances": 25
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
+      "instances": 26
      }
     ],
     "instances": [
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "<a href=\"/virtual-tour\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
       "html": null
      }
@@ -942,12 +1228,12 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 78,
+  "uniqueIssues": 140,
   "consensus": 1,
-  "axeOnly": 43,
-  "alfaOnly": 34,
-  "rawAxe": 44,
-  "rawAlfa": 35,
+  "axeOnly": 66,
+  "alfaOnly": 73,
+  "rawAxe": 67,
+  "rawAlfa": 74,
   "byKey": {
    "axe-core:heading-order": {
     "actRuleId": null,
@@ -955,7 +1241,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 11,
+    "pages": 16,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -964,7 +1250,7 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 5,
+    "pages": 9,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -973,7 +1259,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 12,
+    "pages": 18,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -982,7 +1268,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 12,
+    "pages": 18,
     "engines": "axe"
    },
    "act:ffd0e9": {
@@ -993,8 +1279,17 @@
     "alfaRules": [
      "sia-r64"
     ],
-    "pages": 3,
+    "pages": 4,
     "engines": "both"
+   },
+   "axe-core:list": {
+    "actRuleId": null,
+    "axeRules": [
+     "list"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
    },
    "act:23a2a8": {
     "actRuleId": "23a2a8",
@@ -1011,7 +1306,7 @@
     "alfaRules": [
      "sia-r66"
     ],
-    "pages": 4,
+    "pages": 9,
     "engines": "alfa"
    },
    "alfa:sia-r53": {
@@ -1020,7 +1315,7 @@
     "alfaRules": [
      "sia-r53"
     ],
-    "pages": 4,
+    "pages": 8,
     "engines": "alfa"
    },
    "alfa:sia-r73": {
@@ -1029,7 +1324,7 @@
     "alfaRules": [
      "sia-r73"
     ],
-    "pages": 4,
+    "pages": 9,
     "engines": "alfa"
    },
    "alfa:sia-r62": {
@@ -1038,7 +1333,7 @@
     "alfaRules": [
      "sia-r62"
     ],
-    "pages": 4,
+    "pages": 9,
     "engines": "alfa"
    },
    "act:5c01ea": {
@@ -1047,7 +1342,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 4,
+    "pages": 9,
     "engines": "alfa"
    },
    "alfa:sia-r61": {
@@ -1056,7 +1351,7 @@
     "alfaRules": [
      "sia-r61"
     ],
-    "pages": 4,
+    "pages": 9,
     "engines": "alfa"
    },
    "alfa:sia-r57": {
@@ -1065,7 +1360,7 @@
     "alfaRules": [
      "sia-r57"
     ],
-    "pages": 4,
+    "pages": 9,
     "engines": "alfa"
    },
    "alfa:sia-r111": {
@@ -1074,7 +1369,7 @@
     "alfaRules": [
      "sia-r111"
     ],
-    "pages": 4,
+    "pages": 9,
     "engines": "alfa"
    },
    "alfa:sia-r85": {
@@ -1098,20 +1393,20 @@
   }
  },
  "sustainability": {
-  "pages": 205,
+  "pages": 283,
   "medianBytes": 64486,
-  "meanBytes": 74563,
+  "meanBytes": 87747,
   "medianRequests": 7,
-  "totalCo2g": 2.27,
-  "meanCo2g": 0.0111,
-  "totalEnergyWh": 4.58,
-  "meanEnergyWh": 0.0223
+  "totalCo2g": 3.69,
+  "meanCo2g": 0.013,
+  "totalEnergyWh": 7.44,
+  "meanEnergyWh": 0.0263
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 6,
+  "total": 10,
   "byType": {
-   "image": 4,
+   "image": 8,
    "embedded-media": 1,
    "pdf": 1
   },
@@ -1122,6 +1417,14 @@
     "pages": 1,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-08/20260811-childhood-screen.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
     ]
    },
    {
@@ -1149,11 +1452,35 @@
     ]
    },
    {
+    "url": "https://www.nih.gov/sites/default/files/2025-01/20180315-vaccine.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin"
+    ]
+   },
+   {
     "url": "https://www.nih.gov/sites/default/files/2026-01/2025-NIH-Research-Highlights.pdf",
     "type": "pdf",
     "pages": 1,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-02/20180911-ems.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20230926-depression-stock.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -1167,96 +1494,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 6,
+  "pagesChecked": 7,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (6/6)",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 6,
+  "pagesChecked": 7,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -1265,7 +1592,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -1274,7 +1601,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -1283,7 +1610,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -1292,7 +1619,7 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
@@ -1314,7 +1641,7 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
@@ -1336,7 +1663,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -1345,7 +1672,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -1354,7 +1681,7 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 6,
+    "total": 7,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
@@ -1375,8 +1702,8 @@
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 6,
-    "total": 6,
+    "pass": 7,
+    "total": 7,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -1474,20 +1801,38 @@
   }
  },
  "plainLanguage": {
-  "pagesChecked": 5,
-  "pagesScored": 5,
-  "medianWordsPerPage": 673,
-  "medianReadingEase": 34.1,
+  "pagesChecked": 9,
+  "pagesScored": 9,
+  "medianWordsPerPage": 649,
+  "medianReadingEase": 39.2,
   "medianGrade": 14.5,
   "topUnexplainedAcronyms": [
    {
     "acronym": "NIH",
-    "pages": 4,
+    "pages": 7,
     "examplePages": [
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
      "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
-     "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives"
+    ]
+   },
+   {
+    "acronym": "PMID",
+    "pages": 3,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
+    ]
+   },
+   {
+    "acronym": "RE",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -1519,6 +1864,41 @@
     ]
    },
    {
+    "acronym": "GLP",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
+    ]
+   },
+   {
+    "acronym": "RSS",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
+    ]
+   },
+   {
+    "acronym": "MSC",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
+    ]
+   },
+   {
+    "acronym": "MD",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
+    ]
+   },
+   {
+    "acronym": "ISSN",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
+    ]
+   },
+   {
     "acronym": "AIDS",
     "pages": 1,
     "examplePages": [
@@ -1538,64 +1918,16 @@
     "examplePages": [
      "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
     ]
-   },
-   {
-    "acronym": "MSL",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
-    ]
-   },
-   {
-    "acronym": "HIV",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
-    ]
-   },
-   {
-    "acronym": "RPE",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
-    ]
-   },
-   {
-    "acronym": "BROV",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
-    ]
-   },
-   {
-    "acronym": "II",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
-    ]
-   },
-   {
-    "acronym": "DME",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
-    ]
-   },
-   {
-    "acronym": "CALEC",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei"
-    ]
    }
   ],
   "topMisspellings": [
    {
     "word": "nih",
-    "pages": 2,
+    "pages": 3,
     "examplePages": [
      "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+     "https://www.nih.gov/accessibility"
     ]
    },
    {
@@ -1603,6 +1935,22 @@
     "pages": 2,
     "examplePages": [
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+     "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
+    ]
+   },
+   {
+    "word": "doi",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
+    ]
+   },
+   {
+    "word": "Drs",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
     ]
    },
@@ -1748,20 +2096,6 @@
    },
    {
     "word": "Nacional",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
-    ]
-   },
-   {
-    "word": "Medicina",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
-    ]
-   },
-   {
-    "word": "ClinicalTrials",
     "pages": 1,
     "examplePages": [
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
@@ -2202,7 +2536,7 @@
   ]
  },
  "linkCheck": {
-  "brokenCount": 9,
+  "brokenCount": 10,
   "broken": [
    {
     "url": "http://history.nih.gov/",
@@ -2275,12 +2609,32 @@
     "foundOn": [
      "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
     ]
+   },
+   {
+    "url": "https://support.microsoft.com/en-us/office/view-a-presentation-without-powerpoint-2f1077ab-9a4e-41ba-9f75-d55bd9b231a6Microsoft",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.nih.gov/accessibility"
+    ]
    }
   ]
  },
  "errorPages": [
   {
+   "url": "https://nih.gov/news-events/news-releases/hhs-doubles-ai-backed-childhood-cancer-research-funding",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/mrna-vaccine-treat-pancreatic-cancer",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/science-health-public-trust/checklist-communicating-science-health-research-public",
    "status": 403
   },
   {
@@ -2300,6 +2654,14 @@
    "status": 403
   },
   {
+   "url": "https://nih.gov/news-events/nih-research-matters/potent-antibodies-found-people-recovered-covid-19",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/how-exercise-can-protect-against-alzheimers",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials/learn-how-you-too-can-participate-tomorrows-medical-progress-poster",
    "status": 403
   },
@@ -2308,7 +2670,19 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/skin-compounds-associated-attractiveness-mosquitoes",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/nih-research-matters/2021-research-highlights-human-health-advances-0",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-funded-clinical-trial-links-frequent-anger-increased-risk-heart-disease",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/improving-parkinsons-disease-treatment",
    "status": 403
   },
   {
@@ -2317,6 +2691,10 @@
   },
   {
    "url": "https://www.nih.gov/news-events/nih-research-matters/cell-atlases-give-detailed-views-human-organs",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/nih-almanac/michael-lauer-md",
    "status": 403
   },
   {
@@ -2341,42 +2719,6 @@
   },
   {
    "url": "https://nih.gov/news-events/news-releases/nih-launches-home-test-treat-pilot-covid-19-telehealth-program",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/nih-style-guide/nih",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/blood-brain-barrier-test-may-predict-dementia",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/brain-stimulation-can-affect-memory-older-adults",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/nih-style-guide/person-first-destigmatizing-language",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/blood-tests-show-promise-early-alzheimers-diagnosis",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-july-17-2014",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/mecfs/about-mecfs",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/faster-better-images-cutting-edge-microscopes",
    "status": 403
   }
  ],
@@ -2608,15 +2950,15 @@
   }
  ],
  "images": {
-  "pagesScanned": 12,
-  "totalImages": 175,
-  "uniqueImages": 27,
+  "pagesScanned": 18,
+  "totalImages": 275,
+  "uniqueImages": 45,
   "missingAlt": 2,
   "decorative": 0,
-  "withAlt": 173,
+  "withAlt": 273,
   "altVerdicts": {
-   "GOOD": 22,
-   "SUSPICIOUS": 1,
+   "GOOD": 39,
+   "SUSPICIOUS": 2,
    "TOO_SHORT": 2,
    "MISSING": 2
   }
@@ -2851,16 +3193,16 @@
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 58,
+  "total_clusters": 70,
   "clusters": [
    {
     "id": "cc-c522046e8174",
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 12,
-    "instances": 12,
+    "rule_pages_affected": 18,
+    "pages_affected": 18,
+    "instances": 18,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -2870,24 +3212,30 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 14.4,
+    "action_score": 21.6,
     "estimated_fix_impact": {
-     "findings": 12,
-     "pages": 12,
-     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
+     "findings": 18,
+     "pages": 18,
+     "statement": "Fix one place, resolve ~18 finding(s) on 18 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
      "https://www.nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/cancer",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
      "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
+     "https://www.nih.gov/accessibility",
      "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
      "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
      "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
     ]
    },
@@ -2896,9 +3244,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 12,
-    "instances": 12,
+    "rule_pages_affected": 18,
+    "pages_affected": 18,
+    "instances": 18,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -2908,24 +3256,30 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 14.4,
+    "action_score": 21.6,
     "estimated_fix_impact": {
-     "findings": 12,
-     "pages": 12,
-     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
+     "findings": 18,
+     "pages": 18,
+     "statement": "Fix one place, resolve ~18 finding(s) on 18 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
      "https://www.nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/cancer",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
      "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
+     "https://www.nih.gov/accessibility",
      "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
      "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
      "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
     ]
    },
@@ -2934,9 +3288,9 @@
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -2946,48 +3300,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 12,
+    "action_score": 21.6,
     "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
-    ]
-   },
-   {
-    "id": "cc-990743262834",
-    "engine_key": "alfa",
-    "rule_id": "sia-r53",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": "<h3>",
-    "snippet_shape": "",
-    "representative_selector": "<h3>",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
     ]
    },
    {
@@ -2995,9 +3323,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -3007,17 +3335,56 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 8,
+    "action_score": 18,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 8,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 16,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3025,9 +3392,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -3037,17 +3404,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 4,
+    "action_score": 9,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3055,9 +3427,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -3067,17 +3439,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 4,
+    "action_score": 9,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3085,9 +3462,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -3097,17 +3474,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3115,9 +3497,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"health information\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Health Information\"",
@@ -3127,17 +3509,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3145,9 +3532,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"grants & funding\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Grants & Funding\"",
@@ -3157,17 +3544,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3175,9 +3567,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "<p class=\"usa-banner__header-text\">",
     "snippet_shape": "",
     "representative_selector": "<p class=\"usa-banner__header-text\">",
@@ -3187,17 +3579,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3205,9 +3602,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "<p class=\"usa-identifier__identity-domain\">",
     "snippet_shape": "",
     "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
@@ -3217,17 +3614,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3235,9 +3637,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
     "snippet_shape": "",
     "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
@@ -3247,17 +3649,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3265,9 +3672,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"nih websites are changing\"",
     "snippet_shape": "",
     "representative_selector": "text: \"NIH Websites Are Changing\"",
@@ -3277,17 +3684,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3295,9 +3707,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
     "snippet_shape": "",
     "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
@@ -3307,17 +3719,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3325,9 +3742,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -3337,17 +3754,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3355,9 +3777,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
     "snippet_shape": "",
     "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
@@ -3367,17 +3789,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3385,9 +3812,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
     "snippet_shape": "",
     "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
@@ -3397,17 +3824,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3415,9 +3847,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "<a href=\"/virtual-tour\">",
     "snippet_shape": "",
     "representative_selector": "<a href=\"/virtual-tour\">",
@@ -3427,17 +3859,49 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
+    ]
+   },
+   {
+    "id": "cc-981d69379a79",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-pagination__list",
+    "snippet_shape": "ul:",
+    "representative_selector": ".usa-pagination__list",
+    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
     ]
    },
    {
@@ -3445,9 +3909,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 11,
-    "pages_affected": 5,
-    "instances": 5,
+    "rule_pages_affected": 16,
+    "pages_affected": 8,
+    "instances": 8,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -3456,18 +3920,21 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 5,
-    "action_score": 2.4,
+    "distinct_components_for_rule": 7,
+    "action_score": 2.74,
     "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
     ]
    },
@@ -3523,6 +3990,41 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 9,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3607,33 +4109,66 @@
     ]
    },
    {
-    "id": "cc-8cbcff6b68da",
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 7,
+    "instances": 9,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/30352937\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">BacCapSeq: a Platform for Diagnosi",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.97,
+    "estimated_fix_impact": {
+     "findings": 9,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~9 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
+     "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
+    ]
+   },
+   {
+    "id": "cc-ad7c1fbc82f1",
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 4,
-    "instances": 4,
-    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "instances": 5,
+    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
     "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/42564014/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
     "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.33,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.89,
     "estimated_fix_impact": {
-     "findings": 4,
+     "findings": 5,
      "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "statement": "Fix one place, resolve ~5 finding(s) on 4 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -3641,7 +4176,7 @@
     "engine_key": "axe-core",
     "rule_id": "empty-heading",
     "severity": "Minor",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 4,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "article > div > h3",
@@ -3652,8 +4187,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 1.2,
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -3665,11 +4200,42 @@
     ]
    },
    {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 5,
+    "instances": 7,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.69,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~7 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
+    ]
+   },
+   {
     "id": "cc-718e0bc9f4a4",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 11,
+    "rule_pages_affected": 16,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "h3",
@@ -3680,8 +4246,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 5,
-    "action_score": 0.96,
+    "distinct_components_for_rule": 7,
+    "action_score": 0.69,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -3697,7 +4263,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 11,
+    "rule_pages_affected": 16,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "article > div > h3",
@@ -3708,8 +4274,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 5,
-    "action_score": 0.96,
+    "distinct_components_for_rule": 7,
+    "action_score": 0.69,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -3721,62 +4287,92 @@
     ]
    },
    {
-    "id": "cc-c3982f3f2935",
+    "id": "cc-a6e854cc83d5",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 5,
-    "instances": 7,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "rule_pages_affected": 18,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/30352937\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">BacCapSeq: a Platform for Diagnosi",
+    "representative_selector": "li:nth-child(3) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://newsinhealth.nih.gov/2014/08/surviving-sepsis\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Surviving Sepsis</a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.86,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.55,
     "estimated_fix_impact": {
-     "findings": 7,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~7 finding(s) on 5 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
-     "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
-     "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
-    "id": "cc-ad7c1fbc82f1",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 3,
-    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/36692560/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.67,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.55,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage"
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/cancer",
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81"
+    ]
+   },
+   {
+    "id": "cc-a8a38bf8d708",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(20) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(1)",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/36288290/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Chronic E-Cigarette Use Impairs Endot",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.42,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives"
     ]
    },
    {
@@ -3784,7 +4380,7 @@
     "engine_key": "axe-core",
     "rule_id": "empty-heading",
     "severity": "Minor",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 4,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "h3",
@@ -3795,8 +4391,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 3,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3807,11 +4403,38 @@
     ]
    },
    {
+    "id": "cc-b434d7406f26",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article[data-history-node-id=\"9216\"] > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin"
+    ]
+   },
+   {
     "id": "cc-6fc1ba14e15f",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 11,
+    "rule_pages_affected": 16,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > h3",
@@ -3822,8 +4445,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 5,
-    "action_score": 0.48,
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3834,11 +4457,65 @@
     ]
    },
    {
+    "id": "cc-61c26a3768ea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 16,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(4)",
+    "representative_snippet": "<h3>Document Viewers</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/accessibility"
+    ]
+   },
+   {
+    "id": "cc-eba2717659a0",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 16,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article[data-history-node-id=\"9216\"] > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin"
+    ]
+   },
+   {
     "id": "cc-9eec5b6b783d",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 11,
+    "rule_pages_affected": 16,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".field__item:nth-child(*) > .background--green.paragraph--type--callout.callout > .callout__body > .callout__heading",
@@ -3849,8 +4526,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 5,
-    "action_score": 0.48,
+    "distinct_components_for_rule": 7,
+    "action_score": 0.34,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3865,7 +4542,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 2,
     "instances": 3,
     "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3876,8 +4553,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.34,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.28,
     "estimated_fix_impact": {
      "findings": 3,
      "pages": 2,
@@ -3889,95 +4566,11 @@
     ]
    },
    {
-    "id": "cc-a6e854cc83d5",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "li:nth-child(3) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://newsinhealth.nih.gov/2014/08/surviving-sepsis\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Surviving Sepsis</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.34,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized"
-    ]
-   },
-   {
-    "id": "cc-0cb84ddbdf67",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.34,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/cancer",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo"
-    ]
-   },
-   {
-    "id": "cc-a8a38bf8d708",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(20) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(1)",
-    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/36288290/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Chronic E-Cigarette Use Impairs Endot",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.34,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives"
-    ]
-   },
-   {
     "id": "cc-0b473cc478cf",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
@@ -3988,8 +4581,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.34,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.28,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -4005,7 +4598,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/new-inflammatory-disease-discovered\">",
@@ -4016,8 +4609,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4032,7 +4625,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.storycorps.org/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -4043,8 +4636,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4055,11 +4648,65 @@
     ]
    },
    {
+    "id": "cc-03ed2753826f",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.lep.gov/#/eo13166.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.lep.gov/13166/eo13166.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/accessibility"
+    ]
+   },
+   {
+    "id": "cc-56e3b0a72b59",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"/health-information/health-info-lines\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/health-information/health-info-lines\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/accessibility"
+    ]
+   },
+   {
     "id": "cc-f2b6e6353a05",
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://clinicaltrials.gov/ct2/show/nct02970123?term=diabetes&recrs=abdf&cond=kidney+diseases&cntry1=na%3aus&fund=#&draw=#&rank=#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -4070,8 +4717,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4086,7 +4733,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/what-is-chronic-kidney-disease\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -4097,8 +4744,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4109,11 +4756,38 @@
     ]
    },
    {
+    "id": "cc-10240c1aa126",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/30167699\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest"
+    ]
+   },
+   {
     "id": "cc-3b99a487ffee",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 2,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
@@ -4124,8 +4798,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 1,
@@ -4140,7 +4814,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > p:nth-child(*) > a",
@@ -4151,8 +4825,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4167,7 +4841,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"report.nih.gov/\"]",
@@ -4178,8 +4852,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4194,7 +4868,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"history.nih.gov/\"]",
@@ -4205,35 +4879,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/about-nih/nih-almanac/about-nih-almanac"
-    ]
-   },
-   {
-    "id": "cc-7593579d1f63",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 12,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(1)",
-    "representative_snippet": "<a href=\"/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4248,7 +4895,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"storycorps.org/\"]",
@@ -4259,8 +4906,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4275,7 +4922,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"mailto:storycorps@nih.gov\"]",
@@ -4286,8 +4933,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4302,7 +4949,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"smokefree.gov/\"]",
@@ -4313,8 +4960,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4325,11 +4972,65 @@
     ]
    },
    {
+    "id": "cc-017b0d9c3298",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"ask-nih\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"ask-nih\"]",
+    "representative_snippet": "<a href=\"/about-nih/ask-nih\">Ask NIH</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/accessibility"
+    ]
+   },
+   {
+    "id": "cc-9932671d33b6",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a",
+    "snippet_shape": "a:href",
+    "representative_selector": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(2) > a",
+    "representative_snippet": "<a href=\"/health-information/health-info-lines\">toll-free numbers</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/accessibility"
+    ]
+   },
+   {
     "id": "cc-f969fe7b099c",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a",
@@ -4340,8 +5041,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4356,7 +5057,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[href$=\"nichd.nih.gov/\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
@@ -4367,8 +5068,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4383,7 +5084,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[href=\"/\"]",
@@ -4394,8 +5095,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4406,11 +5107,92 @@
     ]
    },
    {
+    "id": "cc-9fb9444513a6",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(7) > a[target=\"_blank\"]",
+    "representative_snippet": "<a href=\"https://www.nih.gov/news-events/news-releases/nih-begins-testing-h7n9-avian-influenza-vaccine-candidate\" target=\"_blank\">previous research</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin"
+    ]
+   },
+   {
+    "id": "cc-dae93c0282ac",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(11) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]:nth-child(1)",
+    "representative_snippet": "<a href=\"https://www.niaid.nih.gov/news-events/h7n9-influenza-vaccine-clinical-trials-begin#qa-section\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in ",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin"
+    ]
+   },
+   {
+    "id": "cc-2ad43b1c671f",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 18,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]:nth-child(3)",
+    "representative_snippet": "<a href=\"https://www.clinicaltrials.gov/\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">ClinicalTrials.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin"
+    ]
+   },
+   {
     "id": "cc-8e2670753039",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "div[callout=\"\"] > .callout__body > .callout__text > p:nth-child(*) > a:nth-child(*)",
@@ -4421,8 +5203,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4437,7 +5219,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".callout__text > p:nth-child(*) > a:nth-child(*)",
@@ -4448,8 +5230,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4464,7 +5246,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".thumbnail-teaser.thumbnail-teaser--1col:nth-child(*) > .thumbnail-teaser__link > .thumbnail-teaser__body > .thumbnail-teaser__description > a:nth-child(*)",
@@ -4475,8 +5257,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4491,7 +5273,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 12,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article > div > ul > li:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
@@ -4502,8 +5284,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 21,
-    "action_score": 0.17,
+    "distinct_components_for_rule": 26,
+    "action_score": 0.14,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4520,9 +5302,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 12,
-    "instances": 12,
+    "rule_pages_affected": 18,
+    "pages_affected": 18,
+    "instances": 18,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -4532,24 +5314,30 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 14.4,
+    "action_score": 21.6,
     "estimated_fix_impact": {
-     "findings": 12,
-     "pages": 12,
-     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
+     "findings": 18,
+     "pages": 18,
+     "statement": "Fix one place, resolve ~18 finding(s) on 18 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
      "https://www.nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/cancer",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
      "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
+     "https://www.nih.gov/accessibility",
      "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
      "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
      "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
     ]
    },
@@ -4558,9 +5346,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 12,
-    "pages_affected": 12,
-    "instances": 12,
+    "rule_pages_affected": 18,
+    "pages_affected": 18,
+    "instances": 18,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -4570,24 +5358,30 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 14.4,
+    "action_score": 21.6,
     "estimated_fix_impact": {
-     "findings": 12,
-     "pages": 12,
-     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
+     "findings": 18,
+     "pages": 18,
+     "statement": "Fix one place, resolve ~18 finding(s) on 18 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/nih-almanac/about-nih-almanac",
      "https://www.nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/cancer",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
      "https://nih.gov/about-nih/what-we-do/nih-almanac/national-eye-institute-nei",
+     "https://www.nih.gov/accessibility",
      "https://nih.gov/news-events/news-releases/elevated-blood-pressure-before-pregnancy-may-increase-chance-pregnancy-loss",
+     "https://www.nih.gov/news-events/news-releases/h7n9-influenza-vaccine-clinical-trials-begin",
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
      "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
      "https://nih.gov/nih-blueprint-neuroscience-research/blueprint-past-initiatives",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
     ]
    },
@@ -4596,9 +5390,9 @@
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -4608,48 +5402,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 12,
+    "action_score": 21.6,
     "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/method-identifies-disease-causing-bacteria",
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
      "https://www.nih.gov/news-events/nih-research-matters/2025-nih-research-highlights-human-health-advances",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression",
      "https://nih.gov/news-events/nih-research-matters/aspirin-use-may-be-widespread-despite-new-guidelines"
-    ]
-   },
-   {
-    "id": "cc-990743262834",
-    "engine_key": "alfa",
-    "rule_id": "sia-r53",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": "<h3>",
-    "snippet_shape": "",
-    "representative_selector": "<h3>",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
-     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
-     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
     ]
    },
    {
@@ -4657,9 +5425,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -4669,17 +5437,56 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 8,
+    "action_score": 18,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 8,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 16,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
+     "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
+     "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -4687,9 +5494,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -4699,17 +5506,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 4,
+    "action_score": 9,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -4717,9 +5529,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -4729,17 +5541,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 4,
+    "action_score": 9,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -4747,9 +5564,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -4759,17 +5576,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -4777,9 +5599,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"health information\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Health Information\"",
@@ -4789,17 +5611,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    },
    {
@@ -4807,9 +5634,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "text: \"grants & funding\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Grants & Funding\"",
@@ -4819,17 +5646,22 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2.67,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/news-events/nih-research-matters/vexas-syndrome-more-common-realized",
      "https://nih.gov/about-nih/voices-nih-community/i-hope-i-can-make-them-see-i-am-not-just-some-weirdo",
      "https://www.nih.gov/news-events/nih-research-matters/e-cigarettes-linked-blood-vessel-damage",
-     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health"
+     "https://www.nih.gov/news-events/nih-research-matters?page=81",
+     "https://www.nih.gov/accessibility",
+     "https://nih.gov/news-events/news-releases/world-kidney-day-shine-spotlight-womens-health",
+     "https://nih.gov/news-events/nih-research-matters/device-improves-survival-after-sudden-cardiac-arrest",
+     "https://www.nih.gov/news-events/nih-research-matters/biomarker-tracks-recovery-depression"
     ]
    }
   ],
@@ -4839,6 +5671,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 2250,
- "pagesSucceeded": 14
+ "pagesAttempted": 3150,
+ "pagesSucceeded": 20
 }
