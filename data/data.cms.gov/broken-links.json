@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-08-19T13:29:14.054Z",
+ "updatedAt": "2026-08-20T13:31:18.028Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -178,15 +178,16 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W25",
     "2026-W26",
     "2026-W27",
     "2026-W31",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/doctors-clinicians/data-sources"
    ]
@@ -743,16 +744,17 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W26",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W26",
     "2026-W29",
     "2026-W30",
     "2026-W31",
     "2026-W32",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 6,
+   "weeksBroken": 7,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/hospitals/timely-effective-care"
    ]
@@ -774,15 +776,16 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W27",
-   "lastSeen": "2026-W33",
+   "lastSeen": "2026-W34",
    "_weeks": [
     "2026-W27",
     "2026-W28",
     "2026-W29",
     "2026-W30",
-    "2026-W33"
+    "2026-W33",
+    "2026-W34"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
     "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county"
    ]
@@ -930,6 +933,19 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/hospitals/psychiatric-unit-services"
+   ]
+  },
+  "https://www.qualitynet.org/ipf/ipfqr/measures": {
+   "status": 0,
+   "reason": "ECONNREFUSED",
+   "firstSeen": "2026-W34",
+   "lastSeen": "2026-W34",
+   "_weeks": [
+    "2026-W34"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://data.cms.gov/provider-data/topics/hospitals/veterans-administration-hospitals"
    ]
   }
  }
