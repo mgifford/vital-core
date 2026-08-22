@@ -1,0 +1,803 @@
+{
+ "runId": "2026-08-22T03-21-48-426Z-fb6d5d",
+ "week": "2026-W34",
+ "domain": "www.cdc.gov",
+ "startedAt": "2026-08-22T03:21:49.009Z",
+ "scanned": [
+  "42fd1bef69a82d87",
+  "7cf9c157c1432f8d",
+  "10674c36a3b9b854",
+  "b5652dc4b0c2f191",
+  "6c3b35d852268db4",
+  "d016ba1f2a0fa7fa",
+  "05cf46a88e4886f8",
+  "258b0746731a65fe",
+  "9f056ded1221c653",
+  "2ceef3da900164f0",
+  "5846618de2c99875",
+  "3d28f6022c3f4729",
+  "44352c8ccb62a07f",
+  "86efa123f788ef18",
+  "f0c033dafe502464",
+  "69fcb86ecdd88c4e",
+  "386fde560e21502f",
+  "a78d44131ad2f813",
+  "6e42afeb247b28f1",
+  "ba1c4b6cc02bd6bc",
+  "7bbf8abfef569cf1",
+  "d6c8639ea2ef6abd",
+  "feed805c1152da6b",
+  "285013da63067620",
+  "7bd8bbb9dc72258c",
+  "c6038c6fe34656e1",
+  "ec07d5e3c741b097",
+  "cdb4baac64479f25",
+  "d6c056a717bcb0e7",
+  "4cfbcb77b575ea5c",
+  "95aa2764e7af1781",
+  "cc84237cc9ffb26b",
+  "e48eddb470192e66",
+  "2d24624aca163973",
+  "6fcfea3d2577d952",
+  "64b37baef564a626",
+  "0959543e104a3265",
+  "3b73cc6a5a3cf1da",
+  "bfacbc232d0b2e11",
+  "ea8e951613b6212e",
+  "1650377fe4899d07",
+  "29ed09566f41ccac",
+  "9f5663c4ac089de1",
+  "daec18ef1b3b63cd"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 1183,
+  "checked": 500,
+  "brokenCount": 76,
+  "broken": [
+   {
+    "url": "http://service.govdelivery.com/service/subscribe.html?code=USCDC_921",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6401a4.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6343a2.htm?s_cid=mm6343a2_w",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6412a8.htm?s_cid=mm6412a8_w"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/flu/fluvaxview/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6401a4.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/flu/professionals/antivirals/summary-clinicians.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6401a4.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/mmwr/author_guide_ce.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6401a4.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6343a2.htm?s_cid=mm6343a2_w"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/emailupdates/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6401a4.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6343a2.htm?s_cid=mm6343a2_w",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6412a8.htm?s_cid=mm6412a8_w"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/surveillance/nvsn/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/flu-vaccines-work/php/effectiveness-studies/2025-2026.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fflu-vaccines-work%2Fphp%2Feffectiveness-studies%2F2025-2026.html&text=Preliminary%20Flu%20Vaccine%20Effectiveness%20(VE)%20Data%20for%202025-2026",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "http://www.cdc.gov/flu-vaccines-work/php/effectiveness-studies/2025-2026.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/medialibrary/index.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/flu-vaccines-work/php/effectiveness-studies/2025-2026.html",
+     "http://www.cdc.gov/immigrant-refugee-health/hcp/overseas-guidance/index.html",
+     "http://www.cdc.gov/nchs/products/databriefs/db68.htm",
+     "http://www.cdc.gov/faca/committees/acbcyw.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients",
+     "https://www.cdc.gov/environmental-exposure-report/about/overview-of-chemicals-in-cigarette-smoke.html",
+     "http://www.cdc.gov/niosh/publications/es/numbered/2011-202sp.html",
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html",
+     "http://www.cdc.gov/nchs/nvss/vsrr.htm",
+     "http://www.cdc.gov/mosquitoes/es/mosquito-control/adulticidas.html",
+     "https://www.cdc.gov/laboratory-systems/php/about/index.html",
+     "https://www.cdc.gov/diabetes/php/cbo-guidance/faith-leaders-diabetes-prevention-management.html",
+     "http://www.cdc.gov/yellow-book/hcp/preparing-international-travelers/travel-health-kits.html",
+     "https://www.cdc.gov/bird-flu/php/monitoring-bird-flu/agenda.html",
+     "https://www.cdc.gov/oral-health/php/infographics/roi-fluoridated-water.html",
+     "http://www.cdc.gov/bird-flu/communication-resources/ppe-high-exposure.html",
+     "https://www.cdc.gov/pcd/issues/2022/22_0208.htm",
+     "https://www.cdc.gov/niosh/docs/video/2013-154",
+     "https://www.cdc.gov/bird-flu/spotlights/h5n1-response-07192024.html",
+     "https://www.cdc.gov/niosh/npg/npgd0362.html",
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6523a3.htm?s_cid=mm6523a3_w",
+     "http://www.cdc.gov/global-hiv-tb/php/global-events/world-tb-day.html",
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6549a5.htm?s_cid=mm6549a5_w",
+     "https://www.cdc.gov/nchhstp/director-letters/director-dhp-announcement.html",
+     "http://www.cdc.gov/measles/plan-for-travel.html",
+     "https://www.cdc.gov/niosh/npg/npgd0648.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_7_3",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/flu-vaccines-work/php/effectiveness-studies/2025-2026.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients",
+     "https://www.cdc.gov/bird-flu/php/monitoring-bird-flu/agenda.html",
+     "http://www.cdc.gov/bird-flu/communication-resources/ppe-high-exposure.html",
+     "https://www.cdc.gov/bird-flu/spotlights/h5n1-response-07192024.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/rss",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/flu-vaccines-work/php/effectiveness-studies/2025-2026.html",
+     "http://www.cdc.gov/immigrant-refugee-health/hcp/overseas-guidance/index.html",
+     "http://www.cdc.gov/nchs/products/databriefs/db68.htm",
+     "http://www.cdc.gov/faca/committees/acbcyw.html",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients",
+     "https://www.cdc.gov/environmental-exposure-report/about/overview-of-chemicals-in-cigarette-smoke.html",
+     "http://www.cdc.gov/niosh/publications/es/numbered/2011-202sp.html",
+     "https://www.cdc.gov/strep-lab/site.html",
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html",
+     "http://www.cdc.gov/nchs/nvss/vsrr.htm",
+     "http://www.cdc.gov/mosquitoes/es/mosquito-control/adulticidas.html",
+     "https://www.cdc.gov/bring-your-brave/site.html",
+     "https://www.cdc.gov/laboratory-systems/php/about/index.html",
+     "https://www.cdc.gov/diabetes/php/cbo-guidance/faith-leaders-diabetes-prevention-management.html",
+     "http://www.cdc.gov/yellow-book/hcp/preparing-international-travelers/travel-health-kits.html",
+     "https://www.cdc.gov/bird-flu/php/monitoring-bird-flu/agenda.html",
+     "https://www.cdc.gov/oral-health/php/infographics/roi-fluoridated-water.html",
+     "http://www.cdc.gov/bird-flu/communication-resources/ppe-high-exposure.html",
+     "https://www.cdc.gov/pcd/issues/2022/22_0208.htm",
+     "https://www.cdc.gov/niosh/docs/video/2013-154",
+     "https://www.cdc.gov/bird-flu/spotlights/h5n1-response-07192024.html",
+     "https://www.cdc.gov/niosh/npg/npgd0362.html",
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6523a3.htm?s_cid=mm6523a3_w",
+     "http://www.cdc.gov/global-hiv-tb/php/global-events/world-tb-day.html",
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6549a5.htm?s_cid=mm6549a5_w",
+     "https://www.cdc.gov/nchhstp/director-letters/director-dhp-announcement.html",
+     "http://www.cdc.gov/measles/plan-for-travel.html",
+     "https://www.cdc.gov/niosh/npg/npgd0648.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fimmigrant-refugee-health%2Fhcp%2Foverseas-guidance%2Findex.html&text=Refugee%20Health%20Overseas%20Guidance",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "http://www.cdc.gov/immigrant-refugee-health/hcp/overseas-guidance/index.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/immigrant-refugee-health/hcp/overseas-guidance/index.html",
+     "http://www.cdc.gov/faca/committees/acbcyw.html",
+     "https://www.cdc.gov/environmental-exposure-report/about/overview-of-chemicals-in-cigarette-smoke.html",
+     "https://www.cdc.gov/strep-lab/site.html",
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html",
+     "http://www.cdc.gov/mosquitoes/es/mosquito-control/adulticidas.html",
+     "https://www.cdc.gov/laboratory-systems/php/about/index.html",
+     "http://www.cdc.gov/yellow-book/hcp/preparing-international-travelers/travel-health-kits.html",
+     "https://www.cdc.gov/oral-health/php/infographics/roi-fluoridated-water.html",
+     "http://www.cdc.gov/global-hiv-tb/php/global-events/world-tb-day.html",
+     "http://www.cdc.gov/measles/plan-for-travel.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnchs%2Fproducts%2Fdatabriefs%2Fdb68.htm&text=Childbearing%20Differences%20Among%20Three%20Generations%20of%20U.S.%20Women",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "http://www.cdc.gov/nchs/products/databriefs/db68.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Ffaca%2Fcommittees%2Facbcyw.html&text=Advisory%20Committee%20on%20Breast%20Cancer%20in%20Young%20Women%20(ACBCYW)",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "http://www.cdc.gov/faca/committees/acbcyw.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/situation-summary/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/signs-symptoms/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/virus-transmission/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/risk-factors/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/testing/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/prevention/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/treatment/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/site.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/novel-flu-infection-control/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/animals/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/unpasteurized-raw-milk/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/emergency-use-oseltamivir/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/php/surveillance/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/php/monitoring-bird-flu/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/php/severe-potential/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/php/technical-report/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/flu/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/swine-flu/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/flu-in-animals/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/flu-vaccines-work/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/pandemic-flu/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/flu-burden/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/novel-flu-infection-control/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/php/severe-potential/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients/interim-guidance-treatment-humans.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/prevention/hpai-interim-recommendations.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients/specimen-collection.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients/interim-guidance-post-exposure.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients/clinical-guidance-treatment.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fbird-flu%2Fhcp%2Fclinicians-evaluating-patients%2Findex.html&text=Clinician%20Brief%3A%20Evaluating%20and%20Managing%20Patients%20Exposed%20to%20Animals%20or%20Persons%20Infected%20with%20Novel%20Influenza%20A%20Viruses%20of%20Public%20Health%20Concern",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients/interim-guidance-follow-up.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/hcp/clinicians-evaluating-patients"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fenvironmental-exposure-report%2Fabout%2Foverview-of-chemicals-in-cigarette-smoke.html&text=Overview%20of%20Chemicals%20in%20Cigarette%20Smoke",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "https://www.cdc.gov/environmental-exposure-report/about/overview-of-chemicals-in-cigarette-smoke.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fniosh%2Fpublications%2Fes%2Fnumbered%2F2011-202sp.html&text=Seguridad%20con%20las%20pistolas%20de%20clavos%3A%20Gu%C3%ADa%20para%20los%20contratistas%20del%20sector%20de%20la%20construcci%C3%B3n",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "http://www.cdc.gov/niosh/publications/es/numbered/2011-202sp.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_10_4",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/niosh/publications/es/numbered/2011-202sp.html",
+     "https://www.cdc.gov/niosh/docs/video/2013-154"
+    ]
+   },
+   {
+    "url": "https://thalassemia.com/treatment-guidelines-1.aspx",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://www.thalassemia.org/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/What-is-ThalTrait_2018_ForWebsiteRev.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://www.thalassemia.org/boduw/wp-content/uploads/2021/06/TIF-2017-Guidelines-for-Mgmt-of-NTDT.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://www.thalassemia.org/boduw/wp-content/uploads/2021/06/TIF-2021-Guidelines-for-Mgmt-of-TDT.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/Monitoring-Deferasirox-Therapy.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/Guidelines-for-Managing-Transfusion-Therapy-for-Thalassemia.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/Monitoring-of-Iron-Overload-in-Transfusion-Dependent-Thalassemia-TDT-1.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/QA-with-Dr_-Ahmad-Digital-Version.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fthalassemia%2Fhcp%2Ftoolkit%2Findex.html&text=Thalassemia%20Healthcare%20Provider%20Resource%20Toolkit",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/QA-with-Dr_-Sayani-Transitioning-to-Adult-Healthcare-in-Thalassemia-v2.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/QA-with-Dr_-Sayani-Fertility-and-Pregnancy-in-Thalassemia.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "https://thalassemia.org/files/galleries/HemHEnglish.pdf",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/thalassemia/hcp/toolkit/index.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/nchs/comec/state-mec-organizations.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/nchs/nvss/vsrr.htm"
+    ]
+   },
+   {
+    "url": "https://wwwdev.cdc.gov/nchs/nvss/vsrr.htm",
+    "status": 0,
+    "reason": "ENOTFOUND",
+    "foundOn": [
+     "http://www.cdc.gov/nchs/nvss/vsrr.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnchs%2Fnvss%2Fvsrr.htm&text=Vital%20Statistics%20Rapid%20Release",
+    "status": 500,
+    "reason": "HTTP 500",
+    "foundOn": [
+     "http://www.cdc.gov/nchs/nvss/vsrr.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.do",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2005/jan/04_0087.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jul/07_0106_es.htm",
+     "http://www.cdc.gov/pcd/issues/2006/jan/05_0055_zhs.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jan/06_0131_fr.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/ncidod/EID/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2005/jan/04_0087.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jul/07_0106_es.htm",
+     "http://www.cdc.gov/pcd/issues/2006/jan/05_0055_zhs.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jan/06_0131_fr.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/nccdphp/shared/pdfinfo.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2005/jan/04_0087.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/doc.do?id=0900f3ec80093c90",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2005/jan/04_0087.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jul/07_0106_es.htm",
+     "http://www.cdc.gov/pcd/issues/2006/jan/05_0055_zhs.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jan/06_0131_fr.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000505.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm4834a3.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000265.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5717a5.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/health/diseases.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000505.htm",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm4834a3.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000265.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5717a5.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/mmwrsrch.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000505.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00000265.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5717a5.htm"
+    ]
+   },
+   {
+    "url": "http://www.dhhs.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2005/jan/04_0087.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jul/07_0106_es.htm",
+     "http://www.cdc.gov/pcd/issues/2006/jan/05_0055_zhs.htm",
+     "https://www.cdc.gov/pcd/issues/2008/jan/06_0131_fr.htm"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 39,
+  "plain-language": 18,
+  "resources": 39,
+  "images": 39,
+  "third-party": 7,
+  "link-check": 39,
+  "standards": 18,
+  "sustainability": 3,
+  "tech": 2,
+  "security": 3,
+  "alfa": 8,
+  "public-interest": 6,
+  "deprecated-html": 6,
+  "lighthouse": 2
+ },
+ "tally": {
+  "ok": 39,
+  "blocked": 5,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-08-22T03:34:22.580Z"
+}
