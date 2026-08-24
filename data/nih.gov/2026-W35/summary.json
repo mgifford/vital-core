@@ -1,0 +1,1596 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W35",
+ "generatedAt": "2026-08-24T13:37:30.562Z",
+ "pagesScanned": 600,
+ "pagesAudited": 4,
+ "coverage": {
+  "axe": 4,
+  "resources": 4,
+  "sustainability": 64,
+  "standards": 2,
+  "plain-language": 2,
+  "deprecated-html": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 25,
+  "pagesWithViolations": 4,
+  "pagesScanned": 4,
+  "medianViolations": 7,
+  "rules": {
+   "heading-order": {
+    "count": 3,
+    "pages": 3,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "target": "article > div > h3",
+      "html": "<h3>Reference</h3>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi",
+      "target": "h3",
+      "html": "<h3 class=\"callout__heading\">Did you Know?</h3>"
+     }
+    ]
+   },
+   "link-in-text-block": {
+    "count": 11,
+    "pages": 4,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "target": "p:nth-child(10) > a[href$=\"niddk.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.niddk.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">https://www.niddk.nih.gov</a>"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "target": "p:nth-child(11) > a[href$=\"nia.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.nia.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">www.nia.nih.gov</a>"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "target": "p:nth-child(12) > a[href=\"/\"]",
+      "html": "<a href=\"/\">www.nih.gov</a>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "p:nth-child(4) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "p:nth-child(4) > a:nth-child(3)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 8,
+    "pages": 4,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 2,
+    "pages": 2,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   },
+   "list": {
+    "count": 1,
+    "pages": 1,
+    "impact": "serious",
+    "help": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/list?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag131"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "target": ".usa-pagination__list",
+      "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 0,
+  "pagesWithFailures": 0,
+  "pagesScanned": 0,
+  "medianFailures": null,
+  "rules": {}
+ },
+ "consensus": {
+  "uniqueIssues": 14,
+  "consensus": 0,
+  "axeOnly": 14,
+  "alfaOnly": 0,
+  "rawAxe": 14,
+  "rawAlfa": 0,
+  "byKey": {
+   "axe-core:heading-order": {
+    "actRuleId": null,
+    "axeRules": [
+     "heading-order"
+    ],
+    "alfaRules": [],
+    "pages": 3,
+    "engines": "axe"
+   },
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 2,
+    "engines": "axe"
+   },
+   "axe-core:list": {
+    "actRuleId": null,
+    "axeRules": [
+     "list"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 64,
+  "medianBytes": 64485,
+  "meanBytes": 84363,
+  "medianRequests": 7,
+  "totalCo2g": 0.8,
+  "meanCo2g": 0.0125,
+  "totalEnergyWh": 1.62,
+  "meanEnergyWh": 0.0253
+ },
+ "deprecatedHtml": null,
+ "resources": {
+  "total": 1,
+  "byType": {
+   "image": 1
+  },
+  "list": [
+   {
+    "url": "https://nih.gov/sites/default/files/2026-08/20260811-childhood-screen.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
+    ]
+   }
+  ]
+ },
+ "standards": {
+  "pagesChecked": 2,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (4/6)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "resilience": {
+  "pagesChecked": 2,
+  "checks": [
+   {
+    "id": "pwa-manifest",
+    "label": "Web app manifest declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A web app manifest is required for installability and controls how the app appears when launched.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-service-worker",
+    "label": "Service worker registered",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A service worker is what makes offline access, caching, and background sync possible.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-theme-color",
+    "label": "Theme color declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-apple-touch-icon",
+    "label": "Apple touch icon (iOS/bookmark icon)",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "manifest-parsed",
+    "label": "Manifest fetched and parsed successfully",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=84"
+     }
+    ]
+   },
+   {
+    "id": "manifest-maskable-icon",
+    "label": "Manifest declares a maskable icon",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=84"
+     }
+    ]
+   },
+   {
+    "id": "sw-active",
+    "label": "Service worker is active (not just registered)",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "sw-controlling",
+    "label": "Service worker controls this page load",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "installable",
+    "label": "Meets basic installability criteria",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
+    "evidenceExamples": [
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/nih-research-matters?page=84"
+     }
+    ]
+   },
+   {
+    "id": "pwa-https",
+    "label": "HTTPS (required for service workers)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100,
+    "why": "HTTPS is required for service workers and most install prompts.",
+    "evidenceExamples": []
+   }
+  ],
+  "offline": null
+ },
+ "security": null,
+ "publicInterest": {
+  "engine": "public-interest",
+  "checkedAt": "2026-08-24T10:52:11.480Z",
+  "a11yStatement": {
+   "result": "fail",
+   "url": null,
+   "confidence": null,
+   "checkedAt": "2026-08-24T10:52:08.652Z"
+  },
+  "carbonTxt": {
+   "result": "fail",
+   "url": null,
+   "valid": false,
+   "fields": {},
+   "checkedAt": "2026-08-24T10:52:08.654Z"
+  },
+  "greenWebFoundation": {
+   "result": "fail",
+   "green": false,
+   "hostedBy": null,
+   "url": "https://api.thegreenwebfoundation.org/greencheck/nih.gov",
+   "checkedAt": "2026-08-24T10:52:08.655Z"
+  },
+  "sitemaps": {
+   "xml": {
+    "found": false,
+    "url": null
+   },
+   "human": {
+    "found": false,
+    "url": null
+   },
+   "checkedAt": "2026-08-24T10:52:08.655Z"
+  }
+ },
+ "plainLanguage": {
+  "pagesChecked": 2,
+  "pagesScored": 2,
+  "medianWordsPerPage": 387,
+  "medianReadingEase": 41,
+  "medianGrade": 13,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "acronym": "MRI",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "acronym": "CAR",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "acronym": "GLP",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "acronym": "RSS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "acronym": "MSC",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "acronym": "MD",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "acronym": "ISSN",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "acronym": "TBI",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "acronym": "PTSD",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "antitumor",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "immunotherapy",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "lymphocytic",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "didn",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "Wein",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "Stetler",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "Doctrow",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "FangXiaNuo",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "word": "encephalopathy",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "word": "funder",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   }
+  ]
+ },
+ "lighthouse": null,
+ "linkCheck": {
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "https://www.nia.nih.gov/",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+    ]
+   }
+  ]
+ },
+ "errorPages": [
+  {
+   "url": "https://nih.gov/news-events/news-releases/hhs-doubles-ai-backed-childhood-cancer-research-funding",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/mrna-vaccine-treat-pancreatic-cancer",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/immune-cells-control-waste-clearance-brain",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/investigational-covid-19-therapeutics-be-evaluated-large-clinical-trials",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/skin-compounds-associated-attractiveness-mosquitoes",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-funded-clinical-trial-links-frequent-anger-increased-risk-heart-disease",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/nih-launches-home-test-treat-pilot-covid-19-telehealth-program",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/lasker-awards",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/alzheimers-proteins-blood-linked-midlife-cognition",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/faster-better-images-cutting-edge-microscopes",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/antibody-treatment-protects-adults-against-malaria",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/oral-antiviral-drug-effective-against-covid-19-hamsters",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/peanut-consumption-infancy-lowers-peanut-allergy",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/machine-learning-predicts-risk-aneurysm",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters?page=0",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/brain/funding/approved-initiative-concepts",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/how-environment-can-shape-future-allergies",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/viagra-associated-reduced-risk-alzheimers-disease",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/nih-collaboration-helps-advance-potential-zika-treatments",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/regenerative-medicine-innovation-project-rmip",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/public-affairs",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/researchers-trigger-sleeps-restorative-effect-parts-awake-brain",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/volunteer-story-melanie-no-disease-identified-healthy-volunteer",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/how-many-steps-better-health",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/nih-style-guide/age",
+   "status": 403
+  }
+ ],
+ "tech": null,
+ "images": {
+  "pagesScanned": 4,
+  "totalImages": 69,
+  "uniqueImages": 28,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 69,
+  "altVerdicts": {
+   "GOOD": 25,
+   "SUSPICIOUS": 1,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": null,
+ "thirdParty": {
+  "pagesScanned": 1,
+  "vendors": [
+   {
+    "origin": "googletagmanager.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 613129,
+    "medianDurationMs": 301,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "origin": "crazyegg.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 68388,
+    "medianDurationMs": 327,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "origin": "cloudflareinsights.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 31612,
+    "medianDurationMs": 99,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "origin": "digitalgov.gov",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 30230,
+    "medianDurationMs": 114,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "origin": "google-analytics.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 20805,
+    "medianDurationMs": 124,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "origin": "pinterest.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 18901,
+    "medianDurationMs": 514,
+    "medianRequests": 3,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "origin": "verint-cdn.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 106,
+    "medianDurationMs": 231,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   }
+  ]
+ },
+ "componentClusters": {
+  "design_system": "none",
+  "design_system_label": "none",
+  "design_system_theme": null,
+  "template_page_threshold": 10,
+  "total_clusters": 12,
+  "clusters": [
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "id": "cc-981d69379a79",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-pagination__list",
+    "snippet_shape": "ul:",
+    "representative_selector": ".usa-pagination__list",
+    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 5,
+    "action_score": 2.16,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 4,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 1.44,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~4 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "id": "cc-016097d297c9",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article > div > h3",
+    "representative_snippet": "<h3>Reference</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
+    ]
+   },
+   {
+    "id": "cc-718e0bc9f4a4",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3",
+    "representative_snippet": "<h3 class=\"callout__heading\">Did you Know?</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-9ada8dffad1b",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href$=\"niddk.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(10) > a[href$=\"niddk.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.niddk.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">https://www.niddk.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.72,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+    ]
+   },
+   {
+    "id": "cc-626df96c3642",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href$=\"nia.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(11) > a[href$=\"nia.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nia.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">www.nia.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.72,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+    ]
+   },
+   {
+    "id": "cc-50d6944a3868",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(12) > a[href=\"/\"]",
+    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.72,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+    ]
+   }
+  ],
+  "top_actions": [
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "id": "cc-981d69379a79",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-pagination__list",
+    "snippet_shape": "ul:",
+    "representative_selector": ".usa-pagination__list",
+    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 3.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 5,
+    "action_score": 2.16,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 4,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 1.44,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~4 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "id": "cc-016097d297c9",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article > div > h3",
+    "representative_snippet": "<h3>Reference</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
+    ]
+   },
+   {
+    "id": "cc-718e0bc9f4a4",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3",
+    "representative_snippet": "<h3 class=\"callout__heading\">Did you Know?</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-9ada8dffad1b",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href$=\"niddk.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(10) > a[href$=\"niddk.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.niddk.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">https://www.niddk.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.72,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+    ]
+   }
+  ],
+  "design_component_usage": [],
+  "page_component_usage": [],
+  "drift_page_count": 0,
+  "drift_pages": [],
+  "drift_clusters": []
+ },
+ "pagesAttempted": 900,
+ "pagesSucceeded": 6
+}
