@@ -1,29 +1,29 @@
 {
  "domain": "nih.gov",
  "week": "2026-W35",
- "generatedAt": "2026-08-25T13:33:05.110Z",
- "pagesScanned": 1350,
- "pagesAudited": 8,
+ "generatedAt": "2026-08-26T13:39:17.815Z",
+ "pagesScanned": 2250,
+ "pagesAudited": 13,
  "coverage": {
-  "axe": 8,
-  "resources": 8,
-  "alfa": 2,
-  "plain-language": 5,
-  "standards": 4,
+  "axe": 13,
+  "resources": 13,
+  "sustainability": 237,
+  "alfa": 4,
+  "plain-language": 9,
+  "standards": 6,
   "lighthouse": 1,
-  "sustainability": 139,
   "deprecated-html": 1
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 57,
-  "pagesWithViolations": 8,
-  "pagesScanned": 8,
-  "medianViolations": 7,
+  "violationTotal": 135,
+  "pagesWithViolations": 13,
+  "pagesScanned": 13,
+  "medianViolations": 8,
   "rules": {
    "heading-order": {
-    "count": 6,
-    "pages": 6,
+    "count": 9,
+    "pages": 9,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -53,7 +53,19 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 1
      },
      {
@@ -83,15 +95,15 @@
       "html": "<h3>At a Glance</h3>"
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      }
     ]
    },
    "link-in-text-block": {
-    "count": 29,
-    "pages": 8,
+    "count": 91,
+    "pages": 13,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -122,16 +134,36 @@
       "instances": 5
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 8
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 1
      },
      {
       "url": "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
       "instances": 3
      },
      {
+      "url": "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
+      "instances": 45
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters?page=84",
       "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
+      "instances": 4
      },
      {
       "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi",
@@ -167,8 +199,8 @@
     ]
    },
    "region": {
-    "count": 16,
-    "pages": 8,
+    "count": 26,
+    "pages": 13,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -198,7 +230,19 @@
       "instances": 2
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
       "instances": 2
      },
      {
@@ -206,7 +250,15 @@
       "instances": 2
      },
      {
+      "url": "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 2
      },
      {
@@ -243,8 +295,8 @@
     ]
    },
    "landmark-unique": {
-    "count": 5,
-    "pages": 5,
+    "count": 7,
+    "pages": 7,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -270,11 +322,19 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "instances": 1
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 1
      }
     ],
@@ -295,14 +355,40 @@
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters?page=84",
+      "url": "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   },
+   "empty-heading": {
+    "count": 1,
+    "pages": 1,
+    "impact": "minor",
+    "help": "Headings should not be empty",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-heading?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "target": "article > div > h3",
+      "html": "<h3></h3>"
      }
     ]
    },
@@ -336,18 +422,19 @@
   }
  },
  "alfa": {
-  "failedTotal": 175,
-  "pagesWithFailures": 2,
-  "pagesScanned": 2,
+  "failedTotal": 355,
+  "pagesWithFailures": 4,
+  "pagesScanned": 4,
   "medianFailures": 88,
   "rules": {
    "sia-r66": {
-    "count": 98,
-    "pages": 2,
+    "count": 194,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -357,6 +444,14 @@
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
       "instances": 48
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 40
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
+      "instances": 56
      }
     ],
     "instances": [
@@ -388,12 +483,13 @@
     ]
    },
    "sia-r53": {
-    "count": 2,
-    "pages": 2,
+    "count": 4,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -402,6 +498,14 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 1
      }
     ],
@@ -415,16 +519,27 @@
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
       "target": "<h3>",
       "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
+      "target": "<h3>",
+      "html": null
      }
     ]
    },
    "sia-r73": {
-    "count": 6,
-    "pages": 2,
+    "count": 12,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -433,6 +548,14 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 3
      }
     ],
@@ -465,12 +588,13 @@
     ]
    },
    "sia-r62": {
-    "count": 4,
-    "pages": 2,
+    "count": 9,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -479,6 +603,14 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 2
      }
     ],
@@ -502,16 +634,22 @@
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
       "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
      }
     ]
    },
    "sia-r18": {
-    "count": 4,
-    "pages": 2,
+    "count": 8,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -520,6 +658,14 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 2
      }
     ],
@@ -543,16 +689,22 @@
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
       "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
       "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
      }
     ]
    },
    "sia-r61": {
-    "count": 2,
-    "pages": 2,
+    "count": 4,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -561,6 +713,14 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 1
      }
     ],
@@ -572,18 +732,29 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      }
     ]
    },
    "sia-r57": {
-    "count": 8,
-    "pages": 2,
+    "count": 16,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -592,6 +763,14 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
       "instances": 4
      }
     ],
@@ -624,12 +803,13 @@
     ]
    },
    "sia-r111": {
-    "count": 51,
-    "pages": 2,
+    "count": 106,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ],
     "affectedPages": [
      {
@@ -639,6 +819,14 @@
      {
       "url": "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
       "instances": 24
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 23
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
+      "instances": 32
      }
     ],
     "instances": [
@@ -668,16 +856,58 @@
       "html": null
      }
     ]
+   },
+   "sia-r85": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r85",
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "target": "<p class=\"nih-slogan\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r64": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r64",
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+      "target": "<h3>",
+      "html": null
+     }
+    ]
    }
   }
  },
  "consensus": {
-  "uniqueIssues": 44,
-  "consensus": 0,
-  "axeOnly": 28,
-  "alfaOnly": 16,
-  "rawAxe": 28,
-  "rawAlfa": 16,
+  "uniqueIssues": 77,
+  "consensus": 1,
+  "axeOnly": 43,
+  "alfaOnly": 33,
+  "rawAxe": 44,
+  "rawAlfa": 34,
   "byKey": {
    "axe-core:heading-order": {
     "actRuleId": null,
@@ -685,7 +915,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 6,
+    "pages": 9,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -694,7 +924,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 13,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -703,7 +933,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 13,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -712,8 +942,19 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 5,
+    "pages": 7,
     "engines": "axe"
+   },
+   "act:ffd0e9": {
+    "actRuleId": "ffd0e9",
+    "axeRules": [
+     "empty-heading"
+    ],
+    "alfaRules": [
+     "sia-r64"
+    ],
+    "pages": 1,
+    "engines": "both"
    },
    "axe-core:list": {
     "actRuleId": null,
@@ -730,7 +971,7 @@
     "alfaRules": [
      "sia-r66"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r53": {
@@ -739,7 +980,7 @@
     "alfaRules": [
      "sia-r53"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r73": {
@@ -748,7 +989,7 @@
     "alfaRules": [
      "sia-r73"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r62": {
@@ -757,7 +998,7 @@
     "alfaRules": [
      "sia-r62"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "act:5c01ea": {
@@ -766,7 +1007,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r61": {
@@ -775,7 +1016,7 @@
     "alfaRules": [
      "sia-r61"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r57": {
@@ -784,7 +1025,7 @@
     "alfaRules": [
      "sia-r57"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r111": {
@@ -793,26 +1034,36 @@
     "alfaRules": [
      "sia-r111"
     ],
-    "pages": 2,
+    "pages": 4,
+    "engines": "alfa"
+   },
+   "alfa:sia-r85": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r85"
+    ],
+    "pages": 1,
     "engines": "alfa"
    }
   }
  },
  "sustainability": {
-  "pages": 139,
-  "medianBytes": 64485,
-  "meanBytes": 73638,
-  "medianRequests": 7,
-  "totalCo2g": 1.52,
-  "meanCo2g": 0.011,
-  "totalEnergyWh": 3.06,
-  "meanEnergyWh": 0.022
+  "pages": 237,
+  "medianBytes": 64486,
+  "meanBytes": 75179,
+  "medianRequests": 6,
+  "totalCo2g": 2.65,
+  "meanCo2g": 0.0112,
+  "totalEnergyWh": 5.33,
+  "meanEnergyWh": 0.0225
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 4,
+  "total": 12,
   "byType": {
-   "image": 4
+   "image": 6,
+   "pdf": 6
   },
   "list": [
    {
@@ -840,106 +1091,170 @@
     ]
    },
    {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20210831-brain.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age"
+    ]
+   },
+   {
     "url": "https://nih.gov/sites/default/files/2026-08/20260811-childhood-screen.jpg",
     "type": "image",
     "pages": 1,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
     ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2017-07/fy2018-bypass-budget-main-report-508.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2017-07/FY19-bypass-budget-report-508_0.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2018-07/fy2020-bypass-budget-report-final.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2019-07/FY21-bypass-budget-report-508.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2022-07/fy24_alzheimers_bypassbudget.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2022-11/2022_nih_progress_report_ad-adrd_research_1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/2023-09-29_15-58-31%2520copy.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
    }
   ]
  },
  "standards": {
-  "pagesChecked": 4,
+  "pagesChecked": 6,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "open-graph",
-    "label": "Open Graph tags (4/6)",
-    "pass": 4,
-    "total": 4,
+    "label": "Open Graph tags (6/6)",
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 4,
+  "pagesChecked": 6,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -948,7 +1263,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -957,7 +1272,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -966,7 +1281,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -975,7 +1290,7 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
@@ -997,7 +1312,7 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
@@ -1019,7 +1334,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -1028,7 +1343,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -1037,7 +1352,7 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
@@ -1058,8 +1373,8 @@
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -1104,21 +1419,30 @@
   }
  },
  "plainLanguage": {
-  "pagesChecked": 5,
-  "pagesScored": 5,
-  "medianWordsPerPage": 600,
-  "medianReadingEase": 41.4,
-  "medianGrade": 13.3,
+  "pagesChecked": 9,
+  "pagesScored": 9,
+  "medianWordsPerPage": 664,
+  "medianReadingEase": 41,
+  "medianGrade": 13.8,
   "topUnexplainedAcronyms": [
    {
     "acronym": "NIH",
-    "pages": 5,
+    "pages": 7,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
-     "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
-     "https://nih.gov/news-events/nih-research-matters?page=84",
-     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales"
+    ]
+   },
+   {
+    "acronym": "PMID",
+    "pages": 3,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age"
     ]
    },
    {
@@ -1130,11 +1454,11 @@
     ]
    },
    {
-    "acronym": "PMID",
+    "acronym": "RSS",
     "pages": 2,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection"
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://nih.gov/news-events/nih-research-matters?page=84"
     ]
    },
    {
@@ -1213,13 +1537,6 @@
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
     ]
-   },
-   {
-    "acronym": "AL",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
-    ]
    }
   ],
   "topMisspellings": [
@@ -1229,6 +1546,38 @@
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters?page=84"
+    ]
+   },
+   {
+    "word": "doi",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age"
+    ]
+   },
+   {
+    "word": "nih",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales"
+    ]
+   },
+   {
+    "word": "translational",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "word": "Neuroimaging",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
     ]
    },
    {
@@ -1366,34 +1715,6 @@
    },
    {
     "word": "Casteel",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
-    ]
-   },
-   {
-    "word": "Resnick",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
-    ]
-   },
-   {
-    "word": "Magaziner",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
-    ]
-   },
-   {
-    "word": "Charpentier",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
-    ]
-   },
-   {
-    "word": "Araujo",
     "pages": 1,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
@@ -1736,7 +2057,7 @@
   ]
  },
  "linkCheck": {
-  "brokenCount": 3,
+  "brokenCount": 44,
   "broken": [
    {
     "url": "https://www.nia.nih.gov/",
@@ -1761,10 +2082,342 @@
     "foundOn": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
     ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/about/nia-and-national-plan-address-alzheimers-disease",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://iadrp.nia.nih.gov/",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/news/dementia-care-summit-research-recommendations-released",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/blog/2017/09/summit-focus-dementia-care-and-caregivers",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dn/unveiling-nih-toolbox",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/news/nih-pcori-announce-major-award-prevent-falls-injuries-older-people",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/about/bypass-budget-proposal-archive",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/blog/2016/01/second-geroscience-summit",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2017-07/fy2018-bypass-budget-main-report-508.pdf",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/milestones",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dn/cognitive-aging-summit-iii",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2017-07/FY19-bypass-budget-report-508_0.pdf",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2018-07/fy2020-bypass-budget-report-final.pdf",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/alzheimers-dementia-outreach-recruitment-engagement-resources",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/recruitment-strategy",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/news/third-geroscience-summit-will-be-held-november-4-5-2019",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dab/geroscience-intersection-basic-aging-biology-chronic-disease-and-health",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2019-07/FY21-bypass-budget-report-508.pdf",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/card",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://covid19.nih.gov/research-highlights/TheraNova",
+    "status": 0,
+    "reason": "ENOTFOUND",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https%3A%2F%2Fwww.nia.nih.gov%2Fsites%2Fdefault%2Ffiles%2F2020-07%2Fbypass-budget-executive-summary-FY-2022.pdf&clen=380273&chunk=true",
+    "status": 0,
+    "reason": "EAI_AGAIN",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/blog/2020/06/combatting-racial-inequality-aging-research",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/news/summit-virtual-meeting-series-2020-national-research-summit-care-services-and-supports-persons",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/2021-alzheimers-summit",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://covid19.nih.gov/news-and-stories/covid-19-affects-nursing-homes-dementia",
+    "status": 0,
+    "reason": "ENOTFOUND",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.alzheimers.gov/",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://card.nih.gov/news-events/card-news/roy-blunt-center-alzheimers-disease-and-related-dementias-research",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dn/2021-nih-alzheimers-research-summit-gaps-and-opportunities",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2022-07/fy24_alzheimers_bypassbudget.pdf",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/sites/default/files/2022-11/2022_nih_progress_report_ad-adrd_research_1.pdf",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/gsig",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dbsr/science-behavior-change-sobc",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dbsr/nih-stage-model-behavioral-intervention-development",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dbsr/individual-behavioral-processes-branch",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dbsr/population-and-social-processes-branch",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dbsr/behavioral-and-social-research-areas-alzheimers-disease",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/research/dbsr/data-resources-behavioral-and-social-research-aging",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://ninds.nih.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/cognitive-health-and-older-adults",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age"
+    ]
+   },
+   {
+    "url": "https://www.ncbi.nlm.nih.gov/pubmedhealth/PMHT0025451/",
+    "status": 410,
+    "reason": "HTTP 410",
+    "foundOn": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
+   },
+   {
+    "url": "http://www.nichd.nih.gov/",
+    "status": 0,
+    "reason": "ERR_HTTP2_ERROR",
+    "foundOn": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
    }
   ]
  },
  "errorPages": [
+  {
+   "url": "https://nih.gov/news-events/news-releases/early-stimulation-improves-performance-bioengineered-human-heart-cells",
+   "status": 403
+  },
   {
    "url": "https://nih.gov/news-events/news-releases/hhs-doubles-ai-backed-childhood-cancer-research-funding",
    "status": 403
@@ -1778,11 +2431,19 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=14",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/nih-research-matters/immune-cells-control-waste-clearance-brain",
    "status": 403
   },
   {
    "url": "https://www.nih.gov/news-events/news-releases/investigational-covid-19-therapeutics-be-evaluated-large-clinical-trials",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/how-exercise-can-protect-against-alzheimers",
    "status": 403
   },
   {
@@ -1810,7 +2471,23 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/obesity-metabolic-health",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-september-19-2013",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/news-events/nih-research-matters/blood-brain-barrier-test-may-predict-dementia",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/brain-stimulation-can-affect-memory-older-adults",
    "status": 403
   },
   {
@@ -1836,156 +2513,135 @@
   {
    "url": "https://www.nih.gov/news-events/nih-research-matters/faster-better-images-cutting-edge-microscopes",
    "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/antibody-treatment-protects-adults-against-malaria",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/oral-antiviral-drug-effective-against-covid-19-hamsters",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/peanut-consumption-infancy-lowers-peanut-allergy",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/structure-hepatitis-c-proteins-reveals-viral-vulnerabilities",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/machine-learning-predicts-risk-aneurysm",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters?page=0",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/institutes-nih/nih-office-director/office-legislative-policy-analysis-olpa/congressional-visits-nih",
-   "status": 403
   }
  ],
  "tech": null,
  "images": {
-  "pagesScanned": 8,
-  "totalImages": 127,
-  "uniqueImages": 31,
+  "pagesScanned": 13,
+  "totalImages": 196,
+  "uniqueImages": 33,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 127,
+  "withAlt": 196,
   "altVerdicts": {
-   "GOOD": 28,
+   "GOOD": 30,
    "SUSPICIOUS": 1,
    "TOO_SHORT": 2
   }
  },
  "techFindings": null,
  "thirdParty": {
-  "pagesScanned": 3,
+  "pagesScanned": 4,
   "vendors": [
    {
     "origin": "googletagmanager.com",
-    "pages": 3,
-    "pagesWithScripts": 3,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
-    "medianBytes": 612056,
-    "medianDurationMs": 301,
+    "medianBytes": 612593,
+    "medianDurationMs": 274,
     "medianRequests": 4,
-    "pagesWithFindings": 3,
+    "pagesWithFindings": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
    {
     "origin": "crazyegg.com",
-    "pages": 3,
-    "pagesWithScripts": 3,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 68388,
-    "medianDurationMs": 260,
+    "medianDurationMs": 230,
     "medianRequests": 4,
-    "pagesWithFindings": 3,
+    "pagesWithFindings": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
    {
     "origin": "cloudflareinsights.com",
-    "pages": 3,
-    "pagesWithScripts": 3,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 31612,
-    "medianDurationMs": 46,
+    "medianDurationMs": 44,
     "medianRequests": 1,
-    "pagesWithFindings": 3,
+    "pagesWithFindings": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
    {
     "origin": "digitalgov.gov",
-    "pages": 3,
-    "pagesWithScripts": 3,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 30230,
-    "medianDurationMs": 114,
+    "medianDurationMs": 120,
     "medianRequests": 1,
-    "pagesWithFindings": 3,
+    "pagesWithFindings": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
    {
     "origin": "google-analytics.com",
-    "pages": 3,
-    "pagesWithScripts": 3,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 20805,
-    "medianDurationMs": 97,
+    "medianDurationMs": 90,
     "medianRequests": 4,
-    "pagesWithFindings": 3,
+    "pagesWithFindings": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
    {
     "origin": "pinterest.com",
-    "pages": 3,
-    "pagesWithScripts": 3,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 18901,
-    "medianDurationMs": 209,
+    "medianDurationMs": 257,
     "medianRequests": 3,
-    "pagesWithFindings": 3,
+    "pagesWithFindings": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
    {
     "origin": "verint-cdn.com",
-    "pages": 3,
-    "pagesWithScripts": 3,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 106,
-    "medianDurationMs": 231,
+    "medianDurationMs": 194,
     "medianRequests": 1,
-    "pagesWithFindings": 3,
+    "pagesWithFindings": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    }
@@ -1996,16 +2652,16 @@
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 33,
+  "total_clusters": 42,
   "clusters": [
    {
     "id": "cc-340e0be35f96",
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -2015,18 +2671,20 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 12,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
-     "https://nih.gov/news-events/nih-research-matters?page=84"
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    },
    {
@@ -2034,9 +2692,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 13,
+    "pages_affected": 13,
+    "instances": 13,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -2044,22 +2702,27 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 15.6,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 13,
+     "pages": 13,
+     "statement": "Fix one place, resolve ~13 finding(s) on 13 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
@@ -2068,9 +2731,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 13,
+    "pages_affected": 13,
+    "instances": 13,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -2078,22 +2741,27 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 15.6,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 13,
+     "pages": 13,
+     "statement": "Fix one place, resolve ~13 finding(s) on 13 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
@@ -2102,9 +2770,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "<h3>",
     "snippet_shape": "",
     "representative_selector": "<h3>",
@@ -2112,17 +2780,19 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 4,
+    "action_score": 8,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    },
    {
@@ -2130,9 +2800,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -2140,17 +2810,111 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 4,
+    "action_score": 8,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    },
    {
@@ -2181,23 +2945,23 @@
     ]
    },
    {
-    "id": "cc-3c4299c743bc",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
+    "rule_pages_affected": 4,
     "pages_affected": 4,
     "instances": 4,
-    "selector_path": ".callout__text > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".callout__text > h3",
-    "representative_snippet": "<h3>At a Glance</h3>",
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 3.2,
+    "action_score": 2.67,
     "estimated_fix_impact": {
      "findings": 4,
      "pages": 4,
@@ -2205,9 +2969,339 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
-     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-19c608daabd2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    },
    {
@@ -2215,9 +3309,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 5,
-    "instances": 9,
+    "rule_pages_affected": 13,
+    "pages_affected": 7,
+    "instances": 13,
     "selector_path": "p:nth-child(*) > a:nth-child(*)",
     "snippet_shape": "a:href",
     "representative_selector": "p:nth-child(4) > a:nth-child(2)",
@@ -2226,19 +3320,223 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 8,
-    "action_score": 2.25,
+    "distinct_components_for_rule": 11,
+    "action_score": 2.29,
     "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~9 finding(s) on 5 page(s)."
+     "findings": 13,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~13 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
-     "https://nih.gov/news-events/nih-research-matters?page=84"
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-fd903397889b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r85",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"nih-slogan\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"nih-slogan\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
+   },
+   {
+    "id": "cc-8b5b40b39985",
+    "engine_key": "alfa",
+    "rule_id": "sia-r64",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 13,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32640131/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">A Randomized Trial of a Multifactoria",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 11,
+    "action_score": 1.96,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 13,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 11,
+    "action_score": 1.64,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 5,
+    "action_score": 1.6,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-016097d297c9",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "article > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article > div > h3",
+    "representative_snippet": "<h3>Reference</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
+   },
+   {
+    "id": "cc-4d6425443650",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ]
    },
    {
@@ -2246,7 +3544,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 4,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -2257,550 +3555,16 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-8cbcff6b68da",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-cd5f617ba5c1",
-    "engine_key": "alfa",
-    "rule_id": "sia-r18",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "@aria-label=\"descripción de la agencia\"",
-    "snippet_shape": "",
-    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-424dd2ea2877",
-    "engine_key": "alfa",
-    "rule_id": "sia-r18",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
-    "snippet_shape": "",
-    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-0cb84ddbdf67",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 8,
-    "action_score": 1.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
-     "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
-     "https://nih.gov/news-events/nih-research-matters?page=84",
-     "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
-    ]
-   },
-   {
-    "id": "cc-c3982f3f2935",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32640131/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">A Randomized Trial of a Multifactoria",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 8,
-    "action_score": 1.35,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-8e242a862e3a",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-992ed06f0f6c",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"health information\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Health Information\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-0bad39ad282b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"grants & funding\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Grants & Funding\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-19c608daabd2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<p class=\"usa-banner__header-text\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-banner__header-text\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-56d16a8447b2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-e5e84016a2ec",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-b3dd9d9563fe",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"nih websites are changing\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH Websites Are Changing\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-f78cd49f3540",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-aba72eba36dd",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-7c67d227d1f8",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "snippet_shape": "",
-    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-3c8788d59ab6",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "snippet_shape": "",
-    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-b39e5ed2e696",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a href=\"/virtual-tour\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"/virtual-tour\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-a6e854cc83d5",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "li:nth-child(4) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.nidcd.nih.gov/health/balance-disorders\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Balance Disorders</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.9,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-016097d297c9",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "article > div > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": "article > div > h3",
-    "representative_snippet": "<h3>Reference</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
+    "distinct_components_for_rule": 5,
     "action_score": 0.8,
     "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
     },
     "affected_pages": [
-     "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions"
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
     ]
    },
    {
@@ -2808,7 +3572,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "h3",
@@ -2831,11 +3595,174 @@
     ]
    },
    {
+    "id": "cc-a6e854cc83d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 13,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "li:nth-child(4) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nidcd.nih.gov/health/balance-disorders\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Balance Disorders</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.65,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+    ]
+   },
+   {
+    "id": "cc-57a02c4f9a82",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmedhealth/pmht0025451/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmedhealth/PMHT0025451/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
+   },
+   {
+    "id": "cc-af37b4615139",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.nichd.nih.gov/news/resources/spotlight/#-redefining-term\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.nichd.nih.gov/news/resources/spotlight/102413-redefining-term\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
+   },
+   {
+    "id": "cc-54aa64b85e43",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://doi.org/#.#/s44220-#-#-#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://doi.org/10.1038/s44220-023-00128-7\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-88a2d7290075",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 13,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmedhealth/PMHT0025451/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Diuretic medicines</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
+    ]
+   },
+   {
+    "id": "cc-a8a38bf8d708",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 13,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(38) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(1)",
+    "representative_snippet": "<a href=\"https://www.nia.nih.gov/about/nia-and-national-plan-address-alzheimers-disease\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia"
+    ]
+   },
+   {
     "id": "cc-9ada8dffad1b",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 13,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[href$=\"niddk.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
@@ -2846,8 +3773,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2862,7 +3789,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 13,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[href$=\"nia.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
@@ -2873,8 +3800,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2889,7 +3816,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 13,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[href=\"/\"]",
@@ -2900,8 +3827,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2916,7 +3843,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 13,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"stride-study.org/\"]",
@@ -2927,8 +3854,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2936,6 +3863,33 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-54c0c05e1b5e",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 13,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"www.nichd.nih.gov\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"www.nichd.nih.gov\"]",
+    "representative_snippet": "<a href=\"http://www.nichd.nih.gov\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">NICHD’s website</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems"
     ]
    }
   ],
@@ -2945,9 +3899,9 @@
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -2957,18 +3911,20 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 12,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
-     "https://nih.gov/news-events/nih-research-matters?page=84"
+     "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    },
    {
@@ -2976,9 +3932,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 13,
+    "pages_affected": 13,
+    "instances": 13,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -2986,22 +3942,27 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 15.6,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 13,
+     "pages": 13,
+     "statement": "Fix one place, resolve ~13 finding(s) on 13 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
@@ -3010,9 +3971,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 13,
+    "pages_affected": 13,
+    "instances": 13,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -3020,22 +3981,27 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 15.6,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 13,
+     "pages": 13,
+     "statement": "Fix one place, resolve ~13 finding(s) on 13 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
      "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
      "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
+     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-aging-nia",
      "https://nih.gov/news-events/nih-research-matters?page=84",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders",
      "https://nih.gov/about-nih/nih-turning-discovery-into-health/healthy-mind/traumatic-brain-injury-tbi"
     ]
    },
@@ -3044,9 +4010,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "<h3>",
     "snippet_shape": "",
     "representative_selector": "<h3>",
@@ -3054,17 +4020,19 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 4,
+    "action_score": 8,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    },
    {
@@ -3072,9 +4040,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -3082,17 +4050,111 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 4,
+    "action_score": 8,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/some-brain-functions-may-improve-age",
+     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    },
    {
@@ -3123,23 +4185,23 @@
     ]
    },
    {
-    "id": "cc-3c4299c743bc",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
+    "rule_pages_affected": 4,
     "pages_affected": 4,
     "instances": 4,
-    "selector_path": ".callout__text > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".callout__text > h3",
-    "representative_snippet": "<h3>At a Glance</h3>",
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 3.2,
+    "action_score": 2.67,
     "estimated_fix_impact": {
      "findings": 4,
      "pages": 4,
@@ -3147,96 +4209,9 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
      "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
-     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks"
-    ]
-   },
-   {
-    "id": "cc-7593579d1f63",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 5,
-    "instances": 9,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 8,
-    "action_score": 2.25,
-    "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~9 finding(s) on 5 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/engineered-phages-treat-drug-resistant-infection",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths",
-     "https://nih.gov/news-events/nih-research-matters/childhood-screen-detects-mental-health-risks",
-     "https://www.nih.gov/brain-initiative/research/neuroimaging-technologies-across-scales",
-     "https://nih.gov/news-events/nih-research-matters?page=84"
-    ]
-   },
-   {
-    "id": "cc-ad7c1fbc82f1",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32640131/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
-    ]
-   },
-   {
-    "id": "cc-8cbcff6b68da",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/trends-us-methamphetamine-use-associated-deaths"
+     "https://nih.gov/news-events/news-releases/diuretic-therapy-extremely-preterm-infants-does-not-alleviate-respiratory-problems",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-find-common-brain-network-substance-use-disorders"
     ]
    }
   ],
@@ -3246,6 +4221,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 1800,
- "pagesSucceeded": 10
+ "pagesAttempted": 2700,
+ "pagesSucceeded": 15
 }
