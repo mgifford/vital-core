@@ -1,7 +1,7 @@
 {
  "domain": "www.cdc.gov",
  "week": "2026-W35",
- "generatedAt": "2026-08-26T13:38:59.240Z",
+ "generatedAt": "2026-08-27T22:34:43.609Z",
  "pagesScanned": 1902,
  "pagesAudited": 1690,
  "coverage": {
@@ -33644,7 +33644,7 @@
  "sustainability": {
   "pages": 191,
   "medianBytes": 5272436,
-  "meanBytes": 5553055,
+  "meanBytes": 5553103,
   "medianRequests": 44,
   "totalCo2g": 157.19,
   "meanCo2g": 0.823,
@@ -63662,7 +63662,7 @@
  },
  "lighthouse": {
   "pagesSampled": 170,
-  "medianPerformance": 84,
+  "medianPerformance": 83,
   "medianAccessibility": 100,
   "medianBestPractices": 96,
   "medianSeo": 100,
@@ -63674,7 +63674,7 @@
     "max": 100,
     "p10": 52.8,
     "p25": 68,
-    "p50": 83.5,
+    "p50": 82.5,
     "p75": 96.8,
     "p90": 100,
     "range": 75,
@@ -63734,7 +63734,7 @@
    "firstContentfulPaintMs": 1545,
    "largestContentfulPaintMs": 2814,
    "speedIndexMs": 2525,
-   "totalBlockingTimeMs": 150,
+   "totalBlockingTimeMs": 152,
    "cumulativeLayoutShift": 0
   },
   "pwaSignals": [],
@@ -63756,7 +63756,7 @@
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5133a1.htm",
      "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm"
     ],
-    "savingsBytes": 28349389,
+    "savingsBytes": 28350493,
     "savingsMs": 23550
    },
    {
@@ -63777,7 +63777,7 @@
      "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm"
     ],
     "savingsBytes": 0,
-    "savingsMs": 48150
+    "savingsMs": 49350
    },
    {
     "id": "webmcp-registered-tools",
@@ -63877,7 +63877,7 @@
      "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm"
     ],
     "savingsBytes": 0,
-    "savingsMs": 43350
+    "savingsMs": 44400
    },
    {
     "id": "network-dependency-tree-insight",
@@ -63917,7 +63917,7 @@
      "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm"
     ],
     "savingsBytes": 0,
-    "savingsMs": 274500
+    "savingsMs": 274250
    },
    {
     "id": "interactive",
@@ -63957,7 +63957,7 @@
      "https://www.cdc.gov/niosh/idlh/107493.html"
     ],
     "savingsBytes": 0,
-    "savingsMs": 74350
+    "savingsMs": 74150
    },
    {
     "id": "unused-css-rules",
@@ -63977,13 +63977,13 @@
      "https://www.cdc.gov/mosquitoes/mosquito-control/index.html"
     ],
     "savingsBytes": 10781224,
-    "savingsMs": 52650
+    "savingsMs": 52700
    },
    {
     "id": "largest-contentful-paint",
     "category": "performance",
     "title": "Largest Contentful Paint",
-    "pages": 97,
+    "pages": 98,
     "examplePages": [
      "http://www.cdc.gov/niosh/npg/npgd0380.html",
      "https://www.cdc.gov/niosh/research-programs/portfolio/ptd.html",
@@ -64023,7 +64023,7 @@
     "id": "speed-index",
     "category": "performance",
     "title": "Speed Index",
-    "pages": 76,
+    "pages": 77,
     "examplePages": [
      "https://www.cdc.gov/niosh/research-programs/portfolio/ptd.html",
      "http://www.cdc.gov/niosh/publications/numbered/2019-128.html",
@@ -64057,7 +64057,7 @@
      "http://www.cdc.gov/newborn-screening/featurestory/quality-assurance-for-newborn-screening.html"
     ],
     "savingsBytes": 0,
-    "savingsMs": 4450
+    "savingsMs": 4400
    },
    {
     "id": "redirects",
@@ -64100,6 +64100,26 @@
     "savingsMs": 0
    },
    {
+    "id": "total-blocking-time",
+    "category": "performance",
+    "title": "Total Blocking Time",
+    "pages": 62,
+    "examplePages": [
+     "http://www.cdc.gov/niosh/npg/npgd0380.html",
+     "https://www.cdc.gov/niosh/research-programs/portfolio/ptd.html",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5630a1.htm",
+     "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm",
+     "http://www.cdc.gov/nchs/products/databriefs/db428.htm",
+     "http://www.cdc.gov/dpdx/monthlyCaseStudies/2020/index.html",
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table4a_LLCP.html",
+     "https://www.cdc.gov/phlp/php/tribal-public-health/index.html",
+     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6153a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6212a3.htm"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
     "id": "image-size-responsive",
     "category": "best-practices",
     "title": "Serves images with low resolution",
@@ -64115,26 +64135,6 @@
      "http://www.cdc.gov/mmwr/preview/mmwrhtml/00035896.htm",
      "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6440a10.htm?s_cid=mm6440a10_w",
      "https://www.cdc.gov/pcd/issues/2008/apr/07_0200_fr.htm"
-    ],
-    "savingsBytes": 0,
-    "savingsMs": 0
-   },
-   {
-    "id": "total-blocking-time",
-    "category": "performance",
-    "title": "Total Blocking Time",
-    "pages": 61,
-    "examplePages": [
-     "http://www.cdc.gov/niosh/npg/npgd0380.html",
-     "https://www.cdc.gov/niosh/research-programs/portfolio/ptd.html",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5630a1.htm",
-     "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm",
-     "http://www.cdc.gov/nchs/products/databriefs/db428.htm",
-     "http://www.cdc.gov/dpdx/monthlyCaseStudies/2020/index.html",
-     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table4a_LLCP.html",
-     "https://www.cdc.gov/phlp/php/tribal-public-health/index.html",
-     "http://www.cdc.gov/mmwr/preview/mmwrhtml/mm6153a1.htm",
-     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6212a3.htm"
     ],
     "savingsBytes": 0,
     "savingsMs": 0
@@ -64197,7 +64197,7 @@
      "http://www.cdc.gov/newborn-screening/featurestory/quality-assurance-for-newborn-screening.html"
     ],
     "savingsBytes": 0,
-    "savingsMs": 63650
+    "savingsMs": 63800
    },
    {
     "id": "doctype",
@@ -64223,7 +64223,7 @@
     "id": "max-potential-fid",
     "category": "performance",
     "title": "Max Potential First Input Delay",
-    "pages": 54,
+    "pages": 55,
     "examplePages": [
      "http://www.cdc.gov/niosh/npg/npgd0380.html",
      "https://www.cdc.gov/niosh/research-programs/portfolio/ptd.html",
@@ -64283,7 +64283,7 @@
     "id": "first-contentful-paint",
     "category": "performance",
     "title": "First Contentful Paint",
-    "pages": 50,
+    "pages": 51,
     "examplePages": [
      "http://www.cdc.gov/niosh/npg/npgd0380.html",
      "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm",
@@ -64403,7 +64403,7 @@
     "id": "server-response-time",
     "category": "performance",
     "title": "Initial server response time was short",
-    "pages": 25,
+    "pages": 26,
     "examplePages": [
      "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5416a4.htm",
      "http://www.cdc.gov/pcd/issues/2006/jan/05_0129_fr.htm",
@@ -64417,7 +64417,7 @@
      "http://www.cdc.gov/nccdphp/dnpao/data-trends-maps/index.html"
     ],
     "savingsBytes": 0,
-    "savingsMs": 11850
+    "savingsMs": 12500
    },
    {
     "id": "charset",
@@ -64443,7 +64443,7 @@
     "id": "forced-reflow-insight",
     "category": "performance",
     "title": "Forced reflow",
-    "pages": 15,
+    "pages": 16,
     "examplePages": [
      "https://www.cdc.gov/niosh/research-programs/portfolio/ptd.html",
      "https://www.cdc.gov/mmwr/volumes/73/wr/mm7319a4.htm",
@@ -64463,7 +64463,7 @@
     "id": "document-latency-insight",
     "category": "performance",
     "title": "Document request latency",
-    "pages": 14,
+    "pages": 15,
     "examplePages": [
      "https://www.cdc.gov/phlp/php/tribal-public-health/index.html",
      "http://www.cdc.gov/fluview/site.html",
@@ -64474,10 +64474,10 @@
      "https://www.cdc.gov/pregnancy-hiv-std-tb-hepatitis/about",
      "https://www.cdc.gov/united-states-cancer-statistics/about/index.html",
      "https://www.cdc.gov/pcd/issues/2015/15_0234.htm",
-     "https://www.cdc.gov/mmwr/volumes/74/wr/mm7435a1.htm?s_cid=OS_mm7435a1_w"
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/psittacosis/index.html"
     ],
     "savingsBytes": 0,
-    "savingsMs": 9800
+    "savingsMs": 10450
    },
    {
     "id": "bf-cache",
