@@ -1,0 +1,206 @@
+{
+ "runId": "2026-08-31T15-32-57-883Z-9ab9ff",
+ "week": "2026-W36",
+ "domain": "openpaymentsdata.cms.gov",
+ "startedAt": "2026-08-31T15:33:00.192Z",
+ "scanned": [
+  "c64b549be32d19d2",
+  "7539023d2dcb5d9d",
+  "193520570cd4f93e",
+  "75e0252d0d684542",
+  "5fd5b7d76b5defd9",
+  "e76e534cb24312d3",
+  "f0dfbdb7b27b74cc",
+  "735231f64ed2757a",
+  "e91073ed400408ed",
+  "1b8b7ae8e7649ef7",
+  "d3ec2fa88860cf61",
+  "0591ebee9a968694",
+  "03aeffb08fece034",
+  "e4ce1e4e142a75dc",
+  "0aacf48e8bb73161",
+  "dfb4d21428d3ba07",
+  "73bba421aeb440ae",
+  "9f18d29a753e83ab",
+  "a6d2a3d030b1d403",
+  "67b132f014a8022e",
+  "590b93a9354591e3",
+  "23daaeca2c1528c7",
+  "a0adf7b0202e459f",
+  "1fd2ffc7ebf31b45",
+  "77ea741a09cd32b8",
+  "eab3352815d4edc5",
+  "12289b54eea19b43"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 0,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 123,
+  "checked": 123,
+  "brokenCount": 7,
+  "broken": [
+   {
+    "url": "https://openpaymentsdata.cms.gov/datasets/archived",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://openpaymentsdata.cms.gov/datasets?keyword%5B%5D=all+years",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=5",
+     "https://openpaymentsdata.cms.gov/compliance",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c?page=4",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=3",
+     "https://openpaymentsdata.cms.gov/dataset/0380bbeb-aea1-58b6-b708-829f92a48202?page=231046",
+     "https://openpaymentsdata.cms.gov/state/virginia",
+     "https://openpaymentsdata.cms.gov/dataset/ce1d28dd-0094-5060-a036-580329439600",
+     "https://openpaymentsdata.cms.gov/state/california",
+     "https://openpaymentsdata.cms.gov/dataset/fb3a65aa-c901-4a38-a813-b04b00dfa2a9?page=2",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c",
+     "https://openpaymentsdata.cms.gov/about/api",
+     "https://openpaymentsdata.cms.gov/state/delaware",
+     "https://openpaymentsdata.cms.gov/state/rhode-island",
+     "https://openpaymentsdata.cms.gov/state/louisiana",
+     "https://openpaymentsdata.cms.gov/state/new-mexico",
+     "https://openpaymentsdata.cms.gov/dataset/f0d1de67-6852-4093-a036-c9328c256a05?page=5",
+     "https://openpaymentsdata.cms.gov/datasets?keyword%5B%5D=2019"
+    ]
+   },
+   {
+    "url": "https://openpaymentsdata.cms.gov/datasets/download",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://openpaymentsdata.cms.gov/datasets?keyword%5B%5D=all+years",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=5",
+     "https://openpaymentsdata.cms.gov/compliance",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c?page=4",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=3",
+     "https://openpaymentsdata.cms.gov/dataset/0380bbeb-aea1-58b6-b708-829f92a48202?page=231046",
+     "https://openpaymentsdata.cms.gov/state/virginia",
+     "https://openpaymentsdata.cms.gov/dataset/ce1d28dd-0094-5060-a036-580329439600",
+     "https://openpaymentsdata.cms.gov/state/california",
+     "https://openpaymentsdata.cms.gov/dataset/fb3a65aa-c901-4a38-a813-b04b00dfa2a9?page=2",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c",
+     "https://openpaymentsdata.cms.gov/about/api",
+     "https://openpaymentsdata.cms.gov/state/delaware",
+     "https://openpaymentsdata.cms.gov/state/rhode-island",
+     "https://openpaymentsdata.cms.gov/state/louisiana",
+     "https://openpaymentsdata.cms.gov/state/new-mexico",
+     "https://openpaymentsdata.cms.gov/dataset/f0d1de67-6852-4093-a036-c9328c256a05?page=5",
+     "https://openpaymentsdata.cms.gov/datasets?keyword%5B%5D=2019"
+    ]
+   },
+   {
+    "url": "https://openpaymentsdata.cms.gov/page=3",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=5",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c?page=4",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=3",
+     "https://openpaymentsdata.cms.gov/dataset/0380bbeb-aea1-58b6-b708-829f92a48202?page=231046",
+     "https://openpaymentsdata.cms.gov/dataset/ce1d28dd-0094-5060-a036-580329439600",
+     "https://openpaymentsdata.cms.gov/dataset/fb3a65aa-c901-4a38-a813-b04b00dfa2a9?page=2",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c",
+     "https://openpaymentsdata.cms.gov/dataset/f0d1de67-6852-4093-a036-c9328c256a05?page=5"
+    ]
+   },
+   {
+    "url": "https://openpaymentsdata.cms.gov/page=2",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=5",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c?page=4",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=3",
+     "https://openpaymentsdata.cms.gov/dataset/0380bbeb-aea1-58b6-b708-829f92a48202?page=231046",
+     "https://openpaymentsdata.cms.gov/dataset/ce1d28dd-0094-5060-a036-580329439600",
+     "https://openpaymentsdata.cms.gov/dataset/fb3a65aa-c901-4a38-a813-b04b00dfa2a9?page=2",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c",
+     "https://openpaymentsdata.cms.gov/dataset/f0d1de67-6852-4093-a036-c9328c256a05?page=5"
+    ]
+   },
+   {
+    "url": "https://openpaymentsdata.cms.gov/page=4",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=5",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c?page=4",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=3",
+     "https://openpaymentsdata.cms.gov/dataset/0380bbeb-aea1-58b6-b708-829f92a48202?page=231046",
+     "https://openpaymentsdata.cms.gov/dataset/ce1d28dd-0094-5060-a036-580329439600",
+     "https://openpaymentsdata.cms.gov/dataset/fb3a65aa-c901-4a38-a813-b04b00dfa2a9?page=2",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c",
+     "https://openpaymentsdata.cms.gov/dataset/f0d1de67-6852-4093-a036-c9328c256a05?page=5"
+    ]
+   },
+   {
+    "url": "https://openpaymentsdata.cms.gov/page=13",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=5",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c?page=4",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=3",
+     "https://openpaymentsdata.cms.gov/dataset/ce1d28dd-0094-5060-a036-580329439600",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c",
+     "https://openpaymentsdata.cms.gov/dataset/f0d1de67-6852-4093-a036-c9328c256a05?page=5"
+    ]
+   },
+   {
+    "url": "https://openpaymentsdata.cms.gov/page=5",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=5",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c?page=4",
+     "https://openpaymentsdata.cms.gov/dataset/ec9521bf-9d97-4603-814c-f4132d34bc4f?page=3",
+     "https://openpaymentsdata.cms.gov/dataset/0380bbeb-aea1-58b6-b708-829f92a48202?page=231046",
+     "https://openpaymentsdata.cms.gov/dataset/ce1d28dd-0094-5060-a036-580329439600",
+     "https://openpaymentsdata.cms.gov/dataset/fb3a65aa-c901-4a38-a813-b04b00dfa2a9?page=2",
+     "https://openpaymentsdata.cms.gov/dataset/9c248e7e-7c7f-478b-ab84-ce0919d72c1c",
+     "https://openpaymentsdata.cms.gov/dataset/f0d1de67-6852-4093-a036-c9328c256a05?page=5"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 18,
+  "resources": 18,
+  "images": 18,
+  "link-check": 18,
+  "alfa": 10,
+  "standards": 11,
+  "tech": 2,
+  "third-party": 2,
+  "plain-language": 8,
+  "security": 2,
+  "deprecated-html": 2
+ },
+ "tally": {
+  "ok": 18,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 9,
+  "error": 0
+ },
+ "finishedAt": "2026-08-31T15:47:02.640Z"
+}
