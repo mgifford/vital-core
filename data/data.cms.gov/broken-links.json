@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-08-27T22:34:50.794Z",
+ "updatedAt": "2026-08-31T19:16:24.693Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -962,12 +962,13 @@
    "status": 0,
    "reason": "ECONNREFUSED",
    "firstSeen": "2026-W34",
-   "lastSeen": "2026-W35",
+   "lastSeen": "2026-W36",
    "_weeks": [
     "2026-W34",
-    "2026-W35"
+    "2026-W35",
+    "2026-W36"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/hospitals/veterans-administration-hospitals"
    ]
@@ -989,13 +990,41 @@
    "status": 0,
    "reason": "ECONNREFUSED",
    "firstSeen": "2026-W35",
-   "lastSeen": "2026-W35",
+   "lastSeen": "2026-W36",
    "_weeks": [
-    "2026-W35"
+    "2026-W35",
+    "2026-W36"
+   ],
+   "weeksBroken": 2,
+   "foundOn": [
+    "https://data.cms.gov/provider-data/topics/hospitals/overall-hospital-quality-star-rating"
+   ]
+  },
+  "https://www.medicaid.gov/medicaid/prescription-drugs/state-drug-utilization-data/index.html": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W36",
+   "lastSeen": "2026-W36",
+   "_weeks": [
+    "2026-W36"
    ],
    "weeksBroken": 1,
    "foundOn": [
-    "https://data.cms.gov/provider-data/topics/hospitals/overall-hospital-quality-star-rating"
+    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicaid-opioid-prescribing-rates-by-geography",
+    "https://data.cms.gov/tools/medicaid-drug-spending-dashboard"
+   ]
+  },
+  "https://www.medicaid.gov/medicaid/prescription-drugs/medicaid-drug-rebate-program/index.html": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W36",
+   "lastSeen": "2026-W36",
+   "_weeks": [
+    "2026-W36"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicaid-opioid-prescribing-rates-by-geography"
    ]
   }
  }
