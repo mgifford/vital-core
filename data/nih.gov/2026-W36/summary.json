@@ -1,0 +1,1732 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W36",
+ "generatedAt": "2026-08-31T19:16:32.402Z",
+ "pagesScanned": 600,
+ "pagesAudited": 4,
+ "coverage": {
+  "sustainability": 71,
+  "axe": 4,
+  "deprecated-html": 1,
+  "resources": 4,
+  "standards": 2,
+  "security": 1,
+  "plain-language": 2
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 28,
+  "pagesWithViolations": 4,
+  "pagesScanned": 4,
+  "medianViolations": 7,
+  "rules": {
+   "aria-allowed-attr": {
+    "count": 2,
+    "pages": 2,
+    "impact": "critical",
+    "help": "Elements must only use supported ARIA attributes",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/aria-allowed-attr?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag412"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".usa-accordion--bordered",
+      "html": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">"
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "target": ".usa-accordion--bordered",
+      "html": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">"
+     }
+    ]
+   },
+   "heading-order": {
+    "count": 4,
+    "pages": 4,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>"
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45556\">\n          Roster\n        </button>\n      </h4>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     }
+    ]
+   },
+   "link-in-text-block": {
+    "count": 12,
+    "pages": 4,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 5
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
+      "instances": 4
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "target": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
+      "html": "<a href=\"https://www.acd.od.nih.gov/working-groups/brain.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Working Group</a>"
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "target": "article[data-history-node-id=\"17596\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.cancer.gov/about-cancer/screening\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cancer Screening</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "target": "article[data-history-node-id=\"17596\"] > div > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/39636625/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Estimation of cancer deaths averted f"
+     }
+    ]
+   },
+   "region": {
+    "count": 8,
+    "pages": 4,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 2,
+    "pages": 2,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 0,
+  "pagesWithFailures": 0,
+  "pagesScanned": 0,
+  "medianFailures": null,
+  "rules": {}
+ },
+ "consensus": {
+  "uniqueIssues": 16,
+  "consensus": 0,
+  "axeOnly": 16,
+  "alfaOnly": 0,
+  "rawAxe": 16,
+  "rawAlfa": 0,
+  "byKey": {
+   "act:5c01ea": {
+    "actRuleId": "5c01ea",
+    "axeRules": [
+     "aria-allowed-attr"
+    ],
+    "alfaRules": [],
+    "pages": 2,
+    "engines": "axe"
+   },
+   "axe-core:heading-order": {
+    "actRuleId": null,
+    "axeRules": [
+     "heading-order"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 2,
+    "engines": "axe"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 71,
+  "medianBytes": 61342,
+  "meanBytes": 377468,
+  "medianRequests": 7,
+  "totalCo2g": 3.97,
+  "meanCo2g": 0.0559,
+  "totalEnergyWh": 8.04,
+  "meanEnergyWh": 0.1132
+ },
+ "deprecatedHtml": null,
+ "resources": {
+  "total": 4,
+  "byType": {
+   "pdf": 2,
+   "image": 2
+  },
+  "list": [
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-04/brain2025_508c_2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "url": "https://pyramidal.stanford.edu/publications/WiltEtAl2009.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20250114-cancer.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20191210-mouth.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   }
+  ]
+ },
+ "standards": {
+  "pagesChecked": 2,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (5/6)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "resilience": {
+  "pagesChecked": 2,
+  "checks": [
+   {
+    "id": "pwa-manifest",
+    "label": "Web app manifest declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A web app manifest is required for installability and controls how the app appears when launched.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-service-worker",
+    "label": "Service worker registered",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A service worker is what makes offline access, caching, and background sync possible.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-theme-color",
+    "label": "Theme color declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-apple-touch-icon",
+    "label": "Apple touch icon (iOS/bookmark icon)",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "manifest-parsed",
+    "label": "Manifest fetched and parsed successfully",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+     }
+    ]
+   },
+   {
+    "id": "manifest-maskable-icon",
+    "label": "Manifest declares a maskable icon",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+     }
+    ]
+   },
+   {
+    "id": "sw-active",
+    "label": "Service worker is active (not just registered)",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "sw-controlling",
+    "label": "Service worker controls this page load",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "installable",
+    "label": "Meets basic installability criteria",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
+    "evidenceExamples": [
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+     }
+    ]
+   },
+   {
+    "id": "pwa-https",
+    "label": "HTTPS (required for service workers)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100,
+    "why": "HTTPS is required for service workers and most install prompts.",
+    "evidenceExamples": []
+   }
+  ],
+  "offline": null
+ },
+ "security": {
+  "checks": [
+   {
+    "id": "https",
+    "label": "Served over HTTPS",
+    "pass": true,
+    "detail": "https:"
+   },
+   {
+    "id": "hsts",
+    "label": "HTTP Strict Transport Security (HSTS)",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "csp",
+    "label": "Content Security Policy (CSP)",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "x-content-type-options",
+    "label": "X-Content-Type-Options: nosniff",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "clickjacking",
+    "label": "Clickjacking protection (X-Frame-Options or CSP frame-ancestors)",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "gov-tld",
+    "label": "Sponsored government TLD (.gov/.mil/.edu)",
+    "pass": true,
+    "detail": "gov"
+   },
+   {
+    "id": "security-txt",
+    "label": "Published security.txt",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "www-resolution",
+    "label": "Resolves with and without www",
+    "pass": false,
+    "detail": "www.nih.gov"
+   }
+  ],
+  "passed": 5,
+  "total": 8
+ },
+ "publicInterest": null,
+ "plainLanguage": {
+  "pagesChecked": 2,
+  "pagesScored": 2,
+  "medianWordsPerPage": 28479,
+  "medianReadingEase": 39,
+  "medianGrade": 13,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "BRAIN",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "MD",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "FY",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "II",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "III",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "DBS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "THE",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "VISION",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "AND",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "RNA",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "ID",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "PRIME",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "EM",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "GABA",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "acronym": "CMOS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "Neurotechnologies",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "InitiativeBRAIN",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Officio",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Wingfield",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Jorgenson",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Bargmann",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Newsome",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Deisseroth",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Donoghue",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Morehouse",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Kamil",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Ugurbil",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Marder",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Normann",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Sanes",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Schnitzer",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Sejnowski",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "Tsien",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "translational",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "neurotechnology",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "vivo",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "glial",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "scalable",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "subcellular",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "word": "nanoscience",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   }
+  ]
+ },
+ "lighthouse": null,
+ "linkCheck": {
+  "brokenCount": 4,
+  "broken": [
+   {
+    "url": "http://www.mouseconnectome.org/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "url": "https://pyramidal.stanford.edu/publications/WiltEtAl2009.pdf",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "url": "https://report.nih.gov/nihfactsheets/ViewFactSheet.aspx?csid=67",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "url": "https://clarityresourcecenter.org/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   }
+  ]
+ },
+ "errorPages": [
+  {
+   "url": "https://www.nih.gov/challenges/nih-complement-animal-research-experimentation-nams-reduction-practice-challenge",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/voices-nih-community/they-cant-be-talking-about-me",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/investigational-covid-19-therapeutics-be-evaluated-large-clinical-trials",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/skin-compounds-associated-attractiveness-mosquitoes",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/machine-learning-identifies-federally-protected-waters",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/heart-disease-stroke",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/nih-launches-home-test-treat-pilot-covid-19-telehealth-program",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/blood-brain-barrier-test-may-predict-dementia",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/oral-small-molecule-glp-1-drugs-penetrate-deep-into-brain-suppress-cravings",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/nih-almanac/tara-schwetz-phd",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/nanoparticles-developed-traumatic-brain-injury",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/brain/funding/approved-initiative-concepts",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/brain-decoder-turns-person-s-brain-activity-into-words",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/disclaimers",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/intelligent-injection-device-targets-tissues",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/poor-air-quality-across-northeastern-public-transit-systems",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/lasting-immunity-found-after-recovery-covid-19",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/alzheimers-protein-may-have-natural-antibiotic-role",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/include-project/down-syndrome-research-plan",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases?page=180",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/echo/program-components/echo-cohort-study-sites",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/improving-visibility-nih-supported-clinical-trial-activities-results",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/if-you-have-question",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/how-high-fructose-intake-may-trigger-fatty-liver-disease",
+   "status": 403
+  }
+ ],
+ "tech": null,
+ "images": {
+  "pagesScanned": 4,
+  "totalImages": 56,
+  "uniqueImages": 15,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 56,
+  "altVerdicts": {
+   "GOOD": 12,
+   "SUSPICIOUS": 1,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": null,
+ "thirdParty": null,
+ "componentClusters": {
+  "design_system": "none",
+  "design_system_label": "none",
+  "design_system_theme": null,
+  "template_page_threshold": 10,
+  "total_clusters": 12,
+  "clusters": [
+   {
+    "id": "cc-3305fcaaecb5",
+    "engine_key": "axe-core",
+    "rule_id": "aria-allowed-attr",
+    "severity": "Critical",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-accordion--bordered",
+    "snippet_shape": "div:aria",
+    "representative_selector": ".usa-accordion--bordered",
+    "representative_snippet": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-dc4046f0700e",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
+    "snippet_shape": "h4:aria",
+    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 3,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-cea602cc36e9",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
+    "representative_snippet": "<a href=\"https://www.acd.od.nih.gov/working-groups/brain.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Working Group</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-0975fb981253",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"17596\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.cancer.gov/about-cancer/screening\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cancer Screening</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ]
+   },
+   {
+    "id": "cc-2e09cc43fb39",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"17596\"] > div > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/39636625/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Estimation of cancer deaths averted f",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(16) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31809739\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Heterogeneity within Stratified Ep",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   }
+  ],
+  "top_actions": [
+   {
+    "id": "cc-3305fcaaecb5",
+    "engine_key": "axe-core",
+    "rule_id": "aria-allowed-attr",
+    "severity": "Critical",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-accordion--bordered",
+    "snippet_shape": "div:aria",
+    "representative_selector": ".usa-accordion--bordered",
+    "representative_snippet": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-dc4046f0700e",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
+    "snippet_shape": "h4:aria",
+    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 3,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-cea602cc36e9",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
+    "representative_snippet": "<a href=\"https://www.acd.od.nih.gov/working-groups/brain.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Working Group</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
+    "id": "cc-0975fb981253",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"17596\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.cancer.gov/about-cancer/screening\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cancer Screening</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ]
+   }
+  ],
+  "design_component_usage": [],
+  "page_component_usage": [],
+  "drift_page_count": 0,
+  "drift_pages": [],
+  "drift_clusters": []
+ },
+ "pagesAttempted": 750,
+ "pagesSucceeded": 5
+}
