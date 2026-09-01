@@ -1,6 +1,6 @@
 {
  "domain": "www.medicare.gov",
- "updatedAt": "2026-08-31T19:15:51.116Z",
+ "updatedAt": "2026-09-01T16:54:31.956Z",
  "links": {
   "https://www.cms.gov/medicare-coverage-database/search.aspx": {
    "status": 503,
@@ -543,7 +543,7 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W26",
-   "lastSeen": "2026-W35",
+   "lastSeen": "2026-W36",
    "_weeks": [
     "2026-W26",
     "2026-W27",
@@ -551,9 +551,10 @@
     "2026-W30",
     "2026-W31",
     "2026-W34",
-    "2026-W35"
+    "2026-W35",
+    "2026-W36"
    ],
-   "weeksBroken": 7,
+   "weeksBroken": 8,
    "foundOn": [
     "https://www.medicare.gov/coverage/popular-topics"
    ]
@@ -879,12 +880,13 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W27",
-   "lastSeen": "2026-W32",
+   "lastSeen": "2026-W36",
    "_weeks": [
     "2026-W27",
-    "2026-W32"
+    "2026-W32",
+    "2026-W36"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
     "https://www.medicare.gov/coverage/mental-health-care-outpatient"
    ]
@@ -990,34 +992,36 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W28",
-   "lastSeen": "2026-W35",
+   "lastSeen": "2026-W36",
    "_weeks": [
     "2026-W28",
     "2026-W30",
     "2026-W32",
-    "2026-W35"
+    "2026-W35",
+    "2026-W36"
    ],
-   "weeksBroken": 4,
+   "weeksBroken": 5,
    "foundOn": [
-    "https://medicare.gov/coverage/advance-care-planning",
-    "https://www.medicare.gov/coverage/advance-care-planning"
+    "http://medicare.gov/coverage/advance-care-planning",
+    "https://medicare.gov/coverage/advance-care-planning"
    ]
   },
   "https://www.nia.nih.gov/health/advance-care-planning/preparing-living-will": {
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W28",
-   "lastSeen": "2026-W35",
+   "lastSeen": "2026-W36",
    "_weeks": [
     "2026-W28",
     "2026-W30",
     "2026-W32",
-    "2026-W35"
+    "2026-W35",
+    "2026-W36"
    ],
-   "weeksBroken": 4,
+   "weeksBroken": 5,
    "foundOn": [
-    "https://medicare.gov/coverage/advance-care-planning",
-    "https://www.medicare.gov/coverage/advance-care-planning"
+    "http://medicare.gov/coverage/advance-care-planning",
+    "https://medicare.gov/coverage/advance-care-planning"
    ]
   },
   "https://www.twitter.com/MedicareGov": {
@@ -1541,7 +1545,9 @@
     "https://medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/eligibility-help-with-costs-November",
     "http://medicare.gov/health-drug-plans/part-d/basics/costs",
     "http://medicare.gov/basics/costs/help/medicaid",
-    "https://www.medicare.gov/basics/end-stage-renal-disease"
+    "https://www.medicare.gov/basics/end-stage-renal-disease",
+    "http://medicare.gov/health-drug-plans/health-plans/your-health-plan-options/SNP",
+    "http://medicare.gov/basics/end-stage-renal-disease"
    ]
   },
   "https://www.youtube.com/user/CMSHHSgov": {
@@ -1590,6 +1596,46 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://www.medicare.gov/care-compare/resources/resources-and-information"
+   ]
+  },
+  "https://www.medicaid.gov/about-us/where-can-people-get-help-medicaid-chip/index.html": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W36",
+   "lastSeen": "2026-W36",
+   "_weeks": [
+    "2026-W36"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/health-drug-plans/part-d/basics"
+   ]
+  },
+  "https://askmd.sharecare.com/en": {
+   "status": 406,
+   "reason": "HTTP 406",
+   "firstSeen": "2026-W36",
+   "lastSeen": "2026-W36",
+   "_weeks": [
+    "2026-W36"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/health-apps/AskMD",
+    "http://medicare.gov/health-apps/AskMD"
+   ]
+  },
+  "https://www.fema.gov/": {
+   "status": 503,
+   "reason": "HTTP 503",
+   "firstSeen": "2026-W36",
+   "lastSeen": "2026-W36",
+   "_weeks": [
+    "2026-W36"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/providers-services/disaster-emergency"
    ]
   }
  }

@@ -1,25 +1,298 @@
 {
  "domain": "nih.gov",
  "week": "2026-W36",
- "generatedAt": "2026-08-31T19:16:32.402Z",
- "pagesScanned": 600,
- "pagesAudited": 4,
+ "generatedAt": "2026-09-01T16:55:08.513Z",
+ "pagesScanned": 1200,
+ "pagesAudited": 8,
  "coverage": {
-  "sustainability": 71,
-  "axe": 4,
-  "deprecated-html": 1,
-  "resources": 4,
-  "standards": 2,
+  "sustainability": 143,
+  "axe": 8,
+  "alfa": 3,
+  "resources": 8,
+  "standards": 4,
+  "deprecated-html": 2,
   "security": 1,
-  "plain-language": 2
+  "plain-language": 5,
+  "tech": 1
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 28,
-  "pagesWithViolations": 4,
-  "pagesScanned": 4,
+  "violationTotal": 55,
+  "pagesWithViolations": 8,
+  "pagesScanned": 8,
   "medianViolations": 7,
   "rules": {
+   "heading-order": {
+    "count": 7,
+    "pages": 7,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "target": "h3:nth-child(4)",
+      "html": "<h3>What</h3>"
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45556\">\n          Roster\n        </button>\n      </h4>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 3,
+    "pages": 3,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   },
+   "link-in-text-block": {
+    "count": 25,
+    "pages": 8,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "instances": 5
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 5
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+      "instances": 5
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Translocation of a gut pathobiont "
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "p:nth-child(4) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "p:nth-child(4) > a:nth-child(3)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "target": "p:nth-child(14) > .mailto[href=\"mailto:NIAIDNews@niaid.nih.gov\"][data-extlink=\"\"]",
+      "html": "<a href=\"mailto:NIAIDNews@niaid.nih.gov\" class=\"mailto\" data-extlink=\"\">NIAIDNews@niaid.nih.gov</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 16,
+    "pages": 8,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     }
+    ]
+   },
    "aria-allowed-attr": {
     "count": 2,
     "pages": 2,
@@ -57,269 +330,466 @@
      }
     ]
    },
-   "heading-order": {
-    "count": 4,
-    "pages": 4,
-    "impact": "moderate",
-    "help": "Heading levels should only increase by one",
-    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
-    "tags": [
-     "best-practice"
-    ],
-    "examplePages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
-    ],
-    "affectedPages": [
-     {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "instances": 1
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "instances": 1
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "instances": 1
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
-      "instances": 1
-     }
-    ],
-    "instances": [
-     {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45556\">\n          Roster\n        </button>\n      </h4>"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "target": ".callout__text > h3",
-      "html": "<h3>At a Glance</h3>"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
-      "target": ".callout__text > h3",
-      "html": "<h3>At a Glance</h3>"
-     }
-    ]
-   },
-   "link-in-text-block": {
-    "count": 12,
-    "pages": 4,
-    "impact": "serious",
-    "help": "Links must be distinguishable without relying on color",
-    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
-    "tags": [
-     "wcag2a",
-     "wcag141"
-    ],
-    "examplePages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
-    ],
-    "affectedPages": [
-     {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "instances": 1
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "instances": 2
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "instances": 5
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
-      "instances": 4
-     }
-    ],
-    "instances": [
-     {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
-      "html": "<a href=\"https://www.acd.od.nih.gov/working-groups/brain.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Working Group</a>"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "target": "article[data-history-node-id=\"17596\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-      "html": "<a href=\"https://www.cancer.gov/about-cancer/screening\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cancer Screening</a>"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "target": "article[data-history-node-id=\"17596\"] > div > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-      "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/39636625/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Estimation of cancer deaths averted f"
-     }
-    ]
-   },
-   "region": {
-    "count": 8,
-    "pages": 4,
-    "impact": "moderate",
-    "help": "All page content should be contained by landmarks",
-    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
-    "tags": [
-     "best-practice"
-    ],
-    "examplePages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
-    ],
-    "affectedPages": [
-     {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "instances": 2
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "instances": 2
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "instances": 2
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
-      "instances": 2
-     }
-    ],
-    "instances": [
-     {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "target": ".usa-alert",
-      "html": "<div class=\"usa-alert\">"
-     },
-     {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "target": "#system-breadcrumb",
-      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".usa-alert",
-      "html": "<div class=\"usa-alert\">"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": "#system-breadcrumb",
-      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "target": ".usa-alert",
-      "html": "<div class=\"usa-alert\">"
-     }
-    ]
-   },
-   "landmark-unique": {
+   "empty-heading": {
     "count": 2,
     "pages": 2,
-    "impact": "moderate",
-    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
-    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "impact": "minor",
+    "help": "Headings should not be empty",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-heading?application=axeAPI",
     "tags": [
      "best-practice"
     ],
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ],
     "affectedPages": [
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
       "instances": 1
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
       "instances": 1
      }
     ],
     "instances": [
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-      "target": "#block-nih2-uswds-search",
-      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "target": "h3:nth-child(18)",
+      "html": "<h3></h3>"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing",
-      "target": "#block-nih2-uswds-search",
-      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "target": ".field__item:nth-child(2) > h2",
+      "html": "<h2> </h2>"
      }
     ]
    }
   }
  },
  "alfa": {
-  "failedTotal": 0,
-  "pagesWithFailures": 0,
-  "pagesScanned": 0,
-  "medianFailures": null,
-  "rules": {}
+  "failedTotal": 286,
+  "pagesWithFailures": 3,
+  "pagesScanned": 3,
+  "medianFailures": 95,
+  "rules": {
+   "sia-r66": {
+    "count": 152,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 53
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 55
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 44
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "text: \"Health Information\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "text: \"Grants & Funding\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "text: \"Health Information\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r53": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "target": "<h4 class=\"usa-accordion__heading\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 9,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 3
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r62": {
+    "count": 5,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "target": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 6,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 3,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 12,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 4
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 96,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 29
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "instances": 31
+     },
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 36
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "target": "<a href=\"/virtual-tour\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r64": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r64",
+    "examplePages": [
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "target": "<h2>",
+      "html": null
+     }
+    ]
+   }
+  }
  },
  "consensus": {
-  "uniqueIssues": 16,
-  "consensus": 0,
-  "axeOnly": 16,
-  "alfaOnly": 0,
-  "rawAxe": 16,
-  "rawAlfa": 0,
+  "uniqueIssues": 53,
+  "consensus": 1,
+  "axeOnly": 29,
+  "alfaOnly": 23,
+  "rawAxe": 30,
+  "rawAlfa": 24,
   "byKey": {
-   "act:5c01ea": {
-    "actRuleId": "5c01ea",
-    "axeRules": [
-     "aria-allowed-attr"
-    ],
-    "alfaRules": [],
-    "pages": 2,
-    "engines": "axe"
-   },
    "axe-core:heading-order": {
     "actRuleId": null,
     "axeRules": [
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 4,
-    "engines": "axe"
-   },
-   "axe-core:link-in-text-block": {
-    "actRuleId": null,
-    "axeRules": [
-     "link-in-text-block"
-    ],
-    "alfaRules": [],
-    "pages": 4,
-    "engines": "axe"
-   },
-   "axe-core:region": {
-    "actRuleId": null,
-    "axeRules": [
-     "region"
-    ],
-    "alfaRules": [],
-    "pages": 4,
+    "pages": 7,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -328,29 +798,148 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 2,
+    "pages": 3,
     "engines": "axe"
+   },
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 8,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 8,
+    "engines": "axe"
+   },
+   "act:5c01ea": {
+    "actRuleId": "5c01ea",
+    "axeRules": [
+     "aria-allowed-attr"
+    ],
+    "alfaRules": [
+     "sia-r18"
+    ],
+    "pages": 5,
+    "engines": "both"
+   },
+   "act:ffd0e9": {
+    "actRuleId": "ffd0e9",
+    "axeRules": [
+     "empty-heading"
+    ],
+    "alfaRules": [
+     "sia-r64"
+    ],
+    "pages": 2,
+    "engines": "both"
+   },
+   "alfa:sia-r66": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r66"
+    ],
+    "pages": 3,
+    "engines": "alfa"
+   },
+   "alfa:sia-r53": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r53"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r73": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r73"
+    ],
+    "pages": 3,
+    "engines": "alfa"
+   },
+   "alfa:sia-r62": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r62"
+    ],
+    "pages": 3,
+    "engines": "alfa"
+   },
+   "alfa:sia-r61": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r61"
+    ],
+    "pages": 3,
+    "engines": "alfa"
+   },
+   "alfa:sia-r57": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r57"
+    ],
+    "pages": 3,
+    "engines": "alfa"
+   },
+   "alfa:sia-r111": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r111"
+    ],
+    "pages": 3,
+    "engines": "alfa"
    }
   }
  },
  "sustainability": {
-  "pages": 71,
+  "pages": 143,
   "medianBytes": 61342,
-  "meanBytes": 377468,
+  "meanBytes": 69959,
   "medianRequests": 7,
-  "totalCo2g": 3.97,
-  "meanCo2g": 0.0559,
-  "totalEnergyWh": 8.04,
-  "meanEnergyWh": 0.1132
+  "totalCo2g": 1.48,
+  "meanCo2g": 0.0104,
+  "totalEnergyWh": 3,
+  "meanEnergyWh": 0.021
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 4,
+  "total": 6,
   "byType": {
-   "pdf": 2,
-   "image": 2
+   "image": 4,
+   "pdf": 2
   },
   "list": [
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-02/20180327-fish-liver.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-01/20180309-tb.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
    {
     "url": "https://www.nih.gov/sites/default/files/2026-04/brain2025_508c_2.pdf",
     "type": "pdf",
@@ -376,106 +965,106 @@
     ]
    },
    {
-    "url": "https://www.nih.gov/sites/default/files/2025-03/20191210-mouth.jpg",
+    "url": "https://nih.gov/sites/default/files/2026-02/20260224-demenita.jpg",
     "type": "image",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
     ]
    }
   ]
  },
  "standards": {
-  "pagesChecked": 2,
+  "pagesChecked": 4,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (5/6)",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 2,
+  "pagesChecked": 4,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -484,7 +1073,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -493,7 +1082,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -502,7 +1091,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -511,10 +1100,14 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+     },
      {
       "evidence": "No manifest declared",
       "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
@@ -529,10 +1122,14 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+     },
      {
       "evidence": "No manifest declared",
       "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
@@ -547,7 +1144,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -556,7 +1153,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -565,10 +1162,14 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 2,
+    "total": 4,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+     },
      {
       "evidence": "no readable web app manifest; no service worker registered",
       "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
@@ -582,8 +1183,8 @@
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 2,
-    "total": 2,
+    "pass": 4,
+    "total": 4,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -645,44 +1246,149 @@
   "passed": 5,
   "total": 8
  },
- "publicInterest": null,
+ "publicInterest": {
+  "engine": "public-interest",
+  "checkedAt": "2026-09-01T12:58:35.180Z",
+  "a11yStatement": {
+   "result": "fail",
+   "url": null,
+   "confidence": null,
+   "checkedAt": "2026-09-01T12:58:34.098Z"
+  },
+  "carbonTxt": {
+   "result": "fail",
+   "url": null,
+   "valid": false,
+   "fields": {},
+   "checkedAt": "2026-09-01T12:58:34.100Z"
+  },
+  "greenWebFoundation": {
+   "result": "fail",
+   "green": false,
+   "hostedBy": null,
+   "url": "https://api.thegreenwebfoundation.org/greencheck/nih.gov",
+   "checkedAt": "2026-09-01T12:58:34.101Z"
+  },
+  "sitemaps": {
+   "xml": {
+    "found": false,
+    "url": null
+   },
+   "human": {
+    "found": false,
+    "url": null
+   },
+   "checkedAt": "2026-09-01T12:58:34.102Z"
+  }
+ },
  "plainLanguage": {
-  "pagesChecked": 2,
-  "pagesScored": 2,
-  "medianWordsPerPage": 28479,
-  "medianReadingEase": 39,
-  "medianGrade": 13,
+  "pagesChecked": 5,
+  "pagesScored": 5,
+  "medianWordsPerPage": 741,
+  "medianReadingEase": 42.7,
+  "medianGrade": 13.1,
   "topUnexplainedAcronyms": [
    {
-    "acronym": "BRAIN",
-    "pages": 1,
+    "acronym": "II",
+    "pages": 3,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
-    "acronym": "MD",
-    "pages": 1,
+    "acronym": "HIV",
+    "pages": 2,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "acronym": "BRAIN",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
     "acronym": "FY",
-    "pages": 1,
+    "pages": 2,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "II",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
     "acronym": "III",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "acronym": "NIH",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "acronym": "PMID",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "acronym": "TB",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "acronym": "AIDS",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "acronym": "AS",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "acronym": "RW",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "acronym": "DOI",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "acronym": "RSS",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "acronym": "MD",
     "pages": 1,
     "examplePages": [
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
@@ -694,72 +1400,132 @@
     "examplePages": [
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
     ]
-   },
-   {
-    "acronym": "THE",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "VISION",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "AND",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "RNA",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "ID",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "PRIME",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "EM",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "GABA",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "CMOS",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
    }
   ],
   "topMisspellings": [
+   {
+    "word": "translational",
+    "pages": 3,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "word": "Drs",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ]
+   },
+   {
+    "word": "neurodegenerative",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "word": "transformative",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "micrograph",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "Mycobacterium",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "Fauci",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "Eisinger",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "Multisectoral",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "Mtb",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "Reimaging",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "ajtmh",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "Routh",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "NIAIDNews",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "niaid",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "nih",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "word": "www",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
    {
     "word": "Neurotechnologies",
     "pages": 1,
@@ -815,131 +1581,12 @@
     "examplePages": [
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
     ]
-   },
-   {
-    "word": "Donoghue",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Morehouse",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Kamil",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Ugurbil",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Marder",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Normann",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Sanes",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Schnitzer",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Sejnowski",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Tsien",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "translational",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "neurotechnology",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "vivo",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "glial",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "scalable",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "subcellular",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "nanoscience",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
    }
   ]
  },
  "lighthouse": null,
  "linkCheck": {
-  "brokenCount": 4,
+  "brokenCount": 8,
   "broken": [
    {
     "url": "http://www.mouseconnectome.org/",
@@ -972,12 +1619,52 @@
     "foundOn": [
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
     ]
+   },
+   {
+    "url": "http://history.nih.gov/research/sources_legislative_chronology.html",
+    "status": 0,
+    "reason": "ECONNREFUSED",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "url": "http://olpa.od.nih.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/what-is-dementia",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/brain-donation-gift-future-generations",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
    }
   ]
  },
  "errorPages": [
   {
+   "url": "https://nih.gov/news-events/news-releases/early-stimulation-improves-performance-bioengineered-human-heart-cells",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/challenges/nih-complement-animal-research-experimentation-nams-reduction-practice-challenge",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/challenges/supplements-facts-first-digital-adventure-every-age-challenge",
    "status": 403
   },
   {
@@ -986,6 +1673,10 @@
   },
   {
    "url": "https://www.nih.gov/news-events/news-releases/investigational-covid-19-therapeutics-be-evaluated-large-clinical-trials",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/sleep-exercise-may-reduce-mutation-driven-inflammation",
    "status": 403
   },
   {
@@ -1009,11 +1700,47 @@
    "status": 403
   },
   {
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/brain-immunity-may-undergo-major-midlife-overhaul",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/news-events/nih-research-matters/blood-brain-barrier-test-may-predict-dementia",
    "status": 403
   },
   {
+   "url": "https://nih.gov/news-events/nih-research-matters/neural-signature-predicts-antidepressant-response",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/news-releases/oral-small-molecule-glp-1-drugs-penetrate-deep-into-brain-suppress-cravings",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/drug-may-slow-development-type-1-diabetes",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/atlas-developing-human-brain",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/advancing-mecfs-research/announcements",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/heal/heal-initiative-requirements/data-sharing-policy",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/stopping-scar-tissue-improves-healing-after-heart-attack-mice",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters?page=0",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/research-training/medical-research-initiatives/advancing-mecfs-research/events/circulation-january-11-2024",
    "status": 403
   },
   {
@@ -1027,79 +1754,526 @@
   {
    "url": "https://www.nih.gov/brain/funding/approved-initiative-concepts",
    "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/brain-decoder-turns-person-s-brain-activity-into-words",
-   "status": 403
-  },
-  {
-   "url": "http://mailto:RADxInfo@nih.gov/disclaimers",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/intelligent-injection-device-targets-tissues",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/poor-air-quality-across-northeastern-public-transit-systems",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/lasting-immunity-found-after-recovery-covid-19",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/alzheimers-protein-may-have-natural-antibiotic-role",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/include-project/down-syndrome-research-plan",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/news-releases?page=180",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/echo/program-components/echo-cohort-study-sites",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/improving-visibility-nih-supported-clinical-trial-activities-results",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/if-you-have-question",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/how-high-fructose-intake-may-trigger-fatty-liver-disease",
-   "status": 403
   }
  ],
- "tech": null,
+ "tech": [
+  {
+   "name": "Cloudflare Browser Insights",
+   "category": "Analytics",
+   "categories": [
+    "Analytics",
+    "RUM"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Crazy Egg",
+   "category": "Analytics",
+   "categories": [
+    "Analytics"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://crazyegg.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Google Analytics",
+   "category": "Analytics",
+   "categories": [
+    "Analytics"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://google.com/analytics",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Varnish",
+   "category": "Caching",
+   "categories": [
+    "Caching"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.varnish-cache.org",
+   "cpe": "cpe:2.3:a:varnish-software:varnish_cache:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Cloudflare",
+   "category": "CDN",
+   "categories": [
+    "CDN"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Drupal",
+   "category": "CMS",
+   "categories": [
+    "CMS"
+   ],
+   "confidence": 100,
+   "version": "10",
+   "website": "https://www.drupal.org/",
+   "cpe": "cpe:2.3:a:drupal:drupal:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "jQuery",
+   "category": "JavaScript libraries",
+   "categories": [
+    "JavaScript libraries"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://jquery.com",
+   "cpe": "cpe:2.3:a:jquery:jquery:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "HTTP/3",
+   "category": "Miscellaneous",
+   "categories": [
+    "Miscellaneous"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://httpwg.org/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Acquia Cloud Platform",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.acquia.com/products/drupal-cloud/cloud-platform",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Amazon Web Services",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://aws.amazon.com/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "PHP",
+   "category": "Programming languages",
+   "categories": [
+    "Programming languages"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://php.net",
+   "cpe": "cpe:2.3:a:php:php:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "HSTS",
+   "category": "Security",
+   "categories": [
+    "Security"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.rfc-editor.org/rfc/rfc6797#section-6.1",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "Google Tag Manager",
+   "category": "Tag managers",
+   "categories": [
+    "Tag managers"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.google.com/tagmanager",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  },
+  {
+   "name": "USWDS",
+   "category": "UI frameworks",
+   "categories": [
+    "UI frameworks"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://designsystem.digital.gov",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+   ]
+  }
+ ],
  "images": {
-  "pagesScanned": 4,
-  "totalImages": 56,
-  "uniqueImages": 15,
+  "pagesScanned": 8,
+  "totalImages": 111,
+  "uniqueImages": 17,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 56,
+  "withAlt": 111,
   "altVerdicts": {
-   "GOOD": 12,
+   "GOOD": 14,
    "SUSPICIOUS": 1,
    "TOO_SHORT": 2
   }
  },
- "techFindings": null,
- "thirdParty": null,
+ "techFindings": {
+  "model": {
+   "pages": 1,
+   "tech": {
+    "Cloudflare Browser Insights": 1,
+    "Crazy Egg": 1,
+    "Google Analytics": 1,
+    "Varnish": 1,
+    "Cloudflare": 1,
+    "Drupal": 1,
+    "jQuery": 1,
+    "HTTP/3": 1,
+    "Acquia Cloud Platform": 1,
+    "Amazon Web Services": 1,
+    "PHP": 1,
+    "HSTS": 1,
+    "Google Tag Manager": 1,
+    "USWDS": 1
+   },
+   "finding": {
+    "axe:empty-heading": 1,
+    "axe:heading-order": 1,
+    "axe:link-in-text-block": 1,
+    "axe:region": 1
+   },
+   "pair": {
+    "Cloudflare Browser Insights": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Crazy Egg": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Google Analytics": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Varnish": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Cloudflare": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Drupal": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "jQuery": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "HTTP/3": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Acquia Cloud Platform": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Amazon Web Services": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "PHP": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "HSTS": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "Google Tag Manager": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    },
+    "USWDS": {
+     "axe:empty-heading": 1,
+     "axe:heading-order": 1,
+     "axe:link-in-text-block": 1,
+     "axe:region": 1
+    }
+   }
+  },
+  "associations": []
+ },
+ "thirdParty": {
+  "pagesScanned": 2,
+  "vendors": [
+   {
+    "origin": "googletagmanager.com",
+    "pages": 2,
+    "pagesWithScripts": 2,
+    "isScriptVendor": true,
+    "medianBytes": 618251,
+    "medianDurationMs": 322,
+    "medianRequests": 4,
+    "pagesWithFindings": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism"
+    ]
+   },
+   {
+    "origin": "crazyegg.com",
+    "pages": 2,
+    "pagesWithScripts": 2,
+    "isScriptVendor": true,
+    "medianBytes": 68385,
+    "medianDurationMs": 214,
+    "medianRequests": 4,
+    "pagesWithFindings": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism"
+    ]
+   },
+   {
+    "origin": "digitalgov.gov",
+    "pages": 2,
+    "pagesWithScripts": 2,
+    "isScriptVendor": true,
+    "medianBytes": 30230,
+    "medianDurationMs": 68,
+    "medianRequests": 1,
+    "pagesWithFindings": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism"
+    ]
+   },
+   {
+    "origin": "cloudflareinsights.com",
+    "pages": 2,
+    "pagesWithScripts": 2,
+    "isScriptVendor": true,
+    "medianBytes": 28467,
+    "medianDurationMs": 63,
+    "medianRequests": 1,
+    "pagesWithFindings": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism"
+    ]
+   },
+   {
+    "origin": "google-analytics.com",
+    "pages": 2,
+    "pagesWithScripts": 2,
+    "isScriptVendor": true,
+    "medianBytes": 20805,
+    "medianDurationMs": 81,
+    "medianRequests": 5,
+    "pagesWithFindings": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism"
+    ]
+   },
+   {
+    "origin": "pinterest.com",
+    "pages": 2,
+    "pagesWithScripts": 2,
+    "isScriptVendor": true,
+    "medianBytes": 18901,
+    "medianDurationMs": 196,
+    "medianRequests": 3,
+    "pagesWithFindings": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism"
+    ]
+   },
+   {
+    "origin": "verint-cdn.com",
+    "pages": 2,
+    "pagesWithScripts": 2,
+    "isScriptVendor": true,
+    "medianBytes": 106,
+    "medianDurationMs": 135,
+    "medianRequests": 1,
+    "pagesWithFindings": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism"
+    ]
+   }
+  ]
+ },
  "componentClusters": {
   "design_system": "none",
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 12,
+  "total_clusters": 41,
   "clusters": [
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 8,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 8,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
    {
     "id": "cc-3305fcaaecb5",
     "engine_key": "axe-core",
@@ -1129,73 +2303,13 @@
     ]
    },
    {
-    "id": "cc-c522046e8174",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
-    ]
-   },
-   {
     "id": "cc-340e0be35f96",
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -1203,45 +2317,105 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 4.8,
+    "action_score": 7.2,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
     ]
    },
    {
-    "id": "cc-dc4046f0700e",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
-    "snippet_shape": "h4:aria",
-    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2.4,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
@@ -1249,9 +2423,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 7,
+    "pages_affected": 3,
+    "instances": 3,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -1259,45 +2433,451 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
     "action_score": 2.4,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
     ]
    },
    {
-    "id": "cc-7593579d1f63",
+    "id": "cc-dc4046f0700e",
     "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 3,
     "instances": 3,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
+    "snippet_shape": "h4:aria",
+    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-19c608daabd2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-e4f32d74f85a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r64",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h2>",
+    "snippet_shape": "",
+    "representative_selector": "<h2>",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.2,
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
@@ -1305,9 +2885,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 8,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
     "snippet_shape": "a:href",
     "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
@@ -1315,17 +2895,373 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 11,
+    "action_score": 1.31,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.2,
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+    ]
+   },
+   {
+    "id": "cc-d353923a9e69",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h4 class=\"usa-accordion__heading\">",
+    "snippet_shape": "",
+    "representative_selector": "<h4 class=\"usa-accordion__heading\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 8,
+    "pages_affected": 3,
+    "instances": 4,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.98,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~4 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "id": "cc-61c26a3768ea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(4)",
+    "representative_snippet": "<h3>What</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "id": "cc-10240c1aa126",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+    ]
+   },
+   {
+    "id": "cc-7ed9dc818893",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-0975fb981253",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 8,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"17596\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.cancer.gov/about-cancer/screening\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cancer Screening</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.65,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
      "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "id": "cc-b4aea9b8408e",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(18)",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "id": "cc-c7e1187668ec",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".field__item:nth-child(*) > h2",
+    "snippet_shape": "h2:",
+    "representative_selector": ".field__item:nth-child(2) > h2",
+    "representative_snippet": "<h2> </h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 8,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Translocation of a gut pathobiont ",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+    ]
+   },
+   {
+    "id": "cc-a2dc4c0de62b",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 8,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > .mailto[href=\"mailto:niaidnews@niaid.nih.gov\"][data-extlink=\"\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(14) > .mailto[href=\"mailto:NIAIDNews@niaid.nih.gov\"][data-extlink=\"\"]",
+    "representative_snippet": "<a href=\"mailto:NIAIDNews@niaid.nih.gov\" class=\"mailto\" data-extlink=\"\">NIAIDNews@niaid.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "id": "cc-2b8a2f898d9a",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 8,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href$=\"niaid.nih.gov/\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(15) > a[href$=\"niaid.nih.gov/\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+    "representative_snippet": "<a href=\"http://www.niaid.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">www.niaid.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "id": "cc-50d6944a3868",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 8,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(16) > a[href=\"/\"]",
+    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
     ]
    },
    {
@@ -1333,7 +3269,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 8,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
@@ -1344,8 +3280,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -1356,38 +3292,11 @@
     ]
    },
    {
-    "id": "cc-0975fb981253",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "article[data-history-node-id=\"17596\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.cancer.gov/about-cancer/screening\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cancer Screening</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
-    ]
-   },
-   {
     "id": "cc-2e09cc43fb39",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 8,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -1398,8 +3307,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -1410,34 +3319,129 @@
     ]
    },
    {
-    "id": "cc-c3982f3f2935",
+    "id": "cc-e3397b4fcf37",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 8,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "selector_path": "span > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(16) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31809739\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Heterogeneity within Stratified Ep",
+    "representative_selector": "span > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/41589584/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">CTE Neuropathology Alone Associated w",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "id": "cc-afc35d392e65",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 8,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Office of N",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 11,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    }
   ],
   "top_actions": [
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 8,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 8,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
    {
     "id": "cc-3305fcaaecb5",
     "engine_key": "axe-core",
@@ -1467,73 +3471,13 @@
     ]
    },
    {
-    "id": "cc-c522046e8174",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
-    ]
-   },
-   {
     "id": "cc-340e0be35f96",
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -1541,45 +3485,105 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 1,
-    "action_score": 4.8,
+    "action_score": 7.2,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
     ]
    },
    {
-    "id": "cc-dc4046f0700e",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
-    "snippet_shape": "h4:aria",
-    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 2.4,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
@@ -1587,9 +3591,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 7,
+    "pages_affected": 3,
+    "instances": 3,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -1597,127 +3601,76 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 2,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
     "action_score": 2.4,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
     ]
    },
    {
-    "id": "cc-7593579d1f63",
+    "id": "cc-dc4046f0700e",
     "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 3,
     "instances": 3,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
+    "snippet_shape": "h4:aria",
+    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.2,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
     "estimated_fix_impact": {
      "findings": 3,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://www.nih.gov/news-events/nih-research-matters/newly-identified-oral-stem-cell-key-wound-healing"
-    ]
-   },
-   {
-    "id": "cc-0cb84ddbdf67",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
-    "id": "cc-cea602cc36e9",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
-    "representative_snippet": "<a href=\"https://www.acd.od.nih.gov/working-groups/brain.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Working Group</a>",
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2,
     "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "id": "cc-0975fb981253",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "article[data-history-node-id=\"17596\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.cancer.gov/about-cancer/screening\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cancer Screening</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    }
   ],
@@ -1727,6 +3680,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 750,
- "pagesSucceeded": 5
+ "pagesAttempted": 1650,
+ "pagesSucceeded": 11
 }
