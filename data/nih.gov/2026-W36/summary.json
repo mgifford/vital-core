@@ -1,30 +1,30 @@
 {
  "domain": "nih.gov",
  "week": "2026-W36",
- "generatedAt": "2026-09-01T16:55:08.513Z",
- "pagesScanned": 1200,
- "pagesAudited": 8,
+ "generatedAt": "2026-09-02T16:52:46.537Z",
+ "pagesScanned": 2097,
+ "pagesAudited": 14,
  "coverage": {
-  "sustainability": 143,
-  "axe": 8,
-  "alfa": 3,
-  "resources": 8,
-  "standards": 4,
+  "sustainability": 232,
+  "axe": 14,
+  "alfa": 7,
+  "resources": 14,
+  "standards": 6,
   "deprecated-html": 2,
-  "security": 1,
-  "plain-language": 5,
-  "tech": 1
+  "security": 2,
+  "plain-language": 8,
+  "tech": 2
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 55,
-  "pagesWithViolations": 8,
-  "pagesScanned": 8,
-  "medianViolations": 7,
+  "violationTotal": 103,
+  "pagesWithViolations": 14,
+  "pagesScanned": 14,
+  "medianViolations": 8,
   "rules": {
    "heading-order": {
-    "count": 7,
-    "pages": 7,
+    "count": 13,
+    "pages": 13,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -33,8 +33,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
     ],
     "affectedPages": [
      {
@@ -42,7 +42,23 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 1
+     },
+     {
       "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
       "instances": 1
      },
      {
@@ -51,6 +67,14 @@
      },
      {
       "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
       "instances": 1
      },
      {
@@ -73,30 +97,30 @@
       "html": "<h3>At a Glance</h3>"
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
       "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
       "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
       "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>"
      },
      {
-      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
-      "target": "h3:nth-child(4)",
-      "html": "<h3>What</h3>"
+      "url": "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
      },
      {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45556\">\n          Roster\n        </button>\n      </h4>"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      }
     ]
    },
    "landmark-unique": {
-    "count": 3,
-    "pages": 3,
+    "count": 8,
+    "pages": 8,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -105,12 +129,32 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
       "instances": 1
      },
      {
@@ -129,20 +173,30 @@
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+      "url": "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      }
     ]
    },
    "link-in-text-block": {
-    "count": 25,
-    "pages": 8,
+    "count": 49,
+    "pages": 14,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -152,8 +206,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
     ],
     "affectedPages": [
      {
@@ -161,8 +215,24 @@
       "instances": 4
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 4
+     },
+     {
       "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
       "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 5
      },
      {
       "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
@@ -171,6 +241,14 @@
      {
       "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
       "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
+      "instances": 4
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
@@ -206,20 +284,20 @@
       "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
      },
      {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "target": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33811065/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Reduced MC4R signaling alters nocicep"
      },
      {
-      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
-      "target": "p:nth-child(14) > .mailto[href=\"mailto:NIAIDNews@niaid.nih.gov\"][data-extlink=\"\"]",
-      "html": "<a href=\"mailto:NIAIDNews@niaid.nih.gov\" class=\"mailto\" data-extlink=\"\">NIAIDNews@niaid.nih.gov</a>"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "target": "p:nth-child(4) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
      }
     ]
    },
    "region": {
-    "count": 16,
-    "pages": 8,
+    "count": 28,
+    "pages": 14,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -228,8 +306,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
     ],
     "affectedPages": [
      {
@@ -237,7 +315,23 @@
       "instances": 2
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 2
+     },
+     {
       "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
       "instances": 2
      },
      {
@@ -246,6 +340,14 @@
      },
      {
       "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
       "instances": 2
      },
      {
@@ -277,17 +379,17 @@
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      },
      {
-      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "#system-breadcrumb",
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      }
@@ -331,8 +433,8 @@
     ]
    },
    "empty-heading": {
-    "count": 2,
-    "pages": 2,
+    "count": 3,
+    "pages": 3,
     "impact": "minor",
     "help": "Headings should not be empty",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-heading?application=axeAPI",
@@ -341,11 +443,16 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
       "instances": 1
      },
      {
@@ -360,6 +467,11 @@
       "html": "<h3></h3>"
      },
      {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "target": "article[data-history-node-id=\"22136\"] > div > h3",
+      "html": "<h3></h3>"
+     },
+     {
       "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
       "target": ".field__item:nth-child(2) > h2",
       "html": "<h2> </h2>"
@@ -369,24 +481,40 @@
   }
  },
  "alfa": {
-  "failedTotal": 286,
-  "pagesWithFailures": 3,
-  "pagesScanned": 3,
-  "medianFailures": 95,
+  "failedTotal": 641,
+  "pagesWithFailures": 7,
+  "pagesScanned": 7,
+  "medianFailures": 94,
   "rules": {
    "sia-r66": {
-    "count": 152,
-    "pages": 3,
+    "count": 344,
+    "pages": 7,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
       "instances": 53
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 52
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 50
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 55
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 35
      },
      {
       "url": "https://www.nih.gov/nih-style-guide/autism",
@@ -414,28 +542,45 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "text: \"Health Information\"",
       "html": null
      }
     ]
    },
    "sia-r53": {
-    "count": 2,
-    "pages": 2,
+    "count": 6,
+    "pages": 6,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
       "instances": 1
      },
      {
@@ -450,25 +595,56 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
-      "target": "<h4 class=\"usa-accordion__heading\">",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "target": "<h3>",
       "html": null
      }
     ]
    },
    "sia-r73": {
-    "count": 9,
-    "pages": 3,
+    "count": 22,
+    "pages": 7,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
       "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 4
      },
      {
       "url": "https://www.nih.gov/nih-style-guide/autism",
@@ -496,29 +672,45 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      }
     ]
    },
    "sia-r62": {
-    "count": 5,
-    "pages": 3,
+    "count": 14,
+    "pages": 7,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
       "instances": 2
      },
      {
@@ -542,34 +734,50 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
-      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "target": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33811065/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
-      "target": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
      }
     ]
    },
    "sia-r18": {
-    "count": 6,
-    "pages": 3,
+    "count": 14,
+    "pages": 7,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
       "instances": 2
      },
      {
@@ -593,34 +801,50 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
      }
     ]
    },
    "sia-r61": {
-    "count": 3,
-    "pages": 3,
+    "count": 7,
+    "pages": 7,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
       "instances": 1
      },
      {
@@ -639,29 +863,55 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      }
     ]
    },
    "sia-r57": {
-    "count": 12,
-    "pages": 3,
+    "count": 28,
+    "pages": 7,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
       "instances": 4
      },
      {
@@ -690,30 +940,46 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      }
     ]
    },
    "sia-r111": {
-    "count": 96,
-    "pages": 3,
+    "count": 201,
+    "pages": 7,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
       "instances": 29
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+      "instances": 28
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+      "instances": 27
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+      "instances": 30
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 20
      },
      {
       "url": "https://www.nih.gov/nih-style-guide/autism",
@@ -741,31 +1007,88 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/nih-style-guide/autism",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
       "html": null
      }
     ]
    },
-   "sia-r64": {
+   "sia-r85": {
+    "count": 2,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r85",
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "target": "<p class=\"nih-subtitle\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "target": "<p class=\"nih-slogan\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r78": {
     "count": 1,
     "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r78",
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "target": "<h3>",
+      "html": null
+     }
+    ]
+   },
+   "sia-r64": {
+    "count": 2,
+    "pages": 2,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r64",
     "examplePages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ],
     "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "instances": 1
+     },
      {
       "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
       "instances": 1
      }
     ],
     "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+      "target": "<h3>",
+      "html": null
+     },
      {
       "url": "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology",
       "target": "<h2>",
@@ -776,12 +1099,12 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 53,
-  "consensus": 1,
-  "axeOnly": 29,
-  "alfaOnly": 23,
-  "rawAxe": 30,
-  "rawAlfa": 24,
+  "uniqueIssues": 111,
+  "consensus": 2,
+  "axeOnly": 52,
+  "alfaOnly": 57,
+  "rawAxe": 54,
+  "rawAlfa": 59,
   "byKey": {
    "axe-core:heading-order": {
     "actRuleId": null,
@@ -789,7 +1112,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 7,
+    "pages": 13,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -798,7 +1121,7 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 3,
+    "pages": 8,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -807,7 +1130,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 14,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -816,7 +1139,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 14,
     "engines": "axe"
    },
    "act:5c01ea": {
@@ -827,7 +1150,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 5,
+    "pages": 9,
     "engines": "both"
    },
    "act:ffd0e9": {
@@ -838,7 +1161,7 @@
     "alfaRules": [
      "sia-r64"
     ],
-    "pages": 2,
+    "pages": 3,
     "engines": "both"
    },
    "alfa:sia-r66": {
@@ -847,7 +1170,7 @@
     "alfaRules": [
      "sia-r66"
     ],
-    "pages": 3,
+    "pages": 7,
     "engines": "alfa"
    },
    "alfa:sia-r53": {
@@ -856,7 +1179,7 @@
     "alfaRules": [
      "sia-r53"
     ],
-    "pages": 2,
+    "pages": 6,
     "engines": "alfa"
    },
    "alfa:sia-r73": {
@@ -865,7 +1188,7 @@
     "alfaRules": [
      "sia-r73"
     ],
-    "pages": 3,
+    "pages": 7,
     "engines": "alfa"
    },
    "alfa:sia-r62": {
@@ -874,7 +1197,7 @@
     "alfaRules": [
      "sia-r62"
     ],
-    "pages": 3,
+    "pages": 7,
     "engines": "alfa"
    },
    "alfa:sia-r61": {
@@ -883,7 +1206,7 @@
     "alfaRules": [
      "sia-r61"
     ],
-    "pages": 3,
+    "pages": 7,
     "engines": "alfa"
    },
    "alfa:sia-r57": {
@@ -892,7 +1215,7 @@
     "alfaRules": [
      "sia-r57"
     ],
-    "pages": 3,
+    "pages": 7,
     "engines": "alfa"
    },
    "alfa:sia-r111": {
@@ -901,26 +1224,44 @@
     "alfaRules": [
      "sia-r111"
     ],
-    "pages": 3,
+    "pages": 7,
+    "engines": "alfa"
+   },
+   "alfa:sia-r85": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r85"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r78": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r78"
+    ],
+    "pages": 1,
     "engines": "alfa"
    }
   }
  },
  "sustainability": {
-  "pages": 143,
+  "pages": 232,
   "medianBytes": 61342,
-  "meanBytes": 69959,
-  "medianRequests": 7,
-  "totalCo2g": 1.48,
-  "meanCo2g": 0.0104,
-  "totalEnergyWh": 3,
-  "meanEnergyWh": 0.021
+  "meanBytes": 66653,
+  "medianRequests": 6,
+  "totalCo2g": 2.29,
+  "meanCo2g": 0.0099,
+  "totalEnergyWh": 4.64,
+  "meanEnergyWh": 0.02
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 6,
+  "total": 12,
   "byType": {
-   "image": 4,
+   "image": 10,
    "pdf": 2
   },
   "list": [
@@ -930,6 +1271,38 @@
     "pages": 1,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20210420-red.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-03/20190514-cfs.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-03/20190709-copd.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20200922-bp.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining"
     ]
    },
    {
@@ -957,6 +1330,22 @@
     ]
    },
    {
+    "url": "https://nih.gov/sites/default/files/2026-04/20260421-jonathan-green.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-05/20240624-dementia.jpeg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities"
+    ]
+   },
+   {
     "url": "https://www.nih.gov/sites/default/files/2025-03/20250114-cancer.jpg",
     "type": "image",
     "pages": 1,
@@ -975,96 +1364,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 4,
+  "pagesChecked": 6,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (5/6)",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 4,
+  "pagesChecked": 6,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -1073,7 +1462,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -1082,7 +1471,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -1091,7 +1480,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -1100,7 +1489,7 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
@@ -1110,11 +1499,11 @@
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
      }
     ]
    },
@@ -1122,7 +1511,7 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
@@ -1132,11 +1521,11 @@
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
      }
     ]
    },
@@ -1144,7 +1533,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -1153,7 +1542,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -1162,7 +1551,7 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 4,
+    "total": 6,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
@@ -1172,19 +1561,19 @@
      },
      {
       "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold"
      },
      {
       "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+      "url": "https://www.nih.gov/brain/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
      }
     ]
    },
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 4,
-    "total": 4,
+    "pass": 6,
+    "total": 6,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -1282,18 +1671,72 @@
   }
  },
  "plainLanguage": {
-  "pagesChecked": 5,
-  "pagesScored": 5,
-  "medianWordsPerPage": 741,
-  "medianReadingEase": 42.7,
-  "medianGrade": 13.1,
+  "pagesChecked": 8,
+  "pagesScored": 8,
+  "medianWordsPerPage": 751,
+  "medianReadingEase": 43,
+  "medianGrade": 13,
   "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 5,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "acronym": "PMID",
+    "pages": 5,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
    {
     "acronym": "II",
     "pages": 3,
     "examplePages": [
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "acronym": "RW",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "acronym": "JAMA",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths"
+    ]
+   },
+   {
+    "acronym": "BC",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "acronym": "COVID",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
@@ -1330,79 +1773,46 @@
     ]
    },
    {
-    "acronym": "NIH",
+    "acronym": "RA",
     "pages": 2,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
     ]
    },
    {
-    "acronym": "PMID",
-    "pages": 2,
+    "acronym": "ME",
+    "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "acronym": "TB",
+    "acronym": "CFS",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "acronym": "AIDS",
+    "acronym": "GI",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
-    ]
-   },
-   {
-    "acronym": "AS",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
-    ]
-   },
-   {
-    "acronym": "RW",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
-    ]
-   },
-   {
-    "acronym": "DOI",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
-    ]
-   },
-   {
-    "acronym": "RSS",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
-    ]
-   },
-   {
-    "acronym": "MD",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "acronym": "DBS",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    }
   ],
   "topMisspellings": [
+   {
+    "word": "doi",
+    "pages": 4,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
    {
     "word": "translational",
     "pages": 3,
@@ -1429,164 +1839,157 @@
     ]
    },
    {
-    "word": "transformative",
+    "word": "myalgic",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "micrograph",
+    "word": "encephalomyelitis",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Mycobacterium",
+    "word": "fizkes",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Fauci",
+    "word": "iStock",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Eisinger",
+    "word": "Myalgic",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Multisectoral",
+    "word": "doesn",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Mtb",
+    "word": "exertional",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Reimaging",
+    "word": "nanoelectronics",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "ajtmh",
+    "word": "mononuclear",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Routh",
+    "word": "PBMCs",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "NIAIDNews",
+    "word": "Tianna",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "niaid",
+    "word": "Hicklin",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "nih",
+    "word": "Encephalomyelitis",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "www",
+    "word": "Esfandyarpour",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Neurotechnologies",
+    "word": "Kashi",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "InitiativeBRAIN",
+    "word": "Nemat",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Officio",
+    "word": "Gorgani",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Wingfield",
+    "word": "Wilhelmy",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Jorgenson",
+    "word": "Proc",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Bargmann",
+    "word": "Acad",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    },
    {
-    "word": "Newsome",
+    "word": "pii",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
-    "word": "Deisseroth",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome"
     ]
    }
   ]
  },
  "lighthouse": null,
  "linkCheck": {
-  "brokenCount": 8,
+  "brokenCount": 10,
   "broken": [
    {
     "url": "http://www.mouseconnectome.org/",
@@ -1651,6 +2054,22 @@
     "foundOn": [
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
     ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/alzheimers-and-dementia",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities"
+    ]
+   },
+   {
+    "url": "https://www.nimhd.nih.gov/resources/understanding-health-disparities/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities"
+    ]
    }
   ]
  },
@@ -1664,7 +2083,15 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/mrna-vaccine-treat-pancreatic-cancer",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/challenges/supplements-facts-first-digital-adventure-every-age-challenge",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/other-public-information-servers",
    "status": 403
   },
   {
@@ -1673,6 +2100,10 @@
   },
   {
    "url": "https://www.nih.gov/news-events/news-releases/investigational-covid-19-therapeutics-be-evaluated-large-clinical-trials",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials/learn-how-you-too-can-participate-tomorrows-medical-progress-poster",
    "status": 403
   },
   {
@@ -1688,7 +2119,23 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/brain-initiative/research/tools-technologies-brain-cells-circuits/brain-initiative-cell-census-network",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/nih-research-matters/machine-learning-identifies-federally-protected-waters",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/nih-almanac/michael-lauer-md",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/brain-scan-guided-emergency-stroke-treatment-can-save-more-lives",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/brain-initiative/about/multi-council-working-group/brain-multi-council-working-group-mcwg-meeting-august-2026",
    "status": 403
   },
   {
@@ -1708,51 +2155,23 @@
    "status": 403
   },
   {
+   "url": "https://nih.gov/news-events/nih-research-matters/brain-stimulation-can-affect-memory-older-adults",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/2024-nih-research-highlights-human-health-advances",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/faster-better-images-cutting-edge-microscopes",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/antibody-treatment-protects-adults-against-malaria",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/nih-research-matters/neural-signature-predicts-antidepressant-response",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/news-releases/oral-small-molecule-glp-1-drugs-penetrate-deep-into-brain-suppress-cravings",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/drug-may-slow-development-type-1-diabetes",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/atlas-developing-human-brain",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/advancing-mecfs-research/announcements",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/heal/heal-initiative-requirements/data-sharing-policy",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/stopping-scar-tissue-improves-healing-after-heart-attack-mice",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters?page=0",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/research-training/medical-research-initiatives/advancing-mecfs-research/events/circulation-january-11-2024",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/about-nih/nih-almanac/tara-schwetz-phd",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/nanoparticles-developed-traumatic-brain-injury",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/brain/funding/approved-initiative-concepts",
    "status": 403
   }
  ],
@@ -1768,8 +2187,9 @@
    "version": null,
    "website": "https://www.cloudflare.com",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1783,8 +2203,9 @@
    "version": null,
    "website": "https://crazyegg.com",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1798,8 +2219,9 @@
    "version": null,
    "website": "https://google.com/analytics",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1813,8 +2235,9 @@
    "version": null,
    "website": "https://www.varnish-cache.org",
    "cpe": "cpe:2.3:a:varnish-software:varnish_cache:*:*:*:*:*:*:*:*",
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1828,8 +2251,9 @@
    "version": null,
    "website": "https://www.cloudflare.com",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1843,8 +2267,9 @@
    "version": "10",
    "website": "https://www.drupal.org/",
    "cpe": "cpe:2.3:a:drupal:drupal:*:*:*:*:*:*:*:*",
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1858,8 +2283,9 @@
    "version": null,
    "website": "https://jquery.com",
    "cpe": "cpe:2.3:a:jquery:jquery:*:*:*:*:*:*:*:*",
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1873,8 +2299,9 @@
    "version": null,
    "website": "https://httpwg.org/",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1888,8 +2315,9 @@
    "version": null,
    "website": "https://www.acquia.com/products/drupal-cloud/cloud-platform",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1903,8 +2331,9 @@
    "version": null,
    "website": "https://aws.amazon.com/",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1918,8 +2347,9 @@
    "version": null,
    "website": "https://php.net",
    "cpe": "cpe:2.3:a:php:php:*:*:*:*:*:*:*:*",
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1933,8 +2363,9 @@
    "version": null,
    "website": "https://www.rfc-editor.org/rfc/rfc6797#section-6.1",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1948,8 +2379,9 @@
    "version": null,
    "website": "https://www.google.com/tagmanager",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   },
@@ -1963,134 +2395,270 @@
    "version": null,
    "website": "https://designsystem.digital.gov",
    "cpe": null,
-   "pagesConfirmed": 1,
+   "pagesConfirmed": 2,
    "examplePages": [
+    "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
    ]
   }
  ],
  "images": {
-  "pagesScanned": 8,
-  "totalImages": 111,
-  "uniqueImages": 17,
+  "pagesScanned": 14,
+  "totalImages": 200,
+  "uniqueImages": 23,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 111,
+  "withAlt": 200,
   "altVerdicts": {
-   "GOOD": 14,
-   "SUSPICIOUS": 1,
+   "GOOD": 19,
+   "SUSPICIOUS": 2,
    "TOO_SHORT": 2
   }
  },
  "techFindings": {
   "model": {
-   "pages": 1,
+   "pages": 2,
    "tech": {
-    "Cloudflare Browser Insights": 1,
-    "Crazy Egg": 1,
-    "Google Analytics": 1,
-    "Varnish": 1,
-    "Cloudflare": 1,
-    "Drupal": 1,
-    "jQuery": 1,
-    "HTTP/3": 1,
-    "Acquia Cloud Platform": 1,
-    "Amazon Web Services": 1,
-    "PHP": 1,
-    "HSTS": 1,
-    "Google Tag Manager": 1,
-    "USWDS": 1
+    "Cloudflare Browser Insights": 2,
+    "Crazy Egg": 2,
+    "Google Analytics": 2,
+    "Varnish": 2,
+    "Cloudflare": 2,
+    "Drupal": 2,
+    "jQuery": 2,
+    "HTTP/3": 2,
+    "Acquia Cloud Platform": 2,
+    "Amazon Web Services": 2,
+    "PHP": 2,
+    "HSTS": 2,
+    "Google Tag Manager": 2,
+    "USWDS": 2
    },
    "finding": {
-    "axe:empty-heading": 1,
-    "axe:heading-order": 1,
-    "axe:link-in-text-block": 1,
-    "axe:region": 1
+    "axe:heading-order": 2,
+    "axe:landmark-unique": 1,
+    "axe:link-in-text-block": 2,
+    "axe:region": 2,
+    "alfa:sia-r66": 1,
+    "alfa:sia-r53": 1,
+    "alfa:sia-r73": 1,
+    "alfa:sia-r62": 1,
+    "alfa:sia-r18": 1,
+    "alfa:sia-r61": 1,
+    "alfa:sia-r57": 1,
+    "alfa:sia-r111": 1,
+    "axe:empty-heading": 1
    },
    "pair": {
     "Cloudflare Browser Insights": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Crazy Egg": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Google Analytics": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Varnish": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Cloudflare": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Drupal": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "jQuery": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "HTTP/3": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Acquia Cloud Platform": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Amazon Web Services": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "PHP": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "HSTS": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "Google Tag Manager": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     },
     "USWDS": {
-     "axe:empty-heading": 1,
-     "axe:heading-order": 1,
-     "axe:link-in-text-block": 1,
-     "axe:region": 1
+     "axe:heading-order": 2,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 2,
+     "axe:region": 2,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1,
+     "axe:empty-heading": 1
     }
    }
   },
@@ -2204,26 +2772,26 @@
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 41,
+  "total_clusters": 53,
   "clusters": [
    {
-    "id": "cc-c522046e8174",
+    "id": "cc-340e0be35f96",
     "engine_key": "axe-core",
-    "rule_id": "region",
+    "rule_id": "landmark-unique",
     "severity": "Moderate",
     "rule_pages_affected": 8,
     "pages_affected": 8,
     "instances": 8,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "distinct_components_for_rule": 1,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 8,
@@ -2231,9 +2799,49 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 16.8,
+    "estimated_fix_impact": {
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
      "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
      "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
      "https://www.nih.gov/nih-style-guide/autism",
@@ -2245,9 +2853,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -2255,21 +2863,60 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
      "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
      "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2303,71 +2950,13 @@
     ]
    },
    {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 7.2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
-    ]
-   },
-   {
-    "id": "cc-cffcfd807590",
-    "engine_key": "alfa",
-    "rule_id": "sia-r61",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
-    "snippet_shape": "",
-    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
-    ]
-   },
-   {
     "id": "cc-cd5f617ba5c1",
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -2377,14 +2966,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 7,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2394,9 +2987,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -2406,16 +2999,51 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 7,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 5,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
     ]
    },
    {
@@ -2423,9 +3051,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 13,
+    "pages_affected": 8,
+    "instances": 8,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -2434,46 +3062,22 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2.4,
+    "distinct_components_for_rule": 4,
+    "action_score": 4.8,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
-    ]
-   },
-   {
-    "id": "cc-dc4046f0700e",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
-    "snippet_shape": "h4:aria",
-    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2.4,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
@@ -2481,9 +3085,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -2493,14 +3097,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2510,9 +3118,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "text: \"health information\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Health Information\"",
@@ -2522,14 +3130,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2539,9 +3151,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "text: \"grants & funding\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Grants & Funding\"",
@@ -2551,130 +3163,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
-    ]
-   },
-   {
-    "id": "cc-19c608daabd2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<p class=\"usa-banner__header-text\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-banner__header-text\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
-    ]
-   },
-   {
-    "id": "cc-56d16a8447b2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
-    ]
-   },
-   {
-    "id": "cc-e5e84016a2ec",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
-    ]
-   },
-   {
-    "id": "cc-8cbcff6b68da",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2684,9 +3184,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "text: \"nih websites are changing\"",
     "snippet_shape": "",
     "representative_selector": "text: \"NIH Websites Are Changing\"",
@@ -2696,14 +3196,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2713,9 +3217,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
     "snippet_shape": "",
     "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
@@ -2725,14 +3229,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2742,9 +3250,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -2754,14 +3262,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2771,9 +3283,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
     "snippet_shape": "",
     "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
@@ -2783,14 +3295,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2800,9 +3316,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
     "snippet_shape": "",
     "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
@@ -2812,14 +3328,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -2829,9 +3349,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "<a href=\"/virtual-tour\">",
     "snippet_shape": "",
     "representative_selector": "<a href=\"/virtual-tour\">",
@@ -2841,29 +3361,198 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
-    "id": "cc-e4f32d74f85a",
+    "id": "cc-19c608daabd2",
     "engine_key": "alfa",
-    "rule_id": "sia-r64",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 3.5,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 3.5,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 5,
+    "action_score": 2.8,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 8,
+    "instances": 13,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 14,
+    "action_score": 2.06,
+    "estimated_fix_impact": {
+     "findings": 13,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~13 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "id": "cc-f8e079cd687f",
+    "engine_key": "alfa",
+    "rule_id": "sia-r78",
     "severity": "Moderate",
     "rule_pages_affected": 1,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "<h2>",
+    "selector_path": "<h3>",
     "snippet_shape": "",
-    "representative_selector": "<h2>",
+    "representative_selector": "<h3>",
     "representative_snippet": null,
     "design_components": [],
     "drift": false,
@@ -2877,7 +3566,67 @@
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
+    "id": "cc-dc4046f0700e",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 13,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
+    "snippet_shape": "h4:aria",
+    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 1.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Translocation of a gut pathobiont ",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 14,
+    "action_score": 1.29,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities"
     ]
    },
    {
@@ -2885,9 +3634,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 14,
+    "pages_affected": 5,
+    "instances": 5,
     "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
     "snippet_shape": "a:href",
     "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
@@ -2896,24 +3645,79 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 11,
-    "action_score": 1.31,
+    "distinct_components_for_rule": 14,
+    "action_score": 1.29,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
-    "id": "cc-990743262834",
+    "id": "cc-5d2cccd53c74",
     "engine_key": "alfa",
-    "rule_id": "sia-r53",
+    "rule_id": "sia-r85",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"nih-subtitle\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"nih-subtitle\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
+    "id": "cc-fd903397889b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r85",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"nih-slogan\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"nih-slogan\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
+    "id": "cc-8b5b40b39985",
+    "engine_key": "alfa",
+    "rule_id": "sia-r64",
     "severity": "Moderate",
     "rule_pages_affected": 2,
     "pages_affected": 1,
@@ -2934,7 +3738,7 @@
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
     ]
    },
    {
@@ -2942,7 +3746,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 6,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<h4 class=\"usa-accordion__heading\">",
@@ -2965,106 +3769,23 @@
     ]
    },
    {
-    "id": "cc-7593579d1f63",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 3,
-    "instances": 4,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.98,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~4 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
-    ]
-   },
-   {
-    "id": "cc-61c26a3768ea",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h3:nth-child(*)",
-    "snippet_shape": "h3:",
-    "representative_selector": "h3:nth-child(4)",
-    "representative_snippet": "<h3>What</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.8,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
-    ]
-   },
-   {
-    "id": "cc-10240c1aa126",
+    "id": "cc-e4f32d74f85a",
     "engine_key": "alfa",
-    "rule_id": "sia-r62",
+    "rule_id": "sia-r64",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 2,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "selector_path": "<h2>",
     "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_selector": "<h2>",
     "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.67,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
-    ]
-   },
-   {
-    "id": "cc-7ed9dc818893",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.67,
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3075,11 +3796,149 @@
     ]
    },
    {
+    "id": "cc-ad7c1fbc82f1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 2,
+    "instances": 3,
+    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33811065/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining"
+    ]
+   },
+   {
+    "id": "cc-10240c1aa126",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd"
+    ]
+   },
+   {
+    "id": "cc-61c26a3768ea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 13,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(4)",
+    "representative_snippet": "<h3>What</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
+    ]
+   },
+   {
+    "id": "cc-eba2717659a0",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 13,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article[data-history-node-id=\"22136\"] > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
+    "id": "cc-50d6944a3868",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(16) > a[href=\"/\"]",
+    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 14,
+    "action_score": 0.51,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
     "id": "cc-0975fb981253",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3090,8 +3949,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.65,
+    "distinct_components_for_rule": 14,
+    "action_score": 0.51,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -3103,11 +3962,38 @@
     ]
    },
    {
+    "id": "cc-d432f0651242",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"nih-subtitle\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"nih-subtitle\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.5,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
     "id": "cc-b4aea9b8408e",
     "engine_key": "axe-core",
     "rule_id": "empty-heading",
     "severity": "Minor",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 3,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "h3:nth-child(*)",
@@ -3118,8 +4004,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 3,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3130,11 +4016,65 @@
     ]
    },
    {
+    "id": "cc-b434d7406f26",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article[data-history-node-id=\"22136\"] > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
+    "id": "cc-a18bebf652ae",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.cc.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.cc.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
     "id": "cc-c7e1187668ec",
     "engine_key": "axe-core",
     "rule_id": "empty-heading",
     "severity": "Minor",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 3,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".field__item:nth-child(*) > h2",
@@ -3145,8 +4085,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 2,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 3,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3157,30 +4097,84 @@
     ]
    },
    {
-    "id": "cc-c3982f3f2935",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
+    "id": "cc-7ed9dc818893",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29590047\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Translocation of a gut pathobiont ",
+    "selector_path": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"http://history.nih.gov/research/sources_legislative_chronology.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity"
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-a8a38bf8d708",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(1)",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32902588/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Trends in Blood Pressure Control Amon",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining"
+    ]
+   },
+   {
+    "id": "cc-0b473cc478cf",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(6)",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32902581/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Obesity and Hypertension in the Time ",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining"
     ]
    },
    {
@@ -3188,7 +4182,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > .mailto[href=\"mailto:niaidnews@niaid.nih.gov\"][data-extlink=\"\"]",
@@ -3199,8 +4193,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3215,7 +4209,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[href$=\"niaid.nih.gov/\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
@@ -3226,35 +4220,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis"
-    ]
-   },
-   {
-    "id": "cc-50d6944a3868",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(16) > a[href=\"/\"]",
-    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3269,7 +4236,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
@@ -3280,8 +4247,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3292,11 +4259,38 @@
     ]
    },
    {
+    "id": "cc-7c3f862e8037",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href$=\"cc.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(12) > a[href$=\"cc.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.cc.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">https://www.cc.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
+    ]
+   },
+   {
     "id": "cc-2e09cc43fb39",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3307,8 +4301,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3323,7 +4317,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "span > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3334,8 +4328,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3350,7 +4344,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3361,8 +4355,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 11,
-    "action_score": 0.33,
+    "distinct_components_for_rule": 14,
+    "action_score": 0.26,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3375,23 +4369,23 @@
   ],
   "top_actions": [
    {
-    "id": "cc-c522046e8174",
+    "id": "cc-340e0be35f96",
     "engine_key": "axe-core",
-    "rule_id": "region",
+    "rule_id": "landmark-unique",
     "severity": "Moderate",
     "rule_pages_affected": 8,
     "pages_affected": 8,
     "instances": 8,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "distinct_components_for_rule": 1,
+    "action_score": 19.2,
     "estimated_fix_impact": {
      "findings": 8,
      "pages": 8,
@@ -3399,9 +4393,49 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
+     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
+     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 16.8,
+    "estimated_fix_impact": {
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
      "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
      "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
      "https://www.nih.gov/nih-style-guide/autism",
@@ -3413,9 +4447,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -3423,21 +4457,60 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
      "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
      "https://www.nih.gov/news-events/news-releases/nih-experts-call-transformative-research-approach-end-tuberculosis",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia",
+     "https://www.nih.gov/nih-style-guide/autism",
+     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14,
+    "estimated_fix_impact": {
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -3471,71 +4544,13 @@
     ]
    },
    {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 7.2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
-     "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
-    ]
-   },
-   {
-    "id": "cc-cffcfd807590",
-    "engine_key": "alfa",
-    "rule_id": "sia-r61",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
-    "snippet_shape": "",
-    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
-     "https://www.nih.gov/nih-style-guide/autism",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
-    ]
-   },
-   {
     "id": "cc-cd5f617ba5c1",
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -3545,14 +4560,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 7,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -3562,9 +4581,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -3574,16 +4593,51 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 7,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 5,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center"
     ]
    },
    {
@@ -3591,9 +4645,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 13,
+    "pages_affected": 8,
+    "instances": 8,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -3602,46 +4656,22 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2.4,
+    "distinct_components_for_rule": 4,
+    "action_score": 4.8,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/blood-test-may-detect-myalgic-encephalomyelitis/chronic-fatigue-syndrome",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://www.nih.gov/news-events/nih-research-matters/quick-test-could-help-reduce-dementia-care-disparities",
      "https://www.nih.gov/news-events/nih-research-matters/prevention-screening-drive-drop-cancer-deaths",
      "https://nih.gov/news-events/nih-research-matters/severe-cte-clearly-linked-dementia"
-    ]
-   },
-   {
-    "id": "cc-dc4046f0700e",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
-    "snippet_shape": "h4:aria",
-    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2.4,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
    },
    {
@@ -3649,9 +4679,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -3661,14 +4691,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4.67,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
+     "https://www.nih.gov/news-events/nih-research-matters/study-finds-link-between-red-hair-pain-threshold",
+     "https://nih.gov/news-events/nih-research-matters/diagnosing-copd",
+     "https://www.nih.gov/news-events/nih-research-matters/high-blood-pressure-awareness-treatment-declining",
+     "https://nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/nih-style-guide/autism",
      "https://www.nih.gov/about-nih/nih-almanac/legislative-chronology"
     ]
@@ -3680,6 +4714,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 1650,
- "pagesSucceeded": 11
+ "pagesAttempted": 2550,
+ "pagesSucceeded": 17
 }
