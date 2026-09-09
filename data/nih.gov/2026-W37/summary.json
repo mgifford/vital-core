@@ -1,28 +1,28 @@
 {
  "domain": "nih.gov",
  "week": "2026-W37",
- "generatedAt": "2026-09-08T16:52:19.751Z",
- "pagesScanned": 1347,
- "pagesAudited": 8,
+ "generatedAt": "2026-09-09T16:55:19.977Z",
+ "pagesScanned": 2247,
+ "pagesAudited": 14,
  "coverage": {
-  "sustainability": 110,
-  "axe": 8,
-  "alfa": 6,
-  "plain-language": 5,
-  "resources": 8,
-  "standards": 6,
+  "sustainability": 210,
+  "axe": 14,
+  "alfa": 11,
+  "plain-language": 10,
+  "resources": 14,
+  "standards": 10,
   "tech": 4
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 62,
-  "pagesWithViolations": 8,
-  "pagesScanned": 8,
+  "violationTotal": 113,
+  "pagesWithViolations": 14,
+  "pagesScanned": 14,
   "medianViolations": 8,
   "rules": {
    "heading-order": {
-    "count": 8,
-    "pages": 8,
+    "count": 14,
+    "pages": 14,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -30,13 +30,37 @@
      "best-practice"
     ],
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 1
      },
      {
@@ -70,35 +94,35 @@
     ],
     "instances": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      },
      {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45556\">\n          Roster\n        </button>\n      </h4>"
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      },
      {
-      "url": "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      }
     ]
    },
    "landmark-unique": {
-    "count": 6,
-    "pages": 6,
+    "count": 12,
+    "pages": 12,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -106,13 +130,37 @@
      "best-practice"
     ],
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 1
      },
      {
@@ -138,35 +186,35 @@
     ],
     "instances": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-      "target": "#block-nih2-uswds-search",
-      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      }
     ]
    },
    "link-in-text-block": {
-    "count": 31,
-    "pages": 8,
+    "count": 58,
+    "pages": 14,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -175,13 +223,37 @@
      "wcag141"
     ],
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 4
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 5
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 6
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 4
      },
      {
@@ -215,6 +287,21 @@
     ],
     "instances": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32646997/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Blood factors transfer beneficial eff"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "p:nth-child(4) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "p:nth-child(4) > a:nth-child(3)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
       "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/39333316/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">SARS-CoV-2-specific plasma cells are "
@@ -223,27 +310,12 @@
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "p:nth-child(4) > a:nth-child(2)",
       "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-      "target": "p:nth-child(4) > a:nth-child(3)",
-      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
-      "html": "<a href=\"https://www.acd.od.nih.gov/working-groups/brain.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Working Group</a>"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
      }
     ]
    },
    "region": {
-    "count": 16,
-    "pages": 8,
+    "count": 28,
+    "pages": 14,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -251,13 +323,37 @@
      "best-practice"
     ],
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 2
      },
      {
@@ -291,6 +387,16 @@
     ],
     "instances": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
@@ -301,17 +407,7 @@
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": ".usa-alert",
-      "html": "<div class=\"usa-alert\">"
-     },
-     {
-      "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-      "target": "#system-breadcrumb",
-      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      }
@@ -347,24 +443,44 @@
   }
  },
  "alfa": {
-  "failedTotal": 623,
-  "pagesWithFailures": 6,
-  "pagesScanned": 6,
-  "medianFailures": 93,
+  "failedTotal": 1110,
+  "pagesWithFailures": 11,
+  "pagesScanned": 11,
+  "medianFailures": 95,
   "rules": {
    "sia-r66": {
-    "count": 342,
-    "pages": 6,
+    "count": 613,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 53
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "instances": 52
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 58
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 58
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 49
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+      "instances": 53
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
@@ -389,44 +505,64 @@
     ],
     "instances": [
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "text: \"Health Information\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "text: \"Grants & Funding\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "text: \"Health Information\"",
       "html": null
      }
     ]
    },
    "sia-r53": {
-    "count": 6,
-    "pages": 6,
+    "count": 11,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 1
      },
      {
@@ -452,44 +588,64 @@
     ],
     "instances": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "<h3>",
+      "html": null
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "<h3>",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": "<h3>",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
       "target": "<h3>",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
       "target": "<h3>",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-      "target": "<h3 class=\"usa-card__heading\">",
       "html": null
      }
     ]
    },
    "sia-r73": {
-    "count": 18,
-    "pages": 6,
+    "count": 33,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 3
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 3
      },
      {
@@ -515,44 +671,64 @@
     ],
     "instances": [
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      }
     ]
    },
    "sia-r62": {
-    "count": 12,
-    "pages": 6,
+    "count": 23,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 2
      },
      {
@@ -577,6 +753,16 @@
      }
     ],
     "instances": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32646997/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -588,34 +774,44 @@
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-      "target": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/35168246/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
      }
     ]
    },
    "sia-r18": {
-    "count": 12,
-    "pages": 6,
+    "count": 22,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 2
      },
      {
@@ -641,6 +837,16 @@
     ],
     "instances": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
@@ -651,34 +857,44 @@
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-      "target": "@aria-label=\"Descripción de la agencia\"",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
      }
     ]
    },
    "sia-r61": {
-    "count": 6,
-    "pages": 6,
+    "count": 11,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 1
      },
      {
@@ -704,44 +920,64 @@
     ],
     "instances": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      }
     ]
    },
    "sia-r57": {
-    "count": 24,
-    "pages": 6,
+    "count": 44,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 4
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 4
      },
      {
@@ -767,45 +1003,65 @@
     ],
     "instances": [
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      }
     ]
    },
    "sia-r111": {
-    "count": 203,
-    "pages": 6,
+    "count": 353,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
     ],
     "affectedPages": [
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+      "instances": 29
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "instances": 28
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "instances": 34
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+      "instances": 33
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+      "instances": 25
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+      "instances": 29
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
@@ -830,27 +1086,27 @@
     ],
     "instances": [
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "url": "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
       "target": "<a href=\"/virtual-tour\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+      "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
       "html": null
      }
@@ -859,12 +1115,12 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 79,
+  "uniqueIssues": 143,
   "consensus": 0,
-  "axeOnly": 31,
-  "alfaOnly": 48,
-  "rawAxe": 31,
-  "rawAlfa": 48,
+  "axeOnly": 55,
+  "alfaOnly": 88,
+  "rawAxe": 55,
+  "rawAlfa": 88,
   "byKey": {
    "axe-core:heading-order": {
     "actRuleId": null,
@@ -872,7 +1128,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 14,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -881,7 +1137,7 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 6,
+    "pages": 12,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -890,7 +1146,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 14,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -899,7 +1155,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 14,
     "engines": "axe"
    },
    "act:5c01ea": {
@@ -910,7 +1166,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 7,
+    "pages": 12,
     "engines": "both"
    },
    "alfa:sia-r66": {
@@ -919,7 +1175,7 @@
     "alfaRules": [
      "sia-r66"
     ],
-    "pages": 6,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r53": {
@@ -928,7 +1184,7 @@
     "alfaRules": [
      "sia-r53"
     ],
-    "pages": 6,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r73": {
@@ -937,7 +1193,7 @@
     "alfaRules": [
      "sia-r73"
     ],
-    "pages": 6,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r62": {
@@ -946,7 +1202,7 @@
     "alfaRules": [
      "sia-r62"
     ],
-    "pages": 6,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r61": {
@@ -955,7 +1211,7 @@
     "alfaRules": [
      "sia-r61"
     ],
-    "pages": 6,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r57": {
@@ -964,7 +1220,7 @@
     "alfaRules": [
      "sia-r57"
     ],
-    "pages": 6,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r111": {
@@ -973,35 +1229,83 @@
     "alfaRules": [
      "sia-r111"
     ],
-    "pages": 6,
+    "pages": 11,
     "engines": "alfa"
    }
   }
  },
  "sustainability": {
-  "pages": 110,
-  "medianBytes": 63176,
-  "meanBytes": 78075,
+  "pages": 210,
+  "medianBytes": 63177,
+  "meanBytes": 70981,
   "medianRequests": 6,
-  "totalCo2g": 1.28,
-  "meanCo2g": 0.0116,
-  "totalEnergyWh": 2.58,
-  "meanEnergyWh": 0.0235
+  "totalCo2g": 2.22,
+  "meanCo2g": 0.0106,
+  "totalEnergyWh": 4.48,
+  "meanEnergyWh": 0.0213
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 11,
+  "total": 17,
   "byType": {
-   "image": 6,
+   "image": 12,
    "pdf": 5
   },
   "list": [
+   {
+    "url": "https://nih.gov/sites/default/files/2025-03/20200721-exercise.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
    {
     "url": "https://nih.gov/sites/default/files/2025-03/20241029-bone-marrow_0.jpeg",
     "type": "image",
     "pages": 1,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-08/20260825-dementia.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-08/20260825-alzheimer.jpeg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-03/20221025-hiv.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-03/20220201-convo.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-03/20200415-photo-receptors.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
     ]
    },
    {
@@ -1087,96 +1391,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 6,
+  "pagesChecked": 10,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (6/6)",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 6,
+  "pagesChecked": 10,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -1185,7 +1489,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -1194,7 +1498,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -1203,7 +1507,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -1212,21 +1516,21 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/brain/about/vision/brain-2025-scientific-vision"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
      }
     ]
    },
@@ -1234,21 +1538,21 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/brain/about/vision/brain-2025-scientific-vision"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
      }
     ]
    },
@@ -1256,7 +1560,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -1265,7 +1569,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -1274,29 +1578,29 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 6,
+    "total": 10,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
      {
       "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/brain/about/vision/brain-2025-scientific-vision"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
      },
      {
       "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
      },
      {
       "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
      }
     ]
    },
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 6,
-    "total": 6,
+    "pass": 10,
+    "total": 10,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -1305,55 +1609,159 @@
   "offline": null
  },
  "security": null,
- "publicInterest": null,
+ "publicInterest": {
+  "engine": "public-interest",
+  "checkedAt": "2026-09-09T09:41:09.544Z",
+  "a11yStatement": {
+   "result": "fail",
+   "url": null,
+   "confidence": null,
+   "checkedAt": "2026-09-09T09:41:04.750Z"
+  },
+  "carbonTxt": {
+   "result": "fail",
+   "url": null,
+   "valid": false,
+   "fields": {},
+   "checkedAt": "2026-09-09T09:41:04.752Z"
+  },
+  "greenWebFoundation": {
+   "result": "fail",
+   "green": false,
+   "hostedBy": null,
+   "url": "https://api.thegreenwebfoundation.org/greencheck/nih.gov",
+   "checkedAt": "2026-09-09T09:41:04.753Z"
+  },
+  "sitemaps": {
+   "xml": {
+    "found": false,
+    "url": null
+   },
+   "human": {
+    "found": false,
+    "url": null
+   },
+   "checkedAt": "2026-09-09T09:41:04.754Z"
+  }
+ },
  "plainLanguage": {
-  "pagesChecked": 5,
-  "pagesScored": 4,
-  "medianWordsPerPage": 714,
-  "medianReadingEase": 42,
-  "medianGrade": 13,
+  "pagesChecked": 10,
+  "pagesScored": 9,
+  "medianWordsPerPage": 759,
+  "medianReadingEase": 47.5,
+  "medianGrade": 11.8,
   "topUnexplainedAcronyms": [
    {
     "acronym": "NIH",
-    "pages": 5,
+    "pages": 9,
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation"
     ]
    },
    {
     "acronym": "PMID",
+    "pages": 7,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation"
+    ]
+   },
+   {
+    "acronym": "JH",
     "pages": 3,
     "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
     ]
    },
    {
     "acronym": "COVID",
-    "pages": 2,
+    "pages": 3,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
     ]
    },
    {
     "acronym": "SARS",
-    "pages": 2,
+    "pages": 3,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
     ]
    },
    {
     "acronym": "DC",
-    "pages": 2,
+    "pages": 3,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+    ]
+   },
+   {
+    "acronym": "AB",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
+    ]
+   },
+   {
+    "acronym": "JR",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "acronym": "AK",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+    ]
+   },
+   {
+    "acronym": "DA",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+    ]
+   },
+   {
+    "acronym": "CK",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation"
+    ]
+   },
+   {
+    "acronym": "KM",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+    ]
+   },
+   {
+    "acronym": "WR",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
     ]
    },
@@ -1366,85 +1774,157 @@
     ]
    },
    {
-    "acronym": "IT",
+    "acronym": "GPLD",
     "pages": 1,
     "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "acronym": "NS",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "acronym": "MC",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "acronym": "PA",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "acronym": "FE",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "acronym": "COV",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "acronym": "MERS",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "acronym": "ACTT",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "acronym": "JH",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
     ]
    }
   ],
   "topMisspellings": [
    {
     "word": "doi",
-    "pages": 3,
+    "pages": 6,
     "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury"
     ]
    },
    {
     "word": "CoV",
+    "pages": 3,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+    ]
+   },
+   {
+    "word": "Shutterstock",
+    "pages": 3,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "word": "Tianna",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury"
+    ]
+   },
+   {
+    "word": "Hicklin",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury"
+    ]
+   },
+   {
+    "word": "Contie",
     "pages": 2,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
+    ]
+   },
+   {
+    "word": "Grossman",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation"
+    ]
+   },
+   {
+    "word": "FatCamera",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Villeda",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "hippocampal",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "neurogenesis",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Bieri",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Diaz",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Schroer",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Gontier",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Casaletto",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "aaw",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Hillblom",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
+   },
+   {
+    "word": "Benioff",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
     ]
    },
    {
@@ -1483,136 +1963,17 @@
     ]
    },
    {
-    "word": "Contie",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
     "word": "Hentenaar",
     "pages": 1,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "Solano",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "Haddad",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "Castrillon",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "Runnstrom",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "Lamothe",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "Lonial",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "Sanz",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
-   },
-   {
-    "word": "remdesivir",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "micrograph",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "Remdesivir",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "investigational",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "wasn",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "baricitinib",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "Fauci",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "Microneedle",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
-    ]
-   },
-   {
-    "word": "Covid",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
     ]
    }
   ]
  },
  "lighthouse": null,
  "linkCheck": {
-  "brokenCount": 17,
+  "brokenCount": 19,
   "broken": [
    {
     "url": "https://www.nia.nih.gov/health/exercise-physical-activity",
@@ -1749,10 +2110,31 @@
     "foundOn": [
      "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
     ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/alzheimers-and-dementia",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "url": "http://www.nia.nih.gov/health/exercise-physical-activity",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline"
+    ]
    }
   ]
  },
  "errorPages": [
+  {
+   "url": "https://nih.gov/news-events/news-releases/early-stimulation-improves-performance-bioengineered-human-heart-cells",
+   "status": 403
+  },
   {
    "url": "https://nih.gov/news-events/news-releases/hhs-doubles-ai-backed-childhood-cancer-research-funding",
    "status": 403
@@ -1786,6 +2168,14 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/brain-initiative/research/tools-technologies-brain-cells-circuits/brain-initiative-cell-census-network",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-funded-clinical-trial-links-frequent-anger-increased-risk-heart-disease",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/news-events/nih-research-matters/improving-parkinsons-disease-treatment",
    "status": 403
   },
@@ -1794,11 +2184,35 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/cell-atlases-give-detailed-views-human-organs",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/nih-almanac/michael-lauer-md",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/news-events/news-releases/brain-scan-guided-emergency-stroke-treatment-can-save-more-lives",
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/about-nih/impact-nih-research/improving-health/infant-maternal-health",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/brain-initiative/about/multi-council-working-group/brain-multi-council-working-group-mcwg-meeting-august-2026",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/heart-disease-stroke",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/nih-launches-home-test-treat-pilot-covid-19-telehealth-program",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/nih-style-guide/nih",
    "status": 403
   },
   {
@@ -1810,47 +2224,11 @@
    "status": 403
   },
   {
+   "url": "https://nih.gov/news-events/nih-research-matters/brain-stimulation-can-affect-memory-older-adults",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/blood-tests-show-promise-early-alzheimers-diagnosis",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/2024-nih-research-highlights-human-health-advances",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-july-17-2014",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/about-nih/nih-almanac/lasker-awards",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/funding/idea-states-pediatric-clinical-trials-network-data-coordinating-operations-center-foa",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/faster-better-images-cutting-edge-microscopes",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/about-nih/voices-nih-community/how-much-longer-do-i-have",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/about-nih/what-we-do/nih-almanac",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/news-releases/oral-small-molecule-glp-1-drugs-penetrate-deep-into-brain-suppress-cravings",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/peanut-consumption-infancy-lowers-peanut-allergy",
    "status": 403
   }
  ],
@@ -2110,15 +2488,15 @@
   }
  ],
  "images": {
-  "pagesScanned": 8,
-  "totalImages": 117,
-  "uniqueImages": 20,
+  "pagesScanned": 14,
+  "totalImages": 207,
+  "uniqueImages": 26,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 117,
+  "withAlt": 207,
   "altVerdicts": {
-   "GOOD": 17,
-   "SUSPICIOUS": 1,
+   "GOOD": 22,
+   "SUSPICIOUS": 2,
    "TOO_SHORT": 2
   }
  },
@@ -2371,22 +2749,117 @@
   },
   "associations": []
  },
- "thirdParty": null,
+ "thirdParty": {
+  "pagesScanned": 1,
+  "vendors": [
+   {
+    "origin": "googletagmanager.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 620234,
+    "medianDurationMs": 333,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "origin": "crazyegg.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 68389,
+    "medianDurationMs": 185,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "origin": "cloudflareinsights.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 30294,
+    "medianDurationMs": 43,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "origin": "digitalgov.gov",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 30230,
+    "medianDurationMs": 17,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "origin": "google-analytics.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 20805,
+    "medianDurationMs": 70,
+    "medianRequests": 5,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "origin": "pinterest.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 18901,
+    "medianDurationMs": 157,
+    "medianRequests": 3,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "origin": "verint-cdn.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 106,
+    "medianDurationMs": 112,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   }
+  ]
+ },
  "componentClusters": {
   "design_system": "none",
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 35,
+  "total_clusters": 40,
   "clusters": [
    {
     "id": "cc-340e0be35f96",
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 12,
+    "pages_affected": 12,
+    "instances": 12,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -2394,16 +2867,22 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 14.4,
+    "action_score": 28.8,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 12,
+     "pages": 12,
+     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
@@ -2416,9 +2895,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -2426,16 +2905,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 12,
+    "action_score": 22,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -2448,9 +2932,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -2458,16 +2942,22 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
@@ -2482,9 +2972,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -2492,16 +2982,22 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
@@ -2516,9 +3012,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -2526,16 +3022,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 6,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -2548,9 +3049,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -2558,16 +3059,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 6,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -2580,9 +3086,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 5,
-    "instances": 5,
+    "rule_pages_affected": 11,
+    "pages_affected": 10,
+    "instances": 10,
     "selector_path": "<h3>",
     "snippet_shape": "",
     "representative_selector": "<h3>",
@@ -2590,16 +3096,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 5,
+    "action_score": 10,
     "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+     "findings": 10,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -2611,9 +3122,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 14,
+    "pages_affected": 12,
+    "instances": 12,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -2621,20 +3132,470 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 4.8,
+    "action_score": 9.6,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 12,
+     "pages": 12,
+     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-19c608daabd2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
      "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
     ]
    },
@@ -2666,429 +3627,13 @@
     ]
    },
    {
-    "id": "cc-8e242a862e3a",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-992ed06f0f6c",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "text: \"health information\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Health Information\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-0bad39ad282b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "text: \"grants & funding\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Grants & Funding\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-19c608daabd2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "<p class=\"usa-banner__header-text\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-banner__header-text\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-56d16a8447b2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-e5e84016a2ec",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-b3dd9d9563fe",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "text: \"nih websites are changing\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH Websites Are Changing\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-f78cd49f3540",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-aba72eba36dd",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-7c67d227d1f8",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "snippet_shape": "",
-    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-3c8788d59ab6",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "snippet_shape": "",
-    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-b39e5ed2e696",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "<a href=\"/virtual-tour\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"/virtual-tour\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-8cbcff6b68da",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 4,
-    "action_score": 3,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
     "id": "cc-7593579d1f63",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 5,
-    "instances": 9,
+    "rule_pages_affected": 14,
+    "pages_affected": 10,
+    "instances": 18,
     "selector_path": "p:nth-child(*) > a:nth-child(*)",
     "snippet_shape": "a:href",
     "representative_selector": "p:nth-child(4) > a:nth-child(2)",
@@ -3096,16 +3641,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 7,
-    "action_score": 2.57,
+    "likely_source": "template",
+    "distinct_components_for_rule": 9,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~9 finding(s) on 5 page(s)."
+     "findings": 18,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~18 finding(s) on 10 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -3117,29 +3667,70 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 5,
-    "instances": 6,
+    "rule_pages_affected": 14,
+    "pages_affected": 9,
+    "instances": 10,
     "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/39333316/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">SARS-CoV-2-specific plasma cells are ",
+    "representative_selector": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32646997/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Blood factors transfer beneficial eff",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 7,
-    "action_score": 2.57,
+    "distinct_components_for_rule": 9,
+    "action_score": 3.6,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~6 finding(s) on 5 page(s)."
+     "findings": 10,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~10 finding(s) on 9 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 7,
+    "action_score": 3.14,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
      "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
     ]
    },
@@ -3148,57 +3739,31 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 11,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
     "snippet_shape": "",
-    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/39333316/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32646997/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
     "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 4,
-    "action_score": 2,
+    "distinct_components_for_rule": 7,
+    "action_score": 1.71,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-0cb84ddbdf67",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 8,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 1.03,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources"
     ]
    },
    {
@@ -3206,7 +3771,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<h3 class=\"usa-card__heading\">",
@@ -3229,11 +3794,95 @@
     ]
    },
    {
+    "id": "cc-abaac791eabe",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 2,
+    "instances": 3,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(19) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.neurology.org/doi/10.1212/WN9.0000000000000152\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "id": "cc-a6e854cc83d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "li:nth-child(10) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.niddk.nih.gov/health-information/diabetes\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Diabetes </a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 14,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources"
+    ]
+   },
+   {
     "id": "cc-dc4046f0700e",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
@@ -3260,7 +3909,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".usa-card.usa-card--2col.usa-card--filled:nth-child(*) > .usa-card__container > .usa-card__header > h3",
@@ -3287,7 +3936,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
@@ -3298,8 +3947,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.51,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3314,7 +3963,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3325,8 +3974,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.51,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3341,7 +3990,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a",
@@ -3352,8 +4001,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.51,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3368,7 +4017,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 8,
+    "rule_pages_affected": 14,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
@@ -3379,8 +4028,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 7,
-    "action_score": 0.51,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3391,11 +4040,92 @@
     ]
    },
    {
+    "id": "cc-73cb402f3c8e",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" target=\"_blank\" class=\"ext\" data-extlink=\"\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/42490474/\" target=\"_blank\" class=\"ext\" data-extlink=\"\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.29,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "id": "cc-d3e4ae768e2f",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.neurology.org/doi/#.#/wn9.#\" target=\"_blank\" class=\"ext\" data-extlink=\"\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.neurology.org/doi/10.1212/WN9.0000000000000152\" target=\"_blank\" class=\"ext\" data-extlink=\"\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.29,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+    ]
+   },
+   {
+    "id": "cc-82c46c2737a4",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://dx.doi.org/#.#/s41586-#-#-#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://dx.doi.org/10.1038/s41586-020-2201-4\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 7,
+    "action_score": 0.29,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
+    ]
+   },
+   {
     "id": "cc-10240c1aa126",
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -3406,8 +4136,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.5,
+    "distinct_components_for_rule": 7,
+    "action_score": 0.29,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3422,7 +4152,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/paralyzed-men-gain-movement-without-surgery\">",
@@ -3433,8 +4163,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.5,
+    "distinct_components_for_rule": 7,
+    "action_score": 0.29,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3451,9 +4181,9 @@
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 12,
+    "pages_affected": 12,
+    "instances": 12,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -3461,16 +4191,22 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 14.4,
+    "action_score": 28.8,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 12,
+     "pages": 12,
+     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
@@ -3483,9 +4219,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -3493,16 +4229,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 12,
+    "action_score": 22,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -3515,9 +4256,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -3525,16 +4266,22 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
@@ -3549,9 +4296,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 14,
+    "pages_affected": 14,
+    "instances": 14,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -3559,16 +4306,22 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 9.6,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 14,
+     "pages": 14,
+     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
@@ -3583,9 +4336,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -3593,16 +4346,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 6,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -3615,9 +4373,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -3625,16 +4383,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 6,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -3647,9 +4410,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 5,
-    "instances": 5,
+    "rule_pages_affected": 11,
+    "pages_affected": 10,
+    "instances": 10,
     "selector_path": "<h3>",
     "snippet_shape": "",
     "representative_selector": "<h3>",
@@ -3657,16 +4420,21 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 5,
+    "action_score": 10,
     "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+     "findings": 10,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -3678,9 +4446,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 14,
+    "pages_affected": 12,
+    "instances": 12,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -3688,16 +4456,22 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 4.8,
+    "action_score": 9.6,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 12,
+     "pages": 12,
+     "statement": "Fix one place, resolve ~12 finding(s) on 12 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
@@ -3706,40 +4480,13 @@
     ]
    },
    {
-    "id": "cc-3305fcaaecb5",
-    "engine_key": "axe-core",
-    "rule_id": "aria-allowed-attr",
-    "severity": "Critical",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".usa-accordion--bordered",
-    "snippet_shape": "div:aria",
-    "representative_selector": ".usa-accordion--bordered",
-    "representative_snippet": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
-    ]
-   },
-   {
     "id": "cc-8e242a862e3a",
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 6,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -3747,16 +4494,58 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 4,
+    "action_score": 7.33,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
+     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
+     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
+     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
+     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -3771,6 +4560,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 1800,
- "pagesSucceeded": 10
+ "pagesAttempted": 2700,
+ "pagesSucceeded": 16
 }
