@@ -1,0 +1,71 @@
+{
+ "runId": "2026-09-09T12-18-29-510Z-31574e",
+ "week": "2026-W37",
+ "domain": "www.medicare.gov",
+ "startedAt": "2026-09-09T12:18:30.838Z",
+ "scanned": [
+  "622290daddcacb68",
+  "1413de906343f125",
+  "1d46627d35c3a245",
+  "d0a432c944b004bb",
+  "b4fd6025d208af18",
+  "a800f5e6a774844e",
+  "36b8d5c13da94244"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 148,
+  "checked": 148,
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "https://www.cms.gov/medicare-coverage-database/search.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.medicare.gov/coverage"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 7,
+  "alfa": 4,
+  "plain-language": 3,
+  "resources": 7,
+  "images": 7,
+  "link-check": 7,
+  "third-party": 2,
+  "standards": 2,
+  "public-interest": 1,
+  "lighthouse": 1,
+  "sustainability": 1
+ },
+ "tally": {
+  "ok": 7,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-09-09T12:20:40.165Z"
+}
