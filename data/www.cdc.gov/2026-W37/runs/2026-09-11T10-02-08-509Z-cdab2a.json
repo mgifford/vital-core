@@ -1,0 +1,503 @@
+{
+ "runId": "2026-09-11T10-02-08-509Z-cdab2a",
+ "week": "2026-W37",
+ "domain": "www.cdc.gov",
+ "startedAt": "2026-09-11T10:02:09.201Z",
+ "scanned": [
+  "b8c18fef91bc2752",
+  "59b98a5a969821f5",
+  "06f15c53ea79e7ce",
+  "9b5fc0cfa1e418e1",
+  "32bb37babb7c4796",
+  "8c97c42f33910526",
+  "30617ae147c47588",
+  "4a5db58ef11f8ed8",
+  "a8d4e5a73689ae67",
+  "9613866554f875b8",
+  "99c67cd92de05837",
+  "ad879d8cdcb9ae81",
+  "521f699d2b09ef4c",
+  "b13bf9b8c83de1b5",
+  "dd79714c1cee1671",
+  "b3a3478907ccefbe",
+  "d9e8739482cdcc04",
+  "cb1dffd0dbf49377",
+  "02e618a8c231b704",
+  "78bc655ccc6ae4a5",
+  "f5c2436e085593af",
+  "26ac331c96a8437d",
+  "b630ab34c4a10e5d",
+  "3166dda7b9952094",
+  "19f0195b33abf837",
+  "60dd1aaedcb21780",
+  "1d9b852e7b66914e",
+  "a617a2771657d760",
+  "e419e4c83c6faa79",
+  "98d10320ad582e01",
+  "575eb93334afde02",
+  "17c1170c66417cd3",
+  "68e1761d364f92d2"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 1064,
+  "checked": 500,
+  "brokenCount": 42,
+  "broken": [
+   {
+    "url": "https://www.cdc.gov/dpdx/diagnosticprocedures/blood/special.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case291.html",
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case306.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/dpdx/diagnosticprocedures/serum/tests.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case291.html",
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case306.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/dpdx/diagnosticprocedures/other/vaginalswabs.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case291.html",
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case306.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fdpdx%2Fmonthlycasestudies%2F2011%2Fcase291.html&text=Case%20%23291%20%E2%80%93%20January%2C%202011",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case291.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/medialibrary/index.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case291.html",
+     "http://www.cdc.gov/prams/php/data-research/codebooks-phase-8.html",
+     "http://www.cdc.gov/lyme/communication-resources/social-media-graphics.html",
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-10-30-2020.html",
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-12-11-2024.html",
+     "http://www.cdc.gov/lyme/hcp/clinical-care/index.html",
+     "https://www.cdc.gov/cancer-survivors/es/patients/be-prepared-for-an-emergency.html",
+     "http://www.cdc.gov/radiation-health/data-research/facts-stats/airport-security-screening.html",
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case306.html",
+     "https://www.cdc.gov/oropouche/data-maps/current-year-data.html",
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html",
+     "http://www.cdc.gov/sickle-cell/complications/pulmonary-hypertension-high-blood-pressure-in-the-lungs.html",
+     "http://www.cdc.gov/niosh/docs/2011-141",
+     "https://www.cdc.gov/iqip/hcp/strategies/strong-vaccine-recommendation.html",
+     "http://www.cdc.gov/diabetes/diabetes-complications/recovering-from-a-diabetes-related-amputation.html",
+     "https://www.cdc.gov/dialysis-safety/hcp/data-research/index.html",
+     "https://www.cdc.gov/west-nile-virus/communication-resources/video-mosquito-bite.html",
+     "https://www.cdc.gov/mmwr/indrr_2021.html",
+     "https://www.cdc.gov/pcd/subscriptions/rss.htm",
+     "http://www.cdc.gov/fluvaxview/coverage-by-season/2023-24-pregnant-women-coverage.html",
+     "https://www.cdc.gov/nhsn/hai-report/data-tables-pediatric/index.html",
+     "http://www.cdc.gov/immunization-training/hcp/current-issues/index.html",
+     "http://www.cdc.gov/botulism/php/publications-resources/index.html",
+     "http://www.cdc.gov/vaccines/schedules/hcp/imz/adult-conditions.html",
+     "http://www.cdc.gov/media/releases/2026/cdc-provides-update-on-hantavirus-outbreak-linked-to-m-v-hondius-cruise-ship.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/emailupdates/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case291.html",
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case306.html",
+     "https://www.cdc.gov/mmwr/indrr_2021.html",
+     "https://www.cdc.gov/pcd/subscriptions/rss.htm",
+     "https://www.cdc.gov/nhsn/hai-report/data-tables-pediatric/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/rss",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case291.html",
+     "http://www.cdc.gov/prams/php/data-research/codebooks-phase-8.html",
+     "http://www.cdc.gov/lyme/communication-resources/social-media-graphics.html",
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-10-30-2020.html",
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-12-11-2024.html",
+     "http://www.cdc.gov/lyme/hcp/clinical-care/index.html",
+     "https://www.cdc.gov/cancer-survivors/es/patients/be-prepared-for-an-emergency.html",
+     "http://www.cdc.gov/radiation-health/data-research/facts-stats/airport-security-screening.html",
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case306.html",
+     "https://www.cdc.gov/oropouche/data-maps/current-year-data.html",
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html",
+     "http://www.cdc.gov/sickle-cell/complications/pulmonary-hypertension-high-blood-pressure-in-the-lungs.html",
+     "http://www.cdc.gov/niosh/docs/2011-141",
+     "https://www.cdc.gov/iqip/hcp/strategies/strong-vaccine-recommendation.html",
+     "http://www.cdc.gov/diabetes/diabetes-complications/recovering-from-a-diabetes-related-amputation.html",
+     "https://www.cdc.gov/dialysis-safety/hcp/data-research/index.html",
+     "https://www.cdc.gov/west-nile-virus/communication-resources/video-mosquito-bite.html",
+     "https://www.cdc.gov/mmwr/indrr_2021.html",
+     "https://www.cdc.gov/pcd/subscriptions/rss.htm",
+     "http://www.cdc.gov/fluvaxview/coverage-by-season/2023-24-pregnant-women-coverage.html",
+     "https://www.cdc.gov/nhsn/hai-report/data-tables-pediatric/index.html",
+     "http://www.cdc.gov/immunization-training/hcp/current-issues/index.html",
+     "http://www.cdc.gov/botulism/php/publications-resources/index.html",
+     "http://www.cdc.gov/vaccines/schedules/hcp/imz/adult-conditions.html",
+     "http://www.cdc.gov/media/releases/2026/cdc-provides-update-on-hantavirus-outbreak-linked-to-m-v-hondius-cruise-ship.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fprams%2Fphp%2Fdata-research%2Fcodebooks-phase-8.html&text=Phase%208%20Automated%20Research%20File%20Codebook",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/prams/php/data-research/codebooks-phase-8.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_532",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/prams/php/data-research/codebooks-phase-8.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/lyme/communication-resources/social-media-graphics.html",
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-10-30-2020.html",
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-12-11-2024.html",
+     "http://www.cdc.gov/lyme/hcp/clinical-care/index.html",
+     "http://www.cdc.gov/radiation-health/data-research/facts-stats/airport-security-screening.html",
+     "https://www.cdc.gov/oropouche/data-maps/current-year-data.html",
+     "http://www.cdc.gov/sickle-cell/complications/pulmonary-hypertension-high-blood-pressure-in-the-lungs.html",
+     "https://www.cdc.gov/iqip/hcp/strategies/strong-vaccine-recommendation.html",
+     "https://www.cdc.gov/west-nile-virus/communication-resources/video-mosquito-bite.html",
+     "http://www.cdc.gov/fluvaxview/coverage-by-season/2023-24-pregnant-women-coverage.html",
+     "http://www.cdc.gov/immunization-training/hcp/current-issues/index.html",
+     "http://www.cdc.gov/botulism/php/publications-resources/index.html",
+     "http://www.cdc.gov/vaccines/schedules/hcp/imz/adult-conditions.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Flyme%2Fcommunication-resources%2Fsocial-media-graphics.html&text=Lyme%20Disease%20Social%20Media%20Graphics",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/lyme/communication-resources/social-media-graphics.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Flead-prevention%2Fphp%2Flead-advisory-committee%2Fmeeting-10-30-2020.html&text=LEPAC%20Meeting%20-%20October%2030%2C%202020",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-10-30-2020.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Flead-prevention%2Fphp%2Flead-advisory-committee%2Fmeeting-12-11-2024.html&text=LEPAC%20Meeting%20December%2011%2C%202024",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/lead-prevention/php/lead-advisory-committee/meeting-12-11-2024.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Flyme%2Fhcp%2Fclinical-care%2Findex.html&text=Clinical%20Care%20of%20Lyme%20Disease",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/lyme/hcp/clinical-care/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fcancer-survivors%2Fes%2Fpatients%2Fbe-prepared-for-an-emergency.html&text=Est%C3%A9%20preparado%20para%20una%20emergencia",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/cancer-survivors/es/patients/be-prepared-for-an-emergency.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_9_13",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/cancer-survivors/es/patients/be-prepared-for-an-emergency.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fradiation-health%2Fdata-research%2Ffacts-stats%2Fairport-security-screening.html&text=Facts%20About%20Radiation%20from%20Airport%20Security%20Screening",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/radiation-health/data-research/facts-stats/airport-security-screening.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.do",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/PCD/issues/2010/jul/09_0033.htm",
+     "http://www.cdc.gov/pcd/issues/2005/apr/04_0112_fr.htm",
+     "https://www.cdc.gov/pcd/issues/2006/jan/05_0129_es.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/ncidod/EID/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/PCD/issues/2010/jul/09_0033.htm",
+     "http://www.cdc.gov/pcd/issues/2005/apr/04_0112_fr.htm",
+     "https://www.cdc.gov/pcd/issues/2006/jan/05_0129_es.htm"
+    ]
+   },
+   {
+    "url": "http://tools.cdc.gov/syndication/default.aspx?url=http://www.cdc.gov/pcd/issues/2010/jul/09_0033.htm",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/PCD/issues/2010/jul/09_0033.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/nccdphp/shared/pdfinfo.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/PCD/issues/2010/jul/09_0033.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/doc.do?id=0900f3ec80093c90",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/PCD/issues/2010/jul/09_0033.htm",
+     "http://www.cdc.gov/pcd/issues/2005/apr/04_0112_fr.htm",
+     "https://www.cdc.gov/pcd/issues/2006/jan/05_0129_es.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fdpdx%2Fmonthlycasestudies%2F2011%2Fcase306.html&text=Case%20%23306%20%E2%80%93%20August%2C%202011",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/dpdx/monthlycasestudies/2011/case306.html"
+    ]
+   },
+   {
+    "url": "http://www.dhhs.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "http://www.cdc.gov/PCD/issues/2010/jul/09_0033.htm",
+     "http://www.cdc.gov/pcd/issues/2005/apr/04_0112_fr.htm",
+     "https://www.cdc.gov/pcd/issues/2006/jan/05_0129_es.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Foropouche%2Fdata-maps%2Fcurrent-year-data.html&text=Oropouche%20in%20the%20United%20States",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/oropouche/data-maps/current-year-data.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/health/diseases.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/tbi",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/mmwrsrch.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "http://www.biausa.org/Pages/biam2005.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/help.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/contact.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/privacy.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/disclaimer.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5408a5.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/about/about_brfss.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/about/brfss_today.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/annual_data/annual_1988.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/annual_data/annual_1989.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/annual_data/annual_1986.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/annual_data/annual_1985.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/annual_data/annual_1987.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/brfss/annual_data/annual_1984.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/brfss/acbs/2012/prevalence_tables/table15.html"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "sustainability": 3,
+  "axe": 31,
+  "alfa": 8,
+  "plain-language": 17,
+  "resources": 31,
+  "images": 31,
+  "link-check": 31,
+  "standards": 15,
+  "public-interest": 4,
+  "lighthouse": 3,
+  "security": 5,
+  "third-party": 4,
+  "deprecated-html": 6,
+  "tech": 2
+ },
+ "tally": {
+  "ok": 31,
+  "blocked": 2,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-09-11T10:13:25.443Z"
+}
