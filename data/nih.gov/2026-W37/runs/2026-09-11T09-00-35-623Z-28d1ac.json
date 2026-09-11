@@ -1,0 +1,109 @@
+{
+ "runId": "2026-09-11T09-00-35-623Z-28d1ac",
+ "week": "2026-W37",
+ "domain": "nih.gov",
+ "startedAt": "2026-09-11T09:00:36.779Z",
+ "scanned": [
+  "46ead7270a0608ad",
+  "7c9e35189b99b707",
+  "1a9c8308aac19699",
+  "0d9d6dd979110670",
+  "797b21de7f4e05bb",
+  "03982ab7fe82f074",
+  "0f7453cc84486fd1",
+  "b9411a193c48e69c",
+  "8fff9c7bcf9739ad",
+  "234a70bc1d2dd0d1",
+  "a3c032342c547715",
+  "e13dfb95cb905f4d",
+  "6122e8362e6db19a",
+  "c538a27f78eb6b3c",
+  "9f88f4153e16a74d",
+  "74dbec57c1b8063f",
+  "60174c3c0004800c",
+  "64d94c36d360a7d9",
+  "b0d469f85905ed44",
+  "6d3d23c04f9d3a77",
+  "ba89ec389e520114",
+  "b05bd5129527e4d5",
+  "20b949546c694558",
+  "3b06dfdcdb648796",
+  "8367e4d1d0ac4881",
+  "9fc88e0fac754a3a",
+  "3559cc0469c15604",
+  "c297431811d70e4c",
+  "bff1b70033fb0718",
+  "b4eab21728cb98db",
+  "6801523a924a14e5",
+  "eb4782c6716d87b4",
+  "803de06685201961",
+  "2372cfeff30fbcd9",
+  "5407f366dbf029d8",
+  "df067174069c03f5",
+  "a20ceeba944020ef",
+  "6abcdba1e16638d0"
+ ],
+ "errors": [
+  {
+   "pageId": "5283ea1edbf3c035",
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-research-establishes-new-framework-role-senescence-aging",
+   "error": "Error: page.goto: net::ERR_EMPTY_RESPONSE at http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-research-establishes-new-framework-role-senescence-aging\nCall log:\n  - navigating to \"http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-research-establishes-new-framework-role-senesce"
+  },
+  {
+   "pageId": "e9b3278f587a7bfa",
+   "url": "http://mailto:RADxInfo@nih.gov/research-training",
+   "error": "Error: page.goto: net::ERR_EMPTY_RESPONSE at http://mailto:RADxInfo@nih.gov/research-training\nCall log:\n  - navigating to \"http://mailto:RADxInfo@nih.gov/research-training\", waiting until \"load\"\n"
+  }
+ ],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 130,
+  "checked": 130,
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "http://dpcpsi.nih.gov/opa/index",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 1,
+  "plain-language": 1,
+  "resources": 1,
+  "images": 1,
+  "standards": 1,
+  "link-check": 1,
+  "sustainability": 3
+ },
+ "tally": {
+  "ok": 1,
+  "blocked": 37,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 2
+ },
+ "finishedAt": "2026-09-11T09:03:08.672Z"
+}
