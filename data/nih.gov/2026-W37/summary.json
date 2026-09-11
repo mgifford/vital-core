@@ -1,30 +1,30 @@
 {
  "domain": "nih.gov",
  "week": "2026-W37",
- "generatedAt": "2026-09-10T16:41:31.188Z",
- "pagesScanned": 3144,
- "pagesAudited": 19,
+ "generatedAt": "2026-09-11T16:46:16.391Z",
+ "pagesScanned": 3333,
+ "pagesAudited": 23,
  "coverage": {
-  "sustainability": 291,
-  "axe": 19,
+  "sustainability": 308,
+  "axe": 23,
   "alfa": 14,
-  "plain-language": 12,
-  "resources": 19,
-  "standards": 12,
+  "plain-language": 14,
+  "resources": 23,
+  "standards": 15,
   "security": 2,
-  "deprecated-html": 1,
+  "deprecated-html": 3,
   "tech": 4
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 221,
-  "pagesWithViolations": 19,
-  "pagesScanned": 19,
+  "violationTotal": 259,
+  "pagesWithViolations": 23,
+  "pagesScanned": 23,
   "medianViolations": 8,
   "rules": {
    "heading-order": {
-    "count": 17,
-    "pages": 17,
+    "count": 19,
+    "pages": 19,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -34,7 +34,7 @@
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
     ],
     "affectedPages": [
      {
@@ -43,6 +43,10 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
       "instances": 1
      },
      {
@@ -63,6 +67,10 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
       "instances": 1
      },
      {
@@ -118,6 +126,11 @@
       "html": "<h3>At a Glance</h3>"
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
@@ -126,17 +139,12 @@
       "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
-      "target": ".callout__text > h3",
-      "html": "<h3>At a Glance</h3>"
      }
     ]
    },
    "landmark-unique": {
-    "count": 14,
-    "pages": 14,
+    "count": 15,
+    "pages": 15,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -146,7 +154,7 @@
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
     ],
     "affectedPages": [
      {
@@ -155,6 +163,10 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
       "instances": 1
      },
      {
@@ -218,6 +230,11 @@
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
@@ -226,17 +243,12 @@
       "url": "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
-     },
-     {
-      "url": "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
-      "target": "#block-nih2-uswds-search",
-      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      }
     ]
    },
    "link-in-text-block": {
-    "count": 151,
-    "pages": 19,
+    "count": 177,
+    "pages": 23,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -247,7 +259,7 @@
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
     ],
     "affectedPages": [
      {
@@ -257,6 +269,10 @@
      {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
       "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+      "instances": 5
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
@@ -275,12 +291,20 @@
       "instances": 82
      },
      {
+      "url": "https://nih.gov/about-nih/nih-almanac/office-director-nih",
+      "instances": 18
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
       "instances": 4
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
       "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy",
@@ -305,6 +329,10 @@
      {
       "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
       "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials",
+      "instances": 2
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
@@ -356,8 +384,8 @@
     ]
    },
    "region": {
-    "count": 38,
-    "pages": 19,
+    "count": 46,
+    "pages": 23,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -367,7 +395,7 @@
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
     ],
     "affectedPages": [
      {
@@ -376,6 +404,10 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
       "instances": 2
      },
      {
@@ -395,11 +427,19 @@
       "instances": 2
      },
      {
+      "url": "https://nih.gov/about-nih/nih-almanac/office-director-nih",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
       "instances": 2
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
       "instances": 2
      },
      {
@@ -424,6 +464,10 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials",
       "instances": 2
      },
      {
@@ -469,15 +513,15 @@
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      }
     ]
    },
    "aria-allowed-attr": {
-    "count": 1,
-    "pages": 1,
+    "count": 2,
+    "pages": 2,
     "impact": "critical",
     "help": "Elements must only use supported ARIA attributes",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/aria-allowed-attr?application=axeAPI",
@@ -486,15 +530,25 @@
      "wcag412"
     ],
     "examplePages": [
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "instances": 1
+     },
      {
       "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
       "instances": 1
      }
     ],
     "instances": [
+     {
+      "url": "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+      "target": ".usa-accordion--bordered",
+      "html": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">"
+     },
      {
       "url": "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
       "target": ".usa-accordion--bordered",
@@ -1265,11 +1319,11 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 180,
+  "uniqueIssues": 192,
   "consensus": 0,
-  "axeOnly": 70,
+  "axeOnly": 82,
   "alfaOnly": 110,
-  "rawAxe": 70,
+  "rawAxe": 82,
   "rawAlfa": 110,
   "byKey": {
    "axe-core:heading-order": {
@@ -1278,7 +1332,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 17,
+    "pages": 19,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -1287,7 +1341,7 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 14,
+    "pages": 15,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -1296,7 +1350,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 19,
+    "pages": 23,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -1305,7 +1359,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 19,
+    "pages": 23,
     "engines": "axe"
    },
    "act:5c01ea": {
@@ -1316,7 +1370,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 15,
+    "pages": 16,
     "engines": "both"
    },
    "alfa:sia-r66": {
@@ -1385,21 +1439,22 @@
   }
  },
  "sustainability": {
-  "pages": 291,
-  "medianBytes": 63176,
-  "meanBytes": 68808,
+  "pages": 308,
+  "medianBytes": 63177,
+  "meanBytes": 68497,
   "medianRequests": 6,
-  "totalCo2g": 2.98,
+  "totalCo2g": 3.14,
   "meanCo2g": 0.0102,
-  "totalEnergyWh": 6.02,
-  "meanEnergyWh": 0.0207
+  "totalEnergyWh": 6.34,
+  "meanEnergyWh": 0.0206
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 19,
+  "total": 23,
   "byType": {
-   "image": 14,
-   "pdf": 5
+   "image": 15,
+   "pdf": 7,
+   "presentation": 1
   },
   "list": [
    {
@@ -1416,6 +1471,14 @@
     "pages": 1,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20200128-alcohol.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
     ]
    },
    {
@@ -1515,6 +1578,30 @@
     ]
    },
    {
+    "url": "https://www.nih.gov/sites/default/files/2024-12/infographic-why-researchers-different-kinds-clinical-studies.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2024-12/infographic-why-researchers-different-kinds-clinical-studies-espanol.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2024-12/why-nih-clinical-research-matters.ppt",
+    "type": "presentation",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
+    ]
+   },
+   {
     "url": "https://nih.gov/sites/default/files/2025-02/20180510-spine.jpg",
     "type": "image",
     "pages": 1,
@@ -1557,96 +1644,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 12,
+  "pagesChecked": 15,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (6/6)",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 12,
+  "pagesChecked": 15,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -1655,7 +1742,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -1664,7 +1751,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -1673,7 +1760,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -1682,7 +1769,7 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
@@ -1692,11 +1779,11 @@
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
      }
     ]
    },
@@ -1704,7 +1791,7 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
@@ -1714,11 +1801,11 @@
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
      },
      {
       "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
      }
     ]
    },
@@ -1726,7 +1813,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -1735,7 +1822,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -1744,7 +1831,7 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 12,
+    "total": 15,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
@@ -1754,19 +1841,19 @@
      },
      {
       "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
      },
      {
       "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes"
      }
     ]
    },
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 12,
-    "total": 12,
+    "pass": 15,
+    "total": 15,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -1864,15 +1951,15 @@
   }
  },
  "plainLanguage": {
-  "pagesChecked": 12,
-  "pagesScored": 11,
-  "medianWordsPerPage": 759,
-  "medianReadingEase": 47.4,
-  "medianGrade": 12.1,
+  "pagesChecked": 14,
+  "pagesScored": 13,
+  "medianWordsPerPage": 777,
+  "medianReadingEase": 43.3,
+  "medianGrade": 12.2,
   "topUnexplainedAcronyms": [
    {
     "acronym": "NIH",
-    "pages": 11,
+    "pages": 12,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
@@ -1946,6 +2033,14 @@
     ]
    },
    {
+    "acronym": "IT",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih"
+    ]
+   },
+   {
     "acronym": "CTE",
     "pages": 2,
     "examplePages": [
@@ -1959,6 +2054,14 @@
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "acronym": "DNA",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society"
     ]
    },
    {
@@ -1983,22 +2086,6 @@
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy"
-    ]
-   },
-   {
-    "acronym": "CK",
-    "pages": 2,
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
-     "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation"
-    ]
-   },
-   {
-    "acronym": "KM",
-    "pages": 2,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
     ]
    }
   ],
@@ -2063,6 +2150,14 @@
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation"
+    ]
+   },
+   {
+    "word": "investigational",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
     ]
    },
    {
@@ -2184,19 +2279,12 @@
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
     ]
-   },
-   {
-    "word": "cytometry",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines"
-    ]
    }
   ]
  },
  "lighthouse": null,
  "linkCheck": {
-  "brokenCount": 31,
+  "brokenCount": 33,
   "broken": [
    {
     "url": "https://www.nia.nih.gov/health/exercise-physical-activity",
@@ -2446,6 +2534,22 @@
     "foundOn": [
      "https://www.nih.gov/about-nih/what-we-do/nih-almanac/fogarty-international-center-fic"
     ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/facts-about-aging-and-alcohol",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide"
+    ]
+   },
+   {
+    "url": "http://dpcpsi.nih.gov/opa/index",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih"
+    ]
    }
   ]
  },
@@ -2547,7 +2651,7 @@
    "status": 403
   },
   {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/improving-control-bionic-prosthetic-hands",
+   "url": "https://nih.gov/news-events/nih-research-matters/new-approach-fighting-staph-infections",
    "status": 403
   }
  ],
@@ -2807,14 +2911,14 @@
   }
  ],
  "images": {
-  "pagesScanned": 19,
-  "totalImages": 278,
-  "uniqueImages": 30,
+  "pagesScanned": 23,
+  "totalImages": 341,
+  "uniqueImages": 40,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 278,
+  "withAlt": 341,
   "altVerdicts": {
-   "GOOD": 26,
+   "GOOD": 36,
    "SUSPICIOUS": 2,
    "TOO_SHORT": 2
   }
@@ -3069,97 +3173,118 @@
   "associations": []
  },
  "thirdParty": {
-  "pagesScanned": 1,
+  "pagesScanned": 4,
   "vendors": [
    {
     "origin": "googletagmanager.com",
-    "pages": 1,
-    "pagesWithScripts": 1,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
-    "medianBytes": 620234,
-    "medianDurationMs": 333,
+    "medianBytes": 622471,
+    "medianDurationMs": 370,
     "medianRequests": 4,
-    "pagesWithFindings": 1,
+    "pagesWithFindings": 4,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    },
    {
     "origin": "crazyegg.com",
-    "pages": 1,
-    "pagesWithScripts": 1,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
-    "medianBytes": 68389,
-    "medianDurationMs": 185,
+    "medianBytes": 70064,
+    "medianDurationMs": 211,
     "medianRequests": 4,
-    "pagesWithFindings": 1,
+    "pagesWithFindings": 4,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    },
    {
     "origin": "cloudflareinsights.com",
-    "pages": 1,
-    "pagesWithScripts": 1,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 30294,
-    "medianDurationMs": 43,
+    "medianDurationMs": 52,
     "medianRequests": 1,
-    "pagesWithFindings": 1,
+    "pagesWithFindings": 4,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    },
    {
     "origin": "digitalgov.gov",
-    "pages": 1,
-    "pagesWithScripts": 1,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 30230,
-    "medianDurationMs": 17,
+    "medianDurationMs": 49,
     "medianRequests": 1,
-    "pagesWithFindings": 1,
+    "pagesWithFindings": 4,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    },
    {
     "origin": "google-analytics.com",
-    "pages": 1,
-    "pagesWithScripts": 1,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 20805,
-    "medianDurationMs": 70,
-    "medianRequests": 5,
-    "pagesWithFindings": 1,
+    "medianDurationMs": 93,
+    "medianRequests": 4,
+    "pagesWithFindings": 4,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    },
    {
     "origin": "pinterest.com",
-    "pages": 1,
-    "pagesWithScripts": 1,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 18901,
-    "medianDurationMs": 157,
+    "medianDurationMs": 183,
     "medianRequests": 3,
-    "pagesWithFindings": 1,
+    "pagesWithFindings": 4,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    },
    {
     "origin": "verint-cdn.com",
-    "pages": 1,
-    "pagesWithScripts": 1,
+    "pages": 4,
+    "pagesWithScripts": 4,
     "isScriptVendor": true,
     "medianBytes": 106,
-    "medianDurationMs": 112,
+    "medianDurationMs": 140,
     "medianRequests": 1,
-    "pagesWithFindings": 1,
+    "pagesWithFindings": 4,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    }
   ]
@@ -3169,16 +3294,16 @@
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 44,
+  "total_clusters": 48,
   "clusters": [
    {
     "id": "cc-340e0be35f96",
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 14,
-    "pages_affected": 14,
-    "instances": 14,
+    "rule_pages_affected": 15,
+    "pages_affected": 15,
+    "instances": 15,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -3188,15 +3313,16 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 33.6,
+    "action_score": 36,
     "estimated_fix_impact": {
-     "findings": 14,
-     "pages": 14,
-     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
+     "findings": 15,
+     "pages": 15,
+     "statement": "Fix one place, resolve ~15 finding(s) on 15 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
@@ -3256,9 +3382,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 19,
-    "instances": 19,
+    "rule_pages_affected": 23,
+    "pages_affected": 23,
+    "instances": 23,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -3268,27 +3394,31 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 22.8,
+    "action_score": 27.6,
     "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
+     "findings": 23,
+     "pages": 23,
+     "statement": "Fix one place, resolve ~23 finding(s) on 23 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov/about-nih/what-we-do/nih-almanac/fogarty-international-center-fic",
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih",
      "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
      "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
      "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/skin-test-detects-evidence-parkinsons-related-disorders",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
      "https://nih.gov/nih-style-guide/age",
      "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
@@ -3301,9 +3431,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 19,
-    "instances": 19,
+    "rule_pages_affected": 23,
+    "pages_affected": 23,
+    "instances": 23,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -3313,27 +3443,31 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 22.8,
+    "action_score": 27.6,
     "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
+     "findings": 23,
+     "pages": 23,
+     "statement": "Fix one place, resolve ~23 finding(s) on 23 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov/about-nih/what-we-do/nih-almanac/fogarty-international-center-fic",
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih",
      "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
      "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
      "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/skin-test-detects-evidence-parkinsons-related-disorders",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
      "https://nih.gov/nih-style-guide/age",
      "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
@@ -3456,6 +3590,34 @@
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
      "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
+    ]
+   },
+   {
+    "id": "cc-3305fcaaecb5",
+    "engine_key": "axe-core",
+    "rule_id": "aria-allowed-attr",
+    "severity": "Critical",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-accordion--bordered",
+    "snippet_shape": "div:aria",
+    "representative_selector": ".usa-accordion--bordered",
+    "representative_snippet": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
     ]
    },
    {
@@ -3943,9 +4105,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 17,
-    "pages_affected": 14,
-    "instances": 14,
+    "rule_pages_affected": 19,
+    "pages_affected": 15,
+    "instances": 15,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -3955,15 +4117,16 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 4,
-    "action_score": 8.4,
+    "action_score": 9,
     "estimated_fix_impact": {
-     "findings": 14,
-     "pages": 14,
-     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
+     "findings": 15,
+     "pages": 15,
+     "statement": "Fix one place, resolve ~15 finding(s) on 15 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
@@ -3983,9 +4146,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
-    "pages_affected": 12,
-    "instances": 21,
+    "rule_pages_affected": 23,
+    "pages_affected": 13,
+    "instances": 22,
     "selector_path": "p:nth-child(*) > a:nth-child(*)",
     "snippet_shape": "a:href",
     "representative_selector": "p:nth-child(4) > a:nth-child(2)",
@@ -3994,16 +4157,17 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "template",
-    "distinct_components_for_rule": 9,
-    "action_score": 4.8,
+    "distinct_components_for_rule": 13,
+    "action_score": 3.6,
     "estimated_fix_impact": {
-     "findings": 21,
-     "pages": 12,
-     "statement": "Fix one place, resolve ~21 finding(s) on 12 page(s)."
+     "findings": 22,
+     "pages": 13,
+     "statement": "Fix one place, resolve ~22 finding(s) on 13 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
@@ -4021,9 +4185,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
-    "pages_affected": 12,
-    "instances": 15,
+    "rule_pages_affected": 23,
+    "pages_affected": 13,
+    "instances": 16,
     "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
     "snippet_shape": "a:href",
     "representative_selector": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -4032,16 +4196,17 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "template",
-    "distinct_components_for_rule": 9,
-    "action_score": 4.8,
+    "distinct_components_for_rule": 13,
+    "action_score": 3.6,
     "estimated_fix_impact": {
-     "findings": 15,
-     "pages": 12,
-     "statement": "Fix one place, resolve ~15 finding(s) on 12 page(s)."
+     "findings": 16,
+     "pages": 13,
+     "statement": "Fix one place, resolve ~16 finding(s) on 13 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov/about-nih/what-we-do/nih-almanac/fogarty-international-center-fic",
      "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
@@ -4052,33 +4217,6 @@
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
      "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
-   },
-   {
-    "id": "cc-3305fcaaecb5",
-    "engine_key": "axe-core",
-    "rule_id": "aria-allowed-attr",
-    "severity": "Critical",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".usa-accordion--bordered",
-    "snippet_shape": "div:aria",
-    "representative_selector": ".usa-accordion--bordered",
-    "representative_snippet": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
     ]
    },
    {
@@ -4125,9 +4263,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
-    "pages_affected": 4,
-    "instances": 4,
+    "rule_pages_affected": 23,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
     "snippet_shape": "a:href",
     "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
@@ -4136,15 +4274,17 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 9,
-    "action_score": 1.6,
+    "distinct_components_for_rule": 13,
+    "action_score": 1.66,
     "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials",
      "https://nih.gov/nih-style-guide/age",
      "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
      "https://www.nih.gov/about-nih/nih-almanac/leadership/nih-directors"
@@ -4184,32 +4324,31 @@
     ]
    },
    {
-    "id": "cc-a6e854cc83d5",
+    "id": "cc-dc4046f0700e",
     "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
     "rule_pages_affected": 19,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "li:nth-child(10) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.niddk.nih.gov/health-information/diabetes\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Diabetes </a>",
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
+    "snippet_shape": "h4:aria",
+    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45681\">\n          Executive Summary\n        </button>\n      </h4>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 9,
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
     "action_score": 1.2,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
-     "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy"
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
     ]
    },
    {
@@ -4240,58 +4379,32 @@
     ]
    },
    {
-    "id": "cc-abaac791eabe",
+    "id": "cc-a6e854cc83d5",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
-    "pages_affected": 2,
+    "rule_pages_affected": 23,
+    "pages_affected": 3,
     "instances": 3,
-    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(19) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.neurology.org/doi/10.1212/WN9.0000000000000152\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">",
+    "representative_selector": "li:nth-child(10) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.niddk.nih.gov/health-information/diabetes\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Diabetes </a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 9,
-    "action_score": 0.8,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 13,
+    "action_score": 0.83,
     "estimated_fix_impact": {
      "findings": 3,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
-    ]
-   },
-   {
-    "id": "cc-dc4046f0700e",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 17,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
-    "snippet_shape": "h4:aria",
-    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
-    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-45556\">\n          Roster\n        </button>\n      </h4>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 4,
-    "action_score": 0.6,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
+     "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy"
     ]
    },
    {
@@ -4299,7 +4412,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 17,
+    "rule_pages_affected": 19,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".usa-card.usa-card--2col.usa-card--filled:nth-child(*) > .usa-card__container > .usa-card__header > h3",
@@ -4326,7 +4439,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 17,
+    "rule_pages_affected": 19,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "h3",
@@ -4349,11 +4462,148 @@
     ]
    },
    {
+    "id": "cc-abaac791eabe",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 23,
+    "pages_affected": 2,
+    "instances": 3,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(19) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.neurology.org/doi/10.1212/WN9.0000000000000152\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 13,
+    "action_score": 0.55,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~3 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
+     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging"
+    ]
+   },
+   {
+    "id": "cc-0975fb981253",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 23,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"12386\"] > div > ul > li:nth-child(5) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/women-and-alcohol\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new windo",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 13,
+    "action_score": 0.55,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
+     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+    ]
+   },
+   {
+    "id": "cc-b7761d87db86",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 23,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"echo\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"echo\"]",
+    "representative_snippet": "<a href=\"/echo\">ECHO</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 13,
+    "action_score": 0.28,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih"
+    ]
+   },
+   {
+    "id": "cc-8929ee750169",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 23,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"oam\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"oam\"]",
+    "representative_snippet": "<a href=\"https://dpcpsi.nih.gov/oam\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">OAM</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 13,
+    "action_score": 0.28,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih"
+    ]
+   },
+   {
+    "id": "cc-1a8ef86b9810",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 23,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"oar.nih.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"oar.nih.gov/\"]",
+    "representative_snippet": "<a href=\"http://www.oar.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">OAR</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 13,
+    "action_score": 0.28,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih"
+    ]
+   },
+   {
     "id": "cc-cea602cc36e9",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
+    "rule_pages_affected": 23,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".grid-col-fill > .text-formatted.field--name-field-uswds-body.field--type-text-long > p > a[title=\"(opens in a new window)\"][data-extlink=\"\"][target=\"_blank\"]",
@@ -4364,8 +4614,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 9,
-    "action_score": 0.4,
+    "distinct_components_for_rule": 13,
+    "action_score": 0.28,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4376,30 +4626,30 @@
     ]
    },
    {
-    "id": "cc-0975fb981253",
+    "id": "cc-5e87556d4308",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
+    "rule_pages_affected": 23,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "selector_path": ".usa-intro > a",
     "snippet_shape": "a:href",
-    "representative_selector": "article[data-history-node-id=\"12181\"] > div > ul > li:nth-child(5) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.niaid.nih.gov/diseases-conditions/coronaviruses\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Coronaviruses</a>",
+    "representative_selector": ".usa-intro > a",
+    "representative_snippet": "<a href=\"https://www.nih.gov/health-information/nih-clinical-research-trials-you\">ClinicalResearchTrials.nih.gov</a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 9,
-    "action_score": 0.4,
+    "distinct_components_for_rule": 13,
+    "action_score": 0.28,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19"
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials"
     ]
    },
    {
@@ -4407,7 +4657,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
+    "rule_pages_affected": 23,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a",
@@ -4418,8 +4668,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 9,
-    "action_score": 0.4,
+    "distinct_components_for_rule": 13,
+    "action_score": 0.28,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4434,7 +4684,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 19,
+    "rule_pages_affected": 23,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
@@ -4445,8 +4695,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 9,
-    "action_score": 0.4,
+    "distinct_components_for_rule": 13,
+    "action_score": 0.28,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -4679,9 +4929,9 @@
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 14,
-    "pages_affected": 14,
-    "instances": 14,
+    "rule_pages_affected": 15,
+    "pages_affected": 15,
+    "instances": 15,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -4691,15 +4941,16 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 33.6,
+    "action_score": 36,
     "estimated_fix_impact": {
-     "findings": 14,
-     "pages": 14,
-     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
+     "findings": 15,
+     "pages": 15,
+     "statement": "Fix one place, resolve ~15 finding(s) on 15 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
@@ -4759,9 +5010,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 19,
-    "instances": 19,
+    "rule_pages_affected": 23,
+    "pages_affected": 23,
+    "instances": 23,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -4771,27 +5022,31 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 22.8,
+    "action_score": 27.6,
     "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
+     "findings": 23,
+     "pages": 23,
+     "statement": "Fix one place, resolve ~23 finding(s) on 23 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov/about-nih/what-we-do/nih-almanac/fogarty-international-center-fic",
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih",
      "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
      "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
      "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/skin-test-detects-evidence-parkinsons-related-disorders",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
      "https://nih.gov/nih-style-guide/age",
      "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
@@ -4804,9 +5059,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 19,
-    "instances": 19,
+    "rule_pages_affected": 23,
+    "pages_affected": 23,
+    "instances": 23,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -4816,27 +5071,31 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 22.8,
+    "action_score": 27.6,
     "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
+     "findings": 23,
+     "pages": 23,
+     "statement": "Fix one place, resolve ~23 finding(s) on 23 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
+     "https://www.nih.gov/news-events/nih-research-matters/alcohol-related-deaths-increasing-nationwide",
      "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
      "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
      "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
      "https://www.nih.gov/about-nih/what-we-do/nih-almanac/fogarty-international-center-fic",
+     "https://nih.gov/about-nih/nih-almanac/office-director-nih",
      "https://nih.gov/news-events/nih-research-matters/study-reveals-brain-networks-critical-conversation",
      "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
      "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy",
      "https://nih.gov/brain/about/vision/brain-2025-scientific-vision",
      "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
      "https://nih.gov/news-events/nih-research-matters/skin-test-detects-evidence-parkinsons-related-disorders",
      "https://www.nih.gov//news-events/nih-research-matters/early-results-show-benefit-remdesivir-covid-19",
      "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
+     "https://www.nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials",
      "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
      "https://nih.gov/nih-style-guide/age",
      "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
@@ -4962,6 +5221,34 @@
     ]
    },
    {
+    "id": "cc-3305fcaaecb5",
+    "engine_key": "axe-core",
+    "rule_id": "aria-allowed-attr",
+    "severity": "Critical",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-accordion--bordered",
+    "snippet_shape": "div:aria",
+    "representative_selector": ".usa-accordion--bordered",
+    "representative_snippet": "<div aria-multiselectable=\"true\" class=\"usa-accordion usa-accordion--bordered paragraph paragraph--type--uswds-accordion paragraph--view-mode--default\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/brain-initiative/about/vision/brain-20-neuroethics-enabling-enhancing-neuroscience-advances-society",
+     "https://nih.gov/brain/about/vision/brain-2025-scientific-vision"
+    ]
+   },
+   {
     "id": "cc-8e242a862e3a",
     "engine_key": "alfa",
     "rule_id": "sia-r66",
@@ -5040,46 +5327,6 @@
      "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
      "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
     ]
-   },
-   {
-    "id": "cc-0bad39ad282b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 14,
-    "pages_affected": 14,
-    "instances": 14,
-    "selector_path": "text: \"grants & funding\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Grants & Funding\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 9.33,
-    "estimated_fix_impact": {
-     "findings": 14,
-     "pages": 14,
-     "statement": "Fix one place, resolve ~14 finding(s) on 14 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/exercise-induced-protein-may-reverse-age-related-cognitive-decline",
-     "https://nih.gov/news-events/nih-research-matters/why-protective-antibodies-fade-after-covid-19-vaccines",
-     "https://www.nih.gov/news-events/nih-research-matters/dementia-free-years-may-decrease-smoking-hypertension-diabetes",
-     "https://www.nih.gov/news-events/nih-research-matters/dna-organization-changes-alzheimers-disease-aging",
-     "https://nih.gov/news-events/nih-research-matters/slow-vaccine-delivery-improves-immune-response-hiv",
-     "https://www.nih.gov/about-nih/what-we-do/nih-almanac/fogarty-international-center-fic",
-     "https://nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
-     "https://www.nih.gov/news-events/nih-research-matters/how-football-raises-risk-chronic-traumatic-encephalopathy",
-     "https://nih.gov/news-events/nih-research-matters/covid-19-immune-response-improves-months-after-vaccination",
-     "https://nih.gov/news-events/nih-research-matters/tracking-sars-cov-2-variants-wastewater",
-     "https://nih.gov/news-events/nih-research-matters/spinal-cord-stimulation-improves-hand-grip-after-cervical-spinal-injury",
-     "https://nih.gov/nih-style-guide/age",
-     "https://nih.gov/health-information/your-healthiest-self-wellness-toolkits/physical-wellness-toolkit/physical-wellness-toolkit-more-resources",
-     "https://nih.gov/news-events/nih-research-matters/infections-falls-increased-private-equity-owned-hospitals"
-    ]
    }
   ],
   "design_component_usage": [],
@@ -5088,6 +5335,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 3600,
- "pagesSucceeded": 21
+ "pagesAttempted": 3795,
+ "pagesSucceeded": 25
 }
