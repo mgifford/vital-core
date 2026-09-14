@@ -1,0 +1,3340 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W38",
+ "generatedAt": "2026-09-14T18:13:09.113Z",
+ "pagesScanned": 597,
+ "pagesAudited": 4,
+ "coverage": {
+  "sustainability": 76,
+  "axe": 4,
+  "alfa": 2,
+  "plain-language": 2,
+  "resources": 4,
+  "standards": 2,
+  "security": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 29,
+  "pagesWithViolations": 4,
+  "pagesScanned": 4,
+  "medianViolations": 7,
+  "rules": {
+   "heading-order": {
+    "count": 2,
+    "pages": 2,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 2,
+    "pages": 2,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   },
+   "link-in-text-block": {
+    "count": 15,
+    "pages": 4,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "instances": 7
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "p:nth-child(20) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33252621/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Financial&nbsp;Presentation of Alzhei"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "p:nth-child(4) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "p:nth-child(4) > a:nth-child(3)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "target": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a",
+      "html": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">Common Data Elements (CDEs) program</a>"
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 8,
+    "pages": 4,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     }
+    ]
+   },
+   "list": {
+    "count": 2,
+    "pages": 2,
+    "impact": "serious",
+    "help": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/list?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag131"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "target": ".usa-pagination__list",
+      "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": ".usa-pagination__list",
+      "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 235,
+  "pagesWithFailures": 2,
+  "pagesScanned": 2,
+  "medianFailures": 118,
+  "rules": {
+   "sia-r66": {
+    "count": 98,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 53
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 45
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "text: \"Health Information\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "text: \"Grants & Funding\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "text: \"Health Information\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r53": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<h3>",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 6,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 3
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r62": {
+    "count": 4,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33252621/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 4,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 8,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 4
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 112,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 29
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "instances": 83
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "<a href=\"/virtual-tour\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "consensus": {
+  "uniqueIssues": 29,
+  "consensus": 0,
+  "axeOnly": 14,
+  "alfaOnly": 15,
+  "rawAxe": 14,
+  "rawAlfa": 15,
+  "byKey": {
+   "axe-core:heading-order": {
+    "actRuleId": null,
+    "axeRules": [
+     "heading-order"
+    ],
+    "alfaRules": [],
+    "pages": 2,
+    "engines": "axe"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 2,
+    "engines": "axe"
+   },
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:list": {
+    "actRuleId": null,
+    "axeRules": [
+     "list"
+    ],
+    "alfaRules": [],
+    "pages": 2,
+    "engines": "axe"
+   },
+   "alfa:sia-r66": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r66"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r53": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r53"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r73": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r73"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r62": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r62"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "act:5c01ea": {
+    "actRuleId": "5c01ea",
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r18"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r61": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r61"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r57": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r57"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r111": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r111"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 76,
+  "medianBytes": 63177,
+  "meanBytes": 79992,
+  "medianRequests": 7,
+  "totalCo2g": 0.9,
+  "meanCo2g": 0.0119,
+  "totalEnergyWh": 1.83,
+  "meanEnergyWh": 0.024
+ },
+ "deprecatedHtml": null,
+ "resources": {
+  "total": 93,
+  "byType": {
+   "image": 2,
+   "document": 67,
+   "spreadsheet": 22,
+   "pdf": 2
+  },
+  "list": [
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20210219-dementia.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-08/lsns-copyright-statement.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-02/20180410-basilica-stock.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/phq-2-crf-swedish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/phq2-cdes.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/phq2-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/phq2-crf-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/phq-2-crf-arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/phq-2-crf-polish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/phq-2-crf-somali.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-crf-japanese.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-cdes.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-korean.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-crf-simplified-chinese.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-crf-swedish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-crf-traditional-chinese.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-severity-crf-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-7d-crf-pediatric.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-7d-cde-pediatric.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/bpi-pain-severity-7d-crf-pediatric-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad-2-crf-swedish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad2-cdes.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad2-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad2-crf-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad2-crf-somali_0.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad2-crf-polish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad2-crf-arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/opioid-mme-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/opioid-mme-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/whoqol-2-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/whoqol-2-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/whoqol-2-crf-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/whoqol-2-crf-somali.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/whoqol-2-crf-arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/whoqol-2-crf-traditional-chinese.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-acute-crf-somali.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-acute-crf-arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-crf-arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-acute-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-acute-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-crf-somali.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-crf-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgis-cdes.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/pgic-crf-swedish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/pgic-cdes.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/pgic-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/pgic-crf-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/pgic-crf-polish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/sleep-duration-crf-spanish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/sleep-duration-cdes.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-04/Sleep_Duration_CRF_English.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-04/Sleep_Duration_CRF_Somali.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-04/Sleep_Duration_CRF_Swedish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-04/Sleep_Duration_CRF_Arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/cerq-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/cerq-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/phq-9-crf-swedish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/patient-health-questionnaire-9-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/patient-health-questionnaire-9-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/patient-health-questionnaire-9-spanish-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/phq-9-crf-somali.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/phq-9-crf-arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/phq-9-crf-traditional-chinese.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/msas-sf-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/msas-sf-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/fact-b-copyright-statement.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/bdi-ia-copyright-statement.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/aaqsa-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/aaqsa-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/promis-sleep-disturbance-8a-crf.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/promis-sleep-disturbance-8a-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/poem-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/poem-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/mpfi-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/mpfi-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/fs-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/csessr-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/csessr-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/promis-emotional-distress-depression-item-bank-crf.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/promis-emotional-distress-depression-item-bank-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad-7-crf-swedish.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/generalized-anxiety-disorder-7-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/generalized-anxiety-disorder-7-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/generalized-anxiety-disorder-7-spanish-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad-7-crf-arabic.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad-7-crf-somali.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/craving-scale-3-item-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/craving-scale-3-item-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/mpq-lf-copright-statement.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/feges-crf.docx",
+    "type": "document",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/feges-cde.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   }
+  ]
+ },
+ "standards": {
+  "pagesChecked": 2,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 2,
+    "rate": 0
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (6/6)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 2,
+    "total": 2,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "resilience": {
+  "pagesChecked": 2,
+  "checks": [
+   {
+    "id": "pwa-manifest",
+    "label": "Web app manifest declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A web app manifest is required for installability and controls how the app appears when launched.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-service-worker",
+    "label": "Service worker registered",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A service worker is what makes offline access, caching, and background sync possible.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-theme-color",
+    "label": "Theme color declared",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-apple-touch-icon",
+    "label": "Apple touch icon (iOS/bookmark icon)",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "manifest-parsed",
+    "label": "Manifest fetched and parsed successfully",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+     }
+    ]
+   },
+   {
+    "id": "manifest-maskable-icon",
+    "label": "Manifest declares a maskable icon",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+     }
+    ]
+   },
+   {
+    "id": "sw-active",
+    "label": "Service worker is active (not just registered)",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "sw-controlling",
+    "label": "Service worker controls this page load",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "installable",
+    "label": "Meets basic installability criteria",
+    "pass": 0,
+    "total": 2,
+    "rate": 0,
+    "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
+    "evidenceExamples": [
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+     }
+    ]
+   },
+   {
+    "id": "pwa-https",
+    "label": "HTTPS (required for service workers)",
+    "pass": 2,
+    "total": 2,
+    "rate": 100,
+    "why": "HTTPS is required for service workers and most install prompts.",
+    "evidenceExamples": []
+   }
+  ],
+  "offline": null
+ },
+ "security": {
+  "checks": [
+   {
+    "id": "https",
+    "label": "Served over HTTPS",
+    "pass": true,
+    "detail": "https:"
+   },
+   {
+    "id": "hsts",
+    "label": "HTTP Strict Transport Security (HSTS)",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "csp",
+    "label": "Content Security Policy (CSP)",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "x-content-type-options",
+    "label": "X-Content-Type-Options: nosniff",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "clickjacking",
+    "label": "Clickjacking protection (X-Frame-Options or CSP frame-ancestors)",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "gov-tld",
+    "label": "Sponsored government TLD (.gov/.mil/.edu)",
+    "pass": true,
+    "detail": "gov"
+   },
+   {
+    "id": "security-txt",
+    "label": "Published security.txt",
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "www-resolution",
+    "label": "Resolves with and without www",
+    "pass": false,
+    "detail": "www.nih.gov"
+   }
+  ],
+  "passed": 5,
+  "total": 8
+ },
+ "publicInterest": {
+  "engine": "public-interest",
+  "checkedAt": "2026-09-14T14:40:00.841Z",
+  "a11yStatement": {
+   "result": "fail",
+   "url": null,
+   "confidence": null,
+   "checkedAt": "2026-09-14T14:39:55.910Z"
+  },
+  "carbonTxt": {
+   "result": "fail",
+   "url": null,
+   "valid": false,
+   "fields": {},
+   "checkedAt": "2026-09-14T14:39:55.911Z"
+  },
+  "greenWebFoundation": {
+   "result": "fail",
+   "green": false,
+   "hostedBy": null,
+   "url": "https://api.thegreenwebfoundation.org/greencheck/nih.gov",
+   "checkedAt": "2026-09-14T14:39:55.912Z"
+  },
+  "sitemaps": {
+   "xml": {
+    "found": false,
+    "url": null
+   },
+   "human": {
+    "found": false,
+    "url": null
+   },
+   "checkedAt": "2026-09-14T14:39:55.913Z"
+  }
+ },
+ "plainLanguage": {
+  "pagesChecked": 2,
+  "pagesScored": 1,
+  "medianWordsPerPage": 1168,
+  "medianReadingEase": 42.4,
+  "medianGrade": 12.6,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "JAMA",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "acronym": "LH",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "acronym": "KM",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "acronym": "JPW",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "acronym": "JW",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "acronym": "PMID",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "acronym": "HEAL",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "CDE",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "PHQ",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "GAD",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "CRF",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "MSAS",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "SF",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "FACT",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "iStock",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "hasn",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "didn",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "Dementias",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "Langa",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "Bynum",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "Hsu",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "doi",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "jamainternmed",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "word": "CDEs",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "InitiativeCommon",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "anhedonia",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "phq",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "crf",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "swedish",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "docx",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "cdes",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "xlsx",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "spanish",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "arabic",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "somali",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "Subscale",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "bpi",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "japanese",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "word": "korean",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   }
+  ]
+ },
+ "lighthouse": null,
+ "linkCheck": {
+  "brokenCount": 2,
+  "broken": [
+   {
+    "url": "https://www.nia.nih.gov/health/heart-health",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/alzheimers",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   }
+  ]
+ },
+ "errorPages": [
+  {
+   "url": "https://www.nih.gov/challenges/supplements-facts-first-digital-adventure-every-age-challenge",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/sleep-exercise-may-reduce-mutation-driven-inflammation",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/study-suggests-covid-19-vaccines-do-not-reduce-fertility",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/brain-scan-guided-emergency-stroke-treatment-can-save-more-lives",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/obesity-metabolic-health",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-july-17-2014",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/atlas-developing-human-brain",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/machine-learning-predicts-risk-aneurysm",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/ai-tool-predicts-response-cancer-therapy",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director/office-legislative-policy-analysis-olpa/congressional-visits-nih",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/viagra-associated-reduced-risk-alzheimers-disease",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/press-room?page=184",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/disrupting-normal-hormone-cycle-spurs-fat-cells",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/poverty-reduction-alters-infant-brain-activity",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/paralyzed-men-gain-movement-without-surgery",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/include-project/down-syndrome-research-plan",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/hhs-nih-launch-next-generation-universal-vaccine-platform-pandemic-prone-viruses",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/progress-inclusion-women-clinical-research",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/drugs-treat-spinal-disc-degeneration-mice",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/ultrasound-imaging-gets-small-wearable",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/echo/program-components/echo-cohort-study-sites",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/compound-produced-bacteria-protects-skin",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/potent-neutralizing-antibodies-target-new-regions-coronavirus-spike",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/new-genes-tied-alzheimers-disease",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/most-ovarian-cysts-may-not-need-surveillance",
+   "status": 403
+  }
+ ],
+ "tech": null,
+ "images": {
+  "pagesScanned": 4,
+  "totalImages": 57,
+  "uniqueImages": 16,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 57,
+  "altVerdicts": {
+   "GOOD": 13,
+   "SUSPICIOUS": 1,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": null,
+ "thirdParty": null,
+ "componentClusters": {
+  "design_system": "none",
+  "design_system_label": "none",
+  "design_system_theme": null,
+  "template_page_threshold": 10,
+  "total_clusters": 30,
+  "clusters": [
+   {
+    "id": "cc-981d69379a79",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-pagination__list",
+    "snippet_shape": "ul:",
+    "representative_selector": ".usa-pagination__list",
+    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-19c608daabd2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(20) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33252621/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Financial&nbsp;Presentation of Alzhei",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-9932671d33b6",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a",
+    "snippet_shape": "a:href",
+    "representative_selector": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a",
+    "representative_snippet": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">Common Data Elements (CDEs) program</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-ad7c1fbc82f1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33252621/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "id": "cc-5373c45b4edc",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "id": "cc-0975fb981253",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"13271\"] > div > ul > li:nth-child(7) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nhlbi.nih.gov/health-topics/heart-surgery\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Heart Surgery</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-a6e854cc83d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "li:nth-child(8) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nia.nih.gov/health/heart-health\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Heart Health</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   }
+  ],
+  "top_actions": [
+   {
+    "id": "cc-981d69379a79",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".usa-pagination__list",
+    "snippet_shape": "ul:",
+    "representative_selector": ".usa-pagination__list",
+    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   }
+  ],
+  "design_component_usage": [],
+  "page_component_usage": [],
+  "drift_page_count": 0,
+  "drift_pages": [],
+  "drift_clusters": []
+ },
+ "pagesAttempted": 900,
+ "pagesSucceeded": 6
+}
