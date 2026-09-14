@@ -255,6 +255,7 @@ targets:
   # sorted — see WAF-ALLOWLIST.md for the request template and status.
   - domain: www.cms.gov
     importance: 5
+    pages_per_run: 90   # memory guard: lower per-run concurrency/load for this large domain
     priority_urls_file: profiles/www.cms.gov-top-tasks.txt
 
     # DRAFT, NOT YET IMPLEMENTED.
@@ -269,7 +270,9 @@ targets:
     design_system_theme: default
     webmcp: true
     sampling:
-      alfa: 25   # Alfa creates large in-memory DOM snapshots; at 50% with 150 pages/run the heap exceeds the runner's 7 GB RAM
+      alfa: 15       # stronger memory guard: reduce heavy DOM snapshot workload
+      resources: 75  # reduce large-resource cataloging pressure on peak heap
+      images: 75     # reduce image inventory payload on this high-volume target
   - domain: www.medicare.gov
     importance: 5
 
