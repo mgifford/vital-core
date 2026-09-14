@@ -77,6 +77,14 @@ const networkIdleCap = Math.min(
 
 const log = (...m) => console.log(`[${target.key}]`, ...m);
 log(`run ${runId} week ${week} budget ${budget}`);
+const mib = (bytes) => Math.round((bytes / (1024 * 1024)) * 10) / 10;
+const logMemory = (phase) => {
+  const { rss, heapUsed, heapTotal, external } = process.memoryUsage();
+  log(
+    `mem ${phase} rss:${mib(rss)}MiB heap:${mib(heapUsed)}/${mib(heapTotal)}MiB external:${mib(external)}MiB`
+  );
+};
+logMemory('start');
 
 const state = loadState(target.key, target.domain);
 
@@ -175,6 +183,7 @@ if (lighthouseEnabled && !args['base-url']) {
 // little idempotent rescanning next run.
 const STATE_SAVE_EVERY = 25;
 let sincePersist = 0;
+let processedPages = 0;
 
 // Security and public-interest are origin-level checks (headers, TLD,
 // security.txt, a11y statement, etc.) — identical for every page in a run,
@@ -185,10 +194,14 @@ let publicInterestResult;
 let offlineResilienceResult;
 
 for (const item of batch) {
+  if (processedPages > 0 && processedPages % 10 === 0) {
+    logMemory(`progress ${processedPages}/${batch.length}`);
+  }
   if (scanDeadlineMs && Date.now() >= scanDeadlineMs) {
     log('time budget reached; stopping scan early for clean exit');
     break;
   }
+  processedPages++;
 
   const urlPath = new URL(item.url).pathname;
 
@@ -294,14 +307,24 @@ for (const item of batch) {
 
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
       if (runs('axe')) { record.axe = await runAxe(page); mark('axe'); }
-      if (runs('alfa')) { record.alfa = await runAlfa(page); mark('alfa'); }
+      if (runs('alfa')) {
+        logMemory(`before alfa ${urlPath}`);
+        record.alfa = await runAlfa(page);
+        mark('alfa');
+        logMemory(`after alfa ${urlPath}`);
+      }
       if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page, { extraAllowlist: target.spelling_allowlist ?? [] }); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
-      if (runs('resources')) { record.resources = await runResources(page, item.url); mark('resources'); }
+      if (runs('resources')) {
+        record.resources = await runResources(page, item.url);
+        mark('resources');
+        logMemory(`after resources ${urlPath}`);
+      }
       if (imgCollector) {
         const imgs = await runImages(page, item.url);
         record.images = { ...imgs, images: imgCollector.collect(imgs.images) };
         mark('images');
+        logMemory(`after images ${urlPath}`);
       }
       if (runs('standards')) { record.standards = await runStandards(page); mark('standards'); }
       // Security is per-origin (headers/TLD/security.txt), so check it only
@@ -439,6 +462,7 @@ for (const item of batch) {
 }
 
 // --- Link check (post-scan, capped and polite) ------------------------
+logMemory('pre-link-check');
 if (checkLinksEnabled && linksSeen.size > 0) {
   const cap = parseInt(process.env.VITAL_LINK_CHECK_CAP ?? '500', 10);
   log(`link-check: ${linksSeen.size} unique links seen; checking up to ${cap}`);
@@ -455,6 +479,7 @@ if (checkLinksEnabled && linksSeen.size > 0) {
   };
   log(`link-check: ${broken.length} broken of ${checked} checked`);
 }
+logMemory('post-link-check');
 
 if (lighthouse) await lighthouse.close();
 
@@ -464,7 +489,9 @@ runLog.tally = tally;
 runLog.finishedAt = new Date().toISOString();
 fs.writeFileSync(path.join(runsDir, `${runId}.json`), JSON.stringify(runLog, null, 1));
 saveState(target.key, state);
+logMemory('before-browser-close');
 await browser.close();
+logMemory('end');
 const coverage = Object.entries(enginesRun).map(([e, n]) => `${e}:${n}`).join(' ');
 const tallyStr = `ok:${tally.ok} blocked:${tally.blocked} timeout:${tally.timeout} robots:${tally.robots_skipped} url-filter:${tally.url_filtered} non-html:${tally.non_html} error:${tally.error}`;
 log(`done: ${runLog.scanned.length} scanned | ${tallyStr}${coverage ? ` | ${coverage}` : ''}`);
@@ -527,4 +554,3 @@ function parseArgs(argv) {
   }
   return out;
 }
-
