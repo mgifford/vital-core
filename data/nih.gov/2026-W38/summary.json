@@ -1,28 +1,29 @@
 {
  "domain": "nih.gov",
  "week": "2026-W38",
- "generatedAt": "2026-09-14T18:13:09.113Z",
- "pagesScanned": 597,
- "pagesAudited": 4,
+ "generatedAt": "2026-09-15T17:17:02.310Z",
+ "pagesScanned": 1344,
+ "pagesAudited": 9,
  "coverage": {
-  "sustainability": 76,
-  "axe": 4,
-  "alfa": 2,
-  "plain-language": 2,
-  "resources": 4,
-  "standards": 2,
+  "sustainability": 151,
+  "axe": 9,
+  "alfa": 4,
+  "plain-language": 3,
+  "resources": 9,
+  "standards": 3,
+  "deprecated-html": 1,
   "security": 1
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 29,
-  "pagesWithViolations": 4,
-  "pagesScanned": 4,
-  "medianViolations": 7,
+  "violationTotal": 90,
+  "pagesWithViolations": 9,
+  "pagesScanned": 9,
+  "medianViolations": 8,
   "rules": {
    "heading-order": {
-    "count": 2,
-    "pages": 2,
+    "count": 6,
+    "pages": 6,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -31,11 +32,28 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
       "instances": 1
      },
      {
@@ -50,15 +68,30 @@
       "html": "<h3>At a Glance</h3>"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "target": ".usa-card.usa-card--header-first.usa-card--sans-serif-heading:nth-child(1) > .paragraph--type--flip-card.nih-flip-card.usa-card__container > .nih-flip-card__front > .usa-card__header > .usa-card__heading.font-family-sans",
+      "html": "<h3 class=\"usa-card__heading font-family-sans\"><a id=\"artificial-heart-valves\" class=\"usa-anchor\"></a>Artificial Heart Valves</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+      "target": "article > div > h3",
+      "html": "<h3></h3>"
      }
     ]
    },
    "landmark-unique": {
-    "count": 2,
-    "pages": 2,
+    "count": 4,
+    "pages": 4,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -67,11 +100,20 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
       "instances": 1
      },
      {
@@ -82,6 +124,16 @@
     "instances": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      },
@@ -93,8 +145,8 @@
     ]
    },
    "link-in-text-block": {
-    "count": 15,
-    "pages": 4,
+    "count": 57,
+    "pages": 9,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -104,8 +156,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events"
     ],
     "affectedPages": [
      {
@@ -113,8 +165,28 @@
       "instances": 4
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events",
+      "instances": 1
+     },
+     {
       "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
       "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "instances": 30
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+      "instances": 3
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
@@ -142,20 +214,20 @@
       "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director\">NIH Office of the Director</a>"
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-      "target": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a",
-      "html": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">Common Data Elements (CDEs) program</a>"
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "target": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31827281\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Mutations that prevent caspase cle"
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "target": "p:nth-child(4) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>"
      }
     ]
    },
    "region": {
-    "count": 8,
-    "pages": 4,
+    "count": 17,
+    "pages": 9,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -164,8 +236,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events"
     ],
     "affectedPages": [
      {
@@ -173,7 +245,27 @@
       "instances": 2
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events",
+      "instances": 1
+     },
+     {
       "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
       "instances": 2
      },
      {
@@ -197,19 +289,77 @@
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "#system-breadcrumb",
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+      "url": "https://www.nih.gov/news-events",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
+     }
+    ]
+   },
+   "image-alt": {
+    "count": 2,
+    "pages": 1,
+    "impact": "critical",
+    "help": "Images must have alternative text",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/image-alt?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag111"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events",
+      "target": "a[title=\"NIH News in Health\"] > .thumbnail-teaser__img > .image-style-thumbnail-large[loading=\"lazy\"][width=\"200\"]",
+      "html": "<img loading=\"lazy\" src=\"/sites/default/files/styles/thumbnail_large/public/2024-12/newsinhealth-fanned-out.jpg?itok=DvFTBOva\" width=\"200\" height=\"auto\" class=\"image-style-thumbnail-large\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events",
+      "target": "a[title=\"NIH Research Matters\"] > .thumbnail-teaser__img > .image-style-thumbnail-large[loading=\"lazy\"][width=\"200\"]",
+      "html": "<img loading=\"lazy\" src=\"/sites/default/files/styles/thumbnail_large/public/2024-12/researchmatters-collage-square.jpg?itok=2pX42waR\" width=\"200\" height=\"auto\" class=\"image-style-thumbnail-large\">"
+     }
+    ]
+   },
+   "page-has-heading-one": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Page should contain a level-one heading",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/page-has-heading-one?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events",
+      "target": "html",
+      "html": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\">"
      }
     ]
    },
@@ -249,27 +399,62 @@
       "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
      }
     ]
+   },
+   "empty-heading": {
+    "count": 1,
+    "pages": 1,
+    "impact": "minor",
+    "help": "Headings should not be empty",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-heading?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+      "target": "article > div > h3",
+      "html": "<h3></h3>"
+     }
+    ]
    }
   }
  },
  "alfa": {
-  "failedTotal": 235,
-  "pagesWithFailures": 2,
-  "pagesScanned": 2,
+  "failedTotal": 506,
+  "pagesWithFailures": 4,
+  "pagesScanned": 4,
   "medianFailures": 118,
   "rules": {
    "sia-r66": {
-    "count": 98,
-    "pages": 2,
+    "count": 272,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
       "instances": 53
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 48
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "instances": 126
      },
      {
       "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
@@ -293,27 +478,37 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "text: \"Health Information\"",
       "html": null
      }
     ]
    },
    "sia-r53": {
-    "count": 1,
-    "pages": 1,
+    "count": 3,
+    "pages": 3,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 1
      }
     ],
@@ -322,20 +517,39 @@
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
       "target": "<h3>",
       "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "target": "<h3 class=\"usa-card__heading font-family-sans\">",
+      "html": null
      }
     ]
    },
    "sia-r73": {
-    "count": 6,
-    "pages": 2,
+    "count": 12,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 3
      },
      {
@@ -360,29 +574,38 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      }
     ]
    },
    "sia-r62": {
-    "count": 4,
-    "pages": 2,
+    "count": 7,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
       "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "instances": 1
      },
      {
       "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
@@ -401,28 +624,42 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
-      "target": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "target": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31827281\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
      }
     ]
    },
    "sia-r18": {
-    "count": 4,
-    "pages": 2,
+    "count": 8,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 2
      },
      {
@@ -442,28 +679,42 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
      }
     ]
    },
    "sia-r61": {
-    "count": 2,
-    "pages": 2,
+    "count": 4,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 1
      },
      {
@@ -474,6 +725,16 @@
     "instances": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      },
@@ -485,16 +746,25 @@
     ]
    },
    "sia-r57": {
-    "count": 8,
-    "pages": 2,
+    "count": 16,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 4
      },
      {
@@ -519,29 +789,38 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      }
     ]
    },
    "sia-r111": {
-    "count": 112,
-    "pages": 2,
+    "count": 184,
+    "pages": 4,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
       "instances": 29
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+      "instances": 24
+     },
+     {
+      "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+      "instances": 48
      },
      {
       "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
@@ -565,12 +844,12 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1",
+      "url": "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
       "html": null
      }
@@ -579,12 +858,12 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 29,
+  "uniqueIssues": 64,
   "consensus": 0,
-  "axeOnly": 14,
-  "alfaOnly": 15,
-  "rawAxe": 14,
-  "rawAlfa": 15,
+  "axeOnly": 33,
+  "alfaOnly": 31,
+  "rawAxe": 33,
+  "rawAlfa": 31,
   "byKey": {
    "axe-core:heading-order": {
     "actRuleId": null,
@@ -592,7 +871,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 2,
+    "pages": 6,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -601,7 +880,7 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 2,
+    "pages": 4,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -610,7 +889,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 4,
+    "pages": 9,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -619,7 +898,25 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 4,
+    "pages": 9,
+    "engines": "axe"
+   },
+   "act:23a2a8": {
+    "actRuleId": "23a2a8",
+    "axeRules": [
+     "image-alt"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "axe-core:page-has-heading-one": {
+    "actRuleId": null,
+    "axeRules": [
+     "page-has-heading-one"
+    ],
+    "alfaRules": [],
+    "pages": 1,
     "engines": "axe"
    },
    "axe-core:list": {
@@ -631,13 +928,22 @@
     "pages": 2,
     "engines": "axe"
    },
+   "act:ffd0e9": {
+    "actRuleId": "ffd0e9",
+    "axeRules": [
+     "empty-heading"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
    "alfa:sia-r66": {
     "actRuleId": null,
     "axeRules": [],
     "alfaRules": [
      "sia-r66"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r53": {
@@ -646,7 +952,7 @@
     "alfaRules": [
      "sia-r53"
     ],
-    "pages": 1,
+    "pages": 3,
     "engines": "alfa"
    },
    "alfa:sia-r73": {
@@ -655,7 +961,7 @@
     "alfaRules": [
      "sia-r73"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r62": {
@@ -664,7 +970,7 @@
     "alfaRules": [
      "sia-r62"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "act:5c01ea": {
@@ -673,7 +979,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r61": {
@@ -682,7 +988,7 @@
     "alfaRules": [
      "sia-r61"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r57": {
@@ -691,7 +997,7 @@
     "alfaRules": [
      "sia-r57"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    },
    "alfa:sia-r111": {
@@ -700,29 +1006,29 @@
     "alfaRules": [
      "sia-r111"
     ],
-    "pages": 2,
+    "pages": 4,
     "engines": "alfa"
    }
   }
  },
  "sustainability": {
-  "pages": 76,
+  "pages": 151,
   "medianBytes": 63177,
-  "meanBytes": 79992,
-  "medianRequests": 7,
-  "totalCo2g": 0.9,
-  "meanCo2g": 0.0119,
-  "totalEnergyWh": 1.83,
-  "meanEnergyWh": 0.024
+  "meanBytes": 71640,
+  "medianRequests": 6,
+  "totalCo2g": 1.61,
+  "meanCo2g": 0.0107,
+  "totalEnergyWh": 3.25,
+  "meanEnergyWh": 0.0215
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 93,
+  "total": 98,
   "byType": {
-   "image": 2,
+   "image": 4,
    "document": 67,
-   "spreadsheet": 22,
-   "pdf": 2
+   "pdf": 5,
+   "spreadsheet": 22
   },
   "list": [
    {
@@ -734,11 +1040,51 @@
     ]
    },
    {
+    "url": "https://nih.gov/sites/default/files/2025-03/20200107-cria.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease"
+    ]
+   },
+   {
     "url": "https://www.nih.gov/sites/default/files/CDEs/2026-08/lsns-copyright-statement.docx",
     "type": "document",
     "pages": 1,
     "examplePages": [
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20190521-processed.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
+    ]
+   },
+   {
+    "url": "https://www.uspreventiveservicestaskforce.org/uspstf/sites/default/files/file/supporting_documents/aspirin-cvd-prevention-final-rec-bulletin.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-06/framingham-heart-study.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "url": "https://www.hrsa.gov/sites/default/files/hrsa/advisory-committees/heritable-disorders/reports-recommendations/response-congenital-cyanotic.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ]
    },
    {
@@ -1472,96 +1818,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 2,
+  "pagesChecked": 3,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (6/6)",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 2,
+  "pagesChecked": 3,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -1570,7 +1916,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -1579,7 +1925,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -1588,7 +1934,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -1597,13 +1943,17 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
      {
       "evidence": "No manifest declared",
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events"
      },
      {
       "evidence": "No manifest declared",
@@ -1615,13 +1965,17 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
      {
       "evidence": "No manifest declared",
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events"
      },
      {
       "evidence": "No manifest declared",
@@ -1633,7 +1987,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -1642,7 +1996,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -1651,13 +2005,17 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 2,
+    "total": 3,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
      {
       "evidence": "no readable web app manifest; no service worker registered",
       "url": "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events"
      },
      {
       "evidence": "no readable web app manifest; no service worker registered",
@@ -1668,8 +2026,8 @@
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 2,
-    "total": 2,
+    "pass": 3,
+    "total": 3,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -1767,18 +2125,27 @@
   }
  },
  "plainLanguage": {
-  "pagesChecked": 2,
-  "pagesScored": 1,
-  "medianWordsPerPage": 1168,
-  "medianReadingEase": 42.4,
-  "medianGrade": 12.6,
+  "pagesChecked": 3,
+  "pagesScored": 2,
+  "medianWordsPerPage": 806,
+  "medianReadingEase": 50,
+  "medianGrade": 12,
   "topUnexplainedAcronyms": [
    {
     "acronym": "NIH",
+    "pages": 3,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "acronym": "PMID",
     "pages": 2,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
@@ -1817,70 +2184,71 @@
     ]
    },
    {
-    "acronym": "PMID",
+    "acronym": "KD",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "acronym": "HEAL",
+    "acronym": "KY",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "acronym": "CDE",
+    "acronym": "ST",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "acronym": "PHQ",
+    "acronym": "LA",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "acronym": "GAD",
+    "acronym": "CG",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "acronym": "CRF",
+    "acronym": "AM",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "acronym": "MSAS",
+    "acronym": "PV",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "acronym": "SF",
+    "acronym": "PJ",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "acronym": "FACT",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    }
   ],
   "topMisspellings": [
+   {
+    "word": "doi",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
+    ]
+   },
    {
     "word": "iStock",
     "pages": 1,
@@ -1931,13 +2299,6 @@
     ]
    },
    {
-    "word": "doi",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
-    ]
-   },
-   {
     "word": "jamainternmed",
     "pages": 1,
     "examplePages": [
@@ -1945,122 +2306,122 @@
     ]
    },
    {
-    "word": "CDEs",
+    "word": "american",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "InitiativeCommon",
+    "word": "Libitum",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "anhedonia",
+    "word": "Ayuketah",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "phq",
+    "word": "Brychta",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "crf",
+    "word": "Cai",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "swedish",
+    "word": "Cassimatis",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "docx",
+    "word": "Costa",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "cdes",
+    "word": "Courville",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "xlsx",
+    "word": "Darcey",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "spanish",
+    "word": "Forde",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "arabic",
+    "word": "Gharib",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "somali",
+    "word": "Guo",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "Subscale",
+    "word": "McGehee",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "bpi",
+    "word": "Ouwerkerk",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "japanese",
+    "word": "Raisinger",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    },
    {
-    "word": "korean",
+    "word": "Rozga",
     "pages": 1,
     "examplePages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
     ]
    }
   ]
  },
  "lighthouse": null,
  "linkCheck": {
-  "brokenCount": 2,
+  "brokenCount": 8,
   "broken": [
    {
     "url": "https://www.nia.nih.gov/health/heart-health",
@@ -2077,12 +2438,68 @@
     "foundOn": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
     ]
+   },
+   {
+    "url": "https://www.niams.nih.gov/health-topics/autoinflammatory-diseases",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/news/daily-low-dose-aspirin-found-have-no-effect-healthy-lifespan-older-people%20",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/news/daily-low-dose-aspirin-has-little-impact-stroke-risk-and-spikes-risk-brain-bleeding-falls",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "url": "https://newsroom.uvahealth.com/2020/01/02/fda-approves-uva-developed-artificial-pancreas/%20",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "url": "https://www.fda.gov/news-events/press-announcements/fda-approves-new-drug-treatment-chronic-weight-management-first-2014?utm_medium=email&utm_source=govdelivery",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "url": "https://www.niddk.nih.gov/about-niddk/research-areas/diabetes/diabetes-prevention-program-dpp/Pages/default.aspx",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
    }
   ]
  },
  "errorPages": [
   {
+   "url": "https://nih.gov/news-events/news-releases/hhs-doubles-ai-backed-childhood-cancer-research-funding",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/challenges/supplements-facts-first-digital-adventure-every-age-challenge",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/other-public-information-servers",
    "status": 403
   },
   {
@@ -2094,7 +2511,19 @@
    "status": 403
   },
   {
+   "url": "https://nih.gov/news-events/nih-research-matters/2021-research-highlights-human-health-advances-0",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/news-events/news-releases/brain-scan-guided-emergency-stroke-treatment-can-save-more-lives",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/brain-immunity-may-undergo-major-midlife-overhaul",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
    "status": 403
   },
   {
@@ -2102,7 +2531,19 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/blood-tests-show-promise-early-alzheimers-diagnosis",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-july-17-2014",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/neural-signature-predicts-antidepressant-response",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/rural-youth-often-lack-access-suicide-prevention-services",
    "status": 403
   },
   {
@@ -2114,7 +2555,15 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/research-context-obesity-metabolic-health",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/news-events/nih-research-matters/ai-tool-predicts-response-cancer-therapy",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/nanoparticles-developed-traumatic-brain-injury",
    "status": 403
   },
   {
@@ -2122,7 +2571,15 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/brain/funding/approved-initiative-concepts",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/nih-research-matters/viagra-associated-reduced-risk-alzheimers-disease",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-almanac/national-institute-aging-nia",
    "status": 403
   },
   {
@@ -2130,81 +2587,258 @@
    "status": 403
   },
   {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/disrupting-normal-hormone-cycle-spurs-fat-cells",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/poverty-reduction-alters-infant-brain-activity",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/paralyzed-men-gain-movement-without-surgery",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/include-project/down-syndrome-research-plan",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/news-releases/hhs-nih-launch-next-generation-universal-vaccine-platform-pandemic-prone-viruses",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/progress-inclusion-women-clinical-research",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/drugs-treat-spinal-disc-degeneration-mice",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/ultrasound-imaging-gets-small-wearable",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/echo/program-components/echo-cohort-study-sites",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/compound-produced-bacteria-protects-skin",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/potent-neutralizing-antibodies-target-new-regions-coronavirus-spike",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/new-genes-tied-alzheimers-disease",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/most-ovarian-cysts-may-not-need-surveillance",
+   "url": "https://nih.gov/news-events/nih-research-matters/intranasal-proteins-could-protect-against-covid-19-variants",
    "status": 403
   }
  ],
  "tech": null,
  "images": {
-  "pagesScanned": 4,
-  "totalImages": 57,
-  "uniqueImages": 16,
-  "missingAlt": 0,
+  "pagesScanned": 9,
+  "totalImages": 139,
+  "uniqueImages": 31,
+  "missingAlt": 2,
   "decorative": 0,
-  "withAlt": 57,
+  "withAlt": 137,
   "altVerdicts": {
-   "GOOD": 13,
-   "SUSPICIOUS": 1,
-   "TOO_SHORT": 2
+   "GOOD": 25,
+   "SUSPICIOUS": 2,
+   "TOO_SHORT": 2,
+   "MISSING": 2
   }
  },
  "techFindings": null,
- "thirdParty": null,
+ "thirdParty": {
+  "pagesScanned": 1,
+  "vendors": [
+   {
+    "origin": "googletagmanager.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 622810,
+    "medianDurationMs": 499,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "origin": "crazyegg.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 68389,
+    "medianDurationMs": 381,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "origin": "cloudflareinsights.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 30294,
+    "medianDurationMs": 60,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "origin": "digitalgov.gov",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 30230,
+    "medianDurationMs": 81,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "origin": "google-analytics.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 20805,
+    "medianDurationMs": 284,
+    "medianRequests": 5,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "origin": "pinterest.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 18901,
+    "medianDurationMs": 329,
+    "medianRequests": 3,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "origin": "verint-cdn.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 106,
+    "medianDurationMs": 107,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   }
+  ]
+ },
  "componentClusters": {
   "design_system": "none",
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 30,
+  "total_clusters": 41,
   "clusters": [
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 10.8,
+    "estimated_fix_impact": {
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
    {
     "id": "cc-981d69379a79",
     "engine_key": "axe-core",
@@ -2234,157 +2868,13 @@
     ]
    },
    {
-    "id": "cc-c522046e8174",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-3c4299c743bc",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".callout__text > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".callout__text > h3",
-    "representative_snippet": "<h3>At a Glance</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
-    ]
-   },
-   {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
-    ]
-   },
-   {
-    "id": "cc-cffcfd807590",
-    "engine_key": "alfa",
-    "rule_id": "sia-r61",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
-    "snippet_shape": "",
-    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
     "id": "cc-cd5f617ba5c1",
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -2392,16 +2882,18 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
    },
@@ -2410,12 +2902,543 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.2,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-19c608daabd2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-3eaef533ce36",
+    "engine_key": "axe-core",
+    "rule_id": "image-alt",
+    "severity": "Critical",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[title=\"nih news in health\"] > .thumbnail-teaser__img > .image-style-thumbnail-large[loading=\"lazy\"][width=\"#\"]",
+    "snippet_shape": "img:",
+    "representative_selector": "a[title=\"NIH News in Health\"] > .thumbnail-teaser__img > .image-style-thumbnail-large[loading=\"lazy\"][width=\"200\"]",
+    "representative_snippet": "<img loading=\"lazy\" src=\"/sites/default/files/styles/thumbnail_large/public/2024-12/newsinhealth-fanned-out.jpg?itok=DvFTBOva\" width=\"200\" height=\"auto\" class=\"image-style-thumbnail-large\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events"
+    ]
+   },
+   {
+    "id": "cc-75d05b684772",
+    "engine_key": "axe-core",
+    "rule_id": "image-alt",
+    "severity": "Critical",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[title=\"nih research matters\"] > .thumbnail-teaser__img > .image-style-thumbnail-large[loading=\"lazy\"][width=\"#\"]",
+    "snippet_shape": "img:",
+    "representative_selector": "a[title=\"NIH Research Matters\"] > .thumbnail-teaser__img > .image-style-thumbnail-large[loading=\"lazy\"][width=\"200\"]",
+    "representative_snippet": "<img loading=\"lazy\" src=\"/sites/default/files/styles/thumbnail_large/public/2024-12/researchmatters-collage-square.jpg?itok=2pX42waR\" width=\"200\" height=\"auto\" class=\"image-style-thumbnail-large\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events"
+    ]
+   },
+   {
+    "id": "cc-8cbe4219c5ad",
+    "engine_key": "axe-core",
+    "rule_id": "page-has-heading-one",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "html",
+    "snippet_shape": "html:",
+    "representative_selector": "html",
+    "representative_snippet": "<html lang=\"en\" dir=\"ltr\" prefix=\"og: https://ogp.me/ns#\" class=\" js\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
     "representative_snippet": null,
     "design_components": [],
     "drift": false,
@@ -2430,398 +3453,7 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-990743262834",
-    "engine_key": "alfa",
-    "rule_id": "sia-r53",
-    "severity": "Moderate",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "<h3>",
-    "snippet_shape": "",
-    "representative_selector": "<h3>",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
-    ]
-   },
-   {
-    "id": "cc-8e242a862e3a",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-992ed06f0f6c",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"health information\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Health Information\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-0bad39ad282b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"grants & funding\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Grants & Funding\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-19c608daabd2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<p class=\"usa-banner__header-text\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-banner__header-text\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-56d16a8447b2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-e5e84016a2ec",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-8cbcff6b68da",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-b3dd9d9563fe",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"nih websites are changing\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH Websites Are Changing\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-f78cd49f3540",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-aba72eba36dd",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-7c67d227d1f8",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "snippet_shape": "",
-    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-3c8788d59ab6",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "snippet_shape": "",
-    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-b39e5ed2e696",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "<a href=\"/virtual-tour\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"/virtual-tour\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease"
     ]
    },
    {
@@ -2829,9 +3461,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 9,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
     "snippet_shape": "a:href",
     "representative_selector": "p:nth-child(20) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -2839,17 +3471,132 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.2,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 9,
+    "action_score": 1.6,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
      "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 9,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 9,
+    "action_score": 1.6,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 9,
+    "pages_affected": 3,
+    "instances": 6,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 9,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~6 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
+    ]
+   },
+   {
+    "id": "cc-4d6425443650",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology"
+    ]
+   },
+   {
+    "id": "cc-a687f4c8677c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h3 class=\"usa-card__heading font-family-sans\">",
+    "snippet_shape": "",
+    "representative_selector": "<h3 class=\"usa-card__heading font-family-sans\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
     ]
    },
    {
@@ -2857,7 +3604,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a",
@@ -2868,8 +3615,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.2,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.8,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -2881,31 +3628,57 @@
     ]
    },
    {
-    "id": "cc-0cb84ddbdf67",
+    "id": "cc-17f9a6ba03ce",
     "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 4,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-card.usa-card--header-first.usa-card--sans-serif-heading:nth-child(*) > .paragraph--type--flip-card.nih-flip-card.usa-card__container > .nih-flip-card__front > .usa-card__header > .usa-card__heading.font-family-sans",
+    "snippet_shape": "h3:",
+    "representative_selector": ".usa-card.usa-card--header-first.usa-card--sans-serif-heading:nth-child(1) > .paragraph--type--flip-card.nih-flip-card.usa-card__container > .nih-flip-card__front > .usa-card__header > .usa-card__heading.font-family-sans",
+    "representative_snippet": "<h3 class=\"usa-card__heading font-family-sans\"><a id=\"artificial-heart-valves\" class=\"usa-anchor\"></a>Artificial Heart Valves</h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 1.2,
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "id": "cc-016097d297c9",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology"
     ]
    },
    {
@@ -2913,7 +3686,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 4,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -2924,8 +3697,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.67,
+    "distinct_components_for_rule": 4,
+    "action_score": 0.5,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2936,11 +3709,38 @@
     ]
    },
    {
+    "id": "cc-10240c1aa126",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31827281\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.5,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease"
+    ]
+   },
+   {
     "id": "cc-5373c45b4edc",
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
+    "rule_pages_affected": 4,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
@@ -2951,8 +3751,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.67,
+    "distinct_components_for_rule": 4,
+    "action_score": 0.5,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2963,30 +3763,84 @@
     ]
    },
    {
-    "id": "cc-7593579d1f63",
+    "id": "cc-342fa9018711",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
-    "instances": 2,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "instances": 3,
+    "selector_path": "ol:nth-child(*) > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "representative_selector": "ol:nth-child(3) > li:nth-child(1) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/1992323/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">1992323</a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
     "estimated_fix_impact": {
-     "findings": 2,
+     "findings": 3,
      "pages": 1,
-     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+     "statement": "Fix one place, resolve ~3 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health"
+    ]
+   },
+   {
+    "id": "cc-88a2d7290075",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 9,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(9) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
+    "representative_snippet": "<a href=\"https://dpcpsi.nih.gov/hormone-homeostasis\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">here</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology"
+    ]
+   },
+   {
+    "id": "cc-50d6944a3868",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 9,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(10) > a[href=\"/\"]",
+    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology"
     ]
    },
    {
@@ -2994,7 +3848,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3005,8 +3859,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3021,7 +3875,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 4,
+    "rule_pages_affected": 9,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -3032,8 +3886,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 6,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 9,
+    "action_score": 0.4,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -3045,6 +3899,135 @@
    }
   ],
   "top_actions": [
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 9,
+    "instances": 9,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 10.8,
+    "estimated_fix_impact": {
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 9,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 9.6,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 8,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
    {
     "id": "cc-981d69379a79",
     "engine_key": "axe-core",
@@ -3074,157 +4057,13 @@
     ]
    },
    {
-    "id": "cc-c522046e8174",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 4,
-    "pages_affected": 4,
-    "instances": 4,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 4,
-     "pages": 4,
-     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-3c4299c743bc",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".callout__text > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".callout__text > h3",
-    "representative_snippet": "<h3>At a Glance</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
-    ]
-   },
-   {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4.8,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
-    ]
-   },
-   {
-    "id": "cc-cffcfd807590",
-    "engine_key": "alfa",
-    "rule_id": "sia-r61",
-    "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
-    "snippet_shape": "",
-    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 4,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
     "id": "cc-cd5f617ba5c1",
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -3232,16 +4071,18 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
    },
@@ -3250,9 +4091,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -3260,44 +4101,49 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
    },
    {
-    "id": "cc-990743262834",
-    "engine_key": "alfa",
-    "rule_id": "sia-r53",
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "<h3>",
-    "snippet_shape": "",
-    "representative_selector": "<h3>",
-    "representative_snippet": null,
+    "rule_pages_affected": 6,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 2,
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.2,
     "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients"
     ]
    },
    {
@@ -3305,9 +4151,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -3315,16 +4161,48 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "content",
+    "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 1.33,
+    "action_score": 2.67,
     "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.67,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
    }
@@ -3335,6 +4213,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 900,
- "pagesSucceeded": 6
+ "pagesAttempted": 1800,
+ "pagesSucceeded": 12
 }
