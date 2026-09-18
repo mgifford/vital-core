@@ -1,29 +1,30 @@
 {
  "domain": "nih.gov",
  "week": "2026-W38",
- "generatedAt": "2026-09-17T17:16:57.777Z",
- "pagesScanned": 3140,
- "pagesAudited": 20,
+ "generatedAt": "2026-09-18T16:43:54.524Z",
+ "pagesScanned": 3333,
+ "pagesAudited": 22,
  "coverage": {
-  "sustainability": 333,
-  "axe": 20,
-  "alfa": 10,
-  "resources": 20,
-  "standards": 9,
+  "sustainability": 348,
+  "axe": 22,
+  "alfa": 11,
+  "resources": 22,
+  "standards": 10,
   "security": 2,
   "plain-language": 8,
-  "deprecated-html": 2
+  "deprecated-html": 2,
+  "lighthouse": 1
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 169,
-  "pagesWithViolations": 20,
-  "pagesScanned": 20,
+  "violationTotal": 185,
+  "pagesWithViolations": 22,
+  "pagesScanned": 22,
   "medianViolations": 8,
   "rules": {
    "heading-order": {
-    "count": 14,
-    "pages": 14,
+    "count": 16,
+    "pages": 16,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -65,6 +66,10 @@
       "instances": 1
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 1
      },
@@ -78,6 +83,10 @@
      },
      {
       "url": "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
       "instances": 1
      },
      {
@@ -122,8 +131,8 @@
     ]
    },
    "landmark-unique": {
-    "count": 9,
-    "pages": 9,
+    "count": 11,
+    "pages": 11,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -165,6 +174,14 @@
       "instances": 1
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 1
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
       "instances": 1
      },
@@ -202,8 +219,8 @@
     ]
    },
    "link-in-text-block": {
-    "count": 99,
-    "pages": 20,
+    "count": 107,
+    "pages": 22,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -254,6 +271,10 @@
       "instances": 4
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 4
+     },
+     {
       "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 30
      },
@@ -276,6 +297,10 @@
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
       "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 4
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
@@ -327,8 +352,8 @@
     ]
    },
    "region": {
-    "count": 39,
-    "pages": 20,
+    "count": 43,
+    "pages": 22,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -378,6 +403,10 @@
       "instances": 2
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
       "instances": 2
      },
@@ -399,6 +428,10 @@
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
       "instances": 2
      },
      {
@@ -594,14 +627,14 @@
   }
  },
  "alfa": {
-  "failedTotal": 1027,
-  "pagesWithFailures": 10,
-  "pagesScanned": 10,
-  "medianFailures": 92,
+  "failedTotal": 1120,
+  "pagesWithFailures": 11,
+  "pagesScanned": 11,
+  "medianFailures": 93,
   "rules": {
    "sia-r66": {
-    "count": 539,
-    "pages": 10,
+    "count": 591,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -642,6 +675,10 @@
       "instances": 56
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 52
+     },
+     {
       "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
       "instances": 44
      },
@@ -679,8 +716,8 @@
     ]
    },
    "sia-r53": {
-    "count": 7,
-    "pages": 7,
+    "count": 8,
+    "pages": 8,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -710,6 +747,10 @@
      },
      {
       "url": "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
       "instances": 1
      },
      {
@@ -746,8 +787,8 @@
     ]
    },
    "sia-r73": {
-    "count": 32,
-    "pages": 10,
+    "count": 35,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -788,6 +829,10 @@
       "instances": 3
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 3
+     },
+     {
       "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
       "instances": 3
      },
@@ -825,8 +870,8 @@
     ]
    },
    "sia-r62": {
-    "count": 29,
-    "pages": 10,
+    "count": 31,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -867,6 +912,10 @@
       "instances": 10
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 2
+     },
+     {
       "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
       "instances": 2
      },
@@ -904,8 +953,8 @@
     ]
    },
    "sia-r18": {
-    "count": 20,
-    "pages": 10,
+    "count": 22,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -946,6 +995,10 @@
       "instances": 2
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 2
+     },
+     {
       "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
       "instances": 2
      },
@@ -983,8 +1036,8 @@
     ]
    },
    "sia-r61": {
-    "count": 10,
-    "pages": 10,
+    "count": 11,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -1025,6 +1078,10 @@
       "instances": 1
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 1
+     },
+     {
       "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
       "instances": 1
      },
@@ -1062,8 +1119,8 @@
     ]
    },
    "sia-r57": {
-    "count": 40,
-    "pages": 10,
+    "count": 44,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -1104,6 +1161,10 @@
       "instances": 4
      },
      {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+      "instances": 4
+     },
+     {
       "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
       "instances": 4
      },
@@ -1141,8 +1202,8 @@
     ]
    },
    "sia-r111": {
-    "count": 342,
-    "pages": 10,
+    "count": 370,
+    "pages": 11,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -1180,6 +1241,10 @@
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+      "instances": 28
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
       "instances": 28
      },
      {
@@ -1330,12 +1395,12 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 152,
+  "uniqueIssues": 168,
   "consensus": 2,
-  "axeOnly": 68,
-  "alfaOnly": 82,
-  "rawAxe": 70,
-  "rawAlfa": 84,
+  "axeOnly": 76,
+  "alfaOnly": 90,
+  "rawAxe": 78,
+  "rawAlfa": 92,
   "byKey": {
    "axe-core:heading-order": {
     "actRuleId": null,
@@ -1343,7 +1408,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 14,
+    "pages": 16,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -1352,7 +1417,7 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 9,
+    "pages": 11,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -1361,7 +1426,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 20,
+    "pages": 22,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -1370,7 +1435,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 20,
+    "pages": 22,
     "engines": "axe"
    },
    "act:23a2a8": {
@@ -1417,7 +1482,7 @@
     "alfaRules": [
      "sia-r66"
     ],
-    "pages": 10,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r53": {
@@ -1426,7 +1491,7 @@
     "alfaRules": [
      "sia-r53"
     ],
-    "pages": 7,
+    "pages": 8,
     "engines": "alfa"
    },
    "alfa:sia-r73": {
@@ -1435,7 +1500,7 @@
     "alfaRules": [
      "sia-r73"
     ],
-    "pages": 10,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r62": {
@@ -1444,7 +1509,7 @@
     "alfaRules": [
      "sia-r62"
     ],
-    "pages": 10,
+    "pages": 11,
     "engines": "alfa"
    },
    "act:5c01ea": {
@@ -1453,7 +1518,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 10,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r61": {
@@ -1462,7 +1527,7 @@
     "alfaRules": [
      "sia-r61"
     ],
-    "pages": 10,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r57": {
@@ -1471,7 +1536,7 @@
     "alfaRules": [
      "sia-r57"
     ],
-    "pages": 10,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r111": {
@@ -1480,7 +1545,7 @@
     "alfaRules": [
      "sia-r111"
     ],
-    "pages": 10,
+    "pages": 11,
     "engines": "alfa"
    },
    "alfa:sia-r85": {
@@ -1504,20 +1569,20 @@
   }
  },
  "sustainability": {
-  "pages": 333,
+  "pages": 348,
   "medianBytes": 63177,
-  "meanBytes": 77421,
+  "meanBytes": 76807,
   "medianRequests": 6,
-  "totalCo2g": 3.83,
-  "meanCo2g": 0.0115,
-  "totalEnergyWh": 7.75,
-  "meanEnergyWh": 0.0233
+  "totalCo2g": 3.97,
+  "meanCo2g": 0.0114,
+  "totalEnergyWh": 8.03,
+  "meanEnergyWh": 0.0231
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 105,
+  "total": 107,
   "byType": {
-   "image": 11,
+   "image": 13,
    "document": 67,
    "pdf": 5,
    "spreadsheet": 22
@@ -1588,6 +1653,14 @@
     ]
    },
    {
+    "url": "https://nih.gov/sites/default/files/2025-06/20250603-substance.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ]
+   },
+   {
     "url": "https://www.uspreventiveservicestaskforce.org/uspstf/sites/default/files/file/supporting_documents/aspirin-cvd-prevention-final-rec-bulletin.pdf",
     "type": "pdf",
     "pages": 1,
@@ -1625,6 +1698,14 @@
     "pages": 1,
     "examplePages": [
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-02/20180918-regrowth.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue"
     ]
    },
    {
@@ -2366,96 +2447,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 9,
+  "pagesChecked": 10,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 8,
-    "total": 9,
-    "rate": 89
+    "pass": 9,
+    "total": 10,
+    "rate": 90
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (5/6)",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 9,
+  "pagesChecked": 10,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -2464,7 +2545,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -2473,7 +2554,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -2482,7 +2563,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -2491,7 +2572,7 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
@@ -2513,7 +2594,7 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
@@ -2535,7 +2616,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -2544,7 +2625,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -2553,7 +2634,7 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 9,
+    "total": 10,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
@@ -2574,8 +2655,8 @@
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 9,
-    "total": 9,
+    "pass": 10,
+    "total": 10,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -2982,9 +3063,364 @@
    }
   ]
  },
- "lighthouse": null,
+ "lighthouse": {
+  "pagesSampled": 1,
+  "medianPerformance": 35,
+  "medianAccessibility": 95,
+  "medianBestPractices": 77,
+  "medianSeo": 100,
+  "medianPwa": null,
+  "medianAgentic": 59,
+  "distributions": {
+   "performance": {
+    "min": 35,
+    "max": 35,
+    "p10": 35,
+    "p25": 35,
+    "p50": 35,
+    "p75": 35,
+    "p90": 35,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "accessibility": {
+    "min": 95,
+    "max": 95,
+    "p10": 95,
+    "p25": 95,
+    "p50": 95,
+    "p75": 95,
+    "p90": 95,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "bestPractices": {
+    "min": 77,
+    "max": 77,
+    "p10": 77,
+    "p25": 77,
+    "p50": 77,
+    "p75": 77,
+    "p90": 77,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "seo": {
+    "min": 100,
+    "max": 100,
+    "p10": 100,
+    "p25": 100,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "agentic": {
+    "min": 59,
+    "max": 59,
+    "p10": 59,
+    "p25": 59,
+    "p50": 59,
+    "p75": 59,
+    "p90": 59,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   }
+  },
+  "metrics": {
+   "firstContentfulPaintMs": 2843,
+   "largestContentfulPaintMs": 4566,
+   "speedIndexMs": 3691,
+   "totalBlockingTimeMs": 1011,
+   "cumulativeLayoutShift": 0.483
+  },
+  "pwaSignals": [],
+  "recommendations": [
+   {
+    "id": "mainthread-work-breakdown",
+    "category": "performance",
+    "title": "Minimize main-thread work",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 1000
+   },
+   {
+    "id": "bootup-time",
+    "category": "performance",
+    "title": "Reduce JavaScript execution time",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 1000
+   },
+   {
+    "id": "redirects",
+    "category": "performance",
+    "title": "Avoid multiple page redirects",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 900
+   },
+   {
+    "id": "unused-css-rules",
+    "category": "performance",
+    "title": "Reduce unused CSS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 113502,
+    "savingsMs": 300
+   },
+   {
+    "id": "unused-javascript",
+    "category": "performance",
+    "title": "Reduce unused JavaScript",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 356137,
+    "savingsMs": 0
+   },
+   {
+    "id": "document-latency-insight",
+    "category": "performance",
+    "title": "Document request latency",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 250
+   },
+   {
+    "id": "unminified-javascript",
+    "category": "performance",
+    "title": "Minify JavaScript",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 19164,
+    "savingsMs": 150
+   },
+   {
+    "id": "image-delivery-insight",
+    "category": "performance",
+    "title": "Improve image delivery",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 150
+   },
+   {
+    "id": "server-response-time",
+    "category": "performance",
+    "title": "Initial server response time was short",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 50
+   },
+   {
+    "id": "font-display-insight",
+    "category": "performance",
+    "title": "Font display",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 50
+   },
+   {
+    "id": "first-contentful-paint",
+    "category": "performance",
+    "title": "First Contentful Paint",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "largest-contentful-paint",
+    "category": "performance",
+    "title": "Largest Contentful Paint",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "speed-index",
+    "category": "performance",
+    "title": "Speed Index",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "total-blocking-time",
+    "category": "performance",
+    "title": "Total Blocking Time",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "max-potential-fid",
+    "category": "performance",
+    "title": "Max Potential First Input Delay",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "cumulative-layout-shift",
+    "category": "agentic-browsing",
+    "title": "Cumulative Layout Shift",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "errors-in-console",
+    "category": "best-practices",
+    "title": "Browser errors were logged to the console",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "interactive",
+    "category": "performance",
+    "title": "Time to Interactive",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "deprecations",
+    "category": "best-practices",
+    "title": "Uses deprecated APIs",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "webmcp-registered-tools",
+    "category": "agentic-browsing",
+    "title": "WebMCP tools registered",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "webmcp-form-coverage",
+    "category": "agentic-browsing",
+    "title": "WebMCP form coverage",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "webmcp-schema-validity",
+    "category": "agentic-browsing",
+    "title": "WebMCP schemas are valid",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "llms-txt",
+    "category": "agentic-browsing",
+    "title": "llms.txt follows recommendations",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "cls-culprits-insight",
+    "category": "performance",
+    "title": "Layout shift culprits",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "network-dependency-tree-insight",
+    "category": "performance",
+    "title": "Network dependency tree",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   }
+  ]
+ },
  "linkCheck": {
-  "brokenCount": 11,
+  "brokenCount": 12,
   "broken": [
    {
     "url": "https://www.nia.nih.gov/health/heart-health",
@@ -3072,6 +3508,14 @@
     "reason": "UND_ERR_CONNECT_TIMEOUT",
     "foundOn": [
      "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment"
+    ]
+   },
+   {
+    "url": "https://calendar.nih.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
     ]
    }
   ]
@@ -3180,14 +3624,14 @@
  ],
  "tech": null,
  "images": {
-  "pagesScanned": 20,
-  "totalImages": 297,
-  "uniqueImages": 41,
+  "pagesScanned": 22,
+  "totalImages": 327,
+  "uniqueImages": 43,
   "missingAlt": 2,
   "decorative": 0,
-  "withAlt": 295,
+  "withAlt": 325,
   "altVerdicts": {
-   "GOOD": 32,
+   "GOOD": 34,
    "SUSPICIOUS": 3,
    "TOO_SHORT": 2,
    "TOO_LONG": 2,
@@ -3324,9 +3768,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 20,
-    "pages_affected": 20,
-    "instances": 20,
+    "rule_pages_affected": 22,
+    "pages_affected": 22,
+    "instances": 22,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -3336,11 +3780,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 24,
+    "action_score": 26.4,
     "estimated_fix_impact": {
-     "findings": 20,
-     "pages": 20,
-     "statement": "Fix one place, resolve ~20 finding(s) on 20 page(s)."
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -3352,57 +3796,14 @@
      "https://www.nih.gov/news-events",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
      "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
      "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
      "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
      "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
-     "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 20,
-    "pages_affected": 19,
-    "instances": 19,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 2,
-    "action_score": 22.8,
-    "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
-     "https://www.nih.gov/news-events/nih-research-matters/how-psychedelic-drugs-may-help-depression",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
@@ -3415,9 +3816,9 @@
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 9,
-    "pages_affected": 9,
-    "instances": 9,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -3425,13 +3826,13 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 21.6,
+    "action_score": 26.4,
     "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 9,
-     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -3441,8 +3842,57 @@
      "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
      "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
      "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
      "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 22,
+    "pages_affected": 21,
+    "instances": 21,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 25.2,
+    "estimated_fix_impact": {
+     "findings": 21,
+     "pages": 21,
+     "statement": "Fix one place, resolve ~21 finding(s) on 21 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
+     "https://www.nih.gov/news-events/nih-research-matters/how-psychedelic-drugs-may-help-depression",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
+     "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
    },
    {
@@ -3450,9 +3900,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -3462,11 +3912,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 20,
+    "action_score": 22,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -3477,6 +3927,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -3486,9 +3937,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -3498,11 +3949,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 10,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -3513,6 +3964,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -3522,9 +3974,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -3534,11 +3986,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 10,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -3549,6 +4001,340 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -3582,337 +4368,13 @@
     ]
    },
    {
-    "id": "cc-8e242a862e3a",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-992ed06f0f6c",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "text: \"health information\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Health Information\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-0bad39ad282b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "text: \"grants & funding\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Grants & Funding\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-b3dd9d9563fe",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "text: \"nih websites are changing\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH Websites Are Changing\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-f78cd49f3540",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "snippet_shape": "",
-    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-aba72eba36dd",
-    "engine_key": "alfa",
-    "rule_id": "sia-r57",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "text: \"get the latest updates and faqs\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-7c67d227d1f8",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "snippet_shape": "",
-    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-3c8788d59ab6",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "snippet_shape": "",
-    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-b39e5ed2e696",
-    "engine_key": "alfa",
-    "rule_id": "sia-r111",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
-    "selector_path": "<a href=\"/virtual-tour\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"/virtual-tour\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 3,
-    "action_score": 6.67,
-    "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
     "id": "cc-990743262834",
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 7,
-    "pages_affected": 6,
-    "instances": 6,
+    "rule_pages_affected": 8,
+    "pages_affected": 7,
+    "instances": 7,
     "selector_path": "<h3>",
     "snippet_shape": "",
     "representative_selector": "<h3>",
@@ -3922,11 +4384,11 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 6,
+    "action_score": 7,
     "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+     "findings": 7,
+     "pages": 7,
+     "statement": "Fix one place, resolve ~7 finding(s) on 7 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -3934,6 +4396,7 @@
      "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
      "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014"
     ]
    },
@@ -3942,9 +4405,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "<p class=\"usa-banner__header-text\">",
     "snippet_shape": "",
     "representative_selector": "<p class=\"usa-banner__header-text\">",
@@ -3954,11 +4417,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 4,
-    "action_score": 5,
+    "action_score": 5.5,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -3969,6 +4432,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -3978,9 +4442,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "<p class=\"usa-identifier__identity-domain\">",
     "snippet_shape": "",
     "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
@@ -3990,11 +4454,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 4,
-    "action_score": 5,
+    "action_score": 5.5,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -4005,6 +4469,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -4014,9 +4479,9 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 14,
-    "pages_affected": 9,
-    "instances": 9,
+    "rule_pages_affected": 16,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": ".callout__text > h3",
     "snippet_shape": "h3:",
     "representative_selector": ".callout__text > h3",
@@ -4024,13 +4489,13 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 5,
-    "action_score": 4.32,
+    "action_score": 5.28,
     "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 9,
-     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -4040,6 +4505,8 @@
      "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
      "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
      "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
      "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies"
     ]
@@ -4049,9 +4516,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 8,
-    "instances": 8,
+    "rule_pages_affected": 11,
+    "pages_affected": 9,
+    "instances": 9,
     "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
     "snippet_shape": "",
     "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
@@ -4061,11 +4528,11 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 4,
-    "action_score": 4,
+    "action_score": 4.5,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 9,
+     "pages": 9,
+     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -4074,6 +4541,7 @@
      "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -4132,6 +4600,43 @@
     "affected_pages": [
      "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 22,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33582134/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Hydrating the Respiratory Tract: An A",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 14,
+    "action_score": 2.83,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
+     "https://www.nih.gov/news-events/nih-research-matters/how-psychedelic-drugs-may-help-depression",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
+     "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies"
     ]
    },
    {
@@ -4216,46 +4721,11 @@
     ]
    },
    {
-    "id": "cc-c3982f3f2935",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 20,
-    "pages_affected": 9,
-    "instances": 9,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(18) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33582134/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Hydrating the Respiratory Tract: An A",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 14,
-    "action_score": 2.31,
-    "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 9,
-     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
-     "https://www.nih.gov/news-events/nih-research-matters/how-psychedelic-drugs-may-help-depression",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
-     "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
-     "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies"
-    ]
-   },
-   {
     "id": "cc-0cb84ddbdf67",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 9,
     "instances": 9,
     "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
@@ -4290,9 +4760,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
     "snippet_shape": "",
     "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -4302,11 +4772,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 10,
-    "action_score": 2,
+    "action_score": 2.2,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -4317,8 +4787,43 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 22,
+    "pages_affected": 8,
+    "instances": 15,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 14,
+    "action_score": 2.06,
+    "estimated_fix_impact": {
+     "findings": 15,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~15 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue"
     ]
    },
    {
@@ -4378,43 +4883,11 @@
     ]
    },
    {
-    "id": "cc-7593579d1f63",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 20,
-    "pages_affected": 6,
-    "instances": 11,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 14,
-    "action_score": 1.54,
-    "estimated_fix_impact": {
-     "findings": 11,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~11 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain"
-    ]
-   },
-   {
     "id": "cc-d432f0651242",
     "engine_key": "alfa",
     "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "<p class=\"nih-subtitle\">",
@@ -4442,7 +4915,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r53",
     "severity": "Moderate",
-    "rule_pages_affected": 7,
+    "rule_pages_affected": 8,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<h3 class=\"usa-card__heading font-family-sans\">",
@@ -4469,7 +4942,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 14,
+    "rule_pages_affected": 16,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "h3:nth-child(*)",
@@ -4497,7 +4970,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -4526,7 +4999,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 2,
     "instances": 3,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
@@ -4554,7 +5027,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 2,
     "instances": 3,
     "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -4582,7 +5055,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "p:nth-child(*) > a",
@@ -4610,7 +5083,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a",
@@ -4638,7 +5111,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "p:nth-child(*) > a[href=\"/\"]",
@@ -4666,7 +5139,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 14,
+    "rule_pages_affected": 16,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".usa-card.usa-card--header-first.usa-card--sans-serif-heading:nth-child(*) > .paragraph--type--flip-card.nih-flip-card.usa-card__container > .nih-flip-card__front > .usa-card__header > .usa-card__heading.font-family-sans",
@@ -4693,7 +5166,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 14,
+    "rule_pages_affected": 16,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article > div > h3",
@@ -4720,7 +5193,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 14,
+    "rule_pages_affected": 16,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
@@ -4747,7 +5220,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -4768,6 +5241,34 @@
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
      "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset"
+    ]
+   },
+   {
+    "id": "cc-10240c1aa126",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31827281\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 10,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue"
     ]
    },
    {
@@ -4856,7 +5357,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 3,
     "selector_path": "ol:nth-child(*) > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -4883,7 +5384,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 2,
     "selector_path": "p:nth-child(*) > a[href$=\"style-guide/\"][data-extlink=\"\"][target=\"_blank\"]",
@@ -4910,7 +5411,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[href$=\"cc.nih.gov/\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
@@ -4937,7 +5438,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > .mailto[data-extlink=\"\"]",
@@ -4964,7 +5465,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 20,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"bethesda.org/\"]",
@@ -4987,38 +5488,11 @@
     ]
    },
    {
-    "id": "cc-10240c1aa126",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31827281\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 10,
-    "action_score": 0.2,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease"
-    ]
-   },
-   {
     "id": "cc-a18bebf652ae",
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.cc.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -5045,7 +5519,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"mailto:elizabeth.deatrick@nih.gov\" class=\"mailto\" data-extlink=\"\">",
@@ -5072,7 +5546,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"http://www.nejm.org/doi/full/#.#/nejmp1802256\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -5099,7 +5573,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.healdatafair.org/resources/guidance/selection\" target=\"_blank\" title=\"(opens in a new window)\" class=\"ext\">",
@@ -5126,7 +5600,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://datascience.nih.gov/strides#:~:text=the%20nih%20science%20and%20technology,access%20cloud%20services%20and%20environments.\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -5153,7 +5627,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"http://www.bethesda.org/\" target=\"_blank\" class=\"ext\" data-extlink=\"\">",
@@ -5180,7 +5654,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
+    "rule_pages_affected": 11,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
@@ -5209,9 +5683,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 20,
-    "pages_affected": 20,
-    "instances": 20,
+    "rule_pages_affected": 22,
+    "pages_affected": 22,
+    "instances": 22,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -5221,11 +5695,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 24,
+    "action_score": 26.4,
     "estimated_fix_impact": {
-     "findings": 20,
-     "pages": 20,
-     "statement": "Fix one place, resolve ~20 finding(s) on 20 page(s)."
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5237,57 +5711,14 @@
      "https://www.nih.gov/news-events",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
      "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
      "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
      "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
      "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
-     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
-     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
-     "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 20,
-    "pages_affected": 19,
-    "instances": 19,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "template",
-    "distinct_components_for_rule": 2,
-    "action_score": 22.8,
-    "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
-     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
-     "https://www.nih.gov/news-events/nih-research-matters/how-psychedelic-drugs-may-help-depression",
-     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
-     "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
-     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
-     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
-     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
-     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
-     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
-     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
-     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
@@ -5300,9 +5731,9 @@
     "engine_key": "axe-core",
     "rule_id": "landmark-unique",
     "severity": "Moderate",
-    "rule_pages_affected": 9,
-    "pages_affected": 9,
-    "instances": 9,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "#block-nih2-uswds-search",
     "snippet_shape": "div:role",
     "representative_selector": "#block-nih2-uswds-search",
@@ -5310,13 +5741,13 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
+    "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 21.6,
+    "action_score": 26.4,
     "estimated_fix_impact": {
-     "findings": 9,
-     "pages": 9,
-     "statement": "Fix one place, resolve ~9 finding(s) on 9 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5326,8 +5757,57 @@
      "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
      "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
      "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
      "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 22,
+    "pages_affected": 21,
+    "instances": 21,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 25.2,
+    "estimated_fix_impact": {
+     "findings": 21,
+     "pages": 21,
+     "statement": "Fix one place, resolve ~21 finding(s) on 21 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/understanding-exceptional-responders-cancer-treatment",
+     "https://www.nih.gov/news-events/nih-research-matters/how-psychedelic-drugs-may-help-depression",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
+     "https://www.nih.gov/news-events/nih-research-matters/eating-highly-processed-foods-linked-weight-gain",
+     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/nih-launches-21-million-initiative-improve-understanding-sex-specific-hormonal-biology",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/procedure-makes-heart-valve-replacement-safer-high-risk-patients",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://nih.gov/nih-style-guide/person-first-destigmatizing-language",
+     "https://www.nih.gov/news-events/nih-research-matters/microbiome-transplants-may-curb-food-allergies",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
    },
    {
@@ -5335,9 +5815,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r61",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
     "snippet_shape": "",
     "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
@@ -5347,11 +5827,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 20,
+    "action_score": 22,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5362,6 +5842,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -5371,9 +5852,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -5383,11 +5864,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 10,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5398,6 +5879,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -5407,9 +5889,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -5419,11 +5901,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 2,
-    "action_score": 10,
+    "action_score": 11,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5434,35 +5916,8 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
-    ]
-   },
-   {
-    "id": "cc-981d69379a79",
-    "engine_key": "axe-core",
-    "rule_id": "list",
-    "severity": "Serious",
-    "rule_pages_affected": 2,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".usa-pagination__list",
-    "snippet_shape": "ul:",
-    "representative_selector": ".usa-pagination__list",
-    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 7.2,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=15",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
    },
@@ -5471,9 +5926,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -5483,11 +5938,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 6.67,
+    "action_score": 7.33,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5498,6 +5953,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -5507,9 +5963,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "text: \"health information\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Health Information\"",
@@ -5519,11 +5975,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 6.67,
+    "action_score": 7.33,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5534,6 +5990,7 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -5543,9 +6000,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 10,
-    "pages_affected": 10,
-    "instances": 10,
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
     "selector_path": "text: \"grants & funding\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Grants & Funding\"",
@@ -5555,11 +6012,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 6.67,
+    "action_score": 7.33,
     "estimated_fix_impact": {
-     "findings": 10,
-     "pages": 10,
-     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
@@ -5570,6 +6027,44 @@
      "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
      "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
+     "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 3,
+    "action_score": 7.33,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/humidity-masks-may-lessen-severity-covid-19",
+     "https://www.nih.gov/news-events/nih-research-matters/financial-problems-can-be-sign-dementia-onset",
+     "https://nih.gov/news-events/nih-research-matters/researchers-find-cause-new-autoinflammatory-disease",
+     "https://nih.gov/about-nih/impact-nih-research/improving-health/heart-lung-kidney-health",
+     "https://www.nih.gov/news-events/news-releases/dr-jonathan-m-green-selected-ceo-nih-clinical-center",
+     "https://nih.gov/about-nih/nih-almanac/michael-gottesman-md",
+     "https://www.nih.gov/news-events/news-releases/monoclonal-antibodies-crucial-fighting-emerging-infectious-diseases-say-nih-officials",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/about-heal-data-ecosystem",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
      "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-january-16-2014",
      "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=1"
     ]
@@ -5581,6 +6076,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 3600,
- "pagesSucceeded": 23
+ "pagesAttempted": 3795,
+ "pagesSucceeded": 25
 }
