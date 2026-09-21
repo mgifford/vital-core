@@ -1,0 +1,4515 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W39",
+ "generatedAt": "2026-09-21T18:21:30.207Z",
+ "pagesScanned": 600,
+ "pagesAudited": 4,
+ "coverage": {
+  "sustainability": 49,
+  "axe": 4,
+  "alfa": 2,
+  "resources": 4,
+  "standards": 3,
+  "plain-language": 2,
+  "lighthouse": 1,
+  "tech": 1,
+  "deprecated-html": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 24,
+  "pagesWithViolations": 4,
+  "pagesScanned": 4,
+  "medianViolations": 6,
+  "rules": {
+   "link-in-text-block": {
+    "count": 12,
+    "pages": 3,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "instances": 5
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "instances": 6
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+     },
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "target": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a:nth-child(1)",
+      "html": "<a href=\"/echo/echo-program-organization\">Program Organizational Chart</a>"
+     },
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "target": "p:nth-child(1) > a:nth-child(2)",
+      "html": "<a href=\"https://www.nih.gov/echo/nih-environmental-influences-child-health-outcomes-echo-program-office-strategic-plan\">ECHO Strategic Plan</a>"
+     },
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "target": "p:nth-child(16) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.nigms.nih.gov/Research/DRCB/IDeA/Pages/default.aspx\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">IDeA states</a>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "target": "li:nth-child(4) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.nidcd.nih.gov/health/balance-disorders\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Balance Disorders</a>"
+     }
+    ]
+   },
+   "region": {
+    "count": 8,
+    "pages": 4,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": ".region-site-alert",
+      "html": "<div class=\"region region-site-alert\">"
+     }
+    ]
+   },
+   "heading-order": {
+    "count": 3,
+    "pages": 3,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/echo/about-echo-program",
+      "target": "h3:nth-child(2)",
+      "html": "<h3>Mission</h3>"
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+      "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-4186\">\n          Electronic Records\n        </button>\n      </h4>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 1,
+    "pages": 1,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 348,
+  "pagesWithFailures": 2,
+  "pagesScanned": 2,
+  "medianFailures": 174,
+  "rules": {
+   "sia-r66": {
+    "count": 54,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 54
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "text: \"Health Information\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "text: \"Grants & Funding\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 32,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 29
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<p class=\"large-text\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r62": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 4,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 8,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 4
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 149,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "instances": 32
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 117
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+      "target": "<a href=\"/virtual-tour\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<button class=\"usa-menu-btn\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r53": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<h4 class=\"usa-accordion__heading\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r78": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r78",
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<h1 class=\"hidden uswds-page-title page-title\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r113": {
+    "count": 96,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r113",
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "instances": 96
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<button class=\"usa-menu-btn\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+      "target": "<button class=\"usa-accordion__button usa-nav__link \" aria-expanded=\"false\" aria-controls=\"basic-nav-section-1\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "consensus": {
+  "uniqueIssues": 26,
+  "consensus": 0,
+  "axeOnly": 11,
+  "alfaOnly": 15,
+  "rawAxe": 11,
+  "rawAlfa": 15,
+  "byKey": {
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 3,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 4,
+    "engines": "axe"
+   },
+   "axe-core:heading-order": {
+    "actRuleId": null,
+    "axeRules": [
+     "heading-order"
+    ],
+    "alfaRules": [],
+    "pages": 3,
+    "engines": "axe"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 1,
+    "engines": "axe"
+   },
+   "alfa:sia-r66": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r66"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r73": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r73"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r62": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r62"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "act:5c01ea": {
+    "actRuleId": "5c01ea",
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r18"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r61": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r61"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r57": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r57"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r111": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r111"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r53": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r53"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r78": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r78"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   },
+   "alfa:sia-r113": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r113"
+    ],
+    "pages": 1,
+    "engines": "alfa"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 49,
+  "medianBytes": 63176,
+  "meanBytes": 483548,
+  "medianRequests": 7,
+  "totalCo2g": 3.51,
+  "meanCo2g": 0.0717,
+  "totalEnergyWh": 7.11,
+  "meanEnergyWh": 0.1451
+ },
+ "deprecatedHtml": null,
+ "resources": {
+  "total": 130,
+  "byType": {
+   "embedded-media": 7,
+   "pdf": 121,
+   "spreadsheet": 1,
+   "image": 1
+  },
+  "list": [
+   {
+    "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DofqAMp5DbvY&max_width=0&max_height=0&hash=30yp9T6IflKK-6ZSmUHOxTGNOJvsE6f4U8vrvfxGBsw",
+    "type": "embedded-media",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DQR4u5uF8wJE&max_width=0&max_height=0&hash=09EvF3J-bR8tE_26KlQ4xtagNbDrz_jCgp-T10NZ43E",
+    "type": "embedded-media",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DXi_-7-cwoDw&max_width=0&max_height=0&hash=PdV8HhflZsihouL0T0w3TUQsEtI0_-gX4nAHVV6zDds",
+    "type": "embedded-media",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3Dt_qRSWpf85I&max_width=0&max_height=0&hash=30pQeHLp5P9l-BWNvXjgOeucPbS_0yd9ZXZ0sFGfA3Q",
+    "type": "embedded-media",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DxFx6aw9cK3A&max_width=0&max_height=0&hash=fkAAxP5obchrvAm1Onri38EqRAu-DBGGF3QzJYMmsQ4",
+    "type": "embedded-media",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DiAi7ls1kZXQ&max_width=0&max_height=0&hash=tSQhbxXWxMD1PQPRvBwvXDcKqtOeFPF0ngFwZXnnQb0",
+    "type": "embedded-media",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DOyzsw5PucJM&max_width=0&max_height=0&hash=gmEWxcUuaR4GxhMuUV9VG_4jX_9v6uszcEh6anqFT7U",
+    "type": "embedded-media",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59447-production.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-3.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-4.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-5.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-6.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-7.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-8.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-9.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-10.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-11.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/58947-tranche-12.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59250-tranche-1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59250-tranche-2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-3.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-4.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-5.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-6.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-7.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/59644-tranche-8.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54464-1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54464-2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54464-3.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54464-4.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54106-1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54106-2a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54106-2b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54106-3a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/54106-3b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-01-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-01-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-02-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-02-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-02-c.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-03-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-03-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-03-c.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-03-d.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-04-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-04-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-04-c.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-05-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-05-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-06-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-06-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-07-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-07-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-08-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-08-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-08-c.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-09-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-09-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-10-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-10-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-11-a.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/tranche-11-b.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210731-npr-production-tranche-1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210731-npr-production-tranche-2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210731-npr-production-tranche-3.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210731-npr-production-tranche-4.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210731-npr-production-tranche-5.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210731-npr-production-tranche-6.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210831-npr-production-tranche-1.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210831-npr-production-tranche-2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210831-npr-production-tranche-3.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210831-npr-production-tranche-4.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20210831-npr-production-tranche-5.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/final-response-56372.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/miller-56444-updated.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/complete-response-redacted-56215.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/simonson-56433.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/20211020-risk-of-bat-emergence.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1R01AI110964-year-1-tranche-01.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1R01AI110964-year-1-tranche-02.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1R01AI110964-year-1-tranche-03.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1R01AI110964-year-1-tranche-04.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/5R01AI110964-year-2.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/5R01AI110964-year-3.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/5R01AI110964-year-4.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/5R01AI110964-year-5.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/2R01AI110964-year-6-tranche-01.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/2R01AI110964-year-6-tranche-02.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/2R01AI110964-year-6-tranche-03.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/2R01AI110964-year-6-tranche-04.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/2R01AI110964-year-6-tranche-05.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-01.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-02.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-03.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-04.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-05.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-06.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-07.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-08.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-09.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/1U01AI151797-tranche-10.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/response-murray-delauro-letters-regarding-sexual-harassment.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/FY-2020-NIH-firearms-research.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/firearm-project-1996-2015.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/redteam-report.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/fnih-mou.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://grants.nih.gov/grants/olaw/primate_products_report/r_OLAW%20Report.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/letter-bryant-2015.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/letter-berliner-vanhollen-2015.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://www.niaid.nih.gov/about/organization/dmid/about/Documents/NIH-Quality-Audit-Report-STDY-13-0005-TG.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://grants.nih.gov/grants/olaw/Animal_Welfare_Investigation_A4149-01_%5BCase_9Y%5D.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/collins-letters-01232015.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://grants.nih.gov/grants/olaw/foia-uwm-2013/Final_Report.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://grants.nih.gov/grants/olaw/foia-utmb/Preface.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/summary-data-use.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/letter-chairman-upton-07152013.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/waxman-markey-degette.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://ntp.niehs.nih.gov/ntp/foia/acrylonitrile_amended_qapwg_report_redacted_508.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://ntp.niehs.nih.gov/ntp/foia/etbe_amended_qapwg_report_redacted_508.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://ntp.niehs.nih.gov/ntp/foia/vinylchloride_amended_qapwg_report_redacted_508be.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://ntp.niehs.nih.gov/ntp/foia/pwgmtbe_508.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://ntp.niehs.nih.gov/ntp/foia/pwgmethylalcohol_508.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/institutes/foia/foia-orgcharts.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://www.ott.nih.gov/sites/default/files/documents/policy/March-In-Fabrazyme.pdf",
+    "type": "pdf",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/institutes/foia/subaward-frn-comments-final.xlsx",
+    "type": "spreadsheet",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-03/20200728-walking.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   }
+  ]
+ },
+ "standards": {
+  "pagesChecked": 3,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 3,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 3,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 3,
+    "rate": 0
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (5/6)",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 3,
+    "total": 3,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "resilience": {
+  "pagesChecked": 3,
+  "checks": [
+   {
+    "id": "pwa-manifest",
+    "label": "Web app manifest declared",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "A web app manifest is required for installability and controls how the app appears when launched.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-service-worker",
+    "label": "Service worker registered",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "A service worker is what makes offline access, caching, and background sync possible.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-theme-color",
+    "label": "Theme color declared",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-apple-touch-icon",
+    "label": "Apple touch icon (iOS/bookmark icon)",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "manifest-parsed",
+    "label": "Manifest fetched and parsed successfully",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+     }
+    ]
+   },
+   {
+    "id": "manifest-maskable-icon",
+    "label": "Manifest declares a maskable icon",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+     }
+    ]
+   },
+   {
+    "id": "sw-active",
+    "label": "Service worker is active (not just registered)",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "sw-controlling",
+    "label": "Service worker controls this page load",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "installable",
+    "label": "Meets basic installability criteria",
+    "pass": 0,
+    "total": 3,
+    "rate": 0,
+    "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
+    "evidenceExamples": [
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+     }
+    ]
+   },
+   {
+    "id": "pwa-https",
+    "label": "HTTPS (required for service workers)",
+    "pass": 3,
+    "total": 3,
+    "rate": 100,
+    "why": "HTTPS is required for service workers and most install prompts.",
+    "evidenceExamples": []
+   }
+  ],
+  "offline": null
+ },
+ "security": null,
+ "publicInterest": null,
+ "plainLanguage": {
+  "pagesChecked": 2,
+  "pagesScored": 1,
+  "medianWordsPerPage": 1048,
+  "medianReadingEase": 24.6,
+  "medianGrade": 16.6,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "FOIA",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "CDC",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "FDA",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "NIDCR",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "HHS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "NTP",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "COVID",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "RBD",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "SARS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "ICAN",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "NPR",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "US",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "NCBI",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "RNA",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "Pre",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ]
+   },
+   {
+    "word": "peri",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ]
+   },
+   {
+    "word": "Neurodevelopment",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ]
+   },
+   {
+    "word": "underserved",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ]
+   },
+   {
+    "word": "Tabak",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Tobias",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "recombinant",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "biodefense",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "mRNA",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Fauci",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "CoV",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Buzzfeed",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Drs",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Auchincloss",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Handley",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Morens",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Folkers",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Doepel",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "nCoV",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "EcoHealth",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "betacoronavirus",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "polymerase",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "RdRp",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Daszak",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "word": "Baric",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   }
+  ]
+ },
+ "lighthouse": {
+  "pagesSampled": 1,
+  "medianPerformance": 25,
+  "medianAccessibility": 95,
+  "medianBestPractices": 77,
+  "medianSeo": 100,
+  "medianPwa": null,
+  "medianAgentic": 69,
+  "distributions": {
+   "performance": {
+    "min": 25,
+    "max": 25,
+    "p10": 25,
+    "p25": 25,
+    "p50": 25,
+    "p75": 25,
+    "p90": 25,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "accessibility": {
+    "min": 95,
+    "max": 95,
+    "p10": 95,
+    "p25": 95,
+    "p50": 95,
+    "p75": 95,
+    "p90": 95,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "bestPractices": {
+    "min": 77,
+    "max": 77,
+    "p10": 77,
+    "p25": 77,
+    "p50": 77,
+    "p75": 77,
+    "p90": 77,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "seo": {
+    "min": 100,
+    "max": 100,
+    "p10": 100,
+    "p25": 100,
+    "p50": 100,
+    "p75": 100,
+    "p90": 100,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   },
+   "agentic": {
+    "min": 69,
+    "max": 69,
+    "p10": 69,
+    "p25": 69,
+    "p50": 69,
+    "p75": 69,
+    "p90": 69,
+    "range": 0,
+    "spreadP10toP90": 0,
+    "iqr": 0
+   }
+  },
+  "metrics": {
+   "firstContentfulPaintMs": 3553,
+   "largestContentfulPaintMs": 10710,
+   "speedIndexMs": 4532,
+   "totalBlockingTimeMs": 1298,
+   "cumulativeLayoutShift": 0.307
+  },
+  "pwaSignals": [],
+  "recommendations": [
+   {
+    "id": "unused-javascript",
+    "category": "performance",
+    "title": "Reduce unused JavaScript",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 356446,
+    "savingsMs": 1750
+   },
+   {
+    "id": "bootup-time",
+    "category": "performance",
+    "title": "Reduce JavaScript execution time",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 1350
+   },
+   {
+    "id": "mainthread-work-breakdown",
+    "category": "performance",
+    "title": "Minimize main-thread work",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 1300
+   },
+   {
+    "id": "redirects",
+    "category": "performance",
+    "title": "Avoid multiple page redirects",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 800
+   },
+   {
+    "id": "unused-css-rules",
+    "category": "performance",
+    "title": "Reduce unused CSS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 114237,
+    "savingsMs": 550
+   },
+   {
+    "id": "render-blocking-insight",
+    "category": "performance",
+    "title": "Render-blocking requests",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 550
+   },
+   {
+    "id": "cache-insight",
+    "category": "performance",
+    "title": "Use efficient cache lifetimes",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 150
+   },
+   {
+    "id": "document-latency-insight",
+    "category": "performance",
+    "title": "Document request latency",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 50
+   },
+   {
+    "id": "font-display-insight",
+    "category": "performance",
+    "title": "Font display",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 50
+   },
+   {
+    "id": "unminified-javascript",
+    "category": "performance",
+    "title": "Minify JavaScript",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 19164,
+    "savingsMs": 0
+   },
+   {
+    "id": "unminified-css",
+    "category": "performance",
+    "title": "Minify CSS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 2101,
+    "savingsMs": 0
+   },
+   {
+    "id": "first-contentful-paint",
+    "category": "performance",
+    "title": "First Contentful Paint",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "largest-contentful-paint",
+    "category": "performance",
+    "title": "Largest Contentful Paint",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "speed-index",
+    "category": "performance",
+    "title": "Speed Index",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "total-blocking-time",
+    "category": "performance",
+    "title": "Total Blocking Time",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "max-potential-fid",
+    "category": "performance",
+    "title": "Max Potential First Input Delay",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "cumulative-layout-shift",
+    "category": "agentic-browsing",
+    "title": "Cumulative Layout Shift",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "errors-in-console",
+    "category": "best-practices",
+    "title": "Browser errors were logged to the console",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "interactive",
+    "category": "performance",
+    "title": "Time to Interactive",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "deprecations",
+    "category": "best-practices",
+    "title": "Uses deprecated APIs",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "webmcp-registered-tools",
+    "category": "agentic-browsing",
+    "title": "WebMCP tools registered",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "webmcp-form-coverage",
+    "category": "agentic-browsing",
+    "title": "WebMCP form coverage",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "webmcp-schema-validity",
+    "category": "agentic-browsing",
+    "title": "WebMCP schemas are valid",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "llms-txt",
+    "category": "agentic-browsing",
+    "title": "llms.txt follows recommendations",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "cls-culprits-insight",
+    "category": "performance",
+    "title": "Layout shift culprits",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   },
+   {
+    "id": "network-dependency-tree-insight",
+    "category": "performance",
+    "title": "Network dependency tree",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/echo/about-echo-program"
+    ],
+    "savingsBytes": 0,
+    "savingsMs": 0
+   }
+  ]
+ },
+ "linkCheck": {
+  "brokenCount": 4,
+  "broken": [
+   {
+    "url": "http://www.niaid.nih.gov/about/organization/dmid/about/Documents/NIH-Quality-Audit-Report-STDY-13-0005-TG.pdf",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "http://report.nih.gov/investigators_and_trainees/index.aspx",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://foiaportal.nih.gov/app/ReadingRoom.aspx",
+    "status": 0,
+    "reason": "ERR_HTTP2_ERROR",
+    "foundOn": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/topics/falls-and-falls-prevention",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   }
+  ]
+ },
+ "errorPages": [
+  {
+   "url": "https://www.nih.gov/heal/award-policy/data-sharing-policy/common-data-elements-cdes-repository?page=14",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/investigational-covid-19-therapeutics-be-evaluated-large-clinical-trials",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/skin-compounds-associated-attractiveness-mosquitoes",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/brain-initiative/research/tools-technologies-brain-cells-circuits/brain-initiative-cell-census-network",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/new-approach-fighting-staph-infections",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/nih-style-guide/nih",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/peanut-consumption-infancy-lowers-peanut-allergy",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/research-training/medical-research-initiatives/brain-initiative/about/vision/brain-2025-scientific-vision",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/brain-initiative/about/brain-partners",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/comparing-heart-failure-drugs",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/urine-test-identifies-high-risk-prostate-cancers",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/brain-decoder-turns-person-s-brain-activity-into-words",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/nih-launches-new-office-advance-human-based-research-reduce-animal-use",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/who-we-are/nih-director",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/nih-style-guide/disabilities",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/research-training/lasker-clinical-research-scholars/how-apply",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/disclaimers",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/nih-collaboration-helps-advance-potential-zika-treatments",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/regenerative-medicine-innovation-project-rmip",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/understanding-exposome",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/researchers-trigger-sleeps-restorative-effect-parts-awake-brain",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/nih-almanac/about-nih-almanac",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/2023-nih-research-highlights-human-health-advances",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/researchers-find-genetic-basis-important-risk-factor-blinding-eye-disease",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/alzheimers-protein-may-have-natural-antibiotic-role",
+   "status": 403
+  }
+ ],
+ "tech": [
+  {
+   "name": "Cloudflare Browser Insights",
+   "category": "Analytics",
+   "categories": [
+    "Analytics",
+    "RUM"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "Crazy Egg",
+   "category": "Analytics",
+   "categories": [
+    "Analytics"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://crazyegg.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "Varnish",
+   "category": "Caching",
+   "categories": [
+    "Caching"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.varnish-cache.org",
+   "cpe": "cpe:2.3:a:varnish-software:varnish_cache:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "Cloudflare",
+   "category": "CDN",
+   "categories": [
+    "CDN"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "Drupal",
+   "category": "CMS",
+   "categories": [
+    "CMS"
+   ],
+   "confidence": 100,
+   "version": "10",
+   "website": "https://www.drupal.org/",
+   "cpe": "cpe:2.3:a:drupal:drupal:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "jQuery",
+   "category": "JavaScript libraries",
+   "categories": [
+    "JavaScript libraries"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://jquery.com",
+   "cpe": "cpe:2.3:a:jquery:jquery:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "HTTP/3",
+   "category": "Miscellaneous",
+   "categories": [
+    "Miscellaneous"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://httpwg.org/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "Acquia Cloud Platform",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.acquia.com/products/drupal-cloud/cloud-platform",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "Amazon Web Services",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://aws.amazon.com/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "PHP",
+   "category": "Programming languages",
+   "categories": [
+    "Programming languages"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://php.net",
+   "cpe": "cpe:2.3:a:php:php:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "HSTS",
+   "category": "Security",
+   "categories": [
+    "Security"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.rfc-editor.org/rfc/rfc6797#section-6.1",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "Google Tag Manager",
+   "category": "Tag managers",
+   "categories": [
+    "Tag managers"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.google.com/tagmanager",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  {
+   "name": "USWDS",
+   "category": "UI frameworks",
+   "categories": [
+    "UI frameworks"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://designsystem.digital.gov",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  }
+ ],
+ "images": {
+  "pagesScanned": 4,
+  "totalImages": 54,
+  "uniqueImages": 14,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 54,
+  "altVerdicts": {
+   "GOOD": 11,
+   "SUSPICIOUS": 1,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": {
+  "model": {
+   "pages": 1,
+   "tech": {
+    "Cloudflare Browser Insights": 1,
+    "Crazy Egg": 1,
+    "Varnish": 1,
+    "Cloudflare": 1,
+    "Drupal": 1,
+    "jQuery": 1,
+    "HTTP/3": 1,
+    "Acquia Cloud Platform": 1,
+    "Amazon Web Services": 1,
+    "PHP": 1,
+    "HSTS": 1,
+    "Google Tag Manager": 1,
+    "USWDS": 1
+   },
+   "finding": {
+    "axe:heading-order": 1,
+    "axe:region": 1,
+    "alfa:sia-r53": 1,
+    "alfa:sia-r78": 1,
+    "alfa:sia-r73": 1,
+    "alfa:sia-r18": 1,
+    "alfa:sia-r61": 1,
+    "alfa:sia-r113": 1,
+    "alfa:sia-r57": 1,
+    "alfa:sia-r111": 1
+   },
+   "pair": {
+    "Cloudflare Browser Insights": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Crazy Egg": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Varnish": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Cloudflare": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Drupal": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "jQuery": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "HTTP/3": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Acquia Cloud Platform": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Amazon Web Services": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "PHP": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "HSTS": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Google Tag Manager": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "USWDS": {
+     "axe:heading-order": 1,
+     "axe:region": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r78": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r113": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    }
+   }
+  },
+  "associations": []
+ },
+ "thirdParty": null,
+ "componentClusters": {
+  "design_system": "none",
+  "design_system_label": "none",
+  "design_system_theme": null,
+  "template_page_threshold": 10,
+  "total_clusters": 38,
+  "clusters": [
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.2,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-d353923a9e69",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h4 class=\"usa-accordion__heading\">",
+    "snippet_shape": "",
+    "representative_selector": "<h4 class=\"usa-accordion__heading\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-c79fb56054bf",
+    "engine_key": "alfa",
+    "rule_id": "sia-r78",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h1 class=\"hidden uswds-page-title page-title\">",
+    "snippet_shape": "",
+    "representative_selector": "<h1 class=\"hidden uswds-page-title page-title\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(16) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nigms.nih.gov/Research/DRCB/IDeA/Pages/default.aspx\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">IDeA states</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-19c608daabd2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-61c26a3768ea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(2)",
+    "representative_snippet": "<h3>Mission</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/echo/about-echo-program"
+    ]
+   },
+   {
+    "id": "cc-dc4046f0700e",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
+    "snippet_shape": "h4:aria",
+    "representative_selector": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
+    "representative_snippet": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-4186\">\n          Electronic Records\n        </button>\n      </h4>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-f1244869ba3c",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".region-site-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".region-site-alert",
+    "representative_snippet": "<div class=\"region region-site-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-de04b5cb22b0",
+    "engine_key": "alfa",
+    "rule_id": "sia-r113",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-b10407c26466",
+    "engine_key": "alfa",
+    "rule_id": "sia-r113",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<button class=\"usa-menu-btn\">",
+    "snippet_shape": "",
+    "representative_selector": "<button class=\"usa-menu-btn\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-5a42be84fe5f",
+    "engine_key": "alfa",
+    "rule_id": "sia-r113",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<button class=\"usa-accordion__button usa-nav__link \" aria-expanded=\"false\" aria-controls=\"basic-nav-section-#\">",
+    "snippet_shape": "",
+    "representative_selector": "<button class=\"usa-accordion__button usa-nav__link \" aria-expanded=\"false\" aria-controls=\"basic-nav-section-1\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 0.67,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-b9c3b91d9cae",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a:nth-child(1)",
+    "representative_snippet": "<a href=\"/echo/echo-program-organization\">Program Organizational Chart</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/echo/about-echo-program"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(1) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/echo/nih-environmental-influences-child-health-outcomes-echo-program-office-strategic-plan\">ECHO Strategic Plan</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/echo/about-echo-program"
+    ]
+   },
+   {
+    "id": "cc-a6e854cc83d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "li:nth-child(4) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nidcd.nih.gov/health/balance-disorders\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Balance Disorders</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-ec03984b8b1e",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"stride-study.org/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"stride-study.org/\"]",
+    "representative_snippet": "<a href=\"http://www.stride-study.org/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">STRIDE study</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-06cc68cd7d56",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"large-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"large-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-93d23f8c11f6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p>",
+    "snippet_shape": "",
+    "representative_selector": "<p>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-62c323f0c02b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<button class=\"usa-menu-btn\">",
+    "snippet_shape": "",
+    "representative_selector": "<button class=\"usa-menu-btn\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-aea054fe8810",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<button class=\"usa-accordion__button usa-nav__link \" aria-expanded=\"false\" aria-controls=\"basic-nav-section-#\">",
+    "snippet_shape": "",
+    "representative_selector": "<button class=\"usa-accordion__button usa-nav__link \" aria-expanded=\"false\" aria-controls=\"basic-nav-section-1\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 5,
+    "action_score": 0.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   }
+  ],
+  "top_actions": [
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.2,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/echo/about-echo-program",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists"
+    ]
+   },
+   {
+    "id": "cc-d353923a9e69",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h4 class=\"usa-accordion__heading\">",
+    "snippet_shape": "",
+    "representative_selector": "<h4 class=\"usa-accordion__heading\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-c79fb56054bf",
+    "engine_key": "alfa",
+    "rule_id": "sia-r78",
+    "severity": "Moderate",
+    "rule_pages_affected": 1,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<h1 class=\"hidden uswds-page-title page-title\">",
+    "snippet_shape": "",
+    "representative_selector": "<h1 class=\"hidden uswds-page-title page-title\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 3,
+    "action_score": 1.33,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   }
+  ],
+  "design_component_usage": [],
+  "page_component_usage": [],
+  "drift_page_count": 0,
+  "drift_pages": [],
+  "drift_clusters": []
+ },
+ "pagesAttempted": 900,
+ "pagesSucceeded": 6
+}
