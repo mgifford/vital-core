@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-09-17T17:16:49.624Z",
+ "updatedAt": "2026-09-21T18:21:21.861Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -212,7 +212,7 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W38",
+   "lastSeen": "2026-W39",
    "_weeks": [
     "2026-W25",
     "2026-W26",
@@ -225,11 +225,12 @@
     "2026-W34",
     "2026-W35",
     "2026-W37",
-    "2026-W38"
+    "2026-W38",
+    "2026-W39"
    ],
-   "weeksBroken": 12,
+   "weeksBroken": 13,
    "foundOn": [
-    "https://data.cms.gov/provider-data/topics/nursing-homes/quality-measures"
+    "https://data.cms.gov/provider-data/topics/nursing-homes/technical-details"
    ]
   },
   "http://www.nucc.org/index.php?option=com_content&view=article&id=107&Itemid=132.": {
@@ -1036,17 +1037,18 @@
   },
   "https://www.qualitynet.org/ipf/ipfqr/measures": {
    "status": 0,
-   "reason": "UND_ERR_CONNECT_TIMEOUT",
+   "reason": "ECONNREFUSED",
    "firstSeen": "2026-W34",
-   "lastSeen": "2026-W38",
+   "lastSeen": "2026-W39",
    "_weeks": [
     "2026-W34",
     "2026-W35",
     "2026-W36",
     "2026-W37",
-    "2026-W38"
+    "2026-W38",
+    "2026-W39"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/hospitals/veterans-administration-hospitals"
    ]
@@ -1083,16 +1085,15 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W36",
-   "lastSeen": "2026-W38",
+   "lastSeen": "2026-W39",
    "_weeks": [
     "2026-W36",
     "2026-W37",
-    "2026-W38"
+    "2026-W38",
+    "2026-W39"
    ],
-   "weeksBroken": 3,
+   "weeksBroken": 4,
    "foundOn": [
-    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicaid-opioid-prescribing-rates-by-geography",
-    "https://data.cms.gov/resources/medicaid-opioid-prescribing-rates-by-geography-methodology",
     "https://data.cms.gov/tools/medicaid-drug-spending-dashboard"
    ]
   },
@@ -1144,11 +1145,12 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W37",
-   "lastSeen": "2026-W37",
+   "lastSeen": "2026-W39",
    "_weeks": [
-    "2026-W37"
+    "2026-W37",
+    "2026-W39"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
     "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-service-type-reports/medicare-telehealth-trends"
    ]

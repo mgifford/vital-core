@@ -1,6 +1,6 @@
 {
  "domain": "nih.gov",
- "updatedAt": "2026-09-18T16:43:55.385Z",
+ "updatedAt": "2026-09-21T18:21:31.375Z",
  "links": {
   "https://projectreporter.nih.gov/reporter.cfm": {
    "status": 0,
@@ -2211,13 +2211,14 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W35",
-   "lastSeen": "2026-W35",
+   "lastSeen": "2026-W39",
    "_weeks": [
-    "2026-W35"
+    "2026-W35",
+    "2026-W39"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "https://www.nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
+    "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
    ]
   },
   "http://www.stride-study.org/": {
@@ -3593,6 +3594,45 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://nih.gov/news-events/nih-research-matters/millions-us-kids-live-parents-substance-use-disorders"
+   ]
+  },
+  "http://www.niaid.nih.gov/about/organization/dmid/about/Documents/NIH-Quality-Audit-Report-STDY-13-0005-TG.pdf": {
+   "status": 405,
+   "reason": "HTTP 405",
+   "firstSeen": "2026-W39",
+   "lastSeen": "2026-W39",
+   "_weeks": [
+    "2026-W39"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  "http://report.nih.gov/investigators_and_trainees/index.aspx": {
+   "status": 0,
+   "reason": "UND_ERR_CONNECT_TIMEOUT",
+   "firstSeen": "2026-W39",
+   "lastSeen": "2026-W39",
+   "_weeks": [
+    "2026-W39"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+   ]
+  },
+  "https://foiaportal.nih.gov/app/ReadingRoom.aspx": {
+   "status": 0,
+   "reason": "ERR_HTTP2_ERROR",
+   "firstSeen": "2026-W39",
+   "lastSeen": "2026-W39",
+   "_weeks": [
+    "2026-W39"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
    ]
   }
  }
