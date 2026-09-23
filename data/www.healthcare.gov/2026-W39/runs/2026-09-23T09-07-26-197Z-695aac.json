@@ -1,0 +1,65 @@
+{
+ "runId": "2026-09-23T09-07-26-197Z-695aac",
+ "week": "2026-W39",
+ "domain": "www.healthcare.gov",
+ "startedAt": "2026-09-23T09:07:27.591Z",
+ "scanned": [
+  "d5be2c073472b26b",
+  "8fbcfe586594d418",
+  "635a4f48ee471189"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 142,
+  "checked": 142,
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "https://portal.cms.gov/",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://healthcare.gov/agent-broker-quick-start"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 3,
+  "plain-language": 1,
+  "resources": 3,
+  "images": 3,
+  "tech": 2,
+  "link-check": 3,
+  "deprecated-html": 1,
+  "alfa": 1,
+  "standards": 1
+ },
+ "tally": {
+  "ok": 3,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-09-23T09:08:36.018Z"
+}
