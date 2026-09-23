@@ -1,0 +1,63 @@
+{
+ "runId": "2026-09-23T13-48-01-126Z-90c55d",
+ "week": "2026-W39",
+ "domain": "data.healthcare.gov",
+ "startedAt": "2026-09-23T13:48:01.635Z",
+ "scanned": [
+  "bfae9a0bf5417b55",
+  "44e0c0d90b23165c"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 51,
+  "checked": 51,
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "https://data.healthcare.gov/whats-new",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.healthcare.gov/dataset/wb6u-x2ny?page=40411",
+     "https://data.healthcare.gov/dataset/AB-Registration-Completion-List/wb6u-x2ny/data?page=40411"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 2,
+  "alfa": 2,
+  "resources": 2,
+  "images": 2,
+  "standards": 2,
+  "link-check": 2,
+  "sustainability": 1
+ },
+ "tally": {
+  "ok": 2,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-09-23T13:48:23.811Z"
+}
