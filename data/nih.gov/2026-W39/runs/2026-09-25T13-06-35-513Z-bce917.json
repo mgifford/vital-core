@@ -1,0 +1,91 @@
+{
+ "runId": "2026-09-25T13-06-35-513Z-bce917",
+ "week": "2026-W39",
+ "domain": "nih.gov",
+ "startedAt": "2026-09-25T13:06:37.121Z",
+ "scanned": [
+  "c69371a64265dfe1",
+  "a03dbc13b58cd165",
+  "d18bdf7ebd69bd9e",
+  "02545243b5fb2003",
+  "70df21b574be4bb4",
+  "171d4fbebe537dae",
+  "cd784d3483d5c637",
+  "83bd67b8c4ee4646",
+  "221364186270de2f",
+  "869a8fd94f40f1ed",
+  "c1141e44247f3281",
+  "3aabadb2b1c1785c",
+  "6bb880c2adf7541c",
+  "ee7d6c46b1a32472",
+  "29f677ac4c2efcfd",
+  "00073cde359c32c2",
+  "de83cb7adc43f484",
+  "2ca8637c922fb51a",
+  "e4cf6b1a6e1ddcd9",
+  "efb610eb822eb996",
+  "7b7c5170acf97dc1",
+  "f25beda64c204ab9",
+  "dfdc10f15eff634f",
+  "bb1bd69153791329",
+  "803ba49ccc5ad337",
+  "66c89293782a8871",
+  "d75f7e0a41ff571f",
+  "45ee51d986517179",
+  "784b32c5041fe558",
+  "023c4fe67b56a2cc",
+  "a7aeb31027d42a7a",
+  "b52ff20a9ad6dbcd",
+  "93fb61b1f904ea0f",
+  "e05b89222bb0f407",
+  "04c04c77a6d0ccee"
+ ],
+ "errors": [
+  {
+   "pageId": "ac6d47c343b9af34",
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases?page=2",
+   "error": "Error: page.goto: net::ERR_EMPTY_RESPONSE at http://mailto:RADxInfo@nih.gov/news-events/news-releases?page=2\nCall log:\n  - navigating to \"http://mailto:RADxInfo@nih.gov/news-events/news-releases?page=2\", waiting until \"load\"\n"
+  }
+ ],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 94,
+  "checked": 94,
+  "brokenCount": 0,
+  "broken": []
+ },
+ "enginesRun": {
+  "axe": 1,
+  "resources": 1,
+  "images": 1,
+  "standards": 1,
+  "link-check": 1,
+  "sustainability": 2
+ },
+ "tally": {
+  "ok": 1,
+  "blocked": 34,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 1
+ },
+ "finishedAt": "2026-09-25T13:08:52.686Z"
+}
