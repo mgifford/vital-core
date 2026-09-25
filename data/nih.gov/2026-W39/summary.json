@@ -1,16 +1,16 @@
 {
  "domain": "nih.gov",
  "week": "2026-W39",
- "generatedAt": "2026-09-24T17:33:16.793Z",
- "pagesScanned": 2997,
- "pagesAudited": 19,
+ "generatedAt": "2026-09-25T17:33:22.913Z",
+ "pagesScanned": 3332,
+ "pagesAudited": 22,
  "coverage": {
-  "sustainability": 277,
-  "axe": 19,
-  "resources": 19,
-  "standards": 13,
+  "sustainability": 311,
+  "axe": 22,
+  "resources": 22,
+  "standards": 15,
   "alfa": 12,
-  "plain-language": 6,
+  "plain-language": 7,
   "lighthouse": 2,
   "tech": 3,
   "deprecated-html": 2,
@@ -18,14 +18,14 @@
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 136,
-  "pagesWithViolations": 19,
-  "pagesScanned": 19,
+  "violationTotal": 163,
+  "pagesWithViolations": 22,
+  "pagesScanned": 22,
   "medianViolations": 8,
   "rules": {
    "link-in-text-block": {
-    "count": 68,
-    "pages": 18,
+    "count": 83,
+    "pages": 21,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -36,7 +36,7 @@
     "examplePages": [
      "https://nih.gov/press-room?page=9",
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
-     "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults"
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children"
     ],
     "affectedPages": [
      {
@@ -46,6 +46,10 @@
      {
       "url": "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
       "instances": 5
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+      "instances": 6
      },
      {
       "url": "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
@@ -92,7 +96,15 @@
       "instances": 4
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+      "instances": 4
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+      "instances": 5
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
       "instances": 5
      },
      {
@@ -134,9 +146,9 @@
       "html": "<a href=\"https://www.nih.gov/radx\">https://www.nih.gov/radx</a>"
      },
      {
-      "url": "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
-      "target": "p:nth-child(11) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
-      "html": "<a href=\"https://www.nichd.nih.gov/news/releases/031115-podcast-reynolds\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">previous resear"
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+      "target": "article[data-history-node-id=\"13136\"] > div > ul > li:nth-child(5) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+      "html": "<a href=\"https://www.nimh.nih.gov/health/topics/depression/index.shtml\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Depression</a>"
      }
     ]
    },
@@ -178,8 +190,8 @@
     ]
    },
    "region": {
-    "count": 38,
-    "pages": 19,
+    "count": 44,
+    "pages": 22,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -189,7 +201,7 @@
     "examplePages": [
      "https://nih.gov/press-room?page=9",
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
-     "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults"
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children"
     ],
     "affectedPages": [
      {
@@ -198,6 +210,10 @@
      },
      {
       "url": "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
       "instances": 2
      },
      {
@@ -249,7 +265,15 @@
       "instances": 2
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
       "instances": 2
      },
      {
@@ -291,7 +315,7 @@
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      }
@@ -362,8 +386,8 @@
     ]
    },
    "heading-order": {
-    "count": 15,
-    "pages": 15,
+    "count": 18,
+    "pages": 18,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -372,12 +396,16 @@
     ],
     "examplePages": [
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
-     "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
-     "https://nih.gov/echo/about-echo-program"
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults"
     ],
     "affectedPages": [
      {
       "url": "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
       "instances": 1
      },
      {
@@ -425,7 +453,15 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
       "instances": 1
      },
      {
@@ -444,6 +480,11 @@
       "html": "<h3>What</h3>"
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
       "url": "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
       "target": "article > div > h3",
       "html": "<h3></h3>"
@@ -457,17 +498,12 @@
       "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
       "target": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(1) > h4",
       "html": "<h4 class=\"usa-accordion__heading\">\n        <button class=\"usa-accordion__button\" aria-expanded=\"false\" aria-controls=\"uswds-paragraph-4186\">\n          Electronic Records\n        </button>\n      </h4>"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-      "target": ".callout__text > h3",
-      "html": "<h3>At a Glance</h3>"
      }
     ]
    },
    "landmark-unique": {
-    "count": 8,
-    "pages": 8,
+    "count": 11,
+    "pages": 11,
     "impact": "moderate",
     "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
@@ -475,11 +511,15 @@
      "best-practice"
     ],
     "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights"
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+      "instances": 1
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
       "instances": 1
@@ -505,7 +545,15 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
       "instances": 1
      },
      {
@@ -514,6 +562,11 @@
      }
     ],
     "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
       "target": "#block-nih2-uswds-search",
@@ -531,11 +584,6 @@
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
-      "target": "#block-nih2-uswds-search",
-      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "target": "#block-nih2-uswds-search",
       "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      }
@@ -1409,11 +1457,11 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 167,
+  "uniqueIssues": 179,
   "consensus": 4,
-  "axeOnly": 63,
+  "axeOnly": 75,
   "alfaOnly": 100,
-  "rawAxe": 67,
+  "rawAxe": 79,
   "rawAlfa": 104,
   "byKey": {
    "axe-core:link-in-text-block": {
@@ -1422,7 +1470,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 18,
+    "pages": 21,
     "engines": "axe"
    },
    "axe-core:list": {
@@ -1440,7 +1488,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 19,
+    "pages": 22,
     "engines": "axe"
    },
    "act:ffd0e9": {
@@ -1460,7 +1508,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 15,
+    "pages": 18,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -1469,7 +1517,7 @@
      "landmark-unique"
     ],
     "alfaRules": [],
-    "pages": 8,
+    "pages": 11,
     "engines": "axe"
    },
    "alfa:sia-r66": {
@@ -1574,25 +1622,33 @@
   }
  },
  "sustainability": {
-  "pages": 277,
+  "pages": 311,
   "medianBytes": 63176,
-  "meanBytes": 142076,
+  "meanBytes": 133450,
   "medianRequests": 6,
-  "totalCo2g": 5.84,
-  "meanCo2g": 0.0211,
-  "totalEnergyWh": 11.82,
-  "meanEnergyWh": 0.0427
+  "totalCo2g": 6.16,
+  "meanCo2g": 0.0198,
+  "totalEnergyWh": 12.47,
+  "meanEnergyWh": 0.0401
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 138,
+  "total": 141,
   "byType": {
+   "image": 11,
    "embedded-media": 7,
    "pdf": 122,
-   "spreadsheet": 1,
-   "image": 8
+   "spreadsheet": 1
   },
   "list": [
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-02/20180703-child.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children"
+    ]
+   },
    {
     "url": "https://www.nih.gov/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DofqAMp5DbvY&max_width=0&max_height=0&hash=30yp9T6IflKK-6ZSmUHOxTGNOJvsE6f4U8vrvfxGBsw",
     "type": "embedded-media",
@@ -2674,11 +2730,27 @@
     ]
    },
    {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20210301-covid.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection"
+    ]
+   },
+   {
     "url": "https://nih.gov/sites/default/files/2025-03/20191022-deer.jpg",
     "type": "image",
     "pages": 1,
     "examplePages": [
      "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-02/20260224-pancreatic-test.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer"
     ]
    },
    {
@@ -2700,96 +2772,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 13,
+  "pagesChecked": 15,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (5/6)",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 13,
+  "pagesChecked": 15,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -2798,7 +2870,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -2807,7 +2879,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -2816,7 +2888,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -2825,7 +2897,7 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
@@ -2847,7 +2919,7 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
@@ -2869,7 +2941,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -2878,7 +2950,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -2887,7 +2959,7 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 13,
+    "total": 15,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
@@ -2908,8 +2980,8 @@
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 13,
-    "total": 13,
+    "pass": 15,
+    "total": 15,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -2973,15 +3045,15 @@
  },
  "publicInterest": null,
  "plainLanguage": {
-  "pagesChecked": 6,
-  "pagesScored": 5,
-  "medianWordsPerPage": 721,
-  "medianReadingEase": 43.6,
-  "medianGrade": 12.2,
+  "pagesChecked": 7,
+  "pagesScored": 6,
+  "medianWordsPerPage": 733,
+  "medianReadingEase": 45,
+  "medianGrade": 13,
   "topUnexplainedAcronyms": [
    {
     "acronym": "NIH",
-    "pages": 5,
+    "pages": 6,
     "examplePages": [
      "https://nih.gov/echo/about-echo-program",
      "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library",
@@ -2992,11 +3064,12 @@
    },
    {
     "acronym": "PMID",
-    "pages": 3,
+    "pages": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
-     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
+     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer"
     ]
    },
    {
@@ -3005,6 +3078,22 @@
     "examplePages": [
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
      "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "acronym": "JE",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer"
+    ]
+   },
+   {
+    "acronym": "AL",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer"
     ]
    },
    {
@@ -3076,30 +3165,17 @@
     "examplePages": [
      "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
     ]
-   },
-   {
-    "acronym": "ICAN",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
-    ]
-   },
-   {
-    "acronym": "NPR",
-    "pages": 1,
-    "examplePages": [
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
-    ]
    }
   ],
   "topMisspellings": [
    {
     "word": "doi",
-    "pages": 3,
+    "pages": 4,
     "examplePages": [
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
      "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
-     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
+     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer"
     ]
    },
    {
@@ -3749,6 +3825,10 @@
    "status": 403
   },
   {
+   "url": "https://nih.gov/news-events/news-releases/hhs-doubles-ai-backed-childhood-cancer-research-funding",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/news-releases/adults-prediabetes-lifestyle-intervention-lowered-risk-developing-multiple-chronic-conditions",
    "status": 403
   },
@@ -3793,6 +3873,10 @@
    "status": 403
   },
   {
+   "url": "https://nih.gov/news-events/nih-research-matters/2021-research-highlights-human-health-advances-0",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/brain/research/systems-neuroscience",
    "status": 403
   },
@@ -3813,6 +3897,18 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/about-nih/nih-almanac/michael-lauer-md",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/brain-scan-guided-emergency-stroke-treatment-can-save-more-lives",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/impact-nih-research/improving-health/infant-maternal-health",
+   "status": 403
+  },
+  {
    "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/guidelines-communicating-informed-consent-individuals-who-are-deaf-or-hard-hearing-scientists",
    "status": 403
   },
@@ -3822,26 +3918,6 @@
   },
   {
    "url": "https://www.nih.gov/news-events/nih-research-matters/improving-control-bionic-prosthetic-hands",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/brain-initiative/about/multi-council-working-group/brain-multi-council-working-group-mcwg-meeting-august-2026",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/heart-disease-stroke",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/nih-style-guide/nih",
-   "status": 403
-  },
-  {
-   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/brain-immunity-may-undergo-major-midlife-overhaul",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/gut-microbe-drives-autoimmunity",
    "status": 403
   }
  ],
@@ -4086,14 +4162,14 @@
   }
  ],
  "images": {
-  "pagesScanned": 19,
-  "totalImages": 278,
-  "uniqueImages": 33,
+  "pagesScanned": 22,
+  "totalImages": 324,
+  "uniqueImages": 37,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 278,
+  "withAlt": 324,
   "altVerdicts": {
-   "GOOD": 29,
+   "GOOD": 33,
    "SUSPICIOUS": 2,
    "TOO_SHORT": 2
   }
@@ -4489,8 +4565,45 @@
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 76,
+  "total_clusters": 77,
   "clusters": [
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 1,
+    "action_score": 26.4,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
+     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
+     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
+    ]
+   },
    {
     "id": "cc-cffcfd807590",
     "engine_key": "alfa",
@@ -4530,47 +4643,13 @@
     ]
    },
    {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 19.2,
-    "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
-     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
-     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
-     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
-     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
-     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
-    ]
-   },
-   {
     "id": "cc-d730914777a9",
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 19,
-    "instances": 19,
+    "rule_pages_affected": 22,
+    "pages_affected": 22,
+    "instances": 22,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -4580,15 +4659,16 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 15.2,
+    "action_score": 17.6,
     "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
      "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
      "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
      "https://nih.gov/echo/about-echo-program",
@@ -4601,7 +4681,9 @@
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
      "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
      "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
      "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients",
      "https://nih.gov/press-room?page=189",
@@ -4613,9 +4695,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 18,
-    "instances": 18,
+    "rule_pages_affected": 22,
+    "pages_affected": 21,
+    "instances": 21,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -4625,15 +4707,16 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 14.4,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 18,
-     "pages": 18,
-     "statement": "Fix one place, resolve ~18 finding(s) on 18 page(s)."
+     "findings": 21,
+     "pages": 21,
+     "statement": "Fix one place, resolve ~21 finding(s) on 21 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
      "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
      "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
      "https://nih.gov/echo/about-echo-program",
@@ -4645,7 +4728,9 @@
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
      "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
      "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
      "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients",
      "https://nih.gov/press-room?page=189",
@@ -5047,6 +5132,43 @@
     ]
    },
    {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 18,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 5,
+    "action_score": 5.28,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
+     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
+     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
+    ]
+   },
+   {
     "id": "cc-7c67d227d1f8",
     "engine_key": "alfa",
     "rule_id": "sia-r111",
@@ -5186,40 +5308,6 @@
      "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
      "https://nih.gov/news-events/news-releases/iodine-deficiency-may-reduce-pregnancy-chances-nih-study-suggests",
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients"
-    ]
-   },
-   {
-    "id": "cc-3c4299c743bc",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 15,
-    "pages_affected": 8,
-    "instances": 8,
-    "selector_path": ".callout__text > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".callout__text > h3",
-    "representative_snippet": "<h3>At a Glance</h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 5,
-    "action_score": 3.84,
-    "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
-     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
-     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
-     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
-     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
-     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
     ]
    },
    {
@@ -5365,9 +5453,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
-    "pages_affected": 8,
-    "instances": 12,
+    "rule_pages_affected": 21,
+    "pages_affected": 10,
+    "instances": 15,
     "selector_path": "p:nth-child(*) > a:nth-child(*)",
     "snippet_shape": "a:href",
     "representative_selector": "p:nth-child(1) > a:nth-child(2)",
@@ -5375,13 +5463,13 @@
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 18,
-    "action_score": 1.6,
+    "likely_source": "template",
+    "distinct_components_for_rule": 19,
+    "action_score": 1.89,
     "estimated_fix_impact": {
-     "findings": 12,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~12 finding(s) on 8 page(s)."
+     "findings": 15,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~15 finding(s) on 10 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/echo/about-echo-program",
@@ -5390,7 +5478,43 @@
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
      "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
      "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
+     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 21,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29921144\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">A Randomized Controlled Trial of P",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 19,
+    "action_score": 1.52,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://nih.gov/echo/about-echo-program",
+     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
      "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
     ]
    },
@@ -5399,7 +5523,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 15,
+    "rule_pages_affected": 18,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": "article > div > h3",
@@ -5460,70 +5584,6 @@
     ]
    },
    {
-    "id": "cc-0cb84ddbdf67",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 18,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 18,
-    "action_score": 1.2,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/press-room?page=9",
-     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
-     "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
-     "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients",
-     "https://nih.gov/press-room?page=189",
-     "https://nih.gov/research-training/lasker-clinical-research-scholars"
-    ]
-   },
-   {
-    "id": "cc-c3982f3f2935",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 18,
-    "pages_affected": 6,
-    "instances": 6,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(16) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.nigms.nih.gov/Research/DRCB/IDeA/Pages/default.aspx\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">IDeA states</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 18,
-    "action_score": 1.2,
-    "estimated_fix_impact": {
-     "findings": 6,
-     "pages": 6,
-     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/echo/about-echo-program",
-     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
-     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
-     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
-    ]
-   },
-   {
     "id": "cc-4d6425443650",
     "engine_key": "axe-core",
     "rule_id": "empty-heading",
@@ -5550,6 +5610,38 @@
      "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
      "https://nih.gov/news-events/news-releases/iodine-deficiency-may-reduce-pregnancy-chances-nih-study-suggests",
      "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 21,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 19,
+    "action_score": 1.14,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/press-room?page=9",
+     "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
+     "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
+     "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients",
+     "https://nih.gov/press-room?page=189",
+     "https://nih.gov/research-training/lasker-clinical-research-scholars"
     ]
    },
    {
@@ -5638,7 +5730,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 15,
+    "rule_pages_affected": 18,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "h3:nth-child(*)",
@@ -5666,7 +5758,7 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".region-site-alert",
@@ -5686,6 +5778,36 @@
     },
     "affected_pages": [
      "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library"
+    ]
+   },
+   {
+    "id": "cc-0975fb981253",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 21,
+    "pages_affected": 4,
+    "instances": 5,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"13136\"] > div > ul > li:nth-child(5) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nimh.nih.gov/health/topics/depression/index.shtml\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Depression</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 19,
+    "action_score": 0.76,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~5 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
     ]
    },
    {
@@ -5774,7 +5896,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": "p:nth-child(*) > a[href=\"/\"]",
@@ -5785,8 +5907,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.6,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.57,
     "estimated_fix_impact": {
      "findings": 3,
      "pages": 3,
@@ -5799,40 +5921,11 @@
     ]
    },
    {
-    "id": "cc-0975fb981253",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 18,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "article[data-history-node-id=\"17686\"] > div > ul > li:nth-child(5) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.nhlbi.nih.gov/education/dash-eating-plan\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">DASH Eating Plan</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.6,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
-     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
-    ]
-   },
-   {
     "id": "cc-dc4046f0700e",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 15,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
@@ -5859,7 +5952,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 15,
+    "rule_pages_affected": 18,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
@@ -5879,34 +5972,6 @@
     },
     "affected_pages": [
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients"
-    ]
-   },
-   {
-    "id": "cc-abaac791eabe",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 18,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(19) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/41719383/\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Monocyte-derived IL-10 drives sex dif",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.4,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
-     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
     ]
    },
    {
@@ -6015,6 +6080,62 @@
     },
     "affected_pages": [
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients"
+    ]
+   },
+   {
+    "id": "cc-a6e854cc83d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 21,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "li:nth-child(4) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nidcd.nih.gov/health/balance-disorders\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Balance Disorders</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 19,
+    "action_score": 0.38,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer"
+    ]
+   },
+   {
+    "id": "cc-abaac791eabe",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 21,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(19) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/41719383/\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Monocyte-derived IL-10 drives sex dif",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 19,
+    "action_score": 0.38,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
     ]
    },
    {
@@ -6130,7 +6251,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 2,
     "selector_path": "p:nth-child(*) > a",
@@ -6141,8 +6262,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 1,
@@ -6157,7 +6278,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"radx\"]",
@@ -6168,8 +6289,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6184,7 +6305,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
@@ -6195,8 +6316,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6211,7 +6332,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"www.nichd.nih.gov.\"]",
@@ -6222,8 +6343,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6238,7 +6359,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a:nth-child(*)",
@@ -6249,8 +6370,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6265,7 +6386,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]:nth-child(*)",
@@ -6276,8 +6397,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6292,7 +6413,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]:nth-child(*)",
@@ -6303,8 +6424,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6319,7 +6440,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
@@ -6330,8 +6451,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6342,38 +6463,11 @@
     ]
    },
    {
-    "id": "cc-a6e854cc83d5",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 18,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "li:nth-child(4) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.nidcd.nih.gov/health/balance-disorders\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Balance Disorders</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care"
-    ]
-   },
-   {
     "id": "cc-ec03984b8b1e",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"stride-study.org/\"]",
@@ -6384,8 +6478,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6400,7 +6494,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "div[callout=\"\"] > .callout__body > .callout__text > p:nth-child(*) > a:nth-child(*)",
@@ -6411,8 +6505,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6423,11 +6517,38 @@
     ]
    },
    {
+    "id": "cc-e3397b4fcf37",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 21,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "span > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "span > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/41593855/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer"
+    ]
+   },
+   {
     "id": "cc-167c95f281f9",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 21,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"www.nhlbi.nih.gov\"]",
@@ -6438,8 +6559,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 18,
-    "action_score": 0.2,
+    "distinct_components_for_rule": 19,
+    "action_score": 0.19,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6803,6 +6924,43 @@
   ],
   "top_actions": [
    {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 11,
+    "pages_affected": 11,
+    "instances": 11,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 1,
+    "action_score": 26.4,
+    "estimated_fix_impact": {
+     "findings": 11,
+     "pages": 11,
+     "statement": "Fix one place, resolve ~11 finding(s) on 11 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
+     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
+     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
+    ]
+   },
+   {
     "id": "cc-cffcfd807590",
     "engine_key": "alfa",
     "rule_id": "sia-r61",
@@ -6841,47 +6999,13 @@
     ]
    },
    {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 8,
-    "pages_affected": 8,
-    "instances": 8,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 19.2,
-    "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
-     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
-     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
-     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
-     "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
-     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
-    ]
-   },
-   {
     "id": "cc-d730914777a9",
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 19,
-    "instances": 19,
+    "rule_pages_affected": 22,
+    "pages_affected": 22,
+    "instances": 22,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -6891,15 +7015,16 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 15.2,
+    "action_score": 17.6,
     "estimated_fix_impact": {
-     "findings": 19,
-     "pages": 19,
-     "statement": "Fix one place, resolve ~19 finding(s) on 19 page(s)."
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
      "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
      "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
      "https://nih.gov/echo/about-echo-program",
@@ -6912,7 +7037,9 @@
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
      "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
      "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
      "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients",
      "https://nih.gov/press-room?page=189",
@@ -6924,9 +7051,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 19,
-    "pages_affected": 18,
-    "instances": 18,
+    "rule_pages_affected": 22,
+    "pages_affected": 21,
+    "instances": 21,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -6936,15 +7063,16 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 14.4,
+    "action_score": 16.8,
     "estimated_fix_impact": {
-     "findings": 18,
-     "pages": 18,
-     "statement": "Fix one place, resolve ~18 finding(s) on 18 page(s)."
+     "findings": 21,
+     "pages": 21,
+     "statement": "Fix one place, resolve ~21 finding(s) on 21 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
      "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
      "https://nih.gov/health-information/nih-clinical-research-trials-you/personal-stories/why-we-became-scientists",
      "https://nih.gov/echo/about-echo-program",
@@ -6956,7 +7084,9 @@
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
      "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
      "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer",
+     "https://www.nih.gov/news-events/nih-research-matters/progress-toward-blood-test-early-pancreatic-cancer",
      "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice",
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients",
      "https://nih.gov/press-room?page=189",
@@ -7195,6 +7325,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 3600,
- "pagesSucceeded": 22
+ "pagesAttempted": 4088,
+ "pagesSucceeded": 26
 }
