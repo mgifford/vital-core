@@ -1,0 +1,371 @@
+{
+ "runId": "2026-09-26T08-51-07-951Z-9176f2",
+ "week": "2026-W39",
+ "domain": "www.cdc.gov",
+ "startedAt": "2026-09-26T08:51:08.632Z",
+ "scanned": [
+  "7d336604dbdbc7da",
+  "348be5b102a86955",
+  "0d8e47e58f884dba",
+  "b33dc871ba9e4d97",
+  "b31cf668cf45cf69",
+  "cd41740bd14b0dfd",
+  "58c2fd3963b64654",
+  "7f8ba4770746aaca",
+  "89c0cfe3a78d0c44",
+  "eab77bcb5f5ce058",
+  "df5e351df5ac8fd5",
+  "bb49889da728adeb",
+  "de4754a3ed15853a",
+  "ac5849399370a171",
+  "fd3c4975231b0721",
+  "7140c02a95f6889d",
+  "14e30fa3483a3058",
+  "0cd2b91bc002e9f6",
+  "15df75dd32c11806",
+  "7474767d64c0fe47",
+  "f51fa96d2516ed13",
+  "755ba16e3a501f3a",
+  "3bb68f33a399862e",
+  "819aa3dbfb8c75ee",
+  "5b2978a1fca41b96",
+  "fabaaced71574799",
+  "bd1d47d61ad7de12",
+  "b660cfdd33d1cef9",
+  "78acd061db5cef37",
+  "58f5ed59feb1fa9a",
+  "4c0ebd97c67e4dfe",
+  "71d9a4e7fff6c1cc",
+  "a14f92fc5dfc947b",
+  "cb2d681b661a1763",
+  "e57279c1e9a12824"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 345,
+  "checked": 345,
+  "brokenCount": 32,
+  "broken": [
+   {
+    "url": "http://www.cdc.gov/search.do",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/nov/11_0255.htm",
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0241.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/ncidod/EID/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/nov/11_0255.htm",
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0241.htm"
+    ]
+   },
+   {
+    "url": "http://tools.cdc.gov/syndication/default.aspx?url=http://www.cdc.gov/pcd/issues/2011/nov/11_0255.htm",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/nov/11_0255.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/nccdphp/shared/pdfinfo.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/nov/11_0255.htm",
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0241.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/doc.do?id=0900f3ec80093c90",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/nov/11_0255.htm",
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0241.htm"
+    ]
+   },
+   {
+    "url": "http://www.dhhs.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "http://www.cdc.gov/pcd/issues/2011/nov/11_0255.htm",
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0241.htm"
+    ]
+   },
+   {
+    "url": "http://tools.cdc.gov/syndication/default.aspx?url=http://www.cdc.gov/pcd/issues/2011/sep/10_0241.htm",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0241.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fpolaris%2Fphp%2Fcdc-policy-process%2Findex.html&text=CDC%20Policy%20Process",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/polaris/php/cdc-policy-process/index.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/medialibrary/index.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/polaris/php/cdc-policy-process/index.html",
+     "https://www.cdc.gov/natural-disasters/es/psa-toolkit/desechar-alimentos-despues-de-un-apagon.html",
+     "https://www.cdc.gov/lead-prevention/success-stories-by-state/baltimore-maryland.html",
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/encryption.html",
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/web-plus.html",
+     "https://www.cdc.gov/wastewater/stories/index.html",
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6540a8.htm?s_cid=mm6540a8_w",
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/polaris/php/cdc-policy-process/index.html",
+     "https://www.cdc.gov/natural-disasters/es/psa-toolkit/desechar-alimentos-despues-de-un-apagon.html",
+     "https://www.cdc.gov/lead-prevention/success-stories-by-state/baltimore-maryland.html",
+     "https://www.cdc.gov/wastewater/stories/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/rss",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "http://www.cdc.gov/polaris/php/cdc-policy-process/index.html",
+     "https://www.cdc.gov/natural-disasters/es/psa-toolkit/desechar-alimentos-despues-de-un-apagon.html",
+     "https://www.cdc.gov/lead-prevention/success-stories-by-state/baltimore-maryland.html",
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/encryption.html",
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/web-plus.html",
+     "https://www.cdc.gov/wastewater/stories/index.html",
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6540a8.htm?s_cid=mm6540a8_w",
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnatural-disasters%2Fes%2Fpsa-toolkit%2Fdesechar-alimentos-despues-de-un-apagon.html&text=Desechar%20alimentos%20despu%C3%A9s%20de%20un%20apag%C3%B3n",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/natural-disasters/es/psa-toolkit/desechar-alimentos-despues-de-un-apagon.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Flead-prevention%2Fsuccess-stories-by-state%2Fbaltimore-maryland.html&text=Baltimore%2C%20Maryland",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/lead-prevention/success-stories-by-state/baltimore-maryland.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnational-program-cancer-registries%2Fphp%2Fdata-security%2Fencryption.html&text=Data%20Encryption",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/encryption.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_9_13",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/encryption.html",
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/web-plus.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnational-program-cancer-registries%2Fphp%2Fdata-security%2Fweb-plus.html&text=Security%20Features%20in%20Web%20Plus",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/national-program-cancer-registries/php/data-security/web-plus.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fwastewater%2Fstories%2Findex.html&text=Wastewater%20Success%20Stories",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/wastewater/stories/index.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/healthywater/hygiene",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6540a8.htm?s_cid=mm6540a8_w"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fmmwr%2Fvolumes%2F65%2Fwr%2Fmm6540a8.htm&text=Announcement%3A%20Global%20Handwashing%20Day%20%E2%80%94%20October%2015%2C%202016",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/volumes/65/wr/mm6540a8.htm?s_cid=mm6540a8_w"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/usual-place-asthma-children.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/uncontrolled-asthma-adults-2019.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/uncontrolled-asthma-children-2018-2020.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/uncontrolled-asthma-adults.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/uncontrolled-asthma-children.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/asthma-ed-visits_2010-2018.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/severity_adult.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/severity_child.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/Health_Care_Coverage_among_Children.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/asthma_stats/uncontrolled_asthma.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/asthma/nacpgranteeprofile.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fasthma%2Fbrfss%2F05%2Fbrfsschilddata.htm&text=2005%20Child%20Asthma%20Data%3A%20Prevalence%20Tables",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/asthma/asl_asthma_video.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "http://www.cdc.gov/asthma/brfss/05/brfsschilddata.htm"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 10,
+  "alfa": 1,
+  "plain-language": 5,
+  "deprecated-html": 3,
+  "resources": 10,
+  "images": 10,
+  "link-check": 10,
+  "public-interest": 2,
+  "sustainability": 2,
+  "standards": 3,
+  "third-party": 3,
+  "lighthouse": 2
+ },
+ "tally": {
+  "ok": 10,
+  "blocked": 25,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-09-26T09:00:03.529Z"
+}
