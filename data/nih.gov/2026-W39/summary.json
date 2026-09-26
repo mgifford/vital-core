@@ -1,16 +1,16 @@
 {
  "domain": "nih.gov",
  "week": "2026-W39",
- "generatedAt": "2026-09-25T17:33:22.913Z",
- "pagesScanned": 3332,
- "pagesAudited": 22,
+ "generatedAt": "2026-09-26T16:45:01.170Z",
+ "pagesScanned": 3333,
+ "pagesAudited": 23,
  "coverage": {
-  "sustainability": 311,
-  "axe": 22,
-  "resources": 22,
+  "sustainability": 312,
+  "axe": 23,
+  "resources": 23,
   "standards": 15,
   "alfa": 12,
-  "plain-language": 7,
+  "plain-language": 8,
   "lighthouse": 2,
   "tech": 3,
   "deprecated-html": 2,
@@ -18,14 +18,14 @@
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 163,
-  "pagesWithViolations": 22,
-  "pagesScanned": 22,
+  "violationTotal": 172,
+  "pagesWithViolations": 23,
+  "pagesScanned": 23,
   "medianViolations": 8,
   "rules": {
    "link-in-text-block": {
-    "count": 83,
-    "pages": 21,
+    "count": 88,
+    "pages": 22,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -74,6 +74,10 @@
      {
       "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
       "instances": 6
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
+      "instances": 5
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
@@ -190,8 +194,8 @@
     ]
    },
    "region": {
-    "count": 44,
-    "pages": 22,
+    "count": 46,
+    "pages": 23,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -242,6 +246,10 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
       "instances": 2
      },
      {
@@ -322,8 +330,8 @@
     ]
    },
    "empty-heading": {
-    "count": 5,
-    "pages": 5,
+    "count": 6,
+    "pages": 6,
     "impact": "minor",
     "help": "Headings should not be empty",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/empty-heading?application=axeAPI",
@@ -346,6 +354,10 @@
      },
      {
       "url": "https://nih.gov/news-events/news-releases/iodine-deficiency-may-reduce-pregnancy-chances-nih-study-suggests",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
       "instances": 1
      },
      {
@@ -374,20 +386,20 @@
       "html": "<h3></h3>"
      },
      {
-      "url": "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
-      "target": "article > div > h3",
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
+      "target": "h3:nth-child(18)",
       "html": "<h3></h3>"
      },
      {
-      "url": "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients",
-      "target": "article[data-history-node-id=\"9146\"] > div > h3",
+      "url": "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
+      "target": "article > div > h3",
       "html": "<h3></h3>"
      }
     ]
    },
    "heading-order": {
-    "count": 18,
-    "pages": 18,
+    "count": 19,
+    "pages": 19,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -430,6 +442,10 @@
      },
      {
       "url": "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
       "instances": 1
      },
      {
@@ -1457,11 +1473,11 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 179,
+  "uniqueIssues": 183,
   "consensus": 4,
-  "axeOnly": 75,
+  "axeOnly": 79,
   "alfaOnly": 100,
-  "rawAxe": 79,
+  "rawAxe": 83,
   "rawAlfa": 104,
   "byKey": {
    "axe-core:link-in-text-block": {
@@ -1470,7 +1486,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 21,
+    "pages": 22,
     "engines": "axe"
    },
    "axe-core:list": {
@@ -1488,7 +1504,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 22,
+    "pages": 23,
     "engines": "axe"
    },
    "act:ffd0e9": {
@@ -1499,7 +1515,7 @@
     "alfaRules": [
      "sia-r64"
     ],
-    "pages": 5,
+    "pages": 6,
     "engines": "both"
    },
    "axe-core:heading-order": {
@@ -1508,7 +1524,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 18,
+    "pages": 19,
     "engines": "axe"
    },
    "axe-core:landmark-unique": {
@@ -1622,20 +1638,20 @@
   }
  },
  "sustainability": {
-  "pages": 311,
+  "pages": 312,
   "medianBytes": 63176,
-  "meanBytes": 133450,
+  "meanBytes": 139983,
   "medianRequests": 6,
-  "totalCo2g": 6.16,
-  "meanCo2g": 0.0198,
-  "totalEnergyWh": 12.47,
-  "meanEnergyWh": 0.0401
+  "totalCo2g": 6.48,
+  "meanCo2g": 0.0208,
+  "totalEnergyWh": 13.12,
+  "meanEnergyWh": 0.042
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 141,
+  "total": 142,
   "byType": {
-   "image": 11,
+   "image": 12,
    "embedded-media": 7,
    "pdf": 122,
    "spreadsheet": 1
@@ -2698,6 +2714,14 @@
     ]
    },
    {
+    "url": "https://nih.gov/sites/default/files/2025-01/20180409-viral-particles.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
+    ]
+   },
+   {
     "url": "https://www.nih.gov/sites/default/files/2026-02/2019%20NIHRM%20Highlights.pdf",
     "type": "pdf",
     "pages": 1,
@@ -3045,11 +3069,11 @@
  },
  "publicInterest": null,
  "plainLanguage": {
-  "pagesChecked": 7,
-  "pagesScored": 6,
-  "medianWordsPerPage": 733,
-  "medianReadingEase": 45,
-  "medianGrade": 13,
+  "pagesChecked": 8,
+  "pagesScored": 7,
+  "medianWordsPerPage": 717,
+  "medianReadingEase": 43.6,
+  "medianGrade": 12.6,
   "topUnexplainedAcronyms": [
    {
     "acronym": "NIH",
@@ -3081,6 +3105,14 @@
     ]
    },
    {
+    "acronym": "RSS",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
+    ]
+   },
+   {
     "acronym": "JE",
     "pages": 2,
     "examplePages": [
@@ -3098,13 +3130,6 @@
    },
    {
     "acronym": "UP",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations"
-    ]
-   },
-   {
-    "acronym": "RSS",
     "pages": 1,
     "examplePages": [
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations"
@@ -3187,6 +3212,30 @@
     ]
    },
    {
+    "word": "www",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
+    ]
+   },
+   {
+    "word": "nih",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
+    ]
+   },
+   {
+    "word": "translational",
+    "pages": 2,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
+    ]
+   },
+   {
     "word": "Epub",
     "pages": 2,
     "examplePages": [
@@ -3251,28 +3300,7 @@
     ]
    },
    {
-    "word": "www",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations"
-    ]
-   },
-   {
-    "word": "nih",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations"
-    ]
-   },
-   {
     "word": "radx",
-    "pages": 1,
-    "examplePages": [
-     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations"
-    ]
-   },
-   {
-    "word": "translational",
     "pages": 1,
     "examplePages": [
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations"
@@ -4162,14 +4190,14 @@
   }
  ],
  "images": {
-  "pagesScanned": 22,
-  "totalImages": 324,
-  "uniqueImages": 37,
+  "pagesScanned": 23,
+  "totalImages": 338,
+  "uniqueImages": 38,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 324,
+  "withAlt": 338,
   "altVerdicts": {
-   "GOOD": 33,
+   "GOOD": 34,
    "SUSPICIOUS": 2,
    "TOO_SHORT": 2
   }
@@ -4565,7 +4593,7 @@
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 77,
+  "total_clusters": 79,
   "clusters": [
    {
     "id": "cc-340e0be35f96",
@@ -4647,9 +4675,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 22,
-    "pages_affected": 22,
-    "instances": 22,
+    "rule_pages_affected": 23,
+    "pages_affected": 23,
+    "instances": 23,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -4659,11 +4687,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 17.6,
+    "action_score": 18.4,
     "estimated_fix_impact": {
-     "findings": 22,
-     "pages": 22,
-     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
+     "findings": 23,
+     "pages": 23,
+     "statement": "Fix one place, resolve ~23 finding(s) on 23 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
@@ -4676,6 +4704,7 @@
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
      "https://nih.gov/news-events/news-releases/iodine-deficiency-may-reduce-pregnancy-chances-nih-study-suggests",
      "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
      "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
      "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
@@ -4695,9 +4724,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 22,
-    "pages_affected": 21,
-    "instances": 21,
+    "rule_pages_affected": 23,
+    "pages_affected": 22,
+    "instances": 22,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -4707,11 +4736,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 16.8,
+    "action_score": 17.6,
     "estimated_fix_impact": {
-     "findings": 21,
-     "pages": 21,
-     "statement": "Fix one place, resolve ~21 finding(s) on 21 page(s)."
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
@@ -4723,6 +4752,7 @@
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
      "https://nih.gov/news-events/news-releases/iodine-deficiency-may-reduce-pregnancy-chances-nih-study-suggests",
      "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
      "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
      "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
@@ -5136,7 +5166,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 19,
     "pages_affected": 11,
     "instances": 11,
     "selector_path": ".callout__text > h3",
@@ -5453,7 +5483,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 10,
     "instances": 15,
     "selector_path": "p:nth-child(*) > a:nth-child(*)",
@@ -5464,8 +5494,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "template",
-    "distinct_components_for_rule": 19,
-    "action_score": 1.89,
+    "distinct_components_for_rule": 21,
+    "action_score": 1.71,
     "estimated_fix_impact": {
      "findings": 15,
      "pages": 10,
@@ -5485,37 +5515,32 @@
     ]
    },
    {
-    "id": "cc-c3982f3f2935",
+    "id": "cc-61c26a3768ea",
     "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 21,
-    "pages_affected": 8,
-    "instances": 8,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29921144\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">A Randomized Controlled Trial of P",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 19,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(4)",
+    "representative_snippet": "<h3>What</h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 19,
-    "action_score": 1.52,
+    "distinct_components_for_rule": 5,
+    "action_score": 1.44,
     "estimated_fix_impact": {
-     "findings": 8,
-     "pages": 8,
-     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
      "https://nih.gov/echo/about-echo-program",
-     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
-     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
-     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
-     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
-     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
-     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
     ]
    },
    {
@@ -5523,7 +5548,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 19,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": "article > div > h3",
@@ -5584,11 +5609,45 @@
     ]
    },
    {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 22,
+    "pages_affected": 8,
+    "instances": 8,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29921144\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">A Randomized Controlled Trial of P",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 21,
+    "action_score": 1.37,
+    "estimated_fix_impact": {
+     "findings": 8,
+     "pages": 8,
+     "statement": "Fix one place, resolve ~8 finding(s) on 8 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/treatment-depression-young-children",
+     "https://nih.gov/echo/about-echo-program",
+     "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
+     "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
+     "https://nih.gov/news-events/nih-research-matters/regrowing-neurons-across-scarred-spinal-tissue",
+     "https://www.nih.gov/news-events/nih-research-matters/sars-cov-2-antibodies-protect-reinfection",
+     "https://www.nih.gov/news-events/nih-research-matters/lab-made-eye-cells-restore-vision-mice"
+    ]
+   },
+   {
     "id": "cc-4d6425443650",
     "engine_key": "axe-core",
     "rule_id": "empty-heading",
     "severity": "Minor",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 6,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": "article > div > h3",
@@ -5617,7 +5676,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 6,
     "instances": 6,
     "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
@@ -5628,8 +5687,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 19,
-    "action_score": 1.14,
+    "distinct_components_for_rule": 21,
+    "action_score": 1.03,
     "estimated_fix_impact": {
      "findings": 6,
      "pages": 6,
@@ -5726,23 +5785,23 @@
     ]
    },
    {
-    "id": "cc-61c26a3768ea",
+    "id": "cc-b4aea9b8408e",
     "engine_key": "axe-core",
-    "rule_id": "heading-order",
-    "severity": "Moderate",
-    "rule_pages_affected": 18,
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 6,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "h3:nth-child(*)",
     "snippet_shape": "h3:",
-    "representative_selector": "h3:nth-child(4)",
-    "representative_snippet": "<h3>What</h3>",
+    "representative_selector": "h3:nth-child(15)",
+    "representative_snippet": "<h3></h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 5,
-    "action_score": 0.96,
+    "distinct_components_for_rule": 3,
+    "action_score": 0.8,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -5750,7 +5809,7 @@
     },
     "affected_pages": [
      "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations",
-     "https://nih.gov/echo/about-echo-program"
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
     ]
    },
    {
@@ -5758,7 +5817,7 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 22,
+    "rule_pages_affected": 23,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".region-site-alert",
@@ -5785,7 +5844,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 4,
     "instances": 5,
     "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -5796,8 +5855,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.76,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.69,
     "estimated_fix_impact": {
      "findings": 5,
      "pages": 4,
@@ -5808,6 +5867,36 @@
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
      "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://nih.gov/news-events/nih-research-matters/bleach-inactivates-infectious-disease-found-deer"
+    ]
+   },
+   {
+    "id": "cc-50d6944a3868",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 22,
+    "pages_affected": 4,
+    "instances": 4,
+    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(14) > a[href=\"/\"]",
+    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.69,
+    "estimated_fix_impact": {
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
+     "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
+     "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients"
     ]
    },
    {
@@ -5892,40 +5981,11 @@
     ]
    },
    {
-    "id": "cc-50d6944a3868",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 21,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
-    "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(14) > a[href=\"/\"]",
-    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.57,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/news-releases/graduates-early-childhood-program-show-greater-educational-gains-adults",
-     "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
-     "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients"
-    ]
-   },
-   {
     "id": "cc-dc4046f0700e",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 19,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".paragraph--type--uswds-accordion-item.paragraph.paragraph--view-mode--default:nth-child(*) > h4",
@@ -5952,7 +6012,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 18,
+    "rule_pages_affected": 19,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
@@ -5972,33 +6032,6 @@
     },
     "affected_pages": [
      "https://nih.gov/news-events/news-releases/new-technique-makes-heart-valve-replacement-safer-some-high-risk-patients"
-    ]
-   },
-   {
-    "id": "cc-b4aea9b8408e",
-    "engine_key": "axe-core",
-    "rule_id": "empty-heading",
-    "severity": "Minor",
-    "rule_pages_affected": 5,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "h3:nth-child(*)",
-    "snippet_shape": "h3:",
-    "representative_selector": "h3:nth-child(15)",
-    "representative_snippet": "<h3></h3>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.4,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/news-events/news-releases/nih-expands-research-improve-covid-19-testing-among-underserved-vulnerable-populations"
     ]
    },
    {
@@ -6060,7 +6093,7 @@
     "engine_key": "axe-core",
     "rule_id": "empty-heading",
     "severity": "Minor",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 6,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
@@ -6087,7 +6120,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -6098,8 +6131,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.38,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.34,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -6115,7 +6148,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "p:nth-child(*) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
@@ -6126,8 +6159,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.38,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.34,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -6251,7 +6284,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 2,
     "selector_path": "p:nth-child(*) > a",
@@ -6262,8 +6295,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 1,
@@ -6278,7 +6311,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"radx\"]",
@@ -6289,8 +6322,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6305,7 +6338,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
@@ -6316,8 +6349,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6332,7 +6365,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"www.nichd.nih.gov.\"]",
@@ -6343,8 +6376,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6359,7 +6392,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a:nth-child(*)",
@@ -6370,8 +6403,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6386,7 +6419,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]:nth-child(*)",
@@ -6397,8 +6430,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6413,7 +6446,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]:nth-child(*)",
@@ -6424,8 +6457,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6440,7 +6473,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][target=\"_blank\"]",
@@ -6451,8 +6484,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6467,7 +6500,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"stride-study.org/\"]",
@@ -6478,8 +6511,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6490,11 +6523,65 @@
     ]
    },
    {
+    "id": "cc-dea91377f1a7",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 22,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > .mailto[href=\"mailto:kpekoc@niaid.nih.gov\"][data-extlink=\"\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(14) > .mailto[href=\"mailto:kpekoc@niaid.nih.gov\"][data-extlink=\"\"]",
+    "representative_snippet": "<a href=\"mailto:kpekoc@niaid.nih.gov\" class=\"mailto\" data-extlink=\"\">kpekoc@niaid.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
+    ]
+   },
+   {
+    "id": "cc-2b8a2f898d9a",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 22,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href$=\"niaid.nih.gov/\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(15) > a[href$=\"niaid.nih.gov/\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+    "representative_snippet": "<a href=\"https://www.niaid.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">NIAID website</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever"
+    ]
+   },
+   {
     "id": "cc-8e2670753039",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "div[callout=\"\"] > .callout__body > .callout__text > p:nth-child(*) > a:nth-child(*)",
@@ -6505,8 +6592,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6521,7 +6608,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "span > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
@@ -6532,8 +6619,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -6548,7 +6635,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 21,
+    "rule_pages_affected": 22,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"www.nhlbi.nih.gov\"]",
@@ -6559,8 +6646,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 19,
-    "action_score": 0.19,
+    "distinct_components_for_rule": 21,
+    "action_score": 0.17,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -7003,9 +7090,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 22,
-    "pages_affected": 22,
-    "instances": 22,
+    "rule_pages_affected": 23,
+    "pages_affected": 23,
+    "instances": 23,
     "selector_path": "#system-breadcrumb",
     "snippet_shape": "h2:",
     "representative_selector": "#system-breadcrumb",
@@ -7015,11 +7102,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 17.6,
+    "action_score": 18.4,
     "estimated_fix_impact": {
-     "findings": 22,
-     "pages": 22,
-     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
+     "findings": 23,
+     "pages": 23,
+     "statement": "Fix one place, resolve ~23 finding(s) on 23 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
@@ -7032,6 +7119,7 @@
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
      "https://nih.gov/news-events/news-releases/iodine-deficiency-may-reduce-pregnancy-chances-nih-study-suggests",
      "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
      "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
      "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
@@ -7051,9 +7139,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Moderate",
-    "rule_pages_affected": 22,
-    "pages_affected": 21,
-    "instances": 21,
+    "rule_pages_affected": 23,
+    "pages_affected": 22,
+    "instances": 22,
     "selector_path": ".usa-alert",
     "snippet_shape": "div:",
     "representative_selector": ".usa-alert",
@@ -7063,11 +7151,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 3,
-    "action_score": 16.8,
+    "action_score": 17.6,
     "estimated_fix_impact": {
-     "findings": 21,
-     "pages": 21,
-     "statement": "Fix one place, resolve ~21 finding(s) on 21 page(s)."
+     "findings": 22,
+     "pages": 22,
+     "statement": "Fix one place, resolve ~22 finding(s) on 22 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/press-room?page=9",
@@ -7079,6 +7167,7 @@
      "https://www.nih.gov/news-events/nih-research-matters/healthful-diet-linked-reduced-risk-cognitive-decline",
      "https://nih.gov/news-events/news-releases/iodine-deficiency-may-reduce-pregnancy-chances-nih-study-suggests",
      "https://nih.gov/news-events/nih-research-matters/approach-prevent-fall-injuries-no-better-usual-care",
+     "https://nih.gov/news-events/news-releases/nih-scientists-develop-macaque-model-study-crimean-congo-hemorrhagic-fever",
      "https://nih.gov/news-events/nih-research-matters/2019-research-highlights-basic-research-insights",
      "https://nih.gov/about-nih/nih-director/statements/nih-establish-new-policies-allowable-publication-costs",
      "https://www.nih.gov/news-events/nih-research-matters/long-covid-symptoms-linked-inflammation",
@@ -7325,6 +7414,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 4088,
- "pagesSucceeded": 26
+ "pagesAttempted": 4089,
+ "pagesSucceeded": 27
 }
