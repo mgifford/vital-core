@@ -1,6 +1,6 @@
 {
  "domain": "www.healthcare.gov",
- "updatedAt": "2026-09-23T17:28:34.069Z",
+ "updatedAt": "2026-09-28T19:52:41.779Z",
  "links": {
   "https://portal.cms.gov/wps/portal/unauthportal/home/": {
    "status": 503,
@@ -26,7 +26,7 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W24",
-   "lastSeen": "2026-W39",
+   "lastSeen": "2026-W40",
    "_weeks": [
     "2026-W24",
     "2026-W25",
@@ -42,16 +42,15 @@
     "2026-W36",
     "2026-W37",
     "2026-W38",
-    "2026-W39"
+    "2026-W39",
+    "2026-W40"
    ],
-   "weeksBroken": 15,
+   "weeksBroken": 16,
    "foundOn": [
-    "https://www.healthcare.gov/small-businesses/agents-and-brokers/register-for-the-shop-marketplace",
-    "https://www.healthcare.gov/agent-broker-quick-start",
+    "https://healthcare.gov/agent-broker-quick-start",
+    "https://www.healthcare.gov/small-businesses/agents-and-brokers/sell-health-insurance-through-shop",
     "https://healthcare.gov/small-businesses/agents-and-brokers/register-for-the-shop-marketplace",
-    "https://healthcare.gov/small-businesses/agents-and-brokers/sell-health-insurance-through-shop",
-    "https://healthcare.gov/small-businesses/agents-and-brokers",
-    "https://healthcare.gov/agent-broker-quick-start"
+    "https://healthcare.gov/small-businesses/agents-and-brokers"
    ]
   },
   "https://www.agentbrokerfaq.cms.gov/s/topic/0TOt0000000TUeNGAW/small-business-health-options-program/": {
@@ -411,7 +410,7 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W30",
-   "lastSeen": "2026-W39",
+   "lastSeen": "2026-W40",
    "_weeks": [
     "2026-W30",
     "2026-W31",
@@ -419,18 +418,19 @@
     "2026-W33",
     "2026-W34",
     "2026-W36",
-    "2026-W39"
+    "2026-W39",
+    "2026-W40"
    ],
-   "weeksBroken": 7,
+   "weeksBroken": 8,
    "foundOn": [
-    "https://healthcare.gov/third-party-privacy-policies"
+    "https://www.healthcare.gov/third-party-privacy-policies"
    ]
   },
   "http://choice.microsoft.com/en-us/opt-out": {
    "status": 0,
    "reason": "ERR_HTTP2_STREAM_ERROR",
    "firstSeen": "2026-W30",
-   "lastSeen": "2026-W39",
+   "lastSeen": "2026-W40",
    "_weeks": [
     "2026-W30",
     "2026-W31",
@@ -438,11 +438,12 @@
     "2026-W33",
     "2026-W34",
     "2026-W36",
-    "2026-W39"
+    "2026-W39",
+    "2026-W40"
    ],
-   "weeksBroken": 7,
+   "weeksBroken": 8,
    "foundOn": [
-    "https://healthcare.gov/third-party-privacy-policies"
+    "https://www.healthcare.gov/third-party-privacy-policies"
    ]
   },
   "http://youradchoices.com/": {
@@ -531,6 +532,21 @@
     "https://www.healthcare.gov/taxes-2021/other-health-coverage",
     "https://www.healthcare.gov/taxes-2021/marketplace-plan-without-savings",
     "https://www.healthcare.gov/american-indians-alaska-natives/coverage"
+   ]
+  },
+  "https://www.healthcare.gov/node/40221": {
+   "status": 404,
+   "reason": "HTTP 404",
+   "firstSeen": "2026-W40",
+   "lastSeen": "2026-W40",
+   "_weeks": [
+    "2026-W40"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.healthcare.gov/choose-a-plan/plans-categories",
+    "https://www.healthcare.gov/hsa-options",
+    "https://www.healthcare.gov/high-deductible-health-plan/hdhp-hsa-information"
    ]
   }
  }
