@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-09-28T19:52:35.449Z",
+ "updatedAt": "2026-09-29T18:17:06.568Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -152,7 +152,7 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W39",
+   "lastSeen": "2026-W40",
    "_weeks": [
     "2026-W25",
     "2026-W26",
@@ -160,9 +160,10 @@
     "2026-W30",
     "2026-W33",
     "2026-W35",
-    "2026-W39"
+    "2026-W39",
+    "2026-W40"
    ],
-   "weeksBroken": 7,
+   "weeksBroken": 8,
    "foundOn": [
     "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/fiscal-intermediary-shared-system-attending-and-rendering"
    ]
@@ -895,7 +896,7 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W27",
-   "lastSeen": "2026-W39",
+   "lastSeen": "2026-W40",
    "_weeks": [
     "2026-W27",
     "2026-W28",
@@ -907,12 +908,12 @@
     "2026-W36",
     "2026-W37",
     "2026-W38",
-    "2026-W39"
+    "2026-W39",
+    "2026-W40"
    ],
-   "weeksBroken": 11,
+   "weeksBroken": 12,
    "foundOn": [
-    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county",
-    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state"
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county"
    ]
   },
   "https://www.cms.gov/marketplace/resources/data/archive": {
@@ -1243,6 +1244,28 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/dialysis-facilities/state-survey-agency-contacts"
+   ]
+  },
+  "https://public.govdelivery.com/accounts/USCMS/subscriber/new?": {
+   "status": 0,
+   "reason": "UND_ERR_CONNECT_TIMEOUT",
+   "firstSeen": "2026-W40",
+   "lastSeen": "2026-W40",
+   "_weeks": [
+    "2026-W40"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/fiscal-intermediary-shared-system-attending-and-rendering/data/september-21-2026",
+    "https://data.cms.gov/provider-characteristics/hospitals-and-other-facilities/rural-health-clinic-all-owners/data/q2-2025",
+    "https://data.cms.gov/provider-characteristics/hospitals-and-other-facilities/federally-qualified-health-center-enrollments/data/q2-2026",
+    "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/pending-initial-logging-and-tracking-physicians/data/may-26-2026",
+    "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/pending-initial-logging-and-tracking-physicians/data/july-14-2026",
+    "https://data.cms.gov/cms-innovation-center-programs/accountable-care-models/next-generation-accountable-care-organization-model-data",
+    "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/order-and-referring/api-docs",
+    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-advantage-geographic-variation-national-state/data/2021",
+    "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/fiscal-intermediary-shared-system-attending-and-rendering/data/june-30-2026",
+    "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/opt-out-affidavits/data/march-2026"
    ]
   }
  }
