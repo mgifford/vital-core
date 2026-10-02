@@ -1,0 +1,988 @@
+{
+ "runId": "2026-10-02T16-00-02-243Z-7ef9dd",
+ "week": "2026-W40",
+ "domain": "www.cdc.gov",
+ "startedAt": "2026-10-02T16:00:04.210Z",
+ "scanned": [
+  "46f8bfd0966c5670",
+  "e44671d9787c1b7f",
+  "15030c1600c87d61",
+  "4757ed7a4779327d",
+  "18299a81a3664e5f",
+  "0cd001b72a500bea",
+  "d0e0522af54d79ba",
+  "ec386c890f807eab",
+  "77a75d82e1352966",
+  "f2a5ebcf214d53d7",
+  "11460443fc08fa9a",
+  "e469a6a36810583a",
+  "c03c7d32e2915606",
+  "3e44a65408f844d1",
+  "36a51b4066dcd1b8",
+  "2436dfa1f92e5b0f",
+  "de25b6ee9216b860",
+  "b6969010d47d1166",
+  "f708bfb76b516d6d",
+  "ada2b7415c65b53b",
+  "79213b8c32360cb2",
+  "71d8289d11d066ae",
+  "7d8c4b6608c923fd",
+  "9f9f03e19769e336",
+  "d8d22e2022f6ddc4",
+  "123283b1646c5fe4",
+  "5737ceda01d0094d",
+  "178c92d0d368280f",
+  "9f7daa9f58f03c5a",
+  "57ead67d9b6c5de8",
+  "9524416d53fcbbe2",
+  "e756cb38a389a1de",
+  "b9797d3dc3e76caf",
+  "05367a54b04303b3",
+  "bb0820a287341ea3",
+  "ed5b9a6e7a828de7"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 1054,
+  "checked": 500,
+  "brokenCount": 102,
+  "broken": [
+   {
+    "url": "https://www.cdc.gov/nchs/comec/state-mec-organizations.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/nchs/nvss/manuals/2021/2k-2021.htm"
+    ]
+   },
+   {
+    "url": "https://wwwdev.cdc.gov/nchs/nvss/vsrr.htm",
+    "status": 0,
+    "reason": "ENOTFOUND",
+    "foundOn": [
+     "https://www.cdc.gov/nchs/nvss/manuals/2021/2k-2021.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fnchs%2Fnvss%2Fmanuals%2F2021%2F2k-2021.htm&text=Instructions%20for%20the%20Automated%20Classification%20of%20the%20Initiating%20and%20Multiple%20Causes%20of%20Fetal%20Deaths%2C%202021",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/nchs/nvss/manuals/2021/2k-2021.htm"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/medialibrary/index.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/nchs/nvss/manuals/2021/2k-2021.htm",
+     "https://www.cdc.gov/genomics/disease/breast_ovarian_cancer/medical_options.htm",
+     "https://www.cdc.gov/han/php/about/index.html",
+     "https://www.cdc.gov/niosh/docs/mining/works/coversheet1552.html",
+     "https://www.cdc.gov/mmwr/volumes/72/wr/mm7250a2.htm",
+     "https://www.cdc.gov/mmwr/volumes/68/wr/mm6836a5.htm",
+     "https://www.cdc.gov/hearing-loss-children/articles/baby-hearing-screening-infographic.html",
+     "http://www.cdc.gov/skin-cancer/es/what-cdc-is-doing/index.html",
+     "https://www.cdc.gov/niosh/docket/archive/docket047.html",
+     "http://www.cdc.gov/sickle-cell-research/php/success-stories/index.html",
+     "http://www.cdc.gov/niosh/docs/2020-107",
+     "https://www.cdc.gov/mmwr/volumes/68/wr/mm685152a3.htm?s_cid=mm685152a3.htm_w",
+     "https://www.cdc.gov/rabies/hcp/veterinarians/index.html",
+     "http://www.cdc.gov/infrastructure/public-health-systems-emerging-practices/research-summary-social-determinants-of-health.html",
+     "https://www.cdc.gov/radon/about",
+     "https://www.cdc.gov/salt/es/reduce-sodium-intake/consejos-para-reducir-el-consumo-de-sodio.html",
+     "https://www.cdc.gov/niosh/bulletin/2020/older-nurses.html",
+     "https://www.cdc.gov/sti/php/ept-legal-status/michigan.html",
+     "https://www.cdc.gov/mmwr/volumes/66/wr/mm6651md.htm?s_cid=mm6651md_w",
+     "https://www.cdc.gov/media/releases/2026/transcript-update-on-ebola-outbreak-in-the-democratic-republic-of-the-congo-and-uganda-and-cdcs.html",
+     "http://www.cdc.gov/nchs/fastats/contraceptive.htm",
+     "http://www.cdc.gov/oral-health/php/infographics/untreated-cavities-adult-smokers.html",
+     "https://www.cdc.gov/restaurant-food-safety/php/data-research/practices.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/nchs/ndi/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/nchs/nvss/manuals/2021/2k-2021.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/nchs/surveys.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/nchs/nvss/manuals/2021/2k-2021.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/rss",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/nchs/nvss/manuals/2021/2k-2021.htm",
+     "https://www.cdc.gov/genomics/disease/breast_ovarian_cancer/medical_options.htm",
+     "https://www.cdc.gov/travel",
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html",
+     "https://www.cdc.gov/han/php/about/index.html",
+     "https://cdc.gov/dengue/prevention",
+     "https://www.cdc.gov/niosh/docs/mining/works/coversheet1552.html",
+     "https://www.cdc.gov/mmwr/volumes/72/wr/mm7250a2.htm",
+     "https://www.cdc.gov/mmwr/volumes/68/wr/mm6836a5.htm",
+     "https://www.cdc.gov/hearing-loss-children/articles/baby-hearing-screening-infographic.html",
+     "http://www.cdc.gov/skin-cancer/es/what-cdc-is-doing/index.html",
+     "https://www.cdc.gov/niosh/docket/archive/docket047.html",
+     "http://www.cdc.gov/sickle-cell-research/php/success-stories/index.html",
+     "http://www.cdc.gov/niosh/docs/2020-107",
+     "http://www.cdc.gov/import-permit-program/site.html",
+     "https://www.cdc.gov/mmwr/volumes/68/wr/mm685152a3.htm?s_cid=mm685152a3.htm_w",
+     "https://www.cdc.gov/rabies/hcp/veterinarians/index.html",
+     "http://www.cdc.gov/infrastructure/public-health-systems-emerging-practices/research-summary-social-determinants-of-health.html",
+     "https://www.cdc.gov/radon/about",
+     "https://www.cdc.gov/salt/es/reduce-sodium-intake/consejos-para-reducir-el-consumo-de-sodio.html",
+     "https://www.cdc.gov/niosh/bulletin/2020/older-nurses.html",
+     "https://www.cdc.gov/sti/php/ept-legal-status/michigan.html",
+     "https://www.cdc.gov/mmwr/volumes/66/wr/mm6651md.htm?s_cid=mm6651md_w",
+     "https://www.cdc.gov/media/releases/2026/transcript-update-on-ebola-outbreak-in-the-democratic-republic-of-the-congo-and-uganda-and-cdcs.html",
+     "http://www.cdc.gov/nchs/fastats/contraceptive.htm",
+     "http://www.cdc.gov/oral-health/php/infographics/untreated-cavities-adult-smokers.html",
+     "https://www.cdc.gov/restaurant-food-safety/php/data-research/practices.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/genomics/disease/breast_ovarian_cancer/medical_options.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/genomics/disease/breast_ovarian_cancer/medical_options.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fbreast-ovarian-cancer-hereditary%2Fmanaging-risk%2Findex.html&text=Managing%20Risk%20for%20Hereditary%20Breast%2C%20Ovarian%2C%20and%20Related%20Cancers",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/genomics/disease/breast_ovarian_cancer/medical_options.htm"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_9_13",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/genomics/disease/breast_ovarian_cancer/medical_options.htm",
+     "http://www.cdc.gov/skin-cancer/es/what-cdc-is-doing/index.html"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/destinations/list",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/traveler-information-center",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/find-clinic",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/faq",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/clinician-information-center",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/partnership-page",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/cholera-travel-information",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/yellowbook-home",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/medical-tourism",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/news-announcements",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_1150",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/page/travel-genomic-surveillance",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level4/ebola-drc-provinces",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level3/ebola-democratic-republic-of-the-congo",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level2/global-polio",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level2/chikungunya-nicaragua",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level1/dengue-global",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level2/yellow-fever-colombia",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level1/hepatitis-a-costa-rica",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/travel/notices/level1/paratyphoid-fever-yemen",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/ncezid/dgmq/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://www2c.cdc.gov/podcasts/rss.asp",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/ecards/",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/health-topics.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/vaccines-adults/recommended-vaccines/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/alzheimers-dementia/about/alzheimers.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/covid/prevention/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/diabetes/prevention-type-2/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/flu/signs-symptoms/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/signs-symptoms/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/clean-hands/data-research/facts-stats/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/hantavirus/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/healthy-weight-growth/about/tips-for-balancing-food-activity.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/high-blood-pressure/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/lyme/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/measles/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/overdose-prevention/prevention/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/dengue/prevention/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/tobacco/tobacco-features/surgeon-generals-report.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/rsv/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/group-a-strep/about/strep-throat.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/ebola/situation-summary/returning-travelers.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/measles/data-research/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/cdc/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/leadership/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/media/",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/organization/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/advisory-committee-director/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/speakers/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/museum/index.htm",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/cdc-foundation.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/divisions-offices/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/labs/strong-lab-safety/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/about/cdc-moving-forward/newcdc-info.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/flu/prevention/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/prepare-your-health/discussionguides/index.htm",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/global-health-protection/php/campaigns-and-awareness/world-field-epidemiology-day.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/overdose-prevention/manage-treat-pain/nonopioid-therapies.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/bird-flu/situation-summary/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/healthy-weight-growth/tips-parents-caregivers/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/diabetes/healthy-eating/choosing-healthy-carbs.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/respiratory-viruses/about/index.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/media/releases/2026/annual-report-to-the-nation-progress-against-lung-cancer-drives-down-cancer-mortality.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/media/releases/2026/twenty-five-years-after-9-11-lessons-from-the-world-trade-center-health-program.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/media/releases/2026/cdc-launches-new-overdose-prevention-data-channel.html",
+    "status": 0,
+    "reason": "Request cannot be constructed from a URL that includes credentials: https://%5C%",
+    "foundOn": [
+     "https://%5C%5C%5C%5Ccdc.gov%5C%5Cproject%5C%5COPHSS_CSELS_DPHID_MMWR_OD_Editors%5C%5CMMWR-WE%5C%5Cxxx%20-%20AUGUST%2021%5C%5CRoundtable%5C%5Cvqf8@cdc.gov/cyclosporiasis/es/about/acerca-de-la-ciclosporosis.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_486",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/han/php/about/index.html"
+    ]
+   },
+   {
+    "url": "http://gten.travel/prep/prep",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/travel"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fhan%2Fphp%2Fabout%2Findex.html&text=Health%20Alert%20Network%20(HAN)",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/han/php/about/index.html"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fniosh%2Fpublications%2Fnumbered%2F2009-102.html&text=Explosion%20Effects%20on%20Mine%20Ventilation%20Stoppings",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/niosh/docs/mining/works/coversheet1552.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx?topic_id=USCDC_10_4",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/niosh/docs/mining/works/coversheet1552.html",
+     "http://www.cdc.gov/niosh/docs/2020-107"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fmmwr%2Fvolumes%2F72%2Fwr%2Fmm7250a2.htm&text=Suicide%20Rates%20by%20Industry%20and%20Occupation%20%E2%80%94%20National%20Vital%20Statistics%20System%2C%20United%20States%2C%202021",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/volumes/72/wr/mm7250a2.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.do",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0286_es.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/ncidod/EID/index.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0286_es.htm"
+    ]
+   },
+   {
+    "url": "http://tools.cdc.gov/syndication/default.aspx?url=http://www.cdc.gov/pcd/issues/2011/sep/10_0286_es.htm",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0286_es.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/doc.do?id=0900f3ec80093c90",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0286_es.htm"
+    ]
+   },
+   {
+    "url": "http://www.dhhs.gov/",
+    "status": 0,
+    "reason": "UND_ERR_CONNECT_TIMEOUT",
+    "foundOn": [
+     "https://www.cdc.gov/pcd/issues/2011/sep/10_0286_es.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/violenceprevention/suicide/index.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/volumes/68/wr/mm6836a5.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fmmwr%2Fvolumes%2F68%2Fwr%2Fmm6836a5.htm&text=QuickStats%3A%20Age-Adjusted%20Rates*%20of%20Suicide%2C%E2%80%A0%20by%20State%E2%80%94%20National%20Vital%20Statistics%20System%2C%20United%20States%2C%C2%A7%202017",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/volumes/68/wr/mm6836a5.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fhearing-loss-children%2Farticles%2Fbaby-hearing-screening-infographic.html&text=EHDI%201-3-6%20Benchmarks",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "https://www.cdc.gov/hearing-loss-children/articles/baby-hearing-screening-infographic.html"
+    ]
+   },
+   {
+    "url": "https://tools.cdc.gov/campaignproxyservice/subscriptions.aspx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.cdc.gov/hearing-loss-children/articles/baby-hearing-screening-infographic.html",
+     "http://www.cdc.gov/sickle-cell-research/php/success-stories/index.html",
+     "https://www.cdc.gov/rabies/hcp/veterinarians/index.html",
+     "https://www.cdc.gov/radon/about",
+     "https://www.cdc.gov/niosh/bulletin/2020/older-nurses.html",
+     "https://www.cdc.gov/sti/php/ept-legal-status/michigan.html",
+     "http://www.cdc.gov/oral-health/php/infographics/untreated-cavities-adult-smokers.html"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/search.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00056293.htm",
+     "https://www.cdc.gov/mmwR/preview/mmwrhtml/rr5405a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047437.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001182.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/health/diseases.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00056293.htm",
+     "https://www.cdc.gov/mmwR/preview/mmwrhtml/rr5405a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047437.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001182.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/help.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00056293.htm",
+     "https://www.cdc.gov/mmwR/preview/mmwrhtml/rr5405a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047437.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001182.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/mmwrsrch.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00056293.htm",
+     "https://www.cdc.gov/mmwR/preview/mmwrhtml/rr5405a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047437.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001182.htm"
+    ]
+   },
+   {
+    "url": "https://www.cdc.gov/mmwr/contact.html",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00056293.htm",
+     "https://www.cdc.gov/mmwR/preview/mmwrhtml/rr5405a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047437.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001182.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/privacy.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00056293.htm",
+     "https://www.cdc.gov/mmwR/preview/mmwrhtml/rr5405a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047437.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001182.htm"
+    ]
+   },
+   {
+    "url": "http://www.cdc.gov/disclaimer.htm",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00056293.htm",
+     "https://www.cdc.gov/mmwR/preview/mmwrhtml/rr5405a1.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00047437.htm",
+     "https://www.cdc.gov/mmwr/preview/mmwrhtml/00001182.htm"
+    ]
+   },
+   {
+    "url": "http://twitter.com/share?url=https%3A%2F%2Fwww.cdc.gov%2Fskin-cancer%2Fes%2Fwhat-cdc-is-doing%2Findex.html&text=Qu%C3%A9%20est%C3%A1n%20haciendo%20los%20CDC%20con%20respecto%20al%20c%C3%A1ncer%20de%20piel",
+    "status": 520,
+    "reason": "HTTP 520",
+    "foundOn": [
+     "http://www.cdc.gov/skin-cancer/es/what-cdc-is-doing/index.html"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 33,
+  "plain-language": 18,
+  "resources": 33,
+  "images": 33,
+  "standards": 10,
+  "link-check": 33,
+  "public-interest": 2,
+  "third-party": 11,
+  "lighthouse": 2,
+  "tech": 3,
+  "security": 1,
+  "sustainability": 4,
+  "alfa": 5,
+  "deprecated-html": 1
+ },
+ "tally": {
+  "ok": 33,
+  "blocked": 3,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 0,
+  "error": 0
+ },
+ "finishedAt": "2026-10-02T16:53:30.989Z"
+}
