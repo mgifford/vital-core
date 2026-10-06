@@ -1,0 +1,3700 @@
+{
+ "domain": "nih.gov",
+ "week": "2026-W41",
+ "generatedAt": "2026-10-06T18:39:22.649Z",
+ "pagesScanned": 1197,
+ "pagesAudited": 6,
+ "coverage": {
+  "sustainability": 130,
+  "axe": 6,
+  "alfa": 5,
+  "plain-language": 2,
+  "resources": 6,
+  "standards": 1,
+  "tech": 1
+ },
+ "blocked": null,
+ "axe": {
+  "violationTotal": 49,
+  "pagesWithViolations": 6,
+  "pagesScanned": 6,
+  "medianViolations": 8,
+  "rules": {
+   "link-in-text-block": {
+    "count": 21,
+    "pages": 6,
+    "impact": "serious",
+    "help": "Links must be distinguishable without relying on color",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag141"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 6
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 6
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 6
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "p:nth-child(3) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+      "html": "<a href=\"https://echochildren.org/what-is-echo/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">ECHO Program</a>"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "p:nth-child(4) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+      "html": "<a href=\"https://echochildren.org/types-of-echo-research/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">observational and intervention"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "p:nth-child(9) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]:nth-child(1)",
+      "html": "<a href=\"https://digital.gov/resources/an-introduction-to-inclusion/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">diversity, equity, "
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "p:nth-child(7) > a",
+      "html": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/drugs-lessen-multiple-sclerosis-damage-mice\">previous research</a>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(1)",
+      "html": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/30046109/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Accumulation of 8,9-unsaturated stero"
+     }
+    ]
+   },
+   "region": {
+    "count": 12,
+    "pages": 6,
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "#system-breadcrumb",
+      "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "target": ".usa-alert",
+      "html": "<div class=\"usa-alert\">"
+     }
+    ]
+   },
+   "heading-order": {
+    "count": 5,
+    "pages": 5,
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "target": ".callout__text > h3",
+      "html": "<h3>At a Glance</h3>"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "target": ".thumbnail-teaser:nth-child(1) > .thumbnail-teaser__link.link--no-tag[typeof=\"schema:WebPage\"] > .thumbnail-teaser__body > .thumbnail-teaser__heading",
+      "html": "<h3 class=\"thumbnail-teaser__heading\">Flu infection study increases understanding of natural immunity</h3>"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": ".thumbnail-teaser:nth-child(1) > .thumbnail-teaser__link.link--no-tag[typeof=\"schema:WebPage\"] > .thumbnail-teaser__body > .thumbnail-teaser__heading",
+      "html": "<h3 class=\"thumbnail-teaser__heading\">NIH study supports use of short-term HIV treatment interruption in clinical trials</h3>"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": ".thumbnail-teaser:nth-child(1) > .thumbnail-teaser__link.link--no-tag[typeof=\"schema:WebPage\"] > .thumbnail-teaser__body > .thumbnail-teaser__heading",
+      "html": "<h3 class=\"thumbnail-teaser__heading\">NIH launches new PubMed tool to strengthen research replication and reproducibility&nbsp;</h3>"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 5,
+    "pages": 5,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     }
+    ]
+   },
+   "label": {
+    "count": 3,
+    "pages": 3,
+    "impact": "critical",
+    "help": "Form elements must have labels",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/label?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag412"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "target": ".chosen-search-input",
+      "html": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\" data-bef-auto-submit-exclude=\"true\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": ".chosen-search-input",
+      "html": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\" data-bef-auto-submit-exclude=\"true\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": ".chosen-search-input",
+      "html": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\" data-bef-auto-submit-exclude=\"true\">"
+     }
+    ]
+   },
+   "list": {
+    "count": 3,
+    "pages": 3,
+    "impact": "serious",
+    "help": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/list?application=axeAPI",
+    "tags": [
+     "wcag2a",
+     "wcag131"
+    ],
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=185",
+      "target": ".usa-pagination__list",
+      "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": ".usa-pagination__list",
+      "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": ".usa-pagination__list",
+      "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
+     }
+    ]
+   }
+  }
+ },
+ "alfa": {
+  "failedTotal": 463,
+  "pagesWithFailures": 5,
+  "pagesScanned": 5,
+  "medianFailures": 95,
+  "rules": {
+   "sia-r66": {
+    "count": 260,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 40
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 53
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 54
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 55
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 58
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "text: \"Health Information\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "text: \"Grants & Funding\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "text: \"Health Information\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 15,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 3
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 3
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "<p class=\"usa-banner__header-text\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "<p class=\"usa-identifier__identity-domain\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r62": {
+    "count": 13,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 5
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<a href=\"https://grants.nih.gov/grants/guide/notice-files/NOT-OD-24-088.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<a href=\"https://echochildren.org/types-of-echo-research/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/drugs-lessen-multiple-sclerosis-damage-mice\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r18": {
+    "count": 10,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 2
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     }
+    ]
+   },
+   "sia-r61": {
+    "count": 5,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     }
+    ]
+   },
+   "sia-r57": {
+    "count": 20,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 4
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "text: \"Get the Latest Updates and FAQs\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "text: \"NIH Websites Are Changing\"",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 132,
+    "pages": 5,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "instances": 23
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 27
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 30
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 26
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 26
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+      "target": "<a href=\"/virtual-tour\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r53": {
+    "count": 4,
+    "pages": 4,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": "<h3 class=\"thumbnail-teaser__heading\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": "<h3 class=\"thumbnail-teaser__heading\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r8": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r8",
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r68": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r68",
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=186",
+      "target": "<ul class=\"chosen-results\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases?page=0",
+      "target": "<ul class=\"chosen-results\">",
+      "html": null
+     }
+    ]
+   }
+  }
+ },
+ "consensus": {
+  "uniqueIssues": 69,
+  "consensus": 2,
+  "axeOnly": 26,
+  "alfaOnly": 41,
+  "rawAxe": 28,
+  "rawAlfa": 43,
+  "byKey": {
+   "axe-core:link-in-text-block": {
+    "actRuleId": null,
+    "axeRules": [
+     "link-in-text-block"
+    ],
+    "alfaRules": [],
+    "pages": 6,
+    "engines": "axe"
+   },
+   "axe-core:region": {
+    "actRuleId": null,
+    "axeRules": [
+     "region"
+    ],
+    "alfaRules": [],
+    "pages": 6,
+    "engines": "axe"
+   },
+   "axe-core:heading-order": {
+    "actRuleId": null,
+    "axeRules": [
+     "heading-order"
+    ],
+    "alfaRules": [],
+    "pages": 5,
+    "engines": "axe"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 5,
+    "engines": "axe"
+   },
+   "act:e086e5": {
+    "actRuleId": "e086e5",
+    "axeRules": [
+     "label"
+    ],
+    "alfaRules": [
+     "sia-r8"
+    ],
+    "pages": 3,
+    "engines": "both"
+   },
+   "axe-core:list": {
+    "actRuleId": null,
+    "axeRules": [
+     "list"
+    ],
+    "alfaRules": [],
+    "pages": 3,
+    "engines": "axe"
+   },
+   "alfa:sia-r66": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r66"
+    ],
+    "pages": 5,
+    "engines": "alfa"
+   },
+   "alfa:sia-r73": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r73"
+    ],
+    "pages": 5,
+    "engines": "alfa"
+   },
+   "alfa:sia-r62": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r62"
+    ],
+    "pages": 5,
+    "engines": "alfa"
+   },
+   "act:5c01ea": {
+    "actRuleId": "5c01ea",
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r18"
+    ],
+    "pages": 5,
+    "engines": "alfa"
+   },
+   "alfa:sia-r61": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r61"
+    ],
+    "pages": 5,
+    "engines": "alfa"
+   },
+   "alfa:sia-r57": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r57"
+    ],
+    "pages": 5,
+    "engines": "alfa"
+   },
+   "alfa:sia-r111": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r111"
+    ],
+    "pages": 5,
+    "engines": "alfa"
+   },
+   "alfa:sia-r53": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r53"
+    ],
+    "pages": 4,
+    "engines": "alfa"
+   },
+   "act:bc4a75": {
+    "actRuleId": "bc4a75",
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r68"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   }
+  }
+ },
+ "sustainability": {
+  "pages": 130,
+  "medianBytes": 63177,
+  "meanBytes": 91064,
+  "medianRequests": 7,
+  "totalCo2g": 1.76,
+  "meanCo2g": 0.0135,
+  "totalEnergyWh": 3.56,
+  "meanEnergyWh": 0.0274
+ },
+ "deprecatedHtml": null,
+ "resources": {
+  "total": 2,
+  "byType": {
+   "image": 2
+  },
+  "list": [
+   {
+    "url": "https://nih.gov/sites/default/files/2025-02/20180804-ms.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20210420-hallucinations.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   }
+  ]
+ },
+ "standards": {
+  "pagesChecked": 1,
+  "checks": [
+   {
+    "id": "schema-gov",
+    "label": "schema.org GovernmentOrganization markup",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "hreflang",
+    "label": "hreflang alternates declared",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "open-social",
+    "label": "Open social presence (Mastodon/Bluesky) linked",
+    "pass": 0,
+    "total": 1,
+    "rate": 0
+   },
+   {
+    "id": "canonical",
+    "label": "Canonical URL declared",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "title",
+    "label": "Page has a <title>",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "description",
+    "label": "Meta description present",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "charset",
+    "label": "Character encoding declared",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "lang",
+    "label": "Document language (lang) set",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "viewport",
+    "label": "Responsive viewport (zoom not disabled)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "open-graph",
+    "label": "Open Graph tags (4/6)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   },
+   {
+    "id": "twitter-card",
+    "label": "Twitter card metadata",
+    "pass": 1,
+    "total": 1,
+    "rate": 100
+   }
+  ],
+  "social": []
+ },
+ "resilience": {
+  "pagesChecked": 1,
+  "checks": [
+   {
+    "id": "pwa-manifest",
+    "label": "Web app manifest declared",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "A web app manifest is required for installability and controls how the app appears when launched.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-service-worker",
+    "label": "Service worker registered",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "A service worker is what makes offline access, caching, and background sync possible.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-theme-color",
+    "label": "Theme color declared",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "pwa-apple-touch-icon",
+    "label": "Apple touch icon (iOS/bookmark icon)",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "manifest-parsed",
+    "label": "Manifest fetched and parsed successfully",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/news-releases?page=186"
+     }
+    ]
+   },
+   {
+    "id": "manifest-maskable-icon",
+    "label": "Manifest declares a maskable icon",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
+    "evidenceExamples": [
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/news-releases?page=186"
+     }
+    ]
+   },
+   {
+    "id": "sw-active",
+    "label": "Service worker is active (not just registered)",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "sw-controlling",
+    "label": "Service worker controls this page load",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
+    "evidenceExamples": []
+   },
+   {
+    "id": "installable",
+    "label": "Meets basic installability criteria",
+    "pass": 0,
+    "total": 1,
+    "rate": 0,
+    "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
+    "evidenceExamples": [
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/news-releases?page=186"
+     }
+    ]
+   },
+   {
+    "id": "pwa-https",
+    "label": "HTTPS (required for service workers)",
+    "pass": 1,
+    "total": 1,
+    "rate": 100,
+    "why": "HTTPS is required for service workers and most install prompts.",
+    "evidenceExamples": []
+   }
+  ],
+  "offline": null
+ },
+ "security": null,
+ "publicInterest": null,
+ "plainLanguage": {
+  "pagesChecked": 2,
+  "pagesScored": 2,
+  "medianWordsPerPage": 360,
+  "medianReadingEase": 28,
+  "medianGrade": 16,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NOTE",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "acronym": "RFI",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "acronym": "ET",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "acronym": "NIH",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "acronym": "HIV",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "acronym": "GLP",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "acronym": "RSS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "pre",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "word": "peri",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "word": "neurodevelopment",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "word": "underserved",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "word": "NIHKidsandEnvironment",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "word": "nih",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "word": "PubMed",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "word": "reproducibility",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "word": "Craniofacial",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "word": "Neuroprosthesis",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "word": "Emb",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "word": "EurekAlert",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   }
+  ]
+ },
+ "lighthouse": null,
+ "linkCheck": {
+  "brokenCount": 4,
+  "broken": [
+   {
+    "url": "https://digital.gov/resources/an-introduction-to-inclusion/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "url": "https://us.pagefreezer.com/en-US/wa/browse/8fbe5dca-baac-4ea1-ac63-4fd951f6bd17?url=https%3A%2F%2Fwww.nih.gov%2Fnews-events%2Fnih-research-matters%2Fstructure-guides-design-dopamine-receptor-binding-compound&timestamp=2022-01-01T14%3A06%3A44Z",
+    "status": 0,
+    "reason": "ECONNRESET",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   },
+   {
+    "url": "https://us.pagefreezer.com/en-US/wa/browse/8fbe5dca-baac-4ea1-ac63-4fd951f6bd17?url=https%3A%2F%2Fwww.nih.gov%2Fnews-events%2Fnih-research-matters%2Fmutated-genes-schizophrenia-map-brain-networks&timestamp=2022-01-01T14%3A06%3A44Z",
+    "status": 0,
+    "reason": "ECONNRESET",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   },
+   {
+    "url": "https://us.pagefreezer.com/en-US/wa/browse/8fbe5dca-baac-4ea1-ac63-4fd951f6bd17?url=https%3A%2F%2Fwww.nih.gov%2Fnews-events%2Fnih-research-matters%2Fpotassium-channel-linked-schizophrenia&timestamp=2022-01-01T14%3A06%3A44Z",
+    "status": 0,
+    "reason": "ECONNRESET",
+    "foundOn": [
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   }
+  ]
+ },
+ "errorPages": [
+  {
+   "url": "https://nih.gov/news-events/news-releases/hhs-doubles-ai-backed-childhood-cancer-research-funding",
+   "status": 403
+  },
+  {
+   "url": "http://mailto:RADxInfo@nih.gov/news-events/news-releases/nih-funded-clinical-trial-links-frequent-anger-increased-risk-heart-disease",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/improving-parkinsons-disease-treatment",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/impact-nih-research/improving-health/infant-maternal-health",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/guidelines-communicating-informed-consent-individuals-who-are-deaf-or-hard-hearing-scientists",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/new-approach-fighting-staph-infections",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/nih-launches-home-test-treat-pilot-covid-19-telehealth-program",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/obesity-metabolic-health",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/blood-brain-barrier-test-may-predict-dementia",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/brain-stimulation-can-affect-memory-older-adults",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/e-cigarettes-may-complicate-teen-attempts-quit-nicotine",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/antibody-treatment-protects-adults-against-malaria",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/rural-youth-often-lack-access-suicide-prevention-services",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/drug-may-slow-development-type-1-diabetes",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/atlas-developing-human-brain",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-environmental-health-sciences-niehs",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/structure-hepatitis-c-proteins-reveals-viral-vulnerabilities",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/heal/heal-initiative-requirements/data-sharing-policy",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/stopping-scar-tissue-improves-healing-after-heart-attack-mice",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters?page=0",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/news-releases/nih-clinical-trial-tuberculous-meningitis-drug-regimen-begins",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director/office-legislative-policy-analysis-olpa/congressional-visits-nih",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/press-room?page=184",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/nih-announces-centers-myalgic-encephalomyelitis-chronic-fatigue-syndrome-research",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/system-uses-imagined-handwriting-turn-thoughts-into-text",
+   "status": 403
+  }
+ ],
+ "tech": [
+  {
+   "name": "Cloudflare Browser Insights",
+   "category": "Analytics",
+   "categories": [
+    "Analytics",
+    "RUM"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Crazy Egg",
+   "category": "Analytics",
+   "categories": [
+    "Analytics"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://crazyegg.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Google Analytics",
+   "category": "Analytics",
+   "categories": [
+    "Analytics"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://google.com/analytics",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Varnish",
+   "category": "Caching",
+   "categories": [
+    "Caching"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.varnish-cache.org",
+   "cpe": "cpe:2.3:a:varnish-software:varnish_cache:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Cloudflare",
+   "category": "CDN",
+   "categories": [
+    "CDN"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.cloudflare.com",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Drupal",
+   "category": "CMS",
+   "categories": [
+    "CMS"
+   ],
+   "confidence": 100,
+   "version": "10",
+   "website": "https://www.drupal.org/",
+   "cpe": "cpe:2.3:a:drupal:drupal:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "jQuery",
+   "category": "JavaScript libraries",
+   "categories": [
+    "JavaScript libraries"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://jquery.com",
+   "cpe": "cpe:2.3:a:jquery:jquery:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "HTTP/3",
+   "category": "Miscellaneous",
+   "categories": [
+    "Miscellaneous"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://httpwg.org/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Acquia Cloud Platform",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.acquia.com/products/drupal-cloud/cloud-platform",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Amazon Web Services",
+   "category": "PaaS",
+   "categories": [
+    "PaaS"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://aws.amazon.com/",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "PHP",
+   "category": "Programming languages",
+   "categories": [
+    "Programming languages"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://php.net",
+   "cpe": "cpe:2.3:a:php:php:*:*:*:*:*:*:*:*",
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "HSTS",
+   "category": "Security",
+   "categories": [
+    "Security"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.rfc-editor.org/rfc/rfc6797#section-6.1",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "Google Tag Manager",
+   "category": "Tag managers",
+   "categories": [
+    "Tag managers"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://www.google.com/tagmanager",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  },
+  {
+   "name": "USWDS",
+   "category": "UI frameworks",
+   "categories": [
+    "UI frameworks"
+   ],
+   "confidence": 100,
+   "version": null,
+   "website": "https://designsystem.digital.gov",
+   "cpe": null,
+   "pagesConfirmed": 1,
+   "examplePages": [
+    "https://nih.gov/news-events/news-releases?page=186"
+   ]
+  }
+ ],
+ "images": {
+  "pagesScanned": 6,
+  "totalImages": 112,
+  "uniqueImages": 43,
+  "missingAlt": 0,
+  "decorative": 0,
+  "withAlt": 112,
+  "altVerdicts": {
+   "GOOD": 32,
+   "SUSPICIOUS": 9,
+   "TOO_SHORT": 2
+  }
+ },
+ "techFindings": {
+  "model": {
+   "pages": 1,
+   "tech": {
+    "Cloudflare Browser Insights": 1,
+    "Crazy Egg": 1,
+    "Google Analytics": 1,
+    "Varnish": 1,
+    "Cloudflare": 1,
+    "Drupal": 1,
+    "jQuery": 1,
+    "HTTP/3": 1,
+    "Acquia Cloud Platform": 1,
+    "Amazon Web Services": 1,
+    "PHP": 1,
+    "HSTS": 1,
+    "Google Tag Manager": 1,
+    "USWDS": 1
+   },
+   "finding": {
+    "axe:heading-order": 1,
+    "axe:label": 1,
+    "axe:landmark-unique": 1,
+    "axe:link-in-text-block": 1,
+    "axe:list": 1,
+    "axe:region": 1,
+    "alfa:sia-r66": 1,
+    "alfa:sia-r8": 1,
+    "alfa:sia-r53": 1,
+    "alfa:sia-r73": 1,
+    "alfa:sia-r62": 1,
+    "alfa:sia-r68": 1,
+    "alfa:sia-r18": 1,
+    "alfa:sia-r61": 1,
+    "alfa:sia-r57": 1,
+    "alfa:sia-r111": 1
+   },
+   "pair": {
+    "Cloudflare Browser Insights": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Crazy Egg": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Google Analytics": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Varnish": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Cloudflare": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Drupal": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "jQuery": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "HTTP/3": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Acquia Cloud Platform": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Amazon Web Services": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "PHP": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "HSTS": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "Google Tag Manager": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    },
+    "USWDS": {
+     "axe:heading-order": 1,
+     "axe:label": 1,
+     "axe:landmark-unique": 1,
+     "axe:link-in-text-block": 1,
+     "axe:list": 1,
+     "axe:region": 1,
+     "alfa:sia-r66": 1,
+     "alfa:sia-r8": 1,
+     "alfa:sia-r53": 1,
+     "alfa:sia-r73": 1,
+     "alfa:sia-r62": 1,
+     "alfa:sia-r68": 1,
+     "alfa:sia-r18": 1,
+     "alfa:sia-r61": 1,
+     "alfa:sia-r57": 1,
+     "alfa:sia-r111": 1
+    }
+   }
+  },
+  "associations": []
+ },
+ "thirdParty": {
+  "pagesScanned": 3,
+  "vendors": [
+   {
+    "origin": "googletagmanager.com",
+    "pages": 3,
+    "pagesWithScripts": 3,
+    "isScriptVendor": true,
+    "medianBytes": 638279,
+    "medianDurationMs": 661,
+    "medianRequests": 4,
+    "pagesWithFindings": 3,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "origin": "crazyegg.com",
+    "pages": 3,
+    "pagesWithScripts": 3,
+    "isScriptVendor": true,
+    "medianBytes": 71023,
+    "medianDurationMs": 384,
+    "medianRequests": 4,
+    "pagesWithFindings": 3,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "origin": "cloudflareinsights.com",
+    "pages": 3,
+    "pagesWithScripts": 3,
+    "isScriptVendor": true,
+    "medianBytes": 30294,
+    "medianDurationMs": 67,
+    "medianRequests": 1,
+    "pagesWithFindings": 3,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "origin": "digitalgov.gov",
+    "pages": 3,
+    "pagesWithScripts": 3,
+    "isScriptVendor": true,
+    "medianBytes": 30230,
+    "medianDurationMs": 118,
+    "medianRequests": 1,
+    "pagesWithFindings": 3,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "origin": "google-analytics.com",
+    "pages": 3,
+    "pagesWithScripts": 3,
+    "isScriptVendor": true,
+    "medianBytes": 20805,
+    "medianDurationMs": 130,
+    "medianRequests": 4,
+    "pagesWithFindings": 3,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "origin": "pinterest.com",
+    "pages": 3,
+    "pagesWithScripts": 3,
+    "isScriptVendor": true,
+    "medianBytes": 18901,
+    "medianDurationMs": 268,
+    "medianRequests": 3,
+    "pagesWithFindings": 3,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "origin": "verint-cdn.com",
+    "pages": 3,
+    "pagesWithScripts": 3,
+    "isScriptVendor": true,
+    "medianBytes": 107,
+    "medianDurationMs": 192,
+    "medianRequests": 1,
+    "pagesWithFindings": 3,
+    "examplePages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   }
+  ]
+ },
+ "componentClusters": {
+  "design_system": "none",
+  "design_system_label": "none",
+  "design_system_theme": null,
+  "template_page_threshold": 10,
+  "total_clusters": 40,
+  "clusters": [
+   {
+    "id": "cc-5e7a4067e318",
+    "engine_key": "axe-core",
+    "rule_id": "label",
+    "severity": "Critical",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".chosen-search-input",
+    "snippet_shape": "input:type",
+    "representative_selector": ".chosen-search-input",
+    "representative_snippet": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\" data-bef-auto-submit-exclude=\"true\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-981d69379a79",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".usa-pagination__list",
+    "snippet_shape": "ul:",
+    "representative_selector": ".usa-pagination__list",
+    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 10.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 10,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 5,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 5,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-2eed9d7202ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r8",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\">",
+    "snippet_shape": "",
+    "representative_selector": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-aee255c01fe4",
+    "engine_key": "alfa",
+    "rule_id": "sia-r68",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<ul class=\"chosen-results\">",
+    "snippet_shape": "",
+    "representative_selector": "<ul class=\"chosen-results\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-a4320a3bea22",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".thumbnail-teaser:nth-child(*) > .thumbnail-teaser__link.link--no-tag[typeof=\"schema:webpage\"] > .thumbnail-teaser__body > .thumbnail-teaser__heading",
+    "snippet_shape": "h3:",
+    "representative_selector": ".thumbnail-teaser:nth-child(1) > .thumbnail-teaser__link.link--no-tag[typeof=\"schema:WebPage\"] > .thumbnail-teaser__body > .thumbnail-teaser__heading",
+    "representative_snippet": "<h3 class=\"thumbnail-teaser__heading\">Flu infection study increases understanding of natural immunity</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 3.6,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-8e242a862e3a",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-992ed06f0f6c",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "text: \"health information\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Health Information\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-0bad39ad282b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r66",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "text: \"grants & funding\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Grants & Funding\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-19c608daabd2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-b3dd9d9563fe",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "text: \"nih websites are changing\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH Websites Are Changing\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-f78cd49f3540",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "snippet_shape": "",
+    "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-aba72eba36dd",
+    "engine_key": "alfa",
+    "rule_id": "sia-r57",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "text: \"get the latest updates and faqs\"",
+    "snippet_shape": "",
+    "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-7c67d227d1f8",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "snippet_shape": "",
+    "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-3c8788d59ab6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "snippet_shape": "",
+    "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-b39e5ed2e696",
+    "engine_key": "alfa",
+    "rule_id": "sia-r111",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<a href=\"/virtual-tour\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"/virtual-tour\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 3,
+    "action_score": 3.33,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2.4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   },
+   {
+    "id": "cc-a5d059c3bdf1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 4,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<h3 class=\"thumbnail-teaser__heading\">",
+    "snippet_shape": "",
+    "representative_selector": "<h3 class=\"thumbnail-teaser__heading\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 6,
+    "action_score": 1.67,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-0cb84ddbdf67",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 8,
+    "action_score": 1.35,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-7ba71ea0eb54",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(3) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
+    "representative_snippet": "<a href=\"https://echochildren.org/what-is-echo/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">ECHO Program</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 8,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "id": "cc-a6e854cc83d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "li:nth-child(8) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nimh.nih.gov/health/topics/schizophrenia/index.shtml\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Schizophrenia<",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 8,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   },
+   {
+    "id": "cc-740cd5f71530",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(9) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]:nth-child(1)",
+    "representative_snippet": "<a href=\"https://digital.gov/resources/an-introduction-to-inclusion/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">diversity, equity, ",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 8,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "id": "cc-f969fe7b099c",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(7) > a",
+    "representative_snippet": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/drugs-lessen-multiple-sclerosis-damage-mice\">previous research</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 8,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis"
+    ]
+   },
+   {
+    "id": "cc-a8a38bf8d708",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(19) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(1)",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/30046109/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Accumulation of 8,9-unsaturated stero",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 8,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis"
+    ]
+   },
+   {
+    "id": "cc-0b473cc478cf",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]:nth-child(6)",
+    "representative_snippet": "<a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC6508550/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Induction&nbsp;of&nbsp;myelin",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 8,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33795430/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Striatal dopamine mediates hallucinat",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 8,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   },
+   {
+    "id": "cc-318865f88745",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://grants.nih.gov/grants/guide/notice-files/not-od-#-#.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://grants.nih.gov/grants/guide/notice-files/NOT-OD-24-088.html\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "id": "cc-952f563128e4",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://echochildren.org/types-of-echo-research/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://echochildren.org/types-of-echo-research/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process"
+    ]
+   },
+   {
+    "id": "cc-5ac894b557d6",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/drugs-lessen-multiple-sclerosis-damage-mice\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.nih.gov/news-events/nih-research-matters/drugs-lessen-multiple-sclerosis-damage-mice\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis"
+    ]
+   },
+   {
+    "id": "cc-e74a305f0b15",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc6508550/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC6508550/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis"
+    ]
+   },
+   {
+    "id": "cc-ad7c1fbc82f1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/33795430/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice"
+    ]
+   }
+  ],
+  "top_actions": [
+   {
+    "id": "cc-5e7a4067e318",
+    "engine_key": "axe-core",
+    "rule_id": "label",
+    "severity": "Critical",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".chosen-search-input",
+    "snippet_shape": "input:type",
+    "representative_selector": ".chosen-search-input",
+    "representative_snippet": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\" data-bef-auto-submit-exclude=\"true\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14.4,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-981d69379a79",
+    "engine_key": "axe-core",
+    "rule_id": "list",
+    "severity": "Serious",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".usa-pagination__list",
+    "snippet_shape": "ul:",
+    "representative_selector": ".usa-pagination__list",
+    "representative_snippet": "<ul class=\"usa-pagination__list pager__items js-pager__items\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 10.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 10,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 7.2,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=185",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-cd5f617ba5c1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "@aria-label=\"descripción de la agencia\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Descripción de la agencia\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 5,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-424dd2ea2877",
+    "engine_key": "alfa",
+    "rule_id": "sia-r18",
+    "severity": "Moderate",
+    "rule_pages_affected": 5,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "@aria-label=\"official website of the department of health and human services\"",
+    "snippet_shape": "",
+    "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 2,
+    "action_score": 5,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/announcements/nih-echo-issues-request-information-potential-strategic-priorities-part-strategic-planning-process",
+     "https://nih.gov/news-events/nih-research-matters/how-drugs-could-repair-damage-multiple-sclerosis",
+     "https://www.nih.gov/news-events/nih-research-matters/tracking-hallucinations-mice",
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-2eed9d7202ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r8",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\">",
+    "snippet_shape": "",
+    "representative_selector": "<input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" readonly=\"\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   },
+   {
+    "id": "cc-aee255c01fe4",
+    "engine_key": "alfa",
+    "rule_id": "sia-r68",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "<ul class=\"chosen-results\">",
+    "snippet_shape": "",
+    "representative_selector": "<ul class=\"chosen-results\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 1,
+    "action_score": 4,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases?page=186",
+     "https://nih.gov/news-events/news-releases?page=0"
+    ]
+   }
+  ],
+  "design_component_usage": [],
+  "page_component_usage": [],
+  "drift_page_count": 0,
+  "drift_pages": [],
+  "drift_clusters": []
+ },
+ "pagesAttempted": 1500,
+ "pagesSucceeded": 7
+}
