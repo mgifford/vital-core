@@ -1,0 +1,198 @@
+{
+ "runId": "2026-10-07T17-04-08-933Z-5cac4e",
+ "week": "2026-W41",
+ "domain": "www.medicare.gov",
+ "startedAt": "2026-10-07T17:04:09.487Z",
+ "scanned": [
+  "a735a07ebef1cde0",
+  "9c47c7a8abc4cd38",
+  "b2305d63bea0626c",
+  "e6e08352186604da",
+  "a524f0dd3973af5a",
+  "ab853d391689301f",
+  "33a367fa8a462ec3",
+  "b3f87807718693b9",
+  "2d4879a44c4d0cab",
+  "475f9744fff7b150",
+  "abe5eae43be47cfc",
+  "1fee53ff810975b5",
+  "e266f4d444914001",
+  "e5007784ea511727",
+  "bb6c963eeed53dc5",
+  "0c4904aec1957451",
+  "357ca1d19dfde046",
+  "8504c755f6bfbd2e",
+  "80fd082e2b4af659",
+  "62148861adcac6b6",
+  "83bbabb5e41eca5f",
+  "5bf98d046f545acd",
+  "6c5b75a5eefd6df7",
+  "d40ea917f116d391",
+  "72a85c795b0ff1e9",
+  "73b51ba1aa011aa1",
+  "e67928000eb2c7df",
+  "7c8a98b9cdec39db",
+  "23b9567a01f609e7",
+  "808869975660aeee",
+  "f973347714a0472b",
+  "4465875954ad55e4",
+  "6446ed4d901bfcbe",
+  "d2ec88b47986332c",
+  "20a4173dfd98fd0e",
+  "8f5f7506eab2ee90",
+  "78652efe4ddc0486",
+  "569fcb2ecfe784c6",
+  "35622bdd8fdf76e4",
+  "ee67e6336c2c36a1",
+  "2b341dd5c25ab763",
+  "6d4731cf7752dabf",
+  "22db11500c0e0f67",
+  "3fc2e7b3795e20cf",
+  "39666ca4c5304191",
+  "c2f11e775fa99221",
+  "56bc57acad43e081",
+  "b69a850912681204",
+  "127f0b6cd4612dd6",
+  "9f4276582b142f8f",
+  "ada8e0a89276fe0c",
+  "7501fda7b7b51af5",
+  "68be04271726ea6c",
+  "d0a432c944b004bb",
+  "3153ebd2b1647885",
+  "b9236aa657aff665",
+  "a05ad1f588b92224",
+  "c88a18dcf9bb5af3",
+  "c6ae97d23f62b4b1",
+  "ddb8224488f56bc5",
+  "443f6a4a13c01d4e",
+  "291b1bf9dd327fff",
+  "1fd984c9c8f28a25",
+  "23a12870fa612b49",
+  "2b1834cde1c4fef9",
+  "d5cb7a101e9a66f7",
+  "d0ae4acc27e54317",
+  "57552f04dc19ace4",
+  "d14ec978dd6aa47d",
+  "74b63885bc81cc38",
+  "934af40206813d54",
+  "8e9abd8b1a43427a",
+  "87e62f3a4c054663",
+  "a898cf9957673574",
+  "3191212b1c5ceaad"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 25,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 538,
+  "checked": 500,
+  "brokenCount": 8,
+  "broken": [
+   {
+    "url": "http://www.lung.org/stop-smoking/join-freedom-from-smoking/",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://www.medicare.gov/coverage/counseling-to-prevent-tobacco-use-tobacco-caused-disease"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/sso/authorize?client_id=mct&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&lang=en-us&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://medicare.gov/medigap-supplemental-insurance-plans"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/sso/authorize?client_id=mct&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D&Lang=en-us",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D"
+    ]
+   },
+   {
+    "url": "https://www.alzheimers.gov/",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://medicare.gov/coverage/cognitive-assessment-care-plan-services"
+    ]
+   },
+   {
+    "url": "https://www.nia.nih.gov/health/alzheimers-and-dementia",
+    "status": 405,
+    "reason": "HTTP 405",
+    "foundOn": [
+     "https://medicare.gov/coverage/cognitive-assessment-care-plan-services"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments&Lang=es-mx",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.medicare.gov/api/appointments/auth/login?return_to=%2Fappointments"
+    ]
+   },
+   {
+    "url": "https://www.medicare.gov/api/appointments/auth/login?return_to=%2Fappointments",
+    "status": 503,
+    "reason": "HTTP 503",
+    "foundOn": [
+     "https://www.medicare.gov/api/appointments/auth/login?return_to=%2Fappointments"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 73,
+  "resources": 73,
+  "images": 73,
+  "third-party": 17,
+  "lighthouse": 7,
+  "link-check": 73,
+  "alfa": 17,
+  "standards": 40,
+  "plain-language": 28,
+  "tech": 6,
+  "deprecated-html": 8,
+  "security": 8,
+  "sustainability": 5,
+  "public-interest": 8
+ },
+ "tally": {
+  "ok": 73,
+  "blocked": 1,
+  "timeout": 0,
+  "robots_skipped": 11,
+  "url_filtered": 0,
+  "non_html": 1,
+  "error": 0
+ },
+ "finishedAt": "2026-10-07T17:21:34.587Z"
+}
