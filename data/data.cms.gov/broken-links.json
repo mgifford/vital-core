@@ -1,6 +1,6 @@
 {
  "domain": "data.cms.gov",
- "updatedAt": "2026-10-06T18:39:15.497Z",
+ "updatedAt": "2026-10-07T19:07:31.798Z",
  "links": {
   "https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/IRF-Quality-Reporting/index.html": {
    "status": 404,
@@ -152,7 +152,7 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W40",
+   "lastSeen": "2026-W41",
    "_weeks": [
     "2026-W25",
     "2026-W26",
@@ -161,9 +161,10 @@
     "2026-W33",
     "2026-W35",
     "2026-W39",
-    "2026-W40"
+    "2026-W40",
+    "2026-W41"
    ],
-   "weeksBroken": 8,
+   "weeksBroken": 9,
    "foundOn": [
     "https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/fiscal-intermediary-shared-system-attending-and-rendering"
    ]
@@ -195,7 +196,7 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W38",
+   "lastSeen": "2026-W41",
    "_weeks": [
     "2026-W25",
     "2026-W26",
@@ -206,19 +207,19 @@
     "2026-W35",
     "2026-W36",
     "2026-W37",
-    "2026-W38"
+    "2026-W38",
+    "2026-W41"
    ],
-   "weeksBroken": 10,
+   "weeksBroken": 11,
    "foundOn": [
-    "https://data.cms.gov/provider-data/topics/doctors-clinicians/data-sources",
-    "https://data.cms.gov/resources/quality-payment-program-experience-data-dictionary-2023"
+    "https://data.cms.gov/provider-data/topics/doctors-clinicians/data-sources"
    ]
   },
   "https://www.nia.nih.gov/health/publication/falls-and-fractures": {
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W25",
-   "lastSeen": "2026-W40",
+   "lastSeen": "2026-W41",
    "_weeks": [
     "2026-W25",
     "2026-W26",
@@ -233,9 +234,10 @@
     "2026-W37",
     "2026-W38",
     "2026-W39",
-    "2026-W40"
+    "2026-W40",
+    "2026-W41"
    ],
-   "weeksBroken": 14,
+   "weeksBroken": 15,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/nursing-homes/quality-measures"
    ]
@@ -955,7 +957,8 @@
    ],
    "weeksBroken": 13,
    "foundOn": [
-    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state"
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-state",
+    "https://data.cms.gov/tools/geographic-variation-in-standardized-medicare-spending-county"
    ]
   },
   "https://www.cms.gov/marketplace/resources/data/archive": {
@@ -1127,15 +1130,16 @@
   },
   "https://www.qualitynet.org/pch/pchqr/measures": {
    "status": 0,
-   "reason": "ECONNREFUSED",
+   "reason": "UND_ERR_CONNECT_TIMEOUT",
    "firstSeen": "2026-W35",
-   "lastSeen": "2026-W40",
+   "lastSeen": "2026-W41",
    "_weeks": [
     "2026-W35",
     "2026-W38",
-    "2026-W40"
+    "2026-W40",
+    "2026-W41"
    ],
-   "weeksBroken": 3,
+   "weeksBroken": 4,
    "foundOn": [
     "https://data.cms.gov/provider-data/topics/hospitals/pps-exempt-cancer-hospitals"
    ]
@@ -1158,34 +1162,35 @@
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W36",
-   "lastSeen": "2026-W40",
+   "lastSeen": "2026-W41",
    "_weeks": [
     "2026-W36",
     "2026-W37",
     "2026-W38",
     "2026-W39",
-    "2026-W40"
+    "2026-W40",
+    "2026-W41"
    ],
-   "weeksBroken": 5,
+   "weeksBroken": 6,
    "foundOn": [
-    "https://data.cms.gov/tools/medicaid-drug-spending-dashboard"
+    "https://data.cms.gov/resources/medicaid-opioid-prescribing-rates-by-geography-methodology"
    ]
   },
   "https://www.medicaid.gov/medicaid/prescription-drugs/medicaid-drug-rebate-program/index.html": {
    "status": 404,
    "reason": "HTTP 404",
    "firstSeen": "2026-W36",
-   "lastSeen": "2026-W39",
+   "lastSeen": "2026-W41",
    "_weeks": [
     "2026-W36",
     "2026-W37",
     "2026-W38",
-    "2026-W39"
+    "2026-W39",
+    "2026-W41"
    ],
-   "weeksBroken": 4,
+   "weeksBroken": 5,
    "foundOn": [
-    "https://data.cms.gov/resources/medicaid-opioid-prescribing-rates-by-geography-methodology",
-    "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/medicaid-opioid-prescribing-rates-by-geography"
+    "https://data.cms.gov/resources/medicaid-opioid-prescribing-rates-by-geography-methodology"
    ]
   },
   "https://data.cms.gov/provider-data/dataset/069d-826b": {
