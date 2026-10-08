@@ -1,31 +1,31 @@
 {
  "domain": "www.medicare.gov",
  "week": "2026-W41",
- "generatedAt": "2026-10-07T19:06:49.601Z",
- "pagesScanned": 2077,
- "pagesAudited": 2010,
+ "generatedAt": "2026-10-08T19:02:12.144Z",
+ "pagesScanned": 2080,
+ "pagesAudited": 2012,
  "coverage": {
-  "axe": 2010,
+  "axe": 2012,
   "alfa": 487,
-  "resources": 2010,
+  "resources": 2012,
   "standards": 984,
   "tech": 201,
-  "plain-language": 1021,
+  "plain-language": 1022,
   "deprecated-html": 208,
-  "sustainability": 200,
+  "sustainability": 201,
   "lighthouse": 173,
   "security": 206
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 3552,
-  "pagesWithViolations": 1736,
-  "pagesScanned": 2010,
+  "violationTotal": 3557,
+  "pagesWithViolations": 1738,
+  "pagesScanned": 2012,
   "medianViolations": 2,
   "rules": {
    "region": {
-    "count": 3476,
-    "pages": 1733,
+    "count": 3480,
+    "pages": 1735,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -1148,6 +1148,10 @@
      },
      {
       "url": "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/medicare-health-plans",
+      "instances": 2
+     },
+     {
+      "url": "http://medicare.gov/publication-ordering/12019",
       "instances": 2
      },
      {
@@ -2596,6 +2600,10 @@
      },
      {
       "url": "https://medicare.gov/coverage/eyeglasses-contact-lenses",
+      "instances": 2
+     },
+     {
+      "url": "https://www.medicare.gov/publication-ordering/12019-S",
       "instances": 2
      },
      {
@@ -7240,8 +7248,8 @@
     ]
    },
    "frame-title": {
-    "count": 16,
-    "pages": 16,
+    "count": 17,
+    "pages": 17,
     "impact": "serious",
     "help": "Frames must have an accessible name",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/frame-title?application=axeAPI",
@@ -7277,6 +7285,10 @@
      },
      {
       "url": "https://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access/find-ACCESS-orgs/ACCESS-search-results",
+      "instances": 1
+     },
+     {
+      "url": "https://www.medicare.gov/publication-ordering/12019-S",
       "instances": 1
      },
      {
@@ -17102,11 +17114,11 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 4073,
+  "uniqueIssues": 4076,
   "consensus": 0,
-  "axeOnly": 1798,
+  "axeOnly": 1801,
   "alfaOnly": 2275,
-  "rawAxe": 1798,
+  "rawAxe": 1801,
   "rawAlfa": 2275,
   "byKey": {
    "axe-core:region": {
@@ -17115,7 +17127,7 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 1733,
+    "pages": 1735,
     "engines": "axe"
    },
    "axe-core:heading-order": {
@@ -17142,7 +17154,7 @@
      "frame-title"
     ],
     "alfaRules": [],
-    "pages": 16,
+    "pages": 17,
     "engines": "axe"
    },
    "axe-core:empty-table-header": {
@@ -17292,14 +17304,14 @@
   }
  },
  "sustainability": {
-  "pages": 200,
-  "medianBytes": 7552387,
-  "meanBytes": 7579654,
+  "pages": 201,
+  "medianBytes": 7551777,
+  "meanBytes": 7579118,
   "medianRequests": 120,
-  "totalCo2g": 224.66,
-  "meanCo2g": 1.1233,
-  "totalEnergyWh": 454.78,
-  "meanEnergyWh": 2.2739
+  "totalCo2g": 225.77,
+  "meanCo2g": 1.1232,
+  "totalEnergyWh": 457.02,
+  "meanEnergyWh": 2.2737
  },
  "deprecatedHtml": null,
  "resources": {
@@ -17315,7 +17327,7 @@
    {
     "url": "https://apps.use2.us-gov-pure.cloud/messenger/thirdparty-plugins.html",
     "type": "iframe",
-    "pages": 2010,
+    "pages": 2012,
     "examplePages": [
      "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
      "http://medicare.gov/publication-ordering/11377",
@@ -17327,7 +17339,7 @@
    {
     "url": "https://apps.use2.us-gov-pure.cloud/genesys-bootstrap/hub.html",
     "type": "iframe",
-    "pages": 2010,
+    "pages": 2012,
     "examplePages": [
      "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
      "http://medicare.gov/publication-ordering/11377",
@@ -17339,7 +17351,7 @@
    {
     "url": "https://apps.use2.us-gov-pure.cloud/messenger/messenger.html",
     "type": "iframe",
-    "pages": 2010,
+    "pages": 2012,
     "examplePages": [
      "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
      "http://medicare.gov/publication-ordering/11377",
@@ -17351,7 +17363,7 @@
    {
     "url": "https://apps.use2.us-gov-pure.cloud/messenger/messenger-renderer.html",
     "type": "iframe",
-    "pages": 2010,
+    "pages": 2012,
     "examplePages": [
      "https://www.medicare.gov/sso/authorize?client_id=mct&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fplan-compare%2Fsls-callback&relay=eyJsYW5nIjoiZW4ifQ%3D%3D",
      "http://medicare.gov/publication-ordering/11377",
@@ -30385,7 +30397,7 @@
   }
  },
  "plainLanguage": {
-  "pagesChecked": 1021,
+  "pagesChecked": 1022,
   "pagesScored": 652,
   "medianWordsPerPage": 209,
   "medianReadingEase": 41,
@@ -32769,17 +32781,17 @@
   }
  ],
  "images": {
-  "pagesScanned": 2010,
-  "totalImages": 6731,
-  "uniqueImages": 2395,
-  "missingAlt": 16,
-  "decorative": 3246,
-  "withAlt": 3469,
+  "pagesScanned": 2012,
+  "totalImages": 6740,
+  "uniqueImages": 2397,
+  "missingAlt": 17,
+  "decorative": 3251,
+  "withAlt": 3472,
   "altVerdicts": {
    "GOOD": 206,
    "SUSPICIOUS": 21,
-   "DECORATIVE": 2167,
-   "MISSING": 1
+   "MISSING": 1,
+   "DECORATIVE": 2169
   }
  },
  "techFindings": {
@@ -33551,17 +33563,17 @@
   ]
  },
  "thirdParty": {
-  "pagesScanned": 490,
+  "pagesScanned": 491,
   "vendors": [
    {
     "origin": "us-gov-pure.cloud",
-    "pages": 490,
-    "pagesWithScripts": 490,
+    "pages": 491,
+    "pagesWithScripts": 491,
     "isScriptVendor": true,
     "medianBytes": 4950241,
-    "medianDurationMs": 1250,
+    "medianDurationMs": 1251,
     "medianRequests": 31,
-    "pagesWithFindings": 438,
+    "pagesWithFindings": 439,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33572,13 +33584,13 @@
    },
    {
     "origin": "tiqcdn.com",
-    "pages": 490,
-    "pagesWithScripts": 490,
+    "pages": 491,
+    "pagesWithScripts": 491,
     "isScriptVendor": true,
     "medianBytes": 60521,
     "medianDurationMs": 26,
     "medianRequests": 7,
-    "pagesWithFindings": 438,
+    "pagesWithFindings": 439,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33589,13 +33601,13 @@
    },
    {
     "origin": "newrelic.com",
-    "pages": 490,
-    "pagesWithScripts": 490,
+    "pages": 491,
+    "pagesWithScripts": 491,
     "isScriptVendor": true,
     "medianBytes": 44682,
     "medianDurationMs": 1,
     "medianRequests": 2,
-    "pagesWithFindings": 438,
+    "pagesWithFindings": 439,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33606,13 +33618,13 @@
    },
    {
     "origin": "launchdarkly.us",
-    "pages": 490,
+    "pages": 491,
     "pagesWithScripts": 0,
     "isScriptVendor": false,
     "medianBytes": 12860,
     "medianDurationMs": 188,
     "medianRequests": 5,
-    "pagesWithFindings": 438,
+    "pagesWithFindings": 439,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33623,13 +33635,13 @@
    },
    {
     "origin": "youtube.com",
-    "pages": 490,
-    "pagesWithScripts": 490,
+    "pages": 491,
+    "pagesWithScripts": 491,
     "isScriptVendor": true,
     "medianBytes": 9870,
     "medianDurationMs": 43,
     "medianRequests": 2,
-    "pagesWithFindings": 438,
+    "pagesWithFindings": 439,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33640,13 +33652,13 @@
    },
    {
     "origin": "nr-data.net",
-    "pages": 490,
-    "pagesWithScripts": 468,
+    "pages": 491,
+    "pagesWithScripts": 469,
     "isScriptVendor": true,
     "medianBytes": 393,
-    "medianDurationMs": 119,
+    "medianDurationMs": 118,
     "medianRequests": 6,
-    "pagesWithFindings": 438,
+    "pagesWithFindings": 439,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33657,13 +33669,13 @@
    },
    {
     "origin": "qualtrics.com",
-    "pages": 480,
-    "pagesWithScripts": 480,
+    "pages": 481,
+    "pagesWithScripts": 481,
     "isScriptVendor": true,
     "medianBytes": 867836,
     "medianDurationMs": 689,
     "medianRequests": 15,
-    "pagesWithFindings": 432,
+    "pagesWithFindings": 433,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33674,13 +33686,13 @@
    },
    {
     "origin": "googletagmanager.com",
-    "pages": 480,
-    "pagesWithScripts": 480,
+    "pages": 481,
+    "pagesWithScripts": 481,
     "isScriptVendor": true,
     "medianBytes": 161711,
     "medianDurationMs": 3,
     "medianRequests": 1,
-    "pagesWithFindings": 432,
+    "pagesWithFindings": 433,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33691,13 +33703,13 @@
    },
    {
     "origin": "digitalgov.gov",
-    "pages": 480,
-    "pagesWithScripts": 480,
+    "pages": 481,
+    "pagesWithScripts": 481,
     "isScriptVendor": true,
     "medianBytes": 30230,
     "medianDurationMs": 1,
     "medianRequests": 1,
-    "pagesWithFindings": 432,
+    "pagesWithFindings": 433,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33708,13 +33720,13 @@
    },
    {
     "origin": "adoberesources.net",
-    "pages": 480,
-    "pagesWithScripts": 480,
+    "pages": 481,
+    "pagesWithScripts": 481,
     "isScriptVendor": true,
     "medianBytes": 27141,
     "medianDurationMs": 2,
     "medianRequests": 2,
-    "pagesWithFindings": 432,
+    "pagesWithFindings": 433,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33725,13 +33737,13 @@
    },
    {
     "origin": "nextdoor.com",
-    "pages": 426,
-    "pagesWithScripts": 426,
+    "pages": 427,
+    "pagesWithScripts": 427,
     "isScriptVendor": true,
     "medianBytes": 59996,
     "medianDurationMs": 66,
     "medianRequests": 4,
-    "pagesWithFindings": 402,
+    "pagesWithFindings": 403,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33742,13 +33754,13 @@
    },
    {
     "origin": "bing.com",
-    "pages": 421,
-    "pagesWithScripts": 421,
+    "pages": 422,
+    "pagesWithScripts": 422,
     "isScriptVendor": true,
     "medianBytes": 15851,
     "medianDurationMs": 20,
     "medianRequests": 3,
-    "pagesWithFindings": 397,
+    "pagesWithFindings": 398,
     "examplePages": [
      "http://medicare.gov/publication-ordering/11377",
      "https://www.medicare.gov/prescription-payment-plan",
@@ -33759,13 +33771,13 @@
    },
    {
     "origin": "google-analytics.com",
-    "pages": 408,
+    "pages": 409,
     "pagesWithScripts": 0,
     "isScriptVendor": false,
     "medianBytes": 0,
     "medianDurationMs": 19,
     "medianRequests": 1,
-    "pagesWithFindings": 366,
+    "pagesWithFindings": 367,
     "examplePages": [
      "http://medicare.gov/glp1bridge",
      "http://medicare.gov/coverage/alcohol-misuse-screenings-counseling",
@@ -33776,13 +33788,13 @@
    },
    {
     "origin": "adsrvr.org",
-    "pages": 36,
+    "pages": 37,
     "pagesWithScripts": 0,
     "isScriptVendor": false,
-    "medianBytes": 175,
-    "medianDurationMs": 210,
+    "medianBytes": 280,
+    "medianDurationMs": 215,
     "medianRequests": 2,
-    "pagesWithFindings": 35,
+    "pagesWithFindings": 36,
     "examplePages": [
      "https://medicare.gov/basics/get-started-with-medicare/get-more-coverage",
      "http://medicare.gov/basics/get-started-with-medicare/sign-up/when-can-i-sign-up-for-medicare",
@@ -33929,13 +33941,13 @@
    },
    {
     "origin": "googleapis.com",
-    "pages": 23,
+    "pages": 24,
     "pagesWithScripts": 0,
     "isScriptVendor": false,
     "medianBytes": 475,
     "medianDurationMs": 2,
     "medianRequests": 1,
-    "pagesWithFindings": 12,
+    "pagesWithFindings": 13,
     "examplePages": [
      "https://www.medicare.gov/care-compare?providerType=HomeHealth",
      "http://medicare.gov/care-compare?guidedSearch=LongTermCare",
@@ -33962,6 +33974,23 @@
     ]
    },
    {
+    "origin": "cms.gov",
+    "pages": 9,
+    "pagesWithScripts": 6,
+    "isScriptVendor": true,
+    "medianBytes": 663627,
+    "medianDurationMs": 0,
+    "medianRequests": 20,
+    "pagesWithFindings": 7,
+    "examplePages": [
+     "https://medicare.gov/publication-ordering/12019-S",
+     "https://www.medicare.gov/publication-ordering/12019-S",
+     "https://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
+     "https://www.medicare.gov/medical-equipment-suppliers",
+     "https://medicare.gov/publication-ordering/11392-S"
+    ]
+   },
+   {
     "origin": "casalemedia.com",
     "pages": 9,
     "pagesWithScripts": 0,
@@ -33979,35 +34008,35 @@
     ]
    },
    {
-    "origin": "cms.gov",
-    "pages": 8,
-    "pagesWithScripts": 5,
-    "isScriptVendor": true,
-    "medianBytes": 644800,
-    "medianDurationMs": 0,
-    "medianRequests": 20,
-    "pagesWithFindings": 6,
-    "examplePages": [
-     "https://medicare.gov/publication-ordering/12019-S",
-     "https://medicare.gov/providers-services/claims-appeals-complaints/claims/share-your-medicare-claims/connected-apps",
-     "https://www.medicare.gov/medical-equipment-suppliers",
-     "https://medicare.gov/publication-ordering/11392-S",
-     "https://www.medicare.gov/medical-equipment-suppliers/about"
-    ]
-   },
-   {
     "origin": "demdex.net",
-    "pages": 7,
+    "pages": 8,
     "pagesWithScripts": 0,
     "isScriptVendor": false,
     "medianBytes": 746,
-    "medianDurationMs": 97,
+    "medianDurationMs": 88,
     "medianRequests": 1,
-    "pagesWithFindings": 6,
+    "pagesWithFindings": 7,
     "examplePages": [
      "https://www.medicare.gov/basics/get-started-with-medicare/using-medicare",
      "https://medicare.gov/publication-ordering/12019-S",
      "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=en-us&redirect_uri=https%3A%2F%2Fes.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments",
+     "https://www.medicare.gov/publication-ordering/12019-S",
+     "https://medicare.gov/publication-ordering/11392-S"
+    ]
+   },
+   {
+    "origin": "tealiumiq.com",
+    "pages": 7,
+    "pagesWithScripts": 7,
+    "isScriptVendor": true,
+    "medianBytes": 166,
+    "medianDurationMs": 29,
+    "medianRequests": 2,
+    "pagesWithFindings": 6,
+    "examplePages": [
+     "https://medicare.gov/publication-ordering/12019-S",
+     "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=en-us&redirect_uri=https%3A%2F%2Fes.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "https://medicare.gov/publication-ordering/11392-S",
      "https://www.medicare.gov/coverage/inpatient-rehabilitation-care"
     ]
@@ -34030,17 +34059,17 @@
     ]
    },
    {
-    "origin": "tealiumiq.com",
+    "origin": "gstatic.com",
     "pages": 6,
-    "pagesWithScripts": 6,
-    "isScriptVendor": true,
-    "medianBytes": 166,
-    "medianDurationMs": 30,
+    "pagesWithScripts": 0,
+    "isScriptVendor": false,
+    "medianBytes": 320710,
+    "medianDurationMs": 0,
     "medianRequests": 2,
-    "pagesWithFindings": 5,
+    "pagesWithFindings": 6,
     "examplePages": [
      "https://medicare.gov/publication-ordering/12019-S",
-     "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=en-us&redirect_uri=https%3A%2F%2Fes.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "https://medicare.gov/publication-ordering/11392-S",
      "https://www.medicare.gov/coverage/inpatient-rehabilitation-care",
      "http://medicare.gov/coverage/weight-loss-drugs"
@@ -34061,23 +34090,6 @@
      "http://medicare.gov/basics/get-started-with-medicare/medicare-basics/what-does-medicare-cost",
      "http://medicare.gov/basics/reporting-medicare-fraud-and-abuse",
      "https://medicare.gov/basics/get-started-with-medicare/sign-up/when-can-i-sign-up-for-medicare"
-    ]
-   },
-   {
-    "origin": "gstatic.com",
-    "pages": 5,
-    "pagesWithScripts": 0,
-    "isScriptVendor": false,
-    "medianBytes": 320710,
-    "medianDurationMs": 0,
-    "medianRequests": 2,
-    "pagesWithFindings": 5,
-    "examplePages": [
-     "https://medicare.gov/publication-ordering/12019-S",
-     "https://medicare.gov/publication-ordering/11392-S",
-     "https://www.medicare.gov/coverage/inpatient-rehabilitation-care",
-     "http://medicare.gov/coverage/weight-loss-drugs",
-     "https://medicare.gov/health-apps/january.ai"
     ]
    },
    {
@@ -34286,9 +34298,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
-    "pages_affected": 1730,
-    "instances": 1730,
+    "rule_pages_affected": 1735,
+    "pages_affected": 1732,
+    "instances": 1732,
     "selector_path": "#edit-step1",
     "snippet_shape": "fieldset:aria+role",
     "representative_selector": "#edit-step1",
@@ -34300,11 +34312,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 7,
-    "action_score": 889.71,
+    "action_score": 890.74,
     "estimated_fix_impact": {
-     "findings": 1730,
-     "pages": 1730,
-     "statement": "Fix one place, resolve ~1730 finding(s) on 1730 page(s)."
+     "findings": 1732,
+     "pages": 1732,
+     "statement": "Fix one place, resolve ~1732 finding(s) on 1732 page(s)."
     },
     "affected_pages": [
      "http://medicare.gov/publication-ordering/11377",
@@ -34585,6 +34597,7 @@
      "https://www.medicare.gov/coverage/pulmonary-rehabilitation-programs",
      "https://www.medicare.gov/publication-ordering/11021",
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/medicare-health-plans",
+     "http://medicare.gov/publication-ordering/12019",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/drug-coverage-new-drug-plan",
      "http://medicare.gov/about-us/plain-writing",
      "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
@@ -34946,6 +34959,7 @@
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/drug-plans",
      "http://medicare.gov/coverage/bone-mass-measurements",
      "https://medicare.gov/coverage/eyeglasses-contact-lenses",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "https://medicare.gov/coverage/pneumococcal-vaccines",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/extra-help-amount",
      "https://medicare.gov/",
@@ -36044,9 +36058,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
-    "pages_affected": 1715,
-    "instances": 1715,
+    "rule_pages_affected": 1735,
+    "pages_affected": 1717,
+    "instances": 1717,
     "selector_path": ".ds-u-clearfix",
     "snippet_shape": "div:",
     "representative_selector": ".ds-u-clearfix",
@@ -36056,11 +36070,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 7,
-    "action_score": 882,
+    "action_score": 883.03,
     "estimated_fix_impact": {
-     "findings": 1715,
-     "pages": 1715,
-     "statement": "Fix one place, resolve ~1715 finding(s) on 1715 page(s)."
+     "findings": 1717,
+     "pages": 1717,
+     "statement": "Fix one place, resolve ~1717 finding(s) on 1717 page(s)."
     },
     "affected_pages": [
      "http://medicare.gov/publication-ordering/11377",
@@ -36337,6 +36351,7 @@
      "https://www.medicare.gov/coverage/pulmonary-rehabilitation-programs",
      "https://www.medicare.gov/publication-ordering/11021",
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/medicare-health-plans",
+     "http://medicare.gov/publication-ordering/12019",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/drug-coverage-new-drug-plan",
      "http://medicare.gov/about-us/plain-writing",
      "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
@@ -36693,6 +36708,7 @@
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/drug-plans",
      "http://medicare.gov/coverage/bone-mass-measurements",
      "https://medicare.gov/coverage/eyeglasses-contact-lenses",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "https://medicare.gov/coverage/pneumococcal-vaccines",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/extra-help-amount",
      "https://medicare.gov/",
@@ -39538,9 +39554,9 @@
     "engine_key": "axe-core",
     "rule_id": "frame-title",
     "severity": "Serious",
-    "rule_pages_affected": 16,
-    "pages_affected": 16,
-    "instances": 16,
+    "rule_pages_affected": 17,
+    "pages_affected": 17,
+    "instances": 17,
     "selector_path": "iframe[height=\"#%\"]",
     "snippet_shape": "iframe:",
     "representative_selector": "iframe[height=\"100%\"]",
@@ -39550,11 +39566,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 57.6,
+    "action_score": 61.2,
     "estimated_fix_impact": {
-     "findings": 16,
-     "pages": 16,
-     "statement": "Fix one place, resolve ~16 finding(s) on 16 page(s)."
+     "findings": 17,
+     "pages": 17,
+     "statement": "Fix one place, resolve ~17 finding(s) on 17 page(s)."
     },
     "affected_pages": [
      "https://www.medicare.gov/coverage/mental-health-substance-use-disorder",
@@ -39563,6 +39579,7 @@
      "http://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access/find-ACCESS-orgs",
      "https://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access",
      "https://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access/find-ACCESS-orgs/ACCESS-search-results",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "http://medicare.gov/publication-ordering/12019-S",
      "https://www.medicare.gov/coverage/pancreas-transplants",
      "https://medicare.gov/publication-ordering/11392-S",
@@ -41145,7 +41162,7 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
+    "rule_pages_affected": 1735,
     "pages_affected": 15,
     "instances": 15,
     "selector_path": ".form-block__intro",
@@ -41350,7 +41367,7 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
+    "rule_pages_affected": 1735,
     "pages_affected": 7,
     "instances": 7,
     "selector_path": "#block-medicare-evo-subtheme-homepagebubbleblock",
@@ -42125,7 +42142,7 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
+    "rule_pages_affected": 1735,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": "#maincontent",
@@ -42154,7 +42171,7 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
+    "rule_pages_affected": 1735,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": "form > p",
@@ -42183,7 +42200,7 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
+    "rule_pages_affected": 1735,
     "pages_affected": 3,
     "instances": 3,
     "selector_path": ".ds-c-alert",
@@ -48120,9 +48137,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
-    "pages_affected": 1730,
-    "instances": 1730,
+    "rule_pages_affected": 1735,
+    "pages_affected": 1732,
+    "instances": 1732,
     "selector_path": "#edit-step1",
     "snippet_shape": "fieldset:aria+role",
     "representative_selector": "#edit-step1",
@@ -48134,11 +48151,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 7,
-    "action_score": 889.71,
+    "action_score": 890.74,
     "estimated_fix_impact": {
-     "findings": 1730,
-     "pages": 1730,
-     "statement": "Fix one place, resolve ~1730 finding(s) on 1730 page(s)."
+     "findings": 1732,
+     "pages": 1732,
+     "statement": "Fix one place, resolve ~1732 finding(s) on 1732 page(s)."
     },
     "affected_pages": [
      "http://medicare.gov/publication-ordering/11377",
@@ -48419,6 +48436,7 @@
      "https://www.medicare.gov/coverage/pulmonary-rehabilitation-programs",
      "https://www.medicare.gov/publication-ordering/11021",
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/medicare-health-plans",
+     "http://medicare.gov/publication-ordering/12019",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/drug-coverage-new-drug-plan",
      "http://medicare.gov/about-us/plain-writing",
      "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
@@ -48780,6 +48798,7 @@
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/drug-plans",
      "http://medicare.gov/coverage/bone-mass-measurements",
      "https://medicare.gov/coverage/eyeglasses-contact-lenses",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "https://medicare.gov/coverage/pneumococcal-vaccines",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/extra-help-amount",
      "https://medicare.gov/",
@@ -49878,9 +49897,9 @@
     "engine_key": "axe-core",
     "rule_id": "region",
     "severity": "Serious",
-    "rule_pages_affected": 1733,
-    "pages_affected": 1715,
-    "instances": 1715,
+    "rule_pages_affected": 1735,
+    "pages_affected": 1717,
+    "instances": 1717,
     "selector_path": ".ds-u-clearfix",
     "snippet_shape": "div:",
     "representative_selector": ".ds-u-clearfix",
@@ -49890,11 +49909,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 7,
-    "action_score": 882,
+    "action_score": 883.03,
     "estimated_fix_impact": {
-     "findings": 1715,
-     "pages": 1715,
-     "statement": "Fix one place, resolve ~1715 finding(s) on 1715 page(s)."
+     "findings": 1717,
+     "pages": 1717,
+     "statement": "Fix one place, resolve ~1717 finding(s) on 1717 page(s)."
     },
     "affected_pages": [
      "http://medicare.gov/publication-ordering/11377",
@@ -50171,6 +50190,7 @@
      "https://www.medicare.gov/coverage/pulmonary-rehabilitation-programs",
      "https://www.medicare.gov/publication-ordering/11021",
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/medicare-health-plans",
+     "http://medicare.gov/publication-ordering/12019",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/drug-coverage-new-drug-plan",
      "http://medicare.gov/about-us/plain-writing",
      "https://medicare.gov/publications/search/all-non-english-pubs?page=3",
@@ -50527,6 +50547,7 @@
      "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/drug-plans",
      "http://medicare.gov/coverage/bone-mass-measurements",
      "https://medicare.gov/coverage/eyeglasses-contact-lenses",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "https://medicare.gov/coverage/pneumococcal-vaccines",
      "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/extra-help-amount",
      "https://medicare.gov/",
@@ -53372,9 +53393,9 @@
     "engine_key": "axe-core",
     "rule_id": "frame-title",
     "severity": "Serious",
-    "rule_pages_affected": 16,
-    "pages_affected": 16,
-    "instances": 16,
+    "rule_pages_affected": 17,
+    "pages_affected": 17,
+    "instances": 17,
     "selector_path": "iframe[height=\"#%\"]",
     "snippet_shape": "iframe:",
     "representative_selector": "iframe[height=\"100%\"]",
@@ -53384,11 +53405,11 @@
     "drift_tokens": [],
     "likely_source": "template",
     "distinct_components_for_rule": 1,
-    "action_score": 57.6,
+    "action_score": 61.2,
     "estimated_fix_impact": {
-     "findings": 16,
-     "pages": 16,
-     "statement": "Fix one place, resolve ~16 finding(s) on 16 page(s)."
+     "findings": 17,
+     "pages": 17,
+     "statement": "Fix one place, resolve ~17 finding(s) on 17 page(s)."
     },
     "affected_pages": [
      "https://www.medicare.gov/coverage/mental-health-substance-use-disorder",
@@ -53397,6 +53418,7 @@
      "http://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access/find-ACCESS-orgs",
      "https://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access",
      "https://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access/find-ACCESS-orgs/ACCESS-search-results",
+     "https://www.medicare.gov/publication-ordering/12019-S",
      "http://medicare.gov/publication-ordering/12019-S",
      "https://www.medicare.gov/coverage/pancreas-transplants",
      "https://medicare.gov/publication-ordering/11392-S",
@@ -54040,7 +54062,7 @@
    {
     "rule_key": "axe-core:region",
     "component": "ds-c-fieldset",
-    "findings": 1730,
+    "findings": 1732,
     "share_percent": 49.8
    },
    {
@@ -55773,6 +55795,12 @@
     ]
    },
    {
+    "url": "http://medicare.gov/publication-ordering/12019",
+    "components": [
+     "ds-c-fieldset"
+    ]
+   },
+   {
     "url": "https://www.medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/drug-coverage-new-drug-plan",
     "components": [
      "ds-c-fieldset"
@@ -55867,18 +55895,12 @@
     "components": [
      "ds-c-fieldset"
     ]
-   },
-   {
-    "url": "http://medicare.gov/basics/forms-publications-mailings/mailings/costs-and-coverage/upcoming-plan-changes",
-    "components": [
-     "ds-c-fieldset"
-    ]
    }
   ],
   "drift_page_count": 0,
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 2164,
- "pagesSucceeded": 2138
+ "pagesAttempted": 2166,
+ "pagesSucceeded": 2140
 }
