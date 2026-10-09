@@ -1,0 +1,89 @@
+{
+ "runId": "2026-10-09T11-25-51-581Z-64a2c5",
+ "week": "2026-W41",
+ "domain": "data.medicaid.gov",
+ "startedAt": "2026-10-09T11:25:52.029Z",
+ "scanned": [
+  "381d17d64526ddd2",
+  "cf8020af628715dc",
+  "804085796d84dbf1",
+  "290cf4eafe34b16b",
+  "fdb70e5b24fe79e8",
+  "bdce8b386cf47658",
+  "8b338f96e5af5cdb",
+  "0a8cd5f9443aeb8d",
+  "386675ff842b1371",
+  "fcd4a4a0a1d7437f",
+  "5ab320cf350b44a8",
+  "3304e7908800aec3",
+  "029d65f3e3a7b771"
+ ],
+ "errors": [],
+ "sampling": {
+  "axe": 100,
+  "alfa": 50,
+  "plain-language": 50,
+  "link-check": 100,
+  "lighthouse": 10,
+  "deprecated-html": 10,
+  "resources": 100,
+  "images": 100,
+  "standards": 50,
+  "security": 10,
+  "public-interest": 10,
+  "offline-resilience": 0,
+  "sustainability": 10,
+  "tech": 10,
+  "third-party": 25
+ },
+ "linkCheck": {
+  "total": 162,
+  "checked": 162,
+  "brokenCount": 1,
+  "broken": [
+   {
+    "url": "https://data.medicaid.gov/whats-new",
+    "status": 404,
+    "reason": "HTTP 404",
+    "foundOn": [
+     "https://data.medicaid.gov/dataset/c3d4ec55-f9ea-5b76-9eba-93cc3664c1f1?page=4770",
+     "https://data.medicaid.gov/dataset/fbf6f052-37cf-5512-914c-f732124a7a99?page=4",
+     "https://data.medicaid.gov/dataset/50a46484-9a54-42d0-8da6-509a8b5656c0?page=355",
+     "https://data.medicaid.gov/dataset/f48c4dc5-80d3-5528-8d79-238c124fe10d?page=42",
+     "https://data.medicaid.gov/dataset/84922793-8c53-4e1a-8e4d-edf6d5e8bb3b?page=3",
+     "https://data.medicaid.gov/dataset/1a05ec18-59b9-5d39-a2aa-1e642ca1e192",
+     "https://data.medicaid.gov/datasets?keyword%5B%5D=Average+Manufacturer+Price+%28AMP%29",
+     "https://data.medicaid.gov/dataset/fc93a1e1-dca9-557b-95bf-ba92017c8794",
+     "https://data.medicaid.gov/datasets?keyword%5B0%5D=DQ+%28Data+Quality%29+Atlas&page=2",
+     "https://data.medicaid.gov/dataset/99315a95-37ac-4eee-946a-3c523b4c481e",
+     "https://data.medicaid.gov/datasets?keyword%5B%5D=Applications",
+     "https://data.medicaid.gov/dataset/0563d88c-8fe5-42a8-9d69-f67fd21c0e91?page=2"
+    ]
+   }
+  ]
+ },
+ "enginesRun": {
+  "axe": 12,
+  "alfa": 6,
+  "resources": 12,
+  "images": 12,
+  "standards": 7,
+  "security": 4,
+  "link-check": 12,
+  "plain-language": 5,
+  "third-party": 2,
+  "lighthouse": 3,
+  "public-interest": 1,
+  "tech": 1
+ },
+ "tally": {
+  "ok": 12,
+  "blocked": 0,
+  "timeout": 0,
+  "robots_skipped": 0,
+  "url_filtered": 0,
+  "non_html": 1,
+  "error": 0
+ },
+ "finishedAt": "2026-10-09T11:27:47.137Z"
+}
