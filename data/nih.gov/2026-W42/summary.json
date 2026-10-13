@@ -1,29 +1,30 @@
 {
  "domain": "nih.gov",
  "week": "2026-W42",
- "generatedAt": "2026-10-12T21:27:13.792Z",
- "pagesScanned": 899,
- "pagesAudited": 5,
+ "generatedAt": "2026-10-13T19:33:04.936Z",
+ "pagesScanned": 1793,
+ "pagesAudited": 10,
  "coverage": {
-  "sustainability": 88,
-  "axe": 5,
-  "resources": 5,
-  "alfa": 3,
+  "sustainability": 174,
+  "axe": 10,
+  "resources": 10,
+  "alfa": 6,
+  "standards": 6,
   "deprecated-html": 1,
-  "standards": 3,
   "security": 1,
-  "lighthouse": 2
+  "lighthouse": 2,
+  "plain-language": 2
  },
  "blocked": null,
  "axe": {
-  "violationTotal": 30,
-  "pagesWithViolations": 5,
-  "pagesScanned": 5,
-  "medianViolations": 5,
+  "violationTotal": 74,
+  "pagesWithViolations": 10,
+  "pagesScanned": 10,
+  "medianViolations": 8,
   "rules": {
    "heading-order": {
-    "count": 3,
-    "pages": 3,
+    "count": 7,
+    "pages": 7,
     "impact": "moderate",
     "help": "Heading levels should only increase by one",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/heading-order?application=axeAPI",
@@ -32,8 +33,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
     ],
     "affectedPages": [
      {
@@ -41,7 +42,23 @@
       "instances": 1
      },
      {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+      "instances": 1
+     },
+     {
       "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "instances": 1
      },
      {
@@ -56,20 +73,30 @@
       "html": "<h3>Transcript</h3>"
      },
      {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "article[data-history-node-id=\"5066\"] > div > h3",
+      "html": "<h3></h3>"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+      "target": "h3:nth-child(4)",
+      "html": "<h3>What</h3>"
+     },
+     {
       "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
       "target": "h3:nth-child(2)",
       "html": "<h3>Opening Remarks</h3>"
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
+      "url": "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
       "target": ".callout__text > h3",
       "html": "<h3>At a Glance</h3>"
      }
     ]
    },
    "link-in-text-block": {
-    "count": 14,
-    "pages": 5,
+    "count": 37,
+    "pages": 10,
     "impact": "serious",
     "help": "Links must be distinguishable without relying on color",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/link-in-text-block?application=axeAPI",
@@ -79,8 +106,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15"
     ],
     "affectedPages": [
      {
@@ -88,8 +115,16 @@
       "instances": 4
      },
      {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 6
+     },
+     {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+      "instances": 5
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
@@ -98,6 +133,18 @@
      {
       "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
       "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+      "instances": 6
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+      "instances": 5
      },
      {
       "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
@@ -121,20 +168,20 @@
       "html": "<a href=\"mailto:storycorps@nih.gov\" class=\"mailto\" data-extlink=\"\">storycorps@nih.gov</a>"
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-      "target": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a",
-      "html": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">Common Data Elements (CDEs) program</a>"
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "p:nth-child(11) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
+      "html": "<a href=\"https://ieeexplore.ieee.org/document/9418534\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">RADx Tech Testing Verification Cor"
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-      "target": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
-      "html": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Department of Health and Human Services</a>"
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "a[href$=\"radx\"]",
+      "html": "<a href=\"https://www.nih.gov/radx\">https://www.nih.gov/radx</a>"
      }
     ]
    },
    "region": {
-    "count": 10,
-    "pages": 5,
+    "count": 20,
+    "pages": 10,
     "impact": "moderate",
     "help": "All page content should be contained by landmarks",
     "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
@@ -143,8 +190,8 @@
     ],
     "examplePages": [
      "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15"
     ],
     "affectedPages": [
      {
@@ -152,7 +199,15 @@
       "instances": 2
      },
      {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 2
+     },
+     {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
       "instances": 2
      },
      {
@@ -161,6 +216,18 @@
      },
      {
       "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "instances": 2
      },
      {
@@ -180,19 +247,123 @@
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "#system-breadcrumb",
       "html": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>"
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": ".usa-alert",
       "html": "<div class=\"usa-alert\">"
+     }
+    ]
+   },
+   "empty-heading": {
+    "count": 2,
+    "pages": 2,
+    "impact": "minor",
+    "help": "Headings should not be empty",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/empty-heading?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "article[data-history-node-id=\"5066\"] > div > h3",
+      "html": "<h3></h3>"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+      "target": "h3:nth-child(20)",
+      "html": "<h3></h3>"
+     }
+    ]
+   },
+   "landmark-unique": {
+    "count": 6,
+    "pages": 6,
+    "impact": "moderate",
+    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/landmark-unique?application=axeAPI",
+    "tags": [
+     "best-practice"
+    ],
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+      "target": "#block-nih2-uswds-search",
+      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
      }
     ]
    },
@@ -232,51 +403,29 @@
       "html": "<ul class=\"usa-pagination__list pager__items js-pager__items\">"
      }
     ]
-   },
-   "landmark-unique": {
-    "count": 1,
-    "pages": 1,
-    "impact": "moderate",
-    "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
-    "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
-    "tags": [
-     "best-practice"
-    ],
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ],
-    "affectedPages": [
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
-      "instances": 1
-     }
-    ],
-    "instances": [
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
-      "target": "#block-nih2-uswds-search",
-      "html": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">"
-     }
-    ]
    }
   }
  },
  "alfa": {
-  "failedTotal": 258,
-  "pagesWithFailures": 3,
-  "pagesScanned": 3,
-  "medianFailures": 84,
+  "failedTotal": 520,
+  "pagesWithFailures": 6,
+  "pagesScanned": 6,
+  "medianFailures": 89,
   "rules": {
    "sia-r66": {
-    "count": 145,
-    "pages": 3,
+    "count": 280,
+    "pages": 6,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r66",
     "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 39
+     },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 44
@@ -286,54 +435,146 @@
       "instances": 46
      },
      {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 44
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+      "instances": 52
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
       "instances": 55
      }
     ],
     "instances": [
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "text: \"Health Information\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "text: \"Grants & Funding\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "text: \"Health Information\"",
       "html": null
      }
     ]
    },
-   "sia-r73": {
-    "count": 9,
-    "pages": 3,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+   "sia-r85": {
+    "count": 2,
+    "pages": 2,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r85",
     "examplePages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "<p class=\"nih-slogan\">",
+      "html": null
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "target": "<p class=\"nih-subtitle\">",
+      "html": null
+     }
+    ]
+   },
+   "sia-r53": {
+    "count": 3,
+    "pages": 3,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+      "target": "<h3>",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
+      "target": "<h3>",
+      "html": null
+     }
+    ]
+   },
+   "sia-r73": {
+    "count": 19,
+    "pages": 6,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r73",
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 3
+     },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 3
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "instances": 3
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "instances": 3
      },
      {
@@ -343,48 +584,60 @@
     ],
     "instances": [
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "<p class=\"usa-banner__header-text\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "<p class=\"usa-identifier__identity-domain\">",
       "html": null
      }
     ]
    },
    "sia-r62": {
-    "count": 6,
-    "pages": 3,
+    "count": 12,
+    "pages": 6,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r62",
     "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 3
+     },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 2
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "instances": 2
      },
      {
@@ -394,6 +647,21 @@
     ],
     "instances": [
      {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "<a href=\"https://jamanetwork.com/journals/jama/fullarticle/10.1001/jama.2022.14877?guestAccessKey=d98d9357-ab4b-477a-b97c-ae5c9382870c&utm_source=For_The_Media&utm_medium=referral&utm_campaign=ftm_lin",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "<a href=\"https://ieeexplore.ieee.org/document/9418534\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+      "html": null
+     },
+     {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
@@ -401,41 +669,38 @@
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-      "target": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
-      "html": null
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
-      "target": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
       "html": null
      }
     ]
    },
    "sia-r18": {
-    "count": 6,
-    "pages": 3,
+    "count": 12,
+    "pages": 6,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r18",
     "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 2
+     },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 2
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "instances": 2
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 2
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "instances": 2
      },
      {
@@ -445,6 +710,16 @@
     ],
     "instances": [
      {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "@aria-label=\"Descripción de la agencia\"",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
+      "html": null
+     },
+     {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
@@ -456,37 +731,39 @@
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-      "target": "@aria-label=\"Descripción de la agencia\"",
-      "html": null
-     },
-     {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-      "target": "@aria-label=\"Official website of the Department of Health and Human Services\"",
-      "html": null
-     },
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
       "target": "@aria-label=\"Descripción de la agencia\"",
       "html": null
      }
     ]
    },
    "sia-r61": {
-    "count": 3,
-    "pages": 3,
+    "count": 6,
+    "pages": 6,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r61",
     "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 1
+     },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 1
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "instances": 1
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 1
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "instances": 1
      },
      {
@@ -496,6 +773,11 @@
     ],
     "instances": [
      {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
@@ -506,28 +788,45 @@
       "html": null
      },
      {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+      "html": null
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "target": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
       "html": null
      }
     ]
    },
    "sia-r57": {
-    "count": 12,
-    "pages": 3,
+    "count": 24,
+    "pages": 6,
     "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r57",
     "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 4
+     },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 4
      },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "instances": 4
+     },
+     {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 4
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
       "instances": 4
      },
      {
@@ -537,42 +836,67 @@
     ],
     "instances": [
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "text: \"Get the Latest Updates and FAQs\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "text: \"NIH Websites Are Changing\"",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
       "html": null
      }
     ]
    },
-   "sia-r111": {
-    "count": 76,
-    "pages": 3,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+   "sia-r64": {
+    "count": 1,
+    "pages": 1,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r64",
     "examplePages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
     ],
     "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 1
+     }
+    ],
+    "instances": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "target": "<h3>",
+      "html": null
+     }
+    ]
+   },
+   "sia-r111": {
+    "count": 161,
+    "pages": 6,
+    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r111",
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
+    ],
+    "affectedPages": [
+     {
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+      "instances": 20
+     },
      {
       "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "instances": 19
@@ -582,55 +906,42 @@
       "instances": 26
      },
      {
+      "url": "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+      "instances": 37
+     },
+     {
+      "url": "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+      "instances": 28
+     },
+     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
       "instances": 31
      }
     ],
     "instances": [
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
       "target": "<a href=\"/virtual-tour\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "<a class=\"usa-button\" href=\"/web-modernization\">",
       "html": null
      },
      {
-      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+      "url": "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
       "target": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
-      "html": null
-     }
-    ]
-   },
-   "sia-r53": {
-    "count": 1,
-    "pages": 1,
-    "ruleUrl": "https://alfa.siteimprove.com/rules/sia-r53",
-    "examplePages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ],
-    "affectedPages": [
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
-      "instances": 1
-     }
-    ],
-    "instances": [
-     {
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits",
-      "target": "<h3>",
       "html": null
      }
     ]
@@ -638,12 +949,12 @@
   }
  },
  "consensus": {
-  "uniqueIssues": 38,
-  "consensus": 0,
-  "axeOnly": 16,
-  "alfaOnly": 22,
-  "rawAxe": 16,
-  "rawAlfa": 22,
+  "uniqueIssues": 84,
+  "consensus": 1,
+  "axeOnly": 36,
+  "alfaOnly": 47,
+  "rawAxe": 37,
+  "rawAlfa": 48,
   "byKey": {
    "axe-core:heading-order": {
     "actRuleId": null,
@@ -651,7 +962,7 @@
      "heading-order"
     ],
     "alfaRules": [],
-    "pages": 3,
+    "pages": 7,
     "engines": "axe"
    },
    "axe-core:link-in-text-block": {
@@ -660,7 +971,7 @@
      "link-in-text-block"
     ],
     "alfaRules": [],
-    "pages": 5,
+    "pages": 10,
     "engines": "axe"
    },
    "axe-core:region": {
@@ -669,7 +980,27 @@
      "region"
     ],
     "alfaRules": [],
-    "pages": 5,
+    "pages": 10,
+    "engines": "axe"
+   },
+   "act:ffd0e9": {
+    "actRuleId": "ffd0e9",
+    "axeRules": [
+     "empty-heading"
+    ],
+    "alfaRules": [
+     "sia-r64"
+    ],
+    "pages": 2,
+    "engines": "both"
+   },
+   "axe-core:landmark-unique": {
+    "actRuleId": null,
+    "axeRules": [
+     "landmark-unique"
+    ],
+    "alfaRules": [],
+    "pages": 6,
     "engines": "axe"
    },
    "axe-core:list": {
@@ -681,20 +1012,29 @@
     "pages": 2,
     "engines": "axe"
    },
-   "axe-core:landmark-unique": {
-    "actRuleId": null,
-    "axeRules": [
-     "landmark-unique"
-    ],
-    "alfaRules": [],
-    "pages": 1,
-    "engines": "axe"
-   },
    "alfa:sia-r66": {
     "actRuleId": null,
     "axeRules": [],
     "alfaRules": [
      "sia-r66"
+    ],
+    "pages": 6,
+    "engines": "alfa"
+   },
+   "alfa:sia-r85": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r85"
+    ],
+    "pages": 2,
+    "engines": "alfa"
+   },
+   "alfa:sia-r53": {
+    "actRuleId": null,
+    "axeRules": [],
+    "alfaRules": [
+     "sia-r53"
     ],
     "pages": 3,
     "engines": "alfa"
@@ -705,7 +1045,7 @@
     "alfaRules": [
      "sia-r73"
     ],
-    "pages": 3,
+    "pages": 6,
     "engines": "alfa"
    },
    "alfa:sia-r62": {
@@ -714,7 +1054,7 @@
     "alfaRules": [
      "sia-r62"
     ],
-    "pages": 3,
+    "pages": 6,
     "engines": "alfa"
    },
    "act:5c01ea": {
@@ -723,7 +1063,7 @@
     "alfaRules": [
      "sia-r18"
     ],
-    "pages": 3,
+    "pages": 6,
     "engines": "alfa"
    },
    "alfa:sia-r61": {
@@ -732,7 +1072,7 @@
     "alfaRules": [
      "sia-r61"
     ],
-    "pages": 3,
+    "pages": 6,
     "engines": "alfa"
    },
    "alfa:sia-r57": {
@@ -741,7 +1081,7 @@
     "alfaRules": [
      "sia-r57"
     ],
-    "pages": 3,
+    "pages": 6,
     "engines": "alfa"
    },
    "alfa:sia-r111": {
@@ -750,39 +1090,30 @@
     "alfaRules": [
      "sia-r111"
     ],
-    "pages": 3,
-    "engines": "alfa"
-   },
-   "alfa:sia-r53": {
-    "actRuleId": null,
-    "axeRules": [],
-    "alfaRules": [
-     "sia-r53"
-    ],
-    "pages": 1,
+    "pages": 6,
     "engines": "alfa"
    }
   }
  },
  "sustainability": {
-  "pages": 88,
+  "pages": 174,
   "medianBytes": 64562,
-  "meanBytes": 79863,
+  "meanBytes": 84275,
   "medianRequests": 7,
-  "totalCo2g": 1.04,
-  "meanCo2g": 0.0119,
-  "totalEnergyWh": 2.11,
-  "meanEnergyWh": 0.024
+  "totalCo2g": 2.18,
+  "meanCo2g": 0.0125,
+  "totalEnergyWh": 4.4,
+  "meanEnergyWh": 0.0253
  },
  "deprecatedHtml": null,
  "resources": {
-  "total": 51,
+  "total": 55,
   "byType": {
    "embedded-media": 1,
+   "image": 5,
    "document": 24,
    "spreadsheet": 16,
-   "pdf": 9,
-   "image": 1
+   "pdf": 9
   },
   "list": [
    {
@@ -794,11 +1125,27 @@
     ]
    },
    {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20220826-swabbing-kid.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
     "url": "https://nih.gov/sites/default/files/CDEs/2026-08/lsns-copyright-statement.docx",
     "type": "document",
     "pages": 1,
     "examplePages": [
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15"
+    ]
+   },
+   {
+    "url": "https://nih.gov/sites/default/files/2025-01/20180209-diagnostic-assay.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
     ]
    },
    {
@@ -1186,6 +1533,22 @@
     ]
    },
    {
+    "url": "https://www.nih.gov/sites/default/files/2025-03/20190625-sierra-leonne.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "url": "https://www.nih.gov/sites/default/files/2026-03/20260310-pain_0.jpg",
+    "type": "image",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain"
+    ]
+   },
+   {
     "url": "https://www.nih.gov/sites/default/files/2025-03/20190402-eating.jpg",
     "type": "image",
     "pages": 1,
@@ -1196,96 +1559,96 @@
   ]
  },
  "standards": {
-  "pagesChecked": 3,
+  "pagesChecked": 6,
   "checks": [
    {
     "id": "schema-gov",
     "label": "schema.org GovernmentOrganization markup",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "hreflang",
     "label": "hreflang alternates declared",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "open-social",
     "label": "Open social presence (Mastodon/Bluesky) linked",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0
    },
    {
     "id": "description",
     "label": "Meta description present",
-    "pass": 2,
-    "total": 3,
-    "rate": 67
+    "pass": 5,
+    "total": 6,
+    "rate": 83
    },
    {
     "id": "canonical",
     "label": "Canonical URL declared",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "title",
     "label": "Page has a <title>",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "charset",
     "label": "Character encoding declared",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "lang",
     "label": "Document language (lang) set",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "viewport",
     "label": "Responsive viewport (zoom not disabled)",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "open-graph",
     "label": "Open Graph tags (6/6)",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    },
    {
     "id": "twitter-card",
     "label": "Twitter card metadata",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100
    }
   ],
   "social": []
  },
  "resilience": {
-  "pagesChecked": 3,
+  "pagesChecked": 6,
   "checks": [
    {
     "id": "pwa-manifest",
     "label": "Web app manifest declared",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "A web app manifest is required for installability and controls how the app appears when launched.",
     "evidenceExamples": []
@@ -1294,7 +1657,7 @@
     "id": "pwa-service-worker",
     "label": "Service worker registered",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "A service worker is what makes offline access, caching, and background sync possible.",
     "evidenceExamples": []
@@ -1303,7 +1666,7 @@
     "id": "pwa-theme-color",
     "label": "Theme color declared",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "Theme color controls the browser chrome/status-bar color when the site is installed or bookmarked.",
     "evidenceExamples": []
@@ -1312,7 +1675,7 @@
     "id": "pwa-apple-touch-icon",
     "label": "Apple touch icon (iOS/bookmark icon)",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "iOS uses this icon for home-screen bookmarks and \"Add to Home Screen\" — without it the icon falls back to a screenshot.",
     "evidenceExamples": []
@@ -1321,21 +1684,21 @@
     "id": "manifest-parsed",
     "label": "Manifest fetched and parsed successfully",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "A manifest that fails to parse cannot drive installability or launch behavior even if the link is present.",
     "evidenceExamples": [
      {
       "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
+     },
+     {
+      "evidence": "No manifest declared",
       "url": "https://www.nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
-     },
-     {
-      "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013"
-     },
-     {
-      "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
      }
     ]
    },
@@ -1343,21 +1706,21 @@
     "id": "manifest-maskable-icon",
     "label": "Manifest declares a maskable icon",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "A maskable icon lets the OS safely crop/mask the app icon on different device shapes without clipping content.",
     "evidenceExamples": [
      {
       "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+     },
+     {
+      "evidence": "No manifest declared",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
+     },
+     {
+      "evidence": "No manifest declared",
       "url": "https://www.nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
-     },
-     {
-      "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013"
-     },
-     {
-      "evidence": "No manifest declared",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
      }
     ]
    },
@@ -1365,7 +1728,7 @@
     "id": "sw-active",
     "label": "Service worker is active (not just registered)",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "An active service worker (not just registered) is what actually intercepts requests and serves cached content.",
     "evidenceExamples": []
@@ -1374,7 +1737,7 @@
     "id": "sw-controlling",
     "label": "Service worker controls this page load",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "A controlling service worker means THIS page load is being served/intercepted, not just a future one.",
     "evidenceExamples": []
@@ -1383,29 +1746,29 @@
     "id": "installable",
     "label": "Meets basic installability criteria",
     "pass": 0,
-    "total": 3,
+    "total": 6,
     "rate": 0,
     "why": "Determines whether the browser can realistically offer \"Add to Home Screen\" / install, based on manifest + service worker + HTTPS together.",
     "evidenceExamples": [
      {
       "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
+      "url": "https://www.nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
+     },
+     {
+      "evidence": "no readable web app manifest; no service worker registered",
       "url": "https://www.nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
-     },
-     {
-      "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013"
-     },
-     {
-      "evidence": "no readable web app manifest; no service worker registered",
-      "url": "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
      }
     ]
    },
    {
     "id": "pwa-https",
     "label": "HTTPS (required for service workers)",
-    "pass": 3,
-    "total": 3,
+    "pass": 6,
+    "total": 6,
     "rate": 100,
     "why": "HTTPS is required for service workers and most install prompts.",
     "evidenceExamples": []
@@ -1468,7 +1831,207 @@
   "total": 8
  },
  "publicInterest": null,
- "plainLanguage": null,
+ "plainLanguage": {
+  "pagesChecked": 2,
+  "pagesScored": 2,
+  "medianWordsPerPage": 481,
+  "medianReadingEase": 49,
+  "medianGrade": 11,
+  "topUnexplainedAcronyms": [
+   {
+    "acronym": "NIH",
+    "pages": 2,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "NCI",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "acronym": "PHS",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "acronym": "VA",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "TS",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "DL",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "RT",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "CM",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "SE",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "TJ",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "acronym": "PMID",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   }
+  ],
+  "topMisspellings": [
+   {
+    "word": "Sessoms",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "word": "NCI",
+    "pages": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "word": "Leone",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "PeterHermesFurian",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "iStock",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "Betancourt",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "Shriver",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "weren",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "Antonaccio",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "VanderWeele",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "Acad",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "Adolesc",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "pii",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "doi",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "jaac",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
+    "word": "Epub",
+    "pages": 1,
+    "examplePages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   }
+  ]
+ },
  "lighthouse": {
   "pagesSampled": 2,
   "medianPerformance": 38,
@@ -1921,7 +2484,23 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/challenges/supplements-facts-first-digital-adventure-every-age-challenge",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/other-public-information-servers",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/immune-cells-control-waste-clearance-brain",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/news-releases/investigational-covid-19-therapeutics-be-evaluated-large-clinical-trials",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/health-information/nih-clinical-research-trials-you/promotional-materials/learn-how-you-too-can-participate-tomorrows-medical-progress-poster",
    "status": 403
   },
   {
@@ -1930,6 +2509,26 @@
   },
   {
    "url": "https://www.nih.gov/news-events/nih-research-matters/skin-compounds-associated-attractiveness-mosquitoes",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/brain/research/systems-neuroscience",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/nih-foia-library/contact-information-nih-supported-pis",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/replacing-function-impaired-cystic-fibrosis-protein",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/health-information/nih-clinical-research-trials-you/guidelines-communicating-informed-consent-individuals-who-are-deaf-or-hard-hearing-scientists",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/nih-turning-discovery-into-health/our-biggest-health-challenges/heart-disease-stroke",
    "status": 403
   },
   {
@@ -1949,97 +2548,292 @@
    "status": 403
   },
   {
+   "url": "https://www.nih.gov/research-training/medical-research-initiatives/environmental-influences-child-health-outcomes-echo-program/funding/idea-states-pediatric-clinical-trials-network-data-coordinating-operations-center-foa",
+   "status": 403
+  },
+  {
    "url": "https://nih.gov/news-events/nih-research-matters/alzheimers-proteins-blood-linked-midlife-cognition",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/faster-better-images-cutting-edge-microscopes",
+   "status": 403
+  },
+  {
+   "url": "https://www.nih.gov/news-events/nih-research-matters/antibody-treatment-protects-adults-against-malaria",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/voices-nih-community/how-much-longer-do-i-have",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/news-events/nih-research-matters/neural-signature-predicts-antidepressant-response",
+   "status": 403
+  },
+  {
+   "url": "https://nih.gov/about-nih/what-we-do/nih-almanac",
    "status": 403
   },
   {
    "url": "https://nih.gov/news-events/nih-research-matters/oral-antiviral-drug-effective-against-covid-19-hamsters",
    "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/peanut-consumption-infancy-lowers-peanut-allergy",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/structure-hepatitis-c-proteins-reveals-viral-vulnerabilities",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/heal/heal-initiative-requirements/data-sharing-policy",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/machine-learning-predicts-risk-aneurysm",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/brain-initiative/about/brain-partners",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/institutes-nih/nih-office-director/office-legislative-policy-analysis-olpa/congressional-visits-nih",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/comparing-heart-failure-drugs",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/wearable-ultrasound-patch-tracks-blood-pressure",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/about-nih/organization",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/news-releases/nih-announces-centers-myalgic-encephalomyelitis-chronic-fatigue-syndrome-research",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/news-events/nih-research-matters/system-uses-imagined-handwriting-turn-thoughts-into-text",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/institutes-nih/nih-office-director/executive-secretariat-execsec/invite-nih-director",
-   "status": 403
-  },
-  {
-   "url": "http://mailto:RADxInfo@nih.gov/health-information/nih-clinical-research-trials-you/parents-children",
-   "status": 403
-  },
-  {
-   "url": "https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/clear-communication/plain-language-nih",
-   "status": 403
-  },
-  {
-   "url": "https://nih.gov/news-events/nih-research-matters/altered-brain-connections-youth-adhd",
-   "status": 403
   }
  ],
  "tech": null,
  "images": {
-  "pagesScanned": 5,
-  "totalImages": 67,
-  "uniqueImages": 14,
+  "pagesScanned": 10,
+  "totalImages": 138,
+  "uniqueImages": 18,
   "missingAlt": 0,
   "decorative": 0,
-  "withAlt": 67,
+  "withAlt": 138,
   "altVerdicts": {
-   "GOOD": 11,
+   "GOOD": 15,
    "SUSPICIOUS": 1,
    "TOO_SHORT": 2
   }
  },
  "techFindings": null,
- "thirdParty": null,
+ "thirdParty": {
+  "pagesScanned": 1,
+  "vendors": [
+   {
+    "origin": "googletagmanager.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 646599,
+    "medianDurationMs": 937,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "origin": "crazyegg.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 71020,
+    "medianDurationMs": 347,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "origin": "cloudflareinsights.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 31679,
+    "medianDurationMs": 32,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "origin": "digitalgov.gov",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 30230,
+    "medianDurationMs": 157,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "origin": "google-analytics.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 20805,
+    "medianDurationMs": 53,
+    "medianRequests": 4,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "origin": "pinterest.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 18901,
+    "medianDurationMs": 251,
+    "medianRequests": 3,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "origin": "verint-cdn.com",
+    "pages": 1,
+    "pagesWithScripts": 1,
+    "isScriptVendor": true,
+    "medianBytes": 107,
+    "medianDurationMs": 98,
+    "medianRequests": 1,
+    "pagesWithFindings": 1,
+    "examplePages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   }
+  ]
+ },
  "componentClusters": {
   "design_system": "none",
   "design_system_label": "none",
   "design_system_theme": null,
   "template_page_threshold": 10,
-  "total_clusters": 34,
+  "total_clusters": 52,
   "clusters": [
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14.4,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 10,
+    "pages_affected": 10,
+    "instances": 10,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 10,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 10,
+    "pages_affected": 10,
+    "instances": 10,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 10,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
    {
     "id": "cc-981d69379a79",
     "engine_key": "axe-core",
@@ -2069,104 +2863,13 @@
     ]
    },
    {
-    "id": "cc-c522046e8174",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-cffcfd807590",
-    "engine_key": "alfa",
-    "rule_id": "sia-r61",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
-    "snippet_shape": "",
-    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
     "id": "cc-cd5f617ba5c1",
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -2176,15 +2879,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2193,9 +2899,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -2205,42 +2911,47 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 6,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 6,
     "estimated_fix_impact": {
      "findings": 3,
      "pages": 3,
      "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 2.4,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2249,9 +2960,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -2261,15 +2972,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2278,9 +2992,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"health information\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Health Information\"",
@@ -2290,15 +3004,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2307,9 +3024,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"grants & funding\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Grants & Funding\"",
@@ -2319,131 +3036,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-19c608daabd2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<p class=\"usa-banner__header-text\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-banner__header-text\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-56d16a8447b2",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-e5e84016a2ec",
-    "engine_key": "alfa",
-    "rule_id": "sia-r73",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
-    "snippet_shape": "",
-    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-8cbcff6b68da",
-    "engine_key": "alfa",
-    "rule_id": "sia-r62",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "snippet_shape": "",
-    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2452,9 +3056,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"nih websites are changing\"",
     "snippet_shape": "",
     "representative_selector": "text: \"NIH Websites Are Changing\"",
@@ -2464,15 +3068,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2481,9 +3088,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"nih is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
     "snippet_shape": "",
     "representative_selector": "text: \"NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, a",
@@ -2493,15 +3100,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2510,9 +3120,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r57",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -2522,15 +3132,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2539,9 +3152,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "<a class=\"usa-button\" href=\"/web-modernization\">",
     "snippet_shape": "",
     "representative_selector": "<a class=\"usa-button\" href=\"/web-modernization\">",
@@ -2551,15 +3164,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2568,9 +3184,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "<button type=\"button\" aria-label=\"ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
     "snippet_shape": "",
     "representative_selector": "<button type=\"button\" aria-label=\"Ocultar alerta\" class=\"usa-alert__toggle icon-close\">",
@@ -2580,15 +3196,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -2597,9 +3216,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r111",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "<a href=\"/virtual-tour\">",
     "snippet_shape": "",
     "representative_selector": "<a href=\"/virtual-tour\">",
@@ -2609,22 +3228,152 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
    {
-    "id": "cc-990743262834",
+    "id": "cc-19c608daabd2",
     "engine_key": "alfa",
-    "rule_id": "sia-r53",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "<p class=\"usa-banner__header-text\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-banner__header-text\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-56d16a8447b2",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "<p class=\"usa-identifier__identity-domain\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-domain\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 3,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-e5e84016a2ec",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 5,
+    "instances": 5,
+    "selector_path": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"official website of the department of health and human services\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"usa-identifier__identity-disclaimer\" aria-label=\"Official website of the Department of Health and Human Services\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 2.5,
+    "estimated_fix_impact": {
+     "findings": 5,
+     "pages": 5,
+     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-8cbcff6b68da",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://www.hhs.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 6,
+    "action_score": 2,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-8b5b40b39985",
+    "engine_key": "alfa",
+    "rule_id": "sia-r64",
     "severity": "Moderate",
     "rule_pages_affected": 1,
     "pages_affected": 1,
@@ -2645,7 +3394,118 @@
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
+    "id": "cc-3c4299c743bc",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": ".callout__text > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": ".callout__text > h3",
+    "representative_snippet": "<h3>At a Glance</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 4,
+    "action_score": 1.8,
+    "estimated_fix_impact": {
+     "findings": 3,
+     "pages": 3,
+     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-61c26a3768ea",
+    "engine_key": "axe-core",
+    "rule_id": "heading-order",
+    "severity": "Moderate",
+    "rule_pages_affected": 7,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "h3:nth-child(*)",
+    "snippet_shape": "h3:",
+    "representative_selector": "h3:nth-child(4)",
+    "representative_snippet": "<h3>What</h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 1.2,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013"
+    ]
+   },
+   {
+    "id": "cc-fd903397889b",
+    "engine_key": "alfa",
+    "rule_id": "sia-r85",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"nih-slogan\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"nih-slogan\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
+    "id": "cc-5d2cccd53c74",
+    "engine_key": "alfa",
+    "rule_id": "sia-r85",
+    "severity": "Moderate",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<p class=\"nih-subtitle\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"nih-subtitle\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 1,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
     ]
    },
    {
@@ -2653,9 +3513,9 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 5,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 10,
+    "pages_affected": 4,
+    "instances": 4,
     "selector_path": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
     "snippet_shape": "a:href",
     "representative_selector": ".usa-identifier__identity-disclaimer > a[href$=\"hhs.gov/\"]",
@@ -2664,17 +3524,18 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "unknown",
-    "distinct_components_for_rule": 8,
-    "action_score": 1.35,
+    "distinct_components_for_rule": 16,
+    "action_score": 0.9,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 4,
+     "pages": 4,
+     "statement": "Fix one place, resolve ~4 finding(s) on 4 page(s)."
     },
     "affected_pages": [
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013"
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
     ]
    },
    {
@@ -2682,7 +3543,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 6,
     "pages_affected": 2,
     "instances": 2,
     "selector_path": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">",
@@ -2693,36 +3554,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 1.33,
-    "estimated_fix_impact": {
-     "findings": 2,
-     "pages": 2,
-     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
-    ]
-   },
-   {
-    "id": "cc-9932671d33b6",
-    "engine_key": "axe-core",
-    "rule_id": "link-in-text-block",
-    "severity": "Serious",
-    "rule_pages_affected": 5,
-    "pages_affected": 2,
-    "instances": 2,
-    "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a",
-    "snippet_shape": "a:href",
-    "representative_selector": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a",
-    "representative_snippet": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">Common Data Elements (CDEs) program</a>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.9,
+    "distinct_components_for_rule": 6,
+    "action_score": 0.67,
     "estimated_fix_impact": {
      "findings": 2,
      "pages": 2,
@@ -2738,7 +3571,7 @@
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 7,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > h3",
@@ -2749,8 +3582,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.8,
+    "distinct_components_for_rule": 4,
+    "action_score": 0.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2761,57 +3594,304 @@
     ]
    },
    {
-    "id": "cc-61c26a3768ea",
+    "id": "cc-b434d7406f26",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 2,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article[data-history-node-id=\"5066\"] > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 2,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
+    "id": "cc-eba2717659a0",
     "engine_key": "axe-core",
     "rule_id": "heading-order",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 7,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > h3",
+    "snippet_shape": "h3:",
+    "representative_selector": "article[data-history-node-id=\"5066\"] > div > h3",
+    "representative_snippet": "<h3></h3>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 4,
+    "action_score": 0.6,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
+    "id": "cc-b4aea9b8408e",
+    "engine_key": "axe-core",
+    "rule_id": "empty-heading",
+    "severity": "Minor",
+    "rule_pages_affected": 2,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "h3:nth-child(*)",
     "snippet_shape": "h3:",
-    "representative_selector": "h3:nth-child(2)",
-    "representative_snippet": "<h3>Opening Remarks</h3>",
+    "representative_selector": "h3:nth-child(20)",
+    "representative_snippet": "<h3></h3>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.8,
+    "distinct_components_for_rule": 2,
+    "action_score": 0.6,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013"
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
     ]
    },
    {
-    "id": "cc-3c4299c743bc",
-    "engine_key": "axe-core",
-    "rule_id": "heading-order",
+    "id": "cc-d432f0651242",
+    "engine_key": "alfa",
+    "rule_id": "sia-r73",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 6,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": ".callout__text > h3",
-    "snippet_shape": "h3:",
-    "representative_selector": ".callout__text > h3",
-    "representative_snippet": "<h3>At a Glance</h3>",
+    "selector_path": "<p class=\"nih-subtitle\">",
+    "snippet_shape": "",
+    "representative_selector": "<p class=\"nih-subtitle\">",
+    "representative_snippet": null,
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.8,
+    "distinct_components_for_rule": 4,
+    "action_score": 0.5,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md"
+    ]
+   },
+   {
+    "id": "cc-9932671d33b6",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(*) > a",
+    "snippet_shape": "a:href",
+    "representative_selector": ".text-formatted.field--name-field-uswds-body.field--type-text-long > p:nth-child(1) > a",
+    "representative_snippet": "<a href=\"/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program\">Common Data Elements (CDEs) program</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12"
+    ]
+   },
+   {
+    "id": "cc-c3982f3f2935",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(15) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31176749\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-0975fb981253",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "article[data-history-node-id=\"21806\"] > div > ul > li:nth-child(6) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://newsinhealth.nih.gov/2018/10/managing-pain\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Managing pain</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-7593579d1f63",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 2,
+    "instances": 2,
+    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
+    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.45,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 2,
+     "statement": "Fix one place, resolve ~2 finding(s) on 2 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-49160fe35aa1",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://jamanetwork.com/journals/jama/fullarticle/#.#/jama.#.#?guestaccesskey=d98d9357-ab4b-477a-b97c-ae5c9382870c&utm_source=for_the_media&utm_medium=referral&utm_campaign=ftm_lin",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://jamanetwork.com/journals/jama/fullarticle/10.1001/jama.2022.14877?guestAccessKey=d98d9357-ab4b-477a-b97c-ae5c9382870c&utm_source=For_The_Media&utm_medium=referral&utm_campaign=ftm_lin",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
+    "id": "cc-2663a22862d7",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://ieeexplore.ieee.org/document/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://ieeexplore.ieee.org/document/9418534\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
+    "id": "cc-73cb402f3c8e",
+    "engine_key": "alfa",
+    "rule_id": "sia-r62",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/#/\" target=\"_blank\" class=\"ext\" data-extlink=\"\">",
+    "snippet_shape": "",
+    "representative_selector": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/41719383/\" target=\"_blank\" class=\"ext\" data-extlink=\"\">",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain"
     ]
    },
    {
@@ -2819,7 +3899,7 @@
     "engine_key": "alfa",
     "rule_id": "sia-r62",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
+    "rule_pages_affected": 6,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/#\" class=\"ext\" data-extlink=\"\" target=\"_blank\">",
@@ -2830,8 +3910,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 3,
-    "action_score": 0.67,
+    "distinct_components_for_rule": 6,
+    "action_score": 0.33,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2842,11 +3922,38 @@
     ]
    },
    {
+    "id": "cc-a6e854cc83d5",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 1,
+    "instances": 2,
+    "selector_path": "li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "li:nth-child(3) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://www.nimh.nih.gov/health/topics/anxiety-disorders/index.shtml\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Anxiety Di",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 2,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~2 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma"
+    ]
+   },
+   {
     "id": "cc-90ddb377c608",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 10,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": ".field__item:nth-child(*) > .background--gray.paragraph--type--callout.callout > .callout__body > .callout__text.clearfix > p:nth-child(*) > a[target=\"_blank\"][rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"]",
@@ -2857,8 +3964,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2873,7 +3980,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 10,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"storycorps.org/\"]",
@@ -2884,8 +3991,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2900,7 +4007,7 @@
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 10,
     "pages_affected": 1,
     "instances": 1,
     "selector_path": "a[href$=\"mailto:storycorps@nih.gov\"]",
@@ -2911,8 +4018,8 @@
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
@@ -2923,88 +4030,332 @@
     ]
    },
    {
-    "id": "cc-0975fb981253",
+    "id": "cc-3b99a487ffee",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 10,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "article[data-history-node-id=\"#\"] > div > ul > li:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "selector_path": "p:nth-child(*) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "article[data-history-node-id=\"12786\"] > div > ul > li:nth-child(5) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.nhlbi.nih.gov/health-topics/dash-eating-plan\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">DASH Eating Plan</a>",
+    "representative_selector": "p:nth-child(11) > a[rel=\"noopener nofollow noreferrer\"][title=\"(opens in a new window)\"][data-extlink=\"\"]",
+    "representative_snippet": "<a href=\"https://ieeexplore.ieee.org/document/9418534\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">RADx Tech Testing Verification Cor",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
     ]
    },
    {
-    "id": "cc-c3982f3f2935",
+    "id": "cc-53a4ee3046b7",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 10,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "p:nth-child(*) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
+    "selector_path": "a[href$=\"radx\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(17) > a[data-extlink=\"\"][target=\"_blank\"][rel=\"noopener nofollow noreferrer\"]",
-    "representative_snippet": "<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/30889188\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Cost-effectiveness of financial in",
+    "representative_selector": "a[href$=\"radx\"]",
+    "representative_snippet": "<a href=\"https://www.nih.gov/radx\">https://www.nih.gov/radx</a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
     ]
    },
    {
-    "id": "cc-7593579d1f63",
+    "id": "cc-3342a6ddc8cb",
     "engine_key": "axe-core",
     "rule_id": "link-in-text-block",
     "severity": "Serious",
-    "rule_pages_affected": 5,
+    "rule_pages_affected": 10,
     "pages_affected": 1,
     "instances": 1,
-    "selector_path": "p:nth-child(*) > a:nth-child(*)",
+    "selector_path": "a[href$=\"nibib.nih.gov/\"]",
     "snippet_shape": "a:href",
-    "representative_selector": "p:nth-child(4) > a:nth-child(2)",
-    "representative_snippet": "<a href=\"https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison\">Office of Communications and Public Liaison</a>",
+    "representative_selector": "a[href$=\"nibib.nih.gov/\"]",
+    "representative_snippet": "<a href=\"https://www.nibib.nih.gov/\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">https://www.nibib.nih.gov</a>",
     "design_components": [],
     "drift": false,
     "drift_tokens": [],
     "likely_source": "content",
-    "distinct_components_for_rule": 8,
-    "action_score": 0.45,
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
     "estimated_fix_impact": {
      "findings": 1,
      "pages": 1,
      "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
     },
     "affected_pages": [
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab"
+    ]
+   },
+   {
+    "id": "cc-854e10ba1263",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href=\"mailto:kpekoc@niaid.nih.gov\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href=\"mailto:kpekoc@niaid.nih.gov\"]",
+    "representative_snippet": "<a href=\"mailto:kpekoc@niaid.nih.gov\" class=\"mailto\" data-extlink=\"\">kpekoc@niaid.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
+    ]
+   },
+   {
+    "id": "cc-8af34485d275",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "a[href$=\"www.niaid.nih.gov\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "a[href$=\"www.niaid.nih.gov\"]",
+    "representative_snippet": "<a href=\"http://www.niaid.nih.gov\" class=\"ext\" data-extlink=\"\" target=\"_blank\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">NIAID website</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
+    ]
+   },
+   {
+    "id": "cc-50d6944a3868",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[href=\"/\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(18) > a[href=\"/\"]",
+    "representative_snippet": "<a href=\"/\">www.nih.gov</a>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies"
+    ]
+   },
+   {
+    "id": "cc-abaac791eabe",
+    "engine_key": "axe-core",
+    "rule_id": "link-in-text-block",
+    "severity": "Serious",
+    "rule_pages_affected": 10,
+    "pages_affected": 1,
+    "instances": 1,
+    "selector_path": "p:nth-child(*) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "snippet_shape": "a:href",
+    "representative_selector": "p:nth-child(19) > a[target=\"_blank\"][data-extlink=\"\"][rel=\"noopener nofollow noreferrer\"]",
+    "representative_snippet": "<a href=\"https://pubmed.ncbi.nlm.nih.gov/41719383/\" target=\"_blank\" class=\"ext\" data-extlink=\"\" rel=\"noopener nofollow noreferrer\" title=\"(opens in a new window)\">Monocyte-derived IL-10 drives sex dif",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "content",
+    "distinct_components_for_rule": 16,
+    "action_score": 0.22,
+    "estimated_fix_impact": {
+     "findings": 1,
+     "pages": 1,
+     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain"
     ]
    }
   ],
   "top_actions": [
+   {
+    "id": "cc-340e0be35f96",
+    "engine_key": "axe-core",
+    "rule_id": "landmark-unique",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "#block-nih2-uswds-search",
+    "snippet_shape": "div:role",
+    "representative_selector": "#block-nih2-uswds-search",
+    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 14.4,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-c522046e8174",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 10,
+    "pages_affected": 10,
+    "instances": 10,
+    "selector_path": ".usa-alert",
+    "snippet_shape": "div:",
+    "representative_selector": ".usa-alert",
+    "representative_snippet": "<div class=\"usa-alert\">",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 10,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-d730914777a9",
+    "engine_key": "axe-core",
+    "rule_id": "region",
+    "severity": "Moderate",
+    "rule_pages_affected": 10,
+    "pages_affected": 10,
+    "instances": 10,
+    "selector_path": "#system-breadcrumb",
+    "snippet_shape": "h2:",
+    "representative_selector": "#system-breadcrumb",
+    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "template",
+    "distinct_components_for_rule": 2,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 10,
+     "pages": 10,
+     "statement": "Fix one place, resolve ~10 finding(s) on 10 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/news-events/news-releases/nih-scientists-adapt-new-brain-disease-test-parkinsons-dementia-lewy-bodies",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/social-acceptance-helps-mental-health-after-war-trauma",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-cffcfd807590",
+    "engine_key": "alfa",
+    "rule_id": "sia-r61",
+    "severity": "Moderate",
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
+    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
+    "snippet_shape": "",
+    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 12,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
    {
     "id": "cc-981d69379a79",
     "engine_key": "axe-core",
@@ -3034,104 +4385,13 @@
     ]
    },
    {
-    "id": "cc-c522046e8174",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
-    "selector_path": ".usa-alert",
-    "snippet_shape": "div:",
-    "representative_selector": ".usa-alert",
-    "representative_snippet": "<div class=\"usa-alert\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-d730914777a9",
-    "engine_key": "axe-core",
-    "rule_id": "region",
-    "severity": "Moderate",
-    "rule_pages_affected": 5,
-    "pages_affected": 5,
-    "instances": 5,
-    "selector_path": "#system-breadcrumb",
-    "snippet_shape": "h2:",
-    "representative_selector": "#system-breadcrumb",
-    "representative_snippet": "<h2 id=\"system-breadcrumb\" class=\"visually-hidden\">Breadcrumb</h2>",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 2,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 5,
-     "pages": 5,
-     "statement": "Fix one place, resolve ~5 finding(s) on 5 page(s)."
-    },
-    "affected_pages": [
-     "https://www.nih.gov/about-nih/voices-nih-community/our-patients-are-heroes",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office/community-liaison-council-meeting-minutes-may-16-2013",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-cffcfd807590",
-    "engine_key": "alfa",
-    "rule_id": "sia-r61",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicid\":null,\"sys",
-    "snippet_shape": "",
-    "representative_selector": "{\"type\":\"document\",\"children\":[{\"type\":\"type\",\"name\":\"html\",\"publicId\":null,\"sys",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 1,
-    "action_score": 6,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
     "id": "cc-cd5f617ba5c1",
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "@aria-label=\"descripción de la agencia\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Descripción de la agencia\"",
@@ -3141,15 +4401,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 6,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -3158,9 +4421,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r18",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "@aria-label=\"official website of the department of health and human services\"",
     "snippet_shape": "",
     "representative_selector": "@aria-label=\"Official website of the Department of Health and Human Services\"",
@@ -3170,42 +4433,47 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 2,
-    "action_score": 3,
+    "action_score": 6,
+    "estimated_fix_impact": {
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
+    },
+    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
+     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
+     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
+    ]
+   },
+   {
+    "id": "cc-990743262834",
+    "engine_key": "alfa",
+    "rule_id": "sia-r53",
+    "severity": "Moderate",
+    "rule_pages_affected": 3,
+    "pages_affected": 3,
+    "instances": 3,
+    "selector_path": "<h3>",
+    "snippet_shape": "",
+    "representative_selector": "<h3>",
+    "representative_snippet": null,
+    "design_components": [],
+    "drift": false,
+    "drift_tokens": [],
+    "likely_source": "unknown",
+    "distinct_components_for_rule": 1,
+    "action_score": 6,
     "estimated_fix_impact": {
      "findings": 3,
      "pages": 3,
      "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
     },
     "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-340e0be35f96",
-    "engine_key": "axe-core",
-    "rule_id": "landmark-unique",
-    "severity": "Moderate",
-    "rule_pages_affected": 1,
-    "pages_affected": 1,
-    "instances": 1,
-    "selector_path": "#block-nih2-uswds-search",
-    "snippet_shape": "div:role",
-    "representative_selector": "#block-nih2-uswds-search",
-    "representative_snippet": "<div class=\"search-block-form usa-form block block-search container-inline\" data-drupal-selector=\"search-block-form\" id=\"block-nih2-uswds-search\" role=\"search\">",
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "content",
-    "distinct_components_for_rule": 1,
-    "action_score": 2.4,
-    "estimated_fix_impact": {
-     "findings": 1,
-     "pages": 1,
-     "statement": "Fix one place, resolve ~1 finding(s) on 1 page(s)."
-    },
-    "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -3214,9 +4482,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"get the latest updates and faqs\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Get the Latest Updates and FAQs\"",
@@ -3226,15 +4494,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    },
@@ -3243,9 +4514,9 @@
     "engine_key": "alfa",
     "rule_id": "sia-r66",
     "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
+    "rule_pages_affected": 6,
+    "pages_affected": 6,
+    "instances": 6,
     "selector_path": "text: \"health information\"",
     "snippet_shape": "",
     "representative_selector": "text: \"Health Information\"",
@@ -3255,44 +4526,18 @@
     "drift_tokens": [],
     "likely_source": "unknown",
     "distinct_components_for_rule": 3,
-    "action_score": 2,
+    "action_score": 4,
     "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
+     "findings": 6,
+     "pages": 6,
+     "statement": "Fix one place, resolve ~6 finding(s) on 6 page(s)."
     },
     "affected_pages": [
+     "https://www.nih.gov/news-events/news-releases/nih-funded-pediatric-covid-19-testing-study-finds-school-aged-children-can-self-swab",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
      "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
-     "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
-    ]
-   },
-   {
-    "id": "cc-0bad39ad282b",
-    "engine_key": "alfa",
-    "rule_id": "sia-r66",
-    "severity": "Moderate",
-    "rule_pages_affected": 3,
-    "pages_affected": 3,
-    "instances": 3,
-    "selector_path": "text: \"grants & funding\"",
-    "snippet_shape": "",
-    "representative_selector": "text: \"Grants & Funding\"",
-    "representative_snippet": null,
-    "design_components": [],
-    "drift": false,
-    "drift_tokens": [],
-    "likely_source": "unknown",
-    "distinct_components_for_rule": 3,
-    "action_score": 2,
-    "estimated_fix_impact": {
-     "findings": 3,
-     "pages": 3,
-     "statement": "Fix one place, resolve ~3 finding(s) on 3 page(s)."
-    },
-    "affected_pages": [
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=15",
-     "https://nih.gov/heal/heal-initiative-requirements/data-sharing-policy/common-data-elements-cdes-program/cdes-repository?page=12",
+     "https://nih.gov/about-nih/nih-almanac/stuart-m-sessoms-md",
+     "https://www.nih.gov/news-events/nih-research-matters/immune-cells-may-underlie-sex-differences-chronic-pain",
      "https://www.nih.gov/news-events/nih-research-matters/prescribing-healthy-foods-could-bring-cost-effective-benefits"
     ]
    }
@@ -3303,6 +4548,6 @@
   "drift_pages": [],
   "drift_clusters": []
  },
- "pagesAttempted": 900,
- "pagesSucceeded": 5
+ "pagesAttempted": 1800,
+ "pagesSucceeded": 10
 }
