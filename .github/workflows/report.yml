@@ -113,7 +113,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 26 # 🟢 Upgraded to Node 26 Latest Stable Release
+          node-version: 26
           cache: npm
 
       - name: Install dependencies
