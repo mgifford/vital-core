@@ -119,6 +119,10 @@ severity taxonomy and accessibility rules: a standing gate, not an afterthought.
   The `.filter(t => !t.hf_only)` guard in `scan.yml` is the enforcement point.
 - **VA `data/` and `state/` paths are gitignored** — Playwright may capture
   CSRF/OAuth tokens on those pages. The gitignore entries are the only defense.
+- **`state/` is never committed** (all domains). CI keeps crawl state as
+  `<domain>.crawl.json.gz` assets on the `scan-state` release via
+  `scripts/state-release.js`, which refuses `hf_only` targets. Committing it
+  grew `.git` by ~1.4 GB in three months.
 
 ---
 

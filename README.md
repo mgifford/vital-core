@@ -19,8 +19,9 @@ accessible** to more people?"
 functions of the data directory.**
 
 - `state/<domain>/crawl.json`: the crawl frontier. The only mutable
-  file. If it is deleted, the crawler reseeds from the sitemap and no
-  history is lost.
+  file. Not committed: CI keeps it on the `scan-state` release (see
+  ARCHITECTURE.md). If it is deleted, the crawler reseeds from the sitemap
+  and no history is lost.
 - `data/<domain>/<ISO-week>/pages/*.json`: one compact record per page
   per week. Append-only.
 - `data/<domain>/<ISO-week>/runs/*.json`: append-only run logs.
