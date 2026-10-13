@@ -22,6 +22,12 @@ dist/
 .env.*
 !.env.example
 
+# Crawl state is mutable and large (up to ~57 MB per domain). CI keeps it
+# as assets on the `scan-state` release (scripts/state-release.js); locally
+# it is a plain on-disk directory. Committing it grew .git by ~1.4 GB in
+# three months.
+state/
+
 # HF-only targets — scanned on Hugging Face, not GitHub Actions.
 # Guard against accidental commit of their scan data to this repo.
 data/www.va.gov/

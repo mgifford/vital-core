@@ -14,9 +14,14 @@
 # 23:11-05:47 ET on weeknights and 21:13-07:37 ET on weekends.
 # During standard time, they run one hour earlier.
 #
-# Commit safety: each matrix job writes only state/<domain>/ and
-# data/<domain>/, so parallel jobs never touch the same files. The
-# push step rebases and retries to absorb the race on the branch tip.
+# Commit safety: each matrix job writes only data/<domain>/, so parallel
+# jobs never touch the same files. The push step rebases and retries to
+# absorb the race on the branch tip.
+#
+# Crawl state (state/<domain>/crawl.json) is NOT committed: it lives as
+# <domain>.crawl.json.gz on the rolling `scan-state` release
+# (scripts/state-release.js). Each job restores and re-uploads only its
+# own asset. A missing asset means the domain reseeds from its sitemap.
 
 name: scan
 
@@ -93,7 +98,6 @@ jobs:
             src
             scripts
             config
-            state
 
       - uses: actions/setup-node@v5
         with:
@@ -103,6 +107,8 @@ jobs:
         id: list
         env:
           DISPATCH_DOMAIN: ${{ github.event.inputs.domain }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           npm ci --omit=optional --ignore-scripts
 
@@ -139,6 +145,9 @@ jobs:
                 });
             " >> "$GITHUB_OUTPUT"
           else
+            # list-scan-domains.js reads every domain's state to skip
+            # domains with no budget left.
+            node scripts/state-release.js download-all
             node scripts/list-scan-domains.js
           fi
 
@@ -221,8 +230,8 @@ jobs:
           sparse-checkout: |
             src
             config
+            scripts
             vendor
-            state/${{ matrix.domain }}
             data/${{ matrix.domain }}
 
       - uses: actions/setup-node@v5
@@ -264,6 +273,15 @@ jobs:
             echo "::warning file=vendor/wappalyzer/VERSION::Wappalyzer fingerprints are ${AGE_DAYS} days old (vendored ${DATE}). Run scripts/update-wappalyzer.sh to refresh."
           fi
 
+      # Fails on any error other than "no asset yet", so a transient API
+      # error can never lead to a fresh seed overwriting good state.
+      - name: Restore crawl state
+        id: restore
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: node scripts/state-release.js download "${{ matrix.domain }}"
+
       - name: Scan
         env:
           NODE_OPTIONS: --max-old-space-size=5120
@@ -286,13 +304,20 @@ jobs:
             --domain "${{ matrix.domain }}" \
             $BUDGET_FLAG
 
-      - name: Commit state and data
+      - name: Save crawl state
+        if: always() && steps.restore.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: node scripts/state-release.js upload "${{ matrix.domain }}"
+
+      - name: Commit data
         if: always()
         run: |
           git config user.name "vital-scans[bot]"
           git config user.email "vital-scans@users.noreply.github.com"
 
-          git add state/ data/
+          git add data/
 
           if git diff --cached --quiet; then
             echo "no changes"
@@ -317,7 +342,7 @@ jobs:
               git reset --soft HEAD~1 2>/dev/null || true
               git pull --rebase origin "${GITHUB_REF_NAME}"
 
-              git add state/ data/
+              git add data/
 
               git commit \
                 -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)" ||
