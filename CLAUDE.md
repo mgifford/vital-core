@@ -12,7 +12,7 @@ sustainability/standards engines, and publishes static HTML reports to
 GitHub Pages via `docs/` (generated; gitignored locally, deployed as
 a GitHub Actions artifact).
 
-**Stack**: Node.js ESM ≥20, no build step, no bundler.
+**Stack**: Node.js ESM ≥22, no build step, no bundler.
 
 **Key commands**:
 ```bash

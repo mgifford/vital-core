@@ -312,6 +312,32 @@ No report should perform its own scanning or independent measurements. Reports c
   summaries, and deploys `docs/` to Pages. The generated HTML is **never
   committed** — it's rebuilt every time from `data/`.
 
+## Temporary dependency overrides
+
+Each entry in `package.json` `overrides` that works around an upstream
+package is a temporary divergence and is recorded here.
+
+**`simple-git` `^4.0.2`** (added 2026-10-13)
+
+- Why: `@siteimprove/alfa-test-utils` 0.84.x pins `simple-git ^3.36.0`,
+  which pulls in `simple-git` <4.0.1 and `@simple-git/argv-parser` <2.0.1
+  (Dependabot alerts #63 to #66, two critical, two high). Real exposure is
+  low: alfa-test-utils only calls `getRemotes`, `branchLocal` and `log` in
+  its Siteimprove-upload path, which vital-core does not use. Those three
+  calls work unchanged in simple-git 4.
+- Downstream owner: Mike Gifford
+- Upstream reference: pending PR to Siteimprove/alfa-integrations (bump
+  alfa-test-utils to simple-git 4); not yet opened
+- Review date: 2026-11-13
+- Removal condition: an alfa-test-utils release that depends on simple-git 4
+  is adopted here, Dependabot alerts #63 to #66 stay closed, and a scan with
+  the Alfa engine is retested
+- Rollback: remove the override and run `npm install`; the alerts reopen but
+  scanning is unaffected
+
+simple-git 4 and alfa-test-utils both require Node >=22, which is why
+`engines.node` is `>=22`.
+
 ## Common questions
 
 - **"Is there a database?"** No. The repo *is* the database; everything
