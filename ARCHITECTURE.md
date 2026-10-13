@@ -11,7 +11,9 @@ conventions, [AGENTS.md](AGENTS.md).
 GitHub Actions, and **files are the only persistent state**:
 
 - Raw scan data is committed to the repo under `data/`.
-- Crawl progress is committed under `state/`.
+- Crawl progress lives under `state/`. It is **not** committed: in CI it
+  is kept as one gzip asset per domain on the rolling `scan-state` GitHub
+  Release; locally it is a plain directory. See "Crawl state storage" below.
 - The published website is a **pure function** of `data/` — regenerated
   from scratch each run, never hand-edited, never committed (it ships
   straight to GitHub Pages as a build artifact).
@@ -102,7 +104,7 @@ data/<domain>/                      ← committed raw scan data
   third-parties.json                ledger: third-party vendors first/last seen
   inventory.json                    last-known status of every URL ever scanned
 
-state/<domain>/
+state/<domain>/                     ← NOT committed (gitignored)
   crawl.json                        the crawl frontier: every known URL with
                                     depth, last-scanned week, status, fail count
 
@@ -123,7 +125,8 @@ page-detail pruning and answer "when did this first appear?".
 
 **Retention contract:** summaries and ledgers are kept forever; page-level
 detail under `pages/` and `runs/` is pruned after `retention_weeks`
-(default 3, `config/targets.yml`) by `src/prune.js` — this is an
+(set to 2 in `config/targets.yml`; `src/prune.js` falls back to 3 if
+unset) — this is an
 insight-delivery system, not an archive, so raw per-page detail that a
 newer scan supersedes is aggressively forgotten once it's rolled up into
 `summary.json` and the ledgers. Consumers (`aggregate.js`, CSV exports,
@@ -195,13 +198,46 @@ force-push to `main` requires a new explicit owner override given in
 that session's chat — see the charter's `historical-evidence-preservation`
 directive.
 
-**Alerting:** the `report.yml` gate job no longer warns on a static
-"still over 1 GB" threshold (that would now fire every single day forever
-and become noise, since existing history won't shrink). Instead it
-tracks server-side repo size run-over-run (`data/.repo-size-kb`) and
-warns if it grows by more than ~50 MB between two report runs — a signal
-the write-pattern fix regressed or a new bloat source appeared, not just
-"the repo is still large."
+**Regrowth (2026-07 to 2026-10):** after the rewrite, `.git` grew back
+from 128 MB to 2.4 GB in three months. Measured 2026-10-13, about
+1,449 MB of the pack was `state/<domain>/crawl.json`: 1,101 commits in 30
+days, files up to 57 MB, each written as a single line of JSON, so git
+could not delta them well. The July rewrite had stripped old versions of
+crawl state but kept committing new ones.
+
+**Crawl state storage (since 2026-10):** `state/` is gitignored. In CI,
+each domain's `crawl.json` is stored as `<domain-key>.crawl.json.gz` on one
+rolling prerelease tagged `scan-state`, through `scripts/state-release.js`:
+
+- the `scan.yml` matrix job downloads every asset (`download-all`) so
+  `list-scan-domains.js` can check weekly budgets;
+- each scan job restores only its own domain's asset before `scan.js` and
+  uploads it with `--clobber` afterwards, so jobs stay isolated per domain;
+- a missing asset means "seed fresh" (the existing "state lost" path). Any
+  other download error fails the job, and the upload step is skipped, so a
+  transient API error can never overwrite good state with a fresh seed;
+- `hf_only` (VA) targets are never uploaded: the matrix filter excludes
+  them and the script refuses them.
+
+Release assets have no history, which is intended: crawl state is
+disposable. Locally nothing changes: `src/lib/state.js` reads and writes
+`state/<key>/crawl.json` on disk and knows nothing about releases.
+
+Moving state out of git stops new growth but leaves the ~1.4 GB already in
+history. Reclaiming it needs another one-time history rewrite with its own
+explicit owner approval (see above).
+
+**Alerting:** the `report.yml` gate job checks the server-reported repo
+size three ways:
+
+- run-over-run (`data/.repo-size-kb`): warns on more than ~50 MB of growth
+  between two report runs;
+- weekly (`data/.repo-size-history`, a rolling list of the last 60 daily
+  sizes): warns on more than 100 MB of growth over about 7 days. This
+  catches the steady ~25 MB/day pattern that the run-over-run check
+  missed;
+- absolute ceiling: warns above 2,662 MB (2.6 GB), just over the 2026-10
+  size. Lower it after any history rewrite.
 
 
 Crawler
@@ -287,7 +323,8 @@ Two GitHub Actions workflows, no server:
 
 ```
 scan.yml      (several scheduled runs per night, off-peak, one job per domain)
-  └─ src/scan.js   crawl a batch, run engines, commit data/ + state/
+  └─ src/scan.js   crawl a batch, run engines, commit data/,
+                   upload state/ to the scan-state release
 
 report.yml    (after the night's scans complete)
   ├─ src/aggregate.js   read data/ → write summaries + docs/
@@ -303,9 +340,9 @@ The aggregation pipeline is responsible for **transforming evidence into reusabl
 No report should perform its own scanning or independent measurements. Reports consume aggregated evidence rather than generating it.
 
 - **`scan.yml`** runs on a staggered set of off-hours cron schedules,
-  one parallel job per domain. Each job scans its budget and commits
-  only its own `data/<domain>/` and `state/<domain>/` files, so parallel
-  jobs never collide. Pushes rebase-and-retry to absorb races.
+  one parallel job per domain. Each job scans its budget, commits only
+  its own `data/<domain>/` files and uploads only its own crawl-state
+  asset, so parallel jobs never collide. Pushes rebase-and-retry to absorb races.
 - **`report.yml`** is triggered when the scan workflow finishes (so the
   published site always reflects the freshest data), and publishes at
   most once per day. It aggregates, prunes, commits the regenerated
