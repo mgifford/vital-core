@@ -57,10 +57,19 @@ jobs:
       # warn only on fast renewed growth — that's the signal the
       # write-pattern fix stopped working or a new bloat source appeared,
       # not "the repo is still as big as it was."
+      #
+      # Run-over-run alone missed steady growth: 128 MB → 2.4 GB between
+      # July and October 2026 at ~25 MB/day never crossed 50 MB per run
+      # (it was committed crawl state; now a release asset). So also
+      # compare against ~7 days ago (data/.repo-size-history) and against
+      # an absolute ceiling. The ceiling sits just above the 2026-10 size
+      # because history doesn't shrink; lower it after any history rewrite.
       - id: size
         name: Check repository size growth
         env:
           GH_TOKEN: ${{ github.token }}
+          WEEKLY_GROWTH_LIMIT_MB: 100
+          CEILING_MB: 2662
         run: |
           KB=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .size)
           MB=$((KB / 1024))
@@ -76,6 +85,21 @@ jobs:
             fi
           else
             echo "No prior size recorded yet (first run after the watchdog rewrite) — nothing to compare."
+          fi
+          CUTOFF=$(date -u -d '7 days ago' +%Y-%m-%d)
+          BASE=$(awk -v c="$CUTOFF" '$1 <= c { d = $1; kb = $2 } END { if (kb) print d, kb }' data/.repo-size-history 2>/dev/null || true)
+          if [ -n "$BASE" ]; then
+            set -- $BASE
+            WEEK_MB=$(( (KB - $2) / 1024 ))
+            echo "Growth since $1: ~${WEEK_MB} MB"
+            if [ "$WEEK_MB" -gt "$WEEKLY_GROWTH_LIMIT_MB" ]; then
+              echo "::warning title=Repo growing steadily::Repo grew ~${WEEK_MB} MB since $1 (limit ${WEEKLY_GROWTH_LIMIT_MB} MB per ~7 days; now ~${MB} MB). Find the path with 'git rev-list --objects --all | git cat-file --batch-check' and check whether something large is being committed every run (see ARCHITECTURE.md 'Git history policy')."
+            fi
+          else
+            echo "No size recorded 7+ days ago yet — weekly growth check starts once data/.repo-size-history has a week of entries."
+          fi
+          if [ "$MB" -gt "$CEILING_MB" ]; then
+            echo "::warning title=Repo over size ceiling::Repo is ~${MB} MB, over the ${CEILING_MB} MB ceiling. Investigate the largest paths in history before it reaches GitHub's soft limits."
           fi
 
       - id: decide
@@ -139,6 +163,9 @@ jobs:
           # not size mid-way through today's own commit.
           if [ -n "$REPO_SIZE_KB" ]; then
             echo "$REPO_SIZE_KB" > data/.repo-size-kb
+            { cat data/.repo-size-history 2>/dev/null || true
+              echo "$(date -u +%Y-%m-%d) $REPO_SIZE_KB"; } | tail -n 60 > data/.repo-size-history.tmp
+            mv data/.repo-size-history.tmp data/.repo-size-history
           fi
           git add data/
 
