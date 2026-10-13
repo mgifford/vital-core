@@ -1,6 +1,6 @@
 {
  "domain": "www.medicare.gov",
- "updatedAt": "2026-10-12T21:26:17.600Z",
+ "updatedAt": "2026-10-13T19:32:13.911Z",
  "links": {
   "https://www.cms.gov/medicare-coverage-database/search.aspx": {
    "status": 503,
@@ -29,7 +29,8 @@
    "weeksBroken": 17,
    "foundOn": [
     "https://www.medicare.gov/index.php/coverage",
-    "https://medicare.gov/coverage"
+    "https://medicare.gov/coverage",
+    "https://www.medicare.gov/coverage"
    ]
   },
   "https://mhanational.org/": {
@@ -609,7 +610,8 @@
    "weeksBroken": 10,
    "foundOn": [
     "https://www.medicare.gov/care-compare/resources/information-for-providers",
-    "http://medicare.gov/care-compare/resources/information-for-providers"
+    "http://medicare.gov/care-compare/resources/information-for-providers",
+    "https://medicare.gov/care-compare/resources/information-for-providers"
    ]
   },
   "https://www.dol.gov/agencies/owcp/dcmwc": {
@@ -1125,7 +1127,7 @@
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W28",
-   "lastSeen": "2026-W41",
+   "lastSeen": "2026-W42",
    "_weeks": [
     "2026-W28",
     "2026-W30",
@@ -1135,20 +1137,19 @@
     "2026-W38",
     "2026-W39",
     "2026-W40",
-    "2026-W41"
+    "2026-W41",
+    "2026-W42"
    ],
-   "weeksBroken": 9,
+   "weeksBroken": 10,
    "foundOn": [
-    "https://www.medicare.gov/coverage/advance-care-planning",
-    "http://medicare.gov/coverage/advance-care-planning",
-    "https://medicare.gov/coverage/advance-care-planning"
+    "http://medicare.gov/coverage/advance-care-planning"
    ]
   },
   "https://www.nia.nih.gov/health/advance-care-planning/preparing-living-will": {
    "status": 405,
    "reason": "HTTP 405",
    "firstSeen": "2026-W28",
-   "lastSeen": "2026-W41",
+   "lastSeen": "2026-W42",
    "_weeks": [
     "2026-W28",
     "2026-W30",
@@ -1158,13 +1159,12 @@
     "2026-W38",
     "2026-W39",
     "2026-W40",
-    "2026-W41"
+    "2026-W41",
+    "2026-W42"
    ],
-   "weeksBroken": 9,
+   "weeksBroken": 10,
    "foundOn": [
-    "https://www.medicare.gov/coverage/advance-care-planning",
-    "http://medicare.gov/coverage/advance-care-planning",
-    "https://medicare.gov/coverage/advance-care-planning"
+    "http://medicare.gov/coverage/advance-care-planning"
    ]
   },
   "https://www.twitter.com/MedicareGov": {
@@ -1774,7 +1774,11 @@
    "weeksBroken": 6,
    "foundOn": [
     "https://medicare.gov/coverage/mental-health-substance-use-disorder",
-    "https://medicare.gov/basics/costs/help/medicaid"
+    "https://medicare.gov/basics/costs/help/medicaid",
+    "http://medicare.gov/coverage/mental-health-substance-use-disorder",
+    "https://medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/eligibility-help-with-costs-November",
+    "http://medicare.gov/basics/forms-publications-mailings/mailings/help-with-costs/eligibility-help-with-costs-November",
+    "https://www.medicare.gov/basics/costs/help/medicaid"
    ]
   },
   "https://www.youtube.com/user/CMSHHSgov": {
@@ -1884,7 +1888,8 @@
    ],
    "weeksBroken": 6,
    "foundOn": [
-    "https://www.medicare.gov/care-compare/resources/information-for-providers"
+    "https://www.medicare.gov/care-compare/resources/information-for-providers",
+    "https://medicare.gov/care-compare/resources/information-for-providers"
    ]
   },
   "https://www.healthcare-download.com/": {
@@ -2183,13 +2188,13 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W40",
-   "lastSeen": "2026-W40",
+   "lastSeen": "2026-W42",
    "_weeks": [
-    "2026-W40"
+    "2026-W40",
+    "2026-W42"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "https://www.medicare.gov/appointments",
     "https://www.medicare.gov/api/appointments/auth/login?return_to=%2Fappointments"
    ]
   },
@@ -2240,15 +2245,15 @@
    "status": 503,
    "reason": "HTTP 503",
    "firstSeen": "2026-W40",
-   "lastSeen": "2026-W41",
+   "lastSeen": "2026-W42",
    "_weeks": [
     "2026-W40",
-    "2026-W41"
+    "2026-W41",
+    "2026-W42"
    ],
-   "weeksBroken": 2,
+   "weeksBroken": 3,
    "foundOn": [
-    "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=en-us&redirect_uri=https%3A%2F%2Fes.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments",
-    "https://www.medicare.gov/api/appointments/auth/login?return_to=%2Fappointments"
+    "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments"
    ]
   },
   "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=es-mx&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments": {
@@ -2362,13 +2367,14 @@
    "status": 0,
    "reason": "timeout",
    "firstSeen": "2026-W41",
-   "lastSeen": "2026-W41",
+   "lastSeen": "2026-W42",
    "_weeks": [
-    "2026-W41"
+    "2026-W41",
+    "2026-W42"
    ],
-   "weeksBroken": 1,
+   "weeksBroken": 2,
    "foundOn": [
-    "http://medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access/find-ACCESS-orgs/ACCESS-search-results"
+    "https://www.medicare.gov/providers-services/coordinating-care/support-chronic-health-conditions-access/find-ACCESS-orgs/ACCESS-search-results"
    ]
   },
   "https://medicare.gov/publications/10050-c-medicare-and-you.pdf": {
@@ -2382,6 +2388,32 @@
    "weeksBroken": 1,
    "foundOn": [
     "https://medicare.gov/publications/search/all-non-english-pubs?page=9"
+   ]
+  },
+  "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments&Lang=en-us": {
+   "status": 503,
+   "reason": "HTTP 503",
+   "firstSeen": "2026-W42",
+   "lastSeen": "2026-W42",
+   "_weeks": [
+    "2026-W42"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/api/appointments/auth/login?return_to=%2Fappointments"
+   ]
+  },
+  "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments": {
+   "status": 503,
+   "reason": "HTTP 503",
+   "firstSeen": "2026-W42",
+   "lastSeen": "2026-W42",
+   "_weeks": [
+    "2026-W42"
+   ],
+   "weeksBroken": 1,
+   "foundOn": [
+    "https://www.medicare.gov/api/appointments/auth/login?client_id=mgas&Lang=en-us&redirect_uri=https%3A%2F%2Fwww.medicare.gov%2Fapi%2Fappointments%2Fauth%2Fcallback&relay=%2Fappointments"
    ]
   }
  }
