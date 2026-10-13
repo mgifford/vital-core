@@ -2,7 +2,7 @@
 
 **Mission**: `crawl-state-release-assets-01M4VRB7`
 **Target branch**: `main`
-**Status**: Design confirmed by owner 2026-10-13; implemented, pending CI round-trip and post-merge bootstrap
+**Status**: Implemented; CI round-trip verified (runs 38483595325, 38483424311); PR #270; post-merge bootstrap pending
 
 ---
 
@@ -78,32 +78,32 @@ Out of scope:
 
 ## Acceptance criteria
 
-1. **AC1 State not committed.** `state/` is in `.gitignore`. `git ls-files
+1. ✓ **AC1 State not committed.** `state/` is in `.gitignore`. `git ls-files
    state/` is empty on the PR branch. Working-tree files are kept
    (`git rm -r --cached`).
-2. **AC2 Workflow no longer stages state.** `scan.yml` has no `state` entry
+2. ✓ **AC2 Workflow no longer stages state.** `scan.yml` has no `state` entry
    in either sparse checkout, and the commit step runs `git add data/` only.
-3. **AC3 Round-trip.** A `workflow_dispatch` scan of one small non-VA
+3. ✓ **AC3 Round-trip.** A `workflow_dispatch` scan of one small non-VA
    domain shows, in its log: asset downloaded (or "no asset, seeding
    fresh"), scan resumed from that state, asset uploaded. The resulting
    commit contains no `state/` paths.
-4. **AC4 Safe failure.** A download failure other than "not found" fails
+4. ✓ **AC4 Safe failure.** A download failure other than "not found" fails
    the job before `scan.js` runs, and the upload step does not run.
-5. **AC5 VA isolation.** The helper script exits non-zero for any `hf_only`
+5. ✓ **AC5 VA isolation.** The helper script exits non-zero for any `hf_only`
    target. The `!t.hf_only` matrix filter is unchanged.
-6. **AC6 Local dev.** `npm run scan` with `VITAL_DOMAIN` set works with no
+6. ✓ **AC6 Local dev.** `npm run scan` with `VITAL_DOMAIN` set works with no
    GitHub access, reading and writing `state/<key>/crawl.json` on disk.
 7. **AC7 Bootstrap.** After merge, each non-VA domain's asset in
    `scan-state` matches the last committed `crawl.json` (same JSON after
    gunzip).
-8. **AC8 Size watchdog.** `report.yml` warns when the server-reported repo
+8. ✓ **AC8 Size watchdog.** `report.yml` warns when the server-reported repo
    size grows by more than a set amount over about 7 days, and when it
    exceeds a set absolute ceiling. Existing run-over-run behavior is kept.
-9. **AC9 Docs.** ARCHITECTURE.md storage and alerting sections describe the
+9. ✓ **AC9 Docs.** ARCHITECTURE.md storage and alerting sections describe the
    current state (not the July 128 MB baseline as current). The retention
    text says what `config/targets.yml` actually sets (2). CLAUDE.md and
    README.md no longer say that `state/` is committed.
-10. **AC10 Tests.** `npm run test:unit` passes. New pure helpers (asset
+10. ✓ **AC10 Tests.** `npm run test:unit` passes. New pure helpers (asset
     naming, `hf_only` guard) have unit tests.
 
 ## Sustainability acceptance criterion
