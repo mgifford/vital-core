@@ -125,7 +125,7 @@ fresh baseline, to preserve evidence.
 | FR-005 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | ✓ Done 2026-10-14 — report.yml (and scan.yml) commit and push to the data repo |
 | FR-006 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | ✓ Done 2026-10-14 — growth checks track the data repo; `CODE_CEILING_MB` 100 for this repo (PR #273) |
 | FR-007 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | ✓ Done 2026-10-14 — ARCHITECTURE.md "Data repo (since 2026-10-14)" |
-| FR-008 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Done 2026-07-14 for the rewrite; ROADMAP B3 not yet updated for the October split |
+| FR-008 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | ✓ Done — 2026-07-14 for the rewrite; 2026-10-14 for the split (B3 "SECOND FOLLOW-UP RESOLVED 2026-10-14", pointing to this mission) |
 
 ## Non-Functional Requirements
 
