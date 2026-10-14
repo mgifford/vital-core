@@ -1,6 +1,35 @@
 # Mission: Move `data/` into a companion repo
 
-## Status: SUPERSEDED — resolved by in-place history rewrite, 2026-07-14
+## Status: DONE, 2026-10-14 (companion-repo split executed)
+
+The split this mission planned was carried out on 2026-10-14, after the
+July rewrite (below) proved temporary: `.git` grew back from 128 MB to
+2.4 GB by 2026-10-13.
+
+- **Companion repo:** [mgifford/vital-core-data](https://github.com/mgifford/vital-core-data),
+  built with `git filter-repo --subdirectory-filter data/` from `vital-core`
+  `d2f549dc`, so it keeps the full history of `data/` (3,314 commits,
+  965 MiB; tree identical to `d2f549dc:data`), plus a `.gitignore` for the
+  four VA (`hf_only`) domains.
+- **Code repo:** PR #272 untracked and gitignored `data/`, added a
+  `data_repo` config key (global default `mgifford/vital-core-data`,
+  per-target override, refused on `hf_only` targets), and pointed
+  `scan.yml` / `report.yml` at the data repo, pushing with the
+  `VITAL_DATA_DEPLOY_KEY` deploy key. PR #273 passed secrets to the called
+  report and lowered `CODE_CEILING_MB` to 100.
+- **History:** with explicit owner approval in chat (charter
+  `historical-evidence-preservation` exception), `data/` was then purged
+  from `vital-core` history: pack 970 MiB -> 4.7 MiB, commits 4,239 -> 915,
+  `HEAD^{tree}` unchanged. Unit and e2e tests passed before the force-push.
+  A day earlier, `state/` had moved to the `scan-state` release (PR #270)
+  and been purged the same way.
+- **Verified in CI:** dispatched scans (38547163201, 38550904552) pushed to
+  the data repo; report run 38547567319 committed there and deployed Pages.
+
+See `ARCHITECTURE.md` ("Data repo (since 2026-10-14)" and "Third history
+rewrite") for the full record. The July text below is kept as history.
+
+### Earlier status: superseded by in-place history rewrite, 2026-07-14
 
 Root-caused first: the growth wasn't primarily page-level detail, it was
 `aggregate.js`/ledger modules unconditionally rewriting unchanged content
@@ -26,13 +55,9 @@ the rewritten repo, before any force-push. See `ARCHITECTURE.md`'s "Git
 history policy" section and `docs-internal/ROADMAP-2026-07.md` Mission B3
 for the full writeup and evidence.
 
-This mission is now closed. The spec/plan/research below are retained for
-historical context (they document real, considered trade-offs — e.g. why
-a fresh companion-repo baseline was preferred over porting history, and
-the cross-repo credential problem) in case a companion-repo split is ever
-reconsidered for a *different* reason (e.g. wanting truncatable history
-going forward rather than a one-time size fix). No FR/NFR below should be
-treated as pending work.
+In July the mission was closed as superseded. It was reopened and
+completed in October (see Status above); the FR/NFR tables below now
+record the October outcome.
 
 ## Problem
 
@@ -85,30 +110,30 @@ policy" section and Mission B3.
 - Migrating VA domain data (already gitignored, never entered history).
   Still true.
 
-## Functional Requirements (companion-repo plan — not executed)
+## Functional Requirements
 
-None of FR-001 through FR-008 below were implemented; the mission was
-resolved by the history rewrite instead (see Status). Left as-authored
-for context if a companion-repo split is separately reconsidered later.
-
-| ID | Requirement | Status |
-|---|---|---|
-| FR-001 | A new companion repo (e.g. `vital-core-data`) is created and contains the current `data/` content, with history that can be periodically truncated independently of `vital-core` | Not executed — superseded |
-| FR-002 | `vital-core`'s `data/` directory is removed from the working tree and added to `.gitignore` (matching how VA domains are already handled) | Not executed — superseded |
-| FR-003 | Access mechanism is a **separate clone/checkout step**, not a git submodule — CI and local dev explicitly clone/checkout the companion repo into `data/` (e.g. a second `actions/checkout` step in `report.yml`, and a documented local step for contributors). No submodule pointer is committed to `vital-core` | Not executed — superseded |
-| FR-004 | `npm run scan` and `npm run aggregate` work unchanged from a contributor's point of view aside from the new setup step (docs updated, e.g. "clone the companion repo into data/ first" in README/CLAUDE.md dev-setup instructions) | Not executed — superseded |
-| FR-005 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | Not executed — superseded |
-| FR-006 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | Done — resolved via PR #235's run-over-run growth alert (see ARCHITECTURE.md), not via this mission |
-| FR-007 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | Done — rewritten to describe the history rewrite instead, 2026-07-14 |
-| FR-008 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Done — 2026-07-14 |
-
-## Non-Functional Requirements (companion-repo plan — not executed)
+Executed 2026-10-14 (see Status). One deviation from the July plan: the
+companion repo kept the full `data/` history rather than starting from a
+fresh baseline, to preserve evidence.
 
 | ID | Requirement | Status |
 |---|---|---|
-| NFR-01 | No change to committed data shapes (summary.json/findings.json/etc schemas) — this is a storage-location change only | N/A — no storage-location change was made |
-| NFR-02 | Existing `vital-core` git history is not rewritten or squashed as part of this mission | **Superseded by owner decision** — history *was* rewritten instead, under a separate one-time charter exception (2026-07-14), not as part of this mission's original NFRs |
-| NFR-03 | `npm run test:unit` and `npm run test:e2e` pass after the change | Done — both passed against the rewritten repo before force-push |
+| FR-001 | A new companion repo (e.g. `vital-core-data`) is created and contains the current `data/` content, with history that can be periodically truncated independently of `vital-core` | ✓ Done 2026-10-14 — `mgifford/vital-core-data`, full history; no truncation cadence decided |
+| FR-002 | `vital-core`'s `data/` directory is removed from the working tree and added to `.gitignore` (matching how VA domains are already handled) | ✓ Done 2026-10-14 — PR #272 |
+| FR-003 | Access mechanism is a **separate clone/checkout step**, not a git submodule — CI and local dev explicitly clone/checkout the companion repo into `data/` (e.g. a second `actions/checkout` step in `report.yml`, and a documented local step for contributors). No submodule pointer is committed to `vital-core` | ✓ Done 2026-10-14 — second `actions/checkout` into `data/` in scan.yml and report.yml; README documents the local clone |
+| FR-004 | `npm run scan` and `npm run aggregate` work unchanged from a contributor's point of view aside from the new setup step (docs updated, e.g. "clone the companion repo into data/ first" in README/CLAUDE.md dev-setup instructions) | ✓ Done 2026-10-14 — code paths unchanged (`DIRS.data`); README updated |
+| FR-005 | `.github/workflows/report.yml` is updated: a checkout step fetches the companion repo into `data/` before scan/aggregate runs, and the workflow commits/pushes updates back to the companion repo instead of `vital-core` | ✓ Done 2026-10-14 — report.yml (and scan.yml) commit and push to the data repo |
+| FR-006 | The 1 GB size-check gate job's warning condition and text are updated to reflect the new reality (either checking the companion repo's size too, or removing the now-resolved warning for `vital-core` itself) | ✓ Done 2026-10-14 — growth checks track the data repo; `CODE_CEILING_MB` 100 for this repo (PR #273) |
+| FR-007 | `ARCHITECTURE.md` "Git history policy" paragraph is rewritten to describe the companion-repo split as implemented (repo name, how scan/aggregate reach it, truncation cadence if decided) | ✓ Done 2026-10-14 — ARCHITECTURE.md "Data repo (since 2026-10-14)" |
+| FR-008 | `docs-internal/ROADMAP-2026-07.md` Mission B3 checkbox/notes are updated with resolution date and a pointer to this mission | Done 2026-07-14 for the rewrite; ROADMAP B3 not yet updated for the October split |
+
+## Non-Functional Requirements
+
+| ID | Requirement | Status |
+|---|---|---|
+| NFR-01 | No change to committed data shapes (summary.json/findings.json/etc schemas) — this is a storage-location change only | ✓ Done — storage location only; data repo tree identical to `data/` |
+| NFR-02 | Existing `vital-core` git history is not rewritten or squashed as part of this mission | Superseded by owner decision — `vital-core` history was rewritten (2026-07-14, and again 2026-10-13/14 to purge `state/` and `data/`), each under an explicit one-time charter exception; the data history is preserved in the data repo |
+| NFR-03 | `npm run test:unit` and `npm run test:e2e` pass after the change | ✓ Done — 533 unit tests and e2e passed on the rewritten repo before each force-push |
 
 ## Sustainability gate
 
