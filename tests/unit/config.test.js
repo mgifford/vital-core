@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveLanguages, loadConfig } from '../../src/lib/config.js';
+import { resolveLanguages, loadConfig, ciDataRepo } from '../../src/lib/config.js';
 
 test('config: defaults to [en]/en when nothing is set', () => {
   const r = resolveLanguages(undefined, undefined, 'x');
@@ -133,4 +133,57 @@ targets:
 `),
     /unknown obligation/
   );
+});
+
+test('config: data_repo defaults to mgifford/vital-core-data', () => {
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+`);
+  assert.equal(c.dataRepo, 'mgifford/vital-core-data');
+  assert.equal(c.targets[0].dataRepo, 'mgifford/vital-core-data');
+  assert.equal(ciDataRepo(c), 'mgifford/vital-core-data');
+});
+
+test('config: a target can override the global data_repo', () => {
+  const c = loadConfig(`
+data_repo: someone/global-data
+targets:
+  - domain: a.gov
+  - domain: b.gov
+    data_repo: someone/b-data
+`);
+  assert.equal(c.targets[0].dataRepo, 'someone/global-data');
+  assert.equal(c.targets[1].dataRepo, 'someone/b-data');
+});
+
+test('config: rejects a malformed data_repo', () => {
+  assert.throws(() => loadConfig(`
+data_repo: not-a-repo
+targets:
+  - domain: a.gov
+`), /owner\/name/);
+});
+
+test('config: rejects data_repo on an hf_only target', () => {
+  assert.throws(() => loadConfig(`
+targets:
+  - domain: www.va.gov
+    hf_only: true
+    data_repo: someone/va-data
+`), /hf_only/);
+});
+
+test('config: ciDataRepo refuses non-hf_only targets split across repos', () => {
+  const c = loadConfig(`
+targets:
+  - domain: a.gov
+  - domain: b.gov
+    data_repo: someone/other
+`);
+  assert.throws(() => ciDataRepo(c), /one data_repo/);
+});
+
+test('config: the real targets.yml resolves to a single CI data repo', () => {
+  assert.equal(ciDataRepo(loadConfig()), loadConfig().dataRepo);
 });

@@ -6,6 +6,8 @@ import { DEFAULT_FINDING_POLICY, mergeFindingPolicy, validateFindingPolicy } fro
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
+const DEFAULT_DATA_REPO = 'mgifford/vital-core-data';
+const REPO_RE = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 
 // Mutable state (crawl progress, scan data, the built site) can be redirected
 // to a persistent volume via VITAL_DATA_ROOT. This exists for the Hugging Face
@@ -56,6 +58,7 @@ export function loadConfig(rawYaml) {
   // relative path would be wrong outside the site itself (llms.txt, CSV
   // exports). Trailing slash stripped so callers can always do `${base}${path}`.
   const reportBaseUrl = (cfg.report_base_url || '').replace(/\/+$/, '');
+  const dataRepo = validateDataRepo(cfg.data_repo ?? DEFAULT_DATA_REPO, 'global config');
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
@@ -69,6 +72,12 @@ export function loadConfig(rawYaml) {
     // language switcher above — only a literal `true` enables it, so an
     // unset or misconfigured flag never silently ships client-side JS.
     t.webmcpEnabled = t.webmcp === true;
+    // hf_only (VA) data is gitignored on purpose: pages can capture CSRF/OAuth
+    // tokens. Sending it to any git repo is a separate owner decision.
+    if (t.data_repo != null && t.hf_only) {
+      throw new Error(`Target ${t.domain} is hf_only; its data must not be pushed to a data_repo.`);
+    }
+    t.dataRepo = t.data_repo != null ? validateDataRepo(t.data_repo, `target ${t.domain}`) : dataRepo;
     t.findingPolicy = mergeFindingPolicy(globalFindingPolicy, t.finding_policy ?? {});
     const policyValidation = validateFindingPolicy(t.findingPolicy, { scope: `target ${t.domain}` });
     if (policyValidation.errors.length > 0) {
@@ -94,8 +103,26 @@ export function loadConfig(rawYaml) {
     defaultLanguage: globalLangs.defaultLanguage,
     showLanguageSwitcher: globalShowSwitcher,
     reportBaseUrl,
+    dataRepo,
     targets,
   };
+}
+
+function validateDataRepo(repo, where) {
+  if (typeof repo !== 'string' || !REPO_RE.test(repo)) {
+    throw new Error(`data_repo "${repo}" in ${where} must look like "owner/name".`);
+  }
+  return repo;
+}
+
+// CI checks out one data repo into data/ for every non-hf_only target, so a
+// split across several repos is refused until the workflows support it.
+export function ciDataRepo(config) {
+  const repos = [...new Set(config.targets.filter((t) => !t.hf_only).map((t) => t.dataRepo))];
+  if (repos.length > 1) {
+    throw new Error(`CI supports one data_repo for all non-hf_only targets; found ${repos.join(', ')}.`);
+  }
+  return repos[0] ?? config.dataRepo;
 }
 
 /**

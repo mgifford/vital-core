@@ -14,9 +14,13 @@
 # 23:11-05:47 ET on weeknights and 21:13-07:37 ET on weekends.
 # During standard time, they run one hour earlier.
 #
+# Scan data lives in the data repo (`data_repo` in config/targets.yml,
+# default mgifford/vital-core-data), checked out into data/ and pushed with
+# the VITAL_DATA_DEPLOY_KEY deploy key. This repo holds code only.
+#
 # Commit safety: each matrix job writes only data/<domain>/, so parallel
 # jobs never touch the same files. The push step rebases and retries to
-# absorb the race on the branch tip.
+# absorb the race on the data repo's branch tip.
 #
 # Crawl state (state/<domain>/crawl.json) is NOT committed: it lives as
 # <domain>.crawl.json.gz on the rolling `scan-state` release
@@ -232,7 +236,6 @@ jobs:
             config
             scripts
             vendor
-            data/${{ matrix.domain }}
 
       - uses: actions/setup-node@v5
         with:
@@ -241,6 +244,20 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Resolve data repo
+        id: datarepo
+        run: echo "repo=$(node scripts/data-repo.js)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.datarepo.outputs.repo }}
+          ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
+          path: data
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            ${{ matrix.domain }}
 
       - name: Cache Playwright browser
         uses: actions/cache@v4
@@ -312,12 +329,14 @@ jobs:
         run: node scripts/state-release.js upload "${{ matrix.domain }}"
 
       - name: Commit data
-        if: always()
+        if: always() && steps.datarepo.outcome == 'success'
+        working-directory: data
         run: |
           git config user.name "vital-scans[bot]"
           git config user.email "vital-scans@users.noreply.github.com"
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-          git add data/
+          git add "${{ matrix.domain }}"
 
           if git diff --cached --quiet; then
             echo "no changes"
@@ -336,13 +355,13 @@ jobs:
               --rebase \
               -X theirs \
               origin \
-              "${GITHUB_REF_NAME}"; then
+              "$BRANCH"; then
 
               git rebase --abort 2>/dev/null || true
               git reset --soft HEAD~1 2>/dev/null || true
-              git pull --rebase origin "${GITHUB_REF_NAME}"
+              git pull --rebase origin "$BRANCH"
 
-              git add data/
+              git add "${{ matrix.domain }}"
 
               git commit \
                 -m "scan(${{ matrix.domain }}): $(date -u +%Y-%m-%dT%H:%MZ)" ||
