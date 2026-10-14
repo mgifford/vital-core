@@ -146,6 +146,23 @@ page-level detail that a newer scan supersedes.
   for the full writeup. Any *future* rewrite still requires a fresh,
   explicit owner override per the charter — this was a one-time exception,
   not a standing policy.
+
+  SECOND FOLLOW-UP RESOLVED 2026-10-14: option (b) executed. The July
+  rewrite proved temporary: `.git` grew back to 2.4 GB by 2026-10-13, about
+  1.45 GB of it `state/<domain>/crawl.json`. With explicit owner approval in
+  chat for each rewrite and each force-push:
+  - 2026-10-13: crawl state moved to assets on the `scan-state` release
+    (PR #270) and `state/` was purged from history (2.36 GiB -> 970 MiB).
+  - 2026-10-14: `data/` moved to the companion repo
+    [mgifford/vital-core-data](https://github.com/mgifford/vital-core-data),
+    which keeps the full `data/` history (PR #272: `data_repo` config,
+    scan.yml/report.yml check out and push to it; PR #273: secrets and
+    ceilings). `data/` was then purged from `vital-core` history (970 MiB ->
+    4.7 MiB, commits 4,239 -> 915, `HEAD^{tree}` unchanged).
+  The Spec Kitty mission `kitty-specs/git-history-companion-repo-01KXEQCF`
+  records this outcome (Status: DONE 2026-10-14). See ARCHITECTURE.md "Data
+  repo (since 2026-10-14)" and "Third history rewrite" for the full writeup.
+  No truncation cadence has been decided for the data repo.
   Original options kept below for context:
   (a) periodic history rewrite squashing scan-bot commits older than N weeks
       (rewrites history — conflicts with append-only doctrine; needs charter
@@ -153,13 +170,16 @@ page-level detail that a newer scan supersedes.
       as a one-time exception, see above,
   (b) move data/ to a companion repo where history can be periodically
       truncated (shallow "rolling" repo), code repo stays light — not
-      executed; superseded by (a),
+      executed in July (superseded by (a)); EXECUTED 2026-10-14, keeping
+      full history in the data repo, see above,
   (c) accept growth; partial clone (A1) already shields CI.
   New alert (replaces the static 1 GB check, which would now fire daily
   forever since existing history can't shrink): report.yml's gate job
   compares server-side repo size run-over-run (data/.repo-size-kb) and warns
   if it grows >50 MB between two report runs — signals the write-pattern fix
   regressed, or a new bloat source appeared, rather than "still large."
+  Since 2026-10-14 these growth checks track the data repo, and the code
+  repo has a separate absolute `CODE_CEILING_MB` (100).
 - [x] B4. Whatever is chosen, document the retention contract in
   ARCHITECTURE.md: "summaries + ledgers forever; page detail N weeks; git
   history policy X."
