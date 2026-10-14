@@ -7,10 +7,9 @@ if [ "${GITHUB_ACTIONS}" = "true" ]; then
 fi
 
 STAGED=$(git diff --cached --name-only)
-# Deleting state/ files is allowed: state/ is no longer tracked (it lives on
-# the scan-state release), and a deletion carries no scan data.
-BLOCKED=$( { git diff --cached --name-only --diff-filter=d | grep -E '^(data|state)/'
-             git diff --cached --name-only --diff-filter=D | grep -E '^data/'; } )
+# Deletions are allowed: neither path is tracked any more (state/ lives on the
+# scan-state release, data/ in the data repo), and a deletion carries no data.
+BLOCKED=$(git diff --cached --name-only --diff-filter=d | grep -E '^(data|state)/')
 if [ -n "$BLOCKED" ]; then
   echo "ERROR: Attempt to commit scan data from a local machine."
   echo "These paths should only be committed by GitHub Actions:"

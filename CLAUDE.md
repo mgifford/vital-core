@@ -123,6 +123,11 @@ severity taxonomy and accessibility rules: a standing gate, not an afterthought.
   `<domain>.crawl.json.gz` assets on the `scan-state` release via
   `scripts/state-release.js`, which refuses `hf_only` targets. Committing it
   grew `.git` by ~1.4 GB in three months.
+- **`data/` is not tracked in this repo.** Scan data lives in the data repo
+  (`data_repo` in `config/targets.yml`, default `mgifford/vital-core-data`),
+  which CI checks out into `data/` and pushes with the `VITAL_DATA_DEPLOY_KEY`
+  deploy key. The data repo carries its own copy of the VA `.gitignore`
+  entries; `hf_only` targets may not set `data_repo`.
 
 ---
 

@@ -90,10 +90,13 @@ for the whole week.
 
 ## Where data is stored
 
-Two committed directories, plus one generated (uncommitted) one.
+Two data directories, plus one generated one. None is tracked in this
+repo: `data/` is a checkout of the data repo (`data_repo` in
+`config/targets.yml`, default `mgifford/vital-core-data`), `state/` lives on
+the `scan-state` release, and `docs/` is built at deploy time.
 
 ```
-data/<domain>/                      ← committed raw scan data
+data/<domain>/                      ← raw scan data, committed to the data repo
   <ISO-week>/                       e.g. 2026-W25
     pages/<pageId>.json             one record per scanned page (the audit results)
     runs/<timestamp>.json           per-run log (what was scanned, broken links, tally)
@@ -249,8 +252,30 @@ garbage-collects server-side. The remaining ~970 MB is mostly `data/`
 
 Any further rewrite still needs a new explicit owner override (see above).
 
-**Alerting:** the `report.yml` gate job checks the server-reported repo
-size three ways:
+**Data repo (since 2026-10-14):** `data/` moved to its own repository, so
+cloning or checking out this repo gets code only (~8 MB of files at the tip,
+against ~1,455 MB for `data/`). This is the companion-repo split the
+`git-history-companion-repo` mission scoped in July.
+
+- `data_repo` in `config/targets.yml` (default `mgifford/vital-core-data`)
+  names it; a target may override it. `ciDataRepo()` refuses a split across
+  repos for non-`hf_only` targets until the workflows support several, and
+  `hf_only` targets may not set it at all.
+- The data repo was created with `git filter-repo --subdirectory-filter
+  data/`, so it keeps the full history of `data/`, plus its own `.gitignore`
+  for the VA domains.
+- `scan.yml` checks out only `<domain>/` of the data repo into `data/`;
+  `report.yml` checks out all of it. Both push with the write-enabled
+  deploy key whose private half is the `VITAL_DATA_DEPLOY_KEY` secret.
+- The size markers (`.repo-size-kb`, `.repo-size-history`,
+  `.last-report-date`) live at the data repo root; the gate job reads them
+  through the API instead of checking out the data.
+- `data/` history still sits in this repo until a separate, owner-approved
+  purge. After it, lower `CODE_CEILING_MB` in `report.yml` to about 100 MB.
+
+**Alerting:** the `report.yml` gate job checks the server-reported size of
+the data repo three ways (this repo only gets an absolute
+`CODE_CEILING_MB`):
 
 - run-over-run (`data/.repo-size-kb`): warns on more than ~50 MB of growth
   between two report runs;

@@ -70,6 +70,12 @@ sustainability_metric: energy
 # Trailing slash is optional. Leave empty to keep CSV links relative.
 report_base_url: "https://mgifford.github.io/vital-core"
 
+# Scan data (data/) lives in its own repository, checked out into data/ by
+# scan.yml and report.yml, so cloning this repo gets code only. A target may
+# override it, but CI currently needs every non-hf_only target on one repo.
+# hf_only (VA) targets may not set it: their data never goes to git.
+data_repo: mgifford/vital-core-data
+
 # Report languages. Each report is rendered once per listed language; the
 # `default_language` keeps the canonical (unsuffixed) file paths — e.g.
 # accessibility.html — and every other language gets a locale suffix —
