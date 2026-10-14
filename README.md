@@ -22,6 +22,11 @@ functions of the data directory.**
   file. Not committed: CI keeps it on the `scan-state` release (see
   ARCHITECTURE.md). If it is deleted, the crawler reseeds from the sitemap
   and no history is lost.
+- `data/`: scan data. Not tracked in this repo: it is its own repo
+  (`data_repo` in `config/targets.yml`, default
+  [mgifford/vital-core-data](https://github.com/mgifford/vital-core-data)),
+  checked out into `data/` by CI. Clone it there locally only when you need
+  the data; the code runs and tests without it.
 - `data/<domain>/<ISO-week>/pages/*.json`: one compact record per page
   per week. Append-only.
 - `data/<domain>/<ISO-week>/runs/*.json`: append-only run logs.

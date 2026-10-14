@@ -11,6 +11,8 @@
 #   1. aggregate       : computes summaries from data/, writes docs/
 #   2. prune           : removes page-level detail older than retention_weeks
 #   3. commit          : writes summaries and retention marker back to data/
+#                        (data/ is a checkout of the data repo, `data_repo`
+#                        in config/targets.yml; pushed with VITAL_DATA_DEPLOY_KEY)
 #   4. generate comment: creates docs/comment.md
 #   5. deploy          : publishes docs/ to GitHub Pages
 #   6. post comment    : posts weekly Markdown summary to a pinned issue
@@ -41,10 +43,34 @@ jobs:
     outputs:
       publish: ${{ steps.decide.outputs.publish }}
       repo_size_kb: ${{ steps.size.outputs.kb }}
+      data_repo: ${{ steps.datarepo.outputs.repo }}
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 1
+          sparse-checkout: |
+            src
+            scripts
+            config
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+
+      # The gate only needs three small marker files from the data repo, so
+      # it reads them through the API instead of checking out ~1.5 GB.
+      - id: datarepo
+        name: Read data repo markers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          npm ci --omit=optional --ignore-scripts
+          REPO=$(node scripts/data-repo.js)
+          echo "repo=${REPO}" >> "$GITHUB_OUTPUT"
+          mkdir -p data
+          for f in .repo-size-kb .repo-size-history .last-report-date; do
+            gh api "repos/${REPO}/contents/${f}" -H "Accept: application/vnd.github.raw" > "data/${f}" 2>/dev/null || rm -f "data/${f}"
+          done
 
       # Data-in-git growth watchdog (ROADMAP-2026-07.md Mission B3). The
       # 1 GB static threshold this used to check was a one-time trigger —
@@ -64,16 +90,27 @@ jobs:
       # compare against ~7 days ago (data/.repo-size-history) and against
       # an absolute ceiling. The ceiling sits ~330 MB above the size after
       # the 2026-10-13 rewrite (~970 MB); lower it after any history rewrite.
+      #
+      # Since data/ moved to the data repo, growth is tracked there; this
+      # code repo only gets a ceiling (CODE_CEILING_MB). Lower that to about
+      # 100 MB once data/ history is purged from this repo.
       - id: size
         name: Check repository size growth
         env:
           GH_TOKEN: ${{ github.token }}
+          DATA_REPO: ${{ steps.datarepo.outputs.repo }}
           WEEKLY_GROWTH_LIMIT_MB: 100
           CEILING_MB: 1300
+          CODE_CEILING_MB: 1300
         run: |
-          KB=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .size)
+          CODE_MB=$(( $(gh api "repos/${GITHUB_REPOSITORY}" --jq .size) / 1024 ))
+          echo "Code repository size: ~${CODE_MB} MB"
+          if [ "$CODE_MB" -gt "$CODE_CEILING_MB" ]; then
+            echo "::warning title=Code repo over size ceiling::${GITHUB_REPOSITORY} is ~${CODE_MB} MB, over the ${CODE_CEILING_MB} MB ceiling. Scan data belongs in ${DATA_REPO}."
+          fi
+          KB=$(gh api "repos/${DATA_REPO}" --jq .size)
           MB=$((KB / 1024))
-          echo "Repository size (server-side, full history): ${KB} KB (~${MB} MB)"
+          echo "Data repository size (server-side, full history): ${KB} KB (~${MB} MB)"
           echo "kb=${KB}" >> "$GITHUB_OUTPUT"
           PREV_KB=$(cat data/.repo-size-kb 2>/dev/null || echo "")
           if [ -n "$PREV_KB" ]; then
@@ -81,7 +118,7 @@ jobs:
             GROWTH_MB=$((GROWTH_KB / 1024))
             echo "Growth since last run: ${GROWTH_KB} KB (~${GROWTH_MB} MB)"
             if [ "$GROWTH_MB" -gt 50 ]; then
-              echo "::warning title=Repo growing fast::Repo grew ~${GROWTH_MB} MB since the last report run (now ~${MB} MB). The write-pattern fix (see ARCHITECTURE.md 'Git history policy') may have regressed, or a new bloat source appeared — investigate before falling back to docs-internal/ROADMAP-2026-07.md Mission B3 (move data/ to a companion repo)."
+              echo "::warning title=Repo growing fast::Repo grew ~${GROWTH_MB} MB since the last report run (now ~${MB} MB). The write-pattern fix (see ARCHITECTURE.md 'Git history policy') may have regressed, or a new bloat source appeared in the data repo."
             fi
           else
             echo "No prior size recorded yet (first run after the watchdog rewrite) — nothing to compare."
@@ -135,6 +172,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ needs.gate.outputs.data_repo }}
+          ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
+          path: data
+          fetch-depth: 1
+
       - uses: actions/setup-node@v5
         with:
           node-version: 26
@@ -150,24 +194,26 @@ jobs:
         run: node src/prune.js
 
       - name: Commit summaries and pruning
+        working-directory: data
         env:
           REPO_SIZE_KB: ${{ needs.gate.outputs.repo_size_kb }}
         run: |
           git config user.name "vital-scans[bot]"
           git config user.email "vital-scans@users.noreply.github.com"
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-          date -u +%Y-%m-%d > data/.last-report-date
+          date -u +%Y-%m-%d > .last-report-date
           # Size as measured by the gate job at the START of this run — the
           # growth-watchdog check above compares against this on the NEXT
           # run, so it's tracking size-at-report-time to size-at-report-time,
           # not size mid-way through today's own commit.
           if [ -n "$REPO_SIZE_KB" ]; then
-            echo "$REPO_SIZE_KB" > data/.repo-size-kb
-            { cat data/.repo-size-history 2>/dev/null || true
-              echo "$(date -u +%Y-%m-%d) $REPO_SIZE_KB"; } | tail -n 60 > data/.repo-size-history.tmp
-            mv data/.repo-size-history.tmp data/.repo-size-history
+            echo "$REPO_SIZE_KB" > .repo-size-kb
+            { cat .repo-size-history 2>/dev/null || true
+              echo "$(date -u +%Y-%m-%d) $REPO_SIZE_KB"; } | tail -n 60 > .repo-size-history.tmp
+            mv .repo-size-history.tmp .repo-size-history
           fi
-          git add data/
+          git add -A .
 
           if git diff --cached --quiet; then
             echo "no data changes"
@@ -181,11 +227,11 @@ jobs:
               exit 0
             fi
 
-            if ! git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"; then
+            if ! git pull --rebase -X theirs origin "$BRANCH"; then
               git rebase --abort 2>/dev/null || true
               git reset --soft HEAD~1 2>/dev/null || true
-              git pull --rebase origin "${GITHUB_REF_NAME}"
-              git add data/
+              git pull --rebase origin "$BRANCH"
+              git add -A .
               git commit -m "report: summaries $(date -u +%Y-%m-%d)" || true
             fi
 
