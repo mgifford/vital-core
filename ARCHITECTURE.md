@@ -270,8 +270,26 @@ against ~1,455 MB for `data/`). This is the companion-repo split the
 - The size markers (`.repo-size-kb`, `.repo-size-history`,
   `.last-report-date`) live at the data repo root; the gate job reads them
   through the API instead of checking out the data.
-- `data/` history still sits in this repo until a separate, owner-approved
-  purge. After it, lower `CODE_CEILING_MB` in `report.yml` to about 100 MB.
+
+**Third history rewrite: `data/` purge (2026-10-14):** with the data safe in
+the data repo (full history), the owner approved in chat, once for the
+rewrite and once for the force-push, removing `data/` from this repo's
+history with `git filter-repo --path data/ --invert-paths`:
+
+- pack size 970 MiB -> 4.7 MiB; a fresh clone is ~5 MB of `.git` plus
+  ~9 MB of files;
+- `HEAD^{tree}` unchanged (`b8b31def`), since `data/` was already untracked;
+- commits 4,239 -> 915: the data-only scan and report commits became empty
+  and were pruned (they live on in the data repo);
+- `npm run test:unit` (533 pass) and `npm run test:e2e` passed on the
+  rewritten `main` before the push;
+- `main` (`524d236f` -> `363c659c`) and the `scan-state` tag (`2dc507ae` ->
+  `963095cf`, now the merge of #267, since its old commit was data-only)
+  were pushed with `--force-with-lease`, workflows paused for the duration.
+
+`CODE_CEILING_MB` dropped to 100. GitHub's reported size lags until it
+garbage-collects, so that warning can fire for a few days after the purge.
+Any further rewrite still needs a new explicit owner override.
 
 **Alerting:** the `report.yml` gate job checks the server-reported size of
 the data repo three ways (this repo only gets an absolute

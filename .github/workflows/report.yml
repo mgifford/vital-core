@@ -92,8 +92,8 @@ jobs:
       # the 2026-10-13 rewrite (~970 MB); lower it after any history rewrite.
       #
       # Since data/ moved to the data repo, growth is tracked there; this
-      # code repo only gets a ceiling (CODE_CEILING_MB). Lower that to about
-      # 100 MB once data/ history is purged from this repo.
+      # code repo only gets a ceiling (CODE_CEILING_MB). data/ history was
+      # purged from it on 2026-10-14 (pack ~5 MB), so 100 MB is a wide margin.
       - id: size
         name: Check repository size growth
         env:
@@ -101,7 +101,7 @@ jobs:
           DATA_REPO: ${{ steps.datarepo.outputs.repo }}
           WEEKLY_GROWTH_LIMIT_MB: 100
           CEILING_MB: 1300
-          CODE_CEILING_MB: 1300
+          CODE_CEILING_MB: 100
         run: |
           CODE_MB=$(( $(gh api "repos/${GITHUB_REPOSITORY}" --jq .size) / 1024 ))
           echo "Code repository size: ~${CODE_MB} MB"
@@ -111,9 +111,15 @@ jobs:
           KB=$(gh api "repos/${DATA_REPO}" --jq .size)
           MB=$((KB / 1024))
           echo "Data repository size (server-side, full history): ${KB} KB (~${MB} MB)"
+          # GitHub reports 0 until it has sized a repo (e.g. a new one), so
+          # 0 is "unknown": neither recorded nor compared.
+          if [ "$KB" -eq 0 ]; then
+            echo "Size not computed yet by GitHub; skipping growth checks."
+            exit 0
+          fi
           echo "kb=${KB}" >> "$GITHUB_OUTPUT"
           PREV_KB=$(cat data/.repo-size-kb 2>/dev/null || echo "")
-          if [ -n "$PREV_KB" ]; then
+          if [ -n "$PREV_KB" ] && [ "$PREV_KB" -gt 0 ]; then
             GROWTH_KB=$((KB - PREV_KB))
             GROWTH_MB=$((GROWTH_KB / 1024))
             echo "Growth since last run: ${GROWTH_KB} KB (~${GROWTH_MB} MB)"
@@ -124,7 +130,7 @@ jobs:
             echo "No prior size recorded yet (first run after the watchdog rewrite) — nothing to compare."
           fi
           CUTOFF=$(date -u -d '7 days ago' +%Y-%m-%d)
-          BASE=$(awk -v c="$CUTOFF" '$1 <= c { d = $1; kb = $2 } END { if (kb) print d, kb }' data/.repo-size-history 2>/dev/null || true)
+          BASE=$(awk -v c="$CUTOFF" '$1 <= c && $2 > 0 { d = $1; kb = $2 } END { if (kb) print d, kb }' data/.repo-size-history 2>/dev/null || true)
           if [ -n "$BASE" ]; then
             set -- $BASE
             WEEK_MB=$(( (KB - $2) / 1024 ))
