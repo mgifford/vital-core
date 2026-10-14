@@ -62,14 +62,14 @@ jobs:
       # July and October 2026 at ~25 MB/day never crossed 50 MB per run
       # (it was committed crawl state; now a release asset). So also
       # compare against ~7 days ago (data/.repo-size-history) and against
-      # an absolute ceiling. The ceiling sits just above the 2026-10 size
-      # because history doesn't shrink; lower it after any history rewrite.
+      # an absolute ceiling. The ceiling sits ~330 MB above the size after
+      # the 2026-10-13 rewrite (~970 MB); lower it after any history rewrite.
       - id: size
         name: Check repository size growth
         env:
           GH_TOKEN: ${{ github.token }}
           WEEKLY_GROWTH_LIMIT_MB: 100
-          CEILING_MB: 2662
+          CEILING_MB: 1300
         run: |
           KB=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .size)
           MB=$((KB / 1024))
