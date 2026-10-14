@@ -223,9 +223,31 @@ Release assets have no history, which is intended: crawl state is
 disposable. Locally nothing changes: `src/lib/state.js` reads and writes
 `state/<key>/crawl.json` on disk and knows nothing about releases.
 
-Moving state out of git stops new growth but leaves the ~1.4 GB already in
-history. Reclaiming it needs another one-time history rewrite with its own
-explicit owner approval (see above).
+**Second history rewrite (2026-10-13):** with the owner's explicit approval
+in chat (charter `historical-evidence-preservation` exception, given twice:
+once for the rewrite, once for the force-push), `main` was rewritten with
+`git filter-repo --path state/ --invert-paths` to drop every historical
+version of `state/<domain>/crawl.json`. `git filter-repo --analyze` put
+`state/` at 1,530 MB packed of 2,500 MB. Results:
+
+- pack size 2.36 GiB -> 969.5 MiB;
+- `HEAD^{tree}` unchanged (`681a6bf5`), since `state/` was already untracked;
+- commit count unchanged at 4,225 (every `state/` commit also touched `data/`,
+  so none became empty);
+- `npm run test:unit` (527 pass) and `npm run test:e2e` passed on the
+  rewritten `main` before the push;
+- `main` (`80a7d3c1` -> `7c3c0676`) and the `scan-state` release tag
+  (`edaf70bf` -> `2dc507ae`) were pushed with `--force-with-lease`. The tag
+  had to move too, or it would have kept the old history alive. The release
+  and its assets are unaffected.
+
+`scan.yml` and `report.yml` were disabled for the duration. Commit SHAs
+from before the rewrite no longer resolve on `main`; local clones must
+re-clone or reset to `origin/main`. GitHub's reported size lags until it
+garbage-collects server-side. The remaining ~970 MB is mostly `data/`
+(`inventory.json`, `resources.json`, weekly `summary.json` churn).
+
+Any further rewrite still needs a new explicit owner override (see above).
 
 **Alerting:** the `report.yml` gate job checks the server-reported repo
 size three ways:
@@ -236,8 +258,10 @@ size three ways:
   sizes): warns on more than 100 MB of growth over about 7 days. This
   catches the steady ~25 MB/day pattern that the run-over-run check
   missed;
-- absolute ceiling: warns above 2,662 MB (2.6 GB), just over the 2026-10
-  size. Lower it after any history rewrite.
+- absolute ceiling: warns above 1,300 MB, about 330 MB over the size after
+  the 2026-10-13 rewrite (~970 MB). It may warn for a few days after a
+  rewrite until GitHub's reported size catches up. Lower it after any
+  future history rewrite.
 
 
 Crawler
