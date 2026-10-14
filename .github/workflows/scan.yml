@@ -395,3 +395,6 @@ jobs:
       }}
 
     uses: ./.github/workflows/report.yml
+    # report.yml pushes to the data repo with VITAL_DATA_DEPLOY_KEY, and a
+    # called workflow only sees secrets passed to it.
+    secrets: inherit

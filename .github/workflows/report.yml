@@ -111,9 +111,15 @@ jobs:
           KB=$(gh api "repos/${DATA_REPO}" --jq .size)
           MB=$((KB / 1024))
           echo "Data repository size (server-side, full history): ${KB} KB (~${MB} MB)"
+          # GitHub reports 0 until it has sized a repo (e.g. a new one), so
+          # 0 is "unknown": neither recorded nor compared.
+          if [ "$KB" -eq 0 ]; then
+            echo "Size not computed yet by GitHub; skipping growth checks."
+            exit 0
+          fi
           echo "kb=${KB}" >> "$GITHUB_OUTPUT"
           PREV_KB=$(cat data/.repo-size-kb 2>/dev/null || echo "")
-          if [ -n "$PREV_KB" ]; then
+          if [ -n "$PREV_KB" ] && [ "$PREV_KB" -gt 0 ]; then
             GROWTH_KB=$((KB - PREV_KB))
             GROWTH_MB=$((GROWTH_KB / 1024))
             echo "Growth since last run: ${GROWTH_KB} KB (~${GROWTH_MB} MB)"
@@ -124,7 +130,7 @@ jobs:
             echo "No prior size recorded yet (first run after the watchdog rewrite) — nothing to compare."
           fi
           CUTOFF=$(date -u -d '7 days ago' +%Y-%m-%d)
-          BASE=$(awk -v c="$CUTOFF" '$1 <= c { d = $1; kb = $2 } END { if (kb) print d, kb }' data/.repo-size-history 2>/dev/null || true)
+          BASE=$(awk -v c="$CUTOFF" '$1 <= c && $2 > 0 { d = $1; kb = $2 } END { if (kb) print d, kb }' data/.repo-size-history 2>/dev/null || true)
           if [ -n "$BASE" ]; then
             set -- $BASE
             WEEK_MB=$(( (KB - $2) / 1024 ))
