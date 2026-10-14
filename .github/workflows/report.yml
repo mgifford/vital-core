@@ -92,8 +92,8 @@ jobs:
       # the 2026-10-13 rewrite (~970 MB); lower it after any history rewrite.
       #
       # Since data/ moved to the data repo, growth is tracked there; this
-      # code repo only gets a ceiling (CODE_CEILING_MB). Lower that to about
-      # 100 MB once data/ history is purged from this repo.
+      # code repo only gets a ceiling (CODE_CEILING_MB). data/ history was
+      # purged from it on 2026-10-14 (pack ~5 MB), so 100 MB is a wide margin.
       - id: size
         name: Check repository size growth
         env:
@@ -101,7 +101,7 @@ jobs:
           DATA_REPO: ${{ steps.datarepo.outputs.repo }}
           WEEKLY_GROWTH_LIMIT_MB: 100
           CEILING_MB: 1300
-          CODE_CEILING_MB: 1300
+          CODE_CEILING_MB: 100
         run: |
           CODE_MB=$(( $(gh api "repos/${GITHUB_REPOSITORY}" --jq .size) / 1024 ))
           echo "Code repository size: ~${CODE_MB} MB"
