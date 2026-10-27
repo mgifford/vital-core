@@ -242,6 +242,12 @@ test('budgetStatus: cap reached vs frontier empty vs runnable', () => {
   const runnableStatus = budgetStatus(runnable, '2026-W24', target);
   assert.equal(runnableStatus.remaining, 3);
   assert.equal(runnableStatus.frontierEmpty, false);
+
+  // Unseeded: no pages at all (new target or lost state) must stay runnable
+  // so scan.js gets to seed it from the sitemap.
+  const unseededStatus = budgetStatus({ domain: 'x', seededAt: null, pages: {} }, '2026-W24', target);
+  assert.equal(unseededStatus.remaining, 3);
+  assert.equal(unseededStatus.frontierEmpty, false);
 });
 
 test('addPage: priority promotes an existing page without duplicating', () => {

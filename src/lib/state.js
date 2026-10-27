@@ -80,13 +80,18 @@ export function weeklyCapFor(target) {
  * (not already scanned this week, not past the fail threshold). Used by
  * the nightly matrix job to skip spawning a scan job that would just exit
  * immediately — see pickBatch for the same two conditions applied per-run.
+ *
+ * A state with no pages at all is unseeded (a new target, or a lost
+ * scan-state asset), not exhausted: scan.js seeds it from the sitemap, so
+ * it must stay runnable or the schedule would never start it.
  */
 export function budgetStatus(state, week, target) {
   const cap = weeklyCapFor(target);
   const entries = Object.entries(state.pages);
   const scannedThisWeek = entries.filter(([, p]) => p.lastScannedWeek === week).length;
   const remaining = Math.max(0, cap - scannedThisWeek);
-  const frontierEmpty = !entries.some(([, p]) => p.lastScannedWeek !== week && p.failCount < 3);
+  const frontierEmpty = entries.length > 0
+    && !entries.some(([, p]) => p.lastScannedWeek !== week && p.failCount < 3);
   return { cap, scannedThisWeek, remaining, frontierEmpty };
 }
 
