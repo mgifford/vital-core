@@ -203,6 +203,14 @@ upstream's version (`git checkout --theirs <file>`) unless you meant to keep
 yours. For `package-lock.json`, take upstream's version, then run `npm ci`
 to confirm it still matches `package.json`.
 
+### Sending discoveries upstream
+
+Keep a `docs-internal/UPSTREAM-SUGGESTIONS.md` in your repo for anything
+every instance would want: an engine bug, a US-only assumption, a missing
+setup step. vital-core never ships that file, so it never conflicts. Fix
+those things in vital-core, on a branch from `upstream/main`, then merge
+upstream into your repo. See CLAUDE.md, "Fleets made from this template".
+
 ## Local use
 
 ```sh
