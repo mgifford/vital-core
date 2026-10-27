@@ -922,9 +922,30 @@ test('security: classifies TLD, HTTPS, and headers from a mocked origin', async 
     assert.equal(by2['https'], false, 'http is not https');
     assert.equal(by2['gov-tld'], false, '.com is not sponsored');
     assert.equal(by2['security-txt'], false);
+
+    const r3 = await runSecurity('https://www.hackney.gov.uk', 'ua', 1000);
+    const gov3 = r3.checks.find((c) => c.id === 'gov-tld');
+    assert.equal(gov3.pass, true, 'a .gov.uk council is on a government domain');
+    assert.equal(gov3.detail, 'gov.uk');
   } finally {
     globalThis.fetch = realFetch;
   }
+});
+
+test('governmentSuffix: national government namespaces count, look-alikes do not', async () => {
+  const { governmentSuffix } = await import('../../src/engines/security.js');
+  assert.equal(governmentSuffix('www.cms.gov'), '.gov');
+  assert.equal(governmentSuffix('go.walsall.gov.uk'), '.gov.uk');
+  assert.equal(governmentSuffix('WWW.GOV.SCOT.'), '.gov.scot', 'case and a trailing dot are ignored');
+  assert.equal(governmentSuffix('www.canada.ca'), '.canada.ca');
+  assert.equal(governmentSuffix('canada.ca'), '.canada.ca', 'the apex itself counts');
+  assert.equal(governmentSuffix('www.tbs-sct.gc.ca'), '.gc.ca');
+  assert.equal(governmentSuffix('www.digital.go.jp'), '.go.jp');
+  assert.equal(governmentSuffix('example.com'), null);
+  assert.equal(governmentSuffix('notgov.uk'), null);
+  assert.equal(governmentSuffix('www.example.co.uk'), null);
+  assert.equal(governmentSuffix('gov.uk.example.com'), null, 'only the end of the host counts');
+  assert.equal(governmentSuffix(''), null);
 });
 
 test('remediation: expanded tips cover landmark-unique and aria rules', async () => {

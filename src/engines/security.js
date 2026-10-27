@@ -13,7 +13,21 @@
  * Each check is { id, label, pass, detail }.
  */
 
-const SPONSORED_TLDS = ['.gov', '.mil', '.edu', '.fed.us'];
+// Namespaces only a government (or, for .edu, an accredited institution) can
+// register. Other countries reserve a second-level domain instead of a TLD,
+// so a .gov.uk council must count the same as a US .gov agency.
+const GOVERNMENT_SUFFIXES = [
+  '.gov', '.mil', '.edu', '.fed.us',
+  '.gov.uk', '.gov.scot', '.gov.wales', '.llyw.cymru',
+  '.gc.ca', '.canada.ca',
+  '.gov.au', '.govt.nz', '.go.jp', '.gouv.fr', '.gov.ie', '.europa.eu',
+];
+
+/** The government namespace a host sits in (e.g. '.gov.uk'), or null. */
+export function governmentSuffix(hostname) {
+  const host = String(hostname ?? '').toLowerCase().replace(/\.$/, '');
+  return GOVERNMENT_SUFFIXES.find((s) => host.endsWith(s) || host === s.slice(1)) ?? null;
+}
 
 export async function runSecurity(origin, userAgent, timeoutMs = 15000) {
   const checks = [];
@@ -45,10 +59,10 @@ export async function runSecurity(origin, userAgent, timeoutMs = 15000) {
     add('hsts', 'HTTP Strict Transport Security (HSTS)', false, 'origin unreachable');
   }
 
-  // Sponsored government TLD.
   const host = url.hostname.toLowerCase();
-  add('gov-tld', 'Sponsored government TLD (.gov/.mil/.edu)',
-    SPONSORED_TLDS.some((t) => host.endsWith(t)), host.split('.').slice(-1)[0]);
+  const govSuffix = governmentSuffix(host);
+  add('gov-tld', 'Government domain (.gov, .mil, .edu, or a national one such as .gov.uk)',
+    !!govSuffix, govSuffix ? govSuffix.slice(1) : host.split('.').slice(-1)[0]);
 
   // security.txt (well-known location, with legacy fallback).
   const stdPath = `${url.protocol}//${url.host}/.well-known/security.txt`;
