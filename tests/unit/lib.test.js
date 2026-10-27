@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { normalizeUrl, pageId, registrableDomain, isThirdParty } from '../../src/lib/urls.js';
 import { isoWeekOf, previousWeekOf } from '../../src/lib/week.js';
 import { parseRobots } from '../../src/lib/robots.js';
@@ -21,7 +22,7 @@ import { headersToWappalyzer } from '../../src/engines/tech.js';
 import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
-import { extractAudits } from '../../src/engines/lighthouse.js';
+import { extractAudits, isDetachedTargetError } from '../../src/engines/lighthouse.js';
 import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
 import { loadPriorityUrls } from '../../src/lib/top-tasks.js';
 import { prioritizeAccessibilityBugs } from '../../src/lib/accessibility-priority.js';
@@ -1625,6 +1626,43 @@ test('extractAudits: pulls failing non-a11y audits, tags category, skips a11y/pa
   assert.equal(css.savingsMs, 350, 'max metricSavings ms captured');
   const seo = out.find((a) => a.id === 'meta-description');
   assert.equal(seo.category, 'seo', 'category tagged from auditRefs');
+});
+
+function protocolError(method, message) {
+  const err = new Error(`Protocol error (${method}): ${message}`);
+  err.protocolMethod = method;
+  return err;
+}
+
+test('isDetachedTargetError: matches only a child target closing while Lighthouse attaches', () => {
+  assert.ok(isDetachedTargetError(protocolError('Target.getTargetInfo', 'Session with given id not found.')));
+  assert.ok(isDetachedTargetError(protocolError('Network.enable', 'Session with given id not found.')));
+  assert.ok(!isDetachedTargetError(protocolError('Page.navigate', 'Session with given id not found.')), 'other methods still fail');
+  assert.ok(!isDetachedTargetError(protocolError('Target.getTargetInfo', 'Internal error')), 'other errors still fail');
+  assert.ok(!isDetachedTargetError(new Error('Session with given id not found.')), 'needs a protocol method');
+  assert.ok(!isDetachedTargetError(undefined));
+});
+
+test('guardDetachedTargetRejections: survives the detached-target rejection, still crashes on others', () => {
+  const mod = new URL('../../src/engines/lighthouse.js', import.meta.url).href;
+  const run = (method, message) => spawnSync(process.execPath, ['--input-type=module', '-e', `
+    const { guardDetachedTargetRejections } = await import(${JSON.stringify(mod)});
+    guardDetachedTargetRejections((m) => console.log(m));
+    const err = new Error(${JSON.stringify(message)});
+    err.protocolMethod = ${JSON.stringify(method)};
+    Promise.reject(err);
+    setTimeout(() => console.log('still running'), 50);
+  `], { encoding: 'utf8' });
+
+  const ignored = run('Target.getTargetInfo', 'Protocol error (Target.getTargetInfo): Session with given id not found.');
+  assert.equal(ignored.status, 0, ignored.stderr);
+  assert.match(ignored.stdout, /ignored a child target/);
+  assert.match(ignored.stdout, /still running/);
+
+  const fatal = run('Page.navigate', 'Protocol error (Page.navigate): Internal error');
+  assert.notEqual(fatal.status, 0);
+  assert.doesNotMatch(fatal.stdout, /still running/);
+  assert.match(fatal.stderr, /Internal error/);
 });
 
 test('assessAltText: classifies each alt-text problem', () => {
