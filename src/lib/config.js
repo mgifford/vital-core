@@ -6,6 +6,13 @@ import { DEFAULT_FINDING_POLICY, mergeFindingPolicy, validateFindingPolicy } fro
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
+export const SPELLING_DICTIONARIES = {
+  'en-US': 'dictionary-en',
+  'en-GB': 'dictionary-en-gb',
+  'en-CA': 'dictionary-en-ca',
+  'en-AU': 'dictionary-en-au',
+};
+export const DEFAULT_SPELLING_LOCALE = 'en-US';
 const DEFAULT_DATA_REPO = 'mgifford/vital-core-data';
 const REPO_RE = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 
@@ -93,6 +100,7 @@ export function loadConfig(rawYaml) {
       }
       t.design_system = ds;
     }
+    t.spelling_locale = resolveSpellingLocale(t.spelling_locale, `target ${t.domain}`);
   }
   return {
     defaults,
@@ -113,6 +121,15 @@ function validateDataRepo(repo, where) {
     throw new Error(`data_repo "${repo}" in ${where} must look like "owner/name".`);
   }
   return repo;
+}
+
+function resolveSpellingLocale(value, where) {
+  if (value == null) return DEFAULT_SPELLING_LOCALE;
+  const locale = Object.keys(SPELLING_DICTIONARIES).find((l) => l.toLowerCase() === String(value).toLowerCase());
+  if (!locale) {
+    throw new Error(`Unsupported spelling_locale "${value}" in ${where}. Supported: ${Object.keys(SPELLING_DICTIONARIES).join(', ')}.`);
+  }
+  return locale;
 }
 
 // CI checks out one data repo into data/ for every non-hf_only target, so a

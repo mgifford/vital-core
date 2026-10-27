@@ -13,7 +13,7 @@ import { splitSentences, estimateSyllables } from '../../src/engines/plain-langu
 import { checkLink } from '../../src/lib/links.js';
 import { normalizeRate, shouldRun } from '../../src/lib/sampling.js';
 import { updateFindings } from '../../src/lib/findings.js';
-import { findMisspellings } from '../../src/lib/spell.js';
+import { findMisspellings, loadSpeller } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
 import { toCsv, ruleSlug, writeLighthouseCsv, writeLighthouseJson } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
@@ -473,6 +473,24 @@ test('spell: flags real misspellings, skips numbers/acronyms/allowlist/jargon', 
   ]);
   assert.equal(r.misspelledCount, 3);
   assert.deepEqual(r.misspelled.sort(), ['recieve', 'teh', 'xyzzy']);
+});
+
+test('spell: each spelling_locale accepts its own English and still catches typos', async () => {
+  const words = ['organisation', 'colour', 'centre', 'programme', 'organization', 'accesibility', 'Medicaid'];
+  const flagged = async (locale) => {
+    await loadSpeller(locale);
+    return findMisspellings(words, 25, [], locale).misspelled.sort();
+  };
+  assert.deepEqual(findMisspellings(words).misspelled.sort(), ['accesibility', 'centre', 'colour', 'organisation', 'programme'], 'the default is US English');
+  assert.deepEqual(await flagged('en-GB'), ['accesibility', 'organization']);
+  assert.deepEqual(await flagged('en-CA'), ['accesibility', 'organisation', 'programme']);
+  assert.deepEqual(await flagged('en-AU'), ['accesibility', 'organization', 'programme']);
+  assert.ok(!(await flagged('en-GB')).includes('Medicaid'), 'the project allowlist applies to every locale');
+});
+
+test('spell: a locale must be loaded before use, and unknown locales are refused', async () => {
+  assert.throws(() => findMisspellings(['word'], 25, [], 'en-NZ'), /not loaded/);
+  await assert.rejects(loadSpeller('en-NZ'), /Unsupported spelling locale "en-NZ"/);
 });
 
 test('spell: per-call extraAllowlist suppresses target-specific jargon', () => {

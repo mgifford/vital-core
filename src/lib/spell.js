@@ -1,25 +1,41 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import nspell from 'nspell';
-import dictionary from 'dictionary-en';
-import { DIRS } from './config.js';
+import usDictionary from 'dictionary-en';
+import { DIRS, SPELLING_DICTIONARIES, DEFAULT_SPELLING_LOCALE } from './config.js';
 
 /**
- * Spell checking for page prose. Uses nspell with the en dictionary,
- * plus an optional project allowlist (config/spelling-allowlist.txt, one
- * term per line, # comments) for domain jargon — government, medical,
- * and program terms that aren't in a general dictionary but are correct.
+ * Spell checking for page prose. Uses nspell with the dictionary for the
+ * target's spelling_locale (US English by default), plus an optional project
+ * allowlist (config/spelling-allowlist.txt, one term per line, # comments)
+ * for domain jargon — government, medical, and program terms that aren't in
+ * a general dictionary but are correct.
  *
- * The dictionary is loaded once and reused. Numbers, ALL-CAPS acronyms,
- * URLs/emails, and very short tokens are skipped: those are not spelling
- * mistakes and would only add noise.
+ * Each locale's dictionary is loaded once and reused. Numbers, ALL-CAPS
+ * acronyms, URLs/emails, and very short tokens are skipped: those are not
+ * spelling mistakes and would only add noise.
  */
 
-let speller = null;
+// Only the dictionaries a scan actually uses are read: US English is
+// imported up front (the default path is unchanged), the rest on first use.
+const dictionaries = new Map([[DEFAULT_SPELLING_LOCALE, usDictionary]]);
+const spellers = new Map();
 
-function getSpeller() {
-  if (speller) return speller;
-  speller = nspell(dictionary);
+/** Load the dictionary for `locale` so findMisspellings can use it. */
+export async function loadSpeller(locale = DEFAULT_SPELLING_LOCALE) {
+  if (!dictionaries.has(locale)) {
+    const pkg = SPELLING_DICTIONARIES[locale];
+    if (!pkg) throw new Error(`Unsupported spelling locale "${locale}".`);
+    dictionaries.set(locale, (await import(pkg)).default);
+  }
+  return getSpeller(locale);
+}
+
+function getSpeller(locale) {
+  if (spellers.has(locale)) return spellers.get(locale);
+  const dictionary = dictionaries.get(locale);
+  if (!dictionary) throw new Error(`Spelling locale "${locale}" is not loaded; await loadSpeller("${locale}") first.`);
+  const speller = nspell(dictionary);
   // Layer the allowlist on top so jargon stops being flagged.
   const allowPath = path.join(DIRS.config, 'spelling-allowlist.txt');
   if (fs.existsSync(allowPath)) {
@@ -28,6 +44,7 @@ function getSpeller() {
       if (t && !t.startsWith('#')) speller.add(t);
     }
   }
+  spellers.set(locale, speller);
   return speller;
 }
 
@@ -48,9 +65,12 @@ function checkable(word) {
  * extraAllowlist: optional string[] of per-target terms (from
  * target.spelling_allowlist in targets.yml) layered on top of the
  * project-wide config/spelling-allowlist.txt.
+ *
+ * locale: a key of SPELLING_DICTIONARIES; anything but the default must be
+ * loaded with loadSpeller() first.
  */
-export function findMisspellings(words, cap = 25, extraAllowlist = []) {
-  const spell = getSpeller();
+export function findMisspellings(words, cap = 25, extraAllowlist = [], locale = DEFAULT_SPELLING_LOCALE) {
+  const spell = getSpeller(locale);
   // Build a per-call allowed set so the shared speller is never mutated.
   const extra = new Set(extraAllowlist.map((w) => w.toLowerCase()));
   const distinct = new Set();
