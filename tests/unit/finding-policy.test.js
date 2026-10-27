@@ -36,6 +36,59 @@ test('policy defaults: AAA under an AA target => aspirational+report, non-blocki
   assert.equal(out.bugs[0].included_in_primary_score, false);
 });
 
+test('legal baseline: required findings split into legal (WCAG 2.0 A/AA) and target (2.1/2.2 A/AA)', () => {
+  const p = mergeFindingPolicy({ conformance: { version: '2.2', level: 'AA', legal_baseline: { version: '2.0', level: 'AA' } } }, {});
+  const out = applyFindingPolicy(p, [
+    bug({ rule_id: 'list', engine_key: 'axe-core', wcag_sc: '1.3.1', wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A' }),
+    bug({ rule_id: 'sia-r69', wcag_sc: '1.4.3', wcag_level: 'AA', wcag_version: '2.0', wcag_category: 'WCAG 2.0 AA' }),
+    bug(), // sia-r113, 2.5.8, WCAG 2.2 AA
+    bug({ rule_id: 'sia-r111', wcag_sc: '2.5.5', wcag_level: 'AAA', wcag_version: '2.1', wcag_category: 'WCAG 2.x AAA' }),
+    bug({ rule_id: 'sia-r57', wcag_sc: null, wcag_level: null, wcag_version: null, wcag_category: 'Best Practice' }),
+    bug({ rule_id: 'sia-r9999', wcag_sc: null, wcag_level: null, wcag_version: null, wcag_category: 'Undetermined' }),
+  ]);
+  assert.deepEqual(out.bugs.map((b) => b.conformance_tier), ['legal', 'legal', 'target', 'aspirational', 'advisory', 'unmapped']);
+  // The baseline only changes the tier, never the obligation.
+  assert.deepEqual(out.bugs.slice(0, 3).map((b) => b.obligation), ['required', 'required', 'required']);
+});
+
+test('legal baseline: absent => required findings keep a single required tier', () => {
+  const out = applyFindingPolicy(mergeFindingPolicy({}, {}), [bug()]);
+  assert.equal(out.bugs[0].conformance_tier, 'required');
+});
+
+test('legal baseline: an AAA criterion elevated to required counts as target, not legal', () => {
+  const p = mergeFindingPolicy({
+    conformance: { legal_baseline: { version: '2.0', level: 'AA' } },
+    rules: [{ match: { wcag_sc: '1.4.6' }, obligation: 'required', handling: 'report' }],
+  }, {});
+  const out = applyFindingPolicy(p, [bug({ rule_id: 'sia-r66', wcag_sc: '1.4.6', wcag_level: 'AAA', wcag_version: '2.0', wcag_category: 'WCAG 2.x AAA' })]);
+  assert.equal(out.bugs[0].obligation, 'required');
+  assert.equal(out.bugs[0].conformance_tier, 'target');
+});
+
+test('legal baseline: validation rejects a malformed baseline or one above the target', () => {
+  const bad = (legal_baseline, extra = {}) => validateFindingPolicy(mergeFindingPolicy({ conformance: { version: '2.1', level: 'AA', ...extra, legal_baseline } }, {})).errors;
+  assert.deepEqual(bad({ version: '2.0', level: 'AA' }), []);
+  assert.match(bad({ version: '2.2', level: 'AA' }).join('\n'), /legal_baseline\.version 2\.2 is above the conformance target 2\.1/);
+  assert.match(bad({ version: '2.0', level: 'AAA' }).join('\n'), /legal_baseline\.level AAA is above the conformance target AA/);
+  assert.match(bad({ version: 'two', level: 'AA' }).join('\n'), /legal_baseline\.version must look like/);
+  assert.match(bad({ version: '2.0', level: 'B' }).join('\n'), /legal_baseline\.level must be A, AA, or AAA/);
+});
+
+test('policy defaults: an A/AA criterion newer than the target is advisory, not AAA', () => {
+  const p = mergeFindingPolicy({ conformance: { version: '2.0', level: 'AA' } }, {});
+  const out = applyFindingPolicy(p, [bug()]); // 2.5.8, WCAG 2.2 AA
+  assert.equal(out.bugs[0].obligation, 'advisory');
+  assert.equal(out.bugs[0].conformance_tier, 'advisory');
+});
+
+test('policy defaults: Alfa best-practice rule => advisory, not unmapped', () => {
+  const p = mergeFindingPolicy({}, {});
+  const out = applyFindingPolicy(p, [bug({ rule_id: 'sia-r57', wcag_sc: null, wcag_level: null, wcag_version: null, wcag_category: 'Best Practice' })]);
+  assert.equal(out.bugs[0].obligation, 'advisory');
+  assert.equal(out.bugs[0].included_in_primary_score, false);
+});
+
 test('policy override: a specific AAA criterion can be elevated to required', () => {
   const p = mergeFindingPolicy(
     {},

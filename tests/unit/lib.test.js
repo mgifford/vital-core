@@ -692,6 +692,19 @@ test('priority: ranks by pages x severity x reach; fleet flattens across domains
   assert.equal(fleet[0].domain, 'b.gov', 'worst issue across domains floats to the top, tagged with its domain');
 });
 
+test('priority: conformance tier outranks score (legal > target > AAA > best practice > unmapped)', async () => {
+  const { rankBugs, fleetWorstOffenders, isRequiredFinding, tierOf } = await import('../../src/lib/priority.js');
+  const bug = (tier, pages) => ({ conformance_tier: tier, severity: 'Serious', frequency: { pages_affected: pages }, impact: { groups: [] }, summary: tier });
+  const bugs = [bug('unmapped', 90), bug('advisory', 80), bug('aspirational', 70), bug('target', 20), bug('legal', 1)];
+  assert.deepEqual(rankBugs(bugs, 10).map((b) => b.summary), ['legal', 'target', 'aspirational', 'advisory', 'unmapped']);
+  const fleet = fleetWorstOffenders([{ target: { domain: 'a.gov', key: 'a' }, bugs }], 2);
+  assert.deepEqual(fleet.map((b) => b.summary), ['legal', 'target']);
+  assert.deepEqual(bugs.filter(isRequiredFinding).map((b) => b.summary), ['target', 'legal']);
+  // Findings from before tiers existed fall back to their obligation, then to required.
+  assert.equal(tierOf({ obligation: 'aspirational' }), 'aspirational');
+  assert.equal(tierOf({}), 'required');
+});
+
 test('priority: fleet pattern rollup groups by pattern_id and ranks by fix leverage (#221)', async () => {
   const { mergeFleetPatterns, rankFleetPatterns } = await import('../../src/lib/priority.js');
   const patBug = (patternId, sev, pages) => ({
@@ -1097,6 +1110,15 @@ test('classifyFinding: axe best-practice tag without WCAG mapping', () => {
 
 test('classifyFinding: no mapping returns Undetermined', () => {
   assert.equal(classifyFinding('alfa', {}, null), 'Undetermined');
+});
+
+test('classifyFinding: Alfa best-practice and ARIA rules are Best Practice, technique-only stays Undetermined', () => {
+  // sia-r57 declares only an ARIA landmark practice, sia-r61 only an Alfa
+  // best practice; sia-r22 declares only WCAG techniques, which don't say
+  // whether it is a requirement, so it is not guessed into a lane.
+  assert.equal(classifyFinding('alfa', { ruleId: 'sia-r57' }, null), 'Best Practice');
+  assert.equal(classifyFinding('alfa', { ruleId: 'sia-r61' }, null), 'Best Practice');
+  assert.equal(classifyFinding('alfa', { ruleId: 'sia-r22' }, null), 'Undetermined');
 });
 
 test('buildBugReports: WCAG sort order across version groups', () => {
