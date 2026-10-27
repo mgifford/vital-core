@@ -46,9 +46,12 @@ test('config: loadConfig exposes languages on every target', () => {
 });
 
 test('config: normalizes supported design_system values', () => {
-  const c = loadConfig();
-  const cms = c.targets.find((t) => t.domain === 'www.cms.gov');
-  assert.equal(cms?.design_system, 'cms-ds');
+  const c = loadConfig(`
+targets:
+  - domain: example.gov
+    design_system: CMS-DS
+`);
+  assert.equal(c.targets[0].design_system, 'cms-ds');
 });
 
 test('config: webmcpEnabled defaults to false when the flag is absent', () => {
