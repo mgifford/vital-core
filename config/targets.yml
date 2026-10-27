@@ -36,10 +36,20 @@ defaults:
     # none    — suppress the score section entirely
     score_format: both
   finding_policy:
+    # version/level is the build target: everything new should meet WCAG
+    # 2.2 AA. legal_baseline is the legal minimum: Section 508 (36 CFR 1194)
+    # incorporates WCAG 2.0 Level A and AA. Required findings within the
+    # baseline are reported as "Legally required"; the rest of the target
+    # (WCAG 2.1/2.2 A/AA additions) as "Target". AAA is aspirational and
+    # best practices are advisory; neither is ranked with requirements.
     conformance:
       standard: WCAG
       version: "2.2"
       level: AA
+      legal_baseline:
+        name: Section 508
+        version: "2.0"
+        level: AA
     defaults:
       wcag_a_aa:
         obligation: required
