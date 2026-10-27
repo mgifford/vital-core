@@ -19,6 +19,32 @@
 // PWA / offline signals are now detected via Playwright in standards.js instead.
 const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo', 'agentic-browsing'];
 
+// Lighthouse sets up each child target (an iframe or worker) in an async
+// 'sessionattached' listener. When the page removes the target before Chrome
+// answers, Lighthouse ignores "Target closed" but rethrows Chrome's other
+// wording of the same thing, "Session with given id not found". Thrown from a
+// listener, it is an unhandled rejection that audit()'s try/catch can't see,
+// and Node exits mid-scan (lighthouse 13.5.0 and 13.6.0).
+const TARGET_SETUP_METHODS = new Set(['Target.getTargetInfo', 'Network.enable', 'Target.setAutoAttach']);
+
+export function isDetachedTargetError(reason) {
+  return TARGET_SETUP_METHODS.has(reason?.protocolMethod)
+    && /Session with given id not found/.test(String(reason?.message ?? ''));
+}
+
+/**
+ * Ignore only that rejection; anything else is rethrown so it still crashes
+ * the process as it would without a listener. Returns the remover.
+ */
+export function guardDetachedTargetRejections(log = () => {}) {
+  const onRejection = (reason) => {
+    if (!isDetachedTargetError(reason)) throw reason;
+    log(`lighthouse: ignored a child target that closed while attaching (${reason.protocolMethod})`);
+  };
+  process.on('unhandledRejection', onRejection);
+  return () => process.off('unhandledRejection', onRejection);
+}
+
 /**
  * Create a runner that owns one shared Chrome for a batch of audits.
  * Call .audit(url) per sampled page and .close() when done. If Chrome
@@ -41,6 +67,8 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
     log(`lighthouse: unavailable (${String(err?.message || err).slice(0, 100)}); skipping`);
     return { available: false, async audit() { return null; }, async close() {} };
   }
+
+  const unguard = guardDetachedTargetRejections(log);
 
   return {
     available: true,
@@ -87,6 +115,8 @@ export async function createLighthouseRunner({ timeoutMs = 60000, log = () => {}
         await chrome.kill();
       } catch {
         /* best effort */
+      } finally {
+        unguard();
       }
     },
   };
