@@ -94,7 +94,7 @@ jobs:
 
     steps:
       # Sparse and partial checkout keeps the matrix-discovery workspace small.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
           filter: blob:none
@@ -103,9 +103,9 @@ jobs:
             scripts
             config
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
-          node-version: 26
+          node-version-file: .nvmrc
 
       - name: Resolve data repo
         id: datarepo
@@ -118,7 +118,7 @@ jobs:
       # otherwise only surfaces at "Commit data", after crawl state has
       # already marked the pages scanned for the week. Only root files are
       # checked out; this checkout exists for the push test.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           repository: ${{ steps.datarepo.outputs.repo }}
           ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
@@ -250,7 +250,7 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
           filter: blob:none
@@ -260,9 +260,9 @@ jobs:
             scripts
             vendor
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
-          node-version: 26
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies
@@ -272,7 +272,7 @@ jobs:
         id: datarepo
         run: echo "repo=$(node scripts/data-repo.js)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           repository: ${{ steps.datarepo.outputs.repo }}
           ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
@@ -283,7 +283,7 @@ jobs:
             ${{ matrix.domain }}
 
       - name: Cache Playwright browser
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: pw-${{ runner.os }}-${{ hashFiles('package-lock.json') }}

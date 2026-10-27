@@ -45,7 +45,7 @@ jobs:
       repo_size_kb: ${{ steps.size.outputs.kb }}
       data_repo: ${{ steps.datarepo.outputs.repo }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
           sparse-checkout: |
@@ -53,9 +53,9 @@ jobs:
             scripts
             config
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
-          node-version: 26
+          node-version-file: .nvmrc
 
       - id: datarepo
         name: Resolve data repo
@@ -68,7 +68,7 @@ jobs:
       # deploy, so a missing or read-only deploy key would otherwise fail the
       # whole run at that late step. Only root files are checked out, into a
       # separate path because data/ below holds the marker files.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           repository: ${{ steps.datarepo.outputs.repo }}
           ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
@@ -198,18 +198,18 @@ jobs:
       url: ${{ steps.page.outputs.page_url }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           repository: ${{ needs.gate.outputs.data_repo }}
           ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
           path: data
           fetch-depth: 1
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
-          node-version: 26
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies
