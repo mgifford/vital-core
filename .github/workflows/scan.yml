@@ -409,8 +409,9 @@ jobs:
       - scan
 
     # A requested report may run when scan was skipped because no domains
-    # were eligible. It must not run when matrix discovery or a real scan
-    # failed.
+    # were eligible, or when only some domains failed: each domain commits
+    # its own data, so one failure must not hold back the others' report.
+    # It must not run when matrix discovery failed or the run was cancelled.
     if: >-
       ${{
         always() &&
@@ -419,7 +420,8 @@ jobs:
         needs.matrix.result == 'success' &&
         (
           needs.scan.result == 'success' ||
-          needs.scan.result == 'skipped'
+          needs.scan.result == 'skipped' ||
+          needs.scan.result == 'failure'
         )
       }}
 
