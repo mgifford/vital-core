@@ -50,7 +50,9 @@ export function buildBugReports(target, summary) {
     const patternId = `${PREFIX}-${shortHash(engine, ruleId)}`;
     const first = rule.instances?.[0];
     const instanceId = `${PREFIX}-${shortHash(patternId, first?.url ?? '', first?.target ?? '')}`;
-    const scLabel = wcag ? `WCAG ${wcag.sc}` : 'WCAG criterion undetermined';
+    const scLabel = wcag
+      ? `WCAG ${wcag.sc}`
+      : wcag_category === 'Best Practice' ? 'best practice, not a WCAG requirement' : 'WCAG criterion undetermined';
     const component = componentLabel(engine, ruleId, rule.help, wcag);
 
     // Dual-write: the versioned, cross-project a11y/pattern/v1 /

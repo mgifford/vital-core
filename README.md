@@ -95,19 +95,67 @@ For how crawling, storage, and the pipeline work in more detail, see
 GitHub is the source of truth for this project. The `main` branch keeps
 the full working history, and that is where development should land.
 
-Hugging Face Spaces has been archived. It wasa deployment target, not a second source branch:
+Hugging Face Spaces has been archived. It was a deployment target, not a second source branch:
 it should receive a clean snapshot of the current site state on its own
 `main` branch, with large `state/` crawl artifacts stripped out before
 push.
 
-1. Create a repository from these files and push to GitHub.
-2. Edit `config/targets.yml`: list your 5–10 domains and adjust budgets.
-3. In repository **Settings → Pages**, set the source to **GitHub
-   Actions**.
-4. In **Settings → Actions → General**, allow workflows **read and
-   write permissions**.
-5. Run the `scan` workflow once manually (Actions → scan → Run
-   workflow) to verify, then run `report` to publish the first reports.
+### Setting up a new instance
+
+An instance is two repositories: this code (the workflows, `config/`) and a
+companion **data repository** that CI commits scan results to. Every step
+below is needed; a missing one tends to fail quietly, late in a run.
+
+1. **Create the code repo from this one, keeping its history.** Clone this
+   repository and push it to the new remote, so later upstream fixes merge
+   cleanly. Copying the files or using "Use this template" starts an
+   unrelated history.
+   ```sh
+   git clone https://github.com/mgifford/vital-core <name>
+   cd <name>
+   git remote rename origin upstream
+   git remote add origin git@github.com:<owner>/<name>.git
+   git push -u origin main
+   ```
+2. **Create the data repo:** a **public** repository such as `<name>-data`,
+   with an initial commit (a README is enough). It must be public: the
+   report's `gate` job reads its marker files with the workflow's own token.
+3. **Edit `config/targets.yml`:**
+   - list your domains and adjust budgets
+   - set `data_repo:` to the data repo
+   - point the `user_agent` contact URL at your repo
+   - set `finding_policy.conformance` (the WCAG target) and, where a law
+     sets a lower minimum, `legal_baseline` (for US federal sites, Section
+     508: WCAG 2.0 AA)
+
+   Run `npm run test:unit` before pushing; it fails on a config that
+   doesn't load.
+4. **Add a deploy key so CI can push scan data:**
+   - `ssh-keygen -t ed25519 -N "" -C "<name> Actions" -f data-key`
+   - add `data-key.pub` to the **data repo** → Settings → Deploy keys, with
+     **Allow write access** ticked
+   - add the private `data-key` file, including its BEGIN/END lines, to the
+     **code repo** → Settings → Secrets and variables → Actions, as the
+     repository secret **`VITAL_DATA_DEPLOY_KEY`**
+   - delete both local files
+
+   Without the key, checkout quietly falls back to a read-only token. The
+   "Check data repo push access" step now stops the run first, and its
+   annotation names the cause.
+5. **In the code repo's settings:**
+   - **Pages:** set the source to **GitHub Actions**
+   - **Actions → General:** allow workflows **read and write permissions**
+   - **Issues:** keep them enabled; the report workflow posts a "Weekly
+     scan reports" issue
+6. **Run the first scan:** Actions → scan → Run workflow, with the domain
+   left blank, a small budget (e.g. 10) and **Run report** ticked. Start one
+   scan at a time: the `scan-global` concurrency group keeps only the
+   newest waiting run and cancels the others.
+7. **Check that it really worked.** A green run alone doesn't prove anything
+   was scanned. Look for:
+   - new commits in the data repo
+   - the site at `https://<owner>.github.io/<name>/`
+   - the "Weekly scan reports" issue
 
 ## Local use
 

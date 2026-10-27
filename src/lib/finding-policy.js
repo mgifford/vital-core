@@ -12,11 +12,20 @@ export const POLICY_OBLIGATIONS = new Set(['required', 'aspirational', 'advisory
 export const POLICY_HANDLINGS = new Set(['report', 'review', 'suppress']);
 export const KNOWN_POLICY_ENGINES = new Set(['axe-core', 'alfa', 'deprecated-html']);
 
+// Where a required finding sits relative to the legal minimum, for display
+// and ranking. With conformance.legal_baseline set (e.g. WCAG 2.0 AA, the
+// level Section 508 incorporates), required findings split into 'legal'
+// (within the baseline) and 'target' (the rest of the conformance target,
+// e.g. WCAG 2.1/2.2 A/AA additions). Without a baseline they stay
+// 'required'. Every other tier is the finding's obligation.
+export const CONFORMANCE_TIER_ORDER = ['legal', 'required', 'target', 'aspirational', 'advisory', 'unmapped', 'not-applicable'];
+
 export const DEFAULT_FINDING_POLICY = {
   conformance: {
     standard: 'WCAG',
     version: '2.2',
     level: 'AA',
+    legal_baseline: null,
   },
   defaults: {
     wcag_a_aa: { obligation: 'required', handling: 'report' },
@@ -153,6 +162,26 @@ export function validateFindingPolicy(policy, { scope = 'config', knownRuleIds =
   if (!LEVEL_ORDER[level]) {
     errors.push(`${scope}: finding_policy.conformance.level must be A, AA, or AAA`);
   }
+  const baseline = policy.conformance?.legal_baseline;
+  if (baseline != null) {
+    const baseVersion = normalizeVersion(baseline.version);
+    const baseLevel = String(baseline.level ?? '').toUpperCase();
+    if (!baseVersion) {
+      errors.push(`${scope}: finding_policy.conformance.legal_baseline.version must look like 2.0, 2.1, or 2.2`);
+    }
+    if (!LEVEL_ORDER[baseLevel]) {
+      errors.push(`${scope}: finding_policy.conformance.legal_baseline.level must be A, AA, or AAA`);
+    }
+    if (baseline.name != null && (typeof baseline.name !== 'string' || !baseline.name.trim())) {
+      errors.push(`${scope}: finding_policy.conformance.legal_baseline.name must be a non-empty string (e.g. "Section 508")`);
+    }
+    if (baseVersion && version && versionToNumber(baseVersion) > versionToNumber(version)) {
+      errors.push(`${scope}: finding_policy.conformance.legal_baseline.version ${baseVersion} is above the conformance target ${version}`);
+    }
+    if (LEVEL_ORDER[baseLevel] && LEVEL_ORDER[level] && LEVEL_ORDER[baseLevel] > LEVEL_ORDER[level]) {
+      errors.push(`${scope}: finding_policy.conformance.legal_baseline.level ${baseLevel} is above the conformance target ${level}`);
+    }
+  }
 
   for (const [name, lane] of Object.entries(policy.defaults ?? {})) {
     if (!POLICY_OBLIGATIONS.has(lane?.obligation)) {
@@ -248,6 +277,7 @@ function classifyBaseLane(policy, bug) {
   if (bug.engine_key === 'alfa') {
     const alfaMeta = alfaRuleMetadata(bug.rule_id);
     if (alfaMeta.notRequiredForConformance) return 'not_required_for_conformance';
+    if (alfaMeta.bestPractice) return 'best_practice';
   }
 
   if (bug.wcag_level && bug.wcag_version) {
@@ -258,10 +288,27 @@ function classifyBaseLane(policy, bug) {
     const withinVersion = versionToNumber(bug.wcag_version) <= versionToNumber(targetVersion);
     const withinLevel = LEVEL_ORDER[String(bug.wcag_level).toUpperCase()] <= LEVEL_ORDER[targetLevel];
     if (withinVersion && withinLevel) return 'wcag_a_aa';
+    // An A/AA criterion from a newer WCAG version than the target (e.g. a
+    // 2.2 criterion under a 2.0 target) is not AAA; it is simply outside the
+    // declared target.
+    if (!withinVersion && withinLevel) return 'not_required_for_conformance';
     return 'wcag_aaa';
   }
 
   return 'unmapped';
+}
+
+function conformanceTierFor(policy, bug, obligation) {
+  if (obligation !== 'required') return obligation;
+  const baseline = policy.conformance?.legal_baseline;
+  if (!baseline) return 'required';
+  const baseVersion = normalizeVersion(baseline.version);
+  const baseLevel = LEVEL_ORDER[String(baseline.level ?? '').toUpperCase()];
+  const level = LEVEL_ORDER[String(bug.wcag_level ?? '').toUpperCase()];
+  const within = !!(baseVersion && baseLevel && level && bug.wcag_version)
+    && versionToNumber(bug.wcag_version) <= versionToNumber(baseVersion)
+    && level <= baseLevel;
+  return within ? 'legal' : 'target';
 }
 
 function matchesUrlPatterns(bug, patterns) {
@@ -364,6 +411,7 @@ export function applyFindingPolicy(policy, bugs) {
       policy_evidence: chosen.policy_evidence,
       policy_owner: chosen.policy_owner,
       policy_expires: chosen.policy_expires,
+      conformance_tier: conformanceTierFor(policyConfig, bug, chosen.obligation),
       included_in_primary_score: chosen.obligation === 'required' && chosen.handling === 'report',
     };
 

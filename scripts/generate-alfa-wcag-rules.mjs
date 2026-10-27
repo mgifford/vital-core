@@ -42,16 +42,26 @@ async function main() {
   const allRules = [...active, ...deprecated, ...experimental];
 
   const bySc = {};
+  // Rules whose only requirements are Alfa best practices or WAI-ARIA
+  // authoring rules (no WCAG Criterion.of(...)): reported as Best Practice,
+  // not as WCAG findings. Technique-only or requirement-less rules are left
+  // out on purpose -- the package doesn't say what they are, so they stay
+  // Undetermined rather than being guessed into a lane.
+  const bestPractice = new Set();
   for (const [, rule] of allRules) {
     const id = ruleIdFor(rule);
     if (!id) continue;
     const num = id.replace(/^sia-r/, '');
     const reqs = rule._requirements ?? [];
-    const criteria = (Array.isArray(reqs) ? reqs : (reqs.toArray?.() ?? []))
+    const reqList = Array.isArray(reqs) ? reqs : (reqs.toArray?.() ?? []);
+    const criteria = reqList
       .filter((r) => r.type === 'criterion')
       .map((r) => r.chapter);
     for (const sc of new Set(criteria)) {
       (bySc[sc] ??= new Set()).add(num);
+    }
+    if (criteria.length === 0 && reqList.some((r) => r.type === 'best practice' || r.type === 'ARIA')) {
+      bestPractice.add(num);
     }
   }
 
@@ -73,6 +83,7 @@ async function main() {
   for (const sc of sortedScs) {
     out.rules[sc] = bySc[sc] ? [...bySc[sc]].sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10)) : [];
   }
+  out.best_practice = [...bestPractice].sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10));
 
   fs.writeFileSync(OUTPUT_PATH, `${JSON.stringify(out, null, 2)}\n`);
   console.log(`Wrote ${sortedScs.length} SC keys to ${path.relative(ROOT, OUTPUT_PATH)}.`);

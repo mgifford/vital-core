@@ -358,6 +358,78 @@ test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted det
   assert.match(html, /This week at a glance/);
 });
 
+test('renderDomainReport: Fix these first lists required findings by tier; AAA and best practice are separate', () => {
+  const target = {
+    key: 'www.example.gov', domain: 'www.example.gov',
+    findingPolicy: { conformance: { version: '2.2', level: 'AA', legal_baseline: { name: 'Section 508', version: '2.0', level: 'AA' } } },
+  };
+  const summary = {
+    week: '2026-W43', pagesScanned: 50, pagesAudited: 50,
+    generatedAt: '2026-10-25T00:00:00.000Z',
+    axe: { medianViolations: 4, pagesScanned: 50, pagesWithViolations: 50, rules: {} },
+    alfa: { medianFailures: 3, pagesScanned: 50, pagesWithFailures: 27, rules: {} },
+    coverage: { axe: 50, alfa: 50 },
+  };
+  const finding = (id, summaryText, severity, pages, extra) => ({
+    instance_id: id, pattern_id: `${id}-p`, summary: summaryText, severity,
+    frequency: { pages_affected: pages, total_pages_scanned: 50, instances: pages },
+    impact: { groups: [] }, ...extra,
+  });
+  const bugs = [
+    // Most pages, but a best practice: must not lead the required list.
+    finding('VS-region', 'All page content should be contained by landmarks (best practice, not a WCAG requirement)', 'Serious', 50,
+      { rule_id: 'region', wcag_sc: null, wcag_category: 'Best Practice', obligation: 'advisory', conformance_tier: 'advisory' }),
+    finding('VS-r66', 'Text has enhanced contrast (WCAG 1.4.6)', 'Serious', 27,
+      { rule_id: 'sia-r66', wcag_sc: '1.4.6', wcag_level: 'AAA', wcag_version: '2.0', wcag_category: 'WCAG 2.x AAA', obligation: 'aspirational', conformance_tier: 'aspirational' }),
+    // More pages than the legal finding, but WCAG 2.2: ranked after it.
+    finding('VS-r113', 'Target size is at least 24×24 CSS pixels or has spacing (Minimum) (WCAG 2.5.8)', 'Moderate', 9,
+      { rule_id: 'sia-r113', wcag_sc: '2.5.8', wcag_level: 'AA', wcag_version: '2.2', wcag_category: 'WCAG 2.2 AA', obligation: 'required', conformance_tier: 'target' }),
+    finding('VS-list', 'Lists must only contain li elements (WCAG 1.3.1)', 'Serious', 2,
+      { rule_id: 'list', wcag_sc: '1.3.1', wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A', obligation: 'required', conformance_tier: 'legal' }),
+  ];
+
+  const html = renderDomainReport(target, summary, null, null, [summary], bugs, { byRule: {}, bugsAll: null }, null);
+  const section = html.match(/<section aria-labelledby="h-fixfirst">[\s\S]*?<\/section>\n<\/section>/)[0];
+  const [requiredPart, beyondPart] = section.split('id="h-beyond"');
+
+  assert.match(section, /legally required first \(Section 508: WCAG 2\.0 AA\), then the rest of the WCAG 2\.2 AA target/);
+  assert.match(requiredPart, /Top 2 required issues/);
+  assert.ok(requiredPart.indexOf('VS-list') < requiredPart.indexOf('VS-r113'), 'legally required outranks target even on fewer pages');
+  assert.match(requiredPart, /<span class="sev-badge">Legally required<\/span> <span class="bug-meta">WCAG 1\.3\.1 \(2\.0, Level A\)<\/span>/);
+  assert.match(requiredPart, /<span class="sev-badge">Target<\/span> <span class="bug-meta">WCAG 2\.5\.8 \(2\.2, Level AA\)<\/span>/);
+  assert.doesNotMatch(requiredPart, /VS-region|VS-r66/, 'AAA and best practice never sit in the required list');
+
+  assert.ok(beyondPart, 'a separate Beyond the requirements list is rendered');
+  assert.match(beyondPart, /Beyond the requirements/);
+  assert.match(beyondPart, /<span class="sev-badge">Aspirational \(AAA\)<\/span>/);
+  assert.match(beyondPart, /<span class="sev-badge">Best practice<\/span> <span class="bug-meta">not a WCAG requirement<\/span>/);
+  assert.ok(beyondPart.indexOf('VS-r66') < beyondPart.indexOf('VS-region'), 'AAA is listed before best practice');
+
+  const callout = html.match(/<aside class="callout callout-win"[\s\S]*?<\/aside>/)[0];
+  assert.match(callout, /Lists must only contain li elements/, 'the biggest win is the top required finding');
+  assert.match(callout, /Legally required/);
+});
+
+test('renderDomainReport: Fix these first says so when nothing required was found', () => {
+  const target = { key: 'd', domain: 'd', findingPolicy: { conformance: { version: '2.2', level: 'AA' } } };
+  const summary = {
+    week: '2026-W43', pagesScanned: 5, pagesAudited: 5, generatedAt: '2026-10-25T00:00:00.000Z',
+    axe: { medianViolations: 1, pagesScanned: 5, pagesWithViolations: 5, rules: {} },
+    alfa: { medianFailures: 0, pagesScanned: 5, pagesWithFailures: 0, rules: {} },
+    coverage: { axe: 5, alfa: 5 },
+  };
+  const bugs = [{
+    instance_id: 'VS-h1', pattern_id: 'VS-h1p', rule_id: 'sia-r61', summary: 'Page starts with a level 1 heading (best practice, not a WCAG requirement)',
+    severity: 'Moderate', wcag_category: 'Best Practice', obligation: 'advisory', conformance_tier: 'advisory',
+    frequency: { pages_affected: 5, total_pages_scanned: 5, instances: 5 }, impact: { groups: [] },
+  }];
+  const html = renderDomainReport(target, summary, null, null, [summary], bugs, { byRule: {}, bugsAll: null }, null);
+  assert.match(html, /id="h-fixfirst"/);
+  assert.match(html, /No findings against the required WCAG criteria this week/);
+  assert.match(html, /Required findings only, against the WCAG 2\.2 AA conformance target/);
+  assert.match(html, /id="h-beyond"[\s\S]*VS-h1/);
+});
+
 test('renderDomainReport progress panel: burndown, streaks, triage count, fixed list', () => {
   const target = { key: 'www.example.gov', domain: 'www.example.gov' };
   const mk = (week, mv) => ({

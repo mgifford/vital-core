@@ -1,0 +1,18 @@
+# Keeps the GitHub Actions used by .github/workflows/ on their latest
+# releases, so runtime deprecations (e.g. an action still on Node 20) are
+# fixed by a reviewed PR instead of surfacing as run warnings. Updates are
+# grouped into one weekly PR; SHA-pinned actions (tests.yml,
+# spec-kitty-governance.yml) are bumped with their version comment.
+#
+# The Node.js version for CI and local development lives in .nvmrc; bump it
+# when a new release line becomes the latest stable one.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"

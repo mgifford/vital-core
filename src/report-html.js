@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
-import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns } from './lib/priority.js';
+import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
@@ -1686,6 +1686,7 @@ ${heading('h-bugs', t('Bug reports'))}
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
+  <div><dt>${t('Requirement')}</dt><dd>${requirementCell(b)}</dd></div>
   <div><dt>${t('Obligation')}</dt><dd>${esc(b.obligation ?? 'unmapped')}</dd></div>
   <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
   <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
@@ -2556,31 +2557,101 @@ ${newBlock}
  * summing two engines that overlap.
  */
 /**
- * "Fix these first" — the highest-leverage issues for this domain,
- * ranked by pages affected × severity × people reached. Each row links
- * its remediation tip and the CSV of affected pages, so a team can act.
+ * What a finding is required to meet, from its conformance tier (see
+ * applyFindingPolicy): a short badge and the WCAG criterion behind it.
+ * Plain text, so the distinction never rests on color.
  */
-function fixFirstSection(bugs) {
-  const top = rankBugs(bugs, 8);
-  if (top.length === 0) return '';
-  const rows = top
+function requirementLabel(b) {
+  const sc = b.wcag_sc
+    ? t('WCAG @sc (@version, Level @level)', { '@sc': esc(b.wcag_sc), '@version': esc(b.wcag_version ?? '2.x'), '@level': esc(b.wcag_level) })
+    : '';
+  const bestPractice = b.wcag_category === 'Best Practice';
+  switch (tierOf(b)) {
+    case 'legal': return { badge: t('Legally required'), detail: sc };
+    case 'target': return { badge: t('Target'), detail: sc };
+    case 'required': return { badge: t('Required'), detail: sc };
+    case 'aspirational': return { badge: b.wcag_level === 'AAA' ? t('Aspirational (AAA)') : t('Aspirational'), detail: sc };
+    case 'advisory': return bestPractice
+      ? { badge: t('Best practice'), detail: t('not a WCAG requirement') }
+      : { badge: t('Advisory'), detail: sc ? t('@sc, outside the conformance target', { '@sc': sc }) : '' };
+    case 'not-applicable': return { badge: t('Not applicable'), detail: sc };
+    default: return { badge: t('Needs review'), detail: t('no WCAG mapping') };
+  }
+}
+
+function requirementCell(b) {
+  const { badge, detail } = requirementLabel(b);
+  return `<span class="sev-badge">${badge}</span>${detail ? ` <span class="bug-meta">${detail}</span>` : ''}`;
+}
+
+function conformanceText(conformance = {}) {
+  const target = t('WCAG @version @level', { '@version': esc(conformance.version ?? '2.2'), '@level': esc(conformance.level ?? 'AA') });
+  const base = conformance.legal_baseline;
+  if (!base) return t('Required findings only, against the @target conformance target, ranked by pages affected × severity × people reached.', { '@target': target });
+  const baseline = base.name
+    ? t('@name: WCAG @version @level', { '@name': esc(base.name), '@version': esc(base.version), '@level': esc(base.level) })
+    : t('WCAG @version @level', { '@version': esc(base.version), '@level': esc(base.level) });
+  return t('Required findings only: legally required first (@baseline), then the rest of the @target target. Within each, ranked by pages affected × severity × people reached.', { '@baseline': baseline, '@target': target });
+}
+
+/**
+ * "Fix these first" — the highest-leverage required findings for this
+ * domain: legally required ones first, then the rest of the conformance
+ * target, each ranked by pages affected × severity × people reached. AAA
+ * (aspirational) and best-practice (advisory) findings are never mixed in;
+ * they get their own, clearly labelled list below. Each row links its
+ * remediation tip and the CSV of affected pages, so a team can act.
+ */
+function fixFirstSection(bugs, conformance) {
+  if (bugs.length === 0) return '';
+  const required = rankBugs(bugs.filter(isRequiredFinding), 8);
+  const beyond = rankBugs(bugs.filter((b) => !isRequiredFinding(b) && tierOf(b) !== 'not-applicable'), 5);
+  const howToFix = (b) => (b.remediation_tip ? esc(b.remediation_tip) : (b.suggested_fix ? esc(b.suggested_fix) : '—'));
+  const issueCell = (b) => `<a href="${esc(pageHref('accessibility', b.instance_id))}">${esc(b.summary)}</a>${b.rule_url ? ` <a href="${esc(b.rule_url)}" class="bug-meta">${t('(rule↗)')}</a>` : ''}`;
+  const evidence = (b) => (b.affected_pages_csv ? `<a href="${esc(b.affected_pages_csv)}">${t('pages (CSV)')}</a>` : '—');
+  const requiredRows = required
     .map((b) => `<tr>
-  <th scope="row"><a href="${esc(pageHref('accessibility', b.instance_id))}">${esc(b.summary)}</a>${b.rule_url ? ` <a href="${esc(b.rule_url)}" class="bug-meta">${t('(rule↗)')}</a>` : ''}</th>
+  <th scope="row">${issueCell(b)}</th>
+  <td>${requirementCell(b)}</td>
   <td><span class="sev-badge">${esc(t(b.severity))}</span></td>
   <td class="num">${b.frequency.pages_affected}</td>
   <td>${b.impact?.groups?.length ? esc(b.impact.groups.map((g) => g.group).slice(0, 2).join(', ')) : '—'}</td>
-  <td>${b.remediation_tip ? esc(b.remediation_tip) : (b.suggested_fix ? esc(b.suggested_fix) : '—')}</td>
-  <td>${b.affected_pages_csv ? `<a href="${esc(b.affected_pages_csv)}">${t('pages (CSV)')}</a>` : '—'}</td>
+  <td>${howToFix(b)}</td>
+  <td>${evidence(b)}</td>
 </tr>`)
     .join('\n');
+  const beyondRows = beyond
+    .map((b) => `<tr>
+  <th scope="row">${issueCell(b)}</th>
+  <td>${requirementCell(b)}</td>
+  <td class="num">${b.frequency.pages_affected}</td>
+  <td>${howToFix(b)}</td>
+  <td>${evidence(b)}</td>
+</tr>`)
+    .join('\n');
+  const requiredTable = required.length
+    ? `<table>
+<caption>${t('Top @n required issues to prioritize this week.', { '@n': required.length })}</caption>
+<thead><tr><th scope="col">${t('Issue')}</th><th scope="col">${t('Requirement')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Who it affects')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th></tr></thead>
+<tbody>${requiredRows}</tbody>
+</table>`
+    : `<p class="note">${t('No findings against the required WCAG criteria this week. Automated testing finds only some barriers, so manual testing is still needed.')}</p>`;
+  const beyondSection = beyond.length
+    ? `<section aria-labelledby="h-beyond">
+${heading('h-beyond', t('Beyond the requirements'), 3)}
+<p class="meta">${t('Not required for conformance. AAA criteria are aspirational stretch goals and best practices are advisory: worth doing, after the required findings above.')}</p>
+<table>
+<caption>${t('Top @n aspirational, best-practice and unmapped issues.', { '@n': beyond.length })}</caption>
+<thead><tr><th scope="col">${t('Issue')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th></tr></thead>
+<tbody>${beyondRows}</tbody>
+</table>
+</section>`
+    : '';
   return `<section aria-labelledby="h-fixfirst">
 ${heading('h-fixfirst', t('Fix these first'))}
-<p class="meta">${t('Highest-leverage issues, ranked by pages affected × severity × people reached. Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessible.html#h-bugs">Accessibility page</a>.')}</p>
-<table>
-<caption>${t('Top @n issues to prioritize this week.', { '@n': top.length })}</caption>
-<thead><tr><th scope="col">${t('Issue')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Who it affects')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th></tr></thead>
-<tbody>${rows}</tbody>
-</table>
+<p class="meta">${conformanceText(conformance)} ${t('Fixing a shared component often clears many pages at once. Issue links go to the full bug detail on the <a href="accessible.html#h-bugs">Accessibility page</a>.')}</p>
+${requiredTable}
+${beyondSection}
 </section>`;
 }
 
@@ -3673,7 +3744,7 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
 
 ${win ? `<aside class="callout callout-win" aria-labelledby="h-win">
 <h2 id="h-win">${t('Biggest available win')}</h2>
-<p><a href="${esc(pageHref('accessibility', win.instance_id))}"><strong>${esc(win.summary)}</strong></a> — <span class="sev-badge">${esc(t(win.severity))}</span> ${t('across @n page(s)', { '@n': win.frequency.pages_affected })}.${win.remediation_tip ? ` ${esc(win.remediation_tip)}` : (win.suggested_fix ? ` ${esc(win.suggested_fix)}` : '')}</p>
+<p><a href="${esc(pageHref('accessibility', win.instance_id))}"><strong>${esc(win.summary)}</strong></a> — ${requirementCell(win)} · <span class="sev-badge">${esc(t(win.severity))}</span> ${t('across @n page(s)', { '@n': win.frequency.pages_affected })}.${win.remediation_tip ? ` ${esc(win.remediation_tip)}` : (win.suggested_fix ? ` ${esc(win.suggested_fix)}` : '')}</p>
 </aside>` : ''}
 
 ${invSummary ? `<p class="meta">${t('Over the whole history of this site, <strong>@known</strong> unique pages have been scanned at least once; <strong>@withIssues</strong> have known accessibility issues. <strong>@thisWeek</strong> of them were re-checked this ISO week.', { '@known': invSummary.totalKnownPages, '@withIssues': invSummary.pagesWithKnownIssues, '@thisWeek': invSummary.scannedThisWeek })} <a href="../../../data/${esc(target.key)}/domain.json">${t('Download full data (JSON)')}</a>.</p>` : ''}
@@ -3681,7 +3752,7 @@ ${invSummary ? `<p class="meta">${t('Over the whole history of this site, <stron
 ${exclusionBox(target)}
 <div id="exclude-banner" class="exclusion-banner" role="status" hidden></div>
 
-${fixFirstSection(bugs)}
+${fixFirstSection(bugs, target.findingPolicy?.conformance)}
 
 ${progressSection(prog, bugs)}
 
@@ -4054,14 +4125,15 @@ export function renderIndex(dashboard, { branding = {} } = {}) {
   const worstSection = worst.length === 0 ? '' : `
 <section aria-labelledby="h-worst">
 ${heading('h-worst', t('Worst offenders across all domains'))}
-<p class="meta">${t('Highest-impact issues fleet-wide, ranked by pages affected × severity × people reached — where to focus effort first.')}</p>
+<p class="meta">${t('Highest-impact issues fleet-wide: legally required findings first, then the rest of each site\'s conformance target, then AAA and best-practice findings. Within each, ranked by pages affected × severity × people reached.')}</p>
 <table>
 <caption>${t('Top @n issues across all active domains.', { '@n': worst.length })}</caption>
-<thead><tr><th scope="col">${t('Domain')}</th><th scope="col">${t('Issue')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
+<thead><tr><th scope="col">${t('Domain')}</th><th scope="col">${t('Issue')}</th><th scope="col">${t('Requirement')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${worst
     .map((b) => `<tr>
   <th scope="row"><a href="reports/${esc(b.key)}/${esc(b._week)}/index.html">${esc(b.domain)}</a></th>
   <td>${esc(b.summary)}</td>
+  <td>${requirementCell(b)}</td>
   <td><span class="sev-badge">${esc(t(b.severity))}</span></td>
   <td class="num">${b.frequency.pages_affected}</td>
 </tr>`)

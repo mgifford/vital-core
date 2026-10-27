@@ -128,6 +128,10 @@ severity taxonomy and accessibility rules: a standing gate, not an afterthought.
   which CI checks out into `data/` and pushes with the `VITAL_DATA_DEPLOY_KEY`
   deploy key. The data repo carries its own copy of the VA `.gitignore`
   entries; `hf_only` targets may not set `data_repo`.
+- **`scripts/check-data-push.sh` runs first** in the scan matrix and report
+  gate jobs. Without a usable key, checkout falls back to a read-only token
+  and a run would otherwise crawl everything and then lose it at the push.
+  Keep the check ahead of any step that fetches target sites.
 
 ---
 
@@ -152,6 +156,45 @@ hidden by default. "Show everything" toggle reveals all.
 
 Priority tiers: 0 = Critical/Serious + WCAG A/AA; 1 = Critical/Serious +
 BP/Undetermined; 2 = Moderate/Minor + WCAG A/AA + ≥10 pages; 5 = hidden.
+
+---
+
+## Conformance tiers (what a finding is required to meet)
+
+`finding_policy.conformance` holds the WCAG **target** (`version`/`level`,
+e.g. 2.2 AA) and an optional **`legal_baseline`** (`{ name, version, level }`,
+e.g. Section 508 = WCAG 2.0 AA; validated not to exceed the target).
+`applyFindingPolicy()` gives every finding a `conformance_tier`:
+
+| Tier | Meaning | Label |
+|---|---|---|
+| `legal` | required and within the legal baseline | Legally required |
+| `target` | required, beyond the baseline (e.g. 2.1/2.2 A/AA) | Target |
+| `required` | required, no baseline configured | Required |
+| `aspirational` | AAA under an AA target | Aspirational (AAA) |
+| `advisory` | best practice, or A/AA newer than the target | Best practice / Advisory |
+| `unmapped` | no WCAG mapping | Needs review |
+
+Rules to keep:
+
+- **Rank by tier first, then score.** `rankBugs()`/`fleetWorstOffenders()`
+  (`src/lib/priority.js`) do this.
+- **Never list AAA or best practice with requirements.** "Fix these first"
+  shows required tiers only; everything else goes in "Beyond the
+  requirements".
+- **Show the tier as text.** Use `requirementLabel()`/`requirementCell()` in
+  `src/report-html.js`, never color alone.
+- **Obligations don't change with the tier.** The tier only adds the
+  legal/target split.
+
+**Alfa metadata.** Each title in `config/alfa-rule-labels.json` must describe
+what the installed rule checks. Read its `requirements[]` and `Outcomes` in
+`node_modules/@siteimprove/alfa-rules/dist/sia-rN/rule.{js,d.ts}`; on
+2026-10-25, 45 titles had drifted onto other rules. After upgrading
+`@siteimprove/alfa-rules`, run `node scripts/generate-alfa-wcag-rules.mjs`.
+It rewrites the WCAG mapping and the `best_practice` list (rules that
+declare only a best practice or an ARIA practice). Re-apply the documented
+exception, then re-check the labels.
 
 ---
 

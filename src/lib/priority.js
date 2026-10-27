@@ -9,9 +9,39 @@
  *   - severity: Critical/Serious/Moderate/Minor from axe impact + frequency
  *   - reach: the most-affected disability group's population prevalence
  *     (from the WCAG→FPC mapping), so issues hurting more people rank up.
+ *
+ * The score only orders findings within a conformance tier (see
+ * CONFORMANCE_TIER_ORDER in finding-policy.js): a legally required finding
+ * always outranks a target one, which outranks AAA, best-practice and
+ * unmapped findings, however many pages those reach.
  */
 
+import { CONFORMANCE_TIER_ORDER } from './finding-policy.js';
+
 const SEVERITY_WEIGHT = { Critical: 4, Serious: 3, Moderate: 2, Minor: 1 };
+const REQUIRED_TIERS = new Set(['legal', 'required', 'target']);
+
+/**
+ * A finding's conformance tier. Findings that never went through the finding
+ * policy (no tier, no obligation) count as 'required', which is how every
+ * finding was ranked before tiers existed.
+ */
+export function tierOf(bug) {
+  return bug.conformance_tier ?? bug.obligation ?? 'required';
+}
+
+export function isRequiredFinding(bug) {
+  return REQUIRED_TIERS.has(tierOf(bug));
+}
+
+function tierRank(bug) {
+  const i = CONFORMANCE_TIER_ORDER.indexOf(tierOf(bug));
+  return i === -1 ? CONFORMANCE_TIER_ORDER.length : i;
+}
+
+function byTierThenPriority(a, b) {
+  return tierRank(a) - tierRank(b) || b.priority - a.priority;
+}
 
 /** Priority score for one bug report (higher = fix sooner). */
 export function priorityScore(bug) {
@@ -25,11 +55,11 @@ export function priorityScore(bug) {
   return Math.round(pages * sev * (1 + reach) * 100) / 100;
 }
 
-/** Rank a domain's bugs into a "fix these first" list (top `n`). */
+/** Rank a domain's bugs (top `n`): conformance tier first, then priority. */
 export function rankBugs(bugs, n = 10) {
   return bugs
     .map((b) => ({ ...b, priority: priorityScore(b) }))
-    .sort((a, b) => b.priority - a.priority)
+    .sort(byTierThenPriority)
     .slice(0, n);
 }
 
@@ -44,7 +74,7 @@ export function fleetWorstOffenders(perDomain, n = 20) {
       all.push({ domain: target.domain, key: target.key, week: b._week, ...b, priority: priorityScore(b) });
     }
   }
-  return all.sort((a, b) => b.priority - a.priority).slice(0, n);
+  return all.sort(byTierThenPriority).slice(0, n);
 }
 
 /**

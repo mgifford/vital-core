@@ -143,6 +143,7 @@ const ALFA_RULE_METADATA_OVERRIDES = {
 };
 
 let alfaRuleToSc = null;
+let alfaBestPractice = null;
 
 function parseSc(sc) {
   return String(sc)
@@ -170,6 +171,7 @@ function normalizeAlfaRuleId(id) {
 function loadAlfaRuleToSc() {
   if (alfaRuleToSc) return alfaRuleToSc;
   const byRule = {};
+  const bestPractice = new Set();
   const p = path.join(DIRS.root, 'src', 'data', 'alfa-wcag-rules.json');
   try {
     const raw = JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -184,10 +186,15 @@ function loadAlfaRuleToSc() {
     for (const arr of Object.values(byRule)) {
       arr.sort(compareSc);
     }
+    for (const id of raw.best_practice ?? []) {
+      const ruleId = normalizeAlfaRuleId(id);
+      if (ruleId) bestPractice.add(ruleId);
+    }
   } catch {
     // Optional dataset: if missing, we fall back to curated constants.
   }
   alfaRuleToSc = byRule;
+  alfaBestPractice = bestPractice;
   return alfaRuleToSc;
 }
 
@@ -210,14 +217,18 @@ export function alfaRuleMetadata(ruleId) {
       ruleId: null,
       wcagScs: [],
       notRequiredForConformance: false,
+      bestPractice: false,
     };
   }
+  const byRule = loadAlfaRuleToSc();
   const override = ALFA_RULE_METADATA_OVERRIDES[normalized] ?? null;
-  const wcagScs = override?.wcagScs ?? (loadAlfaRuleToSc()[normalized] ?? []);
+  const wcagScs = override?.wcagScs ?? (byRule[normalized] ?? []);
+  const scs = Array.isArray(wcagScs) ? [...wcagScs] : [];
   return {
     ruleId: normalized,
-    wcagScs: Array.isArray(wcagScs) ? [...wcagScs] : [],
+    wcagScs: scs,
     notRequiredForConformance: !!override?.notRequiredForConformance,
+    bestPractice: scs.length === 0 && alfaBestPractice.has(normalized),
   };
 }
 
@@ -260,13 +271,18 @@ export function resolveWcag(engine, { tags = [], ruleId } = {}) {
  *   'WCAG 2.2 A'   — new in WCAG 2.2, Level A
  *   'WCAG 2.2 AA'  — new in WCAG 2.2, Level AA (most common compliance target)
  *   'WCAG 2.x AAA' — AAA criteria (rarely required)
- *   'Best Practice' — axe best-practice rules, not tied to a WCAG criterion
+ *   'Best Practice' — not tied to a WCAG criterion: axe best-practice rules,
+ *                     and Alfa rules whose own requirements are only Alfa
+ *                     best practices or WAI-ARIA authoring rules
  *   'Undetermined' — no WCAG mapping found
  *
  * For axe findings, also inspects the tags array for 'best-practice'.
  */
 export function classifyFinding(engine, { tags = [], ruleId } = {}, resolvedWcag = null) {
   if (engine === 'axe-core' && Array.isArray(tags) && tags.includes('best-practice') && !resolvedWcag) {
+    return 'Best Practice';
+  }
+  if (engine === 'alfa' && !resolvedWcag && alfaRuleMetadata(ruleId).bestPractice) {
     return 'Best Practice';
   }
   if (!resolvedWcag) return 'Undetermined';
