@@ -376,6 +376,12 @@ The per-domain options:
   medical jargon, agency acronyms) the spell checker should accept,
   layered on top of the project-wide `config/spelling-allowlist.txt`.
 
+- **`spelling_locale:`** — which English the spell checker accepts:
+  `en-US` (default), `en-GB`, `en-CA` or `en-AU`, set in `defaults:` or
+  per target. Only that dictionary is loaded during a scan. Each
+  plain-language record stores the locale it used, and the readability
+  page names it, so a switch shows up as a labelled step in the trend.
+
 - **`sampling:`** — a target may override any per-engine coverage rate
   from the global `sampling:` block (e.g. run Lighthouse on more or fewer
   of one site's pages).

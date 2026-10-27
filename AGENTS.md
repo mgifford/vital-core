@@ -38,7 +38,7 @@ compact, comparison-friendly record onto the per-page JSON.
 |-------------|------|------------------|
 | `src/engines/axe.js` | **axe-core** (injected into the page) | WCAG 2.x / Section 508 violations, reduced to rule ids, counts, and pages affected (full node lists are not stored). |
 | `src/engines/alfa.js` | **Siteimprove Alfa** (`@siteimprove/alfa-*`) | Independent ACT-rules audit. Alfa is the open source core of Siteimprove's commercial checker. |
-| `src/engines/plain-language.js` | text analysis (in-page) | Readability (Flesch / Flesch-Kincaid), sentence/passive-voice heuristics, unexplained acronyms. `scored: false` when there's too little prose. |
+| `src/engines/plain-language.js` | text analysis (in-page) | Readability (Flesch / Flesch-Kincaid), sentence/passive-voice heuristics, unexplained acronyms, and spelling against the target's `spelling_locale` dictionary (`src/lib/spell.js`; en-US default, en-GB, en-CA, en-AU). `scored: false` when there's too little prose. |
 | `src/engines/deprecated-html.js` | DOM query (in-page) | Obsolete/legacy HTML (`<font>`, `<center>`, `<marquee>`, presentational attrs). Example of a rate-controlled scanner. |
 | `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD model v4) | Page weight (decoded body bytes) and estimated emissions. |
 | `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO / agentic-browsing scores + Core Web Vitals, plus the failing non-a11y **audits** (recommendations) via `extractAudits`. Drives its own browser. Aggregated into `summary.lighthouse.recommendations` and rendered on `lighthouse.html`. |
