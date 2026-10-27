@@ -313,7 +313,7 @@ for (const item of batch) {
         mark('alfa');
         logMemory(`after alfa ${urlPath}`);
       }
-      if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page, { extraAllowlist: target.spelling_allowlist ?? [] }); mark('plain-language'); }
+      if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page, { extraAllowlist: target.spelling_allowlist ?? [], spellingLocale: target.spelling_locale }); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
       if (runs('resources')) {
         record.resources = await runResources(page, item.url);

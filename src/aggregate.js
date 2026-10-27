@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadConfig, loadProfile, applyProfile, DIRS } from './lib/config.js';
+import { loadConfig, loadProfile, applyProfile, DIRS, DEFAULT_SPELLING_LOCALE } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
@@ -686,6 +686,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   // so a scraped word like "constructor" must not resolve through Object.prototype.
   const acronymCounts = Object.create(null); // acronym -> { pages, examplePages[] }
   const misspellingCounts = Object.create(null); // word -> { pages, examplePages[] }
+  const spellingLocales = new Set();
   const plRows = []; // per-page readability rows (for CSV)
   let plPagesChecked = 0; // pages plain-language ran on (for words/page)
   const wordCounts = []; // per-page main-content word counts
@@ -875,6 +876,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
     }
     if (rec.plainLanguage) {
       plPagesChecked++;
+      // Records from before spelling_locale existed were all checked in US English.
+      spellingLocales.add(rec.plainLanguage.spellingLocale ?? DEFAULT_SPELLING_LOCALE);
       if (typeof rec.plainLanguage.wordCount === 'number') wordCounts.push(rec.plainLanguage.wordCount);
       // Per-page readability row (for the readability CSV).
       plRows.push({
@@ -1047,6 +1050,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
             .sort((a, b) => b[1].pages - a[1].pages)
             .slice(0, 15)
             .map(([acronym, e]) => ({ acronym, pages: e.pages, examplePages: e.examplePages })),
+          spellingLocales: [...spellingLocales].sort(),
           // Most common misspellings, by pages affected (with examples).
           topMisspellings: Object.entries(misspellingCounts)
             .sort((a, b) => b[1].pages - a[1].pages)

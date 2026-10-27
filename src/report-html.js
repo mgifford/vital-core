@@ -3086,6 +3086,15 @@ function scoredLabel(r) {
   return reason === 'non-prose' ? t('not prose (tables/data)') : t('too little text');
 }
 
+function spellingLocaleLabel(locale) {
+  switch (locale) {
+    case 'en-GB': return t('British English');
+    case 'en-CA': return t('Canadian English');
+    case 'en-AU': return t('Australian English');
+    default: return t('US English');
+  }
+}
+
 /**
  * Standalone readability page: a sortable table of every prose page with
  * its word count, Flesch Reading Ease and Flesch-Kincaid grade, plus
@@ -3113,6 +3122,10 @@ export function renderReadabilityPage(target, summary, csvHref) {
   });
   const acronyms = summary.plainLanguage?.topUnexplainedAcronyms ?? [];
   const misspellings = summary.plainLanguage?.topMisspellings ?? [];
+  const spellingLocales = summary.plainLanguage?.spellingLocales?.length ? summary.plainLanguage.spellingLocales : ['en-US'];
+  const dictionaryNote = spellingLocales.length === 1
+    ? t('Checked against the @dictionary dictionary.', { '@dictionary': spellingLocaleLabel(spellingLocales[0]) })
+    : t('Checked against the @dictionary dictionaries.', { '@dictionary': spellingLocales.map(spellingLocaleLabel).join(', ') });
   const body = `
 <h1>${esc(target.domain)}: ${t("Readability")} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('readability')}
@@ -3138,7 +3151,7 @@ ${heading('h-acronyms', t('Unexplained acronyms'))}
 </section>` : ''}
 ${misspellings.length ? `<section aria-labelledby="h-spelling">
 ${heading('h-spelling', t('Possible misspellings'))}
-<p class="meta">${t('Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.')}${downloadLinks(summary.plainLanguage?.spellingCsv, summary.plainLanguage?.spellingJson)}</p>
+<p class="meta">${t('Main-content words not found in the dictionary or the project allowlist, by pages affected. Government and medical jargon may be false positives — add real terms to <code>config/spelling-allowlist.txt</code>.')} ${dictionaryNote}${downloadLinks(summary.plainLanguage?.spellingCsv, summary.plainLanguage?.spellingJson)}</p>
 <ul>${misspellings.map((m) => `<li><code>${esc(m.word)}</code> — ${t('@n page(s)', { '@n': m.pages })}</li>`).join('')}</ul>
 </section>` : ''}`;
   return layout({
