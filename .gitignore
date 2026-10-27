@@ -26,22 +26,26 @@ dist/
 # as assets on the `scan-state` release (scripts/state-release.js); locally
 # it is a plain on-disk directory. Committing it grew .git by ~1.4 GB in
 # three months.
-state/
+/state/
 
 # Scan data lives in its own repo (`data_repo` in config/targets.yml). CI
 # checks it out into data/; locally, clone it there only when you need it.
-data/
+# Anchored to the root: an unanchored data/ also matched src/data/, so a new
+# file there was silently left out of `git add`.
+/data/
 
 # HF-only targets — scanned on Hugging Face, not GitHub Actions.
 # Guard against accidental commit of their scan data to this repo.
-data/www.va.gov/
-data/volunteer.va.gov/
-data/news.va.gov/
-data/benefits.va.gov/
-state/www.va.gov/
-state/volunteer.va.gov/
-state/news.va.gov/
-state/benefits.va.gov/
+# Unanchored on purpose, so they still match if VITAL_DATA_ROOT points at a
+# directory inside the checkout.
+**/data/www.va.gov/
+**/data/volunteer.va.gov/
+**/data/news.va.gov/
+**/data/benefits.va.gov/
+**/state/www.va.gov/
+**/state/volunteer.va.gov/
+**/state/news.va.gov/
+**/state/benefits.va.gov/
 
 # Spec Kitty runtime state (transient, machine-specific)
 .kittify/runtime/
