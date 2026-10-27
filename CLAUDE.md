@@ -347,6 +347,32 @@ unaffected.
 
 ---
 
+## Fleets made from this template
+
+vital-core is a GitHub template. Each fleet (e.g. `vital-core-nsf`,
+`vital-core-lgd`) is a repo made from it and joined to its history (README,
+"Setting up a new instance"). When working in a fleet repo rather than
+`mgifford/vital-core`:
+
+- **Fleet-only changes stay in the fleet:** `config/targets.yml`,
+  `config/profiles/`, the README introduction.
+- **Anything every fleet would want goes upstream:** an engine bug, a US-only
+  assumption, a gap in the docs. Record it in the fleet's
+  `docs-internal/UPSTREAM-SUGGESTIONS.md` with evidence and a status line,
+  then fix it in vital-core.
+- **Make upstream fixes on a branch from `upstream/main`** and open the PR on
+  vital-core; after it merges, run `git merge upstream/main` in the fleet. If
+  the fleet can't wait, merge that same branch into the fleet too: both repos
+  then hold the same commits and the later merge is clean. Never copy a
+  change across by hand; copied changes conflict on the next merge.
+- **Keep the status line current:** filed, PR open, merged upstream, merged
+  into the fleet, or dropped (and why).
+
+vital-core never ships `docs-internal/UPSTREAM-SUGGESTIONS.md`, so a fleet's
+copy never conflicts with upstream.
+
+---
+
 ## Static JSON API
 
 `npm run aggregate` writes a versioned static JSON API to `docs/api/v1/` alongside

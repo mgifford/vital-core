@@ -106,17 +106,43 @@ An instance is two repositories: this code (the workflows, `config/`) and a
 companion **data repository** that CI commits scan results to. Every step
 below is needed; a missing one tends to fail quietly, late in a run.
 
-1. **Create the code repo from this one, keeping its history.** Clone this
-   repository and push it to the new remote, so later upstream fixes merge
-   cleanly. Copying the files or using "Use this template" starts an
-   unrelated history.
+1. **Create the code repo from the template, then join its history to
+   upstream.** This repository is a GitHub template: choose **Use this
+   template → Create a new repository**, leaving "Include all branches"
+   unticked. GitHub starts the new repo with one "Initial commit" that
+   copies these files but not their history, so `git merge upstream/main`
+   can't work until the two histories are joined. Join them once, straight
+   away. It changes no files:
    ```sh
-   git clone https://github.com/mgifford/vital-core <name>
+   git clone git@github.com:<owner>/<name>.git
    cd <name>
-   git remote rename origin upstream
-   git remote add origin git@github.com:<owner>/<name>.git
-   git push -u origin main
+   git remote add upstream https://github.com/mgifford/vital-core
+   git fetch upstream main
+   # The upstream commit that "Initial commit" was copied from:
+   ROOT_TREE=$(git rev-parse "$(git rev-list --max-parents=0 HEAD)^{tree}")
+   BASE=$(git log --format='%H %T' upstream/main | awk -v t="$ROOT_TREE" '$2 == t { print $1; exit }')
+   if [ -n "$BASE" ]; then
+     git merge -s ours --allow-unrelated-histories "$BASE" \
+       -m "Record vital-core ${BASE:0:7} as upstream base"
+     git push
+   else
+     echo "No upstream commit matches the initial commit." >&2
+   fi
    ```
+   If no commit matches, the first commit isn't an unchanged copy of an
+   upstream commit, so don't guess one. Never run the `-s ours` merge
+   against `upstream/main` itself: it records every upstream change made
+   since the copy as merged without applying it.
+
+   Instead of the template, you can clone this repository and push it to a
+   new, empty repo (`git remote rename origin upstream`, then add your repo
+   as `origin`). That keeps the shared history from the start, with no join
+   step.
+
+   A repo made from the template has the scheduled scan and report
+   workflows switched on from its first commit, with this repo's targets in
+   `config/targets.yml`. Until step 4 they stop at the push-access check
+   without fetching any site, so finish step 3 before adding the key.
 2. **Create the data repo:** a **public** repository such as `<name>-data`,
    with an initial commit (a README is enough). It must be public: the
    report's `gate` job reads its marker files with the workflow's own token.
@@ -124,9 +150,15 @@ below is needed; a missing one tends to fail quietly, late in a run.
    - list your domains and adjust budgets
    - set `data_repo:` to the data repo
    - point the `user_agent` contact URL at your repo
+   - set `report_base_url:` to `https://<owner>.github.io/<name>`; CSV
+     links, `llms.txt` and the API catalog are built from it
    - set `finding_policy.conformance` (the WCAG target) and, where a law
      sets a lower minimum, `legal_baseline` (for US federal sites, Section
-     508: WCAG 2.0 AA)
+     508: WCAG 2.0 AA). The shipped default is Section 508, so change or
+     remove it for any other jurisdiction
+   - cut `languages:` down to the ones your readers need. Every listed
+     language is built and deployed on each report run, even with the
+     switcher hidden
 
    Run `npm run test:unit` before pushing; it fails on a config that
    doesn't load.
@@ -156,6 +188,28 @@ below is needed; a missing one tends to fail quietly, late in a run.
    - new commits in the data repo
    - the site at `https://<owner>.github.io/<name>/`
    - the "Weekly scan reports" issue
+
+### Taking upstream updates
+
+```sh
+git fetch upstream main
+git merge upstream/main
+```
+
+Conflicts should only appear in files you changed yourself. A fix that
+reached both repos by copying rather than merging (for example, one you
+made in your repo and then ported upstream) can conflict once. Take
+upstream's version (`git checkout --theirs <file>`) unless you meant to keep
+yours. For `package-lock.json`, take upstream's version, then run `npm ci`
+to confirm it still matches `package.json`.
+
+### Sending discoveries upstream
+
+Keep a `docs-internal/UPSTREAM-SUGGESTIONS.md` in your repo for anything
+every instance would want: an engine bug, a US-only assumption, a missing
+setup step. vital-core never ships that file, so it never conflicts. Fix
+those things in vital-core, on a branch from `upstream/main`, then merge
+upstream into your repo. See CLAUDE.md, "Fleets made from this template".
 
 ## Local use
 
