@@ -50,6 +50,29 @@ test('alfa metadata: sia-r54 (assertive live region atomicity) has no WCAG mappi
   assert.deepEqual(meta.wcagScs, []);
 });
 
+test('alfa metadata: labels match what the rule checks (2026-10-25 drift regressions)', () => {
+  // Each pair was checked against @siteimprove/alfa-rules 0.117.0's
+  // dist/sia-rN/rule.{js,d.ts} requirements and Outcomes; before the fix
+  // these titles belonged to other rules.
+  assert.equal(rulePlainLabel('alfa', 'sia-r57'), 'Text is included in a landmark');
+  assert.equal(rulePlainLabel('alfa', 'sia-r61'), 'Page starts with a level 1 heading');
+  assert.equal(rulePlainLabel('alfa', 'sia-r73'), 'Paragraph line height is at least 1.5');
+  assert.equal(rulePlainLabel('alfa', 'sia-r69'), 'Text has minimum contrast');
+  assert.equal(rulePlainLabel('alfa', 'sia-r84'), 'Scrollable element is keyboard accessible');
+});
+
+test('alfa metadata: best-practice rules carry no WCAG criterion', () => {
+  for (const id of ['sia-r53', 'sia-r57', 'sia-r61', 'sia-r78']) {
+    const meta = alfaRuleMetadata(id);
+    assert.equal(meta.bestPractice, true, `${id} should be a best practice`);
+    assert.deepEqual(meta.wcagScs, [], `${id} should have no WCAG criterion`);
+    assert.equal(resolveWcag('alfa', { ruleId: id }), null);
+  }
+  for (const id of ['sia-r66', 'sia-r113', 'sia-r22']) {
+    assert.equal(alfaRuleMetadata(id).bestPractice, false, `${id} is not a best practice`);
+  }
+});
+
 test('alfa metadata: sia-r70 is not mapped as WCAG 2.4.4', () => {
   const wcag = resolveWcag('alfa', { ruleId: 'sia-r70' });
   assert.equal(wcag, null);
