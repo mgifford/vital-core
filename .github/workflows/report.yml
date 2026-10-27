@@ -57,16 +57,38 @@ jobs:
         with:
           node-version: 26
 
-      # The gate only needs three small marker files from the data repo, so
-      # it reads them through the API instead of checking out ~1.5 GB.
       - id: datarepo
-        name: Read data repo markers
-        env:
-          GH_TOKEN: ${{ github.token }}
+        name: Resolve data repo
         run: |
           npm ci --omit=optional --ignore-scripts
-          REPO=$(node scripts/data-repo.js)
-          echo "repo=${REPO}" >> "$GITHUB_OUTPUT"
+          echo "repo=$(node scripts/data-repo.js)" >> "$GITHUB_OUTPUT"
+
+      # Fail the gate, before the report job builds anything, if CI can't push
+      # to the data repo: the report job's summary commit runs before the Pages
+      # deploy, so a missing or read-only deploy key would otherwise fail the
+      # whole run at that late step. Only root files are checked out, into a
+      # separate path because data/ below holds the marker files.
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.datarepo.outputs.repo }}
+          ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
+          path: data-push-check
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: .push-check
+
+      - name: Check data repo push access
+        env:
+          HAS_DEPLOY_KEY: ${{ secrets.VITAL_DATA_DEPLOY_KEY != '' }}
+        run: bash scripts/check-data-push.sh data-push-check
+
+      # The gate only needs three small marker files from the data repo, so
+      # it reads them through the API instead of checking out ~1.5 GB.
+      - name: Read data repo markers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ steps.datarepo.outputs.repo }}
+        run: |
           mkdir -p data
           for f in .repo-size-kb .repo-size-history .last-report-date; do
             gh api "repos/${REPO}/contents/${f}" -H "Accept: application/vnd.github.raw" > "data/${f}" 2>/dev/null || rm -f "data/${f}"

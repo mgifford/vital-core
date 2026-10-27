@@ -107,6 +107,31 @@ jobs:
         with:
           node-version: 26
 
+      - name: Resolve data repo
+        id: datarepo
+        run: |
+          npm ci --omit=optional --ignore-scripts
+          echo "repo=$(node scripts/data-repo.js)" >> "$GITHUB_OUTPUT"
+
+      # Fail here, before any scan job starts or any target is fetched, if CI
+      # can't push to the data repo. A missing or read-only deploy key
+      # otherwise only surfaces at "Commit data", after crawl state has
+      # already marked the pages scanned for the week. Only root files are
+      # checked out; this checkout exists for the push test.
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.datarepo.outputs.repo }}
+          ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
+          path: data
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: .push-check
+
+      - name: Check data repo push access
+        env:
+          HAS_DEPLOY_KEY: ${{ secrets.VITAL_DATA_DEPLOY_KEY != '' }}
+        run: bash scripts/check-data-push.sh data
+
       - name: Select eligible domains
         id: list
         env:
@@ -114,8 +139,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          npm ci --omit=optional --ignore-scripts
-
           if [ -n "$DISPATCH_DOMAIN" ]; then
             if ! printf '%s' "$DISPATCH_DOMAIN" |
               grep -qE '^[a-z0-9][a-z0-9._-]*\.[a-z]{2,}$'; then
