@@ -11,6 +11,11 @@ the site's web team to **allowlist the scanner** so it can measure the
 site's accessibility and sustainability. The scanner self-identifies for
 exactly this reason.
 
+Before writing to a site, run Actions → **diagnose** for it. The job
+summary shows the status and headers the scanner gets from GitHub's
+network, names the firewall or CDN where the headers identify it, and
+compares the answer a desktop browser gets. Quote it in the request.
+
 ## Currently blocked
 
 | Site | Symptom | Status |

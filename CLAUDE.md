@@ -132,6 +132,11 @@ severity taxonomy and accessibility rules: a standing gate, not an afterthought.
   gate jobs. Without a usable key, checkout falls back to a read-only token
   and a run would otherwise crawl everything and then lose it at the push.
   Keep the check ahead of any step that fetches target sites.
+- **The `diagnose` workflow refuses `hf_only` targets** too, by key or by
+  host with `www.` ignored (`resolveProbeTargets()` in `src/lib/probe.js`).
+  It pushes nothing, so it needs no data-push check, and it keeps only a
+  short header whitelist and cookie *names*: never store cookie values or
+  page bodies from it.
 
 ---
 

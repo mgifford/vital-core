@@ -189,6 +189,13 @@ below is needed; a missing one tends to fail quietly, late in a run.
    - the site at `https://<owner>.github.io/<name>/`
    - the "Weekly scan reports" issue
 
+   If a site comes back with 202s, 403s, 404s, timeouts or very few pages,
+   run Actions → **diagnose** with that domain. It shows what the site sends
+   the scanner from GitHub's network: each redirect hop, the firewall or CDN
+   in front of it, whether a desktop browser gets a different answer,
+   `robots.txt` and the sitemap, and what a slow homepage was still loading.
+   Locally, `npm run diagnose -- <domain>` does the same from your network.
+
 ### Taking upstream updates
 
 ```sh

@@ -2,7 +2,7 @@
 
 **Mission Branch**: `claude/vigilant-shannon-79oda8`
 **Created**: 2026-10-28
-**Status**: Draft
+**Status**: Implemented; SC-001 waits on the first run
 **Input**: vital-core-lgd's first week. Two councils returned almost nothing:
 `www.lbhf.gov.uk` answered the scanner with HTTP 202 and 404s, and
 `www.blackburn.gov.uk` timed out on its homepage three times. The maintainer:
@@ -37,14 +37,14 @@ hints, and a verdict line.
 
 **Acceptance Scenarios**:
 
-1. **Given** a domain that redirects (apex to www, or to another subdomain),
+1. ✓ **Given** a domain that redirects (apex to www, or to another subdomain),
    **When** the workflow runs, **Then** every hop is listed with its status
    and the final host, and a redirect to a different subdomain is called out.
-2. **Given** a site behind a firewall that challenges the scanner, **When**
+2. ✓ **Given** a site behind a firewall that challenges the scanner, **When**
    the workflow runs, **Then** the response headers that identify the
    protection (for example `cf-mitigated`, `x-amzn-waf-action`, Imperva or
    F5 cookies) are named, by header or cookie name only.
-3. **Given** a site that treats the scanner's user agent differently from a
+3. ✓ **Given** a site that treats the scanner's user agent differently from a
    desktop browser's, **When** the workflow runs, **Then** both results are
    shown side by side and the difference is flagged.
 
@@ -62,7 +62,7 @@ requests by host and path when `load` didn't fire in time.
 
 **Acceptance Scenarios**:
 
-1. **Given** a homepage whose `load` event doesn't fire within the timeout,
+1. ✓ **Given** a homepage whose `load` event doesn't fire within the timeout,
    **When** the workflow runs, **Then** the DOMContentLoaded time and up to
    10 still-open requests (host and path, no query string) are listed.
 
@@ -73,7 +73,7 @@ URLs the site's sitemap lists, to compare with what the scans found.
 
 **Acceptance Scenarios**:
 
-1. **Given** a domain, **When** the workflow runs, **Then** it reports
+1. ✓ **Given** a domain, **When** the workflow runs, **Then** it reports
    `robots.txt` status, whether `/` is allowed for the scanner's user agent,
    the sitemaps it names, and the number of URLs in the first sitemap.
 
@@ -94,23 +94,23 @@ URLs the site's sitemap lists, to compare with what the scans found.
 
 | ID | Requirement |
 |---|---|
-| FR-001 | A manual `diagnose` workflow takes an optional list of domains and runs on GitHub's runners. |
-| FR-002 | For each domain it fetches the homepage, its apex/`www.` twin, `robots.txt` and the first sitemap, once with the configured scanner user agent and once with a desktop browser's. |
-| FR-003 | Redirects are followed hop by hop; each hop records status, time and location. |
-| FR-004 | A short list of identifying response headers and the names (never values) of cookies are kept; bodies are not stored beyond the page title. |
-| FR-005 | Protection hints name the firewall or CDN where headers or cookie names identify it. |
-| FR-006 | The homepage is loaded in Chromium with the scan's viewport and user agent; DOMContentLoaded and `load` times, request count, slowest requests and still-open requests are reported. |
-| FR-007 | Each domain gets a one-line verdict; non-OK verdicts are also GitHub annotations. |
-| FR-008 | Results go to the job summary as Markdown, and to stdout as JSON with `--json`. |
-| FR-009 | `hf_only` targets are refused; invalid domains fail before any request. |
+| FR-001 ✓ | A manual `diagnose` workflow takes an optional list of domains and runs on GitHub's runners. |
+| FR-002 ✓ | For each domain it fetches the homepage, its apex/`www.` twin, `robots.txt` and the first sitemap, once with the configured scanner user agent and once with a desktop browser's. |
+| FR-003 ✓ | Redirects are followed hop by hop; each hop records status, time and location. |
+| FR-004 ✓ | A short list of identifying response headers and the names (never values) of cookies are kept; bodies are not stored beyond the page title. |
+| FR-005 ✓ | Protection hints name the firewall or CDN where headers or cookie names identify it. |
+| FR-006 ✓ | The homepage is loaded in Chromium with the scan's viewport and user agent; DOMContentLoaded and `load` times, request count, slowest requests and still-open requests are reported. |
+| FR-007 ✓ | Each domain gets a one-line verdict; non-OK verdicts are also GitHub annotations. |
+| FR-008 ✓ | Results go to the job summary as Markdown, and to stdout as JSON with `--json`. |
+| FR-009 ✓ | `hf_only` targets are refused; invalid domains fail before any request. |
 
 ### Non-Functional Requirements
 
 | ID | Requirement |
 |---|---|
-| NFR-001 | **Sustainability:** manual only (no schedule); about ten HTTP requests and one page load per domain; nothing is committed or published. |
-| NFR-002 | No new dependencies: Node's `fetch` and the Playwright already used by the scan. |
-| NFR-003 | Pure logic (hints, verdicts, parsing, rendering) lives in `src/lib/` with unit tests that make no network calls. |
+| NFR-001 ✓ | **Sustainability:** manual only (no schedule); about ten HTTP requests and one page load per domain; nothing is committed or published. |
+| NFR-002 ✓ | No new dependencies: Node's `fetch` and the Playwright already used by the scan. |
+| NFR-003 ✓ | Pure logic (hints, verdicts, parsing, rendering) lives in `src/lib/` with unit tests that make no network calls. |
 
 ### Constraints
 
@@ -125,5 +125,5 @@ URLs the site's sitemap lists, to compare with what the scans found.
 - **SC-001**: For vital-core-lgd, one run explains LBHF's 202/404s and
   Blackburn's timeouts well enough to choose between "wrong host", "blocked
   by a firewall" and "a slow resource", or says plainly that it can't tell.
-- **SC-002**: The workflow refuses an `hf_only` domain without sending a
+- **SC-002** ✓: The workflow refuses an `hf_only` domain without sending a
   request.
