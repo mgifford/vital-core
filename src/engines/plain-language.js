@@ -16,7 +16,8 @@
  * trends and triage, not authoritative linguistics.
  */
 
-import { findMisspellings } from '../lib/spell.js';
+import { findMisspellings, loadSpeller } from '../lib/spell.js';
+import { DEFAULT_SPELLING_LOCALE } from '../lib/config.js';
 
 const LONG_SENTENCE_WORDS = 20;
 const ACRONYM_CAP = 25;
@@ -24,7 +25,8 @@ const ACRONYM_CAP = 25;
 // "was written", "are being held", "has been reviewed", etc.
 const PASSIVE = /\b(?:is|are|was|were|be|been|being|am)\b\s+(?:\w+ed|\w+en|done|made|sent|put|set|read|built|held|kept|told|shown|known|given|taken|seen|found)\b/i;
 
-export async function runPlainLanguage(page, { extraAllowlist = [] } = {}) {
+export async function runPlainLanguage(page, { extraAllowlist = [], spellingLocale = DEFAULT_SPELLING_LOCALE } = {}) {
+  await loadSpeller(spellingLocale);
   // Extract main-content text in the browser. Prefer <main>/<article>;
   // strip script/style/nav/header/footer so chrome doesn't pollute prose.
   const text = await page.evaluate(() => {
@@ -96,13 +98,14 @@ export async function runPlainLanguage(page, { extraAllowlist = [] } = {}) {
 
   // Spelling: check the main-content words (already nav-excluded) against
   // the dictionary + project allowlist. Words-per-page is wordCount below.
-  const spelling = findMisspellings(words, 25, extraAllowlist);
+  const spelling = findMisspellings(words, 25, extraAllowlist, spellingLocale);
 
   return {
     engine: 'plain-language',
     scored: hasProse, // false = not enough prose to score readability meaningfully
     scoreSkipReason, // null when scored; else 'too-little-text' | 'non-prose'
     wordCount: words.length,
+    spellingLocale,
     misspelledCount: spelling.misspelledCount,
     misspelled: spelling.misspelled,
     sentenceCount: sentences.length,

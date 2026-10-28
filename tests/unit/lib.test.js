@@ -13,7 +13,7 @@ import { splitSentences, estimateSyllables } from '../../src/engines/plain-langu
 import { checkLink } from '../../src/lib/links.js';
 import { normalizeRate, shouldRun } from '../../src/lib/sampling.js';
 import { updateFindings } from '../../src/lib/findings.js';
-import { findMisspellings } from '../../src/lib/spell.js';
+import { findMisspellings, loadSpeller } from '../../src/lib/spell.js';
 import { impactFor, estimateExcluded, pct } from '../../src/lib/fpc.js';
 import { toCsv, ruleSlug, writeLighthouseCsv, writeLighthouseJson } from '../../src/lib/csv.js';
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
@@ -475,6 +475,24 @@ test('spell: flags real misspellings, skips numbers/acronyms/allowlist/jargon', 
   assert.deepEqual(r.misspelled.sort(), ['recieve', 'teh', 'xyzzy']);
 });
 
+test('spell: each spelling_locale accepts its own English and still catches typos', async () => {
+  const words = ['organisation', 'colour', 'centre', 'programme', 'organization', 'accesibility', 'Medicaid'];
+  const flagged = async (locale) => {
+    await loadSpeller(locale);
+    return findMisspellings(words, 25, [], locale).misspelled.sort();
+  };
+  assert.deepEqual(findMisspellings(words).misspelled.sort(), ['accesibility', 'centre', 'colour', 'organisation', 'programme'], 'the default is US English');
+  assert.deepEqual(await flagged('en-GB'), ['accesibility', 'organization']);
+  assert.deepEqual(await flagged('en-CA'), ['accesibility', 'organisation', 'programme']);
+  assert.deepEqual(await flagged('en-AU'), ['accesibility', 'organization', 'programme']);
+  assert.ok(!(await flagged('en-GB')).includes('Medicaid'), 'the project allowlist applies to every locale');
+});
+
+test('spell: a locale must be loaded before use, and unknown locales are refused', async () => {
+  assert.throws(() => findMisspellings(['word'], 25, [], 'en-NZ'), /not loaded/);
+  await assert.rejects(loadSpeller('en-NZ'), /Unsupported spelling locale "en-NZ"/);
+});
+
 test('spell: per-call extraAllowlist suppresses target-specific jargon', () => {
   const words = ['MACRA', 'CHIPRA', 'xyzzy', 'beneficiares']; // MACRA/CHIPRA = ALL-CAPS -> always skipped; xyzzy/beneficiares = misspellings
   const withoutExtra = findMisspellings(words);
@@ -922,9 +940,30 @@ test('security: classifies TLD, HTTPS, and headers from a mocked origin', async 
     assert.equal(by2['https'], false, 'http is not https');
     assert.equal(by2['gov-tld'], false, '.com is not sponsored');
     assert.equal(by2['security-txt'], false);
+
+    const r3 = await runSecurity('https://www.hackney.gov.uk', 'ua', 1000);
+    const gov3 = r3.checks.find((c) => c.id === 'gov-tld');
+    assert.equal(gov3.pass, true, 'a .gov.uk council is on a government domain');
+    assert.equal(gov3.detail, 'gov.uk');
   } finally {
     globalThis.fetch = realFetch;
   }
+});
+
+test('governmentSuffix: national government namespaces count, look-alikes do not', async () => {
+  const { governmentSuffix } = await import('../../src/engines/security.js');
+  assert.equal(governmentSuffix('www.cms.gov'), '.gov');
+  assert.equal(governmentSuffix('go.walsall.gov.uk'), '.gov.uk');
+  assert.equal(governmentSuffix('WWW.GOV.SCOT.'), '.gov.scot', 'case and a trailing dot are ignored');
+  assert.equal(governmentSuffix('www.canada.ca'), '.canada.ca');
+  assert.equal(governmentSuffix('canada.ca'), '.canada.ca', 'the apex itself counts');
+  assert.equal(governmentSuffix('www.tbs-sct.gc.ca'), '.gc.ca');
+  assert.equal(governmentSuffix('www.digital.go.jp'), '.go.jp');
+  assert.equal(governmentSuffix('example.com'), null);
+  assert.equal(governmentSuffix('notgov.uk'), null);
+  assert.equal(governmentSuffix('www.example.co.uk'), null);
+  assert.equal(governmentSuffix('gov.uk.example.com'), null, 'only the end of the host counts');
+  assert.equal(governmentSuffix(''), null);
 });
 
 test('remediation: expanded tips cover landmark-unique and aria rules', async () => {

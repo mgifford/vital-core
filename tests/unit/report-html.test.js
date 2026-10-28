@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
   const target = { key: 'd', domain: 'd' };
@@ -1087,4 +1087,19 @@ test('policy lanes: approved suppressions render as their own labeled, non-delet
   assert.match(html, /Suppression is not resolution/);
   assert.match(html, /checkout-team/);
   assert.match(html, /2026-09-01/);
+});
+
+test('readability page: the misspellings note names the English variant as text', () => {
+  const target = { domain: 'www.example.gov.uk', key: 'www.example.gov.uk', languages: ['en'], defaultLanguage: 'en' };
+  const summary = (locales) => ({
+    week: '2026-W44',
+    plainLanguage: {
+      pageRows: [{ url: 'https://www.example.gov.uk/about', wordCount: 300, fleschReadingEase: 60, fleschKincaidGrade: 8, scored: true }],
+      topMisspellings: [{ word: 'accesibility', pages: 2, examplePages: [] }],
+      ...(locales ? { spellingLocales: locales } : {}),
+    },
+  });
+  assert.match(renderReadabilityPage(target, summary(['en-GB']), 'r.csv'), /Checked against the British English dictionary\./);
+  assert.match(renderReadabilityPage(target, summary(), 'r.csv'), /Checked against the US English dictionary\./, 'older summaries were US English');
+  assert.match(renderReadabilityPage(target, summary(['en-CA', 'en-US']), 'r.csv'), /Checked against the Canadian English, US English dictionaries\./);
 });

@@ -20,6 +20,7 @@ defaults:
   max_crawl_depth: 10        # BFS depth from seeds
   retention_weeks: 2        # page-level detail kept this long; weekly summaries kept forever
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
+  spelling_locale: en-US     # dictionary for spell checks: en-US, en-GB, en-CA or en-AU (per-target override below)
   reporting:
     max_html_issues: 50
     moderate_issue_threshold_percent: 5
@@ -243,6 +244,13 @@ targets:
   #     Examples:
   #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
   #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
+  #
+  #   spelling_locale: en-US | en-GB | en-CA | en-AU — the English the spell
+  #     checker accepts (default en-US, or defaults.spelling_locale). en-GB is
+  #     the "-ise" dictionary GOV.UK style uses; en-CA accepts "colour" with
+  #     "organization". Switching changes the misspelling counts from that
+  #     week on; reports name the dictionary used each week.
+  #     Example: spelling_locale: en-CA   # one Canadian site in a US fleet
   #
   #   url_exclude_patterns: [ ... ] optional list of substring or /regex/ patterns
   #     to exclude from REPORT output only (not from the scan), for EVERYONE, at
