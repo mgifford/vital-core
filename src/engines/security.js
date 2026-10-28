@@ -61,7 +61,7 @@ export async function runSecurity(origin, userAgent, timeoutMs = 15000) {
 
   const host = url.hostname.toLowerCase();
   const govSuffix = governmentSuffix(host);
-  add('gov-tld', 'Government domain (.gov, .mil, .edu, or a national one such as .gov.uk)',
+  add('gov-tld', 'Government domain',
     !!govSuffix, govSuffix ? govSuffix.slice(1) : host.split('.').slice(-1)[0]);
 
   // security.txt (well-known location, with legacy fallback).
