@@ -7,6 +7,8 @@ import { loadConfig, getTarget, DIRS } from './lib/config.js';
 import { normalizeUrl, pageId, buildUrlFilter, resolveUrlPatterns } from './lib/urls.js';
 import { loadState, saveState, addPage, pickBatch, weeklyCapFor, canonicalizeState } from './lib/state.js';
 import { resolveCanonicalOrigin } from './lib/canonical.js';
+import { detectBlock } from './lib/access.js';
+import { cookieNames } from './lib/probe.js';
 import { isoWeek } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
@@ -176,7 +178,7 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 const rates = ratesFor(config, target);
 const enginesRun = {}; // engine -> count of pages it ran on this run
 const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, redirect: 0, error: 0 };
-const runLog = { runId, week, domain: target.domain, canonical, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates };
+const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAllowed: robots.isAllowed('/') }, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates };
 
 // Link checking: collect links seen on pages that are in link-check's
 // sample, then probe them once after the scan. Rate > 0 enables it.
@@ -325,6 +327,26 @@ for (const item of batch) {
       log(`redirect ${urlPath} → ${landed}`);
       recId = landedId;
       recUrl = landed;
+    }
+
+    // A firewall's challenge or refusal is not the page: record it as
+    // blocked, naming the firewall, and run no audit on it.
+    const setCookies = ((await response?.headersArray?.()) ?? [])
+      .filter((h) => h.name.toLowerCase() === 'set-cookie').map((h) => h.value);
+    const block = detectBlock({ status, headers: response?.headers() ?? {}, cookies: cookieNames(setCookies) });
+    if (block) {
+      const scannedAt = new Date().toISOString();
+      fs.writeFileSync(
+        path.join(pagesDir, `${recId}.json`),
+        JSON.stringify({ pageId: recId, url: recUrl, week, runId, scannedAt, status, depth: item.depth, blocked: block })
+      );
+      runLog.scanned.push(recId);
+      Object.assign(state.pages[recId], { lastScannedWeek: week, lastScannedAt: scannedAt, lastStatus: status, failCount: 0 });
+      tally.blocked++;
+      log(`blocked ${status} ${new URL(recUrl).pathname}: firewall ${block.kind}${block.by.length ? ` (${block.by.join(', ')})` : ''}`);
+      if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
+      await new Promise((r) => setTimeout(r, delayMs));
+      continue;
     }
     // Let late async rendering settle before auditing. Government sites
     // routinely fetch/hydrate after the load event, which produces
@@ -500,6 +522,7 @@ for (const item of batch) {
       if (/timeout/i.test(msg) || /TimeoutError/i.test(msg)) tally.timeout++;
       else tally.error++;
       state.pages[item.id].failCount = (state.pages[item.id].failCount ?? 0) + 1;
+      state.pages[item.id].lastFailedWeek = week;
       runLog.errors.push({ pageId: item.id, url: item.url, error: msg.slice(0, 300) });
       log(`ERROR ${urlPath}: ${msg.slice(0, 120)}`);
     }

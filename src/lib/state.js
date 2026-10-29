@@ -106,6 +106,12 @@ export function canonicalizeState(state, canonicalOrigin) {
   return { moved, merged };
 }
 
+// Entries from before lastFailedWeek existed get one more try, which also
+// releases pages that failed out for good under the old rule.
+function retryable(p, week) {
+  return (p.failCount ?? 0) < 3 || p.lastFailedWeek !== week;
+}
+
 /**
  * importance (1-5, default 3) scales max_pages_per_week so low-value domains
  * (e.g. near-identical open-data sites) consume less budget than key sites.
@@ -133,7 +139,7 @@ export function budgetStatus(state, week, target) {
   const scannedThisWeek = entries.filter(([, p]) => p.lastScannedWeek === week).length;
   const remaining = Math.max(0, cap - scannedThisWeek);
   const frontierEmpty = entries.length > 0
-    && !entries.some(([, p]) => p.lastScannedWeek !== week && p.failCount < 3);
+    && !entries.some(([, p]) => p.lastScannedWeek !== week && retryable(p, week));
   return { cap, scannedThisWeek, remaining, frontierEmpty };
 }
 
@@ -153,8 +159,9 @@ export function budgetStatus(state, week, target) {
  *   2. Then the rest in a stable per-week random order — a different
  *      random spread of a large site each week, deterministic for replay.
  *
- * Pages with failCount >= 3 are excluded until a successful scan resets
- * the counter.
+ * Pages with failCount >= 3 are excluded for the rest of the week they
+ * last failed in, then tried once more the next week, so a site that was
+ * down or blocked comes back on its own.
  */
 export function pickBatch(state, week, budget, scannedThisWeekCap) {
   const entries = Object.entries(state.pages);
@@ -164,7 +171,7 @@ export function pickBatch(state, week, budget, scannedThisWeekCap) {
   if (n === 0) return { batch: [], scannedThisWeek };
 
   const candidates = entries
-    .filter(([, p]) => p.lastScannedWeek !== week && p.failCount < 3)
+    .filter(([, p]) => p.lastScannedWeek !== week && retryable(p, week))
     .map(([id, p]) => ({ id, p, rank: weeklyRank(id, week) }))
     .sort((a, b) => {
       // Priority first.

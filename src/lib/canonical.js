@@ -65,7 +65,7 @@ export async function resolveCanonicalOrigin(configuredOrigin, userAgent, timeou
     }
   }
   if (home.error) {
-    return { origin: configured, configured, httpsProblem: null, note: `homepage unreachable (${home.error}); keeping ${configured}` };
+    return { origin: configured, configured, httpsProblem: null, homeError: home.error, note: `homepage unreachable (${home.error}); keeping ${configured}` };
   }
   const origin = pickCanonicalOrigin(configured, home.url);
   let note = null;

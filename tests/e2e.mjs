@@ -100,7 +100,8 @@ ${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a
 <body><main><h1>Fixture</h1><ul>${nav}</ul>
 <p><a rel="me" href="https://mastodon.social/@fixture">Follow us on Mastodon</a></p>
 <p><a href="/does-not-exist-404.html">A deliberately broken link</a></p>
-<p><a href="/moved-page.html">A page that redirects to page 1</a></p></main></body></html>`
+<p><a href="/moved-page.html">A page that redirects to page 1</a></p>
+<p><a href="/challenge.html">A page behind a firewall challenge</a></p></main></body></html>`
   );
   // 1x1 png
   fs.writeFileSync(path.join(SITE, 'pixel.png'), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64'));
@@ -127,6 +128,7 @@ const SITE = ${JSON.stringify(SITE)};
 http.createServer((req, res) => {
   const reqPath = req.url.split('?')[0];
   if (reqPath === '/moved-page.html') { res.writeHead(301, { location: '/page-1.html' }); res.end(); return; }
+  if (reqPath === '/challenge.html') { res.writeHead(202, { 'content-type': 'text/html', 'x-amzn-waf-action': 'challenge' }); res.end('<!DOCTYPE html><html><head><title>Challenge</title></head><body><img src="/x.png"></body></html>'); return; }
   const f = path.join(SITE, reqPath === '/' ? 'index.html' : reqPath);
   if (fs.existsSync(f) && fs.statSync(f).isFile()) {
     res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.js') ? 'application/javascript' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
@@ -265,6 +267,13 @@ try {
     .map((f) => JSON.parse(fs.readFileSync(path.join(runsDir1, f))).scanned)
     .filter((ids) => new Set(ids).size !== ids.length);
   assert(scannedTwice.length === 0, 'no page is audited twice in one run, even when a redirect lands on it first');
+
+  // A firewall challenge page is recorded as blocked and never audited.
+  const challengeRec = w1Records.find((r) => r.url.endsWith('/challenge.html'));
+  assert(challengeRec && challengeRec.blocked?.kind === 'challenge' && challengeRec.status === 202, `the challenge page is recorded as blocked (got ${JSON.stringify(challengeRec?.blocked)})`);
+  assert(!challengeRec.axe && !challengeRec.alfa, 'no audit engine ran on the challenge page');
+  assert(challengeRec.blocked.by.some((b) => b.startsWith('AWS WAF')), 'the firewall is named');
+  assert(w1.access?.firewall?.pages === 1 && w1.access.level === 'ok', `access counts the block without calling the site blocked (got ${JSON.stringify(w1.access)})`);
 
   // Image inventory: every page has a <img src="/pixel.png">, so images engine
   // should record at least one image per page with src and hasAlt fields.
