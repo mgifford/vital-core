@@ -22,7 +22,7 @@ import { headersToWappalyzer } from '../../src/engines/tech.js';
 import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
-import { extractAudits, isDetachedTargetError } from '../../src/engines/lighthouse.js';
+import { extractAudits, isDetachedTargetError, isClosedSessionError } from '../../src/engines/lighthouse.js';
 import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
 import { loadPriorityUrls } from '../../src/lib/top-tasks.js';
 import { prioritizeAccessibilityBugs } from '../../src/lib/accessibility-priority.js';
@@ -1697,6 +1697,15 @@ test('isDetachedTargetError: matches only a child target closing while Lighthous
   assert.ok(!isDetachedTargetError(undefined));
 });
 
+test('isClosedSessionError: matches Lighthouse rejecting a check on a page that has closed', () => {
+  const late = 'Protocol error (Page.enable): Session closed. Most likely the page has been closed.';
+  assert.ok(isClosedSessionError(protocolError('Page.enable', 'Session closed. Most likely the page has been closed.')));
+  assert.ok(isClosedSessionError(Object.assign(new Error(late), { protocolMethod: 'Runtime.evaluate' })), 'any method');
+  assert.ok(!isClosedSessionError(new Error(late)), 'needs a protocol method');
+  assert.ok(!isClosedSessionError(protocolError('Page.navigate', 'Internal error')));
+  assert.ok(!isClosedSessionError(undefined));
+});
+
 test('guardDetachedTargetRejections: survives the detached-target rejection, still crashes on others', () => {
   const mod = new URL('../../src/engines/lighthouse.js', import.meta.url).href;
   const run = (method, message) => spawnSync(process.execPath, ['--input-type=module', '-e', `
@@ -1712,6 +1721,11 @@ test('guardDetachedTargetRejections: survives the detached-target rejection, sti
   assert.equal(ignored.status, 0, ignored.stderr);
   assert.match(ignored.stdout, /ignored a child target/);
   assert.match(ignored.stdout, /still running/);
+
+  const late = run('Page.enable', 'Protocol error (Page.enable): Session closed. Most likely the page has been closed.');
+  assert.equal(late.status, 0, late.stderr);
+  assert.match(late.stdout, /ignored a late check on a page that had closed \(Page\.enable\)/);
+  assert.match(late.stdout, /still running/);
 
   const fatal = run('Page.navigate', 'Protocol error (Page.navigate): Internal error');
   assert.notEqual(fatal.status, 0);
