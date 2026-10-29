@@ -106,6 +106,17 @@ export function extractTitle(html) {
   return text ? text.slice(0, 120) : null;
 }
 
+/** A plain reading of a Node fetch error code. */
+export function describeNetworkError(code) {
+  const c = String(code ?? '');
+  if (c === 'UND_ERR_CONNECT_TIMEOUT') return 'no connection within 10 s (often a firewall dropping traffic from this network)';
+  if (c === 'ECONNREFUSED') return 'connection refused';
+  if (c === 'ECONNRESET' || c === 'UND_ERR_SOCKET') return 'connection reset';
+  if (c === 'ENOTFOUND' || c === 'EAI_AGAIN') return 'domain not found (DNS)';
+  if (/CERT|SSL|TLS/i.test(c)) return `TLS certificate problem: ${c}`;
+  return `network error: ${c}`;
+}
+
 /** The last hop of a fetch chain, and its final host. */
 export function finalHop(chain) {
   const hop = chain?.hops?.[chain.hops.length - 1] ?? null;
@@ -185,7 +196,8 @@ export function renderMarkdown(results, { refused = [] } = {}) {
     }
     if (r.sitemap) {
       const sm = r.sitemap;
-      out.push(`**Sitemap** (${cell(sm.url)}): ${sm.error ?? `${sm.status}, ${sm.locs} ${sm.isIndex ? 'child sitemaps' : 'URLs'}`}`, '');
+      const count = `${sm.locs}${sm.truncated ? '+' : ''} ${sm.isIndex ? 'child sitemaps' : 'URLs'}${sm.truncated ? ' (counted in the first 256 KB)' : ''}`;
+      out.push(`**Sitemap** (${cell(sm.url)}): ${sm.error ?? `${sm.status}, ${count}`}`, '');
     }
     if (r.page) {
       const p = r.page;
