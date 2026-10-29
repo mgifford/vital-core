@@ -132,6 +132,11 @@ severity taxonomy and accessibility rules: a standing gate, not an afterthought.
   gate jobs. Without a usable key, checkout falls back to a read-only token
   and a run would otherwise crawl everything and then lose it at the push.
   Keep the check ahead of any step that fetches target sites.
+- **The `diagnose` workflow refuses `hf_only` targets** too, by key or by
+  host with `www.` ignored (`resolveProbeTargets()` in `src/lib/probe.js`).
+  It pushes nothing, so it needs no data-push check, and it keeps only a
+  short header whitelist and cookie *names*: never store cookie values or
+  page bodies from it.
 
 ---
 
@@ -351,8 +356,17 @@ unaffected.
 
 vital-core is a GitHub template. Each fleet (e.g. `vital-core-nsf`,
 `vital-core-lgd`) is a repo made from it and joined to its history (README,
-"Setting up a new instance"). When working in a fleet repo rather than
-`mgifford/vital-core`:
+"Setting up a new instance").
+
+**vital-core is itself a fleet: CMS.** Every CMS site is in the US, so its
+`config/targets.yml`, `config/profiles/`, Section 508 `legal_baseline`,
+`en-US` `spelling_locale` and the US-government framing in `AGENTS.md` are
+correct here. Don't generalize them in vital-core; a new fleet replaces them
+in its own repo. Engine code (`src/`, workflows, scripts) is shared by every
+fleet, so it must not assume the US: make anything country-specific a
+setting, with the CMS value as the default.
+
+When working in a fleet repo rather than `mgifford/vital-core`:
 
 - **Fleet-only changes stay in the fleet:** `config/targets.yml`,
   `config/profiles/`, the README introduction.

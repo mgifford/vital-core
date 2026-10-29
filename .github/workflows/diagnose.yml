@@ -1,0 +1,52 @@
+# Manual diagnostics for targets whose pages come back as 202s, 403s, 404s
+# or timeouts. Runs scripts/probe-targets.js from GitHub's network, the
+# network the scans run from: for each domain it fetches the homepage, its
+# apex/www. twin, robots.txt and the first sitemap with the scanner's and a
+# desktop browser's user agent, loads the homepage in Chromium the way
+# scan.js does, and writes a verdict per domain to the job summary.
+#
+# Manual only. About ten requests and one page load per domain; nothing is
+# committed or published. hf_only targets are refused by the script.
+
+name: diagnose
+
+on:
+  workflow_dispatch:
+    inputs:
+      domains:
+        description: 'Domains to probe, space- or comma-separated (blank = every target)'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            src
+            scripts
+            config
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --omit=optional --ignore-scripts
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Probe targets
+        env:
+          DOMAINS: ${{ inputs.domains }}
+        run: node scripts/probe-targets.js --domains "$DOMAINS"

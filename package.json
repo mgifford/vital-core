@@ -14,6 +14,7 @@
     "check:public-interest": "node scripts/check-public-interest.js",
     "check:alfa-metadata": "node scripts/validate-alfa-metadata.js",
     "check:ollama": "node scripts/check-ollama.js",
+    "diagnose": "node scripts/probe-targets.js",
     "i18n:extract": "node scripts/i18n-extract.js",
     "i18n:check": "node scripts/i18n-extract.js --check",
     "sync:hosting": "bash scripts/sync-hosting-branches.sh",
