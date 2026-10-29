@@ -152,10 +152,22 @@ test('pickBatch: never-scanned first, weekly cap respected, no rescan same week'
   const { batch: capped } = pickBatch(state, '2026-W24', 10, 2);
   assert.equal(capped.length, 1);
 
-  // Failing pages excluded after 3 failures.
+  // Failing pages excluded after 3 failures in the same week.
   state.pages.c.failCount = 3;
+  state.pages.c.lastFailedWeek = '2026-W24';
   const { batch: noFail } = pickBatch(state, '2026-W24', 10, 100);
   assert.deepEqual(noFail.map((b) => b.id), ['b']);
+});
+
+test('pickBatch: a page that failed out in an earlier week is tried again', () => {
+  const state = { domain: 'x', pages: {} };
+  addPage(state, 'home', 'https://x/', 0);
+  state.pages.home.failCount = 3;
+  state.pages.home.lastFailedWeek = '2026-W44';
+  assert.deepEqual(pickBatch(state, '2026-W44', 10, 100).batch.map((b) => b.id), [], 'not again the same week');
+  assert.deepEqual(pickBatch(state, '2026-W45', 10, 100).batch.map((b) => b.id), ['home'], 'tried once more the next week');
+  delete state.pages.home.lastFailedWeek;
+  assert.deepEqual(pickBatch(state, '2026-W44', 10, 100).batch.map((b) => b.id), ['home'], 'an entry from before lastFailedWeek gets one more try');
 });
 
 test('pickBatch: priority URLs scanned first, no rescan within a week', () => {
@@ -198,8 +210,9 @@ test('pickBatch: failed pages can retry in-week until fail threshold', () => {
   state.pages.done.lastScannedWeek = '2026-W24';
   // retry: no completed outcome yet this week and below fail threshold -> eligible.
   state.pages.retry.failCount = 2;
-  // blocked: reached fail threshold -> excluded.
+  // blocked: reached fail threshold this week -> excluded.
   state.pages.blocked.failCount = 3;
+  state.pages.blocked.lastFailedWeek = '2026-W24';
 
   const { batch } = pickBatch(state, '2026-W24', 10, 100);
   assert.deepEqual(batch.map((b) => b.id), ['retry']);
@@ -233,6 +246,7 @@ test('budgetStatus: cap reached vs frontier empty vs runnable', () => {
   addPage(empty, 'b', 'https://x/b', 0);
   empty.pages.a.lastScannedWeek = '2026-W24';
   empty.pages.b.failCount = 3;
+  empty.pages.b.lastFailedWeek = '2026-W24';
   const emptyStatus = budgetStatus(empty, '2026-W24', target);
   assert.equal(emptyStatus.remaining, 2);
   assert.equal(emptyStatus.frontierEmpty, true);
@@ -1034,7 +1048,7 @@ test('perf-impact: averages always; totals only with page loads', async () => {
   assert.equal(humanBytes(2.5e12), '2.5 TB');
 });
 
-test('dashboard: blocked targets render in a collapsed accordion, not up top', async () => {
+test('dashboard: blocked targets are listed above the ranking, and still not ranked', async () => {
   const { renderIndex } = await import('../../src/report-html.js');
   const wk = (week, blocked) => ({ week, blocked, pagesScanned: 1, pagesAudited: blocked ? 0 : 1,
     axe: { medianViolations: 0, pagesWithViolations: 0, pagesScanned: 1 },
@@ -1044,10 +1058,11 @@ test('dashboard: blocked targets render in a collapsed accordion, not up top', a
     { target: { domain: 'blocked.gov', key: 'blocked.gov' }, series: [wk('2026-W25', { status: 403 })], diffs: {}, bugs: [] },
   ];
   const html = renderIndex(dashboard);
-  assert.match(html, /<details class="blocked-accordion">/, 'blocked targets are in a <details> accordion');
-  assert.match(html, /Blocked targets \(1\)/, 'accordion summary shows the count');
-  // The blocked accordion comes AFTER the leaderboard table, not before it.
-  assert.ok(html.indexOf('<table') < html.indexOf('blocked-accordion'), 'accordion is below the main content');
+  assert.match(html, /Sites blocking the scanner \(1\)/, 'the alert shows the count');
+  assert.match(html, /blocked\.gov<\/a><\/strong>: Blocked\./, 'a summary from before access was recorded still lists the site');
+  assert.match(html, /HTTP 403 × 1/, 'with its error status');
+  assert.ok(html.indexOf('id="h-access"') < html.indexOf('<table'), 'the alert comes before the ranking');
+  assert.doesNotMatch(html.slice(html.indexOf('<table')), /<th scope="row"><a[^>]*>blocked\.gov/, 'the blocked site is not ranked');
 });
 
 test('buildUrlFilter: no config passes everything', () => {

@@ -3721,6 +3721,7 @@ ${coverageTable(summary)}`;
   const body = `
 <h1>${esc(target.domain)}: ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('overview')}
+${accessBanner(summary.access, target.user_agent)}
 <p class="meta">${t('This is the <strong>@week</strong> ISO-week report (<strong>@fetched</strong> pages fetched, <strong>@audited</strong> unique pages audited by axe/Alfa). Generated @date.', { '@week': esc(summary.week), '@fetched': summary.pagesScanned, '@audited': summary.pagesAudited ?? summary.pagesScanned, '@date': esc(summary.generatedAt.slice(0, 10)) })}
 ${prev ? t('Compared against @week (@n fetched).', { '@week': esc(prev.week), '@n': prev.pagesScanned }) : t('First recorded week; no comparison yet.')} ${t('The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.')}
 ${t('Machine-readable API:')} <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
@@ -3854,6 +3855,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
   const body = `
 <h1>${esc(target.domain)}: ${t('Accessibility')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('accessibility')}
+${accessBanner(summary.access, target.user_agent)}
 ${acrNote}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${nextActionsSection(summary, bugs, reporting)}
@@ -4068,33 +4070,142 @@ ${table}
 </figure>`;
 }
 
-export function renderIndex(dashboard, { branding = {} } = {}) {
+const WAF_ALLOWLIST_URL = 'https://github.com/mgifford/vital-core/blob/main/WAF-ALLOWLIST.md';
+
+function statusList(statuses) {
+  return Object.entries(statuses ?? {}).sort((a, b) => b[1] - a[1]).map(([s, n]) => `HTTP ${s} × ${n}`).join(', ');
+}
+
+/**
+ * Why a site blocks the scanner, as list items, plus what to ask the site
+ * for. Every cause is a text label, never colour alone.
+ */
+export function accessReasons(access, userAgent = 'vital-scans') {
+  const items = [];
+  const actions = [];
+  const labels = [];
+  const ua = esc(String(userAgent).split('/')[0] || 'vital-scans');
+  const fw = access?.firewall;
+  if (fw?.pages) {
+    const by = fw.by?.length ? ` ${t('Identified as @firewalls.', { '@firewalls': esc(fw.by.join(', ')) })}` : '';
+    labels.push(t('blocked by a firewall'));
+    items.push(`<strong>${t('Blocked by a firewall')}</strong>: ${t('@count page(s) got a challenge or refusal instead of the page (@statuses).', { '@count': fw.pages, '@statuses': esc(statusList(fw.statuses)) })}${by}`);
+    actions.push(t('Ask the site’s web team to let the user agent <code>@ua</code> through its firewall (<a href="@href">what to send them</a>).', { '@ua': ua, '@href': WAF_ALLOWLIST_URL }));
+  }
+  const rb = access?.robots;
+  if (rb?.rootBlocked || rb?.skipped) {
+    labels.push(t('blocked by robots.txt'));
+    items.push(`<strong>${t('Blocked by robots.txt')}</strong>: ${rb.rootBlocked
+      ? t('robots.txt disallows the scanner for the whole site.')
+      : t('@count page(s) skipped because robots.txt disallows them for the scanner.', { '@count': rb.skipped })}`);
+    actions.push(t('Ask the site to allow <code>@ua</code> in its robots.txt.', { '@ua': ua }));
+  }
+  if (access?.connection) {
+    labels.push(t('unreachable'));
+    items.push(`<strong>${t('Unreachable')}</strong>: ${t('no page loaded in @runs run(s)', { '@runs': access.connection.runs })}${access.connection.error ? ` (${esc(access.connection.error.replace(/\.$/, ''))})` : ''}.`);
+    actions.push(t('Run Actions → diagnose for this domain to see what the scanner’s network gets. A network block has to be lifted by the site’s team.'));
+  }
+  if (access?.level === 'blocked' && Object.keys(access.errorStatuses ?? {}).length) {
+    items.push(t('Other pages answered with an error: @statuses.', { '@statuses': esc(statusList(access.errorStatuses)) }));
+  }
+  return { items, actions, labels };
+}
+
+/**
+ * Dashboard alert for every configured site the scanner couldn't fully
+ * scan: blocked, partly blocked or unreachable first, then sites with no
+ * scan data yet. Placed above the ranking, not collapsed, because a missing
+ * or partial result is the first thing a reader needs to know.
+ */
+export function accessAlert(entries) {
+  const stopped = entries.filter((e) => ['blocked', 'partial'].includes(e.access?.level));
+  const waiting = entries.filter((e) => e.access?.level === 'not-scanned');
+  if (!stopped.length && !waiting.length) return '';
+  const label = (level) => (level === 'partial' ? t('Partly blocked') : t('Blocked'));
+  const names = (list) => {
+    const shown = list.slice(0, 3).map((e) => esc(e.domain)).join(', ');
+    return list.length > 3 ? `${shown} ${t('and @count more', { '@count': list.length - 3 })}` : shown;
+  };
+  const list = stopped.map((e) => {
+    const { items, actions } = accessReasons(e.access, e.userAgent);
+    const name = e.href ? `<a href="${esc(e.href)}">${esc(e.domain)}</a>` : esc(e.domain);
+    return `<li><strong>${name}</strong>: ${label(e.access.level)}.
+<ul>${items.map((i) => `<li>${i}</li>`).join('')}</ul>
+${actions.length ? `<p>${actions.join(' ')}</p>` : ''}</li>`;
+  }).join('\n');
+  const notYet = waiting.length
+    ? `<p>${t('Not scanned yet: @domains. No scan has saved any data for them.', { '@domains': waiting.map((e) => esc(e.domain)).join(', ') })}</p>`
+    : '';
+  const summary = stopped.length
+    ? t('Sites blocking the scanner (@count): @domains', { '@count': stopped.length, '@domains': names(stopped) })
+    : t('Sites not scanned yet (@count): @domains', { '@count': waiting.length, '@domains': names(waiting) });
+  // The summary names the count and the sites, so the notice reads at a
+  // glance while closed. No heading inside <summary>: its button role hides
+  // headings from some screen readers, so the region is labelled instead.
+  return `<section class="access-notice" aria-labelledby="h-access">
+<details>
+<summary><span id="h-access">${summary}</span></summary>
+${stopped.length ? `<p>${t('A firewall rule, a robots.txt rule or a network block stopped the scanner on these sites, so their results are missing or partial. The fix is on the site’s side.')}</p>
+<ul>${list}</ul>` : ''}
+${notYet}
+</details>
+</section>`;
+}
+
+/**
+ * Notice at the top of a domain's pages when the scanner was blocked. Open
+ * when nothing could be audited, since it is then the page's whole story;
+ * closed when only part of the site was blocked.
+ */
+export function accessBanner(access, userAgent) {
+  if (!['blocked', 'partial'].includes(access?.level)) return '';
+  const { items, actions, labels } = accessReasons(access, userAgent);
+  const title = access.level === 'partial'
+    ? t('Part of this site blocks the scanner')
+    : t('This site blocks the scanner');
+  const scope = access.level === 'partial'
+    ? t('The results below cover only the pages the scanner could reach.')
+    : t('No page could be audited, so there are no accessibility results for this site.');
+  return `<section class="access-notice" aria-labelledby="h-access-banner">
+<details${access.level === 'blocked' ? ' open' : ''}>
+<summary><span id="h-access-banner">${title}${labels.length ? `: ${labels.join(', ')}` : ''}</span></summary>
+<p>${scope}</p>
+<ul>${items.map((i) => `<li>${i}</li>`).join('')}</ul>
+${actions.length ? `<p>${actions.join(' ')}</p>` : ''}
+</details>
+</section>`;
+}
+
+export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
   // Profile branding overrides the default headline/intro; absent (the
   // GitHub Pages default) it falls back to the original copy unchanged.
   const h1 = branding.title || t('Weekly quality ledger');
   const intro = branding.intro
     || t('Accessibility and sustainability, measured continuously with open source engines. Thousands of pages per domain, scanned slowly and politely across each week.');
   const pageTitle = branding.title ? `${branding.title} | vital-scans` : 'vital-scans | weekly quality ledger';
-  // Separate targets whose latest week is blocked (e.g. a WAF returning
-  // 403 to the scanner) so they don't read as zero-violation successes.
-  const blocked = dashboard.filter(({ series }) => series[series.length - 1].blocked);
-  const active = dashboard.filter(({ series }) => !series[series.length - 1].blocked);
-
-  // Blocked targets are useful context but not the headline — collapsed
-  // into an accordion at the bottom of the dashboard, not up top.
-  const blockedCallout = blocked.length === 0 ? '' : `
-<section aria-labelledby="h-blocked">
-<details class="blocked-accordion">
-<summary><span id="h-blocked">${t('Blocked targets (@n)', { '@n': blocked.length })}</span></summary>
-<p>${t('These sites returned only access-denied responses to the scanner, so no accessibility or sustainability data could be collected. This is typically a WAF or bot manager blocking automated traffic, not a scan failure. See <a href="https://github.com/mgifford/vital-core/blob/main/WAF-ALLOWLIST.md">WAF-ALLOWLIST.md</a> for how the scanner can be allowlisted.')}</p>
-<ul>${blocked
-    .map(({ target, series }) => {
+  // A target whose latest week audited nothing (a firewall, robots.txt or
+  // network block) is listed in the access alert instead of the ranking, so
+  // it can't read as a zero-violation success.
+  const isBlocked = (latest) => latest.access?.level === 'blocked' || (!latest.access && latest.blocked);
+  const blocked = dashboard.filter(({ series }) => isBlocked(series[series.length - 1]));
+  const active = dashboard.filter(({ series }) => !isBlocked(series[series.length - 1]));
+  const reportHref = (target, latest) => `reports/${target.key}/${latest.week}/index.html`;
+  // A pruned week's committed summary may predate `access`; its `blocked`
+  // status still says whether a firewall refused the scanner.
+  const legacyAccess = (latest) => {
+    const n = latest.pagesScanned ?? 1;
+    const statuses = { [latest.blocked.status]: n };
+    return [401, 403, 429].includes(latest.blocked.status)
+      ? { level: 'blocked', firewall: { pages: n, statuses, by: [] }, errorStatuses: {} }
+      : { level: 'blocked', firewall: { pages: 0 }, errorStatuses: statuses };
+  };
+  const accessSection = accessAlert([
+    ...dashboard.map(({ target, series }) => {
       const latest = series[series.length - 1];
-      return `<li><strong>${esc(target.domain)}</strong> — ${t('HTTP @status (@week)', { '@status': latest.blocked.status, '@week': esc(latest.week) })}</li>`;
-    })
-    .join('\n')}</ul>
-</details>
-</section>`;
+      return { domain: target.domain, href: reportHref(target, latest), userAgent: target.user_agent, access: latest.access ?? (latest.blocked ? legacyAccess(latest) : null) };
+    }),
+    ...unscanned.map(({ target, access }) => ({ domain: target.domain, userAgent: target.user_agent, access })),
+  ]);
 
   // Leaderboard: rank domains best->worst by score (computed over the
   // trailing-7-day window so it's a fair, like-for-like benchmark), with
@@ -4116,8 +4227,9 @@ export function renderIndex(dashboard, { branding = {} } = {}) {
     .map((d) => {
       const { target, series, latest, win, score, traj } = d;
       const trend = series.map(medAxe);
+      const partly = latest.access?.level === 'partial' ? ` <strong class="access-flag">${t('Partly blocked')}</strong>` : '';
       return `<tr>
-  <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a></th>
+  <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a>${partly}</th>
   <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'both')}</td>
   <td>${arrow(traj)}</td>
   <td class="num">${win.pagesAudited ?? win.pagesScanned}</td>
@@ -4288,10 +4400,11 @@ ${heading('h-patterns', t('Recurring patterns across domains'))}
   const body = `
 <h1>${esc(h1)}</h1>
 <p class="meta">${esc(intro)}</p>
+${accessSection}
 ${active.length === 0
-    ? (dashboard.length === 0
+    ? (dashboard.length === 0 && !unscanned.some((u) => u.access?.level === 'blocked')
         ? `<p>${t('No scan data yet. The first weekly report appears after the first scheduled scans complete.')}</p>`
-        : `<p>${t('No accessibility or sustainability data could be collected yet — every target is currently blocked (see the bottom of this page).')}</p>`)
+        : `<p>${t('No accessibility or sustainability data could be collected yet: every target is blocked (see above).')}</p>`)
     : `
 <table>
 <caption>${t('Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.')}</caption>
@@ -4304,8 +4417,7 @@ ${sustainTrend}
 ${worstSection}
 ${techFindingsSection}
 ${lighthouseFleetSection}
-${patternsSection}
-${blockedCallout}`}
+${patternsSection}`}
 <section aria-labelledby="h-tools">
 ${heading('h-tools', t('Tools'))}
 <ul>
@@ -4448,9 +4560,16 @@ export function renderUrlLookup(domains) {
   }
 
   // ── Search ────────────────────────────────────────────────────────
+  // Mirrors urlMatchKey() in src/lib/urls.js: a page is found however its
+  // address is written (http or https, apex or www., with a fragment or a
+  // trailing slash), since stored URLs keep whatever form was scanned.
+  function matchKey(s) {
+    return String(s).toLowerCase().trim().replace(/^[a-z][a-z0-9+.-]*:\\/\\//, '').replace(/^www\\./, '').replace(/#.*$/, '');
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var q = input.value.toLowerCase().trim();
+    var q = matchKey(input.value).replace(/(.)\\/$/, '$1');
     if (!q) return;
 
     var keys = selectedKeys();
@@ -4468,12 +4587,12 @@ export function renderUrlLookup(domains) {
         indexes.forEach(function (idx) {
           if (!idx) return;
           idx.pages.forEach(function (p) {
-            if (p.url.toLowerCase().includes(q)) {
+            if (matchKey(p.url).includes(q)) {
               results.push(Object.assign({}, p, { domain: idx.domain, week: idx.week }));
             }
           });
         });
-        showResults(results, q);
+        showResults(results, input.value.trim());
       });
   });
 
@@ -4757,10 +4876,11 @@ td .url, th .url { max-width: 22rem; }
 .sort-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .meta, .note { color: var(--muted); }
 .note { border-left: 4px solid var(--rule); padding-left: .75rem; }
-.callout-blocked { border-left: 4px solid var(--worse); padding: .25rem 1rem;
-  background: color-mix(in srgb, var(--worse) 8%, transparent); border-radius: 2px; }
-.callout-blocked h2 { color: var(--worse); border-bottom: none; margin-top: .75rem; }
-.callout-blocked ul { margin: .5rem 0; }
+.access-notice { border-left: 4px solid var(--worse); padding: .35rem .75rem; margin: 1rem 0; }
+.access-notice summary { cursor: pointer; font-weight: 600; }
+.access-notice summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.access-notice ul { margin: .5rem 0; }
+.access-flag { color: var(--worse); font-size: .85rem; white-space: nowrap; }
 .callout-win { border-left: 4px solid var(--better); padding: .25rem 1rem; margin: 1rem 0;
   background: color-mix(in srgb, var(--better) 8%, transparent); border-radius: 2px; }
 .callout-win h2 { color: var(--better); border-bottom: none; margin-top: .75rem; }
@@ -4781,8 +4901,6 @@ td .url, th .url { max-width: 22rem; }
 .fixed-list li { margin: .15rem 0; }
 .fixed-list-unconfirmed { color: var(--muted); }
 .pattern-id { font-family: ui-monospace, monospace; font-size: .8rem; }
-.blocked-accordion { margin-top: 2rem; border-top: 1px solid var(--rule); padding-top: .5rem; }
-.blocked-accordion > summary { cursor: pointer; color: var(--muted); font-weight: 600; }
 .ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
   gap: .75rem 2rem; margin: 1rem 0; }
 .ledger div { border-top: 1px solid var(--rule); padding-top: .4rem; }

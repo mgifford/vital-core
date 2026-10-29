@@ -29,7 +29,12 @@ export function governmentSuffix(hostname) {
   return GOVERNMENT_SUFFIXES.find((s) => host.endsWith(s) || host === s.slice(1)) ?? null;
 }
 
-export async function runSecurity(origin, userAgent, timeoutMs = 15000) {
+/**
+ * `origin` is the site's resolved canonical origin (canonical.js), so a site
+ * with no working HTTPS is checked over http and fails "Served over HTTPS";
+ * `httpsProblem` says why.
+ */
+export async function runSecurity(origin, userAgent, timeoutMs = 15000, { httpsProblem = null } = {}) {
   const checks = [];
   const add = (id, label, pass, detail = '') => checks.push({ id, label, pass, detail });
 
@@ -44,7 +49,7 @@ export async function runSecurity(origin, userAgent, timeoutMs = 15000) {
   const res = await safeFetch(origin, userAgent, timeoutMs);
   const headers = res?.headers;
 
-  add('https', 'Served over HTTPS', url.protocol === 'https:', url.protocol);
+  add('https', 'Served over HTTPS', url.protocol === 'https:', httpsProblem ?? url.protocol);
 
   if (headers) {
     add('hsts', 'HTTP Strict Transport Security (HSTS)', headers.has('strict-transport-security'));

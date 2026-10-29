@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { loadConfig } from '../../src/lib/config.js';
 import {
   parseDomains, resolveProbeTargets, twinHost, pickHeaders, cookieNames,
-  protectionHints, extractTitle, describeOutcome, verdict, renderMarkdown,
+  protectionHints, extractTitle, describeOutcome, verdict, renderMarkdown, describeNetworkError,
 } from '../../src/lib/probe.js';
 
 const config = loadConfig(`
@@ -143,4 +143,21 @@ test('renderMarkdown: one section per domain with hops, hints, robots, sitemap a
   }]);
   assert.match(unread, /\*\*robots\.txt:\*\* 403; `\/` allowed for the scanner \(the scan treats an unreadable robots\.txt as allowing everything\)/);
   assert.match(unread, /200 \(512 B, 1\.2 s\) \| — \|/);
+
+  const capped = renderMarkdown([{
+    domain: 'a.gov.uk',
+    configured: true,
+    verdict: { ok: true, text: '200: OK' },
+    fetches: [],
+    hints: [],
+    sitemap: { url: 'https://a.gov.uk/sitemap.xml', status: 200, locs: 1659, isIndex: false, truncated: true },
+  }]);
+  assert.match(capped, /200, 1659\+ URLs \(counted in the first 256 KB\)/);
+});
+
+test('describeNetworkError: plain words for the common connection failures', () => {
+  assert.match(describeNetworkError('UND_ERR_CONNECT_TIMEOUT'), /^no connection within 10 s/);
+  assert.equal(describeNetworkError('ENOTFOUND'), 'domain not found (DNS)');
+  assert.equal(describeNetworkError('CERT_HAS_EXPIRED'), 'TLS certificate problem: CERT_HAS_EXPIRED');
+  assert.equal(describeNetworkError('EHOSTUNREACH'), 'network error: EHOSTUNREACH');
 });

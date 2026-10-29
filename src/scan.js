@@ -5,7 +5,10 @@ import crypto from 'node:crypto';
 import { chromium } from 'playwright';
 import { loadConfig, getTarget, DIRS } from './lib/config.js';
 import { normalizeUrl, pageId, buildUrlFilter, resolveUrlPatterns } from './lib/urls.js';
-import { loadState, saveState, addPage, pickBatch, weeklyCapFor } from './lib/state.js';
+import { loadState, saveState, addPage, pickBatch, weeklyCapFor, canonicalizeState } from './lib/state.js';
+import { resolveCanonicalOrigin } from './lib/canonical.js';
+import { detectBlock } from './lib/access.js';
+import { cookieNames } from './lib/probe.js';
 import { isoWeek } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
@@ -88,12 +91,28 @@ logMemory('start');
 
 const state = loadState(target.key, target.domain);
 
+// --- Canonical origin -------------------------------------------------
+// The scheme and host the homepage redirects to. Every same-site URL is
+// recorded in that form, so a page linked as http:// and https://, or on
+// the apex and www., is one page scanned once rather than two scans behind
+// a redirect each. A site with no working HTTPS is scanned over http and
+// fails the "Served over HTTPS" check.
+const canonical = await resolveCanonicalOrigin(baseOrigin, target.user_agent, target.nav_timeout_ms);
+const siteOrigin = canonical.origin;
+log(`canonical origin ${siteOrigin}${canonical.note ? ` (${canonical.note})` : ''}`);
+if (canonical.httpsProblem) log(`HTTPS: ${canonical.httpsProblem}`);
+const canonicalized = canonicalizeState(state, siteOrigin);
+if (canonicalized.moved || canonicalized.merged) {
+  log(`state: ${canonicalized.moved} URL(s) moved to ${siteOrigin}, ${canonicalized.merged} duplicate(s) merged`);
+  saveState(target.key, state);
+}
+
 // --- Seed -------------------------------------------------------------
 if (Object.keys(state.pages).length === 0) {
   log('state empty; seeding from sitemap and homepage');
-  const seeds = await discoverFromSitemaps(baseOrigin, host, target.user_agent);
+  const seeds = await discoverFromSitemaps(siteOrigin, host, target.user_agent);
   log(`sitemap yielded ${seeds.length} URLs`);
-  const homeNorm = normalizeUrl(baseOrigin + '/', baseOrigin, host);
+  const homeNorm = normalizeUrl(siteOrigin + '/', siteOrigin, host, siteOrigin);
   if (homeNorm) addPage(state, pageId(homeNorm), homeNorm, 0);
   for (const u of seeds) addPage(state, pageId(u), u, 1);
   state.seededAt = new Date().toISOString();
@@ -104,7 +123,7 @@ if (Object.keys(state.pages).length === 0) {
 // Top tasks (e.g. from top-task-finder) that must be covered every week.
 // Re-applied every run so the list can change and newly-added priority
 // URLs are promoted in the frontier. pickBatch scans these first.
-const priorityUrls = loadPriorityUrls(target, baseOrigin, host);
+const priorityUrls = loadPriorityUrls(target, siteOrigin, undefined, siteOrigin);
 if (priorityUrls.length) {
   let promoted = 0;
   for (const u of priorityUrls) if (addPage(state, pageId(u), u, 0, { priority: true })) promoted++;
@@ -125,7 +144,7 @@ if (includePatterns.length || excludePatterns.length) {
 }
 
 // --- Robots -----------------------------------------------------------
-const robots = await fetchRobots(baseOrigin, target.user_agent);
+const robots = await fetchRobots(siteOrigin, target.user_agent);
 const delayMs = Math.max(
   target.delay_ms,
   robots.crawlDelay ? Math.min(robots.crawlDelay * 1000, 10000) : 0
@@ -158,8 +177,8 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 // page's per-engine membership is recorded so reports can show coverage.
 const rates = ratesFor(config, target);
 const enginesRun = {}; // engine -> count of pages it ran on this run
-const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, error: 0 };
-const runLog = { runId, week, domain: target.domain, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates };
+const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, redirect: 0, error: 0 };
+const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAllowed: robots.isAllowed('/') }, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates };
 
 // Link checking: collect links seen on pages that are in link-check's
 // sample, then probe them once after the scan. Rate > 0 enables it.
@@ -202,6 +221,9 @@ for (const item of batch) {
     break;
   }
   processedPages++;
+
+  // Scanned earlier in this run, as the landing page of a redirect.
+  if (state.pages[item.id].lastScannedWeek === week) continue;
 
   const urlPath = new URL(item.url).pathname;
 
@@ -271,6 +293,61 @@ for (const item of batch) {
   try {
     const response = await page.goto(fetchUrl, { waitUntil: 'load' });
     const status = response?.status() ?? 0;
+
+    // A page that lands on another page of this site (moved, or a case or
+    // trailing-slash redirect) is recorded once, under where it lands. The
+    // requested URL stays in the frontier as a redirect: not a page of its
+    // own, and not rescanned this week.
+    let recId = item.id;
+    let recUrl = item.url;
+    const landed = normalizeUrl(page.url(), page.url(), host, siteOrigin);
+    if (landed && landed !== item.url) {
+      const landedId = pageId(landed);
+      addPage(state, landedId, landed, item.depth);
+      Object.assign(state.pages[item.id], {
+        lastScannedWeek: week,
+        lastScannedAt: new Date().toISOString(),
+        lastStatus: 'redirect',
+        redirectTo: landed,
+        failCount: 0,
+      });
+      tally.redirect++;
+      // Not audited now when it was already scanned this week, or when
+      // robots.txt or the URL filter would have skipped it; in those cases
+      // its own frontier entry is handled in its turn, without a fetch.
+      const skip = state.pages[landedId].lastScannedWeek === week ? 'already scanned this week'
+        : !robots.isAllowed(new URL(landed).pathname) ? 'robots disallow'
+          : !item.priority && !urlFilter(landed) ? 'url-filter' : null;
+      if (skip) {
+        log(`redirect ${urlPath} → ${landed} (${skip})`);
+        if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
+        await new Promise((r) => setTimeout(r, delayMs));
+        continue;
+      }
+      log(`redirect ${urlPath} → ${landed}`);
+      recId = landedId;
+      recUrl = landed;
+    }
+
+    // A firewall's challenge or refusal is not the page: record it as
+    // blocked, naming the firewall, and run no audit on it.
+    const setCookies = ((await response?.headersArray?.()) ?? [])
+      .filter((h) => h.name.toLowerCase() === 'set-cookie').map((h) => h.value);
+    const block = detectBlock({ status, headers: response?.headers() ?? {}, cookies: cookieNames(setCookies) });
+    if (block) {
+      const scannedAt = new Date().toISOString();
+      fs.writeFileSync(
+        path.join(pagesDir, `${recId}.json`),
+        JSON.stringify({ pageId: recId, url: recUrl, week, runId, scannedAt, status, depth: item.depth, blocked: block })
+      );
+      runLog.scanned.push(recId);
+      Object.assign(state.pages[recId], { lastScannedWeek: week, lastScannedAt: scannedAt, lastStatus: status, failCount: 0 });
+      tally.blocked++;
+      log(`blocked ${status} ${new URL(recUrl).pathname}: firewall ${block.kind}${block.by.length ? ` (${block.by.join(', ')})` : ''}`);
+      if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
+      await new Promise((r) => setTimeout(r, delayMs));
+      continue;
+    }
     // Let late async rendering settle before auditing. Government sites
     // routinely fetch/hydrate after the load event, which produces
     // transient false positives if axe/alfa run too early.
@@ -289,8 +366,8 @@ for (const item of batch) {
     await page.waitForTimeout(settleDelay);
 
     const record = {
-      pageId: item.id,
-      url: item.url,
+      pageId: recId,
+      url: recUrl,
       week,
       runId,
       scannedAt: new Date().toISOString(),
@@ -316,12 +393,12 @@ for (const item of batch) {
       if (runs('plain-language')) { record.plainLanguage = await runPlainLanguage(page, { extraAllowlist: target.spelling_allowlist ?? [], spellingLocale: target.spelling_locale }); mark('plain-language'); }
       if (runs('deprecated-html')) { record.deprecatedHtml = await runDeprecatedHtml(page); mark('deprecated-html'); }
       if (runs('resources')) {
-        record.resources = await runResources(page, item.url);
+        record.resources = await runResources(page, recUrl);
         mark('resources');
         logMemory(`after resources ${urlPath}`);
       }
       if (imgCollector) {
-        const imgs = await runImages(page, item.url);
+        const imgs = await runImages(page, recUrl);
         record.images = { ...imgs, images: imgCollector.collect(imgs.images) };
         mark('images');
         logMemory(`after images ${urlPath}`);
@@ -330,12 +407,12 @@ for (const item of batch) {
       // Security is per-origin (headers/TLD/security.txt), so check it only
       // when this page is in the sample; aggregate keeps the latest result.
       if (runs('security')) {
-        securityResult ??= await runSecurity(baseOrigin, target.user_agent, target.nav_timeout_ms);
+        securityResult ??= await runSecurity(siteOrigin, target.user_agent, target.nav_timeout_ms, { httpsProblem: canonical.httpsProblem });
         record.security = securityResult;
         mark('security');
       }
       if (runs('public-interest')) {
-        publicInterestResult ??= await runPublicInterest(baseOrigin, target.domain, target.user_agent);
+        publicInterestResult ??= await runPublicInterest(siteOrigin, target.domain, target.user_agent);
         record.publicInterest = publicInterestResult;
         mark('public-interest');
       }
@@ -343,7 +420,7 @@ for (const item of batch) {
       // to 2 navigations), so it defaults off via sampling rate 0 unless a
       // target explicitly enables it in config/targets.yml.
       if (runs('offline-resilience')) {
-        offlineResilienceResult ??= await runOfflineResilience(browser, baseOrigin, target.user_agent, target.nav_timeout_ms);
+        offlineResilienceResult ??= await runOfflineResilience(browser, siteOrigin, target.user_agent, target.nav_timeout_ms);
         record.offlineResilience = offlineResilienceResult;
         mark('offline-resilience');
       }
@@ -366,7 +443,7 @@ for (const item of batch) {
       // own Chrome launched. The sample rate keeps the (slow) audit count
       // proportional to the week's pages.
       if (lighthouse?.available && runs('lighthouse')) {
-        const lh = await lighthouse.audit(item.url);
+        const lh = await lighthouse.audit(recUrl);
         if (lh) {
           record.lighthouse = lh;
           mark('lighthouse');
@@ -385,7 +462,7 @@ for (const item of batch) {
         let added = 0;
         for (const href of hrefs) {
           // Normalize against the canonical domain, not the test base-url.
-          const norm = normalizeUrl(href, item.url, host === 'localhost' || host === '127.0.0.1' ? host : new URL(`https://${target.domain}`).hostname);
+          const norm = normalizeUrl(href, page.url(), host === 'localhost' || host === '127.0.0.1' ? host : new URL(`https://${target.domain}`).hostname, siteOrigin);
           if (norm && urlFilter(norm) && addPage(state, pageId(norm), norm, item.depth + 1)) added++;
         }
         if (added) log(`+${added} URLs discovered on ${urlPath}`);
@@ -398,7 +475,7 @@ for (const item of batch) {
         for (const href of hrefs) {
           let abs;
           try {
-            abs = new URL(href, item.url);
+            abs = new URL(href, page.url());
           } catch {
             continue;
           }
@@ -413,17 +490,17 @@ for (const item of batch) {
             srcs = new Set();
             linkSources.set(u, srcs);
           }
-          if (srcs.size < 50) srcs.add(item.url);
+          if (srcs.size < 50) srcs.add(recUrl);
         }
       }
     }
 
-    fs.writeFileSync(path.join(pagesDir, `${item.id}.json`), writePageRecord(target.key, item.id, record, state.pages[item.id].lastScannedWeek));
-    runLog.scanned.push(item.id);
-    state.pages[item.id].lastScannedWeek = week;
-    state.pages[item.id].lastScannedAt = record.scannedAt;
-    state.pages[item.id].lastStatus = status;
-    state.pages[item.id].failCount = 0;
+    fs.writeFileSync(path.join(pagesDir, `${recId}.json`), writePageRecord(target.key, recId, record, state.pages[recId].lastScannedWeek));
+    runLog.scanned.push(recId);
+    state.pages[recId].lastScannedWeek = week;
+    state.pages[recId].lastScannedAt = record.scannedAt;
+    state.pages[recId].lastStatus = status;
+    state.pages[recId].failCount = 0;
     if (status >= 400) tally.blocked++;
     else tally.ok++;
     log(`${status} ${urlPath} ${record.axe ? `axe:${record.axe.violationCount}` : ''} ${record.alfa ? `alfa:${record.alfa.failedCount}` : ''}`);
@@ -445,6 +522,7 @@ for (const item of batch) {
       if (/timeout/i.test(msg) || /TimeoutError/i.test(msg)) tally.timeout++;
       else tally.error++;
       state.pages[item.id].failCount = (state.pages[item.id].failCount ?? 0) + 1;
+      state.pages[item.id].lastFailedWeek = week;
       runLog.errors.push({ pageId: item.id, url: item.url, error: msg.slice(0, 300) });
       log(`ERROR ${urlPath}: ${msg.slice(0, 120)}`);
     }
@@ -493,7 +571,7 @@ logMemory('before-browser-close');
 await browser.close();
 logMemory('end');
 const coverage = Object.entries(enginesRun).map(([e, n]) => `${e}:${n}`).join(' ');
-const tallyStr = `ok:${tally.ok} blocked:${tally.blocked} timeout:${tally.timeout} robots:${tally.robots_skipped} url-filter:${tally.url_filtered} non-html:${tally.non_html} error:${tally.error}`;
+const tallyStr = `ok:${tally.ok} blocked:${tally.blocked} timeout:${tally.timeout} robots:${tally.robots_skipped} url-filter:${tally.url_filtered} non-html:${tally.non_html} redirect:${tally.redirect} error:${tally.error}`;
 log(`done: ${runLog.scanned.length} scanned | ${tallyStr}${coverage ? ` | ${coverage}` : ''}`);
 
 /**

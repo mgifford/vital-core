@@ -4,7 +4,8 @@ import { normalizeUrl } from './urls.js';
  * Seed URL discovery from sitemaps. Handles sitemap indexes one level
  * deep and caps total URLs so a 500k-URL sitemap cannot blow up state.
  * Parsing is a simple <loc> extraction: valid for the sitemap protocol
- * and avoids an XML dependency.
+ * and avoids an XML dependency. `origin` is the site's canonical origin, so
+ * a sitemap that lists http:// or other-of-www URLs seeds them in that form.
  */
 export async function discoverFromSitemaps(origin, host, userAgent, cap = 20000) {
   const found = new Set();
@@ -35,7 +36,7 @@ export async function discoverFromSitemaps(origin, host, userAgent, cap = 20000)
       for (const loc of locs.slice(0, 25)) queue.push({ url: loc, depth: depth + 1 });
     } else if (!isIndex) {
       for (const loc of locs) {
-        const norm = normalizeUrl(loc, origin, host);
+        const norm = normalizeUrl(loc, origin, host, origin);
         if (norm) found.add(norm);
         if (found.size >= cap) break;
       }

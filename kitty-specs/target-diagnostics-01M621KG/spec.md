@@ -2,7 +2,7 @@
 
 **Mission Branch**: `claude/vigilant-shannon-79oda8`
 **Created**: 2026-10-28
-**Status**: Implemented; SC-001 waits on the first run
+**Status**: Implemented; SC-001 met by the 2026-10-29 run (LBHF: AWS WAF challenge; Blackburn: no TCP connection)
 **Input**: vital-core-lgd's first week. Two councils returned almost nothing:
 `www.lbhf.gov.uk` answered the scanner with HTTP 202 and 404s, and
 `www.blackburn.gov.uk` timed out on its homepage three times. The maintainer:
@@ -122,7 +122,7 @@ URLs the site's sitemap lists, to compare with what the scans found.
 
 ### Measurable Outcomes
 
-- **SC-001**: For vital-core-lgd, one run explains LBHF's 202/404s and
+- **SC-001** ✓: For vital-core-lgd, one run explains LBHF's 202/404s and
   Blackburn's timeouts well enough to choose between "wrong host", "blocked
   by a firewall" and "a slow resource", or says plainly that it can't tell.
 - **SC-002** ✓: The workflow refuses an `hf_only` domain without sending a

@@ -25,6 +25,7 @@ import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
+import { assessAccess, withoutBlockedAudits } from './lib/access.js';
 import { buildLlmsTxt } from './lib/llms-txt.js';
 import { writeApiCatalog } from './lib/api-catalog.js';
 import { summarizeDistribution } from './lib/distribution.js';
@@ -75,6 +76,9 @@ function apiBugsFor(target, bugs) {
 }
 
 const dashboard = [];
+// Configured targets with no page data yet, with their access status from
+// run logs, so the dashboard can say why instead of leaving them out.
+const unscanned = [];
 const apiIndexEntries = [];
 const apiSnapshots = [];
 const apiWeekFindings = [];
@@ -82,7 +86,10 @@ const urlLookupDomains = [];
 
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
-  if (!fs.existsSync(domainDir)) continue;
+  if (!fs.existsSync(domainDir)) {
+    unscanned.push({ target, access: assessAccess() });
+    continue;
+  }
   const reporting = target.reporting ?? {};
   const keyPages = reporting.include_key_page_issues ? loadPriorityUrls(target) : [];
 
@@ -116,7 +123,11 @@ for (const target of config.targets) {
       }
     }
   }
-  if (series.length === 0) continue;
+  if (series.length === 0) {
+    const lastWeek = weeks[weeks.length - 1];
+    unscanned.push({ target, access: assessAccess({ runs: lastWeek ? readRunLogs(path.join(domainDir, lastWeek, 'runs')) : [] }) });
+    continue;
+  }
 
   // Rolling site inventory: last-known status for every URL ever scanned.
   // Updated incrementally from each retained week's page records (older
@@ -128,7 +139,7 @@ for (const target of config.targets) {
     const records = fs.readdirSync(pagesDir)
       .filter((f) => f.endsWith('.json'))
       .map((f) => resolvePageRecord(domainDir, JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'))));
-    updateInventory(inventory, week, records);
+    updateInventory(inventory, week, withoutBlockedAudits(records));
   }
   saveInventory(target.key, inventory);
   const invSummary = inventorySummary(inventory, series[series.length - 1].week);
@@ -520,7 +531,7 @@ for (const locale of config.languages) {
   setLocale(locale);
   setReportLanguages(config.languages, config.defaultLanguage, config.showLanguageSwitcher);
   const sfx = locale === config.defaultLanguage ? '' : `-${locale}`;
-  fs.writeFileSync(path.join(DIRS.docs, `index${sfx}.html`), renderIndex(dashboard, { branding: profile?.branding }));
+  fs.writeFileSync(path.join(DIRS.docs, `index${sfx}.html`), renderIndex(dashboard, { branding: profile?.branding, unscanned }));
   if (urlLookupDomains.length) {
     fs.writeFileSync(path.join(DIRS.docs, `url-lookup${sfx}.html`), renderUrlLookup(urlLookupDomains));
   }
@@ -544,9 +555,9 @@ function summarizeWeek(target, week) {
     return fs.existsSync(summaryPath) ? JSON.parse(fs.readFileSync(summaryPath, 'utf8')) : null;
   }
 
-  const records = fs.readdirSync(pagesDir)
+  const records = withoutBlockedAudits(fs.readdirSync(pagesDir)
     .filter((f) => f.endsWith('.json'))
-    .map((f) => resolvePageRecord(domainDir, JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'))));
+    .map((f) => resolvePageRecord(domainDir, JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8')))));
   if (records.length === 0) return null;
 
   const runsDir = path.join(DIRS.data, target.key, week, 'runs');
@@ -557,6 +568,7 @@ function summarizeWeek(target, week) {
     summary.pagesAttempted = tally.attempted;
     summary.pagesSucceeded = tally.succeeded;
   }
+  if (summary) summary.access = assessAccess({ records, runs: readRunLogs(runsDir) });
   return summary;
 }
 
@@ -584,7 +596,7 @@ function summarizeWindow(target, days = 7) {
   if (records.length === 0) return null;
   const broken = readBrokenLinks(runDirs, cutoff);
   const tally = readTallyTotals(runDirs, cutoff);
-  const s = summarizeRecords(target, 'last-7-days', records, broken);
+  const s = summarizeRecords(target, 'last-7-days', withoutBlockedAudits(records), broken);
   if (s) {
     s.windowDays = days;
     if (tally) { s.pagesAttempted = tally.attempted; s.pagesSucceeded = tally.succeeded; }
@@ -614,6 +626,13 @@ function readTallyTotals(runsDirOrDirs, sinceMs = null) {
     }
   }
   return found ? { attempted, succeeded } : null;
+}
+
+/** Every run log in a runs directory, parsed; [] when there is none. */
+function readRunLogs(runsDir) {
+  if (!fs.existsSync(runsDir)) return [];
+  return fs.readdirSync(runsDir).filter((f) => f.endsWith('.json'))
+    .map((f) => JSON.parse(fs.readFileSync(path.join(runsDir, f), 'utf8')));
 }
 
 /** Fold broken links from one or more runs dirs (optionally since cutoff ms). */

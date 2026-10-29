@@ -26,7 +26,7 @@ import { loadConfig } from '../src/lib/config.js';
 import { parseRobots } from '../src/lib/robots.js';
 import {
   parseDomains, resolveProbeTargets, twinHost, pickHeaders, cookieNames,
-  protectionHints, extractTitle, verdict, renderMarkdown,
+  protectionHints, extractTitle, verdict, renderMarkdown, describeNetworkError,
 } from '../src/lib/probe.js';
 
 const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
@@ -56,21 +56,27 @@ if (refused.length) {
 
 async function readCapped(res) {
   const reader = res.body?.getReader();
-  if (!reader) return '';
+  if (!reader) return { text: '', truncated: false };
   const chunks = [];
   let n = 0;
-  while (n < BODY_CAP) {
+  let truncated = false;
+  while (true) {
     const { done, value } = await reader.read();
     if (done) break;
     chunks.push(value);
     n += value.length;
+    if (n >= BODY_CAP) { truncated = true; break; }
   }
   await reader.cancel().catch(() => {});
-  return Buffer.concat(chunks).toString('utf8');
+  return { text: Buffer.concat(chunks).toString('utf8'), truncated };
 }
 
-/** Follow redirects by hand so every hop is recorded. */
-async function fetchChain(url, userAgent) {
+/**
+ * Follow redirects by hand so every hop is recorded. The scanner's own
+ * fetches send no Accept-Language; the browser-like fetch sends Chromium's
+ * default, which is what the scan's Playwright browser sends.
+ */
+async function fetchChain(url, userAgent, { acceptLanguage = null } = {}) {
   const hops = [];
   const started = Date.now();
   let current = url;
@@ -82,7 +88,11 @@ async function fetchChain(url, userAgent) {
       const res = await fetch(current, {
         redirect: 'manual',
         signal: ctrl.signal,
-        headers: { 'user-agent': userAgent, accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'accept-language': 'en-GB,en;q=0.9' },
+        headers: {
+          'user-agent': userAgent,
+          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          ...(acceptLanguage ? { 'accept-language': acceptLanguage } : {}),
+        },
       });
       const hop = {
         url: current,
@@ -98,14 +108,14 @@ async function fetchChain(url, userAgent) {
         current = new URL(location, current).href;
         continue;
       }
-      const body = await readCapped(res);
+      const { text: body, truncated } = await readCapped(res);
       hop.bytes = Buffer.byteLength(body);
       hop.title = extractTitle(body);
-      return { hops, totalMs: Date.now() - started, body };
+      return { hops, totalMs: Date.now() - started, body, truncated };
     } catch (err) {
       const reason = err.name === 'AbortError'
         ? `no response within ${FETCH_TIMEOUT_MS / 1000} s`
-        : `network error: ${err.cause?.code ?? err.cause?.message ?? err.message}`;
+        : describeNetworkError(err.cause?.code ?? err.cause?.message ?? err.message);
       hops.push({ url: current, error: reason, ms: Date.now() - hopStarted });
       return { hops, totalMs: Date.now() - started };
     } finally {
@@ -181,7 +191,7 @@ async function probe(target) {
   const urls = [`https://${domain}/`, `https://${twinHost(domain)}/`, `https://${domain}/robots.txt`];
   const fetches = [];
   for (const url of urls) {
-    fetches.push({ url, scanner: await fetchChain(url, userAgent), browser: await fetchChain(url, BROWSER_UA) });
+    fetches.push({ url, scanner: await fetchChain(url, userAgent), browser: await fetchChain(url, BROWSER_UA, { acceptLanguage: 'en-US,en;q=0.9' }) });
   }
 
   const robotsFetch = fetches[2].scanner;
@@ -204,6 +214,7 @@ async function probe(target) {
     error: smHop?.error,
     isIndex: /<sitemapindex[\s>]/i.test(smBody),
     locs: (smBody.match(/<loc>/gi) ?? []).length,
+    truncated: !!sitemapFetch.truncated,
   };
 
   const page = await loadInBrowser(`https://${domain}/`, userAgent, navTimeoutMs);

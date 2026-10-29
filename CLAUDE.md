@@ -203,6 +203,58 @@ exception, then re-check the labels.
 
 ---
 
+## Canonical URLs (one page, one record)
+
+Each scan follows the homepage's redirects once (`resolveCanonicalOrigin()`
+in `src/lib/canonical.js`) and records every same-site URL under that scheme
+and host: `normalizeUrl(raw, base, host, canonicalOrigin)`. So `http://` and
+`https://`, or apex and `www.`, forms of a page are one page, and a sitemap
+that lists `http://` URLs doesn't cost a redirect per page.
+
+- **Pass the canonical origin** wherever scan.js normalizes a URL (sitemap,
+  links, priority URLs, the homepage seed). Without it `normalizeUrl` keeps
+  the link's own scheme and host.
+- **Old crawl state is rewritten** on load (`canonicalizeState()`),
+  merging duplicates without losing this week's coverage.
+- **A page that lands elsewhere on the site** is recorded under the landing
+  URL; the requested URL stays in the frontier as `lastStatus: 'redirect'`
+  with `redirectTo`, gets no page record, and isn't rescanned that week.
+- **No HTTPS is a finding, not a failure.** If `https://` fails and
+  `http://` answers, the site is scanned over http and "Served over HTTPS"
+  fails with the reason (`httpsProblem`); an HTTPS-to-HTTP redirect fails it
+  too. A site where nothing answers keeps its configured origin.
+- **Matching ignores the form.** The URL lookup and key-page matching
+  compare `urlMatchKey()` (no scheme, `www.` or fragment), so stored URLs
+  from before this change still match.
+
+## Blocked sites (say so, up front)
+
+A firewall, robots.txt or a network block stopping the scanner is the first
+thing a reader needs to know, so it is never silent. It sits near the top as
+a `<details>` whose summary names the count and the sites: easy to see
+without getting in the way.
+
+- **A challenge page is not the site.** `detectBlock()` (`src/lib/access.js`)
+  treats HTTP 202, `x-amzn-waf-action` or `cf-mitigated` as a firewall
+  challenge, and 401/403/429 as a refusal. The page record gets `blocked:
+  { kind, status, by }` and no audit runs. Older records count by status
+  (`withoutBlockedAudits()` strips their audit results before summarizing,
+  in the inventory and in the URL index).
+- **`summary.access`** (`assessAccess()`) is `blocked` (nothing audited),
+  `partial` (≥10% of attempted pages stopped by a firewall or robots.txt),
+  `ok` or `not-scanned`, with firewall, robots.txt (`runLog.robots`) and
+  connection details. Targets with no page data still get an access status
+  from their run logs.
+- **Show it.** `accessAlert()` sits right under the dashboard intro and lists
+  every blocked, partly blocked, unreachable or not-yet-scanned target with
+  its cause as text and what to ask the site for; `accessBanner()` opens the
+  landing and accessibility pages (expanded only when nothing was audited).
+  Blocked targets are never ranked. Keep headings out of `<summary>` (its
+  button role hides them from some screen readers); the `<section>` is
+  labelled by the summary text instead.
+- **Failed pages come back.** `failCount >= 3` keeps a page out only for the
+  week it last failed (`lastFailedWeek`); it is tried once more each week.
+
 ## URL exclusion (three layers)
 
 Three independent mechanisms drop URLs, at three different stages. Keep them

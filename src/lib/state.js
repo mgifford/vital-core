@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { DIRS } from './config.js';
+import { pageId, toCanonicalOrigin } from './urls.js';
 
 /**
  * Per-domain crawl state. This is the ONLY mutable state in the system.
@@ -65,6 +66,53 @@ export function addPage(state, id, url, depth, { priority = false } = {}) {
 }
 
 /**
+ * Rewrite frontier URLs to the site's canonical origin (canonical.js), so a
+ * page queued as both http:// and https://, or apex and www., becomes one
+ * entry. A merged entry keeps the most recent scan (so this week's coverage
+ * isn't repeated), the priority flag, the lower depth and the lower failure
+ * count. Returns how many entries moved and how many were merged away.
+ */
+export function canonicalizeState(state, canonicalOrigin) {
+  let moved = 0;
+  let merged = 0;
+  for (const [id, p] of Object.entries(state.pages)) {
+    let url;
+    try {
+      url = toCanonicalOrigin(p.url, canonicalOrigin);
+    } catch {
+      continue;
+    }
+    if (url === p.url) continue;
+    const newId = pageId(url);
+    delete state.pages[id];
+    const other = state.pages[newId];
+    if (!other) {
+      state.pages[newId] = { ...p, url };
+      moved++;
+      continue;
+    }
+    const [recent, older] = (p.lastScannedAt ?? '') > (other.lastScannedAt ?? '') ? [p, other] : [other, p];
+    state.pages[newId] = {
+      ...recent,
+      url,
+      discoveredAt: [p.discoveredAt, other.discoveredAt].filter(Boolean).sort()[0] ?? recent.discoveredAt,
+      depth: Math.min(p.depth ?? Infinity, other.depth ?? Infinity),
+      priority: !!(p.priority || other.priority),
+      failCount: Math.min(p.failCount ?? 0, other.failCount ?? 0),
+      lastScannedWeek: recent.lastScannedWeek ?? older.lastScannedWeek,
+    };
+    merged++;
+  }
+  return { moved, merged };
+}
+
+// Entries from before lastFailedWeek existed get one more try, which also
+// releases pages that failed out for good under the old rule.
+function retryable(p, week) {
+  return (p.failCount ?? 0) < 3 || p.lastFailedWeek !== week;
+}
+
+/**
  * importance (1-5, default 3) scales max_pages_per_week so low-value domains
  * (e.g. near-identical open-data sites) consume less budget than key sites.
  * importance 3 = the configured cap; 1 = 1/3; 5 = 5/3.
@@ -91,7 +139,7 @@ export function budgetStatus(state, week, target) {
   const scannedThisWeek = entries.filter(([, p]) => p.lastScannedWeek === week).length;
   const remaining = Math.max(0, cap - scannedThisWeek);
   const frontierEmpty = entries.length > 0
-    && !entries.some(([, p]) => p.lastScannedWeek !== week && p.failCount < 3);
+    && !entries.some(([, p]) => p.lastScannedWeek !== week && retryable(p, week));
   return { cap, scannedThisWeek, remaining, frontierEmpty };
 }
 
@@ -111,8 +159,9 @@ export function budgetStatus(state, week, target) {
  *   2. Then the rest in a stable per-week random order — a different
  *      random spread of a large site each week, deterministic for replay.
  *
- * Pages with failCount >= 3 are excluded until a successful scan resets
- * the counter.
+ * Pages with failCount >= 3 are excluded for the rest of the week they
+ * last failed in, then tried once more the next week, so a site that was
+ * down or blocked comes back on its own.
  */
 export function pickBatch(state, week, budget, scannedThisWeekCap) {
   const entries = Object.entries(state.pages);
@@ -122,7 +171,7 @@ export function pickBatch(state, week, budget, scannedThisWeekCap) {
   if (n === 0) return { batch: [], scannedThisWeek };
 
   const candidates = entries
-    .filter(([, p]) => p.lastScannedWeek !== week && p.failCount < 3)
+    .filter(([, p]) => p.lastScannedWeek !== week && retryable(p, week))
     .map(([id, p]) => ({ id, p, rank: weeklyRank(id, week) }))
     .sort((a, b) => {
       // Priority first.
