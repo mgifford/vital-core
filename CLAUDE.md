@@ -230,7 +230,9 @@ that lists `http://` URLs doesn't cost a redirect per page.
 ## Blocked sites (say so, up front)
 
 A firewall, robots.txt or a network block stopping the scanner is the first
-thing a reader needs to know, so it is never silent and never collapsed.
+thing a reader needs to know, so it is never silent. It sits near the top as
+a `<details>` whose summary names the count and the sites: easy to see
+without getting in the way.
 
 - **A challenge page is not the site.** `detectBlock()` (`src/lib/access.js`)
   treats HTTP 202, `x-amzn-waf-action` or `cf-mitigated` as a firewall
@@ -246,7 +248,10 @@ thing a reader needs to know, so it is never silent and never collapsed.
 - **Show it.** `accessAlert()` sits right under the dashboard intro and lists
   every blocked, partly blocked, unreachable or not-yet-scanned target with
   its cause as text and what to ask the site for; `accessBanner()` opens the
-  landing and accessibility pages. Blocked targets are never ranked.
+  landing and accessibility pages (expanded only when nothing was audited).
+  Blocked targets are never ranked. Keep headings out of `<summary>` (its
+  button role hides them from some screen readers); the `<section>` is
+  labelled by the summary text instead.
 - **Failed pages come back.** `failCount >= 3` keeps a page out only for the
   week it last failed (`lastFailedWeek`); it is tried once more each week.
 

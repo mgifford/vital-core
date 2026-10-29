@@ -27,9 +27,9 @@ for good.
 
 ### User Story 1 - See which sites block the scanner, and why (Priority: P1)
 
-A report reader opening the dashboard sees, near the top, every configured
-site that blocks the scanner, with the cause in words and what to ask the
-site for.
+A report reader opening the dashboard sees, near the top, a one-line notice
+naming every configured site that blocks the scanner; opening it gives the
+cause in words and what to ask the site for.
 
 **Acceptance Scenarios**:
 
@@ -92,8 +92,8 @@ site for.
 | FR-002 ✓ | Each run log records whether robots.txt allows the scanner at `/`. |
 | FR-003 ✓ | Aggregate derives each target's access status for its latest week from page records and run logs: `blocked`, `partial` or `ok`, with firewall, robots.txt and connection details. |
 | FR-004 ✓ | Page records with status 202 from before this change are treated as challenges: no audit results counted. |
-| FR-005 ✓ | The dashboard lists, near the top and not collapsed, every target that is blocked, partly blocked, unreachable or not scanned yet, each with its cause in words and the action to take; partly blocked rows in the ranking table say so in text. |
-| FR-006 ✓ | A domain's landing page opens with a banner when the site is blocked or partly blocked. |
+| FR-005 ✓ | The dashboard lists, near the top in a closed `<details>` whose summary names the count and the sites, every target that is blocked, partly blocked, unreachable or not scanned yet, each with its cause in words and the action to take; partly blocked rows in the ranking table say so in text. (Revised 2026-10-29: the maintainer asked for it to be easy to see without getting in the way.) |
+| FR-006 ✓ | A domain's landing and accessibility pages open with a notice when the site is blocked or partly blocked: expanded when nothing could be audited, closed when only part of the site was blocked. |
 | FR-007 ✓ | A page that reached the failure threshold in an earlier week is retried in the next week. |
 
 ### Non-Functional Requirements

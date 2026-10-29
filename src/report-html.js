@@ -4083,28 +4083,32 @@ function statusList(statuses) {
 export function accessReasons(access, userAgent = 'vital-scans') {
   const items = [];
   const actions = [];
+  const labels = [];
   const ua = esc(String(userAgent).split('/')[0] || 'vital-scans');
   const fw = access?.firewall;
   if (fw?.pages) {
     const by = fw.by?.length ? ` ${t('Identified as @firewalls.', { '@firewalls': esc(fw.by.join(', ')) })}` : '';
+    labels.push(t('blocked by a firewall'));
     items.push(`<strong>${t('Blocked by a firewall')}</strong>: ${t('@count page(s) got a challenge or refusal instead of the page (@statuses).', { '@count': fw.pages, '@statuses': esc(statusList(fw.statuses)) })}${by}`);
     actions.push(t('Ask the site’s web team to let the user agent <code>@ua</code> through its firewall (<a href="@href">what to send them</a>).', { '@ua': ua, '@href': WAF_ALLOWLIST_URL }));
   }
   const rb = access?.robots;
   if (rb?.rootBlocked || rb?.skipped) {
+    labels.push(t('blocked by robots.txt'));
     items.push(`<strong>${t('Blocked by robots.txt')}</strong>: ${rb.rootBlocked
       ? t('robots.txt disallows the scanner for the whole site.')
       : t('@count page(s) skipped because robots.txt disallows them for the scanner.', { '@count': rb.skipped })}`);
     actions.push(t('Ask the site to allow <code>@ua</code> in its robots.txt.', { '@ua': ua }));
   }
   if (access?.connection) {
+    labels.push(t('unreachable'));
     items.push(`<strong>${t('Unreachable')}</strong>: ${t('no page loaded in @runs run(s)', { '@runs': access.connection.runs })}${access.connection.error ? ` (${esc(access.connection.error.replace(/\.$/, ''))})` : ''}.`);
     actions.push(t('Run Actions → diagnose for this domain to see what the scanner’s network gets. A network block has to be lifted by the site’s team.'));
   }
   if (access?.level === 'blocked' && Object.keys(access.errorStatuses ?? {}).length) {
     items.push(t('Other pages answered with an error: @statuses.', { '@statuses': esc(statusList(access.errorStatuses)) }));
   }
-  return { items, actions };
+  return { items, actions, labels };
 }
 
 /**
@@ -4118,6 +4122,10 @@ export function accessAlert(entries) {
   const waiting = entries.filter((e) => e.access?.level === 'not-scanned');
   if (!stopped.length && !waiting.length) return '';
   const label = (level) => (level === 'partial' ? t('Partly blocked') : t('Blocked'));
+  const names = (list) => {
+    const shown = list.slice(0, 3).map((e) => esc(e.domain)).join(', ');
+    return list.length > 3 ? `${shown} ${t('and @count more', { '@count': list.length - 3 })}` : shown;
+  };
   const list = stopped.map((e) => {
     const { items, actions } = accessReasons(e.access, e.userAgent);
     const name = e.href ? `<a href="${esc(e.href)}">${esc(e.domain)}</a>` : esc(e.domain);
@@ -4128,29 +4136,43 @@ ${actions.length ? `<p>${actions.join(' ')}</p>` : ''}</li>`;
   const notYet = waiting.length
     ? `<p>${t('Not scanned yet: @domains. No scan has saved any data for them.', { '@domains': waiting.map((e) => esc(e.domain)).join(', ') })}</p>`
     : '';
-  return `<section class="callout-blocked" aria-labelledby="h-access">
-${heading('h-access', stopped.length ? t('Sites blocking the scanner (@count)', { '@count': stopped.length }) : t('Sites not scanned yet'))}
+  const summary = stopped.length
+    ? t('Sites blocking the scanner (@count): @domains', { '@count': stopped.length, '@domains': names(stopped) })
+    : t('Sites not scanned yet (@count): @domains', { '@count': waiting.length, '@domains': names(waiting) });
+  // The summary names the count and the sites, so the notice reads at a
+  // glance while closed. No heading inside <summary>: its button role hides
+  // headings from some screen readers, so the region is labelled instead.
+  return `<section class="access-notice" aria-labelledby="h-access">
+<details>
+<summary><span id="h-access">${summary}</span></summary>
 ${stopped.length ? `<p>${t('A firewall rule, a robots.txt rule or a network block stopped the scanner on these sites, so their results are missing or partial. The fix is on the site’s side.')}</p>
 <ul>${list}</ul>` : ''}
 ${notYet}
+</details>
 </section>`;
 }
 
-/** Banner at the top of a domain's landing page when the scanner was blocked. */
+/**
+ * Notice at the top of a domain's pages when the scanner was blocked. Open
+ * when nothing could be audited, since it is then the page's whole story;
+ * closed when only part of the site was blocked.
+ */
 export function accessBanner(access, userAgent) {
   if (!['blocked', 'partial'].includes(access?.level)) return '';
-  const { items, actions } = accessReasons(access, userAgent);
+  const { items, actions, labels } = accessReasons(access, userAgent);
   const title = access.level === 'partial'
     ? t('Part of this site blocks the scanner')
     : t('This site blocks the scanner');
   const scope = access.level === 'partial'
     ? t('The results below cover only the pages the scanner could reach.')
     : t('No page could be audited, so there are no accessibility results for this site.');
-  return `<section class="callout-blocked" aria-labelledby="h-access-banner">
-${heading('h-access-banner', title)}
+  return `<section class="access-notice" aria-labelledby="h-access-banner">
+<details${access.level === 'blocked' ? ' open' : ''}>
+<summary><span id="h-access-banner">${title}${labels.length ? `: ${labels.join(', ')}` : ''}</span></summary>
 <p>${scope}</p>
 <ul>${items.map((i) => `<li>${i}</li>`).join('')}</ul>
 ${actions.length ? `<p>${actions.join(' ')}</p>` : ''}
+</details>
 </section>`;
 }
 
@@ -4854,10 +4876,10 @@ td .url, th .url { max-width: 22rem; }
 .sort-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .meta, .note { color: var(--muted); }
 .note { border-left: 4px solid var(--rule); padding-left: .75rem; }
-.callout-blocked { border-left: 4px solid var(--worse); padding: .25rem 1rem; margin: 1rem 0;
-  background: color-mix(in srgb, var(--worse) 8%, transparent); border-radius: 2px; }
-.callout-blocked h2 { color: var(--worse); border-bottom: none; margin-top: .75rem; }
-.callout-blocked ul { margin: .5rem 0; }
+.access-notice { border-left: 4px solid var(--worse); padding: .35rem .75rem; margin: 1rem 0; }
+.access-notice summary { cursor: pointer; font-weight: 600; }
+.access-notice summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.access-notice ul { margin: .5rem 0; }
 .access-flag { color: var(--worse); font-size: .85rem; white-space: nowrap; }
 .callout-win { border-left: 4px solid var(--better); padding: .25rem 1rem; margin: 1rem 0;
   background: color-mix(in srgb, var(--better) 8%, transparent); border-radius: 2px; }

@@ -74,7 +74,9 @@ test('accessAlert and accessBanner: causes and actions in text', () => {
     { domain: 'www.hackney.gov.uk', access: { level: 'ok' } },
     { domain: 'new.gov.uk', access: { level: 'not-scanned' } },
   ]);
-  assert.match(html, /<h2 id="h-access">.*Sites blocking the scanner \(2\)<\/h2>/);
+  assert.match(html, /<section class="access-notice" aria-labelledby="h-access">\n<details>\n<summary><span id="h-access">Sites blocking the scanner \(2\): www\.lbhf\.gov\.uk, blackburn\.gov\.uk<\/span><\/summary>/,
+    'a closed disclosure whose summary names the count and the sites, labelling its region');
+  assert.doesNotMatch(html, /<summary>[^]*?<h\d/, 'no heading inside the summary');
   assert.match(html, /<a href="reports\/www\.lbhf\.gov\.uk\/2026-W44\/index\.html">www\.lbhf\.gov\.uk<\/a><\/strong>: Blocked\./);
   assert.match(html, /<strong>Blocked by a firewall<\/strong>: 1 page\(s\) got a challenge or refusal instead of the page \(HTTP 202 × 1\)\. Identified as AWS WAF challenge/);
   assert.match(html, /let the user agent <code>vital-scans<\/code> through its firewall/);
@@ -84,9 +86,13 @@ test('accessAlert and accessBanner: causes and actions in text', () => {
   assert.match(html, /Not scanned yet: new\.gov\.uk\./);
   assert.equal(accessAlert([{ domain: 'a', access: { level: 'ok' } }]), '');
 
+  const many = accessAlert(['a.gov.uk', 'b.gov.uk', 'c.gov.uk', 'd.gov.uk', 'e.gov.uk'].map((domain) => ({ domain, access: blackburn })));
+  assert.match(many, /Sites blocking the scanner \(5\): a\.gov\.uk, b\.gov\.uk, c\.gov\.uk and 2 more</);
+
   const partial = { level: 'partial', firewall: { pages: 0 }, robots: { rootBlocked: false, skipped: 12 }, connection: null, errorStatuses: {} };
   const banner = accessBanner(partial, 'vital-scans/0.1');
-  assert.match(banner, /Part of this site blocks the scanner/);
+  assert.match(banner, /<details>\n<summary><span id="h-access-banner">Part of this site blocks the scanner: blocked by robots\.txt<\/span><\/summary>/, 'closed when only part of the site is blocked');
+  assert.match(accessBanner(lbhf), /<details open>\n<summary><span id="h-access-banner">This site blocks the scanner: blocked by a firewall</, 'open when nothing could be audited');
   assert.match(banner, /<strong>Blocked by robots\.txt<\/strong>: 12 page\(s\) skipped/);
   assert.match(banner, /allow <code>vital-scans<\/code> in its robots\.txt/);
   assert.equal(accessBanner({ level: 'ok' }), '');
