@@ -26,6 +26,7 @@ import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { assessAccess, withoutBlockedAudits } from './lib/access.js';
+import { omitHeavyLists, trendSeries } from './lib/trend.js';
 import { buildLlmsTxt } from './lib/llms-txt.js';
 import { writeApiCatalog } from './lib/api-catalog.js';
 import { summarizeDistribution } from './lib/distribution.js';
@@ -74,14 +75,6 @@ function apiBugsFor(target, bugs) {
   const filtered = filterBugsByExclusion(bugs, target.url_exclude_patterns ?? []);
   return redactBugs(filtered, { denyParams: target.api_redact_params ?? [] });
 }
-
-// Per-page lists a summary carries in memory for the CSVs and engine pages.
-// They are large and can be rebuilt from page records, so no JSON output
-// embeds them: summary.json, weekly.json, domain.json or the API snapshot.
-// domain.json carried them for every retained week until www.medicaid.gov's
-// grew past V8's maximum string length and every report run failed.
-const HEAVY_SUMMARY_KEYS = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows', 'uniqueImageList']);
-const omitHeavyLists = (key, value) => (HEAVY_SUMMARY_KEYS.has(key) ? undefined : value);
 
 const dashboard = [];
 // Configured targets with no page data yet, with their access status from
@@ -159,7 +152,8 @@ for (const target of config.targets) {
   // History & Trends page).
   const dataOut = path.join(DIRS.docs, 'data', target.key);
   fs.mkdirSync(dataOut, { recursive: true });
-  fs.writeFileSync(path.join(dataOut, 'weekly.json'), JSON.stringify({ domain: target.domain, series, diffs }, omitHeavyLists, 1));
+  const trend = trendSeries(series);
+  fs.writeFileSync(path.join(dataOut, 'weekly.json'), JSON.stringify({ domain: target.domain, series: trend, diffs }, null, 1));
   writeTrendsCsv(dataOut, series);
 
   // Findings ledger: first/last-seen per unique finding (pattern_id),
@@ -480,8 +474,7 @@ for (const target of config.targets) {
   const latestSummary = series[series.length - 1];
   const latestBugsOnly = apiBugsFor(target, latestBugs.map(({ _week, ...b }) => b));
   apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
-  const seriesForJson = JSON.parse(JSON.stringify(series, omitHeavyLists));
-  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, seriesForJson, diffs, ledger, invSummary, latestBugsOnly, latestPolicySummary) });
+  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, trend, diffs, ledger, invSummary, latestBugsOnly, latestPolicySummary) });
 
   const urlIdx = buildUrlIndex(domainDir, target.domain, latestSummary.week);
   if (urlIdx) {
@@ -513,10 +506,10 @@ for (const target of config.targets) {
         // Latest week's tech↔finding associations (lift-ranked), for anyone
         // building cross-site analyses. The full model lives in weekly.series.
         techFindings: latest.techFindings?.associations ?? null,
-        // Week-over-week trend series + diffs.
-        weekly: { series, diffs },
+        // Week-over-week trend series (what failed each week) + diffs.
+        weekly: { series: trend, diffs },
       },
-      omitHeavyLists,
+      null,
       1
     )
   );

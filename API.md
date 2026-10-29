@@ -101,6 +101,14 @@ and a `weekly.series` of per-week summaries with `weekly.diffs`. Use it to build
 trends or to diff week-over-week (e.g. fail CI when `summary.critical_count`
 rises).
 
+The series records **what failed each week, as numbers**: every failing rule
+with its count, pages and impact; failing standards, resilience and security
+checks (with `checksPassing` counting the rest); error pages by status. It
+leaves out what passed and the evidence repeated every week: the pages each
+rule or cluster was found on, the full cluster and resource lists, and broken
+links. That evidence is in `<week>/findings.json` and the week's report and
+CSVs.
+
 ---
 
 ## Schemas
@@ -119,8 +127,8 @@ always conform.
 
 ## Retention
 
-The API reflects the project's retention model: `snapshot.json` keeps the full
-weekly **summary** series for a domain, but detailed per-page records are pruned
+The API reflects the project's retention model: `snapshot.json` keeps the
+weekly **failure trend** for a domain, but detailed per-page records are pruned
 over time. Historical weeks therefore expose summary metrics and findings, not
 resurrected page-level detail. Page-level evidence resources are not part of v1.
 
