@@ -32,14 +32,31 @@ export function isDetachedTargetError(reason) {
     && /Session with given id not found/.test(String(reason?.message ?? ''));
 }
 
+// Lighthouse's CPU-idle wait re-arms itself with setTimeout. When the audit
+// finishes and the page closes while one of those checks is in flight, the
+// check rejects with Lighthouse's "Session closed" protocol error, and since
+// nothing awaits a timer-launched promise, Node exits after the audit has
+// already returned its result (www.medicare.gov, lighthouse 13.6.0,
+// wait-for-condition.js checkForQuiet). A rejection that reaches the process
+// handler has no caller left, so ignoring this wording loses nothing.
+export function isClosedSessionError(reason) {
+  return !!reason?.protocolMethod
+    && /Session closed\. Most likely the page has been closed/.test(String(reason?.message ?? ''));
+}
+
 /**
- * Ignore only that rejection; anything else is rethrown so it still crashes
- * the process as it would without a listener. Returns the remover.
+ * Ignore only those rejections; anything else is rethrown so it still
+ * crashes the process as it would without a listener. Returns the remover.
  */
 export function guardDetachedTargetRejections(log = () => {}) {
   const onRejection = (reason) => {
-    if (!isDetachedTargetError(reason)) throw reason;
-    log(`lighthouse: ignored a child target that closed while attaching (${reason.protocolMethod})`);
+    if (isDetachedTargetError(reason)) {
+      log(`lighthouse: ignored a child target that closed while attaching (${reason.protocolMethod})`);
+    } else if (isClosedSessionError(reason)) {
+      log(`lighthouse: ignored a late check on a page that had closed (${reason.protocolMethod})`);
+    } else {
+      throw reason;
+    }
   };
   process.on('unhandledRejection', onRejection);
   return () => process.off('unhandledRejection', onRejection);

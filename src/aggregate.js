@@ -75,6 +75,14 @@ function apiBugsFor(target, bugs) {
   return redactBugs(filtered, { denyParams: target.api_redact_params ?? [] });
 }
 
+// Per-page lists a summary carries in memory for the CSVs and engine pages.
+// They are large and can be rebuilt from page records, so no JSON output
+// embeds them: summary.json, weekly.json, domain.json or the API snapshot.
+// domain.json carried them for every retained week until www.medicaid.gov's
+// grew past V8's maximum string length and every report run failed.
+const HEAVY_SUMMARY_KEYS = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows', 'uniqueImageList']);
+const omitHeavyLists = (key, value) => (HEAVY_SUMMARY_KEYS.has(key) ? undefined : value);
+
 const dashboard = [];
 // Configured targets with no page data yet, with their access status from
 // run logs, so the dashboard can say why instead of leaving them out.
@@ -100,9 +108,6 @@ for (const target of config.targets) {
     const summary = summarizeWeek(target, week);
     if (summary) {
       series.push(summary);
-      // The full per-page lists are large and reconstructable; keep them
-      // in memory for CSV generation but don't commit them to summary.json.
-      const omit = new Set(['pagesWithAxeList', 'pagesWithAlfaList', 'pageDetail', 'pageRows', 'bytesList', 'imageRows', 'uniqueImageList']);
       const summaryPath = path.join(domainDir, week, 'summary.json');
       // summarizeRecords() stamps a fresh generatedAt on every call, even
       // for weeks whose underlying page data hasn't changed since the last
@@ -111,14 +116,14 @@ for (const target of config.targets) {
       // retained week's summary.json daily forever, even when nothing else
       // differs — compare content ignoring generatedAt and skip the write
       // (and the timestamp bump) when nothing real changed.
-      const nextJson = JSON.stringify(summary, (k, v) => (omit.has(k) || k === 'generatedAt' ? undefined : v), 1);
+      const nextJson = JSON.stringify(summary, (k, v) => (k === 'generatedAt' ? undefined : omitHeavyLists(k, v)), 1);
       const prevJson = fs.existsSync(summaryPath)
-        ? JSON.stringify(JSON.parse(fs.readFileSync(summaryPath, 'utf8')), (k, v) => (omit.has(k) || k === 'generatedAt' ? undefined : v), 1)
+        ? JSON.stringify(JSON.parse(fs.readFileSync(summaryPath, 'utf8')), (k, v) => (k === 'generatedAt' ? undefined : omitHeavyLists(k, v)), 1)
         : null;
       if (nextJson !== prevJson) {
         fs.writeFileSync(
           summaryPath,
-          JSON.stringify(summary, (k, v) => (omit.has(k) ? undefined : v), 1)
+          JSON.stringify(summary, omitHeavyLists, 1)
         );
       }
     }
@@ -154,7 +159,7 @@ for (const target of config.targets) {
   // History & Trends page).
   const dataOut = path.join(DIRS.docs, 'data', target.key);
   fs.mkdirSync(dataOut, { recursive: true });
-  fs.writeFileSync(path.join(dataOut, 'weekly.json'), JSON.stringify({ domain: target.domain, series, diffs }, null, 1));
+  fs.writeFileSync(path.join(dataOut, 'weekly.json'), JSON.stringify({ domain: target.domain, series, diffs }, omitHeavyLists, 1));
   writeTrendsCsv(dataOut, series);
 
   // Findings ledger: first/last-seen per unique finding (pattern_id),
@@ -475,7 +480,8 @@ for (const target of config.targets) {
   const latestSummary = series[series.length - 1];
   const latestBugsOnly = apiBugsFor(target, latestBugs.map(({ _week, ...b }) => b));
   apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
-  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, series, diffs, ledger, invSummary, latestBugsOnly, latestPolicySummary) });
+  const seriesForJson = JSON.parse(JSON.stringify(series, omitHeavyLists));
+  apiSnapshots.push({ key: target.key, data: buildSnapshot(target, seriesForJson, diffs, ledger, invSummary, latestBugsOnly, latestPolicySummary) });
 
   const urlIdx = buildUrlIndex(domainDir, target.domain, latestSummary.week);
   if (urlIdx) {
@@ -510,7 +516,7 @@ for (const target of config.targets) {
         // Week-over-week trend series + diffs.
         weekly: { series, diffs },
       },
-      null,
+      omitHeavyLists,
       1
     )
   );
