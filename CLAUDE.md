@@ -203,6 +203,30 @@ exception, then re-check the labels.
 
 ---
 
+## Canonical URLs (one page, one record)
+
+Each scan follows the homepage's redirects once (`resolveCanonicalOrigin()`
+in `src/lib/canonical.js`) and records every same-site URL under that scheme
+and host: `normalizeUrl(raw, base, host, canonicalOrigin)`. So `http://` and
+`https://`, or apex and `www.`, forms of a page are one page, and a sitemap
+that lists `http://` URLs doesn't cost a redirect per page.
+
+- **Pass the canonical origin** wherever scan.js normalizes a URL (sitemap,
+  links, priority URLs, the homepage seed). Without it `normalizeUrl` keeps
+  the link's own scheme and host.
+- **Old crawl state is rewritten** on load (`canonicalizeState()`),
+  merging duplicates without losing this week's coverage.
+- **A page that lands elsewhere on the site** is recorded under the landing
+  URL; the requested URL stays in the frontier as `lastStatus: 'redirect'`
+  with `redirectTo`, gets no page record, and isn't rescanned that week.
+- **No HTTPS is a finding, not a failure.** If `https://` fails and
+  `http://` answers, the site is scanned over http and "Served over HTTPS"
+  fails with the reason (`httpsProblem`); an HTTPS-to-HTTP redirect fails it
+  too. A site where nothing answers keeps its configured origin.
+- **Matching ignores the form.** The URL lookup and key-page matching
+  compare `urlMatchKey()` (no scheme, `www.` or fragment), so stored URLs
+  from before this change still match.
+
 ## URL exclusion (three layers)
 
 Three independent mechanisms drop URLs, at three different stages. Keep them

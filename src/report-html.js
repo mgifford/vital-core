@@ -4448,9 +4448,16 @@ export function renderUrlLookup(domains) {
   }
 
   // ── Search ────────────────────────────────────────────────────────
+  // Mirrors urlMatchKey() in src/lib/urls.js: a page is found however its
+  // address is written (http or https, apex or www., with a fragment or a
+  // trailing slash), since stored URLs keep whatever form was scanned.
+  function matchKey(s) {
+    return String(s).toLowerCase().trim().replace(/^[a-z][a-z0-9+.-]*:\\/\\//, '').replace(/^www\\./, '').replace(/#.*$/, '');
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var q = input.value.toLowerCase().trim();
+    var q = matchKey(input.value).replace(/(.)\\/$/, '$1');
     if (!q) return;
 
     var keys = selectedKeys();
@@ -4468,12 +4475,12 @@ export function renderUrlLookup(domains) {
         indexes.forEach(function (idx) {
           if (!idx) return;
           idx.pages.forEach(function (p) {
-            if (p.url.toLowerCase().includes(q)) {
+            if (matchKey(p.url).includes(q)) {
               results.push(Object.assign({}, p, { domain: idx.domain, week: idx.week }));
             }
           });
         });
-        showResults(results, q);
+        showResults(results, input.value.trim());
       });
   });
 

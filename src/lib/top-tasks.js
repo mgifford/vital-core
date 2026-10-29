@@ -6,9 +6,10 @@ import { normalizeUrl } from './urls.js';
 /**
  * Resolve a target's designated top-task URLs from inline config and/or
  * a file of URLs (one per line, `#` comments allowed). URLs are normalized
- * to the target's canonical host and deduplicated.
+ * to the target's canonical host and deduplicated. scan.js passes the
+ * resolved canonical origin so the scheme matches too.
  */
-export function loadPriorityUrls(target, origin = `https://${target.domain}`, hostName = new URL(origin).hostname) {
+export function loadPriorityUrls(target, origin = `https://${target.domain}`, hostName = new URL(origin).hostname, canonicalOrigin = undefined) {
   const raw = [...(target.priority_urls ?? [])];
   if (target.priority_urls_file) {
     const file = target.priority_urls_file;
@@ -30,7 +31,7 @@ export function loadPriorityUrls(target, origin = `https://${target.domain}`, ho
   const out = [];
   for (const u of raw) {
     const canon = canonicalizeHost(u, hostName);
-    const norm = normalizeUrl(canon, origin, hostName);
+    const norm = normalizeUrl(canon, origin, hostName, canonicalOrigin);
     if (norm && !seen.has(norm)) {
       seen.add(norm);
       out.push(norm);

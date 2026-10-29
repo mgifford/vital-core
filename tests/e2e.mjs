@@ -99,7 +99,8 @@ ${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a
 <link rel="canonical" href="http://localhost:${PORT}/"></head>
 <body><main><h1>Fixture</h1><ul>${nav}</ul>
 <p><a rel="me" href="https://mastodon.social/@fixture">Follow us on Mastodon</a></p>
-<p><a href="/does-not-exist-404.html">A deliberately broken link</a></p></main></body></html>`
+<p><a href="/does-not-exist-404.html">A deliberately broken link</a></p>
+<p><a href="/moved-page.html">A page that redirects to page 1</a></p></main></body></html>`
   );
   // 1x1 png
   fs.writeFileSync(path.join(SITE, 'pixel.png'), Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64'));
@@ -125,6 +126,7 @@ fs.writeFileSync(
 const SITE = ${JSON.stringify(SITE)};
 http.createServer((req, res) => {
   const reqPath = req.url.split('?')[0];
+  if (reqPath === '/moved-page.html') { res.writeHead(301, { location: '/page-1.html' }); res.end(); return; }
   const f = path.join(SITE, reqPath === '/' ? 'index.html' : reqPath);
   if (fs.existsSync(f) && fs.statSync(f).isFile()) {
     res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.js') ? 'application/javascript' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
@@ -248,6 +250,21 @@ try {
     fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages', fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages'))[0]))
   );
   assert(sampleRec.plainLanguage && typeof sampleRec.plainLanguage.wordCount === 'number', 'plain-language engine ran and recorded data');
+
+  // A page that redirects within the site is recorded once, under where it
+  // lands; the redirecting URL is kept in the crawl state as a redirect.
+  const w1Records = fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages'))
+    .map((f) => JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages', f))));
+  assert(!w1Records.some((r) => r.url.endsWith('/moved-page.html')), 'a redirecting URL gets no page record of its own');
+  assert(w1Records.filter((r) => r.url.endsWith('/page-1.html')).length === 1, 'the page it lands on is recorded once');
+  const crawl1 = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'state', 'localhost', 'crawl.json')));
+  const moved = Object.values(crawl1.pages).find((p) => p.url.endsWith('/moved-page.html'));
+  assert(moved && moved.lastStatus === 'redirect' && moved.redirectTo.endsWith('/page-1.html'), `the redirecting URL is marked as a redirect (got ${JSON.stringify(moved)})`);
+  const runsDir1 = path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'runs');
+  const scannedTwice = fs.readdirSync(runsDir1)
+    .map((f) => JSON.parse(fs.readFileSync(path.join(runsDir1, f))).scanned)
+    .filter((ids) => new Set(ids).size !== ids.length);
+  assert(scannedTwice.length === 0, 'no page is audited twice in one run, even when a redirect lands on it first');
 
   // Image inventory: every page has a <img src="/pixel.png">, so images engine
   // should record at least one image per page with src and hasAlt fields.

@@ -2,7 +2,7 @@
 
 **Mission Branch**: `claude/vigilant-shannon-79oda8`
 **Created**: 2026-10-29
-**Status**: Draft
+**Status**: Implemented; SC-001 and SC-002 wait on a week of scans and a report build
 **Input**: vital-core-lgd, 2026-10-29. Walsall's sitemap lists its pages as
 `http://`, so 453 of the 474 pages scanned that week were recorded under
 `http://go.walsall.gov.uk/…` although the site redirects every one to
@@ -37,16 +37,16 @@ redirect to `https://`; every page record and crawl-state entry uses
 
 **Acceptance Scenarios**:
 
-1. **Given** a homepage that redirects to another scheme or to the other of
+1. ✓ **Given** a homepage that redirects to another scheme or to the other of
    `www.`/apex on the same site, **When** a scan starts, **Then** that final
    scheme and host become the site's canonical origin, and sitemap entries,
    discovered links, priority URLs and the homepage seed are all recorded
    in that form.
-2. **Given** a crawl state that already holds `http://` or other-host
+2. ✓ **Given** a crawl state that already holds `http://` or other-host
    variants, **When** a scan starts, **Then** those entries are rewritten to
    the canonical form and duplicates are merged, keeping this week's scan
    status so nothing is rescanned or lost.
-3. **Given** a page that redirects to a different page on the same site,
+3. ✓ **Given** a page that redirects to a different page on the same site,
    **When** it is scanned, **Then** the audit is recorded under the page it
    lands on, the redirecting URL is marked as a redirect and not counted as
    a page, and a landing page already scanned this week is not audited again.
@@ -58,10 +58,10 @@ only answers over HTTP or when its HTTPS redirects to HTTP.
 
 **Acceptance Scenarios**:
 
-1. **Given** a site whose `https://` homepage fails but `http://` answers,
+1. ✓ **Given** a site whose `https://` homepage fails but `http://` answers,
    **When** it is scanned, **Then** the site is scanned over HTTP and the
    "Served over HTTPS" check fails with a detail naming the HTTPS error.
-2. **Given** a site whose `https://` homepage redirects to `http://`,
+2. ✓ **Given** a site whose `https://` homepage redirects to `http://`,
    **When** it is scanned, **Then** the check fails with "HTTPS redirects
    to HTTP".
 
@@ -72,7 +72,7 @@ whether they include `http://`, `https://`, `www.` or a trailing slash.
 
 **Acceptance Scenarios**:
 
-1. **Given** a page recorded as `http://go.walsall.gov.uk/events/x`,
+1. ✓ **Given** a page recorded as `http://go.walsall.gov.uk/events/x`,
    **When** a reader searches `https://go.walsall.gov.uk/events/x/`,
    **Then** the page is found.
 
@@ -92,21 +92,21 @@ whether they include `http://`, `https://`, `www.` or a trailing slash.
 
 | ID | Requirement |
 |---|---|
-| FR-001 | Each scan resolves the site's canonical origin by following the homepage's redirects; a same-site final URL sets the scheme and host, otherwise the configured origin is kept. |
-| FR-002 | If `https://` fails and `http://` answers, the canonical origin is `http://`, and the reason is kept for the HTTPS check. |
-| FR-003 | `normalizeUrl()` can rewrite a same-site URL to the canonical scheme and host; the sitemap, link discovery, priority URLs and the homepage seed all use it. |
-| FR-004 | Crawl state loaded at the start of a scan is rewritten to canonical URLs, merging duplicates without losing this week's scan status, priority or the lower failure count. |
-| FR-005 | A page that lands on a different same-site URL is recorded under the landing URL; the requested URL is marked `redirect`, is not written as a page record and is not rescanned that week. |
-| FR-006 | robots.txt, the security, public-interest and offline-resilience checks use the canonical origin; "Served over HTTPS" fails for HTTP-only sites and HTTPS-to-HTTP redirects, with the reason as its detail. |
-| FR-007 | The URL lookup ignores the scheme, a leading `www.`, a fragment and a trailing slash when matching. |
+| FR-001 ✓ | Each scan resolves the site's canonical origin by following the homepage's redirects; a same-site final URL sets the scheme and host, otherwise the configured origin is kept. |
+| FR-002 ✓ | If `https://` fails and `http://` answers, the canonical origin is `http://`, and the reason is kept for the HTTPS check. |
+| FR-003 ✓ | `normalizeUrl()` can rewrite a same-site URL to the canonical scheme and host; the sitemap, link discovery, priority URLs and the homepage seed all use it. |
+| FR-004 ✓ | Crawl state loaded at the start of a scan is rewritten to canonical URLs, merging duplicates without losing this week's scan status, priority or the lower failure count. |
+| FR-005 ✓ | A page that lands on a different same-site URL is recorded under the landing URL; the requested URL is marked `redirect`, is not written as a page record and is not rescanned that week. |
+| FR-006 ✓ | robots.txt, the security, public-interest and offline-resilience checks use the canonical origin; "Served over HTTPS" fails for HTTP-only sites and HTTPS-to-HTTP redirects, with the reason as its detail. |
+| FR-007 ✓ | The URL lookup ignores the scheme, a leading `www.`, a fragment and a trailing slash when matching. |
 
 ### Non-Functional Requirements
 
 | ID | Requirement |
 |---|---|
-| NFR-001 | **Sustainability:** at most two extra requests per scan run (the homepage, and `http://` only when `https://` fails); every duplicate scan and per-page redirect it removes is a saving. No client-side cost beyond a few lines in the lookup script. |
-| NFR-002 | URL identity changes only for URLs that weren't already canonical. Pages already recorded in their canonical form keep their page IDs. |
-| NFR-003 | Pure logic (canonical choice, URL rewrite, state merge, lookup matching) has unit tests with no network mocks; any network test uses a real local server. |
+| NFR-001 ✓ | **Sustainability:** at most two extra requests per scan run (the homepage, and `http://` only when `https://` fails); every duplicate scan and per-page redirect it removes is a saving. No client-side cost beyond a few lines in the lookup script. |
+| NFR-002 ✓ | URL identity changes only for URLs that weren't already canonical. Pages already recorded in their canonical form keep their page IDs. |
+| NFR-003 ✓ | Pure logic (canonical choice, URL rewrite, state merge, lookup matching) has unit tests with no network mocks; any network test uses a real local server. |
 
 ### Constraints
 
@@ -123,4 +123,4 @@ whether they include `http://`, `https://`, `www.` or a trailing slash.
   recorded under `http://` and no page queued under two forms.
 - **SC-002**: The URL lookup finds
   `https://go.walsall.gov.uk/events/junior-paint-master-workshop-rob-conway-morning`.
-- **SC-003**: A unit test shows an HTTP-only site failing "Served over HTTPS".
+- **SC-003** ✓: A unit test shows an HTTP-only site failing "Served over HTTPS".

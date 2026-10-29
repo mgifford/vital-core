@@ -1,3 +1,5 @@
+import { urlMatchKey } from './urls.js';
+
 const DEFAULT_REPORTING = {
   max_html_issues: 50,
   moderate_issue_threshold_percent: 5,
@@ -21,7 +23,7 @@ export function normalizeAccessibilityReporting(reporting = {}) {
 
 export function prioritizeAccessibilityBugs(summary, bugs, { keyPages = [], reporting = {} } = {}) {
   const cfg = normalizeAccessibilityReporting(reporting);
-  const keyPageSet = cfg.include_key_page_issues ? new Set(keyPages) : new Set();
+  const keyPageSet = cfg.include_key_page_issues ? new Set(keyPages.map(urlMatchKey)) : new Set();
   const totalPages = summary.pagesScanned || bugs[0]?.frequency.total_pages_scanned || 0;
   const threshold = cfg.moderate_issue_threshold_percent;
 
@@ -88,7 +90,7 @@ function isWcagAorAa(category) {
 function bugHasKeyPageHit(summary, bug, keyPageSet) {
   const rule = ruleForBug(summary, bug);
   const affected = rule?.affectedPages?.map((p) => p.url).filter(Boolean) ?? bug.affected_pages ?? [];
-  return affected.some((url) => keyPageSet.has(url));
+  return affected.some((url) => keyPageSet.has(urlMatchKey(url)));
 }
 
 function ruleForBug(summary, bug) {

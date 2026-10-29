@@ -7,6 +7,8 @@ import { DIRS } from './config.js';
  * URL identity is the foundation of week-over-week comparability.
  * One normalization function, used everywhere. If this changes,
  * historical comparisons break, so treat it as a stable contract.
+ * The scheme and host come from the site's canonical origin (canonical.js)
+ * when the caller passes it, so a redirect variant is never a second page.
  */
 
 const TRACKING_PARAMS = /^(utm_|fbclid|gclid|msclkid|mc_cid|mc_eid|ref$)/i;
@@ -18,7 +20,7 @@ const SKIP_EXTENSIONS = /\.(pdf|zip|gz|tar|doc|docx|xls|xlsx|ppt|pptx|jpg|jpeg|p
  * site (cdc.gov == www.cdc.gov), while any other subdomain stays
  * distinct (data.cms.gov != www.cms.gov).
  */
-function bareHost(hostname) {
+export function bareHost(hostname) {
   return hostname.toLowerCase().replace(/^www\./, '');
 }
 
@@ -68,10 +70,13 @@ export function isThirdParty(resourceUrl, pageUrl) {
  * binary asset, mailto, etc.).
  *
  * Host matching treats the apex and its `www.` variant as the same
- * host. The normalized URL keeps the link's actual hostname, so a site
- * that lives on (or redirects to) www stores www URLs consistently.
+ * host. Without `canonicalOrigin` the normalized URL keeps the link's own
+ * scheme and hostname. With it (the origin the site's homepage redirects
+ * to, from canonical.js), a same-site URL takes that scheme and host, so
+ * `http://example.gov/a` and `https://www.example.gov/a` are one page.
+ * URLs already in canonical form keep their page IDs.
  */
-export function normalizeUrl(raw, baseUrl, host) {
+export function normalizeUrl(raw, baseUrl, host, canonicalOrigin) {
   let u;
   try {
     u = new URL(raw, baseUrl);
@@ -81,6 +86,7 @@ export function normalizeUrl(raw, baseUrl, host) {
   if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
   if (host && bareHost(u.hostname) !== bareHost(host)) return null;
   if (SKIP_EXTENSIONS.test(u.pathname)) return null;
+  if (canonicalOrigin) adoptOrigin(u, canonicalOrigin);
 
   u.hash = '';
   u.hostname = u.hostname.toLowerCase();
@@ -98,6 +104,28 @@ export function normalizeUrl(raw, baseUrl, host) {
     u.pathname = u.pathname.slice(0, -1);
   }
   return u.toString();
+}
+
+function adoptOrigin(u, canonicalOrigin) {
+  const c = new URL(canonicalOrigin);
+  if (bareHost(u.hostname) !== bareHost(c.hostname)) return;
+  u.protocol = c.protocol;
+  u.host = c.host;
+}
+
+/** A normalized URL with a same-site scheme and host replaced by canonicalOrigin's. */
+export function toCanonicalOrigin(url, canonicalOrigin) {
+  const u = new URL(url);
+  adoptOrigin(u, canonicalOrigin);
+  return u.toString();
+}
+
+/**
+ * A URL without its scheme, a leading `www.` or a fragment, for matching a
+ * page however its address is written (http or https, apex or www).
+ */
+export function urlMatchKey(url) {
+  return String(url ?? '').trim().replace(/^[a-z][a-z0-9+.-]*:\/\//i, '').replace(/^www\./i, '').replace(/#.*$/, '');
 }
 
 /** Short stable identifier for a normalized URL. */

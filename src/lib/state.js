@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { DIRS } from './config.js';
+import { pageId, toCanonicalOrigin } from './urls.js';
 
 /**
  * Per-domain crawl state. This is the ONLY mutable state in the system.
@@ -62,6 +63,47 @@ export function addPage(state, id, url, depth, { priority = false } = {}) {
     failCount: 0,
   };
   return true;
+}
+
+/**
+ * Rewrite frontier URLs to the site's canonical origin (canonical.js), so a
+ * page queued as both http:// and https://, or apex and www., becomes one
+ * entry. A merged entry keeps the most recent scan (so this week's coverage
+ * isn't repeated), the priority flag, the lower depth and the lower failure
+ * count. Returns how many entries moved and how many were merged away.
+ */
+export function canonicalizeState(state, canonicalOrigin) {
+  let moved = 0;
+  let merged = 0;
+  for (const [id, p] of Object.entries(state.pages)) {
+    let url;
+    try {
+      url = toCanonicalOrigin(p.url, canonicalOrigin);
+    } catch {
+      continue;
+    }
+    if (url === p.url) continue;
+    const newId = pageId(url);
+    delete state.pages[id];
+    const other = state.pages[newId];
+    if (!other) {
+      state.pages[newId] = { ...p, url };
+      moved++;
+      continue;
+    }
+    const [recent, older] = (p.lastScannedAt ?? '') > (other.lastScannedAt ?? '') ? [p, other] : [other, p];
+    state.pages[newId] = {
+      ...recent,
+      url,
+      discoveredAt: [p.discoveredAt, other.discoveredAt].filter(Boolean).sort()[0] ?? recent.discoveredAt,
+      depth: Math.min(p.depth ?? Infinity, other.depth ?? Infinity),
+      priority: !!(p.priority || other.priority),
+      failCount: Math.min(p.failCount ?? 0, other.failCount ?? 0),
+      lastScannedWeek: recent.lastScannedWeek ?? older.lastScannedWeek,
+    };
+    merged++;
+  }
+  return { moved, merged };
 }
 
 /**
