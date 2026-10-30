@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import { once } from 'node:events';
+import { pipeline } from 'node:stream/promises';
 import { detectBlock } from './access.js';
 import { describeNetworkError } from './probe.js';
 import { ownDomain } from './pdf-audit.js';
@@ -69,19 +69,20 @@ export async function fetchPdf(url, { siteDomain, userAgent, dest, maxBytes, tim
     }
 
     const hash = crypto.createHash('md5');
-    const out = fs.createWriteStream(dest);
     let bytes = 0;
     try {
-      for await (const chunk of res.body) {
-        bytes += chunk.length;
-        if (bytes > maxBytes) throw new TooLarge();
-        hash.update(chunk);
-        if (!out.write(chunk)) await once(out, 'drain');
-      }
-      out.end();
-      await once(out, 'finish');
+      // pipeline() keeps an error listener on the file until it has closed: a
+      // write still in flight when a download is abandoned fails afterwards,
+      // and uncaught, that error would end the whole run.
+      await pipeline(res.body, async function* (source) {
+        for await (const chunk of source) {
+          bytes += chunk.length;
+          if (bytes > maxBytes) throw new TooLarge();
+          hash.update(chunk);
+          yield chunk;
+        }
+      }, fs.createWriteStream(dest));
     } catch (err) {
-      out.destroy();
       fs.rmSync(dest, { force: true });
       if (err instanceof TooLarge) return { kind: 'error', fetch: info, error: `larger than the ${mb(maxBytes)} limit` };
       return { kind: 'error', fetch: info, error: `download interrupted: ${err?.name === 'TimeoutError' ? `no complete response within ${Math.round(timeoutMs / 1000)} s` : err?.message ?? err}` };
