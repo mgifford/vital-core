@@ -373,7 +373,7 @@ try {
   const checks = (o) => ({ tagged: 'fail', title: 'pass', language: 'pass', bookmarks: null, taggedContent: 'fail', figuresAlt: null, headings: null, lists: null, tables: null, forms: null, taggedForms: null, taggedAnnotations: null, emptyText: 'fail', protected: 'pass', ...o });
   fs.writeFileSync(path.join(SANDBOX, 'data', 'localhost', 'pdf-audit.json'), JSON.stringify({
     domain: 'localhost',
-    checker: { name: 'pdf-crawler', ref: 'dfbc00505a942ff4bd5af120c26e2b57dbc06049' },
+    checker: { name: 'pdf-crawler', ref: '9f079bac419b9d2b62cc325c5589df012a99e251' },
     pdfs: {
       [`${pdfBase}/report-1.pdf`]: { status: 'analysed', checkedAt: '2026-06-12T22:41:00Z', week: '2026-W24', attempts: 0, report: { accessible: false, title: 'Annual report 1', pages: 12, published: '2025-04-01', checks: checks() } },
       [`${pdfBase}/report-2.pdf`]: { status: 'error', checkedAt: '2026-06-12T22:41:00Z', week: '2026-W24', attempts: 1, httpStatus: 404, errors: ['HTTP 404'] },
@@ -491,7 +491,7 @@ try {
   assert(/<span class="error">Issues found<\/span>/.test(pdfsPage) && /<span class="error">Fail<\/span>/.test(pdfsPage), 'PDF results are text');
   assert(/id="h-pdfs-errors"/.test(pdfsPage) && /<td>HTTP 404<\/td>/.test(pdfsPage), 'a PDF that could not be checked says why');
   assert(/Checks are off for this site/.test(pdfsPage), 'the page says how to run checks where pdf_audit is off');
-  assert(/<code>dfbc005<\/code>/.test(pdfsPage), 'the checker commit is named');
+  assert(/<code>9f079ba<\/code>/.test(pdfsPage), 'the checker commit is named');
   const pdfCsv = fs.readdirSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24')).find((f) => f.endsWith('_pdfs.csv'));
   assert(pdfCsv && pdfsPage.includes(`href="${pdfCsv}"`), 'the PDFs CSV is written and linked');
   const oldPdfs = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'pdfs.html'), 'utf8');
