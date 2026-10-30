@@ -1,0 +1,188 @@
+# Checks the PDFs each site links to, with pdf-crawler's checks
+# (https://github.com/mgifford/pdf-crawler): tagging, title, language,
+# bookmarks, figure alt text, headings, lists, tables and forms.
+#
+# The scans list each site's PDFs in data/<domain>/resources.json. This
+# workflow takes the next ones to check (never checked first, newest first;
+# then failures from an earlier week; then checks older than recheck_days),
+# downloads them politely, analyses them and writes data/<domain>/pdf-audit.json.
+# The next report build shows them on each domain's PDFs page. Only PDFs on
+# the site's own registrable domain are fetched (static.luton.gov.uk for
+# www.luton.gov.uk), robots.txt applies, and the PDFs themselves are never
+# committed. See CLAUDE.md, "PDF checks".
+#
+# Daily for sites with pdf_audit.enabled (off by default). Manually for any
+# one site that is not hf_only, whatever its setting: the latest PDFs not
+# yet checked, 25 unless a count is given.
+
+name: pdf-audit
+
+on:
+  schedule:
+    # 22:41 UTC: late evening in the UK, afternoon in the US, clear of the
+    # nightly scans (01-12 UTC) and the 12:37 UTC report.
+    - cron: '41 22 * * *'
+
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'Check one site, enabled or not (blank = every site with pdf_audit enabled)'
+        required: false
+      count:
+        description: 'PDFs to check per site (blank = pdf_audit.per_run, default 25; at most 200)'
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-audit
+  cancel-in-progress: false
+
+env:
+  # The pdf-crawler commit whose checks run. Bump it deliberately, as a
+  # reviewed change: pdf-audit.json records it with every site's results.
+  PDF_CRAWLER_REF: dfbc00505a942ff4bd5af120c26e2b57dbc06049
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            src
+            scripts
+            config
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --omit=optional --ignore-scripts
+
+      - name: Resolve data repo
+        id: datarepo
+        run: echo "repo=$(node scripts/data-repo.js)" >> "$GITHUB_OUTPUT"
+
+      # Only the two ledgers each site needs: the CMS data repo holds every
+      # page record, which this job never reads.
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.datarepo.outputs.repo }}
+          ssh-key: ${{ secrets.VITAL_DATA_DEPLOY_KEY }}
+          path: data
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*/resources.json
+            /*/pdf-audit.json
+
+      # Before anything is fetched, as in the scan and report workflows: a
+      # run that can't push would download and analyse for nothing.
+      - name: Check data repo push access
+        env:
+          HAS_DEPLOY_KEY: ${{ secrets.VITAL_DATA_DEPLOY_KEY != '' }}
+        run: bash scripts/check-data-push.sh data
+
+      - name: Plan
+        id: plan
+        env:
+          DISPATCH_DOMAIN: ${{ github.event.inputs.domain }}
+          DISPATCH_COUNT: ${{ github.event.inputs.count }}
+        run: |
+          ARGS=(plan --out "$RUNNER_TEMP/pdf-queue.json")
+
+          if [ -n "$DISPATCH_DOMAIN" ]; then
+            if ! printf '%s' "$DISPATCH_DOMAIN" |
+              grep -qE '^[a-z0-9][a-z0-9._-]*\.[a-z]{2,}$'; then
+              echo "::error::domain must be a valid hostname (e.g. www.cms.gov)"
+              exit 1
+            fi
+            ARGS+=(--domain "$DISPATCH_DOMAIN")
+          fi
+
+          if [ -n "$DISPATCH_COUNT" ]; then
+            if ! printf '%s' "$DISPATCH_COUNT" | grep -qE '^[1-9][0-9]*$' ||
+              [ "$DISPATCH_COUNT" -gt 200 ]; then
+              echo "::error::count must be a whole number from 1 to 200"
+              exit 1
+            fi
+            ARGS+=(--count "$DISPATCH_COUNT")
+          fi
+
+          node scripts/pdf-audit.js "${ARGS[@]}"
+
+      - name: Nothing to check
+        if: steps.plan.outputs.queued == '0'
+        run: echo "::notice::No PDF is waiting for a check."
+
+      - uses: actions/checkout@v7
+        if: steps.plan.outputs.queued != '0'
+        with:
+          repository: mgifford/pdf-crawler
+          ref: ${{ env.PDF_CRAWLER_REF }}
+          path: .pdf-crawler
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            scripts
+
+      - uses: astral-sh/setup-uv@v6
+        if: steps.plan.outputs.queued != '0'
+
+      - name: Install pdf-crawler
+        if: steps.plan.outputs.queued != '0'
+        run: uv sync --frozen --no-dev --project .pdf-crawler
+
+      - name: Check PDFs
+        if: steps.plan.outputs.queued != '0'
+        run: |
+          node scripts/pdf-audit.js run \
+            --queue "$RUNNER_TEMP/pdf-queue.json" \
+            --checker .pdf-crawler \
+            --budget-minutes 45
+
+      - name: Commit results
+        if: always() && steps.plan.outputs.queued != '0' && steps.plan.outcome == 'success'
+        working-directory: data
+        run: |
+          git config user.name "vital-scans[bot]"
+          git config user.email "vital-scans@users.noreply.github.com"
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          MESSAGE="pdf-audit: $(date -u +%Y-%m-%dT%H:%MZ)"
+
+          git add -- '*/pdf-audit.json'
+
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+
+          git commit -m "$MESSAGE"
+
+          for i in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+
+            if ! git pull --rebase -X theirs origin "$BRANCH"; then
+              git rebase --abort 2>/dev/null || true
+              git reset --soft HEAD~1 2>/dev/null || true
+              git pull --rebase origin "$BRANCH"
+              git add -- '*/pdf-audit.json'
+              git commit -m "$MESSAGE" || true
+            fi
+
+            sleep $((RANDOM % 10 + 2))
+          done
+
+          echo "push failed after retries" >&2
+          exit 1
