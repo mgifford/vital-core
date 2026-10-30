@@ -102,6 +102,7 @@ export function loadConfig(rawYaml) {
     }
     t.spelling_locale = resolveSpellingLocale(t.spelling_locale, `target ${t.domain}`);
     t.governmentDomains = resolveGovernmentDomains(t.government_domains, `target ${t.domain}`);
+    t.pdfAudit = resolvePdfAudit({ ...(defaults.pdf_audit ?? {}), ...(t.pdf_audit ?? {}) }, `target ${t.domain}`);
   }
   return {
     defaults,
@@ -131,6 +132,19 @@ function resolveSpellingLocale(value, where) {
     throw new Error(`Unsupported spelling_locale "${value}" in ${where}. Supported: ${Object.keys(SPELLING_DICTIONARIES).join(', ')}.`);
   }
   return locale;
+}
+
+export const PDF_AUDIT_DEFAULTS = { enabled: false, per_run: 25, max_file_mb: 25, per_file_timeout: 120, recheck_days: 90 };
+
+function resolvePdfAudit(value, where) {
+  const unknown = Object.keys(value).filter((k) => !(k in PDF_AUDIT_DEFAULTS));
+  if (unknown.length) throw new Error(`Unknown pdf_audit key(s) ${unknown.join(', ')} in ${where}. Known: ${Object.keys(PDF_AUDIT_DEFAULTS).join(', ')}.`);
+  const v = { ...PDF_AUDIT_DEFAULTS, ...value };
+  if (typeof v.enabled !== 'boolean') throw new Error(`pdf_audit.enabled in ${where} must be true or false.`);
+  for (const k of ['per_run', 'max_file_mb', 'per_file_timeout', 'recheck_days']) {
+    if (!(typeof v[k] === 'number' && v[k] > 0)) throw new Error(`pdf_audit.${k} in ${where} must be a positive number.`);
+  }
+  return { enabled: v.enabled, perRun: Math.floor(v.per_run), maxFileMb: v.max_file_mb, perFileTimeout: Math.floor(v.per_file_timeout), recheckDays: v.recheck_days };
 }
 
 const SUFFIX_RE = /^\.?[a-z0-9-]+(\.[a-z0-9-]+)*$/;

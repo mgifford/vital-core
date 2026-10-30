@@ -255,6 +255,33 @@ without getting in the way.
 - **Failed pages come back.** `failCount >= 3` keeps a page out only for the
   week it last failed (`lastFailedWeek`); it is tried once more each week.
 
+## PDF checks (pdf-audit)
+
+The scans list each site's PDFs in `data/<domain>/resources.json`; the
+`pdf-audit` workflow checks them with
+[pdf-crawler](https://github.com/mgifford/pdf-crawler)'s
+`scripts/analyse_files.py`, and `aggregate` renders a PDFs page per domain
+(`renderPdfsPage()`, latest week only) from `data/<domain>/pdf-audit.json`.
+
+- **Own domain only.** `ownDomain()` (`src/lib/pdf-audit.js`) compares
+  registrable domains (`tldts-icann`); PDFs on other organisations' hosts
+  are counted on the page but never fetched, and `fetchPdf()`
+  (`src/lib/pdf-fetch.js`) refuses a redirect that leaves the domain.
+- **The setting decides the daily run, not the manual one.** `pdf_audit`
+  (off by default) selects sites for the cron; a manual run for one named
+  site works whatever its setting. Both refuse `hf_only` targets
+  (`selectTargets()` in `scripts/pdf-audit.js`), and `check-data-push.sh`
+  runs before anything is fetched.
+- **Queue order** (`pdfQueue()`): never checked, newest `firstSeen` first;
+  failures from an earlier ISO week, up to three attempts; checks older
+  than `recheck_days`. Rechecks are conditional (ETag / Last-Modified) and an
+  unchanged MD5 keeps its result without analysis.
+- **The checker is pinned.** `PDF_CRAWLER_REF` in `pdf-audit.yml` is a
+  pdf-crawler commit; bump it as a reviewed change, and keep
+  `analyse_files.py`'s input and output shapes stable upstream.
+- **Store results, never files.** Only `compactReport()`'s fields go into
+  `pdf-audit.json`; downloads are deleted after analysis.
+
 ## URL exclusion (three layers)
 
 Three independent mechanisms drop URLs, at three different stages. Keep them

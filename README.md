@@ -84,6 +84,10 @@ Other deliberate choices:
 3. After the night's scans finish, the `report` workflow aggregates the
    week, deploys the reports to GitHub Pages, and prunes page-level
    detail older than `retention_weeks`.
+4. Optionally, the `pdf-audit` workflow checks the PDFs each site links to
+   (daily, for sites with `pdf_audit: { enabled: true }`, or for one site
+   from Actions → pdf-audit), and the next report shows them on that
+   site's PDFs page.
 
 For how crawling, storage, and the pipeline work in more detail, see
 **[ARCHITECTURE.md](ARCHITECTURE.md)**.
@@ -292,6 +296,9 @@ pages, for an in-browser agent instead of a local coding client — see
 The crawler honors `robots.txt` (Disallow/Allow/Crawl-delay),
 identifies itself with a user agent containing a contact URL, scans one
 page at a time per domain with a configurable delay, and runs at night.
+PDF checks follow the same rules: one PDF at a time, only from the site's
+own domain, each downloaded once and then re-validated with a conditional
+request at most every 90 days.
 If you operate a site being scanned and want changes, open an issue.
 
 ## Honest limits

@@ -4,12 +4,13 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS, DEFAULT_SPELLING_LOCALE } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { weekDeltas, severityBurndown, streaks, deltaSeries } from './lib/progress.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs, writeTrendsCsv } from './lib/csv.js';
+import { loadPdfLedger, pdfReportView } from './lib/pdf-audit.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writePdfsCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs, writeTrendsCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { resolvePageRecord } from './lib/page-records.js';
@@ -377,9 +378,15 @@ for (const target of config.targets) {
 
     // inventory totals only make sense on the latest week's report.
     const isLatest = i === series.length - 1;
+    let pdfView = null;
+    let pdfCsv = null;
     if (isLatest) {
       latestBugs = reportBugs.map((b) => ({ ...b, _week: summary.week }));
       latestPolicySummary = policyResult.suppressionSummary;
+      // PDF results describe each PDF as last checked, so only the latest
+      // week shows them; resLedger already holds this week's inventory.
+      pdfView = pdfReportView(resLedger.resources, loadPdfLedger(target.key, target.domain), target.domain, { enabled: target.pdfAudit?.enabled });
+      pdfCsv = writePdfsCsv(repDir, target.domain, summary.week, pdfView);
     }
 
     // Render the configured languages. Sustainability (sustainable-web-output):
@@ -425,6 +432,7 @@ for (const target of config.targets) {
       fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary, reportBugs, target.url_exclude_patterns ?? []));
       fs.writeFileSync(path.join(repDir, `third-parties${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
       fs.writeFileSync(path.join(repDir, `images${sfx}.html`), renderImagesPage(target, summary, imagesCsv));
+      fs.writeFileSync(path.join(repDir, `pdfs${sfx}.html`), renderPdfsPage(target, summary, pdfView, pdfCsv));
       // History & Trends page (issue #180). Written for every week so the
       // subnav link resolves from any week's report.
       fs.writeFileSync(path.join(repDir, `history${sfx}.html`), renderHistoryPage(target, series, summary.week));
