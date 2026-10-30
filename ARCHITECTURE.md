@@ -404,6 +404,11 @@ report.yml    (after the night's scans complete)
   ├─ src/prune.js       drop page detail older than retention_weeks
   ├─ commit summaries back into data/
   └─ deploy docs/ to GitHub Pages
+
+pdf-audit.yml (daily for sites with pdf_audit enabled; manual for one site)
+  └─ scripts/pdf-audit.js   queue PDFs from data/<domain>/resources.json,
+                            download them, check them with pdf-crawler,
+                            commit data/<domain>/pdf-audit.json
 ```
 
 The scan pipeline is responsible for **collecting evidence**.

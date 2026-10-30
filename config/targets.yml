@@ -260,6 +260,17 @@ targets:
   #     defaults for a whole fleet. Takes effect at the next report build.
   #     Example: government_domains: [{ suffix: .gob.mx, country: Mexico }]
   #
+  #   pdf_audit: { enabled, per_run, max_file_mb, per_file_timeout, recheck_days }
+  #     PDF checks with pdf-crawler (.github/workflows/pdf-audit.yml), for the
+  #     PDFs on the site's own domain that the scans found. Off by default.
+  #     When enabled, the daily run checks up to per_run (25) PDFs per site,
+  #     never-checked and newest first; skips files over max_file_mb (25) or
+  #     taking over per_file_timeout seconds (120); and re-validates a checked
+  #     PDF after recheck_days (90). Any one site can be checked by hand from
+  #     Actions → pdf-audit, enabled or not. Set it in defaults for a whole
+  #     fleet. Results: data/<domain>/pdf-audit.json and the PDFs page.
+  #     Example: pdf_audit: { enabled: true }
+  #
   #   url_exclude_patterns: [ ... ] optional list of substring or /regex/ patterns
   #     to exclude from REPORT output only (not from the scan), for EVERYONE, at
   #     build time. Useful when some teams own certain URL patterns and aren't
