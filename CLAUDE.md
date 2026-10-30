@@ -456,11 +456,13 @@ the HTML reports. Files are gitignored locally and deployed to GitHub Pages.
 breaking change; add the new path under `api/v2/` and keep `v1/` until consumers migrate.
 
 **Never serialize a summary as is.** A summary carries per-page lists in
-memory for the CSVs and engine pages (`HEAVY_SUMMARY_KEYS` in `aggregate.js`).
-Every JSON write of a summary or series (`summary.json`, `weekly.json`,
-`domain.json`, the API snapshot) goes through `omitHeavyLists`; with 21 weeks
-of them, `www.medicaid.gov`'s `domain.json` passed V8's maximum string length
-and every report run failed.
+memory for the CSVs and engine pages (`HEAVY_SUMMARY_KEYS` in
+`src/lib/trend.js`); `summary.json` is written through `omitHeavyLists`. The
+published series (`weekly.json`, `domain.json`, the API snapshot) goes through
+`trendSeries()`: what failed each week as numbers, without passes or the
+evidence repeated every week. Serializing whole summaries for 21 weeks pushed
+`www.medicaid.gov`'s files to ~400 MB each and past V8's maximum string
+length; the trend is ~3 MB.
 
 **No server required** — these are pre-built static files. The `src/lib/api-writer.js`
 module builds them; `src/aggregate.js` calls `writeApiFiles()` once at the end of each run.
