@@ -422,7 +422,7 @@ for (const target of config.targets) {
       fs.writeFileSync(path.join(repDir, `fast${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson, series));
       fs.writeFileSync(path.join(repDir, `findable${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));
       fs.writeFileSync(path.join(repDir, `tech${sfx}.html`), renderTechPage(target, summary, techCsv));
-      fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary));
+      fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary, reportBugs, target.url_exclude_patterns ?? []));
       fs.writeFileSync(path.join(repDir, `third-parties${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
       fs.writeFileSync(path.join(repDir, `images${sfx}.html`), renderImagesPage(target, summary, imagesCsv));
       // History & Trends page (issue #180). Written for every week so the
@@ -853,12 +853,16 @@ function summarizeRecords(target, week, records, brokenLinks) {
       }
       // Tech↔finding row for this page: the technologies on it paired with the
       // accessibility findings on it. Keyed engine:ruleId. Only built for pages
-      // with tech data so the co-occurrence denominator is well-defined.
-      const findings = [
-        ...Object.keys(rec.axe?.violations ?? {}).map((id) => `axe:${id}`),
-        ...Object.keys(rec.alfa?.failed ?? {}).map((id) => `alfa:${id}`),
-      ];
-      techFindingPages.push({ techs: rec.tech.map((d) => d.name), findings });
+      // with tech data and an accessibility audit, naming the engines that ran
+      // so each finding is compared across the pages its engine checked.
+      const engines = [rec.axe && 'axe', rec.alfa && 'alfa'].filter(Boolean);
+      if (engines.length) {
+        const findings = [
+          ...Object.keys(rec.axe?.violations ?? {}).map((id) => `axe:${id}`),
+          ...Object.keys(rec.alfa?.failed ?? {}).map((id) => `alfa:${id}`),
+        ];
+        techFindingPages.push({ techs: rec.tech.map((d) => d.name), findings, engines });
+      }
     }
     if (rec.thirdParty) {
       // hasFindings: did this page have any accessibility finding? Used to

@@ -16,16 +16,21 @@
  *
  * Only pages where BOTH the tech engine and the finding's engine ran are
  * counted — otherwise differing per-engine sampling rates would skew the
- * denominator. Callers pass per-page rows that already reflect that overlap.
+ * denominator: Alfa runs on a sample, so an Alfa finding on every page it
+ * checked looked tied to whatever tech that sample happened to favour. Each
+ * row names the engines that ran on it, and the model keeps per-engine page
+ * and tech counts for those denominators.
  */
 
 /**
  * Build a co-occurrence model from per-page observations.
  *
- * `pages` is an array of { techs: string[], findings: string[] } where each
- * page contributes the set of technologies on it and the set of finding keys
- * (e.g. "axe:color-contrast") on it. Sets are deduplicated per page so a
- * finding that appears 30 times on one page still counts as one page.
+ * `pages` is an array of { techs: string[], findings: string[], engines?: string[] }
+ * where each page contributes the set of technologies on it, the set of
+ * finding keys (e.g. "axe:color-contrast") on it, and the engines that ran on
+ * it ("axe", "alfa": the prefix of its finding keys). Sets are deduplicated
+ * per page so a finding that appears 30 times on one page still counts as one
+ * page.
  *
  * Returns:
  *   {
@@ -33,10 +38,11 @@
  *     tech:   { [name]:  pagesWithTech },
  *     finding:{ [key]:   pagesWithFinding },
  *     pair:   { [name]: { [key]: pagesWithBoth } },
+ *     engines:{ [engine]: { pages, tech: { [name]: pagesWithTech } } },
  *   }
  */
 export function buildCooccurrence(pages) {
-  const model = { pages: 0, tech: {}, finding: {}, pair: {} };
+  const model = { pages: 0, tech: {}, finding: {}, pair: {}, engines: {} };
   for (const p of pages) {
     model.pages++;
     const techs = [...new Set(p.techs ?? [])];
@@ -44,6 +50,11 @@ export function buildCooccurrence(pages) {
     for (const t of techs) {
       model.tech[t] = (model.tech[t] ?? 0) + 1;
       model.pair[t] ??= {};
+    }
+    for (const e of new Set(p.engines ?? [])) {
+      const eng = (model.engines[e] ??= { pages: 0, tech: {} });
+      eng.pages++;
+      for (const t of techs) eng.tech[t] = (eng.tech[t] ?? 0) + 1;
     }
     for (const f of findings) {
       model.finding[f] = (model.finding[f] ?? 0) + 1;
@@ -71,9 +82,18 @@ export function buildCooccurrence(pages) {
  * Returns null when support is below `minPages` on either side, or when any
  * denominator is zero — low-support pairs are noise, not signal.
  */
+/**
+ * The pages a finding could have turned up on: those its engine ran on.
+ * Models stored before per-engine counts existed fall back to every page.
+ */
+function basisFor(model, finding) {
+  return model.engines?.[String(finding).split(':')[0]] ?? { pages: model.pages, tech: model.tech };
+}
+
 export function lift(model, tech, finding, minPages = 5) {
-  const totalPages = model.pages;
-  const techPages = model.tech[tech] ?? 0;
+  const basis = basisFor(model, finding);
+  const totalPages = basis.pages;
+  const techPages = basis.tech[tech] ?? 0;
   const findingPages = model.finding[finding] ?? 0;
   const pairPages = model.pair[tech]?.[finding] ?? 0;
   if (totalPages === 0 || techPages === 0 || findingPages === 0) return null;
@@ -84,30 +104,61 @@ export function lift(model, tech, finding, minPages = 5) {
   return pFindingGivenTech / pFinding;
 }
 
+/** A finding must be at least this many times as common with a technology as without it to be listed. */
+export const MIN_RATIO = 1.5;
+
 /**
- * Rank all (tech, finding) pairs in a model by lift, keeping only pairs that
- * clear the support threshold. Returns
- *   [{ tech, finding, lift, pairPages, techPages, findingPages }]
- * sorted by lift desc, then pairPages desc. `limit` caps the result.
+ * Rank (tech, finding) pairs by how much more common the finding is on pages
+ * with the tech than on pages without it:
+ *
+ *   ratio = (pairPages / techPages) / (withoutFindingPages / withoutPages)
+ *
+ * Comparing with all pages instead says little when a tech is on nearly every
+ * page: Google Ads on 59 of 60 pages gave every finding a lift of 1.02. So a
+ * pair needs `minPages` pages with the tech, with the finding alongside it,
+ * and without the tech, and a ratio of at least `minRatio`. `ratio` is null
+ * when the finding is never on a page without the tech. `lift` (against all
+ * pages) stays for API consumers. Returns
+ *   [{ tech, finding, ratio, lift, pairPages, techPages, findingPages, withoutPages, withoutFindingPages }]
+ * strongest first. `limit` caps the result.
  */
-export function rankAssociations(model, { minPages = 5, limit = 50 } = {}) {
+export function rankAssociations(model, { minPages = 5, minRatio = MIN_RATIO, limit = 50 } = {}) {
   const out = [];
   for (const tech of Object.keys(model.pair)) {
     for (const finding of Object.keys(model.pair[tech])) {
-      const l = lift(model, tech, finding, minPages);
-      if (l == null) continue;
+      const basis = basisFor(model, finding);
+      const techPages = basis.tech[tech] ?? 0;
+      const withoutPages = basis.pages - techPages;
+      const pairPages = model.pair[tech][finding];
+      const findingPages = model.finding[finding] ?? 0;
+      if (techPages < minPages || withoutPages < minPages || pairPages < minPages) continue;
+      const withoutFindingPages = findingPages - pairPages;
+      const ratio = withoutFindingPages > 0 ? (pairPages / techPages) / (withoutFindingPages / withoutPages) : null;
+      if (ratio != null && ratio < minRatio) continue;
       out.push({
         tech,
         finding,
-        lift: Math.round(l * 100) / 100,
-        pairPages: model.pair[tech][finding],
-        techPages: model.tech[tech],
-        findingPages: model.finding[finding],
+        ratio: ratio == null ? null : Math.round(ratio * 100) / 100,
+        lift: Math.round(lift(model, tech, finding, minPages) * 100) / 100,
+        pairPages,
+        techPages,
+        findingPages,
+        withoutPages,
+        withoutFindingPages,
       });
     }
   }
-  out.sort((a, b) => b.lift - a.lift || b.pairPages - a.pairPages);
+  const strength = (a) => a.ratio ?? Infinity;
+  out.sort((a, b) => strength(b) - strength(a) || b.pairPages - a.pairPages);
   return out.slice(0, limit);
+}
+
+/** Technologies on so many pages that too few lack them to compare against. */
+export function onNearlyEveryPage(model, { minPages = 5 } = {}) {
+  return Object.entries(model.tech)
+    .filter(([, n]) => n >= minPages && model.pages - n < minPages)
+    .map(([tech]) => tech)
+    .sort();
 }
 
 /**
@@ -121,9 +172,20 @@ export function rankAssociations(model, { minPages = 5, limit = 50 } = {}) {
  * buildCooccurrence plus parallel `*Sites` maps counting distinct domains.
  */
 export function mergeFleet(entries) {
-  const fleet = { pages: 0, tech: {}, finding: {}, pair: {}, techSites: {}, findingSites: {}, pairSites: {} };
+  const fleet = { pages: 0, tech: {}, finding: {}, pair: {}, engines: {}, techSites: {}, findingSites: {}, pairSites: {} };
+  // Per-engine counts merge only if every site has them; otherwise the
+  // fleet falls back to all pages, as each older model does on its own.
+  const perEngine = entries.every(({ model }) => model.engines && Object.keys(model.engines).length);
+  if (!perEngine) delete fleet.engines;
   for (const { model } of entries) {
     fleet.pages += model.pages;
+    if (perEngine) {
+      for (const [e, eng] of Object.entries(model.engines)) {
+        const f = (fleet.engines[e] ??= { pages: 0, tech: {} });
+        f.pages += eng.pages;
+        for (const [t, n] of Object.entries(eng.tech)) f.tech[t] = (f.tech[t] ?? 0) + n;
+      }
+    }
     for (const [t, n] of Object.entries(model.tech)) {
       fleet.tech[t] = (fleet.tech[t] ?? 0) + n;
       fleet.techSites[t] = (fleet.techSites[t] ?? 0) + 1;

@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { buildCooccurrence } from '../../src/lib/tech-findings.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
   const target = { key: 'd', domain: 'd' };
@@ -1102,4 +1103,73 @@ test('readability page: the misspellings note names the English variant as text'
   assert.match(renderReadabilityPage(target, summary(['en-GB']), 'r.csv'), /Checked against the British English dictionary\./);
   assert.match(renderReadabilityPage(target, summary(), 'r.csv'), /Checked against the US English dictionary\./, 'older summaries were US English');
   assert.match(renderReadabilityPage(target, summary(['en-CA', 'en-US']), 'r.csv'), /Checked against the Canadian English, US English dictionaries\./);
+});
+
+const deepLinkBug = (id, extra = {}) => ({
+  url: 'https://example.gov/a', xpath: 'img', engine_key: 'axe-core', tool: 'axe-core 4.11.0', rule_url: null,
+  severity: 'Serious', frequency: { instances: 1, pages_affected: 1, total_pages_scanned: 4 },
+  examples: [], example_pages: ['https://example.gov/a'], affected_pages: ['https://example.gov/a'],
+  impact: { groups: [], summary: '' }, testing_environment: '', steps_to_reproduce: [], remediation_tip: null, suggested_fix: '',
+  instance_id: id, pattern_id: `P-${id}`, rule_id: id.toLowerCase(), rule_label: id, summary: `Finding ${id}`, description: '',
+  wcag_sc: '1.1.1', wcag_name: 'Non-text Content', wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A', obligation: 'required', handling: 'report',
+  ...extra,
+});
+
+test('tech-findings page: each finding links to its full report, with both rates in words', () => {
+  const pages = [];
+  for (let i = 0; i < 8; i++) pages.push({ techs: ['WordPress', 'Google Ads'], findings: ['axe:image-alt'] });
+  for (let i = 0; i < 6; i++) pages.push({ techs: ['Google Ads'], findings: [] });
+  pages.push({ techs: [], findings: [] });
+  const summary = { week: '2026-W44', techFindings: { model: buildCooccurrence(pages), associations: [{ tech: 'WordPress', finding: 'axe:image-alt', lift: 1.88 }] } };
+  const html = renderTechFindingsPage({ key: 'd', domain: 'd' }, summary, [deepLinkBug('VS-alt', { rule_id: 'image-alt' })]);
+  assert.match(html, /<th scope="row"><a href="accessible\.html#VS-alt">[^<]+\(axe\)<\/a><\/th>/);
+  assert.match(html, /<td class="num" data-sort="1">8 of 8 \(100%\)<\/td>\n  <td class="num" data-sort="0">0 of 7 \(0%\)<\/td>/);
+  assert.match(html, /only with it/);
+  assert.match(html, /<h3>WordPress <span class="bug-meta">8 pages<\/span><\/h3>/);
+  assert.match(html, /Not compared, because they run on nearly every page and leave fewer than 5 pages without them: Google Ads\./);
+  assert.doesNotMatch(html, /Lift/, 'the stored lift is not what the page shows');
+
+  const noBug = renderTechFindingsPage({ key: 'd', domain: 'd' }, summary, []);
+  assert.match(noBug, /<th scope="row">[^<]+\(axe\)<\/th>/, 'no link when the Accessibility page has no report for it');
+  const none = renderTechFindingsPage({ key: 'd', domain: 'd' }, { week: '2026-W44', techFindings: { model: buildCooccurrence(pages.slice(0, 11)) } });
+  assert.match(none, /No finding was at least 1\.5 times as common/);
+  assert.match(none, /Not compared, because they run on nearly every page and leave fewer than 5 pages without them: Google Ads, WordPress\./, 'the empty page still says why');
+});
+
+test('accessibility page: a deep link opens a finding outside the default view, or a summary-only row', () => {
+  const summary = { week: '2026-W25', pagesScanned: 4, axe: { rules: {} }, alfa: { rules: {} }, consensus: null };
+  const bugs = [deepLinkBug('VS-top'), deepLinkBug('VS-bp', { wcag_sc: null, wcag_category: 'Best Practice', obligation: 'advisory', severity: 'Minor' }), deepLinkBug('VS-tail', { severity: 'Minor' })];
+  const html = renderAccessibilityPage({ key: 'd', domain: 'd' }, summary, bugs, { byRule: {}, bugsAll: null }, { max_html_issues: 2, keyPages: [] });
+  assert.match(html, /<tr id="VS-tail" tabindex="-1">/, 'a summary-only finding has an anchor');
+
+  const start = html.indexOf('function goToTarget');
+  const script = html.slice(html.lastIndexOf('<script>', start) + 8, html.indexOf('</script>', start));
+  const el = (tagName, details) => ({ tagName, classList: { add() { this.on = true; }, remove() {} }, closest: () => details, scrollIntoView() {}, focus() { this.focused = true; } });
+  const run = (hash, target) => {
+    const all = { checked: false };
+    const ctx = { applied: 0 };
+    const document = {
+      querySelector: () => null,
+      querySelectorAll: () => [],
+      getElementById: (id) => (id === 'filter-all' ? all : id === hash ? target : null),
+    };
+    const window = { location: { hash: `#${hash}` }, addEventListener() {}, __vitalApplyFilter: () => { ctx.applied++; } };
+    vm.runInNewContext(script, { document, window, setTimeout });
+    return { all, ctx };
+  };
+
+  const hidden = { hidden: true, open: false, getAttribute: () => '0' };
+  const summaryEl = el('SUMMARY', hidden);
+  const r = run('VS-bp', summaryEl);
+  assert.equal(r.all.checked, true, '"Show everything" is switched on');
+  assert.equal(r.ctx.applied, 1);
+  assert.equal(hidden.open, true);
+  assert.equal(summaryEl.focused, true);
+
+  const overflow = { hidden: false, open: false, getAttribute: () => null };
+  const row = el('TR', overflow);
+  const r2 = run('VS-tail', row);
+  assert.equal(overflow.open, true, 'the summary-only list opens');
+  assert.equal(row.focused, true);
+  assert.equal(r2.all.checked, false, 'the filter is left alone for a summary-only row');
 });

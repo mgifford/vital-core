@@ -100,11 +100,18 @@ in bug reports.
 
 `src/lib/tech-findings.js` joins each page's detected technologies with its
 accessibility findings (both already in the page record), building a
-per-page co-occurrence model in `summarizeRecords`. **Lift** =
-`P(finding | tech) / P(finding)` quantifies over-representation; only pages
-where both tech and an accessibility engine ran are counted, with a 5-page
-minimum support. The model is stored on the weekly summary (`techFindings`,
-~9 KB), rendered per-domain as `tech-findings.html`, and merged across
+per-page co-occurrence model in `summarizeRecords`. The per-domain page
+lists a finding when it is at least 1.5 times as common on pages with a
+technology as on pages without it (`rankAssociations`), with at least 5 pages
+with the tech, with both, and without the tech; a tech on nearly every page
+has nothing to compare against and is named as not compared. Comparing with
+all pages instead (**lift** = `P(finding | tech) / P(finding)`, still in the
+data for API consumers) gave a tech on 59 of 60 pages a lift of 1.02 for
+every finding. Only pages where both tech and an accessibility engine ran
+are counted. The model is stored on the weekly summary (`techFindings`,
+~9 KB) and ranked when rendered, so older weeks follow the current rule.
+Each finding links to its report on the Accessibility page. It is rendered
+per-domain as `tech-findings.html`, and merged across
 domains on the dashboard (`mergeFleet` / `rankFleetAssociations`) into the
 **Cross-technology issues** matrix scored by `lift × sites`. It is an
 *association* surface — co-located technologies share identical lift, so the

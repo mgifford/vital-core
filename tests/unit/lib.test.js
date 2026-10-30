@@ -19,7 +19,7 @@ import { toCsv, ruleSlug, writeLighthouseCsv, writeLighthouseJson } from '../../
 import { updateResourceLedger } from '../../src/lib/resource-ledger.js';
 import { buildAcrData, buildAcrYaml, renderAcrHtml } from '../../src/lib/acr.js';
 import { headersToWappalyzer } from '../../src/engines/tech.js';
-import { buildCooccurrence, lift, rankAssociations, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
+import { buildCooccurrence, lift, rankAssociations, onNearlyEveryPage, mergeFleet, rankFleetAssociations } from '../../src/lib/tech-findings.js';
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
 import { extractAudits, isDetachedTargetError, isClosedSessionError } from '../../src/engines/lighthouse.js';
@@ -1609,16 +1609,52 @@ test('tech-findings: lift over- and under-representation, support guard', () => 
   assert.equal(lift(m, 'GTM', 'axe:missing', 1), null);
 });
 
-test('tech-findings: rankAssociations sorts by lift then support', () => {
+test('tech-findings: rankAssociations compares pages with and without the tech, strongest first', () => {
   const pages = [];
   for (let i = 0; i < 6; i++) pages.push({ techs: ['A'], findings: ['axe:x'] });
-  for (let i = 0; i < 6; i++) pages.push({ techs: ['B'], findings: i < 3 ? ['axe:x'] : [] });
+  for (let i = 0; i < 6; i++) pages.push({ techs: ['B'], findings: i < 3 ? ['axe:x', 'axe:y'] : ['axe:y'] });
+  for (let i = 0; i < 6; i++) pages.push({ techs: [], findings: i < 3 ? ['axe:y'] : [] });
   const m = buildCooccurrence(pages);
   const ranked = rankAssociations(m, { minPages: 3 });
-  assert.ok(ranked.length >= 1);
-  // A (finding on all 6) has higher lift than B (finding on 3 of 6).
-  assert.equal(ranked[0].tech, 'A');
-  assert.ok(ranked[0].lift >= (ranked[1]?.lift ?? 0));
+  assert.deepEqual(ranked[0], { tech: 'A', finding: 'axe:x', ratio: 4, lift: 2, pairPages: 6, techPages: 6, findingPages: 9, withoutPages: 12, withoutFindingPages: 3 },
+    'x on 6 of 6 A pages (100%) against 3 of 12 others (25%)');
+  const y = ranked.find((a) => a.tech === 'B' && a.finding === 'axe:y');
+  assert.equal(y.ratio, 4, 'y on 6 of 6 B pages against 3 of 12 others');
+  assert.ok(!ranked.some((a) => a.tech === 'B' && a.finding === 'axe:x'), 'x is on 50% of pages with B and 50% without: not listed');
+});
+
+test('tech-findings: a tech on nearly every page is not compared (Google Ads, 59 of 60 pages)', () => {
+  const pages = [];
+  for (let i = 0; i < 59; i++) pages.push({ techs: ['Google Ads'], findings: i < 9 ? ['axe:aria-prohibited-attr'] : [] });
+  pages.push({ techs: [], findings: [] });
+  const m = buildCooccurrence(pages);
+  assert.equal(Math.round(lift(m, 'Google Ads', 'axe:aria-prohibited-attr') * 100) / 100, 1.02, 'the lift that confused readers');
+  assert.deepEqual(rankAssociations(m), []);
+  assert.deepEqual(onNearlyEveryPage(m), ['Google Ads']);
+});
+
+test('tech-findings: an Alfa finding is compared across the pages Alfa checked (Walsall, Alfa on half the pages)', () => {
+  const pages = [];
+  // Every page Alfa checked has sia-r66; Alfa happened to check more Amazon pages.
+  for (let i = 0; i < 64; i++) pages.push({ techs: ['Amazon Advertising'], engines: i < 34 ? ['axe', 'alfa'] : ['axe'], findings: i < 34 ? ['alfa:sia-r66', 'axe:x'] : ['axe:x'] });
+  for (let i = 0; i < 20; i++) pages.push({ techs: [], engines: i < 7 ? ['axe', 'alfa'] : ['axe'], findings: i < 7 ? ['alfa:sia-r66', 'axe:x'] : ['axe:x'] });
+  const m = buildCooccurrence(pages);
+  assert.deepEqual(m.engines.alfa, { pages: 41, tech: { 'Amazon Advertising': 34 } });
+  assert.deepEqual(rankAssociations(m), [], 'on every page Alfa checked, with or without the tech: 1×, not 1.5×');
+  assert.deepEqual(rankAssociations(m, { minRatio: 0 }).find((a) => a.finding === 'alfa:sia-r66'),
+    { tech: 'Amazon Advertising', finding: 'alfa:sia-r66', ratio: 1, lift: 1, pairPages: 34, techPages: 34, findingPages: 41, withoutPages: 7, withoutFindingPages: 7 });
+
+  const fleet = mergeFleet([{ domain: 'a', model: m }, { domain: 'b', model: m }]);
+  assert.equal(fleet.engines.alfa.pages, 82);
+  assert.equal(mergeFleet([{ domain: 'a', model: m }, { domain: 'old', model: { ...m, engines: undefined } }]).engines, undefined, 'an older model without per-engine counts falls back to all pages');
+});
+
+test('tech-findings: a finding never seen without the tech has no ratio and ranks first; weak ones are dropped', () => {
+  const pages = [];
+  for (let i = 0; i < 10; i++) pages.push({ techs: ['T'], findings: ['axe:only', ...(i < 6 ? ['axe:weak'] : [])] });
+  for (let i = 0; i < 10; i++) pages.push({ techs: [], findings: i < 5 ? ['axe:weak'] : [] });
+  const ranked = rankAssociations(buildCooccurrence(pages));
+  assert.deepEqual(ranked.map((a) => [a.finding, a.ratio]), [['axe:only', null]], 'weak: 60% against 50% is 1.2×, under 1.5×');
 });
 
 test('tech-findings: fleet merge counts distinct sites and scores breadth', () => {

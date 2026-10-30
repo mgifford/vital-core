@@ -4,7 +4,7 @@ import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
 import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
-import { mergeFleet, rankFleetAssociations } from './lib/tech-findings.js';
+import { mergeFleet, rankFleetAssociations, rankAssociations, onNearlyEveryPage } from './lib/tech-findings.js';
 import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
@@ -386,12 +386,13 @@ export function redirectStub(dest, lang = getLocale()) {
  * Keeps the full shared nav so navigation never breaks and the page reads as
  * "we evaluate this, there just wasn't data this week" rather than 404.
  */
-function emptyCriterionPage(target, summary, { active, label, message }) {
+function emptyCriterionPage(target, summary, { active, label, message, extra = '' }) {
   const L = t(label);
   const body = `
 <h1>${esc(target.domain)}: ${esc(L)} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav(active)}
 <p class="meta">${esc(t(message))}</p>
+${extra}
 <p class="note">${t('This criterion is evaluated for every domain, but a given week\'s sample may not include pages with data for it. Check the <a href="archive.html">archive</a> for other weeks, or the <a href="index.html">overview</a>.')}</p>`;
   return layout({
     title: `${target.domain} ${L} ${summary.week} | vital-scans`,
@@ -1835,13 +1836,25 @@ function bugDeepLinkScript() {
     if (prev) prev.classList.remove('target-bug');
     var hash = window.location.hash.slice(1);
     if (!hash) return;
-    var summary = document.getElementById(hash);
-    if (!summary || summary.tagName !== 'SUMMARY') return;
-    var details = summary.closest('details');
-    if (details) details.open = true;
-    summary.classList.add('target-bug');
-    summary.scrollIntoView();
-    summary.focus();
+    var target = document.getElementById(hash);
+    if (!target) return;
+    var details = target.closest('details');
+    if (!details) return;
+    if (target.tagName === 'SUMMARY') {
+      // A link to a finding outside the default view (best practice, or few
+      // pages) would land on nothing, so switch to "Show everything" first.
+      var all = document.getElementById('filter-all');
+      if (details.hidden && details.getAttribute('data-excluded') !== '1' && all && !all.checked && window.__vitalApplyFilter) {
+        all.checked = true;
+        window.__vitalApplyFilter();
+      }
+    } else if (target.tagName !== 'TR') {
+      return;
+    }
+    details.open = true;
+    target.classList.add('target-bug');
+    target.scrollIntoView();
+    target.focus();
   }
   window.addEventListener('hashchange', goToTarget);
   // A permalink click when the URL hash is already this finding's id (e.g.
@@ -1863,7 +1876,7 @@ function bugDeepLinkScript() {
  */
 function overflowFindings(overflowBugs, csvBugsHref) {
   if (!overflowBugs || overflowBugs.length === 0) return '';
-  const rows = overflowBugs.map((b) => `<tr>
+  const rows = overflowBugs.map((b) => `<tr id="${esc(b.instance_id)}" tabindex="-1">
 <td><span class="sev-badge">${esc(t(b.severity))}</span></td>
 <td>${b.rule_url ? `<a href="${esc(b.rule_url)}">${esc(b.summary)}</a>` : esc(b.summary)} <span class="bug-meta">[${esc(b.rule_id)}]</span></td>
 <td>${b.wcag_category ? esc(t(b.wcag_category)) : ''}</td>
@@ -3246,59 +3259,75 @@ function findingLabel(key) {
 }
 
 /**
- * Tech ↔ issues page: surfaces accessibility findings that are statistically
- * over-represented on pages running a given technology. The signal is lift
- * (how much more likely a finding is on pages with the tech vs. its overall
- * rate). High lift across many pages is a candidate systemic issue — a barrier
- * that travels with a CMS/theme/widget rather than with any one page's content.
+ * Tech ↔ issues page: accessibility findings more common on pages running a
+ * technology than on pages without it (rankAssociations). A strong pair over
+ * many pages is a candidate systemic issue — a barrier that travels with a
+ * CMS/theme/widget rather than with any one page's content.
  *
- * Association is not causation: the page says "associated with", and notes that
- * a stack of technologies detected on the same pages will share lift values
+ * Association is not causation: the page says so, and notes that a stack of
+ * technologies detected on the same pages shows the same numbers
  * (collinearity), so the implicated component still needs human confirmation.
  */
-export function renderTechFindingsPage(target, summary) {
+export function renderTechFindingsPage(target, summary, bugs = [], excludePatterns = []) {
   const tf = summary.techFindings;
-  if (!tf || !tf.associations?.length) {
-    return emptyCriterionPage(target, summary, { active: 'tech-findings', label: 'Technology ↔ issues', message: 'No technology-to-finding associations cleared the support threshold this week (need enough pages where both technology detection and an accessibility engine ran).' });
+  // Ranked here from the stored counts, so older weeks follow today's rule.
+  const associations = tf?.model ? rankAssociations(tf.model, { minPages: 5, limit: 50 }) : [];
+  const everywhere = tf?.model ? onNearlyEveryPage(tf.model, { minPages: 5 }) : [];
+  const notCompared = everywhere.length
+    ? `<p class="meta">${t('Not compared, because they run on nearly every page and leave fewer than 5 pages without them: @list.', { '@list': everywhere.map(esc).join(', ') })}</p>`
+    : '';
+  if (!associations.length) {
+    return emptyCriterionPage(target, summary, { active: 'tech-findings', label: 'Technology ↔ issues', message: 'No finding was at least 1.5 times as common on pages running a technology as on pages without it this week. A technology needs at least 5 pages with it and 5 without it to be compared.', extra: notCompared });
   }
   const model = tf.model;
 
-  // Group the ranked associations by technology, strongest first.
-  const byTech = {};
-  for (const a of tf.associations) (byTech[a.tech] ??= []).push(a);
-  const techOrder = Object.keys(byTech).sort(
-    (a, b) => (byTech[b][0]?.lift ?? 0) - (byTech[a][0]?.lift ?? 0)
-  );
+  // Each finding's full report (pages, elements, fix) is on the Accessibility
+  // page, which renders an anchor for every finding left after exclusions.
+  const bugByFinding = new Map();
+  for (const b of filterBugsByExclusion(bugs, excludePatterns)) {
+    const key = `${b.engine_key === 'axe-core' ? 'axe' : b.engine_key}:${b.rule_id}`;
+    if (b.instance_id && !bugByFinding.has(key)) bugByFinding.set(key, b.instance_id);
+  }
+  const findingCell = (key) => {
+    const id = bugByFinding.get(key);
+    return id ? `<a href="${esc(pageHref('accessibility', id))}">${esc(findingLabel(key))}</a>` : esc(findingLabel(key));
+  };
+  const share = (n, of) => `<td class="num" data-sort="${n / of}">${t('@n of @of (@pct%)', { '@n': nf(n), '@of': nf(of), '@pct': Math.round((100 * n) / of) })}</td>`;
 
-  const sections = techOrder
-    .map((tech) => {
-      const rows = byTech[tech]
-        .map((a) => `<tr>
-  <th scope="row">${esc(findingLabel(a.finding))}</th>
-  <td class="num">${a.lift.toFixed(2)}×</td>
-  <td class="num">${a.pairPages} / ${a.techPages}</td>
-  <td class="num">${a.findingPages}</td>
-</tr>`)
-        .join('\n');
-      return `<h3>${esc(tech)} <span class="bug-meta">${t('@n pages', { '@n': model.tech[tech] })}</span></h3>
+  // Associations come strongest first, so each technology's first is its strongest.
+  const byTech = new Map();
+  for (const a of associations) {
+    if (!byTech.has(a.tech)) byTech.set(a.tech, []);
+    byTech.get(a.tech).push(a);
+  }
+
+  const sections = [...byTech]
+    .map(([tech, rows]) => `<h3>${esc(tech)} <span class="bug-meta">${t('@n pages', { '@n': nf(model.tech[tech]) })}</span></h3>
 <table class="sortable">
-<caption>${t('Findings over-represented on pages running @tech (lift ≥ 1, ≥5 pages support).', { '@tech': esc(tech) })}</caption>
+<caption>${t('Findings at least 1.5 times as common on pages running @tech as on pages without it.', { '@tech': esc(tech) })}</caption>
 <thead><tr>
   <th scope="col">${t('Finding')}</th>
-  <th scope="col" class="num">${t('Lift')}</th>
-  <th scope="col" class="num">${t('On tech pages')}</th>
-  <th scope="col" class="num">${t('On all pages')}</th>
+  <th scope="col" class="num">${t('Pages with @tech', { '@tech': esc(tech) })}</th>
+  <th scope="col" class="num">${t('Pages without it')}</th>
+  <th scope="col" class="num">${t('Times as common')}</th>
 </tr></thead>
-<tbody>${rows}</tbody>
-</table>`;
-    })
+<tbody>${rows.map((a) => `<tr>
+  <th scope="row">${findingCell(a.finding)}</th>
+  ${share(a.pairPages, a.techPages)}
+  ${share(a.withoutFindingPages, a.withoutPages)}
+  <td class="num" data-sort="${a.ratio ?? 1e9}">${a.ratio == null ? t('only with it') : `${a.ratio.toFixed(1)}×`}</td>
+</tr>`).join('\n')}</tbody>
+</table>`)
     .join('\n');
 
   const body = `
 <h1>${esc(target.domain)}: ${t('technology ↔ issues')}</h1>
 ${subnav('tech-findings')}
-<p class="meta">${t('Accessibility findings that appear disproportionately on pages running a given technology, across the @pages page(s) in <strong>@week</strong> where both technology detection and an accessibility engine ran. <strong>Lift</strong> is how many times more likely a finding is on pages with the technology than on pages overall — a value of 2× means twice the baseline rate.', { '@pages': model.pages, '@week': esc(summary.week) })}</p>
-<p class="note">${t('This is an <em>association</em>, not proof of cause. Technologies that are detected on the same set of pages (e.g. a CMS, its host, and its language) will share identical lift values; the listing groups by technology but cannot tell which one in a co-located stack is responsible. Treat high-lift pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page\'s content.')}</p>
+<p class="meta">${t('Accessibility findings that are more common on pages running a technology than on pages without it, across the @pages page(s) in <strong>@week</strong> where both technology detection and an accessibility engine ran. Each finding is compared across the pages its own engine checked, since axe and Alfa can run on different samples.', { '@pages': nf(model.pages), '@week': esc(summary.week) })}</p>
+<p class="meta">${t('<strong>Times as common</strong> compares the two groups: the share of pages with the technology that have the finding, divided by the share of pages without it that have it. 1× means no difference; 2× means twice as common. “Only with it” means no page without the technology had the finding. A finding is listed when it is at least 1.5 times as common and is on at least 5 pages with the technology, and only technologies with at least 5 pages each way are compared.')}</p>
+${notCompared}
+<p class="note">${t('This is an <em>association</em>, not proof of cause. Technologies detected on the same pages (e.g. a CMS, its host, and its language) show the same numbers, and the listing cannot tell which one in such a stack is responsible. Treat strong pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page\'s content.')}</p>
+<p class="meta">${t('Each finding links to its full report on the Accessibility page: the pages it is on, the failing elements and how to fix them.')}</p>
 ${sections}`;
   return layout({
     title: `${target.domain} Tech ↔ Issues ${summary.week} | vital-scans`,
@@ -4990,7 +5019,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
   margin: .6rem 0; padding: 0 .9rem; }
 .bug > summary { cursor: pointer; padding: .6rem 0; font-weight: 600; scroll-margin-top: 2rem; }
 .bug[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: .6rem; }
-.bug > summary.target-bug { outline: 4px solid var(--accent); outline-offset: 2px; }
+.bug > summary.target-bug, .overflow-findings tr.target-bug { outline: 4px solid var(--accent); outline-offset: 2px; }
 .bug-permalink { opacity: 0; text-decoration: none; color: var(--accent); font-weight: 700;
   padding: 0 .2rem; margin-right: .1rem; border-radius: 2px; }
 .bug > summary:hover .bug-permalink, .bug-permalink:focus { opacity: 1; }
