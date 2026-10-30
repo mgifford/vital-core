@@ -80,8 +80,7 @@ function writeSite({ fixed }) {
       path.join(SITE, `page-${i}.html`),
       `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title>
-<meta name="generator" content="WordPress 6.5">
-<script src="http://127.0.0.1:${PORT}/thirdparty.js"></script></head>
+${i % 2 === 0 || i % 3 === 0 ? '<meta name="generator" content="WordPress 6.5">\n' : ''}<script src="http://127.0.0.1:${PORT}/thirdparty.js"></script></head>
 <body><main><h1>Page ${i}</h1>
 ${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
 <p>This is a short paragraph of ordinary readable prose written so the plain language engine has real sentences to score. It deliberately contains one mispelled word for the spell check to catch, and enough words to count as content rather than navigation.</p>
@@ -291,18 +290,18 @@ try {
   assert(typeof firstImg.isDecorative === 'boolean', 'isDecorative field present');
 
   // Tech detection: the <meta name="generator" content="WordPress 6.5"> on
-  // every page should be picked up by the Wappalyzer fingerprints.
+  // page 2 should be picked up by the Wappalyzer fingerprints.
   const techPageRecs = fs.readdirSync(pagesDir)
     .map((f) => JSON.parse(fs.readFileSync(path.join(pagesDir, f))))
     .filter((r) => r.status === 200 && r.tech);
   assert(techPageRecs.length > 0, 'at least one page record has tech data');
-  const techResult = techPageRecs[0].tech;
+  const techResult = techPageRecs.find((r) => r.url.endsWith('/page-2.html'))?.tech;
   assert(Array.isArray(techResult) && techResult.length > 0, 'tech detection returned at least one technology');
   assert(techResult.some((t) => /wordpress/i.test(t.name)), 'WordPress detected via meta generator tag');
 
-  // Tech ↔ finding join: every page runs WordPress and the broken pages have
-  // image-alt violations, so the co-occurrence model should pair WordPress
-  // with image-alt, and the association list + sub-page should surface it.
+  // Tech ↔ finding join: WordPress runs on the even pages and every third
+  // page, which includes every broken page, so image-alt is only ever on
+  // WordPress pages. The comparison needs pages without it too.
   assert(w1.techFindings && w1.techFindings.model, 'techFindings model recorded in summary');
   assert(w1.techFindings.model.tech.WordPress >= 5, 'WordPress co-occurrence has enough page support');
   assert('axe:image-alt' in w1.techFindings.model.finding, 'image-alt tracked as a finding key');
@@ -316,6 +315,8 @@ try {
   // findingLabel() renders the human-readable rule label, not the raw id,
   // so match the plain-language text for axe:image-alt.
   assert(/WordPress/.test(tfHtml) && /meaningful alt attribute/.test(tfHtml), 'tech-findings page lists WordPress and the image-alt finding');
+  assert(/<a href="accessible\.html#VS-[^"]+">[^<]*meaningful alt attribute/.test(tfHtml), 'each finding links to its full report on the Accessibility page');
+  assert(/only with it/.test(tfHtml), 'a finding never seen without WordPress says so');
   const w1index = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
   assert(/href="tech-findings.html">Tech/.test(w1index), 'subnav links to tech-findings page');
 

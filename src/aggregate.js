@@ -27,6 +27,7 @@ import { redactBugs } from './lib/api-redact.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { assessAccess, withoutBlockedAudits } from './lib/access.js';
 import { omitHeavyLists, trendSeries } from './lib/trend.js';
+import { withCurrentGovernmentCheck } from './engines/security.js';
 import { buildLlmsTxt } from './lib/llms-txt.js';
 import { writeApiCatalog } from './lib/api-catalog.js';
 import { summarizeDistribution } from './lib/distribution.js';
@@ -421,7 +422,7 @@ for (const target of config.targets) {
       fs.writeFileSync(path.join(repDir, `fast${sfx}.html`), renderLighthousePage(target, summary, lhCsv, lhJson, series));
       fs.writeFileSync(path.join(repDir, `findable${sfx}.html`), renderReadabilityPage(target, summary, readabilityCsv));
       fs.writeFileSync(path.join(repDir, `tech${sfx}.html`), renderTechPage(target, summary, techCsv));
-      fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary));
+      fs.writeFileSync(path.join(repDir, `tech-findings${sfx}.html`), renderTechFindingsPage(target, summary, reportBugs, target.url_exclude_patterns ?? []));
       fs.writeFileSync(path.join(repDir, `third-parties${sfx}.html`), renderThirdPartyPage(target, summary, tpCsv));
       fs.writeFileSync(path.join(repDir, `images${sfx}.html`), renderImagesPage(target, summary, imagesCsv));
       // History & Trends page (issue #180). Written for every week so the
@@ -544,6 +545,10 @@ console.log('docs/ written');
 
 // ---------------------------------------------------------------------
 
+function currentSecurity(target, security) {
+  return withCurrentGovernmentCheck(security, target.domain, target.governmentDomains);
+}
+
 function summarizeWeek(target, week) {
   const domainDir = path.join(DIRS.data, target.key);
   const pagesDir = path.join(domainDir, week, 'pages');
@@ -551,7 +556,10 @@ function summarizeWeek(target, week) {
 
   // If page detail was pruned, reuse the committed summary verbatim.
   if (!fs.existsSync(pagesDir)) {
-    return fs.existsSync(summaryPath) ? JSON.parse(fs.readFileSync(summaryPath, 'utf8')) : null;
+    if (!fs.existsSync(summaryPath)) return null;
+    const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+    if (summary.security) summary.security = currentSecurity(target, summary.security);
+    return summary;
   }
 
   const records = withoutBlockedAudits(fs.readdirSync(pagesDir)
@@ -668,12 +676,19 @@ function summarizeRecords(target, week, records, brokenLinks) {
   // Progressive Web Resilience (per-page): checkId -> { label, pass, total, why, evidenceExamples }.
   const resilienceChecks = {};
   let resiliencePages = 0;
-  // Security (per-origin): keep the latest result seen this week.
+  // Per-origin results (security, public interest, offline resilience): keep
+  // the most recently scanned. Records are read in file-name order, which
+  // says nothing about when each was scanned.
   let securityLatest = null;
-  // Public-interest checks (per-origin): keep the latest result seen this week.
   let publicInterestLatest = null;
-  // Offline/network resilience (per-origin): keep the latest result seen this week.
   let offlineResilienceLatest = null;
+  const scannedAtOf = {};
+  const newest = (engine, rec) => {
+    const at = rec.scannedAt ?? '';
+    if (scannedAtOf[engine] != null && at < scannedAtOf[engine]) return false;
+    scannedAtOf[engine] = at;
+    return true;
+  };
   let pagesScanned = 0;
   let pagesWithAxeViolations = 0;
   let pagesWithAlfaFailures = 0;
@@ -815,9 +830,9 @@ function summarizeRecords(target, week, records, brokenLinks) {
         }
       }
     }
-    if (rec.security) securityLatest = rec.security; // per-origin; latest wins
-    if (rec.offlineResilience) offlineResilienceLatest = rec.offlineResilience; // per-origin; latest wins
-    if (rec.publicInterest) publicInterestLatest = rec.publicInterest; // per-origin; latest wins
+    if (rec.security && newest('security', rec)) securityLatest = rec.security;
+    if (rec.offlineResilience && newest('offlineResilience', rec)) offlineResilienceLatest = rec.offlineResilience;
+    if (rec.publicInterest && newest('publicInterest', rec)) publicInterestLatest = rec.publicInterest;
     if (rec.tech) {
       for (const d of rec.tech) {
         const existing = techDetections.get(d.name);
@@ -838,12 +853,16 @@ function summarizeRecords(target, week, records, brokenLinks) {
       }
       // Tech↔finding row for this page: the technologies on it paired with the
       // accessibility findings on it. Keyed engine:ruleId. Only built for pages
-      // with tech data so the co-occurrence denominator is well-defined.
-      const findings = [
-        ...Object.keys(rec.axe?.violations ?? {}).map((id) => `axe:${id}`),
-        ...Object.keys(rec.alfa?.failed ?? {}).map((id) => `alfa:${id}`),
-      ];
-      techFindingPages.push({ techs: rec.tech.map((d) => d.name), findings });
+      // with tech data and an accessibility audit, naming the engines that ran
+      // so each finding is compared across the pages its engine checked.
+      const engines = [rec.axe && 'axe', rec.alfa && 'alfa'].filter(Boolean);
+      if (engines.length) {
+        const findings = [
+          ...Object.keys(rec.axe?.violations ?? {}).map((id) => `axe:${id}`),
+          ...Object.keys(rec.alfa?.failed ?? {}).map((id) => `alfa:${id}`),
+        ];
+        techFindingPages.push({ techs: rec.tech.map((d) => d.name), findings, engines });
+      }
     }
     if (rec.thirdParty) {
       // hasFindings: did this page have any accessibility finding? Used to
@@ -1052,7 +1071,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         }
       : null,
     security: securityLatest
-      ? { checks: securityLatest.checks, passed: securityLatest.passed, total: securityLatest.total }
+      ? currentSecurity(target, { checks: securityLatest.checks, passed: securityLatest.passed, total: securityLatest.total })
       : null,
     publicInterest: publicInterestLatest ?? null,
     plainLanguage: plPagesChecked

@@ -407,7 +407,7 @@ for (const item of batch) {
       // Security is per-origin (headers/TLD/security.txt), so check it only
       // when this page is in the sample; aggregate keeps the latest result.
       if (runs('security')) {
-        securityResult ??= await runSecurity(siteOrigin, target.user_agent, target.nav_timeout_ms, { httpsProblem: canonical.httpsProblem });
+        securityResult ??= await runSecurity(siteOrigin, target.user_agent, target.nav_timeout_ms, { httpsProblem: canonical.httpsProblem, governmentDomains: target.governmentDomains });
         record.security = securityResult;
         mark('security');
       }

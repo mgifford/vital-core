@@ -101,6 +101,7 @@ export function loadConfig(rawYaml) {
       t.design_system = ds;
     }
     t.spelling_locale = resolveSpellingLocale(t.spelling_locale, `target ${t.domain}`);
+    t.governmentDomains = resolveGovernmentDomains(t.government_domains, `target ${t.domain}`);
   }
   return {
     defaults,
@@ -130,6 +131,21 @@ function resolveSpellingLocale(value, where) {
     throw new Error(`Unsupported spelling_locale "${value}" in ${where}. Supported: ${Object.keys(SPELLING_DICTIONARIES).join(', ')}.`);
   }
   return locale;
+}
+
+const SUFFIX_RE = /^\.?[a-z0-9-]+(\.[a-z0-9-]+)*$/;
+
+function resolveGovernmentDomains(value, where) {
+  if (value == null) return [];
+  if (!Array.isArray(value)) throw new Error(`government_domains in ${where} must be a list of { suffix, country }.`);
+  return value.map((d) => {
+    const suffix = String(d?.suffix ?? '').trim().toLowerCase();
+    const country = String(d?.country ?? '').trim();
+    if (!SUFFIX_RE.test(suffix) || !country) {
+      throw new Error(`government_domains entry ${JSON.stringify(d)} in ${where} needs a suffix such as ".gob.mx" and a country.`);
+    }
+    return { suffix: suffix.startsWith('.') ? suffix : `.${suffix}`, country };
+  });
 }
 
 // CI checks out one data repo into data/ for every non-hf_only target, so a
