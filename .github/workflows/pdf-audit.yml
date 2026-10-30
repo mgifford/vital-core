@@ -42,7 +42,7 @@ concurrency:
 env:
   # The pdf-crawler commit whose checks run. Bump it deliberately, as a
   # reviewed change: pdf-audit.json records it with every site's results.
-  PDF_CRAWLER_REF: dfbc00505a942ff4bd5af120c26e2b57dbc06049
+  PDF_CRAWLER_REF: 9f079bac419b9d2b62cc325c5589df012a99e251
 
 jobs:
   audit:
