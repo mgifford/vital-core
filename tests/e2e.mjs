@@ -367,6 +367,18 @@ try {
   // --- 3. Week 2: violations fixed ------------------------------------
   writeSite({ fixed: true });
   run('src/scan.js', ['--domain', 'localhost', '--budget', '100', '--base-url', `http://localhost:${PORT}`], '2026-W24');
+  // PDF check results as the pdf-audit workflow writes them (it needs
+  // pdf-crawler's Python checker, so the e2e run supplies them).
+  const pdfBase = `http://localhost:${PORT}/files`;
+  const checks = (o) => ({ tagged: 'fail', title: 'pass', language: 'pass', bookmarks: null, taggedContent: 'fail', figuresAlt: null, headings: null, lists: null, tables: null, forms: null, taggedForms: null, taggedAnnotations: null, emptyText: 'fail', protected: 'pass', ...o });
+  fs.writeFileSync(path.join(SANDBOX, 'data', 'localhost', 'pdf-audit.json'), JSON.stringify({
+    domain: 'localhost',
+    checker: { name: 'pdf-crawler', ref: 'dfbc00505a942ff4bd5af120c26e2b57dbc06049' },
+    pdfs: {
+      [`${pdfBase}/report-1.pdf`]: { status: 'analysed', checkedAt: '2026-06-12T22:41:00Z', week: '2026-W24', attempts: 0, report: { accessible: false, title: 'Annual report 1', pages: 12, published: '2025-04-01', checks: checks() } },
+      [`${pdfBase}/report-2.pdf`]: { status: 'error', checkedAt: '2026-06-12T22:41:00Z', week: '2026-W24', attempts: 1, httpStatus: 404, errors: ['HTTP 404'] },
+    },
+  }));
   run('src/aggregate.js', [], '2026-W24');
 
   const weekly = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'docs', 'data', 'localhost', 'weekly.json')));
@@ -474,6 +486,17 @@ try {
   // Dashboard uses the trailing-7-day window ("Pages audited (7d)" header).
   assert(/Pages audited \(7d\)/.test(dash), 'dashboard column reflects the rolling 7-day window');
   // Archive page exists and lists weeks; subnav links to it.
+  const pdfsPage = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'pdfs.html'), 'utf8');
+  assert(/<a class="url" href="http:\/\/localhost:\d+\/files\/report-1\.pdf"[^>]*>report-1\.pdf<\/a><br><span class="bug-meta">Annual report 1<\/span>/.test(pdfsPage), 'PDFs page lists a checked PDF with its title');
+  assert(/<span class="error">Issues found<\/span>/.test(pdfsPage) && /<span class="error">Fail<\/span>/.test(pdfsPage), 'PDF results are text');
+  assert(/id="h-pdfs-errors"/.test(pdfsPage) && /<td>HTTP 404<\/td>/.test(pdfsPage), 'a PDF that could not be checked says why');
+  assert(/Checks are off for this site/.test(pdfsPage), 'the page says how to run checks where pdf_audit is off');
+  assert(/<code>dfbc005<\/code>/.test(pdfsPage), 'the checker commit is named');
+  const pdfCsv = fs.readdirSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24')).find((f) => f.endsWith('_pdfs.csv'));
+  assert(pdfCsv && pdfsPage.includes(`href="${pdfCsv}"`), 'the PDFs CSV is written and linked');
+  const oldPdfs = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'pdfs.html'), 'utf8');
+  assert(/latest week/.test(oldPdfs) && !/report-1\.pdf/.test(oldPdfs), 'an older week points to the latest instead of repeating current results');
+
   const archivePath = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'archive.html');
   assert(fs.existsSync(archivePath), 'archive page written');
   const archiveHtml = fs.readFileSync(archivePath, 'utf8');
@@ -483,7 +506,7 @@ try {
   // page (including archive.html) carries the identical full subnav. A
   // criterion with no data this week still renders, with an empty-state page.
   const weekDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23');
-  const SUBPAGES = ['index', 'accessible', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'history', 'archive'];
+  const SUBPAGES = ['index', 'accessible', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'pdfs', 'history', 'archive'];
   const navOf = (html) => {
     const m = html.match(/<nav class="subnav"[\s\S]*?<\/nav>/);
     if (!m) return null;

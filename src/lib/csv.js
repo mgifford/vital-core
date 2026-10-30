@@ -296,6 +296,27 @@ export function writeBugsCsv(repDir, domain, week, bugs) {
  * Write a flat images.csv — one row per image found across scanned pages.
  * Returns the relative path "images.csv" or null if there's nothing to write.
  */
+/** Every own-domain PDF that has been checked or tried, from pdfReportView(). */
+export function writePdfsCsv(repDir, domain, week, view) {
+  if (!view || !(view.checked.length + view.errors.length)) return null;
+  const checks = ['tagged', 'title', 'language', 'bookmarks', 'taggedContent', 'figuresAlt', 'headings', 'lists', 'tables', 'forms', 'taggedForms', 'taggedAnnotations', 'emptyText', 'protected'];
+  const snake = (k) => k.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+  const headers = ['url', 'status', 'linked_from', 'passes_checks', ...checks.map((k) => `${snake(k)}_check`), 'pages', 'published', 'document_title', 'checked_at', 'error'];
+  const data = [
+    ...view.checked.map((r) => [
+      r.url, 'checked', r.linkedFrom ?? '', r.report.accessible ? 'true' : 'false',
+      ...checks.map((k) => r.report.checks?.[k] ?? ''),
+      r.report.pages ?? '', r.report.published ?? '', r.report.title ?? '', r.checkedAt ?? '', '',
+    ]),
+    ...view.errors.map((e) => [
+      e.url, 'not checked', e.linkedFrom ?? '', '', ...checks.map(() => ''), '', '', '', e.checkedAt ?? '', e.error,
+    ]),
+  ];
+  const name = `${filePrefix(domain, week)}_pdfs.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(headers, data));
+  return name;
+}
+
 export function writeImagesCsv(repDir, domain, week, summary) {
   const rows = summary.images?.imageRows;
   if (!rows?.length) return null;

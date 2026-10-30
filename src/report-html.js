@@ -297,6 +297,7 @@ const PAGES = {
   overview: 'index',
   accessibility: 'accessible',
   images: 'images',
+  pdfs: 'pdfs',
   lighthouse: 'fast',
   readability: 'findable',
   standards: 'standards',
@@ -336,7 +337,7 @@ function pageHref(key, anchor = '') {
  */
 const SUBNAV_GROUPS = [
   { label: null, items: [['overview', 'Overview']] },
-  { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['images', 'Images']] },
+  { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['images', 'Images'], ['pdfs', 'PDFs']] },
   { label: 'Fast?', items: [['lighthouse', 'Lighthouse']] },
   { label: 'Findable?', items: [['readability', 'Readability'], ['standards', 'Standards']] },
   { label: 'Trustworthy?', items: [['security', 'Security'], ['third-party', 'Third parties'], ['errors', 'Errors']] },
@@ -3528,6 +3529,146 @@ ${detailTable}
   });
 }
 
+const PDF_COLUMNS = [
+  ['tagged', 'Tagged'],
+  ['title', 'Title'],
+  ['language', 'Language'],
+  ['bookmarks', 'Bookmarks'],
+  ['figuresAlt', 'Figure alt text'],
+  ['headings', 'Headings'],
+  ['lists', 'Lists'],
+  ['tables', 'Tables'],
+  ['forms', 'Forms'],
+];
+
+function pdfFileCell(url, title) {
+  let name = url;
+  try {
+    name = decodeURIComponent(new URL(url).pathname.split('/').pop() || url);
+  } catch { /* keep the URL */ }
+  return `<a class="url" href="${esc(url)}" title="${esc(url)}">${esc(name)}</a>${title ? `<br><span class="bug-meta">${esc(title)}</span>` : ''}`;
+}
+
+function pdfVerdictCell(v) {
+  if (v === 'pass') return { html: esc(t('Pass')), sort: 1 };
+  if (v === 'fail') return { html: `<span class="error">${esc(t('Fail'))}</span>`, sort: 0 };
+  return { html: `<span class="bug-meta">${esc(t('n/a'))}</span>`, sort: 2 };
+}
+
+const shortDate = (iso) => (iso ? String(iso).slice(0, 10) : '—');
+
+/**
+ * PDFs page: the site's own PDFs as checked by pdf-crawler in the pdf-audit
+ * workflow (`view` is pdfReportView() from src/lib/pdf-audit.js), modelled on
+ * pdf-crawler's own reports: summary counts, then every check per PDF as
+ * text. `view` is null on older weeks: results are current, not per week.
+ */
+export function renderPdfsPage(target, summary, view, csvHref = null) {
+  const active = { active: 'pdfs', label: 'PDFs' };
+  if (!view) {
+    return emptyCriterionPage(target, summary, { ...active, message: 'PDF check results are on the latest week\'s PDFs page; they describe each PDF as last checked, not as of this week.' });
+  }
+  const howToRun = view.enabled
+    ? t('Up to @n PDF(s) are checked each day, newest first.', { '@n': target.pdfAudit?.perRun ?? 25 })
+    : t('Checks are off for this site. To check its latest 25 PDFs, run <strong>Actions → pdf-audit</strong> with this domain, or set <code>pdf_audit: { enabled: true }</code> in <code>config/targets.yml</code> to check them daily.');
+  const otherNote = view.otherCount
+    ? `<p class="meta">${t('@n linked PDF(s) are on other organisations\' sites and are not checked: @hosts.', { '@n': nf(view.otherCount), '@hosts': view.otherHosts.slice(0, 8).map((h) => `${esc(h.host)} (${nf(h.count)})`).join(', ') + (view.otherHosts.length > 8 ? ', …' : '') })}</p>`
+    : '';
+  if (!view.found) {
+    return emptyCriterionPage(target, summary, { ...active, message: 'No PDF on this site\'s own domain has been found by the scans yet.', extra: otherNote });
+  }
+  if (!view.counts.checked && !view.counts.errors) {
+    return emptyCriterionPage(target, summary, {
+      ...active,
+      message: 'None of this site\'s PDFs has been checked yet.',
+      extra: `<p class="meta">${t('@n PDF(s) on the site\'s own domain are waiting.', { '@n': nf(view.waiting) })} ${howToRun}</p>${otherNote}`,
+    });
+  }
+
+  const ref = view.checker?.ref ? ` (<code>${esc(String(view.checker.ref).slice(0, 7))}</code>)` : '';
+  const dl = csvHref ? ` ${t('Download:')} <a href="${esc(csvHref)}">CSV</a>.` : '';
+  const tiles = `<dl class="ledger">
+${statTile('PDFs found', nf(view.found))}
+${statTile('Checked', nf(view.counts.checked))}
+${statTile('Pass every check', nf(view.counts.accessible))}
+${statTile('Issues found', nf(view.counts.issues))}
+${statTile('Could not check', nf(view.counts.errors))}
+${statTile('Waiting', nf(view.waiting))}
+</dl>`;
+
+  const shown = view.checked.slice(0, 500);
+  const cols = [
+    { label: 'File' },
+    { label: 'Result' },
+    ...PDF_COLUMNS.map(([, label]) => ({ label })),
+    { label: 'Pages', num: true },
+    { label: 'Published' },
+    { label: 'Linked from' },
+    { label: 'Checked' },
+  ];
+  const rows = shown.map((r) => {
+    const failed = PDF_COLUMNS.filter(([k]) => r.report.checks?.[k] === 'fail').length;
+    const result = r.report.accessible
+      ? { html: esc(t('Passes')), sort: 0 }
+      : { html: `<span class="error">${esc(t('Issues found'))}</span>`, sort: 1 + failed };
+    return [
+      { html: pdfFileCell(r.url, r.report.title), sort: r.url },
+      result,
+      ...PDF_COLUMNS.map(([k]) => pdfVerdictCell(r.report.checks?.[k])),
+      { html: r.report.pages != null ? nf(r.report.pages) : '—', sort: r.report.pages ?? 0 },
+      { html: esc(r.report.published ?? '—'), sort: r.report.published ?? '' },
+      { html: r.linkedFrom ? urlCell(r.linkedFrom) : '—', sort: r.linkedFrom ?? '' },
+      { html: esc(shortDate(r.checkedAt)), sort: r.checkedAt ?? '' },
+    ];
+  });
+  // Fifteen columns overflow a narrow screen: the table scrolls inside a
+  // focusable, named region, so it scrolls from the keyboard too.
+  const checkedSection = shown.length ? `<section aria-labelledby="h-pdfs-checked">
+${heading('h-pdfs-checked', t('Checked PDFs'))}
+<div class="table-scroll" role="region" aria-label="${esc(t('Table of checked PDFs'))}" tabindex="0">
+${sortableTable(
+    shown.length < view.checked.length
+      ? t('The @shown of @total checked PDFs with the most failed checks; the CSV has every one.', { '@shown': nf(shown.length), '@total': nf(view.checked.length) })
+      : t('@n checked PDF(s), most failed checks first.', { '@n': nf(shown.length) }),
+    cols,
+    rows,
+  )}
+</div>
+</section>` : '';
+
+  const errorsSection = view.errors.length ? `<section aria-labelledby="h-pdfs-errors">
+${heading('h-pdfs-errors', t('PDFs that could not be checked'))}
+<div class="table-scroll" role="region" aria-label="${esc(t('Table of PDFs that could not be checked'))}" tabindex="0">
+<table>
+<caption>${t('@n PDF(s) and why. Each is tried again in a later week, up to three times.', { '@n': nf(view.errors.length) })}</caption>
+<thead><tr><th scope="col">${t('File')}</th><th scope="col">${t('Reason')}</th><th scope="col">${t('Linked from')}</th><th scope="col" class="num">${t('Attempts')}</th><th scope="col">${t('Last tried')}</th></tr></thead>
+<tbody>${view.errors.slice(0, 500).map((e) => `<tr><th scope="row">${pdfFileCell(e.url)}</th><td>${esc(e.error)}</td><td>${e.linkedFrom ? urlCell(e.linkedFrom) : '—'}</td><td class="num">${nf(e.attempts)}</td><td>${esc(shortDate(e.checkedAt))}</td></tr>`).join('\n')}</tbody>
+</table>
+</div>
+</section>` : '';
+
+  const body = `
+<h1>${esc(target.domain)}: ${t('PDFs')}</h1>
+${subnav('pdfs')}
+<p class="meta">${t('PDFs linked from this site\'s pages and hosted on its own domain, checked with <a href="https://github.com/mgifford/pdf-crawler">pdf-crawler</a>@ref: tagging, title, language, bookmarks, figure alt text, headings, lists, tables and forms.', { '@ref': ref })}${dl}</p>
+<p class="note">${t('Automated checks find some problems, not all. A PDF that passes them still needs a person to check it, for example with a screen reader. "n/a" means the PDF has nothing that check applies to.')}</p>
+${tiles}
+<p class="meta">${view.waiting ? `${t('@n PDF(s) are waiting for a check.', { '@n': nf(view.waiting) })} ` : ''}${howToRun}</p>
+${otherNote}
+${checkedSection}
+${errorsSection}`;
+  return layout({
+    title: `${target.domain} PDFs ${summary.week} | vital-scans`,
+    page: 'pdfs',
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t('PDFs')}</li>`,
+    body,
+    depth: 3,
+    extraScript: SORT_SCRIPT,
+    apiFinding: { key: target.key, week: summary.week },
+    target,
+  });
+}
+
 /**
  * Archive page: every retained ISO-week report for a domain, newest
  * first, with key metrics and a week-over-week comparison. Lets reviewers
@@ -4941,6 +5082,8 @@ td .url, th .url { max-width: 22rem; }
 .delta.better { color: var(--better); }
 .delta.same { color: var(--muted); }
 table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+.table-scroll { overflow-x: auto; }
+.table-scroll:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 caption { text-align: left; color: var(--muted); font-size: .85rem; padding-bottom: .4rem; }
 th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--rule);
   vertical-align: top; }

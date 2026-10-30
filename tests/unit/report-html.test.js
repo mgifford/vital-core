@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 import { buildCooccurrence } from '../../src/lib/tech-findings.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
@@ -1172,4 +1172,18 @@ test('accessibility page: a deep link opens a finding outside the default view, 
   assert.equal(overflow.open, true, 'the summary-only list opens');
   assert.equal(row.focused, true);
   assert.equal(r2.all.checked, false, 'the filter is left alone for a summary-only row');
+});
+
+test('PDFs page: empty states say why and what to do', () => {
+  const target = { key: 'www.luton.gov.uk', domain: 'www.luton.gov.uk', pdfAudit: { perRun: 25 } };
+  const summary = { week: '2026-W44' };
+  assert.match(renderPdfsPage(target, summary, null), /PDF check results are on the latest week&#39;s PDFs page|PDF check results are on the latest week's PDFs page/);
+  const base = { enabled: false, found: 0, checked: [], errors: [], waiting: 0, otherHosts: [{ host: 'www.gov.uk', count: 3 }], otherCount: 3, counts: { checked: 0, accessible: 0, issues: 0, errors: 0 }, checker: null };
+  const none = renderPdfsPage(target, summary, base);
+  assert.match(none, /No PDF on this site.{1,6}s own domain has been found/);
+  assert.match(none, /3 linked PDF\(s\) are on other organisations.{1,6} sites and are not checked: www\.gov\.uk \(3\)\./);
+  const waiting = renderPdfsPage(target, summary, { ...base, found: 40, waiting: 40 });
+  assert.match(waiting, /40 PDF\(s\) on the site.{1,6}s own domain are waiting\./);
+  assert.match(waiting, /run <strong>Actions → pdf-audit<\/strong> with this domain/);
+  assert.match(renderPdfsPage(target, summary, { ...base, enabled: true, found: 40, waiting: 40 }), /Up to 25 PDF\(s\) are checked each day, newest first\./);
 });
