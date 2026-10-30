@@ -141,7 +141,7 @@ sampling:
   resources: 100       # catalog PDFs, Office docs, iframes, embedded media
   images: 100           # inline <img> inventory: alt text, dimensions, file size
   standards: 50        # web standards / metadata / social (ScanGov-style, per page)
-  security: 10         # HTTPS, security headers, security.txt, .gov TLD (per origin)
+  security: 10         # HTTPS, security headers, security.txt, government domain, www/bare domain (per origin)
   public-interest: 10  # accessibility statement, carbon.txt, Green Web Foundation, sitemaps (per origin)
   offline-resilience: 0 # offline fallback + Cache Storage usage (per origin; own browser context, opt-in cost — enable per target)
   sustainability: 10   # page weight + estimated CO2
@@ -251,6 +251,14 @@ targets:
   #     "organization". Switching changes the misspelling counts from that
   #     week on; reports name the dictionary used each week.
   #     Example: spelling_locale: en-CA   # one Canadian site in a US fleet
+  #
+  #   government_domains: [ { suffix, country } ] optional namespaces that count
+  #     as a government domain in the security checks, on top of the built-in
+  #     list (.gov, .mil, .edu, .fed.us, .gov.uk, .gov.scot, .gov.wales,
+  #     .llyw.cymru, .gc.ca, .canada.ca, .gov.au, .govt.nz, .go.jp, .gouv.fr,
+  #     .gov.ie, .europa.eu). The country is shown with the result. Set it in
+  #     defaults for a whole fleet. Takes effect at the next report build.
+  #     Example: government_domains: [{ suffix: .gob.mx, country: Mexico }]
   #
   #   url_exclude_patterns: [ ... ] optional list of substring or /regex/ patterns
   #     to exclude from REPORT output only (not from the scan), for EVERYONE, at

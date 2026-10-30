@@ -67,6 +67,23 @@ targets:
   assert.equal(loadConfig('targets:\n  - domain: example.gov\n').targets[0].spelling_locale, 'en-US');
 });
 
+test('config: government_domains adds a fleet\'s own namespaces, normalized, with a country', () => {
+  const c = loadConfig(`
+defaults:
+  government_domains:
+    - { suffix: GOB.MX, country: Mexico }
+targets:
+  - domain: www.sat.gob.mx
+  - domain: www.cms.gov
+    government_domains: []
+`);
+  assert.deepEqual(c.targets[0].governmentDomains, [{ suffix: '.gob.mx', country: 'Mexico' }]);
+  assert.deepEqual(c.targets[1].governmentDomains, []);
+  assert.deepEqual(loadConfig('targets:\n  - domain: example.gov\n').targets[0].governmentDomains, []);
+  assert.throws(() => loadConfig('targets:\n  - domain: a.mx\n    government_domains: [{ suffix: .gob.mx }]\n'), /needs a suffix such as "\.gob\.mx" and a country/);
+  assert.throws(() => loadConfig('targets:\n  - domain: a.mx\n    government_domains: .gob.mx\n'), /must be a list/);
+});
+
 test('config: an unsupported spelling_locale fails with the supported values', () => {
   assert.throws(
     () => loadConfig('targets:\n  - domain: example.gov.uk\n    spelling_locale: en-UK\n'),

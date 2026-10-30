@@ -958,7 +958,7 @@ test('security: classifies TLD, HTTPS, and headers from a mocked origin', async 
     const r3 = await runSecurity('https://www.hackney.gov.uk', 'ua', 1000);
     const gov3 = r3.checks.find((c) => c.id === 'gov-tld');
     assert.equal(gov3.pass, true, 'a .gov.uk council is on a government domain');
-    assert.equal(gov3.detail, 'gov.uk');
+    assert.equal(gov3.detail, 'gov.uk (United Kingdom)');
   } finally {
     globalThis.fetch = realFetch;
   }
@@ -978,6 +978,74 @@ test('governmentSuffix: national government namespaces count, look-alikes do not
   assert.equal(governmentSuffix('www.example.co.uk'), null);
   assert.equal(governmentSuffix('gov.uk.example.com'), null, 'only the end of the host counts');
   assert.equal(governmentSuffix(''), null);
+  assert.equal(governmentSuffix('www.sat.gob.mx', [{ suffix: '.gob.mx', country: 'Mexico' }]), '.gob.mx', 'a fleet can add its own');
+});
+
+test('governmentDomainCheck: names the country, or the domain that is not listed', async () => {
+  const { governmentDomainCheck } = await import('../../src/engines/security.js');
+  assert.deepEqual(governmentDomainCheck('go.walsall.gov.uk'), { id: 'gov-tld', label: 'Government domain', pass: true, detail: 'gov.uk (United Kingdom)' });
+  assert.equal(governmentDomainCheck('www.cms.gov').detail, 'gov (United States)');
+  assert.equal(governmentDomainCheck('www.tbs-sct.gc.ca').detail, 'gc.ca (Canada)');
+  assert.equal(governmentDomainCheck('www.sat.gob.mx', [{ suffix: '.gob.mx', country: 'Mexico' }]).detail, 'gob.mx (Mexico)');
+  assert.deepEqual(governmentDomainCheck('www.example.co.uk'), { id: 'gov-tld', label: 'Government domain', pass: false, detail: 'example.co.uk is not a listed government domain' });
+});
+
+test('withCurrentGovernmentCheck: a stored result gets today\'s answer, other checks untouched', async () => {
+  const { withCurrentGovernmentCheck } = await import('../../src/engines/security.js');
+  const stored = { checks: [{ id: 'https', label: 'Served over HTTPS', pass: true }, { id: 'gov-tld', label: 'Sponsored government TLD (.gov/.mil/.edu)', pass: false, detail: 'uk' }], passed: 1, total: 2 };
+  const r = withCurrentGovernmentCheck(stored, 'go.walsall.gov.uk');
+  assert.deepEqual(r.checks[1], { id: 'gov-tld', label: 'Government domain', pass: true, detail: 'gov.uk (United Kingdom)' });
+  assert.equal(r.checks[0], stored.checks[0]);
+  assert.equal(r.passed, 2);
+  assert.equal(r.total, 2);
+  assert.equal(stored.checks[1].pass, false, 'the stored result is not changed');
+  const none = { checks: [{ id: 'https', pass: true }], passed: 1, total: 1 };
+  assert.equal(withCurrentGovernmentCheck(none, 'go.walsall.gov.uk'), none);
+  assert.equal(withCurrentGovernmentCheck(null, 'go.walsall.gov.uk'), null);
+});
+
+test('wwwVariants: the registrable domain with and without www, not www. on a subdomain', async () => {
+  const { wwwVariants } = await import('../../src/engines/security.js');
+  assert.deepEqual(wwwVariants('go.walsall.gov.uk'), ['walsall.gov.uk', 'www.walsall.gov.uk']);
+  assert.deepEqual(wwwVariants('www.cms.gov'), ['cms.gov']);
+  assert.deepEqual(wwwVariants('blackburn.gov.uk'), ['www.blackburn.gov.uk']);
+  assert.deepEqual(wwwVariants('www.canada.ca'), ['canada.ca']);
+  assert.deepEqual(wwwVariants('www.gov.uk'), ['gov.uk'], 'GOV.UK itself sits on a public suffix');
+  assert.deepEqual(wwwVariants('localhost'), []);
+  assert.deepEqual(wwwVariants('127.0.0.1'), []);
+});
+
+test('security: www resolution checks walsall.gov.uk and www.walsall.gov.uk for go.walsall.gov.uk', async () => {
+  const { runSecurity } = await import('../../src/engines/security.js');
+  const realFetch = globalThis.fetch;
+  const asked = [];
+  try {
+    globalThis.fetch = async (u) => {
+      asked.push(u);
+      if (u === 'https://walsall.gov.uk/') return { ok: true, status: 200, url: 'https://go.walsall.gov.uk/', headers: new Map() };
+      if (u === 'https://www.walsall.gov.uk/') return { ok: false, status: 404, url: u, headers: new Map() };
+      return { ok: true, status: 200, url: u, headers: new Map() };
+    };
+    const r = await runSecurity('https://go.walsall.gov.uk', 'ua', 1000);
+    const www = r.checks.find((c) => c.id === 'www-resolution');
+    assert.ok(!asked.includes('https://www.go.walsall.gov.uk/'), 'www. on the subdomain is not what a visitor types');
+    assert.equal(www.pass, false);
+    assert.equal(www.detail, 'walsall.gov.uk redirects to go.walsall.gov.uk; www.walsall.gov.uk answers HTTP 404');
+
+    globalThis.fetch = async (u) => {
+      if (u === 'https://www.walsall.gov.uk/') throw new Error('ENOTFOUND');
+      return { ok: true, status: 200, url: u === 'https://walsall.gov.uk/' ? 'https://go.walsall.gov.uk/' : u, headers: new Map() };
+    };
+    assert.match((await runSecurity('https://go.walsall.gov.uk', 'ua', 1000)).checks.find((c) => c.id === 'www-resolution').detail, /www\.walsall\.gov\.uk does not answer$/);
+
+    globalThis.fetch = async (u) => ({ ok: true, status: 200, url: u === 'https://cms.gov/' ? 'https://www.cms.gov/' : u, headers: new Map() });
+    const cms = (await runSecurity('https://www.cms.gov', 'ua', 1000)).checks.find((c) => c.id === 'www-resolution');
+    assert.deepEqual([cms.pass, cms.detail], [true, 'cms.gov redirects to www.cms.gov']);
+
+    assert.ok(!(await runSecurity('http://127.0.0.1:9', 'ua', 1000)).checks.some((c) => c.id === 'www-resolution'), 'an IP address has no www form to check');
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });
 
 test('remediation: expanded tips cover landmark-unique and aria rules', async () => {
