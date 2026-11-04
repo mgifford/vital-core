@@ -12,12 +12,14 @@
 //   id            the failing element's id matches ids/id_prefixes
 //   attribute     an attribute on the failing element matches attributes[]
 //   ancestry      a class/id in an ancestor part of the stored selector matches
+//   dom_ancestry  the scanner found a signature on the element or a real DOM ancestor
+//                 (example.component, set at scan time)
 //   script_origin the component's script origin was observed loading on the site
 //
 // Evidence limits: the scanner stores a few capped examples per rule and
 // page, so classification is "sample-based". Counts say so.
 
-const ELEMENT_SIGNALS = ['class', 'id', 'attribute', 'ancestry'];
+const ELEMENT_SIGNALS = ['class', 'id', 'attribute', 'ancestry', 'dom_ancestry'];
 const ALL_SIGNALS = [...ELEMENT_SIGNALS, 'script_origin'];
 const LIST_KEYS = ['class_names', 'class_prefixes', 'ids', 'id_prefixes', 'script_origins'];
 const MAX_SIGNATURES = 50;
@@ -175,7 +177,8 @@ export function describeExample(example) {
   const ids = new Set([attributes.get('id'), ...(tag ? [] : ownCompound.ids)].filter(Boolean));
   const ancestorTokens = ancestors.map((part) => compoundTokens(part.compound));
   return {
-    structured: Boolean(tag) || parts.length > 0,
+    structured: Boolean(tag) || parts.length > 0 || Boolean(example?.component),
+    component: typeof example?.component === 'string' ? example.component : null,
     classes: [...classes],
     ids: [...ids],
     attributes,
@@ -195,6 +198,7 @@ export function matchSignature(example, signature) {
     const value = described.attributes.get(attr.name);
     if ((attr.value == null && attr.value_prefix == null) || attr.value === value || (attr.value_prefix != null && value.startsWith(attr.value_prefix))) signals.add('attribute');
   }
+  if (described.component && described.component === signature.id) signals.add('dom_ancestry');
   if (described.ancestorClasses.some((token) => matchesClass(token, signature)) || described.ancestorIds.some((token) => matchesId(token, signature))) signals.add('ancestry');
   return signals;
 }
@@ -386,4 +390,16 @@ export function scopeViewsFor(bug) {
   const verifiedShared = scope?.classification === 'shared_component' && scope.verified === true;
   const inComponent = scope && ['shared_component', 'mixed', 'candidate_shared_component'].includes(scope.classification);
   return { fullPage: true, pageSpecific: !verifiedShared, sharedComponent: Boolean(inComponent) };
+}
+
+/** Ids of the top clusters whose rule is not a verified shared-component finding. */
+export function actionIdsOutsideComponents(clusters, model, limit = 10) {
+  if (!model?.rules || !Array.isArray(clusters)) return null;
+  return clusters
+    .filter((cluster) => {
+      const scope = model.rules[`${cluster.engine_key}:${cluster.rule_id}`];
+      return !(scope?.classification === 'shared_component' && scope.verified === true);
+    })
+    .slice(0, limit)
+    .map((cluster) => cluster.id);
 }

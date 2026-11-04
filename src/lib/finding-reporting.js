@@ -2,6 +2,7 @@ import { parseFragment, serialize } from 'parse5';
 import { actRulesFor } from './finding-correlation.js';
 import { priorityScore, tierOf } from './priority.js';
 import { redactUrl } from './api-redact.js';
+import { routeMatches } from './page-families.js';
 import actMapping from '../data/act-mapping.json' with { type: 'json' };
 
 const SAFE_ATTRIBUTES = new Set(['id', 'class', 'role', 'type', 'name', 'for', 'tabindex', 'hidden', 'disabled', 'inert', 'href', 'src']);
@@ -52,6 +53,26 @@ export function sanitizeBugEvidence(bug, opts = {}) {
     });
   }
   return out;
+}
+
+// Whether the URLs a finding was seen on belong to a declared page family.
+function pageFamilyFor(urls, pageCount, families) {
+  if (!families?.families?.length || urls.length === 0) return null;
+  const paths = urls.map((url) => { try { return new URL(url).pathname; } catch { return null; } });
+  for (const family of families.families) {
+    const inFamily = paths.filter((path) => path !== null && routeMatches(family.route, path)).length;
+    if (inFamily === 0) continue;
+    return {
+      id: family.id,
+      label: family.label,
+      urls_in_family: inFamily,
+      urls_observed: urls.length,
+      all_urls_in_family: inFamily === urls.length && Number.isInteger(pageCount) && urls.length === pageCount,
+      implementation_count: 1,
+      implementation_basis: 'configured_route',
+    };
+  }
+  return null;
 }
 
 export function buildFindingReporting(bugs, opts = {}) {
@@ -118,6 +139,7 @@ export function buildFindingReporting(bugs, opts = {}) {
       remediation_task_count: null,
       ownership: 'not_established',
       component_scope: bug.component_scope ?? null,
+      page_family: pageFamilyFor(urls, pageCount, opts.summary?.pageFamilies),
       engine_observation_count: bug.frequency?.instances ?? null,
       engine_severity: bug.engine_severity ?? rule?.impact ?? null,
       remediation_priority: { score: priorityScore(bug), conformance_tier: tierOf(bug), display_tier: bug.priority_tier ?? null },

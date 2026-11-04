@@ -40,16 +40,17 @@ export function computeTrainingPriorities(bugs) {
   for (const b of bugs) {
     const sc = b.wcag_sc;
     if (!sc) continue;
-    if (!bysc.has(sc)) bysc.set(sc, { wcag_sc: sc, total_pages: 0, rules: new Map() });
+    if (!bysc.has(sc)) bysc.set(sc, { wcag_sc: sc, total_pages: 0, rules: new Map(), shared: new Set() });
     const entry = bysc.get(sc);
     entry.total_pages += b.frequency.pages_affected;
     entry.rules.set(b.rule_id, (entry.rules.get(b.rule_id) ?? 0) + b.frequency.pages_affected);
+    if (b.component_scope?.classification === 'shared_component' && b.component_scope.verified === true) entry.shared.add(b.rule_id);
   }
 
   return [...bysc.values()]
     .sort((a, b) => b.total_pages - a.total_pages)
     .slice(0, 5)
-    .map(({ wcag_sc, total_pages, rules }) => {
+    .map(({ wcag_sc, total_pages, rules, shared }) => {
       const ruleEntries = [...rules.entries()];
       const ruleIds = ruleEntries.map(([id]) => id);
       const component_inconsistency =
@@ -61,6 +62,7 @@ export function computeTrainingPriorities(bugs) {
         rule_count: ruleIds.length,
         rules: ruleIds,
         component_inconsistency,
+        ...(shared.size ? { shared_component_rule_count: shared.size } : {}),
       };
     });
 }

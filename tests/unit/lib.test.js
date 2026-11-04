@@ -1870,3 +1870,17 @@ test('isAltProblem: GOOD and DECORATIVE are not problems', () => {
   assert.equal(isAltProblem(ALT_VERDICTS.MISSING), true);
   assert.equal(isAltProblem(ALT_VERDICTS.TOO_SHORT), true);
 });
+
+test('computeTrainingPriorities counts rules that are verified shared-component findings', async () => {
+  const { computeTrainingPriorities } = await import('../../src/lib/training-priorities.js');
+  const mk = (rule, pages, scope) => ({ rule_id: rule, wcag_sc: '4.1.2', frequency: { pages_affected: pages }, ...(scope ? { component_scope: scope } : {}) });
+  const [row] = computeTrainingPriorities([
+    mk('button-name', 9, { classification: 'shared_component', verified: true }),
+    mk('aria-allowed-role', 9, { classification: 'candidate_shared_component', verified: false }),
+    mk('image-alt', 9, null),
+  ]);
+  assert.equal(row.rule_count, 3);
+  assert.equal(row.shared_component_rule_count, 1, 'candidates and unscoped findings are not counted');
+  const [plain] = computeTrainingPriorities([mk('image-alt', 9, null)]);
+  assert.equal('shared_component_rule_count' in plain, false);
+});

@@ -17,7 +17,7 @@ import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { runAxe } from './engines/axe.js';
-import { runComponentObservation } from './engines/component-observation.js';
+import { runComponentObservation, annotateComponentExamples } from './engines/component-observation.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
 import { runDeprecatedHtml } from './engines/deprecated-html.js';
@@ -389,7 +389,13 @@ for (const item of batch) {
       if (target.componentSignatures?.length) {
         try { record.componentObservation = await runComponentObservation(page, target.componentSignatures); } catch { /* observation must never fail a page */ }
       }
-      if (runs('axe')) { record.axe = await runAxe(page); mark('axe'); }
+      if (runs('axe')) {
+        record.axe = await runAxe(page);
+        mark('axe');
+        if (target.componentSignatures?.length) {
+          try { await annotateComponentExamples(page, target.componentSignatures, record.axe); } catch { /* best effort */ }
+        }
+      }
       if (runs('alfa')) {
         logMemory(`before alfa ${urlPath}`);
         record.alfa = await runAlfa(page);

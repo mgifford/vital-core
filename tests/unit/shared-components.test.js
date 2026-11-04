@@ -128,3 +128,32 @@ test('a closed consent state produces no component evidence at all', () => {
   assert.equal(model.components[0].verified, false);
   assert.equal(model.counts.shared_component, 0);
 });
+
+test('a scan-time component mark attributes an element whose stored selector shows no ancestry', () => {
+  const origin = { vendors: [{ origin: 'inmobi.com', pages: 3 }] };
+  const marked = { target: 'div:nth-child(2) > .css-cf00qb > .css-jg567y', html: '<p class="css-jg567y">Opted In</p>', component: 'consent-dialog' };
+  const model = track([consent], [
+    ['axe-core', 'color-contrast', 'https://x.test/a', [marked]],
+    ['axe-core', 'region', 'https://x.test/a', [hashedOnly]],
+  ], origin);
+  const contrast = model.rules['axe-core:color-contrast'];
+  assert.equal(contrast.classification, 'shared_component');
+  assert.deepEqual(contrast.signals.sort(), ['dom_ancestry', 'script_origin']);
+  assert.equal(contrast.verified, true);
+  assert.equal(model.rules['axe-core:region'].classification, 'not_attributed', 'unmarked look-alike stays unattributed');
+  assert.equal(matchSignature({ target: 'text: "x"', component: 'other' }, consent).size, 0, 'a mark for another component does not count');
+});
+
+test('without the script origin a mark alone is only a candidate', () => {
+  const model = track([consent], [['axe-core', 'color-contrast', 'https://x.test/a', [{ target: '#a', html: '<p id="a">x</p>', component: 'consent-dialog' }]]], { vendors: [] });
+  assert.equal(model.rules['axe-core:color-contrast'].classification, 'candidate_shared_component');
+});
+
+test('actionIdsOutsideComponents drops only verified shared findings and keeps order', async () => {
+  const { actionIdsOutsideComponents } = await import('../../src/lib/shared-components.js');
+  const model = { rules: { 'axe-core:a': { classification: 'shared_component', verified: true }, 'axe-core:b': { classification: 'mixed', verified: true }, 'axe-core:c': { classification: 'candidate_shared_component', verified: false } } };
+  const clusters = ['a', 'b', 'c', 'd'].map((rule, i) => ({ id: `cc-${i}`, engine_key: 'axe-core', rule_id: rule }));
+  assert.deepEqual(actionIdsOutsideComponents(clusters, model), ['cc-1', 'cc-2', 'cc-3']);
+  assert.deepEqual(actionIdsOutsideComponents(clusters, model, 2), ['cc-1', 'cc-2']);
+  assert.equal(actionIdsOutsideComponents(clusters, null), null);
+});

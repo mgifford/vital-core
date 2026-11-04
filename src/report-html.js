@@ -1166,6 +1166,36 @@ function ruleTable(caption, rules, kind, engineKey, csvLinks = { byRule: {} }) {
 </table>`;
 }
 
+const SHARED_CLASSES = ['shared_component', 'mixed', 'candidate_shared_component'];
+
+function sharedBadgeText(scope) {
+  if (!scope || !SHARED_CLASSES.includes(scope.classification)) return '';
+  const label = scope.component_label ?? scope.component_id ?? '';
+  if (scope.classification === 'shared_component') return t('Shared component: @label (verified)', { '@label': label });
+  if (scope.classification === 'mixed') return t('Partly in shared component: @label', { '@label': label });
+  return t('Possible shared component: @label (unverified)', { '@label': label });
+}
+
+/**
+ * One short answer to "how many URLs, how many implementations, how much is a
+ * shared component?", placed where readers start. Empty unless the target
+ * configured component_signatures or page_families.
+ */
+function scopeSummaryLine(summary, href) {
+  const model = summary.sharedComponents ?? null;
+  const families = summary.pageFamilies ?? null;
+  if (!model && !families) return '';
+  const parts = [t('@urls distinct URLs scanned (@audited audited).', { '@urls': nf(summary.pagesScanned ?? 0), '@audited': nf(summary.pagesAudited ?? 0) })];
+  if (families) {
+    parts.push(t('@in of them belong to @fam declared page familie(s), counted as @fam implementation(s); the other @out have no established implementation count.', { '@in': nf(families.urls_in_families), '@fam': nf(families.known_implementation_count), '@out': nf(families.urls_outside_families) }));
+  }
+  if (model) {
+    const names = model.components.filter((c) => c.verified).map((c) => c.label).join(', ');
+    parts.push(t('@shared of @total engine findings are verified shared-component findings@names; every observation is still counted.', { '@shared': nf(model.counts.shared_component), '@total': nf(model.counts.engine_findings), '@names': names ? ` (${names})` : '' }));
+  }
+  return `<p class="note scope-summary">${parts.map(esc).join(' ')} <a href="${esc(href)}">${t('Scope of analysis')}</a></p>`;
+}
+
 function nextActionsSection(summary, bugs, reporting = {}) {
   const cc = summary.componentClusters;
   const actions = cc?.top_actions ?? [];
@@ -1183,6 +1213,7 @@ function nextActionsSection(summary, bugs, reporting = {}) {
     const b = sanitizeBugEvidence(bug);
     return [`${b.engine_key}:${b.rule_id}`, b];
   }));
+  let sharedInTop = 0;
   const rows = actions.slice(0, 10).map((a) => {
     const bug = byRule.get(`${a.engine_key}:${a.rule_id}`);
     const who = bug?.impact?.groups?.length
@@ -1194,7 +1225,10 @@ function nextActionsSection(summary, bugs, reporting = {}) {
     const selector = actionEvidence.selector || '';
     const tip = bug?.remediation_tip || bug?.suggested_fix || '';
     const ruleLabel = bug?.rule_label || bug?.rule_id || a.rule_id;
-    const clusterTitle = `${ruleLabel} · ${a.design_components?.[0] || t('unattributed component')}`;
+    const scope = bug?.component_scope;
+    const sharedBadge = sharedBadgeText(scope);
+    if (sharedBadge && SHARED_CLASSES.includes(scope.classification)) sharedInTop++;
+    const clusterTitle = `${ruleLabel} · ${a.design_components?.[0] || scope?.component_label || t('unattributed component')}`;
     const examplePages = (bug?.example_pages ?? []).slice(0, 10).map((url) => redactUrl(url));
     const affectedPages = (a.affected_pages ?? []).slice(0, 10).map((url) => redactUrl(url));
     const examples = (bug?.examples ?? []).slice(0, 3).map((e) => ({
@@ -1226,6 +1260,7 @@ function nextActionsSection(summary, bugs, reporting = {}) {
   data-bug-link="${esc(bug?.instance_id ? `#${bug.instance_id}` : '')}">
   <th scope="row">
     ${bug?.instance_id ? `<a href="#${esc(bug.instance_id)}">${esc(clusterTitle)}</a>` : esc(clusterTitle)}
+    ${sharedBadge ? `<div><span class="source-badge">${esc(sharedBadge)}</span></div>` : ''}
     <div class="bug-meta">${esc(a.estimated_fix_impact.statement)}</div>
     ${selector ? `<div class="bug-meta"><strong>${t('XPath / selector')}:</strong> <code>${esc(selector)}</code></div>` : ''}
     ${snippet}
@@ -1264,10 +1299,32 @@ function nextActionsSection(summary, bugs, reporting = {}) {
     ? `<p class="meta">${t('Design-system alignment')} (${esc(cc.design_system)}${cc.design_system_theme ? ` / ${esc(cc.design_system_theme)}` : ''}). ${usage.length ? usage.map((u) => `${esc(u.component)}: ${u.share_percent}% ${t('of sampled rule findings')}`).join(' · ') : t('No design-system components detected in sampled findings.')} ${cc.drift_clusters?.length ? t('@n possible lookalike cluster(s) without system prefixes.', { '@n': cc.drift_clusters.length }) : ''}</p>`
     : '';
 
+  const outsideIds = cc.top_action_ids_outside_components;
+  const clusterById = new Map((cc.clusters ?? []).map((cluster) => [cluster.id, cluster]));
+  const outsideRows = sharedInTop > 0 && Array.isArray(outsideIds)
+    ? outsideIds.map((id) => clusterById.get(id)).filter(Boolean).map((a) => {
+      const bug = byRule.get(`${a.engine_key}:${a.rule_id}`);
+      const title = `${bug?.rule_label || bug?.rule_id || a.rule_id}`;
+      const tip = bug?.remediation_tip || bug?.suggested_fix || '';
+      return `<tr><th scope="row">${bug?.instance_id ? `<a href="#${esc(bug.instance_id)}">${esc(title)}</a>` : esc(title)} <span class="bug-meta">${esc(a.engine_key === 'axe-core' ? 'axe' : a.engine_key)}:${esc(a.rule_id)}</span></th><td><span class="sev-badge">${esc(t(a.severity))}</span></td><td class="num">${a.pages_affected}</td><td>${esc(tip || '—')}</td></tr>`;
+    }).join('\n')
+    : '';
+  const sharedNote = sharedInTop > 0
+    ? `<p class="note">${t('@n of these 10 actions are findings in a shared component, ranked here by the same score as the rest. The page-specific list below leaves out only verified shared-component findings; it is a diagnostic view, not a complete assessment.', { '@n': sharedInTop })}</p>`
+    : '';
+  const outsideBlock = outsideRows
+    ? `<h3 id="h-next-actions-page-specific">${t('Top actions outside verified shared components (diagnostic)')}</h3>
+<table>
+<caption>${t('Top observed component clusters that are not verified shared-component findings. Decisions are recorded in the queue above.')}</caption>
+<thead><tr><th scope="col">${t('Cluster')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('How to fix')}</th></tr></thead>
+<tbody>${outsideRows}</tbody>
+</table>`
+    : '';
   return `<section aria-labelledby="h-next-actions">
 ${heading('h-next-actions', t('Next 10 actions'))}
 <p class="meta">${t('Clusters are fingerprinted by normalized selector path + rule id + snippet shape. Rank score = (severity weight × pages affected) / distinct components for the rule. Clustered observations are review candidates, not verified fixes or ownership assignments.')}</p>
 ${dsBlock}
+${sharedNote}
 <div class="triage-io" hidden id="action-io">
   <span class="triage-io-label">${t('Action queue decisions:')}</span>
   <button type="button" id="action-export" class="triage-btn">${t('Export (.json)')}</button>
@@ -1280,6 +1337,7 @@ ${dsBlock}
 <thead><tr><th scope="col">${t('Cluster')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Who it affects')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th><th scope="col">${t('Decision')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
+${outsideBlock}
 ${nextActionsScript()}
 </section>`;
 }
@@ -1760,6 +1818,7 @@ ${b.impact?.groups?.length
         : `<p class="bug-placeholder">${esc(b.impact?.summary ?? t('Requires manual testing.'))}</p>`}
 <p class="bug-label">${t('Affected pages')}</p>
 <p>${t('@n distinct URL(s) in the stored evidence. Query variants remain distinct.', { '@n': evidenceReport.distinct_urls.observed_count })} ${evidenceReport.distinct_urls.complete ? t('The URL evidence is complete; the list below may be a sample.') : t('The URL list is incomplete; the sample is not the total page count.')}</p>
+${evidenceReport.page_family ? `<p>${evidenceReport.page_family.all_urls_in_family ? t('All @n of these URLs belong to the declared page family "@label", counted as 1 declared implementation.', { '@n': evidenceReport.page_family.urls_in_family, '@label': esc(evidenceReport.page_family.label) }) : t('@n of the @total observed URLs belong to the declared page family "@label" (1 declared implementation).', { '@n': evidenceReport.page_family.urls_in_family, '@total': evidenceReport.page_family.urls_observed, '@label': esc(evidenceReport.page_family.label) })}</p>` : ''}
 ${affectedPagesBlock(b)}
 <p class="bug-label">${t('Testing environment')}</p><p>${esc(b.testing_environment)}</p>
 <p class="bug-label">${t('Suggested fix')}</p>${b.remediation_tip ? `<p><strong>${t('How to fix:')}</strong> ${esc(b.remediation_tip)}</p>` : ''}${b.tech_remediation_tip ? `<p class="tech-tip"><strong>${t('@tech tip:', { '@tech': esc(b.tech_name) })}</strong> ${esc(b.tech_remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
@@ -2518,6 +2577,7 @@ function scopeSignalLabel(signal) {
     id: t('element id'),
     attribute: t('element attribute'),
     ancestry: t('ancestor in the selector'),
+    dom_ancestry: t('element inside the component (DOM)'),
     script_origin: t('script origin observed'),
   }[signal] ?? signal;
 }
@@ -4103,6 +4163,8 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Access
 </dl>
 </section>
 
+${scopeSummaryLine(summary, pageHref('accessibility', 'h-scope'))}
+
 ${win ? `<aside class="callout callout-win" aria-labelledby="h-win">
 <h2 id="h-win">${t('Biggest available win')}</h2>
 <p><a href="${esc(pageHref('accessibility', win.instance_id))}"><strong>${esc(win.summary)}</strong></a> — ${requirementCell(win)} · <span class="sev-badge">${esc(t(win.severity))}</span> ${t('across @n page(s)', { '@n': win.frequency.pages_affected })}.${win.remediation_tip ? ` ${esc(win.remediation_tip)}` : (win.suggested_fix ? ` ${esc(win.suggested_fix)}` : '')}</p>
@@ -4167,7 +4229,7 @@ function renderTrainingPriorities(priorities, advice) {
 <td>${esc(p.label)}</td>
 <td class="num">${p.total_pages}</td>
 <td class="num">${p.rule_count}</td>
-<td>${inconsistencyCell}</td>
+<td>${inconsistencyCell}${p.shared_component_rule_count ? `<div class="meta">${t('@n of @total rule(s) are verified shared-component findings.', { '@n': p.shared_component_rule_count, '@total': p.rule_count })}</div>` : ''}</td>
 </tr>`;
   }).join('\n');
   const adviceHtml = advice
@@ -4204,6 +4266,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
 ${subnav('accessibility')}
 ${accessBanner(summary.access, target.user_agent)}
 ${acrNote}
+${scopeSummaryLine(summary, '#h-scope')}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${nextActionsSection(summary, bugs, reporting)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting, excludePatterns)}

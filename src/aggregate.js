@@ -37,7 +37,7 @@ import { sanitizeBugEvidence } from './lib/finding-reporting.js';
 import { computeTrainingPriorities } from './lib/training-priorities.js';
 import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
 import { createClusterTracker } from './lib/component-clusters.js';
-import { createSharedComponentTracker } from './lib/shared-components.js';
+import { createSharedComponentTracker, actionIdsOutsideComponents } from './lib/shared-components.js';
 import { createPageFamilyTracker } from './lib/page-families.js';
 
 // Fixed tolerance band (in percentage points) for rate-based diff comparisons.
@@ -1215,14 +1215,16 @@ function summarizeRecords(target, week, records, brokenLinks) {
     // Third-party resource/JS cost rolled up per vendor across the pages the
     // third-party engine ran on. Page-resolved (3rd-party JS varies per page).
     thirdParty: thirdPartyPages.length ? rollupThirdParty(thirdPartyPages) : null,
-    componentClusters: clusterTracker.finalize(
-      pagesScanned,
-      target.reporting?.template_page_threshold ?? 10
-    ),
-    sharedComponents: componentTracker.finalize({
-      thirdParty: thirdPartyPages.length ? rollupThirdParty(thirdPartyPages) : null,
-      pagesAudited: auditedPageIds.size,
-    }),
+    ...(() => {
+      const sharedComponents = componentTracker.finalize({
+        thirdParty: thirdPartyPages.length ? rollupThirdParty(thirdPartyPages) : null,
+        pagesAudited: auditedPageIds.size,
+      });
+      const componentClusters = clusterTracker.finalize(pagesScanned, target.reporting?.template_page_threshold ?? 10);
+      const outside = actionIdsOutsideComponents(componentClusters.clusters, sharedComponents);
+      if (outside) componentClusters.top_action_ids_outside_components = outside;
+      return { componentClusters, sharedComponents };
+    })(),
     pageFamilies: familyTracker.finalize(),
   };
 }

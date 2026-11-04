@@ -43,7 +43,7 @@ export function resolvePageFamilies(raw, where = 'config') {
   return out;
 }
 
-function routeMatches(route, pathname) {
+export function routeMatches(route, pathname) {
   const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
   if (route.endsWith('*')) return normalized.startsWith(route.slice(0, -1));
   return normalized === route.replace(/\/+$/, '') || normalized === route;

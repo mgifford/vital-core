@@ -64,9 +64,9 @@ export function t(source, args) {
   // source, so a half-filled catalog (or template with blank values) is safe.
   let out = (catalog && catalog[source]) || source;
   if (args) {
-    for (const token of Object.keys(args)) {
-      out = out.split(token).join(String(args[token]));
-    }
+    // One pass, longest token first, so '@n' can never rewrite the start of '@not'.
+    const tokens = Object.keys(args).sort((a, b) => b.length - a.length).map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    if (tokens.length) out = out.replace(new RegExp(tokens.join('|'), 'g'), (match) => String(args[match]));
   }
   return out;
 }
