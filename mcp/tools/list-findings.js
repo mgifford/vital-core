@@ -72,6 +72,8 @@ export const listFindingsTool = {
     return {
       week,
       total_matched: totalMatched,
+      reporting: doc.reporting ?? null,
+      reporting_scope: 'whole_week_before_tool_filters',
       returned: Math.min(totalMatched, limit),
       truncated,
       findings: findings.slice(0, limit),

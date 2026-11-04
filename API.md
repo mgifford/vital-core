@@ -95,6 +95,45 @@ engines.
 
 ### `snapshot.json`
 
+### Evidence Reporting (Additive v1 Fields)
+
+Weekly findings include an optional `reporting` object and `instance_id`. Existing
+`finding_id`, severity, page totals and history fields retain their meanings.
+The engine observations are not merged or rewritten.
+
+- `act_rules` lists every checked-in ACT mapping and its Approved, Proposed or
+  Unknown publication status. An empty list means no checked-in mapping, not
+  that a rule is unrelated. Document-level `reporting.act_mapping` identifies
+  the mapping generation date and source implementation reports.
+- `duplicate_status` distinguishes `confirmed_duplicate`, `possible_duplicate`,
+  `related` and `not_confirmed`. `correlations` retains observation indices,
+  same-element/component evidence and completeness flags. A sampled match does
+  not establish a duplicate of the entire aggregated finding.
+- `remediation_group_id` groups only complete confirmed duplicates. Summary
+  `engine_finding_count` retains all engine findings; `remediation_group_count`
+  counts groups once. Neither is a number of fixes. `remediation_task_count`
+  is null, and `ownership` is `not_established`.
+- `engine_severity` is the supplied engine impact, or null when absent.
+  The existing `severity` remains the reporting label. `remediation_priority`
+  contains a separate ranking score and conformance/display tiers, not impact.
+- `distinct_urls` gives an exact distinct count over available stored evidence,
+  a reported page count, completeness, and a sample of at most 25 URLs.
+  Query variants stay distinct; similar DOM structure does not change identity.
+  URL redaction may make distinct stored URLs look identical in the public sample.
+- `representative_evidence` contains at most three sanitized examples. HTML is
+  inert text for consumers to escape, never to inject as markup. Text and form
+  values, event handlers, arbitrary data attributes and executable elements are
+  omitted. Supported structural/ARIA attributes remain for diagnosis. Unsafe
+  selectors are omitted. Raw scanner observations remain unchanged internally.
+
+The snapshot also includes document-level reporting counts. Legacy top-action
+`findings` and `estimated_fix_impact` fields remain for compatibility; they are
+observation-based heuristics, not verified task counts or causal ownership.
+Queue items now explicitly say `counting_basis: engine_observations_not_tasks`
+and `remediation_task_count: null`. No API version bump or data migration occurs.
+
+### Snapshot Contents
+
 Full per-domain history: a `summary` block (severity counts + pages scanned),
 the `findings` ledger keyed by `finding_id`, `tech_findings`, `top_actions`,
 and a `weekly.series` of per-week summaries with `weekly.diffs`. Use it to build

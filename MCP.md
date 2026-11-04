@@ -33,6 +33,13 @@ Transport and Vital-domain logic are kept separate (`server.js` only wires
 things together), so later missions can extend local-repository tooling
 without touching how the server boots.
 
+`vital_list_findings` and `vital_get_finding_context` return the additive API v1
+`reporting` evidence when published: ACT mappings/status, duplicate certainty,
+sanitized HTML/selectors, URL-list completeness, engine impact and separate
+remediation priority. Older feeds without these fields still work. List-level
+reporting counts describe the whole week before tool filters or pagination;
+they do not count fixes. Fix counts and ownership remain explicitly unknown.
+
 ## Installation
 
 From a checkout of this repository:

@@ -231,7 +231,10 @@ export function createClusterTracker(target = {}) {
 				estimated_fix_impact: {
 					findings: c.instances,
 					pages: c.pages.size,
-					statement: `Fix one place, resolve ~${c.instances} finding(s) on ${c.pages.size} page(s).`,
+					counting_basis: 'engine_observations_not_tasks',
+					remediation_task_count: null,
+					ownership: 'not_established',
+					statement: `Observed ${c.instances} engine finding instance(s) on ${c.pages.size} page(s); number of fixes and ownership are not established.`,
 				},
 				affected_pages: c.affected_pages,
 			};

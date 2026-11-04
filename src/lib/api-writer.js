@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { redactUrl, deepRedactUrls } from './api-redact.js';
+import { buildFindingReporting, sanitizeEvidence } from './finding-reporting.js';
 
 export const SCHEMA_VERSION = '1';
 
@@ -22,6 +23,34 @@ function severityCounts(bugs) {
     else if (b.severity === 'Minor') minor_count++;
   }
   return { critical_count, serious_count, moderate_count, minor_count, total_findings: bugs.length };
+}
+
+function safeClusterImpact(action) {
+  const findings = action.estimated_fix_impact?.findings ?? action.instances ?? null;
+  const pages = action.estimated_fix_impact?.pages ?? action.pages_affected ?? null;
+  return {
+    ...(action.estimated_fix_impact ?? {}),
+    findings,
+    pages,
+    counting_basis: 'engine_observations_not_tasks',
+    remediation_task_count: null,
+    ownership: 'not_established',
+    statement: findings == null || pages == null
+      ? 'Observed cluster evidence; number of fixes and ownership are not established.'
+      : `Observed ${findings} engine finding instance(s) on ${pages} page(s); number of fixes and ownership are not established.`,
+  };
+}
+
+function sanitizeWeeklyClusterEvidence(weekly, opts) {
+  for (const summary of weekly.series ?? []) {
+    for (const action of summary.componentClusters?.top_actions ?? []) {
+      const evidence = sanitizeEvidence({ xpath: action.representative_selector, html_snippet: action.representative_snippet }, opts);
+      action.representative_selector = evidence.selector;
+      action.representative_snippet = evidence.html;
+      if (action.estimated_fix_impact) action.estimated_fix_impact = safeClusterImpact(action);
+    }
+  }
+  return weekly;
 }
 
 function deriveTrend(bug, ledgerEntry) {
@@ -59,12 +88,16 @@ function apiTopActions(summary, denyParams = []) {
       severity: a.severity,
       pages_affected: a.pages_affected,
       findings: a.instances,
+      counting_basis: 'engine_observations_not_tasks',
+      remediation_task_count: null,
       action_score: a.action_score,
-      representative_selector: a.representative_selector ?? a.selector_path ?? null,
-      representative_snippet: a.representative_snippet ?? null,
+      representative_selector: sanitizeEvidence({ xpath: a.representative_selector ?? a.selector_path }, opts).selector,
+      representative_snippet: sanitizeEvidence({ html_snippet: a.representative_snippet }, opts).html,
       design_components: a.design_components ?? [],
       drift: !!a.drift,
-      estimated_fix_impact: a.estimated_fix_impact ?? null,
+      estimated_fix_impact: safeClusterImpact(a),
+      counting_basis: 'engine_observations_not_tasks',
+      remediation_task_count: null,
     })),
   };
 }
@@ -92,7 +125,7 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
   // The weekly series carries internal summary objects with nested `url` fields
   // (component-cluster drift pages, etc.). Deep-redact so no URL escapes,
   // regardless of nesting depth.
-  const weekly = deepRedactUrls({ series, diffs }, opts);
+  const weekly = sanitizeWeeklyClusterEvidence(deepRedactUrls({ series, diffs }, opts), opts);
   return {
     schema_version: SCHEMA_VERSION,
     domain: target.domain,
@@ -103,6 +136,7 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
       ...counts,
       pages_scanned: latest.pagesScanned ?? 0,
     },
+    reporting: buildFindingReporting(latestBugs, opts).summary,
     inventory: invSummary ?? null,
     findings: ledger.findings ?? {},
     tech_findings: latest.techFindings?.associations ?? null,
@@ -113,17 +147,21 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
 }
 
 export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
+  const reporting = buildFindingReporting(bugs, { denyParams: target.api_redact_params ?? [], summary });
   return {
     schema_version: SCHEMA_VERSION,
     domain: target.domain,
     week: summary.week,
     generated_at: new Date().toISOString(),
     pages_scanned: summary.pagesScanned ?? 0,
+    reporting: reporting.summary,
     top_actions: apiTopActions(summary, target.api_redact_params ?? []),
     findings: bugs.map(b => {
       const ledgerEntry = ledgerFindings?.[b.pattern_id] ?? null;
       return {
         finding_id:     b.pattern_id,
+        instance_id:    b.instance_id ?? null,
+        reporting:      reporting.byFindingId.get(b.pattern_id),
         rule_id:        b.rule_id,
         rule_label:     b.rule_label,
         engine:         b.engine_key,

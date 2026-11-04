@@ -110,7 +110,7 @@ function compareObservations(left, right) {
   return { relation: 'unresolved' };
 }
 
-function actRulesFor(report) {
+export function actRulesFor(report) {
   return actRuleIdsFor(report.engine_key, report.rule_id).map((id) => ({
     id,
     status: ACT_RULE_STATUS[id] ?? 'Unknown',

@@ -17,6 +17,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
+import { chromium } from 'playwright';
 
 const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
 const SANDBOX = path.join(ROOT, '.e2e-sandbox');
@@ -559,6 +561,42 @@ try {
   // ACT rule/page overlap is shown separately from finding-level correlation evidence.
   assert(/ACT rule\/page group\(s\) overlap between engines/.test(w1a11y), 'consensus lists ACT rule/page overlaps');
   assert(/image-alt/.test(w1a11y) && /sia-r2/.test(w1a11y), 'both-engines table references the shared axe + Alfa rule ids');
+  const reportBrowser = await chromium.launch({ headless: true });
+  try {
+    for (const settings of [
+      { viewport: { width: 1280, height: 900 } },
+      { viewport: { width: 390, height: 844 } },
+      { viewport: { width: 1280, height: 900 }, forcedColors: 'active' },
+    ]) {
+      const reportContext = await reportBrowser.newContext({ javaScriptEnabled: false, ...settings });
+      try {
+        const reportPage = await reportContext.newPage();
+        await reportPage.goto(pathToFileURL(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessible.html')).href);
+        const disclosure = reportPage.locator('details.bug').first();
+        const disclosureId = await disclosure.locator(':scope > summary').getAttribute('id');
+        let reached = false;
+        for (let attempt = 0; attempt < 250; attempt++) {
+          await reportPage.keyboard.press('Tab');
+          if (await reportPage.evaluate((id) => document.activeElement?.id === id, disclosureId)) {
+            reached = true;
+            break;
+          }
+        }
+        assert(reached, 'finding disclosure is reachable by Tab without JavaScript');
+        await reportPage.keyboard.press('Enter');
+        assert(await disclosure.getAttribute('open') !== null, 'Enter opens the native finding disclosure without JavaScript');
+        assert(await disclosure.getByText('Engine impact', { exact: true }).isVisible(), 'engine impact evidence is visible without JavaScript');
+        assert(await disclosure.getByText('ACT mappings', { exact: true }).isVisible(), 'ACT evidence is visible without JavaScript');
+        assert(await reportPage.getByText(/The number of fixes is unknown/).isVisible(), 'task-count uncertainty is visible without JavaScript');
+        await reportPage.keyboard.press('Enter');
+        assert(await disclosure.getAttribute('open') === null, 'Enter closes the native disclosure without JavaScript');
+      } finally {
+        await reportContext.close();
+      }
+    }
+  } finally {
+    await reportBrowser.close();
+  }
   // Broken-links & errors are on their own errors.html sub-page.
   assert(/id="h-links"/.test(w1errors) && /Broken links/.test(w1errors), 'broken links section on errors sub-page');
   // Long URLs use the truncatable .url class (e.g. in errors table).

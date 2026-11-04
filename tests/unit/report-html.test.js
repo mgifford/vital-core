@@ -551,6 +551,14 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /does not confirm the full aggregate is a duplicate/i);
   assert.match(html, /m6b1q3 \(Approved\)/);
   assert.match(html, /1 sampled observation pair\(s\) match the same element and ACT Rule/);
+  assert.match(html, /Engine impact/);
+  assert.match(html, /<dt>Engine impact<\/dt><dd>serious<\/dd>/);
+  assert.match(html, /<summary id="VS-12345678">/);
+  assert.match(html, /Reporting severity/);
+  assert.match(html, /Remediation priority score/);
+  assert.match(html, /1 engine finding\(s\), 1 remediation group\(s\)/);
+  assert.match(html, /The number of fixes is unknown/);
+  assert.match(html, /The URL list is incomplete/);
 });
 
 test('renderAccessibilityPage emits the viewer URL-exclusion control (issue #209)', () => {
@@ -684,7 +692,7 @@ test('renderAccessibilityPage includes expanded next-actions copy payload attrib
           representative_selector: 'main .ds-c-alert a',
           representative_snippet: '<a class="ds-c-alert__link">Read more</a>',
           design_components: ['ds-c-alert'],
-          estimated_fix_impact: { statement: 'Fix one place, resolve ~3 finding(s) on 2 page(s).' },
+          estimated_fix_impact: { statement: 'Observed 3 engine finding instance(s) on 2 page(s); number of fixes and ownership are not established.' },
           affected_pages: ['https://example.gov/a', 'https://example.gov/b'],
           affected_pages_csv: 'csv/cluster__cc-123.csv',
         },
@@ -767,7 +775,7 @@ test('nextActionsSection emits a syntactically valid inline <script>', () => {
           representative_selector: 'main a',
           representative_snippet: '<a>Read more</a>',
           design_components: [],
-          estimated_fix_impact: { statement: 'Fix one place, resolve ~3 finding(s) on 2 page(s).' },
+          estimated_fix_impact: { statement: 'Observed 3 engine finding instance(s) on 2 page(s); number of fixes and ownership are not established.' },
           affected_pages: ['https://example.gov/a'],
           affected_pages_csv: null,
         },

@@ -7,6 +7,8 @@ import { performanceImpact } from './lib/perf-impact.js';
 import { mergeFleet, rankFleetAssociations, rankAssociations, onNearlyEveryPage } from './lib/tech-findings.js';
 import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
+import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
+import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
 export { setLocale };
@@ -230,10 +232,10 @@ const fmtA11yGrade = (sc, fmt = 'both') => {
  */
 function affectedPagesBlock(b) {
   const total = b.frequency.pages_affected;
-  const urls = b.affected_pages ?? [];
+  const urls = [...new Set(b.affected_pages ?? [])];
   const li = (u) => {
     let label = u;
-    try { label = new URL(u).pathname || u; } catch { /* keep raw */ }
+    try { const parsed = new URL(u); label = parsed.pathname + parsed.search; } catch { /* keep raw */ }
     return `<li><a href="${esc(u)}">${esc(label)}</a></li>`;
   };
   // data-complete=1 marks that the DOM carries the finding's full affected-page
@@ -1176,21 +1178,25 @@ function nextActionsSection(summary, bugs, reporting = {}) {
     }
   };
 
-  const byRule = new Map((bugs ?? []).map((b) => [`${b.engine_key}:${b.rule_id}`, b]));
+  const byRule = new Map((bugs ?? []).map((bug) => {
+    const b = sanitizeBugEvidence(bug);
+    return [`${b.engine_key}:${b.rule_id}`, b];
+  }));
   const rows = actions.slice(0, 10).map((a) => {
     const bug = byRule.get(`${a.engine_key}:${a.rule_id}`);
     const who = bug?.impact?.groups?.length
       ? bug.impact.groups.map((g) => g.group).slice(0, 3).join(', ')
       : t('Requires manual testing.');
     const wcag = bug?.wcag_sc ? `${bug.wcag_sc}${bug.wcag_name ? ` — ${bug.wcag_name}` : ''}` : t('undetermined');
-    const snippet = a.representative_snippet ? `<pre><code>${esc(a.representative_snippet)}</code></pre>` : '';
-    const selector = a.representative_selector || a.selector_path || '';
+    const actionEvidence = sanitizeEvidence({ xpath: a.representative_selector || a.selector_path, html_snippet: a.representative_snippet });
+    const snippet = actionEvidence.html ? `<pre><code>${esc(actionEvidence.html)}</code></pre>` : '';
+    const selector = actionEvidence.selector || '';
     const tip = bug?.remediation_tip || bug?.suggested_fix || '';
     const ruleLabel = bug?.rule_label || bug?.rule_id || a.rule_id;
     const clusterTitle = `${ruleLabel} · ${a.design_components?.[0] || t('unattributed component')}`;
-    const examplePages = (bug?.example_pages ?? []).slice(0, 10);
-    const affectedPages = (a.affected_pages ?? []).slice(0, 10);
-    const examples = (bug?.examples ?? []).slice(0, 5).map((e) => ({
+    const examplePages = (bug?.example_pages ?? []).slice(0, 10).map((url) => redactUrl(url));
+    const affectedPages = (a.affected_pages ?? []).slice(0, 10).map((url) => redactUrl(url));
+    const examples = (bug?.examples ?? []).slice(0, 3).map((e) => ({
       url: e.url ?? null,
       xpath: e.xpath ?? null,
       html_snippet: e.html_snippet ?? null,
@@ -1207,7 +1213,7 @@ function nextActionsSection(summary, bugs, reporting = {}) {
   data-pages="${esc(String(a.pages_affected))}"
   data-findings="${esc(String(a.instances))}"
   data-selector="${esc(selector)}"
-  data-snippet="${esc(a.representative_snippet || '')}"
+  data-snippet="${esc(actionEvidence.html || '')}"
   data-remediation="${esc(tip)}"
   data-impact="${esc(who)}"
   data-testing-environment="${esc(bug?.testing_environment || '')}"
@@ -1259,7 +1265,7 @@ function nextActionsSection(summary, bugs, reporting = {}) {
 
   return `<section aria-labelledby="h-next-actions">
 ${heading('h-next-actions', t('Next 10 actions'))}
-<p class="meta">${t('Clusters are fingerprinted by normalized selector path + rule id + snippet shape. Rank score = (severity weight × pages affected) / distinct components for the rule. This supersedes the template threshold heuristic while still surfacing it as a validation signal.')}</p>
+<p class="meta">${t('Clusters are fingerprinted by normalized selector path + rule id + snippet shape. Rank score = (severity weight × pages affected) / distinct components for the rule. Clustered observations are review candidates, not verified fixes or ownership assignments.')}</p>
 ${dsBlock}
 <div class="triage-io" hidden id="action-io">
   <span class="triage-io-label">${t('Action queue decisions:')}</span>
@@ -1269,7 +1275,7 @@ ${dsBlock}
   <span id="action-io-status" class="triage-io-status" aria-live="polite"></span>
 </div>
 <table>
-<caption>${t('Top 10 clustered component fixes for this week.')}</caption>
+<caption>${t('Top 10 observed component clusters for review.')}</caption>
 <thead><tr><th scope="col">${t('Cluster')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Who it affects')}</th><th scope="col">${t('How to fix')}</th><th scope="col">${t('Evidence')}</th><th scope="col">${t('Decision')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
@@ -1599,6 +1605,7 @@ function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting 
     { keyPages: reporting.keyPages ?? [], reporting }
   );
   const ordered = view.bugs;
+  const findingReporting = buildFindingReporting(ordered, { denyParams: target.api_redact_params ?? [], summary });
   if (!ordered || ordered.length === 0) {
     return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', t('Bug reports'))}
@@ -1667,7 +1674,10 @@ ${heading('h-bugs', t('Bug reports'))}
     };
   };
 
-  const renderBug = (b) => {
+    const renderBug = (rawBug) => {
+      const b = sanitizeBugEvidence(rawBug, { denyParams: target.api_redact_params ?? [] });
+      const evidenceReport = findingReporting.byFindingId.get(b.pattern_id);
+      const representative = evidenceReport.representative_evidence[0];
       const wcagDetail = b.wcag_sc
         ? `${esc(b.wcag_sc)} ${esc(b.wcag_name)} (${t('Level @level, WCAG @version', { '@level': esc(b.wcag_level), '@version': esc(b.wcag_version ?? '2.x') })})`
         : b.wcag_category === 'Best Practice' ? t('Best Practice — not a WCAG requirement') : t('undetermined');
@@ -1683,7 +1693,7 @@ ${heading('h-bugs', t('Bug reports'))}
       const correlationLabels = {
         confirmed_duplicate: t('Confirmed duplicate'),
         related: t('Related'),
-        uncertain: t('Uncertain'),
+        uncertain: `${t('Uncertain')} (${t('possible duplicate')})`,
         independent: t('Independent'),
       };
       const correlationText = {
@@ -1710,7 +1720,7 @@ ${heading('h-bugs', t('Bug reports'))}
         }).join('')}</ul></dd></div>`
         : '';
       return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-obligation="${esc(b.obligation ?? '')}" data-handling="${esc(b.handling ?? '')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
-<summary id="${esc(b.instance_id)}" tabindex="-1"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
+<summary id="${esc(b.instance_id)}"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('confirmed duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
@@ -1722,13 +1732,18 @@ ${heading('h-bugs', t('Bug reports'))}
   <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
   <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
   <div><dt>${t('Rule')}</dt><dd>${ruleLink}</dd></div>
+  <div><dt>${t('Engine impact')}</dt><dd>${esc(evidenceReport.engine_severity ?? t('Not supplied by the engine'))}</dd></div>
+  <div><dt>${t('Reporting severity')}</dt><dd>${esc(t(b.severity))}</dd></div>
+  <div><dt>${t('Remediation priority score')}</dt><dd>${nf(evidenceReport.remediation_priority.score)}. ${t('Used for ordering, not engine severity or a count of fixes.')}</dd></div>
+  <div><dt>${t('ACT mappings')}</dt><dd>${esc(actRuleLabels(evidenceReport.act_rules))}</dd></div>
+  <div><dt>${t('Remediation group')}</dt><dd><code>${esc(evidenceReport.remediation_group_id)}</code>. ${t('Number of fixes and code ownership are not established.')}</dd></div>
   <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
-  ${b.xpath ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(b.xpath)}</code></dd></div>` : ''}
+  ${representative?.selector ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(representative.selector)}</code></dd></div>` : ''}
   ${b.first_seen ? `<div><dt>${t('History')}</dt><dd>${t('first seen @first, last seen @last (@n wk)', { '@first': esc(b.first_seen), '@last': esc(b.last_seen), '@n': b.weeks_seen })}</dd></div>` : ''}
   ${dupNote}
   ${correlationNote}
 </dl>
-${b.html_snippet ? `<p class="bug-label">${t('HTML snippet — use this to validate the finding without re-running the tool')}</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
+${evidenceReport.representative_evidence.some((example) => example.html) ? `<p class="bug-label">${t('Representative evidence (sanitized; text and form values omitted)')}</p>${evidenceReport.representative_evidence.filter((example) => example.html).map((example) => `<pre><code>${esc(example.html)}</code></pre>${example.selector ? `<p><code>${esc(example.selector)}</code></p>` : ''}`).join('')}` : ''}
 <p class="bug-label">${t('Description')}</p><p>${esc(b.description)}</p>
 <p class="bug-label">${t('Steps to reproduce')}</p><ol>${b.steps_to_reproduce.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
 <p class="bug-label">${t('Impact')}</p>
@@ -1738,6 +1753,7 @@ ${b.impact?.groups?.length
             .join('')}</ul>`
         : `<p class="bug-placeholder">${esc(b.impact?.summary ?? t('Requires manual testing.'))}</p>`}
 <p class="bug-label">${t('Affected pages')}</p>
+<p>${t('@n distinct URL(s) in the stored evidence. Query variants remain distinct.', { '@n': evidenceReport.distinct_urls.observed_count })} ${evidenceReport.distinct_urls.complete ? t('The URL evidence is complete; the list below may be a sample.') : t('The URL list is incomplete; the sample is not the total page count.')}</p>
 ${affectedPagesBlock(b)}
 <p class="bug-label">${t('Testing environment')}</p><p>${esc(b.testing_environment)}</p>
 <p class="bug-label">${t('Suggested fix')}</p>${b.remediation_tip ? `<p><strong>${t('How to fix:')}</strong> ${esc(b.remediation_tip)}</p>` : ''}${b.tech_remediation_tip ? `<p class="tech-tip"><strong>${t('@tech tip:', { '@tech': esc(b.tech_name) })}</strong> ${esc(b.tech_remediation_tip)}</p>` : ''}<p>${esc(b.suggested_fix)}</p>
@@ -1832,6 +1848,7 @@ ${exclusionBox(target, { bugsJson: reporting.bugsJson ?? 'bugs.json' })}
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
 ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
 <p class="note">${t('Automated testing does not establish full WCAG conformance. Findings in the verification lane require manual testing before they are treated as confirmed failures.')}</p>
+<p class="note">${t('@observations engine finding(s), @groups remediation group(s). Only complete confirmed duplicates share a group. Related and possible duplicates remain separate. The number of fixes is unknown.', { '@observations': findingReporting.summary.engine_finding_count, '@groups': findingReporting.summary.remediation_group_count })}</p>
 ${priorityLine}
 ${dupLine}
 ${suppressionBlock}

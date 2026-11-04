@@ -15,6 +15,18 @@
       "description": "Build timestamp (ISO 8601). Present for provenance; not part of finding identity."
     },
     "pages_scanned": { "type": "integer", "minimum": 0 },
+    "reporting": {
+      "type": "object",
+      "description": "Additive evidence-based counts. Engine findings are retained; only complete confirmed duplicates share a remediation group. Groups are not fixes.",
+      "properties": {
+        "engine_finding_count": { "type": "integer", "minimum": 0 },
+        "remediation_group_count": { "type": "integer", "minimum": 0 },
+        "confirmed_duplicate_findings_removed": { "type": "integer", "minimum": 0 },
+        "remediation_task_count": { "type": "null" },
+        "act_mapping": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
     "top_actions": {
       "description": "Optional component-cluster next-actions queue. Null or absent when no clusters were computed.",
       "type": ["object", "null"]
@@ -40,6 +52,24 @@
         },
         "rule_id": { "type": "string", "description": "Engine rule id, e.g. color-contrast. Stable across weeks." },
         "rule_label": { "type": "string" },
+        "instance_id": { "type": ["string", "null"] },
+        "reporting": {
+          "type": "object",
+          "properties": {
+            "act_rules": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string" }, "status": { "enum": ["Approved", "Proposed", "Unknown"] } }, "required": ["id", "status"] } },
+            "duplicate_status": { "enum": ["confirmed_duplicate", "possible_duplicate", "related", "not_confirmed"] },
+            "remediation_group_id": { "type": "string" },
+            "remediation_task_count": { "type": "null" },
+            "ownership": { "const": "not_established" },
+            "engine_severity": { "type": ["string", "null"] },
+            "engine_observation_count": { "type": ["integer", "null"], "minimum": 0 },
+            "remediation_priority": { "type": "object" },
+            "distinct_urls": { "type": "object" },
+            "representative_evidence": { "type": "array" },
+            "correlations": { "type": "array" }
+          },
+          "additionalProperties": true
+        },
         "engine": {
           "type": "string",
           "description": "Detecting engine. axe-core and alfa are preserved as distinct engines.",

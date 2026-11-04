@@ -6,6 +6,7 @@ import { techRemediationTip } from './remediation-prompts.js';
 import { rulePlainLabel } from './rule-label.js';
 import { computeA11yPatternFingerprint, computeA11yOccurrenceFingerprint } from './fingerprint-core.js';
 import { attachFindingCorrelations } from './finding-correlation.js';
+import { sanitizeBugEvidence } from './finding-reporting.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -120,6 +121,7 @@ export function buildBugReports(target, summary) {
       tool: toolName,
       rule_url: rule.helpUrl ?? rule.ruleUrl ?? null,
       severity,
+      engine_severity: rule.impact ?? null,
       frequency: {
         instances: rule.count,
         pages_affected: rule.pages,
@@ -198,6 +200,7 @@ export function buildBugReports(target, summary) {
 
 /** Render a single bug report as Markdown matching the guide's template. */
 export function bugReportToMarkdown(r) {
+  r = sanitizeBugEvidence(r);
   const lines = [];
   lines.push(`## ${r.summary}`);
   lines.push('');
