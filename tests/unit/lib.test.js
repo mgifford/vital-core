@@ -638,7 +638,7 @@ test('resource ledger: persists a source-page sample (examplePages) alongside th
   assert.deepEqual(ledger.resources['https://x/b.pdf'].lastExamplePages, []);
 });
 
-test('act + consensus: axe and alfa for the same ACT rule are one issue', async () => {
+test('act + consensus: axe and alfa for the same ACT rule share a rule/page bucket', async () => {
   const { canonicalRuleKey, actRuleIdsFor } = await import('../../src/lib/act.js');
   const { buildConsensus } = await import('../../src/lib/consensus.js');
 
@@ -652,9 +652,9 @@ test('act + consensus: axe and alfa for the same ACT rule are one issue', async 
   const axe = { 'image-alt': { affectedPages: [{ url: 'p/a', instances: 1 }, { url: 'p/b', instances: 1 }] } };
   const alfa = { 'sia-r2': { affectedPages: [{ url: 'p/a', instances: 1 }] } };
   const c = buildConsensus(axe, alfa);
-  // /a: both engines -> consensus; /b: axe only. 2 unique from 3 raw.
-  assert.equal(c.uniqueIssues, 2, 'deduped to 2 unique issues');
-  assert.equal(c.consensus, 1, '/a caught by both');
+  // /a: both engines map to the bucket; /b: axe only. 2 buckets from 3 records.
+  assert.equal(c.uniqueIssues, 2, 'grouped to 2 canonical rule/page buckets');
+  assert.equal(c.consensus, 1, '/a mapped by both');
   assert.equal(c.axeOnly, 1, '/b axe only');
   assert.equal(c.alfaOnly, 0);
   assert.equal(c.rawAxe + c.rawAlfa, 3, 'naive count would be 3');

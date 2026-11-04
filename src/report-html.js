@@ -1678,11 +1678,40 @@ ${heading('h-bugs', t('Bug reports'))}
         ? `<a href="${esc(b.rule_url)}">${esc(b.tool)} — ${ruleLabel}</a>`
         : `${esc(b.tool)} — ${ruleLabel}`;
       const dupNote = b.possible_duplicate_of
-        ? `<div><dt>${t('Possible duplicate')}</dt><dd>${t('Same WCAG SC covered by axe report <code>@id</code> (pattern <code>@pattern</code>). If axe and this engine flag the same element, the axe report takes precedence — mark this as duplicate in JIRA.', { '@id': esc(b.possible_duplicate_of), '@pattern': esc(b.possible_duplicate_pattern) })}</dd></div>`
+        ? `<div><dt>${t('Confirmed duplicate')}</dt><dd>${t('Both findings share ACT Rule @act and matching element evidence. The original observation is retained.', { '@act': esc(b.possible_duplicate_act_rule) })} <code>${esc(b.possible_duplicate_of)}</code> (${t('pattern')} <code>${esc(b.possible_duplicate_pattern)}</code>).</dd></div>`
+        : '';
+      const correlationLabels = {
+        confirmed_duplicate: t('Confirmed duplicate'),
+        related: t('Related'),
+        uncertain: t('Uncertain'),
+        independent: t('Independent'),
+      };
+      const correlationText = {
+        confirmed_duplicate: t('Same ACT Rule and matching element evidence. Both findings remain available.'),
+        related: t('Evidence links these findings, but does not confirm the full aggregate is a duplicate. Keep both findings.'),
+        uncertain: t('Some evidence overlaps, but it does not identify a unique matching element. Keep both findings.'),
+        independent: t('The sampled targets differ and show no shared component evidence.'),
+      };
+      const actStatusLabels = {
+        Approved: t('Approved'),
+        Proposed: t('Proposed'),
+        Unknown: t('Unknown'),
+      };
+      const actRuleLabels = (rules) => rules?.length
+        ? rules.map((rule) => `${rule.id} (${actStatusLabels[rule.status] ?? actStatusLabels.Unknown})`).join(', ')
+        : t('No ACT mapping');
+      const correlationNote = b.cross_engine_correlations?.length
+        ? `<div><dt>${t('Cross-engine correlations')}</dt><dd><ul>${b.cross_engine_correlations.map((c) => {
+          const confirmedSamples = (c.evidence?.observation_pairs ?? []).filter((pair) => pair.status === 'confirmed_duplicate').length;
+          const sampleNote = confirmedSamples
+            ? `<p class="bug-meta">${t('@n sampled observation pair(s) match the same element and ACT Rule. This does not confirm the full aggregate.', { '@n': confirmedSamples })}</p>`
+            : '';
+          return `<li><strong>${esc(correlationLabels[c.status] ?? t('Unclassified'))}</strong> — <code>${esc(c.peer_instance_id)}</code> (${t('Pattern ID')} <code>${esc(c.peer_pattern_id)}</code>): ${correlationText[c.status] ?? t('Relationship not classified.')}<p class="bug-meta">${t('ACT mappings: this rule @own; paired rule @peer.', { '@own': esc(actRuleLabels(c.own_act_rules)), '@peer': esc(actRuleLabels(c.peer_act_rules)) })}</p>${sampleNote}</li>`;
+        }).join('')}</ul></dd></div>`
         : '';
       return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-obligation="${esc(b.obligation ?? '')}" data-handling="${esc(b.handling ?? '')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
 <summary id="${esc(b.instance_id)}" tabindex="-1"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
-<span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('possible duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
+<span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('confirmed duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
@@ -1697,6 +1726,7 @@ ${heading('h-bugs', t('Bug reports'))}
   ${b.xpath ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(b.xpath)}</code></dd></div>` : ''}
   ${b.first_seen ? `<div><dt>${t('History')}</dt><dd>${t('first seen @first, last seen @last (@n wk)', { '@first': esc(b.first_seen), '@last': esc(b.last_seen), '@n': b.weeks_seen })}</dd></div>` : ''}
   ${dupNote}
+  ${correlationNote}
 </dl>
 ${b.html_snippet ? `<p class="bug-label">${t('HTML snippet — use this to validate the finding without re-running the tool')}</p><pre><code>${esc(b.html_snippet)}</code></pre>` : ''}
 <p class="bug-label">${t('Description')}</p><p>${esc(b.description)}</p>
@@ -1753,7 +1783,7 @@ ${affectedPagesBlock(b)}
 <label>${t('Severity')} <select id="filter-sev"><option value="">${t('All severities')}</option>${sevOpts}</select></label>
 <label>${t('WCAG category')} <select id="filter-cat"><option value="">${t('All categories')}</option>${catOpts}</select></label>
 <label>${t('Triage')} <select id="filter-triage"><option value="">${t('All statuses')}</option><option value="__none__">${t('Not reviewed')}</option><option value="valid">${t('Valid')}</option><option value="false-positive">${t('False positive')}</option><option value="duplicate">${t('Duplicate')}</option><option value="wont-fix">${t("Won't fix")}</option><option value="deferred">${t('Deferred')}</option></select></label>
-<label class="bug-filter-check"><input type="checkbox" id="filter-dup"> ${t('Hide possible duplicates')}</label>
+<label class="bug-filter-check"><input type="checkbox" id="filter-dup"> ${t('Hide confirmed duplicates')}</label>
 ${keyPageFilter}<button type="button" id="filter-reset">${t('Reset')}</button>
 </div>
 <p class="bug-filter-count" aria-live="polite" id="filter-count">${t('Showing @count prioritized issue type(s) out of @total.', { '@count': fullVisibleCount, '@total': fullBugs.length })}</p>
@@ -1767,7 +1797,7 @@ ${keyPageFilter}<button type="button" id="filter-reset">${t('Reset')}</button>
       ? `<p class="note">${t('Default view shows @count prioritized issue type(s); @hidden more are available if you switch to "Show everything".', { '@count': fullVisibleCount, '@hidden': hiddenCount })}</p>`
       : `<p class="note">${t('All findings fit within the prioritized view this week.')}</p>`;
   const dupLine = dupCount > 0
-    ? `<p class="note">${t('@n finding(s) marked "possible duplicate" — Alfa and axe-core both flagged the same WCAG SC on overlapping pages. If they target the same element, the axe-core report is authoritative. Filter the CSV by <code>possible_duplicate_of</code> to see these. Two engines flagging the same barrier reduces the chance of a false positive.', { '@n': dupCount })}</p>`
+    ? `<p class="note">${t('@n finding(s) are confirmed duplicates: both engines map to the same ACT Rule and the sampled element evidence matches. Related or uncertain findings remain separate. Filter the CSV by <code>possible_duplicate_of</code> to see these.', { '@n': dupCount })}</p>`
     : '';
   const suppression = reporting.policySummary ?? null;
   const suppressionBlock = suppression && suppression.patterns > 0
@@ -2565,10 +2595,9 @@ ${newBlock}
 }
 
 /**
- * Cross-engine consensus: the true number of unique accessibility issues
- * (deduplicated across axe and Alfa via W3C ACT rules), and how many both
- * engines agree on. Prevents the "looks like 2x the errors" problem of
- * summing two engines that overlap.
+ * ACT-rule/page group counts are a compact view of mapping overlap. They do
+ * not establish that two engines found the same element; finding details carry
+ * the separate evidence-based correlation records for that conclusion.
  */
 /**
  * What a finding is required to meet, from its conformance tier (see
@@ -2851,9 +2880,8 @@ function consensusSection(summary, bugs = []) {
     }
   }
 
-  // Rules flagged by BOTH engines — the highest-confidence findings, since two
-  // independent implementations of the same ACT rule agree. List them with
-  // links to each engine's rule docs and the canonical ACT rule.
+  // ACT-rule/page keys represented by both engines. This is mapping overlap,
+  // not a same-element conclusion; that evidence lives on each finding.
   const axeRules = summary.axe?.rules ?? {};
   const alfaRules = summary.alfa?.rules ?? {};
   const both = Object.values(c.byKey ?? {})
@@ -2884,24 +2912,24 @@ function consensusSection(summary, bugs = []) {
     .join('\n');
   const bothTable = both.length
     ? `<details class="engine-findings" open>
-<summary>${t('@n rule type(s) caught by both engines — highest confidence', { '@n': both.length })}</summary>
-<p class="meta">${t('Two independent ACT-rule implementations (Deque axe-core and Siteimprove Alfa) flagged the same issue on the same pages. Agreement between separate engines is strong evidence the barrier is real, not a single-tool false positive — the best place to start.')}</p>
+<summary>${t('@n ACT rule/page group(s) overlap between engines', { '@n': both.length })}</summary>
+<p class="meta">${t('A matching ACT rule and page shows rule/page overlap only. It does not confirm the same element or barrier; review the correlation evidence in each finding.')}</p>
 <table>
-<caption>${t('Rules flagged by both axe-core and Alfa in @week, by pages affected.', { '@week': esc(summary.week) })}</caption>
-<thead><tr><th scope="col">${t('Issue')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Rule references')}</th></tr></thead>
+<caption>${t('ACT rule/page groups mapped by both axe-core and Alfa in @week, by pages affected.', { '@week': esc(summary.week) })}</caption>
+<thead><tr><th scope="col">${t('Rule label')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Rule references')}</th></tr></thead>
 <tbody>${bothRows}</tbody>
 </table>
 </details>`
-    : `<p class="meta">${t('No issues were flagged by both engines on the same pages this week.')}</p>`;
+    : `<p class="meta">${t('No ACT rule/page groups were mapped by both engines this week.')}</p>`;
 
   return `<section aria-labelledby="h-consensus">
-${heading('h-consensus', t('Unique accessibility issues (axe + Alfa consolidated)'))}
-<p class="meta">${t('axe and Alfa both implement W3C ACT rules, so the same issue is often caught by both. These are deduplicated by ACT rule and page, so a shared finding counts once')}${saved > 0 ? ` ${t('(@naive raw engine findings → @unique unique)', { '@naive': naive, '@unique': c.uniqueIssues })}` : ''}.</p>
+${heading('h-consensus', t('Cross-engine ACT evidence'))}
+<p class="meta">${t('These counts group engine rules by their canonical ACT rule and affected page. A shared key is not proof that both engines tested the same element.')}${saved > 0 ? ` ${t('(@records engine rule/page records → @groups grouped keys)', { '@records': naive, '@groups': c.uniqueIssues })}` : ''}</p>
 <dl class="ledger">
-  <div><dt>${t('Unique issues (rule × page)')}</dt><dd>${c.uniqueIssues}</dd></div>
-  <div><dt>${t('Caught by both engines')}</dt><dd>${c.consensus}<span class="bug-meta"> ${t('highest confidence')}</span></dd></div>
-  <div><dt>${t('axe only')}</dt><dd>${c.axeOnly}</dd></div>
-  <div><dt>${t('Alfa only')}</dt><dd>${c.alfaOnly}</dd></div>
+  <div><dt>${t('ACT rule/page groups')}</dt><dd>${c.uniqueIssues}</dd></div>
+  <div><dt>${t('Groups with both engines')}</dt><dd>${c.consensus}</dd></div>
+  <div><dt>${t('Groups with axe only')}</dt><dd>${c.axeOnly}</dd></div>
+  <div><dt>${t('Groups with Alfa only')}</dt><dd>${c.alfaOnly}</dd></div>
 </dl>
 ${bothTable}
 </section>`;

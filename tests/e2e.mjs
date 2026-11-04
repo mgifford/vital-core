@@ -556,8 +556,8 @@ try {
   assert(/Deque axe-core findings/.test(w1a11y), 'axe section retitled "Deque axe-core findings"');
   assert(/<details class="engine-findings">\s*<summary>Rule-level axe-core summary/.test(w1a11y), 'axe rule table is in a closed details');
   assert(/<details class="engine-findings">\s*<summary>Rule-level Alfa summary/.test(w1a11y), 'Alfa rule table is in a closed details');
-  // Consensus section lists the rules caught by both engines (high confidence).
-  assert(/caught by both engines — highest confidence/.test(w1a11y), 'consensus lists rules caught by both engines');
+  // ACT rule/page overlap is shown separately from finding-level correlation evidence.
+  assert(/ACT rule\/page group\(s\) overlap between engines/.test(w1a11y), 'consensus lists ACT rule/page overlaps');
   assert(/image-alt/.test(w1a11y) && /sia-r2/.test(w1a11y), 'both-engines table references the shared axe + Alfa rule ids');
   // Broken-links & errors are on their own errors.html sub-page.
   assert(/id="h-links"/.test(w1errors) && /Broken links/.test(w1errors), 'broken links section on errors sub-page');

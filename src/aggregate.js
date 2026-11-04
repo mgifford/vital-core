@@ -1010,9 +1010,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
       medianFailures: alfaCountsPerPage.length ? median(alfaCountsPerPage) : null,
       rules: alfaRules,
     },
-    // Cross-engine consolidation via W3C ACT rules: how many unique issues
-    // there really are (not axe + alfa double-counted), and how many both
-    // engines agree on.
+    // ACT-rule/page grouping for mapping overlap. Same-element duplicate
+    // judgments are attached later to bug reports using observation evidence.
     consensus: buildConsensus(axeRules, alfaRules),
     sustainability: bytesList.length
       ? {
