@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Consent preferences fixture</title>
+</head>
+<body>
+  <main>
+    <h1>Consent preferences</h1>
+    <section class="qc-cmp2-container" role="dialog" aria-modal="true" aria-labelledby="consent-title">
+      <h2 id="consent-title">Privacy choices</h2>
+      <p id="consent-description">Choose which optional services may be used.</p>
+      <ul id="consent-preferences-list" class="qc-cmp2-consent-list">
+        <li><span>Essential storage</span><button type="button" role="switch" aria-checked="true" aria-labelledby="essential-label"><span id="essential-label">Always active</span></button></li>
+        <li><span>Usage analytics</span><button type="button" role="switch" aria-checked="false" class="qc-cmp2-toggle"></button><span class="low-contrast">Opted In</span></li>
+      </ul>
+      <button type="button" id="orphaned-preference" role="listitem" class="qc-cmp2-list-item-header" aria-label="Preference details">Preference details</button>
+      <button type="button">Accept selected</button>
+      <button type="button">Reject optional</button>
+    </section>
+    <ul id="invalid-consent-list" class="qc-cmp2-consent-list">
+      <div class="qc-cmp2-consent-list-item">Unclassified consent item</div>
+    </ul>
+  </main>
+  <style>.low-contrast { color: #aaa; background: #fff; }</style>
+</body>
+</html>

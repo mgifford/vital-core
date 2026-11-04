@@ -28,6 +28,11 @@ test('component clusters: groups by normalized selector + rule id and ranks acti
   assert.equal(top.likely_source, 'template', 'template heuristic still surfaced for validation');
   assert.equal(top.design_components.includes('ds-c-alert'), true);
   assert.equal(typeof top.action_score, 'number');
+  assert.equal(top.estimated_fix_impact.findings, 2);
+  assert.equal(top.estimated_fix_impact.counting_basis, 'engine_observations_not_tasks');
+  assert.equal(top.estimated_fix_impact.remediation_task_count, null);
+  assert.equal(top.estimated_fix_impact.ownership, 'not_established');
+  assert.match(top.estimated_fix_impact.statement, /number of fixes and ownership are not established/);
 });
 
 test('component clusters: detects possible lookalike drift outside design-system prefixes', () => {

@@ -110,6 +110,17 @@ test('vital_get_finding_context: returns the full record verbatim for a known id
   assert.deepEqual(result.finding, FIXTURE_FINDINGS[0]);
 });
 
+test('finding tools preserve additive evidence and disclose whole-week count scope', async () => {
+  const reporting = { duplicate_status: 'possible_duplicate', remediation_task_count: null, engine_severity: null, representative_evidence: [{ selector: '#field', html: '<input id="field">', sanitized: true }] };
+  const finding = { ...FIXTURE_FINDINGS[0], reporting };
+  const ctx = makeCtx({ findings: [finding] });
+  const detail = await getFindingContextTool.handler({ finding_id: finding.finding_id }, ctx);
+  const list = await listFindingsTool.handler({ severity: ['Serious'] }, ctx);
+  assert.deepEqual(detail.finding.reporting, reporting);
+  assert.deepEqual(list.findings[0].reporting, reporting);
+  assert.equal(list.reporting_scope, 'whole_week_before_tool_filters');
+});
+
 test('vital_get_finding_context: reports not-found without throwing', async () => {
   const ctx = makeCtx();
   const result = await getFindingContextTool.handler({ finding_id: 'VS-missing' }, ctx);

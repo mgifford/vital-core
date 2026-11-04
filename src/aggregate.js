@@ -33,6 +33,7 @@ import { buildLlmsTxt } from './lib/llms-txt.js';
 import { writeApiCatalog } from './lib/api-catalog.js';
 import { summarizeDistribution } from './lib/distribution.js';
 import { writeAcrYaml } from './lib/acr.js';
+import { sanitizeBugEvidence } from './lib/finding-reporting.js';
 import { computeTrainingPriorities } from './lib/training-priorities.js';
 import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
 import { createClusterTracker } from './lib/component-clusters.js';
@@ -75,7 +76,8 @@ fs.mkdirSync(DIRS.docs, { recursive: true });
 // layers for the API surface.
 function apiBugsFor(target, bugs) {
   const filtered = filterBugsByExclusion(bugs, target.url_exclude_patterns ?? []);
-  return redactBugs(filtered, { denyParams: target.api_redact_params ?? [] });
+  return redactBugs(filtered, { denyParams: target.api_redact_params ?? [] })
+    .map((bug) => sanitizeBugEvidence(bug, { denyParams: target.api_redact_params ?? [] }));
 }
 
 const dashboard = [];
@@ -262,7 +264,8 @@ for (const target of config.targets) {
 
     // Flat bugs.csv: all findings in one spreadsheet-friendly file.
     // Written after affected_pages_csv is set on each bug so the links are included.
-    csvLinks.bugsAll = writeBugsCsv(repDir, target.domain, summary.week, reportBugs);
+    csvLinks.bugsAll = writeBugsCsv(repDir, target.domain, summary.week,
+      reportBugs.map((bug) => sanitizeBugEvidence(bug, { denyParams: target.api_redact_params ?? [] })));
     // Broken-link ledger: track first/last-seen and weeks-broken per URL,
     // then annotate summary entries so the errors page can show history.
     if (summary.linkCheck?.broken?.length) {
@@ -456,7 +459,7 @@ for (const target of config.targets) {
         domain: target.domain,
         week: summary.week,
         generatedAt: summary.generatedAt,
-        reports: bugs,
+        reports: reportBugs.map((bug) => sanitizeBugEvidence(bug, { denyParams: target.api_redact_params ?? [] })),
         policy: { suppression: policyResult.suppressionSummary },
       }, null, 1)
     );
@@ -1010,9 +1013,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
       medianFailures: alfaCountsPerPage.length ? median(alfaCountsPerPage) : null,
       rules: alfaRules,
     },
-    // Cross-engine consolidation via W3C ACT rules: how many unique issues
-    // there really are (not axe + alfa double-counted), and how many both
-    // engines agree on.
+    // ACT-rule/page grouping for mapping overlap. Same-element duplicate
+    // judgments are attached later to bug reports using observation evidence.
     consensus: buildConsensus(axeRules, alfaRules),
     sustainability: bytesList.length
       ? {

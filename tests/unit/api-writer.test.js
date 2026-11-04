@@ -118,7 +118,21 @@ describe('buildSnapshot', () => {
 
   test('weekly.series is the passed-in series', () => {
     const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
-    assert.deepEqual(snap.weekly.series, FAKE_SERIES);
+    assert.equal(snap.weekly.series[0].week, FAKE_SERIES[0].week);
+    assert.equal(snap.weekly.series[0].componentClusters.top_actions[0].representative_snippet, '<a class="ds-c-alert__link">[text omitted]</a>');
+    assert.equal(snap.weekly.series[0].componentClusters.top_actions[0].estimated_fix_impact.remediation_task_count, null);
+    assert.match(snap.weekly.series[0].componentClusters.top_actions[0].estimated_fix_impact.statement, /number of fixes and ownership are not established/);
+    assert.equal(FAKE_SERIES[0].componentClusters.top_actions[0].representative_snippet, '<a class="ds-c-alert__link">Read more</a>', 'the source series stays untouched');
+  });
+
+  test('weekly snapshot strips unsafe nested cluster markup and legacy fix claims', () => {
+    const unsafe = [{ ...FAKE_SUMMARY, componentClusters: { top_actions: [{ rule_id: 'label', instances: 2, pages_affected: 2, representative_selector: 'text: "PRIVATE"', representative_snippet: '<script>PRIVATE</script><input value="PRIVATE">', estimated_fix_impact: { findings: 2, pages: 2, statement: 'Fix one place, resolve 2 findings.' } }] } }];
+    const snap = buildSnapshot(FAKE_TARGET, unsafe, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
+    const action = snap.weekly.series[0].componentClusters.top_actions[0];
+    assert.equal(action.representative_selector, null);
+    assert.equal(action.representative_snippet, '<input>');
+    assert.ok(!JSON.stringify(snap.weekly).includes('PRIVATE'));
+    assert.doesNotMatch(action.estimated_fix_impact.statement, /Fix one place/);
   });
 
   test('inventory is passed through', () => {
@@ -154,6 +168,24 @@ describe('buildSnapshot', () => {
 });
 
 describe('buildWeekFindings', () => {
+  test('adds evidence reporting without changing v1 identity, severity or history', () => {
+    const bug = { ...FAKE_BUG, instance_id: 'VS-instance', engine_severity: 'moderate', examples: [{ url: 'https://example.gov/?token=PRIVATE', xpath: '#field', html_snippet: '<input id="field" value="PRIVATE">' }], affected_pages: ['https://example.gov/a', 'https://example.gov/a'] };
+    const original = structuredClone(bug);
+    const result = buildWeekFindings(FAKE_TARGET, FAKE_SUMMARY, [bug], FAKE_LEDGER.findings);
+    const finding = result.findings[0];
+    assert.equal(finding.finding_id, original.pattern_id);
+    assert.equal(finding.instance_id, original.instance_id);
+    assert.equal(finding.severity, original.severity);
+    assert.equal(finding.first_seen, original.first_seen);
+    assert.equal(finding.reporting.engine_severity, 'moderate');
+    assert.equal(finding.reporting.act_rules.length, 2);
+    assert.equal(finding.reporting.distinct_urls.observed_count, 1);
+    assert.equal(finding.reporting.distinct_urls.complete, false);
+    assert.equal(result.reporting.remediation_task_count, null);
+    assert.ok(!JSON.stringify(result).includes('PRIVATE'));
+    assert.deepEqual(bug, original);
+  });
+
   test('includes schema_version 1', () => {
     const wf = buildWeekFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER.findings);
     assert.equal(wf.schema_version, '1');

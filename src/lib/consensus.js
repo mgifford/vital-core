@@ -1,21 +1,21 @@
 import { canonicalRuleKey, actRuleIdsFor } from './act.js';
 
 /**
- * Cross-engine consensus. axe and Alfa both implement W3C ACT rules, so
- * the same issue is often reported by both — once you'd naively sum axe
- * + Alfa counts, you'd show ~2x the real number. This consolidates by:
+ * Cross-engine ACT-rule/page grouping. This is a compact summary of mapping
+ * overlap, not a finding-level duplicate judgment. Same-element conclusions
+ * belong to finding-correlation.js, which has sampled selectors and snippets.
+ * Grouping by canonical ACT rule and page:
  *
  *   primary:   the shared ACT rule (axe "image-alt" and Alfa "sia-r2"
  *              are ACT 23a2a8 -> one canonical issue), and
  *   secondary: the affected page URL.
  *
- * An issue = (canonical rule, page). It's "consensus" when both engines
- * flagged that canonical rule on that page, else axe-only or alfa-only.
+ * A bucket = (canonical rule, page). It is "consensus" when both engines
+ * map a finding to that rule on the page, else axe-only or alfa-only.
  * Unmapped rules keep their own key, so they're never wrongly merged.
  *
- * Selectors differ between engines (each emits its own), so we correlate
- * at canonical-rule + page granularity rather than forcing selector
- * equality — that's the reliable signal that "both engines agree".
+ * Selectors and element identities are not available in the rule/page summary,
+ * so a shared bucket does not imply the same tested element.
  */
 
 /**
@@ -26,8 +26,8 @@ import { canonicalRuleKey, actRuleIdsFor } from './act.js';
  *
  * Returns:
  *   {
- *     uniqueIssues,        // distinct (canonical rule, page) pairs
- *     consensus,           // flagged by BOTH engines
+ *     uniqueIssues,        // compatibility field: distinct canonical rule/page buckets
+ *     consensus,           // buckets mapped by BOTH engines, not confirmed duplicates
  *     axeOnly, alfaOnly,
  *     rawAxe, rawAlfa,     // naive per-engine (rule,page) counts, for contrast
  *     byKey: { canonicalKey: { actRuleId, axeRules:Set, alfaRules:Set, pages:Set, engines } }

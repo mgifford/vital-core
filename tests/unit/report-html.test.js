@@ -491,7 +491,10 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
     pagesScanned: 4,
     axe: { rules: { 'image-alt': { count: 2, pages: 2, help: 'Images must have alt text', helpUrl: 'https://example.gov/axe/image-alt', tags: ['wcag111'], examplePages: ['https://example.gov/a'], affectedPages: [{ url: 'https://example.gov/a', instances: 2 }], instances: [{ url: 'https://example.gov/a', target: 'img', html: '<img>' }], impact: 'serious' } } },
     alfa: { rules: { 'sia-r12': { count: 1, pages: 1, ruleUrl: 'https://example.gov/alfa/sia-r12', examplePages: ['https://example.gov/b'], affectedPages: [{ url: 'https://example.gov/b', instances: 1 }], instances: [{ url: 'https://example.gov/b', target: 'a', html: '<a>' }], impact: 'serious' } } },
-    consensus: null,
+    consensus: {
+      uniqueIssues: 1, rawAxe: 2, rawAlfa: 1, consensus: 1, axeOnly: 0, alfaOnly: 0,
+      byKey: { 'act:23a2a8': { actRuleId: '23a2a8', axeRules: ['image-alt'], alfaRules: ['sia-r2'], pages: 1, engines: 'both' } },
+    },
   };
   const bugs = [
     {
@@ -523,6 +526,14 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
       suggested_fix: 'See remediation guidance: https://example.gov/axe/image-alt',
       default_visible: true,
       priority_tier: 0,
+      cross_engine_correlations: [{
+        status: 'related',
+        peer_instance_id: 'VS-alfa1234',
+        peer_pattern_id: 'VS-alfa-pattern',
+        own_act_rules: [{ id: '97a4e1', status: 'Approved' }, { id: 'm6b1q3', status: 'Approved' }],
+        peer_act_rules: [{ id: 'e086e5', status: 'Approved' }],
+        evidence: { observation_pairs: [{ status: 'confirmed_duplicate' }] },
+      }],
     },
   ];
 
@@ -531,6 +542,23 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /<span class="engine-badge" data-engine="axe-core">axe<\/span>/);
   assert.match(html, /<span class="rule-badge">image-alt<\/span>/);
   assert.match(html, /Images must have alternative text/);
+  assert.match(html, /Cross-engine ACT evidence/);
+  assert.match(html, /ACT rule\/page group\(s\) overlap between engines/);
+  assert.match(html, /A matching ACT rule and page shows rule\/page overlap only/);
+  assert.doesNotMatch(html, /same issue is often caught by both/);
+  assert.match(html, /Cross-engine correlations/);
+  assert.match(html, /Related<\/strong> — <code>VS-alfa1234<\/code>/);
+  assert.match(html, /does not confirm the full aggregate is a duplicate/i);
+  assert.match(html, /m6b1q3 \(Approved\)/);
+  assert.match(html, /1 sampled observation pair\(s\) match the same element and ACT Rule/);
+  assert.match(html, /Engine impact/);
+  assert.match(html, /<dt>Engine impact<\/dt><dd>serious<\/dd>/);
+  assert.match(html, /<summary id="VS-12345678">/);
+  assert.match(html, /Reporting severity/);
+  assert.match(html, /Remediation priority score/);
+  assert.match(html, /1 engine finding\(s\), 1 remediation group\(s\)/);
+  assert.match(html, /The number of fixes is unknown/);
+  assert.match(html, /The URL list is incomplete/);
 });
 
 test('renderAccessibilityPage emits the viewer URL-exclusion control (issue #209)', () => {
@@ -664,7 +692,7 @@ test('renderAccessibilityPage includes expanded next-actions copy payload attrib
           representative_selector: 'main .ds-c-alert a',
           representative_snippet: '<a class="ds-c-alert__link">Read more</a>',
           design_components: ['ds-c-alert'],
-          estimated_fix_impact: { statement: 'Fix one place, resolve ~3 finding(s) on 2 page(s).' },
+          estimated_fix_impact: { statement: 'Observed 3 engine finding instance(s) on 2 page(s); number of fixes and ownership are not established.' },
           affected_pages: ['https://example.gov/a', 'https://example.gov/b'],
           affected_pages_csv: 'csv/cluster__cc-123.csv',
         },
@@ -747,7 +775,7 @@ test('nextActionsSection emits a syntactically valid inline <script>', () => {
           representative_selector: 'main a',
           representative_snippet: '<a>Read more</a>',
           design_components: [],
-          estimated_fix_impact: { statement: 'Fix one place, resolve ~3 finding(s) on 2 page(s).' },
+          estimated_fix_impact: { statement: 'Observed 3 engine finding instance(s) on 2 page(s); number of fixes and ownership are not established.' },
           affected_pages: ['https://example.gov/a'],
           affected_pages_csv: null,
         },

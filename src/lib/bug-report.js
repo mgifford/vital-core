@@ -5,6 +5,8 @@ import { remediationTip } from './remediation.js';
 import { techRemediationTip } from './remediation-prompts.js';
 import { rulePlainLabel } from './rule-label.js';
 import { computeA11yPatternFingerprint, computeA11yOccurrenceFingerprint } from './fingerprint-core.js';
+import { attachFindingCorrelations } from './finding-correlation.js';
+import { sanitizeBugEvidence } from './finding-reporting.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -119,6 +121,7 @@ export function buildBugReports(target, summary) {
       tool: toolName,
       rule_url: rule.helpUrl ?? rule.ruleUrl ?? null,
       severity,
+      engine_severity: rule.impact ?? null,
       frequency: {
         instances: rule.count,
         pages_affected: rule.pages,
@@ -190,34 +193,14 @@ export function buildBugReports(target, summary) {
       b.frequency.pages_affected - a.frequency.pages_affected
   );
 
-  // Duplicate detection: when axe and alfa both flag the same WCAG SC on
-  // overlapping pages, the alfa report is likely a duplicate of the axe one
-  // (axe is the canonical source for engineers since it ships remediation
-  // tips). Mark the alfa (or second-engine) report so it can be filtered
-  // in spreadsheets and de-prioritised in JIRA.
-  const axeBySc = new Map(); // wcag_sc -> first axe bug that covers it
-  for (const r of reports) {
-    if (r.engine_key === 'axe-core' && r.wcag_sc) axeBySc.set(r.wcag_sc, r);
-  }
-  for (const r of reports) {
-    if (r.engine_key !== 'axe-core' && r.wcag_sc && axeBySc.has(r.wcag_sc)) {
-      const axeMatch = axeBySc.get(r.wcag_sc);
-      // Only flag when the page-overlap is meaningful (>50% of the smaller
-      // set) — avoids false positives on rules with very different scope.
-      const smaller = Math.min(r.frequency.pages_affected, axeMatch.frequency.pages_affected);
-      const larger = Math.max(r.frequency.pages_affected, axeMatch.frequency.pages_affected);
-      if (smaller > 0 && smaller / larger >= 0.5) {
-        r.possible_duplicate_of = axeMatch.instance_id;
-        r.possible_duplicate_pattern = axeMatch.pattern_id;
-      }
-    }
-  }
+  attachFindingCorrelations(reports);
 
   return reports;
 }
 
 /** Render a single bug report as Markdown matching the guide's template. */
 export function bugReportToMarkdown(r) {
+  r = sanitizeBugEvidence(r);
   const lines = [];
   lines.push(`## ${r.summary}`);
   lines.push('');

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Hidden form field applicability fixture</title>
+  <style>
+    #honeypot-display-none { display: none; }
+    #honeypot-clipped { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    #prohibited-hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Website feedback</h1>
+    <form action="/feedback" method="post">
+      <button type="button" id="tab-before">Previous control</button>
+      <div id="honeypot-wrapper" class="js-form-item form-item form-item-url" aria-labelledby="edit-url-label">
+        <label id="edit-url-label" for="honeypot-display-none">Leave this field blank</label>
+        <input id="honeypot-display-none" type="text" name="url" autocomplete="off" aria-labelledby="edit-url-label">
+      </div>
+      <input id="honeypot-type-hidden" type="hidden" aria-labelledby="hidden-label" aria-checked="mixed">
+      <label id="hidden-label" for="honeypot-type-hidden">Hidden field</label>
+      <input id="honeypot-clipped" type="text" aria-labelledby="edit-url-label" tabindex="0">
+      <button type="button" id="tab-after">Next control</button>
+    </form>
+    <span id="generic-label">Selection state</span>
+    <div id="prohibited-name" role="generic" aria-label="Selection state"></div>
+    <div id="prohibited-visible" aria-checked="true" aria-labelledby="generic-label"></div>
+    <div id="prohibited-hidden" aria-checked="mixed" aria-labelledby="generic-label"></div>
+    <button id="valid-named-button" type="button" aria-labelledby="generic-label"></button>
+    <div id="valid-switch" role="switch" aria-checked="false" aria-labelledby="generic-label"></div>
+  </main>
+</body>
+</html>

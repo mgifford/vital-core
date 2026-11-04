@@ -7,7 +7,7 @@ import { resolveLatestWeek } from './shared.js';
 export const getFindingContextTool = {
   name: 'vital_get_finding_context',
   description:
-    "Return one finding's evidence record (severity, pages affected, trend, first/last seen) verbatim from the /api/v1/ findings feed, by finding_id.",
+    "Return one finding verbatim from API v1 by finding_id, including reporting evidence when available: ACT mappings/status, confirmed/possible duplicate relationships, sanitized HTML/selectors, URL sample completeness, engine impact and separate remediation priority. Unknown fix counts and ownership are not inferred.",
   inputSchema: {
     type: 'object',
     properties: {
