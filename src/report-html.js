@@ -8,6 +8,7 @@ import { mergeFleet, rankFleetAssociations, rankAssociations, onNearlyEveryPage 
 import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
+import { scopeViewsFor } from './lib/shared-components.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -1719,7 +1720,11 @@ ${heading('h-bugs', t('Bug reports'))}
           return `<li><strong>${esc(correlationLabels[c.status] ?? t('Unclassified'))}</strong> — <code>${esc(c.peer_instance_id)}</code> (${t('Pattern ID')} <code>${esc(c.peer_pattern_id)}</code>): ${correlationText[c.status] ?? t('Relationship not classified.')}<p class="bug-meta">${t('ACT mappings: this rule @own; paired rule @peer.', { '@own': esc(actRuleLabels(c.own_act_rules)), '@peer': esc(actRuleLabels(c.peer_act_rules)) })}</p>${sampleNote}</li>`;
         }).join('')}</ul></dd></div>`
         : '';
-      return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-obligation="${esc(b.obligation ?? '')}" data-handling="${esc(b.handling ?? '')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
+      const scope = b.component_scope;
+      const componentScopeNote = scope
+        ? `<div><dt>${t('Component scope')}</dt><dd>${esc(scopeClassLabel(scope.classification))}${scope.component_label ? ` — ${esc(scope.component_label)} (${esc(scopeConfidenceLabel(scope.confidence))})` : ''}. ${t('@in of @total stored example(s) are inside the component; @out outside, @und undetermined. Sample-based: not every instance is inspected.', { '@in': scope.examples_in_component, '@total': scope.examples_total, '@out': scope.examples_outside_component, '@und': scope.examples_undetermined })}</dd></div>`
+        : '';
+      return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-obligation="${esc(b.obligation ?? '')}" data-handling="${esc(b.handling ?? '')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.component_scope ? ` data-page-specific="${scopeViewsFor(b).pageSpecific ? '1' : '0'}" data-shared-component="${scopeViewsFor(b).sharedComponent ? '1' : '0'}"` : ''}${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
 <summary id="${esc(b.instance_id)}"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('confirmed duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
@@ -1742,6 +1747,7 @@ ${heading('h-bugs', t('Bug reports'))}
   ${b.first_seen ? `<div><dt>${t('History')}</dt><dd>${t('first seen @first, last seen @last (@n wk)', { '@first': esc(b.first_seen), '@last': esc(b.last_seen), '@n': b.weeks_seen })}</dd></div>` : ''}
   ${dupNote}
   ${correlationNote}
+  ${componentScopeNote}
 </dl>
 ${evidenceReport.representative_evidence.some((example) => example.html) ? `<p class="bug-label">${t('Representative evidence (sanitized; text and form values omitted)')}</p>${evidenceReport.representative_evidence.filter((example) => example.html).map((example) => `<pre><code>${esc(example.html)}</code></pre>${example.selector ? `<p><code>${esc(example.selector)}</code></p>` : ''}`).join('')}` : ''}
 <p class="bug-label">${t('Description')}</p><p>${esc(b.description)}</p>
@@ -1793,12 +1799,15 @@ ${affectedPagesBlock(b)}
   const keyPageFilter = keyPageCount > 0
     ? `<label class="bug-filter-check"><input type="checkbox" id="filter-key-page"> ${t('Priority URLs only')} (${keyPageCount})</label>\n`
     : '';
+  const scopeFilter = ordered.some((b) => b.component_scope)
+    ? `<label>${t('Scope of analysis')} <select id="filter-scope"><option value="">${t('Full-page findings')}</option><option value="page-specific">${t('Page-specific findings')}</option><option value="shared-component">${t('Shared-component findings')}</option></select></label>\n`
+    : '';
   const filterBar = `<form class="bug-filter" hidden aria-label="${esc(t('Filter bug reports'))}" data-total="${fullBugs.length}" data-prioritized="${fullVisibleCount}">
 <div class="bug-filter-row">
 <label class="bug-filter-check"><input type="checkbox" id="filter-all"> ${t('Show everything')}</label>
 <label>${t('Severity')} <select id="filter-sev"><option value="">${t('All severities')}</option>${sevOpts}</select></label>
 <label>${t('WCAG category')} <select id="filter-cat"><option value="">${t('All categories')}</option>${catOpts}</select></label>
-<label>${t('Triage')} <select id="filter-triage"><option value="">${t('All statuses')}</option><option value="__none__">${t('Not reviewed')}</option><option value="valid">${t('Valid')}</option><option value="false-positive">${t('False positive')}</option><option value="duplicate">${t('Duplicate')}</option><option value="wont-fix">${t("Won't fix")}</option><option value="deferred">${t('Deferred')}</option></select></label>
+${scopeFilter}<label>${t('Triage')} <select id="filter-triage"><option value="">${t('All statuses')}</option><option value="__none__">${t('Not reviewed')}</option><option value="valid">${t('Valid')}</option><option value="false-positive">${t('False positive')}</option><option value="duplicate">${t('Duplicate')}</option><option value="wont-fix">${t("Won't fix")}</option><option value="deferred">${t('Deferred')}</option></select></label>
 <label class="bug-filter-check"><input type="checkbox" id="filter-dup"> ${t('Hide confirmed duplicates')}</label>
 ${keyPageFilter}<button type="button" id="filter-reset">${t('Reset')}</button>
 </div>
@@ -1852,6 +1861,7 @@ ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(repor
 ${priorityLine}
 ${dupLine}
 ${suppressionBlock}
+${scopeOfAnalysisBlock(summary, ordered)}
 <div class="triage-io" hidden id="triage-io">
 <span class="triage-io-label">${t('Triage decisions:')}</span>
 <button type="button" id="triage-export" class="triage-btn">${t('Export (.json)')}</button>
@@ -2486,6 +2496,117 @@ function exclusionFilterScript() {
 // Progressive-enhancement filtering for the bug-report list. Reveals the
 // filter form (hidden by default so no-JS users see every bug) and toggles
 // each .bug <details> by its data-severity / data-category attributes.
+const SCOPE_LIST_CAP = 40;
+
+function scopeClassLabel(classification) {
+  return {
+    shared_component: t('Shared component'),
+    mixed: t('Shared component and other elements'),
+    candidate_shared_component: t('Possible shared component (unverified)'),
+    not_attributed: t('Not attributed to a configured component'),
+    undetermined: t('Undetermined (not enough evidence)'),
+  }[classification] ?? t('Unclassified');
+}
+
+function scopeConfidenceLabel(confidence) {
+  return { high: t('high confidence'), medium: t('medium confidence'), low: t('low confidence') }[confidence] ?? t('no confidence rating');
+}
+
+function scopeSignalLabel(signal) {
+  return {
+    class: t('element CSS class'),
+    id: t('element id'),
+    attribute: t('element attribute'),
+    ancestry: t('ancestor in the selector'),
+    script_origin: t('script origin observed'),
+  }[signal] ?? signal;
+}
+
+/**
+ * "Scope of analysis": answers how many URLs and implementations were seen and
+ * which findings sit inside shared components, as plain HTML (no JavaScript).
+ * Renders nothing unless the target configured component_signatures or
+ * page_families, so fleets that do not opt in see no change.
+ */
+function scopeOfAnalysisBlock(summary, bugs) {
+  const model = summary.sharedComponents ?? null;
+  const families = summary.pageFamilies ?? null;
+  if (!model && !families) return '';
+  const link = (b) => `<a href="#${esc(b.instance_id)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}:${esc(b.rule_id)}</a>`;
+  const list = (items) => items.length === 0
+    ? `<p class="meta">${t('None.')}</p>`
+    : `<ul class="scope-list">${items.slice(0, SCOPE_LIST_CAP).map((b) => `<li>${link(b)} <span class="bug-meta">${esc(t(b.severity))} · ${t('@pages pages', { '@pages': b.frequency.pages_affected })}</span></li>`).join('')}</ul>${items.length > SCOPE_LIST_CAP ? `<p class="meta">${t('@n more finding(s) are in the full list and downloads.', { '@n': items.length - SCOPE_LIST_CAP })}</p>` : ''}`;
+
+  const classCounts = bugs.reduce((m, b) => {
+    const key = b.component_scope?.classification ?? 'unclassified';
+    m[key] = (m[key] ?? 0) + 1;
+    return m;
+  }, {});
+  const pageSpecific = bugs.filter((b) => scopeViewsFor(b).pageSpecific);
+  const shared = bugs.filter((b) => scopeViewsFor(b).sharedComponent);
+
+  const urlLine = `<li>${t('@urls distinct URLs were scanned and @audited audited. Query variants count as separate URLs.', { '@urls': nf(summary.pagesScanned ?? 0), '@audited': nf(summary.pagesAudited ?? 0) })}</li>`;
+  const familyLines = families
+    ? families.families.map((f) => {
+      const states = Object.entries(f.states ?? {}).map(([name, values]) => `${esc(name)}: ${Object.entries(values).map(([value, n]) => `${esc(value)} ${nf(n)}`).join(', ')}`).join('; ');
+      const variants = Object.entries(f.variants ?? {}).map(([name, v]) => `${nf(v.distinct_values)} ${esc(name)}`).join(', ');
+      return `<li>${t('@label: @urls URLs, @impl declared implementation(s).', { '@label': esc(f.label), '@urls': nf(f.url_count), '@impl': nf(f.implementation_count) })}${states ? ` ${t('States')} (${states}).` : ''}${variants ? ` ${t('Distinct values')}: ${variants}.` : ''}</li>`;
+    }).join('')
+    : '';
+  const familySummary = families
+    ? `<li>${t('@in URLs belong to @fam declared page familie(s); no implementation count is established for the other @out URLs. Nothing is sampled or merged.', { '@in': nf(families.urls_in_families), '@fam': nf(families.known_implementation_count), '@out': nf(families.urls_outside_families) })}</li>`
+    : '';
+  const classLine = model
+    ? `<li>${t('@n engine finding(s): @shared in verified shared components, @mixed also with other elements, @cand possible shared component (unverified), @not not attributed, @und undetermined.', {
+      '@n': bugs.length,
+      '@shared': classCounts.shared_component ?? 0,
+      '@mixed': classCounts.mixed ?? 0,
+      '@cand': classCounts.candidate_shared_component ?? 0,
+      '@not': classCounts.not_attributed ?? 0,
+      '@und': (classCounts.undetermined ?? 0) + (classCounts.unclassified ?? 0),
+    })}</li>`
+    : '';
+
+  const byComponent = new Map();
+  for (const b of shared) {
+    const id = b.component_scope.component_id;
+    byComponent.set(id, [...(byComponent.get(id) ?? []), b]);
+  }
+  const componentBlocks = [...byComponent.entries()].map(([id, items]) => {
+    const component = (model?.components ?? []).find((c) => c.id === id) ?? { label: id };
+    const origins = (component.script_origins ?? []).filter((o) => o.observed).map((o) => `${esc(o.origin)} (${t('@n sampled pages', { '@n': nf(o.pages_observed) })})`).join(', ');
+    const rows = items.map((b) => `<tr><th scope="row">${link(b)}</th><td>${esc(scopeClassLabel(b.component_scope.classification))}</td><td class="num">${nf(b.component_scope.pages_in_component)}</td><td class="num">${nf(b.frequency.pages_affected)}</td><td>${esc(t(b.severity))}</td></tr>`).join('');
+    return `<section class="scope-component" aria-labelledby="scope-c-${esc(id)}">
+<h5 id="scope-c-${esc(id)}">${esc(component.label)}</h5>
+<p class="meta">${component.verified ? t('Verified') : t('Not verified')} (${esc(scopeConfidenceLabel(component.confidence))}). ${t('Signals observed')}: ${esc((component.signals_observed ?? []).map(scopeSignalLabel).join(', ') || t('none'))}.${origins ? ` ${t('Script origins')}: ${origins}.` : ''} ${t('@n distinct findings are listed separately; grouping never merges different rules.', { '@n': items.length })}</p>
+<table><caption class="visually-hidden">${t('Findings attributed to @component', { '@component': esc(component.label) })}</caption>
+<thead><tr><th scope="col">${t('Finding')}</th><th scope="col">${t('Attribution')}</th><th scope="col" class="num">${t('Pages in component')}</th><th scope="col" class="num">${t('Pages affected')}</th><th scope="col">${t('Severity')}</th></tr></thead>
+<tbody>${rows}</tbody></table>
+</section>`;
+  }).join('');
+
+  return `<section class="scope-of-analysis" aria-labelledby="h-scope">
+<h3 id="h-scope">${t('Scope of analysis')}</h3>
+<p class="note">${t('Every observed failure is counted. A failure is counted as an independent defect only when the evidence supports it. Attribution uses a sample of stored examples and does not change the score.')}</p>
+<ul>${urlLine}${familySummary}${familyLines}${classLine}</ul>
+<nav aria-label="${esc(t('Scope views'))}"><ul class="scope-nav"><li><a href="#scope-full">${t('Full-page findings')}</a></li>${model ? `<li><a href="#scope-page">${t('Page-specific findings')}</a></li><li><a href="#scope-shared">${t('Shared-component findings')}</a></li>` : ''}</ul></nav>
+<section id="scope-full" aria-labelledby="h-scope-full">
+<h4 id="h-scope-full">${t('Full-page findings')}</h4>
+<p class="meta">${t('All @n detected findings, including shared third-party components. This is the primary full-page evidence view and the one the score uses.', { '@n': bugs.length })}</p>
+</section>${model ? `
+<section id="scope-page" aria-labelledby="h-scope-page">
+<h4 id="h-scope-page">${t('Page-specific findings (diagnostic view)')}</h4>
+<p class="meta">${t('Leaves out only findings verified as belonging to a shared component: @shown of @n findings remain. This is not a complete WCAG assessment. Findings with some elements outside a component stay listed.', { '@shown': pageSpecific.length, '@n': bugs.length })}</p>
+${list(pageSpecific)}
+</section>
+<section id="scope-shared" aria-labelledby="h-scope-shared">
+<h4 id="h-scope-shared">${t('Shared-component findings')}</h4>
+<p class="meta">${t('Grouped by probable implementation. Possible components rest on a single signal and are not verified. Fixing a component once can clear its findings on many URLs.')}</p>
+${componentBlocks || `<p class="meta">${t('No findings were attributed to a configured shared component.')}</p>`}
+</section>` : ''}
+</section>`;
+}
+
 function bugFilterScript() {
   return `<script>
 (function () {
@@ -2498,11 +2619,12 @@ function bugFilterScript() {
   var triage = document.getElementById('filter-triage');
   var dup = document.getElementById('filter-dup');
   var keyPage = document.getElementById('filter-key-page');
+  var scope = document.getElementById('filter-scope');
   var count = document.getElementById('filter-count');
   var empty = document.querySelector('.bug-filter-empty');
   var bugs = Array.prototype.slice.call(document.querySelectorAll('.bug-list .bug'));
   function apply() {
-    var s = sev.value, c = cat.value, t = triage ? triage.value : '', hideDup = dup.checked, keyPageOnly = keyPage ? keyPage.checked : false, showEverything = showAll.checked, shown = 0;
+    var s = sev.value, c = cat.value, t = triage ? triage.value : '', hideDup = dup.checked, keyPageOnly = keyPage ? keyPage.checked : false, showEverything = showAll.checked, sc = scope ? scope.value : '', shown = 0;
     // Triage and priority-URL filters implicitly expand to all priority tiers
     // so you can find triaged/key-page items that are normally hidden.
     var effectiveShowAll = showEverything || !!t || keyPageOnly;
@@ -2516,30 +2638,35 @@ function bugFilterScript() {
       if (b.getAttribute('data-default-visible') === '1') effPrioritized++;
       var bugTriage = b.getAttribute('data-triage') || '';
       var triageOk = !t || (t === '__none__' ? !bugTriage : bugTriage === t);
+      var scopeOk = !sc || (sc === 'page-specific' ? b.getAttribute('data-page-specific') !== '0' : b.getAttribute('data-shared-component') === '1');
       var ok = (effectiveShowAll || b.getAttribute('data-default-visible') === '1')
         && (!s || b.getAttribute('data-severity') === s)
         && (!c || b.getAttribute('data-category') === c)
         && (!hideDup || b.getAttribute('data-duplicate') !== '1')
         && (!keyPageOnly || b.getAttribute('data-key-page') === '1')
+        && scopeOk
         && triageOk;
       b.hidden = !ok;
       if (ok) shown++;
     });
-    var filtered = showEverything || s || c || t || hideDup || keyPageOnly;
+    var filtered = showEverything || s || c || t || hideDup || keyPageOnly || sc;
     count.textContent = filtered
-      ? (showEverything && !t
+      ? (showEverything && !t && !sc
           ? ${JSON.stringify(t('Showing all @count issue type(s).'))}.replace('@count', shown)
           : ${JSON.stringify(t('Showing @count of @total issue type(s).'))}.replace('@count', shown).replace('@total', effTotal))
       : ${JSON.stringify(t('Showing @count prioritized issue type(s) out of @total.'))}.replace('@count', effPrioritized).replace('@total', effTotal);
+    if (sc === 'page-specific') count.textContent += ' ' + ${JSON.stringify(t('Page-specific view: a diagnostic filter, not a complete WCAG assessment.'))};
+    if (sc === 'shared-component') count.textContent += ' ' + ${JSON.stringify(t('Shared-component view: findings with evidence of a shared component.'))};
     if (empty) empty.hidden = shown !== 0;
   }
-  function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; if (triage) triage.value = ''; dup.checked = false; if (keyPage) keyPage.checked = false; apply(); }
+  function reset() { showAll.checked = false; sev.value = ''; cat.value = ''; if (triage) triage.value = ''; dup.checked = false; if (keyPage) keyPage.checked = false; if (scope) scope.value = ''; apply(); }
   showAll.addEventListener('change', apply);
   sev.addEventListener('change', apply);
   cat.addEventListener('change', apply);
   if (triage) triage.addEventListener('change', apply);
   dup.addEventListener('change', apply);
   if (keyPage) keyPage.addEventListener('change', apply);
+  if (scope) scope.addEventListener('change', apply);
   document.getElementById('filter-reset').addEventListener('click', reset);
   var r2 = document.getElementById('filter-reset-2');
   if (r2) r2.addEventListener('click', reset);
@@ -5179,6 +5306,10 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bug-filter button { font: inherit; padding: .3rem .7rem; cursor: pointer; }
 .bug-filter-count { margin: .6rem 0 0; font-size: .85rem; color: var(--muted); }
 .bug-filter-empty { padding: .9rem; border: 1px dashed var(--rule); border-radius: 2px; color: var(--muted); }
+.scope-of-analysis { margin: 1rem 0; padding: .75rem .9rem; border: 1px solid var(--rule); border-radius: 2px; }
+.scope-nav { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; list-style: none; padding: 0; }
+.scope-nav a { display: inline-block; min-height: 24px; padding: .25rem 0; }
+.scope-component { margin: .75rem 0; }
 .exclusion-banner { margin: 1rem 0 1.25rem; padding: .75rem .9rem; border: 2px solid var(--accent);
   border-radius: 2px; background: color-mix(in srgb, var(--accent) 8%, transparent); }
 .exclusion-banner p { margin: 0; font-size: .95rem; }

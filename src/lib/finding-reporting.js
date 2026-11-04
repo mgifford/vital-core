@@ -117,6 +117,7 @@ export function buildFindingReporting(bugs, opts = {}) {
       remediation_group_id: [...groups.get(root(keyOf(bug)))].sort()[0],
       remediation_task_count: null,
       ownership: 'not_established',
+      component_scope: bug.component_scope ?? null,
       engine_observation_count: bug.frequency?.instances ?? null,
       engine_severity: bug.engine_severity ?? rule?.impact ?? null,
       remediation_priority: { score: priorityScore(bug), conformance_tier: tierOf(bug), display_tier: bug.priority_tier ?? null },

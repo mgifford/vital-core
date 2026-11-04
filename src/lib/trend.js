@@ -49,6 +49,12 @@ export function trendSummary(summary) {
     };
   }
   if (s.resources) s.resources = without(s.resources, ['list']);
+  if (s.sharedComponents) {
+    s.sharedComponents = {
+      ...without(s.sharedComponents, ['rules']),
+      components: (s.sharedComponents.components ?? []).map((c) => without(c, ['findings'])),
+    };
+  }
   if (s.linkCheck) s.linkCheck = { ...without(s.linkCheck, ['broken']), brokenCount: s.linkCheck.brokenCount ?? s.linkCheck.broken?.length ?? 0 };
   if (Array.isArray(s.errorPages)) {
     s.errorStatuses = {};

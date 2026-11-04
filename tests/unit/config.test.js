@@ -227,3 +227,24 @@ targets:
 test('config: the real targets.yml resolves to a single CI data repo', () => {
   assert.equal(ciDataRepo(loadConfig()), loadConfig().dataRepo);
 });
+
+test('component_signatures and page_families resolve per target, default from defaults, and reject bad input', () => {
+  const c = loadConfig(`
+defaults:
+  component_signatures:
+    - { id: shared-banner, class_prefixes: [site-banner] }
+targets:
+  - domain: a.example
+  - domain: b.example
+    component_signatures:
+      - { id: consent, class_prefixes: [qc-cmp2], script_origins: [inmobi.com] }
+    page_families:
+      - { id: feedback, route: /feedback, state_params: [rating] }
+`);
+  assert.deepEqual(c.targets[0].componentSignatures.map((s) => s.id), ['shared-banner']);
+  assert.deepEqual(c.targets[1].componentSignatures.map((s) => s.id), ['consent'], 'a target list replaces the default');
+  assert.deepEqual(c.targets[0].pageFamilies, []);
+  assert.equal(c.targets[1].pageFamilies[0].route, '/feedback');
+  assert.throws(() => loadConfig('targets:\n  - domain: a.example\n    component_signatures: [{ id: x }]\n'), /target a\.example: component_signatures\[0\]: needs at least one of/);
+  assert.throws(() => loadConfig('targets:\n  - domain: a.example\n    page_families: [{ id: x, route: nope }]\n'), /route must be a path/);
+});

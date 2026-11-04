@@ -155,6 +155,9 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
     generated_at: new Date().toISOString(),
     pages_scanned: summary.pagesScanned ?? 0,
     reporting: reporting.summary,
+    ...(summary.sharedComponents || summary.pageFamilies
+      ? { scope_of_analysis: { shared_components: summary.sharedComponents ? { ...summary.sharedComponents, rules: undefined } : null, page_families: summary.pageFamilies ?? null } }
+      : {}),
     top_actions: apiTopActions(summary, target.api_redact_params ?? []),
     findings: bugs.map(b => {
       const ledgerEntry = ledgerFindings?.[b.pattern_id] ?? null;

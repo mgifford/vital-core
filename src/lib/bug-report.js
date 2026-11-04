@@ -7,6 +7,7 @@ import { rulePlainLabel } from './rule-label.js';
 import { computeA11yPatternFingerprint, computeA11yOccurrenceFingerprint } from './fingerprint-core.js';
 import { attachFindingCorrelations } from './finding-correlation.js';
 import { sanitizeBugEvidence } from './finding-reporting.js';
+import { attachComponentScope } from './shared-components.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -194,6 +195,7 @@ export function buildBugReports(target, summary) {
   );
 
   attachFindingCorrelations(reports);
+  attachComponentScope(reports, summary.sharedComponents);
 
   return reports;
 }
