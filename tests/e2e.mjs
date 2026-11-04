@@ -74,6 +74,16 @@ targets:
     importance: 3
     priority_urls:
       - http://localhost:${PORT}/page-20.html
+    component_signatures:
+      - id: fixture-consent
+        label: Fixture consent dialog
+        class_prefixes: [qc-cmp2]
+        attributes:
+          - { name: data-cmp, value: consent }
+    page_families:
+      - id: numbered-pages
+        label: Numbered pages
+        route: /page-*
 `
 );
 
@@ -89,7 +99,7 @@ function writeSite({ fixed }) {
 <html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title>
 ${i % 2 === 0 || i % 3 === 0 ? '<meta name="generator" content="WordPress 6.5">\n' : ''}<script src="http://127.0.0.1:${PORT}/thirdparty.js"></script></head>
 <body><main><h1>Page ${i}</h1>
-${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
+${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p><div class="qc-cmp2-container"><button class="qc-cmp2-toggle" data-cmp="consent"></button></div>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
 <p>This is a short paragraph of ordinary readable prose written so the plain language engine has real sentences to score. It deliberately contains one mispelled word for the spell check to catch, and enough words to count as content rather than navigation.</p>
 <p><a href="/files/report-${i}.pdf">Annual report (PDF)</a></p>
 ${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a></p>' : ''}
@@ -190,6 +200,12 @@ try {
   assert(w1.axe.violationTotal > 0, `week 1 found axe violations (${w1.axe.violationTotal})`);
   assert(w1.alfa.failedTotal > 0, `week 1 found Alfa failures (${w1.alfa.failedTotal})`);
   assert('image-alt' in w1.axe.rules, 'image-alt rule recorded');
+  // Shared-component attribution and page families (opt-in, additive).
+  const sc = w1.sharedComponents;
+  assert(sc && sc.rules['axe-core:button-name']?.classification === 'shared_component', `button-name inside the configured component is a verified shared-component finding (got ${sc?.rules?.['axe-core:button-name']?.classification})`);
+  assert(sc.rules['axe-core:image-alt']?.classification === 'not_attributed', 'image-alt outside the component is not attributed to it');
+  assert(sc.components[0].verified === true && sc.components[0].signals_observed.includes('class') && sc.components[0].signals_observed.includes('attribute'), 'component verified by two distinct signal types');
+  assert(w1.pageFamilies && w1.pageFamilies.families[0].url_count >= PAGES && w1.pageFamilies.urls_total === w1.pagesScanned, 'page family counts cover the numbered pages without changing the URL total');
   assert(w1.sustainability && w1.sustainability.medianBytes > 0, 'sustainability metrics recorded');
   assert(w1.sustainability.meanEnergyWh > 0 && w1.sustainability.meanCo2g > 0, 'both energy (Wh) and CO2 (g) recorded');
   // Energy and CO2 are linked by grid intensity (~494 g/kWh in the SWD model).

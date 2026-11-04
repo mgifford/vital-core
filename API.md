@@ -132,6 +132,32 @@ observation-based heuristics, not verified task counts or causal ownership.
 Queue items now explicitly say `counting_basis: engine_observations_not_tasks`
 and `remediation_task_count: null`. No API version bump or data migration occurs.
 
+### Shared-component scope and page families (additive v1 fields)
+
+Both are opt-in per target (`component_signatures`, `page_families` in
+`config/targets.yml`). Without them none of these fields appear, except that
+`reporting.component_scope` is `null`.
+
+- `findings[].reporting.component_scope`: how the stored failing-element
+  examples relate to a configured component. `classification` is
+  `shared_component`, `mixed`, `candidate_shared_component`, `not_attributed`
+  or `undetermined`. `verified` is true only when at least `min_signals`
+  distinct signal types agree (`class`, `id`, `attribute`, `ancestry` of the
+  selector, and the component's `script_origin` seen on the site), including one
+  about the element itself. One CSS prefix alone is a candidate, never
+  verified. Counts say `basis: "stored_examples"`: the scanner keeps a few
+  examples per rule and page, so this is sample-based, not every instance.
+- `scope_of_analysis.shared_components`: per-component confidence, signals
+  observed and finding counts. `scope_of_analysis.page_families`: URL counts,
+  declared implementation counts (`implementation_basis: "configured_route"`),
+  state-parameter counts and distinct variant-value counts. No URLs or selectors
+  appear in either block. Only the values of the parameters a target lists in
+  `state_params` are shown (at most 20 per parameter); `variant_params` are
+  counted, never listed.
+- Grouping never merges findings, changes `pattern_id`/`instance_id`, or alters
+  scores. Page-family counts do not change page identity: every query variant is
+  still its own URL.
+
 ### Snapshot Contents
 
 Full per-domain history: a `summary` block (severity counts + pages scanned),

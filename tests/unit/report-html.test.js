@@ -1215,3 +1215,58 @@ test('PDFs page: empty states say why and what to do', () => {
   assert.match(waiting, /run <strong>Actions → pdf-audit<\/strong> with this domain/);
   assert.match(renderPdfsPage(target, summary, { ...base, enabled: true, found: 40, waiting: 40 }), /Up to 25 PDF\(s\) are checked each day, newest first\./);
 });
+
+test('scope of analysis renders three labelled views without JavaScript and keeps every finding', async () => {
+  const { createSharedComponentTracker, resolveComponentSignatures, attachComponentScope } = await import('../../src/lib/shared-components.js');
+  const { createPageFamilyTracker, resolvePageFamilies } = await import('../../src/lib/page-families.js');
+  const signatures = resolveComponentSignatures([{ id: 'consent-dialog', label: 'Consent dialog', class_prefixes: ['qc-cmp2'], script_origins: ['inmobi.com'] }]);
+  const tracker = createSharedComponentTracker(signatures);
+  const toggle = { target: '.qc-cmp2-box > .qc-cmp2-toggle', html: '<button class="qc-cmp2-toggle">' };
+  const form = { target: '.js-form-type-textfield', html: '<div class="js-form-type-textfield">' };
+  tracker.observe('axe-core', 'button-name', 'https://example.gov/a', [toggle], 3);
+  tracker.observe('axe-core', 'aria-prohibited-attr', 'https://example.gov/a', [form], 1);
+  const families = createPageFamilyTracker(resolvePageFamilies([{ id: 'feedback', label: 'Feedback form', route: '/feedback', state_params: ['rating'] }]));
+  for (const url of ['https://example.gov/feedback?rating=Good', 'https://example.gov/feedback?rating=Poor', 'https://example.gov/a']) families.observe(url);
+  const mk = (rule, id) => ({
+    instance_id: `VS-${id}`, pattern_id: `VS-p${id}`, url: 'https://example.gov/a', xpath: 'x', engine_key: 'axe-core', tool: 'axe-core 4.11.0',
+    rule_url: null, rule_id: rule, rule_label: rule, summary: rule, description: rule, severity: 'Serious',
+    wcag_sc: '4.1.2', wcag_name: 'Name, Role, Value', wcag_level: 'A', wcag_version: '2.0', wcag_category: 'WCAG 2.0 A',
+    obligation: 'required', handling: 'report', frequency: { instances: 3, pages_affected: 1, total_pages_scanned: 3 },
+    examples: [], example_pages: [], affected_pages: ['https://example.gov/a'], impact: { groups: [], summary: '' },
+    testing_environment: 'Automated.', steps_to_reproduce: ['Open.'], remediation_tip: null, suggested_fix: 'See.', default_visible: true, priority_tier: 0,
+  });
+  const bugs = [mk('button-name', 'a'), mk('aria-prohibited-attr', 'b')];
+  const summary = {
+    week: '2026-W45', pagesScanned: 3, pagesAudited: 3, axe: { rules: {} }, alfa: { rules: {} }, consensus: null,
+    sharedComponents: tracker.finalize({ thirdParty: { vendors: [{ origin: 'inmobi.com', pages: 2 }] }, pagesAudited: 3 }),
+    pageFamilies: families.finalize(),
+  };
+  attachComponentScope(bugs, summary.sharedComponents);
+  const html = renderAccessibilityPage({ key: 'd', domain: 'd' }, summary, bugs, { byRule: {}, bugsAll: null }, { keyPages: [] });
+
+  assert.match(html, /id="h-scope">Scope of analysis/);
+  assert.match(html, /id="h-scope-full">Full-page findings/);
+  assert.match(html, /id="h-scope-page">Page-specific findings \(diagnostic view\)/);
+  assert.match(html, /id="h-scope-shared">Shared-component findings/);
+  assert.match(html, /not a complete WCAG assessment/);
+  assert.match(html, /3 distinct URLs were scanned and 3 audited/);
+  assert.match(html, /Feedback form: 2 URLs, 1 declared implementation/);
+  assert.match(html, /rating: Good 1, Poor 1/);
+  assert.match(html, /1 in verified shared components/);
+  const scopeSection = html.slice(html.indexOf('id="scope-page"'), html.indexOf('id="scope-shared"'));
+  assert.match(scopeSection, /aria-prohibited-attr/);
+  assert.doesNotMatch(scopeSection, /button-name/, 'verified shared finding leaves the page-specific list');
+  assert.match(html, /data-bug-id="VS-a"[^>]*data-page-specific="0" data-shared-component="1"/);
+  assert.match(html, /data-bug-id="VS-b"[^>]*data-page-specific="1" data-shared-component="0"/);
+  assert.match(html, /<option value="shared-component">Shared-component findings/);
+  assert.match(html, /grouping never merges different rules/);
+  assert.match(html, /data-bug-id="VS-a"/);
+  assert.match(html, /data-bug-id="VS-b"/);
+});
+
+test('without configured signatures or families the accessibility page is unchanged', () => {
+  const summary = { week: '2026-W45', pagesScanned: 1, axe: { rules: {} }, alfa: { rules: {} }, consensus: null };
+  const bug = { instance_id: 'VS-x', pattern_id: 'VS-px', url: 'https://example.gov/a', xpath: 'x', engine_key: 'axe-core', tool: 'axe-core', rule_url: null, rule_id: 'list', rule_label: 'list', summary: 'list', description: 'list', severity: 'Minor', wcag_category: 'Best Practice', obligation: 'advisory', handling: 'report', frequency: { instances: 1, pages_affected: 1, total_pages_scanned: 1 }, examples: [], example_pages: [], affected_pages: [], impact: { groups: [], summary: '' }, testing_environment: 'a', steps_to_reproduce: ['o'], remediation_tip: null, suggested_fix: 's', default_visible: true, priority_tier: 0 };
+  const html = renderAccessibilityPage({ key: 'd', domain: 'd' }, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
+  assert.doesNotMatch(html, /id="h-scope"|<select id="filter-scope"|data-page-specific="/);
+});

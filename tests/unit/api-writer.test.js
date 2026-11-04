@@ -295,3 +295,24 @@ describe('writeApiFiles', () => {
     assert.equal(index.domains[0].snapshot_url, '/api/v1/example.gov/snapshot.json');
   });
 });
+
+describe('buildWeekFindings scope of analysis (additive)', () => {
+  test('exposes component scope and page-family counts without URLs, and omits them when not configured', () => {
+    const scope = { classification: 'shared_component', component_id: 'consent-dialog', verified: true, basis: 'stored_examples' };
+    const bug = { ...FAKE_BUG, component_scope: scope };
+    const summary = {
+      ...FAKE_SUMMARY,
+      sharedComponents: { schema: 1, counts: { engine_findings: 1 }, components: [{ id: 'consent-dialog', verified: true }], rules: { 'axe-core:x': scope } },
+      pageFamilies: { schema: 1, urls_total: 3, known_implementation_count: 1, families: [] },
+    };
+    const wf = buildWeekFindings(FAKE_TARGET, summary, [bug], FAKE_LEDGER.findings);
+    assert.deepEqual(wf.findings[0].reporting.component_scope, scope);
+    assert.equal(wf.scope_of_analysis.page_families.known_implementation_count, 1);
+    assert.equal(wf.scope_of_analysis.shared_components.components[0].id, 'consent-dialog');
+    assert.equal(JSON.parse(JSON.stringify(wf)).scope_of_analysis.shared_components.rules, undefined, 'per-rule map is carried on each finding instead');
+    assert.equal(wf.schema_version, SCHEMA_VERSION, 'no schema version bump');
+    const plain = buildWeekFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER.findings);
+    assert.equal('scope_of_analysis' in plain, false);
+    assert.equal(plain.findings[0].reporting.component_scope, null);
+  });
+});
