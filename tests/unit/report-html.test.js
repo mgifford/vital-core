@@ -1270,3 +1270,19 @@ test('without configured signatures or families the accessibility page is unchan
   const html = renderAccessibilityPage({ key: 'd', domain: 'd' }, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
   assert.doesNotMatch(html, /id="h-scope"|<select id="filter-scope"|data-page-specific="/);
 });
+
+test('scope of analysis shows the best-effort component observation with its caveat, and omits it when absent', async () => {
+  const { createSharedComponentTracker, resolveComponentSignatures } = await import('../../src/lib/shared-components.js');
+  const signatures = resolveComponentSignatures([{ id: 'consent-dialog', label: 'Consent dialog', class_prefixes: ['qc-cmp2'] }]);
+  const tracker = createSharedComponentTracker(signatures);
+  tracker.observeState({ components: [{ id: 'consent-dialog', present: true, visible_count: 4, dialog: true, button_labels: ['AGREE', 'DISAGREE'] }] });
+  tracker.observeState({ components: [{ id: 'consent-dialog', present: false, visible_count: 0, dialog: false, button_labels: [] }] });
+  const bug = { instance_id: 'VS-x', pattern_id: 'VS-px', url: 'https://example.gov/a', xpath: 'x', engine_key: 'axe-core', tool: 'axe-core', rule_url: null, rule_id: 'list', rule_label: 'list', summary: 'list', description: 'list', severity: 'Minor', wcag_category: 'Best Practice', obligation: 'advisory', handling: 'report', frequency: { instances: 1, pages_affected: 1, total_pages_scanned: 2 }, examples: [], example_pages: [], affected_pages: [], impact: { groups: [], summary: '' }, testing_environment: 'a', steps_to_reproduce: ['o'], remediation_tip: null, suggested_fix: 's', default_visible: true, priority_tier: 0 };
+  const summary = { week: '2026-W45', pagesScanned: 2, pagesAudited: 2, axe: { rules: {} }, alfa: { rules: {} }, consensus: null, sharedComponents: tracker.finalize({ pagesAudited: 2 }) };
+  const html = renderAccessibilityPage({ key: 'd', domain: 'd' }, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
+  assert.match(html, /Consent dialog, as seen when pages were audited \(best effort\): present on 1 of 2 pages, visible on 1, shown as a dialog on 1\./);
+  assert.match(html, /Button labels seen: AGREE, DISAGREE\./);
+  assert.match(html, /can vary by visitor, location and earlier choices/);
+  const bare = { ...summary, sharedComponents: createSharedComponentTracker(signatures).finalize({ pagesAudited: 2 }) };
+  assert.doesNotMatch(renderAccessibilityPage({ key: 'd', domain: 'd' }, bare, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] }), /as seen when pages were audited/);
+});

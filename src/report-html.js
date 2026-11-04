@@ -2556,6 +2556,11 @@ function scopeOfAnalysisBlock(summary, bugs) {
   const familySummary = families
     ? `<li>${t('@in URLs belong to @fam declared page familie(s); no implementation count is established for the other @out URLs. Nothing is sampled or merged.', { '@in': nf(families.urls_in_families), '@fam': nf(families.known_implementation_count), '@out': nf(families.urls_outside_families) })}</li>`
     : '';
+  const observationLines = (model?.components ?? []).filter((c) => c.observation).map((c) => {
+    const o = c.observation;
+    const labels = o.button_labels.map((entry) => esc(entry.label)).join(', ');
+    return `<li>${t('@label, as seen when pages were audited (best effort): present on @present of @observed pages, visible on @visible, shown as a dialog on @dialog.', { '@label': esc(c.label), '@present': nf(o.pages_present), '@observed': nf(o.pages_observed), '@visible': nf(o.pages_visible), '@dialog': nf(o.pages_with_dialog) })}${labels ? ` ${t('Button labels seen')}: ${labels}.` : ''} ${t('What such a component shows can vary by visitor, location and earlier choices, so these counts describe only what the scanner saw.')}</li>`;
+  }).join('');
   const classLine = model
     ? `<li>${t('@n engine finding(s): @shared in verified shared components, @mixed also with other elements, @cand possible shared component (unverified), @not not attributed, @und undetermined.', {
       '@n': bugs.length,
@@ -2588,7 +2593,7 @@ function scopeOfAnalysisBlock(summary, bugs) {
   return `<section class="scope-of-analysis" aria-labelledby="h-scope">
 <h3 id="h-scope">${t('Scope of analysis')}</h3>
 <p class="note">${t('Every observed failure is counted. A failure is counted as an independent defect only when the evidence supports it. Attribution uses a sample of stored examples and does not change the score.')}</p>
-<ul>${urlLine}${familySummary}${familyLines}${classLine}</ul>
+<ul>${urlLine}${familySummary}${familyLines}${classLine}${observationLines}</ul>
 <nav aria-label="${esc(t('Scope views'))}"><ul class="scope-nav"><li><a href="#scope-full">${t('Full-page findings')}</a></li>${model ? `<li><a href="#scope-page">${t('Page-specific findings')}</a></li><li><a href="#scope-shared">${t('Shared-component findings')}</a></li>` : ''}</ul></nav>
 <section id="scope-full" aria-labelledby="h-scope-full">
 <h4 id="h-scope-full">${t('Full-page findings')}</h4>

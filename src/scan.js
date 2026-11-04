@@ -17,6 +17,7 @@ import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { runAxe } from './engines/axe.js';
+import { runComponentObservation } from './engines/component-observation.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
 import { runDeprecatedHtml } from './engines/deprecated-html.js';
@@ -178,7 +179,8 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 const rates = ratesFor(config, target);
 const enginesRun = {}; // engine -> count of pages it ran on this run
 const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, redirect: 0, error: 0 };
-const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAllowed: robots.isAllowed('/') }, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates };
+const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAllowed: robots.isAllowed('/') }, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates,
+  browser: { userAgent: target.user_agent, viewport: { width: 1280, height: 800 } } };
 
 // Link checking: collect links seen on pages that are in link-check's
 // sample, then probe them once after the scan. Rate > 0 enables it.
@@ -383,6 +385,10 @@ for (const item of batch) {
     if (sustain) { record.sustainability = sustain.collect(); mark('sustainability'); }
 
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
+      // Best-effort and read-only: taken before the audits so it describes the page as loaded.
+      if (target.componentSignatures?.length) {
+        try { record.componentObservation = await runComponentObservation(page, target.componentSignatures); } catch { /* observation must never fail a page */ }
+      }
       if (runs('axe')) { record.axe = await runAxe(page); mark('axe'); }
       if (runs('alfa')) {
         logMemory(`before alfa ${urlPath}`);

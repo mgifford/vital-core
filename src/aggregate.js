@@ -769,6 +769,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   for (const rec of files) {
     pagesScanned++;
     familyTracker.observe(rec.url, Boolean(rec.axe || rec.alfa));
+    componentTracker.observeState(rec.componentObservation);
     if (rec.axe || rec.alfa || rec.sustainability || rec.plainLanguage || rec.lighthouse) pagesWithAudit++;
     if (typeof rec.status === 'number' && rec.status >= 400) {
       errorPages.push({ url: rec.url, status: rec.status });
