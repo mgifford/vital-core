@@ -19,6 +19,11 @@ import http from 'node:http';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { chromium } from 'playwright';
+import { Audit } from '@siteimprove/alfa-test-utils';
+import { Playwright as AlfaPlaywright } from '@siteimprove/alfa-playwright';
+import { runAxe } from '../src/engines/axe.js';
+import { runAlfa } from '../src/engines/alfa.js';
+import { buildBugReports } from '../src/lib/bug-report.js';
 
 const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
 const SANDBOX = path.join(ROOT, '.e2e-sandbox');
@@ -653,6 +658,92 @@ try {
   assert('altVerdict' in pixel, 'unique image carries an alt-text verdict');
   // CSV per-occurrence includes the alt verdict (GOOD for "A test pixel").
   assert(/,GOOD,/.test(imagesCsvContent) || /,MISSING,/.test(imagesCsvContent), 'images CSV rows include alt verdict');
+
+  const fixtureBrowser = await chromium.launch({ headless: true });
+  try {
+    const consentPage = await fixtureBrowser.newPage();
+    await consentPage.goto(pathToFileURL(path.join(ROOT, 'tests', 'fixtures', 'walsall-consent.html')).href);
+    const consentAxe = await runAxe(consentPage);
+    const consentAlfa = await runAlfa(consentPage);
+    assert(!!consentAxe.violations.list, 'consent list fixture triggers axe list evidence');
+    assert(!!consentAxe.violations['aria-required-parent'], 'orphan list item triggers axe parent evidence');
+    assert(!!consentAxe.violations['color-contrast'], 'low contrast consent text triggers axe contrast evidence');
+    assert(!!consentAlfa.failed['sia-r68'], 'consent list fixture triggers Alfa required-owned-element evidence');
+    assert(!!consentAlfa.failed['sia-r42'], 'orphan list item triggers Alfa required-context evidence');
+    assert(!!consentAlfa.failed['sia-r69'], 'consent text triggers Alfa contrast evidence');
+    assert(!!consentAxe.violations['button-name'] && !!consentAlfa.failed['sia-r8'], 'unnamed consent switch is observed independently by both engines');
+
+    const observedUrl = 'https://walsall.example.test/consent';
+    const axeRules = Object.fromEntries(Object.entries(consentAxe.violations).map(([ruleId, rule]) => [ruleId, {
+      ...rule,
+      pages: 1,
+      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target, html: example.html })),
+      affectedPages: [{ url: observedUrl, instances: rule.count }],
+    }]));
+    const alfaRules = Object.fromEntries(Object.entries(consentAlfa.failed).map(([ruleId, rule]) => [ruleId, {
+      ...rule,
+      pages: 1,
+      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target })),
+      affectedPages: [{ url: observedUrl, instances: rule.count }],
+    }]));
+    const consentReports = buildBugReports({ domain: 'walsall.example.test', key: 'walsall.example.test' }, {
+      domain: 'walsall.example.test', pagesScanned: 1,
+      axe: { version: consentAxe.version, rules: axeRules },
+      alfa: { version: consentAlfa.version, rules: alfaRules },
+    });
+    const related = (ruleId, peerRuleId) => consentReports.find((report) => report.rule_id === ruleId)?.cross_engine_correlations?.find((correlation) =>
+      consentReports.find((candidate) => candidate.instance_id === correlation.peer_instance_id)?.rule_id === peerRuleId
+    );
+    assert(related('aria-required-parent', 'sia-r42')?.status === 'confirmed_duplicate', 'same button observations share an ACT Rule and complete fixture evidence');
+    const listCorrelation = related('list', 'sia-r68');
+    assert(listCorrelation?.status === 'related', `same-element list observations without shared ACT mapping stay related: ${JSON.stringify(listCorrelation)}`);
+    assert(related('color-contrast', 'sia-r69')?.status === 'uncertain', 'text target overlap and missing ACT mapping remain uncertain');
+    assert(related('button-name', 'sia-r8')?.status === 'related', 'same switch with different ACT tests is not a duplicate');
+
+    const honeypotPage = await fixtureBrowser.newPage();
+    await honeypotPage.goto(pathToFileURL(path.join(ROOT, 'tests', 'fixtures', 'honeypot-applicability.html')).href);
+    const honeypotDom = await honeypotPage.evaluate(() => ({
+      wrapperRole: document.querySelector('#honeypot-wrapper').getAttribute('role'),
+      hiddenDisplay: getComputedStyle(document.querySelector('#honeypot-display-none')).display,
+      hiddenType: document.querySelector('#honeypot-type-hidden').type,
+      clippedRect: (() => { const element = document.querySelector('#honeypot-clipped'); const r = element.getBoundingClientRect(); return { width: r.width, height: r.height, clipPath: getComputedStyle(element).clipPath }; })(),
+      clippedTabIndex: document.querySelector('#honeypot-clipped').tabIndex,
+    }));
+    assert(honeypotDom.wrapperRole === null, 'the Honeypot wrapper retains the implicit generic role');
+    assert(honeypotDom.hiddenDisplay === 'none', 'display:none is recorded on the honeypot input');
+    assert(honeypotDom.hiddenType === 'hidden', 'type=hidden is recorded on the hidden input');
+    assert(honeypotDom.clippedRect.width > 0 && honeypotDom.clippedRect.clipPath === 'inset(50%)', 'clipped visual hiding does not remove a focusable control');
+    assert(honeypotDom.clippedTabIndex === 0, 'the clipped control remains programmatically focusable');
+    await honeypotPage.locator('#tab-before').focus();
+    await honeypotPage.keyboard.press('Tab');
+    assert(await honeypotPage.evaluate(() => document.activeElement.id === 'honeypot-clipped'), 'display:none and type=hidden controls are skipped by keyboard focus');
+    const wrapperSnapshot = await honeypotPage.locator('#honeypot-wrapper').ariaSnapshot();
+    assert(wrapperSnapshot.includes('Leave this field blank'), 'the wrapper label is represented in the accessibility tree');
+
+    const honeypotAxe = await runAxe(honeypotPage);
+    const prohibited = honeypotAxe.violations['aria-prohibited-attr'];
+    const disallowed = honeypotAxe.violations['aria-allowed-attr'];
+    assert(!!prohibited && prohibited.examples.some((example) => example.target.includes('#prohibited-name')), 'generic role naming is reported as aria-prohibited-attr');
+    assert(!!disallowed && disallowed.examples.some((example) => example.target.includes('#prohibited-visible')), 'visible generic state is reported as aria-allowed-attr');
+    assert(!disallowed.examples.some((example) => example.target.includes('#prohibited-hidden')), 'display:none target is excluded from axe results');
+
+    const documentHandle = await honeypotPage.evaluateHandle(() => document);
+    try {
+      const alfaPage = await AlfaPlaywright.toPage(documentHandle);
+      const audit = await Audit.run(alfaPage);
+      const ruleUrl = [...audit.outcomes.keys()].find((url) => url.endsWith('/sia-r18'));
+      assert(!!ruleUrl, 'Alfa report includes the mapped ACT prohibited-property rule');
+      const actResults = [...audit.outcomes.get(ruleUrl)].flatMap((outcome) => outcome.toJSON());
+      const actOutcomes = actResults.map((result) => result.outcome);
+      assert(actOutcomes.includes('failed'), `in-tree generic misuse has a failed ACT outcome: ${JSON.stringify(actOutcomes)}`);
+      assert(actOutcomes.includes('passed'), 'permitted state on a supported role has a passed ACT outcome');
+      assert(!actResults.some((result) => result.target?.name === 'aria-checked' && result.target.value === 'mixed'), 'hidden controls are excluded from ACT test targets rather than reported as inapplicable outcomes');
+    } finally {
+      await documentHandle.dispose().catch(() => {});
+    }
+  } finally {
+    await fixtureBrowser.close();
+  }
 
   const comment = run('src/issue-comment.js', [], '2026-W24');
   assert(comment.includes('localhost: 2026-W24') && comment.includes('Median axe violations'), 'issue comment generated with deltas');

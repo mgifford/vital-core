@@ -41,6 +41,20 @@ test('findings: ledger tracks first/last-seen and is idempotent per week', () =>
   assert.equal(ledger.findings['VS-aaa'].weeksSeen, 2, 're-run same week is idempotent');
 });
 
+test('findings: historical identity and query-bearing page URLs remain stable across weeks', () => {
+  const ledger = { domain: 'example.test', findings: {} };
+  const url = 'https://example.test/feedback?lang=en';
+  const report = { ...BASE_REPORT, pattern_id: 'VS-history-stable', affected_pages: [url] };
+
+  updateFindings(ledger, '2026-W20', [report]);
+  updateFindings(ledger, '2026-W21', [report]);
+
+  assert.deepEqual(Object.keys(ledger.findings), ['VS-history-stable']);
+  assert.equal(ledger.findings['VS-history-stable'].firstSeen, '2026-W20');
+  assert.equal(ledger.findings['VS-history-stable'].lastSeen, '2026-W21');
+  assert.deepEqual(ledger.findings['VS-history-stable'].lastAffectedPages, [url]);
+});
+
 // ---------------------------------------------------------------------------
 // Issue #159: coverage-expansion detection
 // ---------------------------------------------------------------------------

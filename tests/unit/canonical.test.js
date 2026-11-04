@@ -40,6 +40,16 @@ test('normalizeUrl: canonicalOrigin rewrites same-site scheme and host; without 
   assert.equal(normalizeUrl(canonicalUrl, canonicalUrl, 'www.cms.gov', 'https://www.cms.gov'), canonicalUrl, 'an already-canonical URL keeps its page ID');
 });
 
+test('feedback query variants keep distinct page IDs while tracking-only variants collapse', () => {
+  const base = 'https://walsall.example.test/feedback';
+  const formOne = normalizeUrl(`${base}?form=feedback&page=1`, base, 'walsall.example.test');
+  const formTwo = normalizeUrl(`${base}?form=feedback&page=2`, base, 'walsall.example.test');
+  const tracked = normalizeUrl(`${base}?form=feedback&page=1&utm_source=fixture`, base, 'walsall.example.test');
+
+  assert.notEqual(pageId(formOne), pageId(formTwo), 'content/state query variants are distinct pages');
+  assert.equal(pageId(formOne), pageId(tracked), 'known tracking parameters do not create a second page');
+});
+
 test('toCanonicalOrigin and urlMatchKey', () => {
   assert.equal(toCanonicalOrigin('http://hackney.gov.uk/a?x=1', 'https://www.hackney.gov.uk'), 'https://www.hackney.gov.uk/a?x=1');
   assert.equal(toCanonicalOrigin('https://data.cms.gov/a', 'https://www.cms.gov'), 'https://data.cms.gov/a', 'another subdomain is left alone');

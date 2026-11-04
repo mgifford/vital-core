@@ -33,6 +33,56 @@ test('sample matches and legacy duplicate flags never reduce remediation group c
   assert.equal(buildFindingReporting(bugs).summary.remediation_group_count, 2);
 });
 
+test('related findings in one likely component keep separate groups, severities and history', () => {
+  const bugs = pair();
+  bugs[0] = {
+    ...bugs[0], pattern_id: 'VS-list-parent', severity: 'Serious', engine_severity: 'serious',
+    first_seen: '2026-W20', last_seen: '2026-W25', weeks_seen: 6, likely_source: 'template',
+    xpath: 'button[aria-label="Preference details"]',
+    examples: [{ url: 'https://example.gov/consent', xpath: 'button[aria-label="Preference details"]', html_snippet: '<button class="qc-cmp2-consent-list-item-header" role="listitem">' }],
+  };
+  bugs[1] = {
+    ...bugs[1], pattern_id: 'VS-list-owned', rule_id: 'sia-r68', severity: 'Moderate', engine_severity: null,
+    first_seen: '2026-W21', last_seen: '2026-W25', weeks_seen: 5, likely_source: 'template',
+    examples: [{ url: 'https://example.gov/consent', xpath: '<p class="qc-cmp2-consent-list-item-description">', html_snippet: '<p class="qc-cmp2-consent-list-item-description">' }],
+  };
+
+  const correlations = attachFindingCorrelations(bugs);
+  assert.equal(correlations[0].status, 'related');
+  assert.equal(correlations[0].evidence.observation_pairs[0].relation, 'same_component');
+  const original = structuredClone(bugs);
+  const reporting = buildFindingReporting(bugs);
+
+  assert.equal(reporting.summary.engine_finding_count, 2);
+  assert.equal(reporting.summary.remediation_group_count, 2, 'related component findings are not merged as duplicates');
+  assert.equal(reporting.summary.remediation_task_count, null, 'one likely component remediation is not asserted as one task');
+  assert.deepEqual(bugs, original, 'severity, history, IDs, URLs and examples remain unchanged');
+  assert.equal(reporting.byFindingId.get('VS-list-parent').engine_severity, 'serious');
+  assert.equal(reporting.byFindingId.get('VS-list-parent').remediation_priority.conformance_tier, 'required');
+  assert.equal(reporting.byFindingId.get('VS-list-owned').engine_severity, null);
+});
+
+test('reporting preserves stable finding and occurrence IDs, severity and historical URLs', () => {
+  const bug = {
+    ...pair()[0],
+    pattern_id: 'VS-stable-pattern',
+    instance_id: 'VS-stable-occurrence',
+    severity: 'Critical',
+    engine_severity: 'critical',
+    first_seen: '2026-W20',
+    last_seen: '2026-W25',
+    weeks_seen: 6,
+    affected_pages: ['https://example.gov/feedback?lang=en', 'https://example.gov/feedback?lang=fr'],
+  };
+  const result = buildFindingReporting([bug]).byFindingId.get(bug.pattern_id);
+  assert.equal(result.engine_severity, 'critical');
+  assert.equal(result.remediation_priority.score > 0, true);
+  assert.deepEqual(result.distinct_urls.sample, bug.affected_pages);
+  assert.deepEqual([bug.pattern_id, bug.instance_id, bug.first_seen, bug.last_seen, bug.weeks_seen], [
+    'VS-stable-pattern', 'VS-stable-occurrence', '2026-W20', '2026-W25', 6,
+  ]);
+});
+
 test('distinct URLs preserve query variants, deduplicate repeated URLs and disclose incomplete samples', () => {
   const [bug] = pair();
   bug.affected_pages = ['https://example.gov/feedback?a=1', 'https://example.gov/feedback?a=1', 'https://example.gov/feedback?a=2'];
