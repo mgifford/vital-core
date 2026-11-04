@@ -60,3 +60,9 @@ test('i18n: every key in each locale catalog exists in the extracted template', 
     }
   }
 });
+
+test('t() substitutes placeholders in one pass so a short token cannot corrupt a longer one', () => {
+  assert.equal(t('@n of @total, @not attributed', { '@n': 31, '@total': 40, '@not': 17 }), '31 of 40, 17 attributed');
+  assert.equal(t('@a and @b', { '@a': '@b', '@b': 'x' }), '@b and x', 'inserted values are not substituted again');
+  assert.equal(t('Cost: $5 (@n)', { '@n': '$&' }), 'Cost: $5 ($&)', 'values are inserted literally');
+});

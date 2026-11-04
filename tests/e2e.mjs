@@ -99,7 +99,7 @@ function writeSite({ fixed }) {
 <html lang="en"><head><meta charset="utf-8"><title>Page ${i}</title>
 ${i % 2 === 0 || i % 3 === 0 ? '<meta name="generator" content="WordPress 6.5">\n' : ''}<script src="http://127.0.0.1:${PORT}/thirdparty.js"></script></head>
 <body><main><h1>Page ${i}</h1>
-${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p><div class="qc-cmp2-container" role="dialog"><button class="qc-cmp2-toggle" data-cmp="consent"></button><button class="qc-cmp2-agree" data-cmp="consent">Fixture agree</button></div>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
+${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;background:#fff">low contrast</p><div class="qc-cmp2-container" role="dialog"><button class="qc-cmp2-toggle" data-cmp="consent"></button><button class="qc-cmp2-agree" data-cmp="consent">Fixture agree</button><p id="cmp-note" style="color:#aaa;background:#fff">consent note</p></div>' : `<img src="/pixel.png" alt="A test pixel"><label>Search <input type="text"></label><p>Readable text.</p>`}
 <p>This is a short paragraph of ordinary readable prose written so the plain language engine has real sentences to score. It deliberately contains one mispelled word for the spell check to catch, and enough words to count as content rather than navigation.</p>
 <p><a href="/files/report-${i}.pdf">Annual report (PDF)</a></p>
 ${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a></p>' : ''}
@@ -205,6 +205,9 @@ try {
   assert(sc && sc.rules['axe-core:button-name']?.classification === 'shared_component', `button-name inside the configured component is a verified shared-component finding (got ${sc?.rules?.['axe-core:button-name']?.classification})`);
   assert(sc.rules['axe-core:image-alt']?.classification === 'not_attributed', 'image-alt outside the component is not attributed to it');
   assert(sc.components[0].verified === true && sc.components[0].signals_observed.includes('class') && sc.components[0].signals_observed.includes('attribute'), 'component verified by two distinct signal types');
+  const contrast = sc.rules['axe-core:color-contrast'];
+  assert(contrast?.classification === 'mixed' && contrast.signals.includes('dom_ancestry'), `an element inside the component is attributed by DOM ancestry even though its selector shows none; one outside stays outside (got ${contrast?.classification} ${contrast?.signals})`);
+  assert(Array.isArray(w1.componentClusters.top_action_ids_outside_components), 'outside-components action ids recorded');
   const obs = sc.components[0].observation;
   assert(obs && obs.pages_present > 0 && obs.pages_with_dialog === obs.pages_present && obs.pages_observed >= obs.pages_present, `component observation recorded (${JSON.stringify(obs)})`);
   assert(obs.pages_present < obs.pages_observed, 'fixed pages without the component record as not present');
@@ -348,6 +351,10 @@ try {
   assert(/only with it/.test(tfHtml), 'a finding never seen without WordPress says so');
   const w1index = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'index.html'), 'utf8');
   assert(/href="tech-findings.html">Tech/.test(w1index), 'subnav links to tech-findings page');
+  assert(/class="note scope-summary">[^<]*distinct URLs scanned[^<]*verified shared-component findings[^<]*<a href="accessible\.html#h-scope">/.test(w1index), 'landing page carries the scope summary with a link to the Scope of analysis');
+  const w1acc = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessible.html'), 'utf8');
+  assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
+  assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
 
   // Third-party JS: every page loads a script from 127.0.0.1 while the page
   // itself is on localhost — a different registrable domain — so the engine

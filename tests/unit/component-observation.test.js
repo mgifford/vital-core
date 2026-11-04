@@ -54,3 +54,18 @@ test('observations roll up per component and stay absent when never observed', a
   const none = createSharedComponentTracker(signatures);
   assert.equal(none.finalize().components[0].observation, null);
 });
+
+test('annotateComponentExamples marks elements inside a component by real DOM ancestry only', async () => {
+  const { annotateComponentExamples } = await import('../../src/engines/component-observation.js');
+  const html = `<main><p id="outside" style="color:#aaa">outside</p></main>
+<div class="qc-cmp2-container"><section><p id="inside-note">inside</p></section></div>
+<div class="qc-cmp20-banner"><p id="lookalike">look-alike</p></div>`;
+  const axe = { violations: { 'color-contrast': { examples: [{ target: '#outside' }, { target: '#inside-note' }, { target: '#lookalike' }, { target: 'p[' }, { target: 'text: "x"' }] } } };
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html);
+    await annotateComponentExamples(page, signatures, axe);
+  } finally { await browser.close(); }
+  assert.deepEqual(axe.violations['color-contrast'].examples.map((e) => e.component ?? null), [null, 'consent', null, null, null]);
+});

@@ -162,6 +162,16 @@ Both are opt-in per target (`component_signatures`, `page_families` in
   removes anything. What a component shows can vary by visitor and location, so
   these counts describe only the scanner's view and are not comparable between
   sites.
+- `findings[].reporting.page_family` (null when none applies): the declared page
+  family the finding's URLs fall in, with `urls_in_family`, `urls_observed`,
+  `all_urls_in_family` and `implementation_count` (basis `configured_route`).
+- `signals` in `component_scope` may include `dom_ancestry`: the scanner found a
+  configured signature on the failing element or a real DOM ancestor, recorded
+  at scan time as `component` on axe examples in page records. Only axe examples
+  with a plain CSS selector can be resolved this way; Alfa examples cannot.
+- Weekly summaries carry `componentClusters.top_action_ids_outside_components`,
+  the ids of the highest-ranked clusters that are not verified shared-component
+  findings.
 - Grouping never merges findings, changes `pattern_id`/`instance_id`, or alters
   scores. Page-family counts do not change page identity: every query variant is
   still its own URL.
