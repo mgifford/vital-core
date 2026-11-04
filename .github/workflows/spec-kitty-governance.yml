@@ -8,6 +8,7 @@ on:
       - hf-spaces
     paths:
       - '.agents/**'
+      - '.github/copilot-instructions.md'
       - '.github/workflows/spec-kitty-governance.yml'
       - '.kittify/**'
       - 'kitty-specs/**'
@@ -17,6 +18,7 @@ on:
   pull_request:
     paths:
       - '.agents/**'
+      - '.github/copilot-instructions.md'
       - '.github/workflows/spec-kitty-governance.yml'
       - '.kittify/**'
       - 'kitty-specs/**'

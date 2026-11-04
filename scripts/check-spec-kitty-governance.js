@@ -133,8 +133,25 @@ function checkRequiredFiles() {
   }
 }
 
+// Spec Kitty rewrites this block from the state of whichever machine ran it, so a
+// broken local install can commit "project: unknown (migration-required)". Real
+// migration state comes from `spec-kitty upgrade --agent-check`, not this file.
+function checkOrientationBlock() {
+  const file = '.github/copilot-instructions.md';
+  if (!exists(file)) return;
+  const text = read(file);
+  const start = text.indexOf('<!-- spec-kitty:orientation -->');
+  const end = text.indexOf('<!-- /spec-kitty:orientation -->');
+  if (start === -1 || end === -1) return;
+  const block = text.slice(start, end);
+  if (/project:\s*unknown/.test(block) || /\((?:migration-required|upgrade-available)\)/.test(block)) {
+    fail(`${file}: the Spec Kitty orientation block records machine-local state (project: unknown, migration-required or upgrade-available). Restore it with \`git checkout -- ${file}\` instead of committing it.`);
+  }
+}
+
 assertNoMachineBoundArtifacts();
 checkRequiredFiles();
+checkOrientationBlock();
 
 for (const bucket of failureBuckets.values()) {
   if (bucket.count === 1) {
