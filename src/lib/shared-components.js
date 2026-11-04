@@ -215,6 +215,26 @@ export function createSharedComponentTracker(signatures = []) {
   const pagesBySignature = new Map(list.map((s) => [s.id, new Set()]));
   const signalsBySignature = new Map(list.map((s) => [s.id, Object.fromEntries(ELEMENT_SIGNALS.map((k) => [k, { examples: 0 }]))]));
 
+  const stateBySignature = new Map(list.map((s) => [s.id, { pages: 0, present: 0, visible: 0, dialog: 0, labels: new Map() }]));
+  let observedPages = 0;
+
+  // Best-effort snapshot of how each component looked at audit time.
+  function observeState(observation) {
+    if (list.length === 0 || !Array.isArray(observation?.components)) return;
+    observedPages++;
+    for (const entry of observation.components) {
+      const state = stateBySignature.get(entry.id);
+      if (!state) continue;
+      state.pages++;
+      if (entry.present) state.present++;
+      if (entry.visible_count > 0) state.visible++;
+      if (entry.dialog) state.dialog++;
+      for (const label of entry.button_labels ?? []) {
+        if (state.labels.has(label) || state.labels.size < 20) state.labels.set(label, (state.labels.get(label) ?? 0) + 1);
+      }
+    }
+  }
+
   function observe(engineKey, ruleId, url, examples, instanceCount = null) {
     if (list.length === 0) return;
     const key = `${engineKey}:${ruleId}`;
@@ -319,6 +339,18 @@ export function createSharedComponentTracker(signatures = []) {
         script_origins: origins,
         pages_with_component_evidence: pagesBySignature.get(signature.id).size,
         pages_audited: pagesAudited,
+        observation: (() => {
+          const state = stateBySignature.get(signature.id);
+          if (state.pages === 0) return null;
+          return {
+            pages_observed: state.pages,
+            pages_present: state.present,
+            pages_visible: state.visible,
+            pages_with_dialog: state.dialog,
+            button_labels: [...state.labels.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8).map(([label, pages]) => ({ label, pages })),
+            basis: 'best_effort_at_audit_time',
+          };
+        })(),
         findings,
       };
     });
@@ -331,7 +363,7 @@ export function createSharedComponentTracker(signatures = []) {
     };
   }
 
-  return { observe, finalize };
+  return { observe, observeState, finalize };
 }
 
 /** Add an additive `component_scope` to bug reports. No-op without a model. */

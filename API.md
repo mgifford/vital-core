@@ -154,6 +154,14 @@ Both are opt-in per target (`component_signatures`, `page_families` in
   appear in either block. Only the values of the parameters a target lists in
   `state_params` are shown (at most 20 per parameter); `variant_params` are
   counted, never listed.
+- `scope_of_analysis.shared_components.components[].observation` (null when never
+  observed): a best-effort count, taken read-only before the audits, of pages
+  where the component was present, visible and shown as a dialog, with up to 8
+  visible button labels. Page records carry `componentObservation`, and run
+  logs carry `browser` (user agent and viewport). The scanner never clicks or
+  removes anything. What a component shows can vary by visitor and location, so
+  these counts describe only the scanner's view and are not comparable between
+  sites.
 - Grouping never merges findings, changes `pattern_id`/`instance_id`, or alters
   scores. Page-family counts do not change page identity: every query variant is
   still its own URL.
