@@ -1342,3 +1342,14 @@ test('a finding seen only on a declared page family says so, and a partial overl
   assert.match(run([...only, 'https://example.gov/other']), /2 of the 3 observed URLs belong to the declared page family "Feedback form" \(1 declared implementation\)\./);
   assert.doesNotMatch(run(['https://example.gov/other']), /declared page family "Feedback form"/);
 });
+
+test('scope of analysis explains consent handling: dialog audited on the first page of a run, not every page', async () => {
+  const { createSharedComponentTracker, resolveComponentSignatures } = await import('../../src/lib/shared-components.js');
+  const tracker = createSharedComponentTracker(resolveComponentSignatures([{ id: 'consent-dialog', label: 'Consent dialog', class_prefixes: ['qc-cmp2'] }]));
+  for (const state of ['dialog_open_then_clicked', 'after_decision', 'after_decision', 'no_dialog']) tracker.observeConsent({ state, choice: 'reject' });
+  const bug = { instance_id: 'VS-x', pattern_id: 'VS-px', url: 'https://example.gov/a', xpath: 'x', engine_key: 'axe-core', tool: 'axe-core', rule_url: null, rule_id: 'list', rule_label: 'list', summary: 'list', description: 'list', severity: 'Minor', wcag_category: 'Best Practice', obligation: 'advisory', handling: 'report', frequency: { instances: 1, pages_affected: 1, total_pages_scanned: 4 }, examples: [], example_pages: [], affected_pages: [], impact: { groups: [], summary: '' }, testing_environment: 'a', steps_to_reproduce: ['o'], remediation_tip: null, suggested_fix: 's', default_visible: true, priority_tier: 0 };
+  const summary = { week: '2026-W45', pagesScanned: 4, pagesAudited: 4, axe: { rules: {} }, alfa: { rules: {} }, consensus: null, sharedComponents: tracker.finalize({ pagesAudited: 4 }) };
+  const html = renderAccessibilityPage({ key: 'd', domain: 'd' }, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
+  assert.match(html, /Consent dialog handling \(the scanner chose "reject" once per run\): audited with the dialog open on 1 pages, after the dialog had been dismissed on 2 pages, with no dialog seen on 1 pages\./);
+  assert.match(html, /recorded on the first page of each run, not on every page/);
+});

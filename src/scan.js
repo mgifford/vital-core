@@ -18,6 +18,7 @@ import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { runAxe } from './engines/axe.js';
 import { runComponentObservation, annotateComponentExamples } from './engines/component-observation.js';
+import { runConsentAction } from './engines/consent-action.js';
 import { runAlfa } from './engines/alfa.js';
 import { runPlainLanguage } from './engines/plain-language.js';
 import { runDeprecatedHtml } from './engines/deprecated-html.js';
@@ -181,6 +182,9 @@ const enginesRun = {}; // engine -> count of pages it ran on this run
 const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, redirect: 0, error: 0 };
 const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAllowed: robots.isAllowed('/') }, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates,
   browser: { userAgent: target.user_agent, viewport: { width: 1280, height: 800 } } };
+// Opt-in: dismiss a configured consent dialog once per run so it is audited once, not on every page.
+let consentDone = false;
+if (target.consentHandling) runLog.consent = { choice: target.consentHandling.choice, attempts: 0, clicked_on: null };
 
 // Link checking: collect links seen on pages that are in link-check's
 // sample, then probe them once after the scan. Rate > 0 enables it.
@@ -504,6 +508,21 @@ for (const item of batch) {
           }
           if (srcs.size < 50) srcs.add(recUrl);
         }
+      }
+    }
+
+    if (target.consentHandling && record.componentObservation) {
+      const cfg = target.consentHandling;
+      const seen = record.componentObservation.components.find((component) => component.id === cfg.component);
+      const open = Boolean(seen && seen.visible_count > 0);
+      if (open && !consentDone && runLog.consent.attempts < 3) {
+        runLog.consent.attempts++;
+        // Every audit above has already run, so this page was audited with the dialog open.
+        const result = await runConsentAction(page, cfg).catch(() => ({ clicked: false }));
+        record.consent = { state: result.clicked ? 'dialog_open_then_clicked' : 'dialog_open', choice: cfg.choice };
+        if (result.clicked) { consentDone = true; runLog.consent.clicked_on = recId; }
+      } else {
+        record.consent = { state: open ? 'dialog_open' : consentDone ? 'after_decision' : 'no_dialog', choice: cfg.choice };
       }
     }
 

@@ -5,6 +5,7 @@ import { SUPPORTED_LOCALES } from './i18n.js';
 import { DEFAULT_FINDING_POLICY, mergeFindingPolicy, validateFindingPolicy } from './finding-policy.js';
 import { resolveComponentSignatures } from './shared-components.js';
 import { resolvePageFamilies } from './page-families.js';
+import { resolveConsentHandling } from '../engines/consent-action.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
@@ -108,6 +109,7 @@ export function loadConfig(rawYaml) {
     // Both are opt-in and data-only; a target's list replaces the global default.
     t.componentSignatures = resolveComponentSignatures(t.component_signatures ?? defaults.component_signatures, `target ${t.domain}`);
     t.pageFamilies = resolvePageFamilies(t.page_families ?? defaults.page_families, `target ${t.domain}`);
+    t.consentHandling = resolveConsentHandling(t.consent_handling ?? defaults.consent_handling, t.componentSignatures, `target ${t.domain}`);
   }
   return {
     defaults,

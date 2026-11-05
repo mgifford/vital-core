@@ -172,6 +172,17 @@ Both are opt-in per target (`component_signatures`, `page_families` in
 - Weekly summaries carry `componentClusters.top_action_ids_outside_components`,
   the ids of the highest-ranked clusters that are not verified shared-component
   findings.
+- `scope_of_analysis.shared_components.consent_handling` (only when a target sets
+  `consent_handling`): `{ choice, pages_by_state }`. When enabled, the scanner
+  clicks the site's own configured consent button once per run (default
+  `reject`; only the CSS selectors the site owner lists are ever clicked, nothing
+  is guessed, no cookie is written directly and no element is removed). Page
+  records carry `consent.state`: `dialog_open_then_clicked` (the page was audited
+  with the dialog open, then the button was clicked), `dialog_open` (open, not
+  clicked), `after_decision` (the dialog had been dismissed earlier in the run)
+  or `no_dialog`. Run logs carry `consent: { choice, attempts, clicked_on }`.
+  Dialog findings are therefore recorded on the first page of each run, so
+  enabling it lowers dialog counts and starts a new baseline for trends.
 - Grouping never merges findings, changes `pattern_id`/`instance_id`, or alters
   scores. Page-family counts do not change page identity: every query variant is
   still its own URL.
