@@ -770,6 +770,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
     pagesScanned++;
     familyTracker.observe(rec.url, Boolean(rec.axe || rec.alfa));
     componentTracker.observeState(rec.componentObservation);
+    componentTracker.observeConsent(rec.consent);
     if (rec.axe || rec.alfa || rec.sustainability || rec.plainLanguage || rec.lighthouse) pagesWithAudit++;
     if (typeof rec.status === 'number' && rec.status >= 400) {
       errorPages.push({ url: rec.url, status: rec.status });

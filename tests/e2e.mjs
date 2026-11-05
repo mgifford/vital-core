@@ -80,6 +80,15 @@ targets:
         class_prefixes: [qc-cmp2]
         attributes:
           - { name: data-cmp, value: consent }
+      - id: fixture-banner
+        label: Fixture cookie banner
+        class_prefixes: [fx-cmp]
+    consent_handling:
+      component: fixture-banner
+      choice: reject
+      reject_selectors: ['#fx-reject']
+      accept_selectors: ['#fx-accept']
+      wait_ms: 200
     page_families:
       - id: numbered-pages
         label: Numbered pages
@@ -104,7 +113,8 @@ ${broken ? '<img src="/pixel.png"><input type="text"><p style="color:#aaa;backgr
 <p><a href="/files/report-${i}.pdf">Annual report (PDF)</a></p>
 ${fixed && i === 1 ? '<p><a href="/files/brand-new-week2.pdf">Newly added PDF</a></p>' : ''}
 <iframe src="https://www.youtube.com/embed/abc${i}" title="Embedded video ${i}"></iframe>
-<nav aria-label="All pages"><ul>${nav}</ul></nav></main></body></html>`
+<nav aria-label="All pages"><ul>${nav}</ul></nav></main>
+<script>if(document.cookie.indexOf('fx_consent=')<0){var d=document.createElement('div');d.className='fx-cmp';d.setAttribute('role','dialog');d.setAttribute('aria-label','Cookies');d.innerHTML='<button id="fx-reject">Reject</button><button id="fx-accept">Accept</button>';document.body.appendChild(d);d.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;document.cookie='fx_consent='+b.id+'; path=/';d.remove();});}</script></body></html>`
     );
   }
   fs.writeFileSync(
@@ -214,6 +224,15 @@ try {
   assert(obs.button_labels.some((l) => l.label === 'Fixture agree'), 'visible button label captured');
   const w1Runs = fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'runs')).map((f) => JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'runs', f))));
   assert(w1Runs.every((r) => r.browser?.userAgent && r.browser.viewport?.width === 1280), 'run log records the browser identity used');
+  // Click-once consent handling: the fixture dialog is audited with the dialog open once per run, then dismissed through its own reject button.
+  const w1Pages = fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages')).map((f) => JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages', f))));
+  const consentCount = (state) => w1Pages.filter((r) => r.consent?.state === state).length;
+  assert(consentCount('dialog_open_then_clicked') >= 1 && consentCount('dialog_open_then_clicked') <= w1Runs.length, `dialog audited open and then dismissed at most once per run (got ${consentCount('dialog_open_then_clicked')} for ${w1Runs.length} runs)`);
+  assert(consentCount('after_decision') > consentCount('dialog_open_then_clicked') && consentCount('dialog_open') === 0, 'later pages in a run are audited after the decision, and no page is left with the dialog open');
+  assert(w1Runs.every((r) => r.consent?.choice === 'reject' && (r.consent.clicked_on || r.consent.attempts >= 1)), 'run logs record the consent choice and where it was made');
+  const banner = sc.components.find((c) => c.id === 'fixture-banner').observation;
+  assert(banner && banner.pages_present === consentCount('dialog_open_then_clicked') && banner.pages_observed > banner.pages_present, `the banner is observed present only on the first page of each run (${JSON.stringify(banner)})`);
+  assert(sc.consent_handling?.choice === 'reject' && sc.consent_handling.pages_by_state.after_decision > 0, 'summary records consent handling by state');
   assert(w1.pageFamilies && w1.pageFamilies.families[0].url_count >= PAGES && w1.pageFamilies.urls_total === w1.pagesScanned, 'page family counts cover the numbered pages without changing the URL total');
   assert(w1.sustainability && w1.sustainability.medianBytes > 0, 'sustainability metrics recorded');
   assert(w1.sustainability.meanEnergyWh > 0 && w1.sustainability.meanCo2g > 0, 'both energy (Wh) and CO2 (g) recorded');

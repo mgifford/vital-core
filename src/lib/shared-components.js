@@ -221,6 +221,15 @@ export function createSharedComponentTracker(signatures = []) {
 
   const stateBySignature = new Map(list.map((s) => [s.id, { pages: 0, present: 0, visible: 0, dialog: 0, labels: new Map() }]));
   let observedPages = 0;
+  const consentStates = new Map();
+  let consentChoice = null;
+
+  // How each page was audited relative to a dialog the scanner may have dismissed once per run.
+  function observeConsent(consent) {
+    if (list.length === 0 || typeof consent?.state !== 'string') return;
+    consentStates.set(consent.state, (consentStates.get(consent.state) ?? 0) + 1);
+    consentChoice ??= consent.choice ?? null;
+  }
 
   // Best-effort snapshot of how each component looked at audit time.
   function observeState(observation) {
@@ -360,6 +369,7 @@ export function createSharedComponentTracker(signatures = []) {
     });
     return {
       schema: 1,
+      ...(consentStates.size ? { consent_handling: { choice: consentChoice, pages_by_state: Object.fromEntries([...consentStates.entries()].sort()) } } : {}),
       basis: 'Capped examples stored per rule and page. Attribution describes the stored examples, not every instance.',
       counts,
       components: componentModels,
@@ -367,7 +377,7 @@ export function createSharedComponentTracker(signatures = []) {
     };
   }
 
-  return { observe, observeState, finalize };
+  return { observe, observeState, observeConsent, finalize };
 }
 
 /** Add an additive `component_scope` to bug reports. No-op without a model. */
