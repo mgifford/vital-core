@@ -14,6 +14,17 @@ test suite.
 
 The governance gate is `npm run check:spec-kitty`.
 
+## Generated Orientation Block
+
+The block between `<!-- spec-kitty:orientation -->` markers in
+`.github/copilot-instructions.md` is rewritten by Spec Kitty from the state of
+the machine that ran it, and anything inside the markers is overwritten. Keep
+repository guidance below the closing marker. If a run leaves the block saying
+`project: unknown`, `migration-required` or `upgrade-available`, restore it with
+`git checkout -- .github/copilot-instructions.md`; `npm run check:spec-kitty`
+fails if it is committed. The real migration state comes from
+`spec-kitty upgrade --agent-check`.
+
 ## Report Standards
 
 Generated reports must remain accessible without JavaScript, use semantic HTML,
