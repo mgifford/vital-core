@@ -39,6 +39,51 @@ Each engine has a **weekly coverage rate** set in one place — `config/targets.
 - **Third-party JS / resource evaluation** (`src/engines/third-party.js`): inventories every third-party origin (different registrable domain than the page) serving resources to each sampled page — requests, bytes, and load duration (from the Resource Timing API), and how many were scripts. Rolled up per vendor across pages (`src/lib/third-party-rollup.js`): pages present, median load cost, whether it serves JavaScript, and the share of its pages that also had an accessibility finding (an association to investigate, not proof of cause). A committed `third-parties.json` ledger tracks first/last-seen per vendor so new vendors are flagged. Shown on a `third-party.html` sub-page with a `third-party.csv` export. Third-party JS is easy to add and frequently degrades a page (injected DOM the owner never reviewed, plus load time); this makes the cost visible. Sampled like sustainability (default 25%) because third parties vary per page.
 - **Link checking** (`src/lib/links.js`, via the `link-check` engine): collects links seen on sampled pages and probes a capped, deduplicated sample (`VITAL_LINK_CHECK_CAP`, default 500) with polite per-host pacing, recording broken links (4xx/5xx, DNS failures, timeouts). 401/403/429 are treated as soft-OK to avoid bot-challenge false positives.
 
+### Shared components and consent dialogs (opt-in)
+
+A recurring third-party component, such as a cookie or consent dialog, can fail
+the same rules on every page and swamp the page's own findings. These features
+exist for that case and are off unless a fleet's `config/targets.yml` turns them
+on. They hold no vendor selectors in code.
+
+- **Shared-component attribution** (`src/lib/shared-components.js`, config
+  `component_signatures`): labels failing elements that sit in a configured
+  component, using several signals (class, id, attribute, selector and DOM
+  ancestry, script origin). One CSS prefix alone is only a candidate. Output:
+  Scope of analysis on the Accessibility page, `component_scope` in the API.
+- **Component observation** (`src/engines/component-observation.js`): a
+  read-only record of whether the component was present, visible, a dialog, and
+  its button labels at audit time. This shows what the scanner actually receives,
+  which can differ from what visitors see.
+- **Click-once consent handling** (`src/engines/consent-action.js`, config
+  `consent_handling`): clicks only the buttons the site owner lists (default
+  `reject`), once per run, so the dialog is audited once and later pages are
+  audited after the decision. Each page records `consent.state`.
+
+**Worked example: Walsall (UK, Quantcast Choice, `qc-cmp2-*`).** The idea came
+from Walsall's accessibility lead and was built and merged upstream
+(vital-core#293, #294, #295, #297), then used from `vital-core-lgd`. The code is
+not Walsall-specific; the settings are.
+
+**If another fleet or site has a similar problem** (for example a US site whose
+banner is a different variant), pull the idea from here instead of rebuilding it:
+
+1. Read the observation in Scope of analysis. It lists the button labels the
+   scanner saw. A different location or visitor type may get a different variant
+   (UK/EU consent vs US opt-out), and the scanner is not in the visitor's
+   location.
+2. Add a `component_signatures` entry for the dialog in that fleet's config,
+   with at least two kinds of evidence.
+3. If the dialog is audited on every page, add `consent_handling` for that
+   component, using the site's own button selectors from markup its owner
+   supplies. A different variant means different selectors in config, not
+   different code.
+4. After a run, check the recorded `consent.state` values before trusting the
+   numbers, and expect a one-time step change in trends.
+
+Not solved: seeing the variant a visitor in another country would see. The
+scheduled scans run on GitHub's cloud servers.
+
 ### Cross-engine consensus (ACT-rule deduplication)
 
 axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.
