@@ -107,14 +107,17 @@ consumer reads. Data contracts and remaining work are documented in
 
 ### Findings by region and component
 
-The stored evidence is grouped two ways for readers who think in pages rather
-than rules: **by landmark region** (main, navigation "Primary", an explicit
-`unclassified` entry, and a separate count for findings the scanner could not
-locate) and **by component** — a configured `component_signatures` id with
-`attribution: configured`, or the nearest widget role (dialog, tablist, …) as a
-`candidate` that never claims a shared implementation. Grouping is sample-based:
-pages and instances are summed across findings, not distinct counts, and
-`ownership_established` is always false. The Accessibility page gains a
+The stored evidence is grouped in three separate dimensions: **by landmark
+region** (main, navigation "Primary", an explicit `unclassified` entry, and a
+separate count for findings the scanner could not locate), **by structural
+widget type** (dialog, tablist, menu, … — a category that never claims an
+implementation), and **by configured shared component** (a
+`component_signatures` id, with its verification provenance from the
+shared-component model). Two unrelated dialogs therefore share the `dialog`
+widget category but are never grouped as one component; a widget role never
+becomes a component. Grouping is sample-based: pages and instances are summed
+across findings, not distinct counts, and `ownership_established` is always
+false. The Accessibility page gains a
 "Findings by page region" table (no JavaScript needed), the JSON API exposes
 `scope_of_analysis.regions` / `component_groups` and per-finding
 `reporting.region`, and a `<domain>_<date>_regions.csv` export is written.
@@ -125,10 +128,11 @@ not an implementation and grouping is not ownership.
 
 A per-week `explore.html` page turns the finding list into an inspection
 surface. **Without JavaScript** it renders a complete static index — every
-finding with severity, engine, region, component and affected pages, each
-linking to its full report anchor — plus the week's by-region and by-component
-tables. **With JavaScript** it adds filters (region, component, engine,
-severity, free-text search) and a detail panel for the selected finding: rule,
+finding with severity, engine, region, widget type, component and affected
+pages, each linking to its full report anchor — plus the week's by-region,
+by-widget-type and by-component tables. **With JavaScript** it adds filters
+(region, widget type, component, engine, severity, free-text search) and a
+detail panel for the selected finding: rule,
 WCAG, URL, selector, captured element facts (tag, explicit role, name
 attributes, match count, visibility, shadow/iframe), region path, widget,
 component attribution and evidence completeness, stored examples and steps to

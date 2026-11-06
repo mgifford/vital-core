@@ -200,12 +200,13 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
     generated_at: new Date().toISOString(),
     pages_scanned: summary.pagesScanned ?? 0,
     reporting: reporting.summary,
-    ...(summary.sharedComponents || summary.pageFamilies || summary.regions || summary.componentGroups
+    ...(summary.sharedComponents || summary.pageFamilies || summary.regions || summary.widgetGroups || summary.componentGroups
       ? {
           scope_of_analysis: {
             shared_components: summary.sharedComponents ? { ...summary.sharedComponents, rules: undefined } : null,
             page_families: summary.pageFamilies ?? null,
             ...(summary.regions ? { regions: publicGrouping(summary.regions, target.api_redact_params ?? []) } : {}),
+            ...(summary.widgetGroups ? { widget_groups: publicGrouping(summary.widgetGroups, target.api_redact_params ?? []) } : {}),
             ...(summary.componentGroups ? { component_groups: publicGrouping(summary.componentGroups, target.api_redact_params ?? []) } : {}),
           },
         }

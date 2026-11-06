@@ -60,6 +60,9 @@ export function trendSummary(summary) {
   if (s.regions) {
     s.regions = { ...s.regions, regions: (s.regions.regions ?? []).map((region) => without(region, ['representative'])) };
   }
+  if (s.widgetGroups) {
+    s.widgetGroups = { ...s.widgetGroups, groups: (s.widgetGroups.groups ?? []).map((group) => without(group, ['representative'])) };
+  }
   if (s.componentGroups) {
     s.componentGroups = { ...s.componentGroups, groups: (s.componentGroups.groups ?? []).map((group) => without(group, ['representative'])) };
   }

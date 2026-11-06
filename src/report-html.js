@@ -9,7 +9,7 @@ import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
 import { scopeViewsFor } from './lib/shared-components.js';
-import { findingRegionLabel, findingComponentLabel, findingRegionKey, findingComponentKey, filterFindings } from './lib/finding-filter.js';
+import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, filterFindings } from './lib/finding-filter.js';
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
 import { redactUrl } from './lib/api-redact.js';
@@ -5591,7 +5591,7 @@ const EXPLORER_ROW_LIMIT = 200;
  * exactly one implementation (unit-tested in Node, stringified here).
  */
 function explorerScript({ bugsJson, reportHref, labels }) {
-  const filterSource = [findingRegionKey, findingRegionLabel, findingComponentKey, findingComponentLabel, filterFindings]
+  const filterSource = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, filterFindings]
     .map((fn) => fn.toString())
     .join('\n');
   const reproductionSource = [isReplayableSelector, reproductionPlan, executeReproduction, playwrightTestFor]
@@ -5652,6 +5652,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   function readState() {
     return {
       region: fieldValue('explorer-region'),
+      widget: fieldValue('explorer-widget'),
       component: fieldValue('explorer-component'),
       engine: fieldValue('explorer-engine'),
       severity: fieldValue('explorer-severity'),
@@ -5861,7 +5862,9 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       anchor.appendChild(document.createTextNode(' '));
       anchor.appendChild(text('span', bug.rule_id, 'rule-badge'));
       anchor.appendChild(document.createTextNode(' ' + (bug.summary || bug.rule_label || '')));
-      anchor.appendChild(text('span', findingRegionLabel(bug) + ' · ' + findingComponentLabel(bug), 'bug-meta'));
+      var meta = findingRegionLabel(bug) + ' · ' + findingWidgetLabel(bug);
+      if (findingComponentKey(bug)) meta += ' · ' + findingComponentLabel(bug);
+      anchor.appendChild(text('span', meta, 'bug-meta'));
       li.appendChild(anchor);
       results.appendChild(li);
     });
@@ -5920,17 +5923,24 @@ function explorerScript({ bugsJson, reportHref, labels }) {
 export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.json' } = {}) {
   const rows = (bugs ?? []).slice(0, EXPLORER_ROW_LIMIT).map((bug) => {
     const href = pageHref('accessibility', bug.instance_id);
-    return `<tr id="${esc(bug.instance_id)}"><th scope="row"><a href="${esc(href)}">${esc(bug.summary || bug.rule_label || bug.rule_id)}</a></th><td><span class="sev-badge">${esc(t(bug.severity))}</span></td><td>${esc(bug.engine_key === 'axe-core' ? 'axe' : bug.engine_key)}</td><td>${esc(findingRegionLabel(bug))}</td><td>${esc(findingComponentLabel(bug))}</td><td class="num">${nf(bug.frequency?.pages_affected ?? 0)}</td></tr>`;
+    return `<tr id="${esc(bug.instance_id)}"><th scope="row"><a href="${esc(href)}">${esc(bug.summary || bug.rule_label || bug.rule_id)}</a></th><td><span class="sev-badge">${esc(t(bug.severity))}</span></td><td>${esc(bug.engine_key === 'axe-core' ? 'axe' : bug.engine_key)}</td><td>${esc(findingRegionLabel(bug))}</td><td>${esc(findingWidgetLabel(bug))}</td><td>${esc(findingComponentLabel(bug))}</td><td class="num">${nf(bug.frequency?.pages_affected ?? 0)}</td></tr>`;
   }).join('');
   const regionRows = (summary.regions?.regions ?? []).map((region) =>
     `<tr><th scope="row">${esc(region.label)}</th><td class="num">${nf(region.findings)}</td><td class="num">${nf(region.pages_affected_sum)}</td></tr>`).join('');
+  const widgetRows = (summary.widgetGroups?.groups ?? []).map((group) =>
+    `<tr><th scope="row">${esc(group.label)}</th><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.pages_affected_sum)}</td><td>${esc((group.components ?? []).map((component) => component.id).join(', ') || '—')}</td></tr>`).join('');
   const componentRows = (summary.componentGroups?.groups ?? []).map((group) =>
-    `<tr><th scope="row">${esc(group.label)}</th><td>${esc(group.attribution)}</td><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.pages_affected_sum)}</td></tr>`).join('');
+    `<tr><th scope="row">${esc(group.label)}</th><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.verified_findings ?? 0)}</td><td class="num">${nf(group.pages_affected_sum)}</td></tr>`).join('');
   const options = (items) => items.map((item) =>
     `<option value="${esc(item.key)}">${esc(item.label)}${item.count ? ` (${nf(item.count)})` : ''}</option>`).join('');
   const regionOptions = options((summary.regions?.regions ?? []).map((region) => ({ key: region.key, label: region.label, count: region.findings })));
+  const widgetOptions = options((summary.widgetGroups?.groups ?? []).map((group) => ({
+    key: `widget:${group.widget}`,
+    label: group.label,
+    count: group.findings,
+  })));
   const componentOptions = options((summary.componentGroups?.groups ?? []).map((group) => ({
-    key: group.implementation ? `component:${group.implementation}` : `widget:${group.label.replace(' (candidate)', '')}`,
+    key: `component:${group.implementation}`,
     label: group.label,
     count: group.findings,
   })));
@@ -5952,6 +5962,8 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     element: t('Element'),
     region: t('Region'),
     widget: t('Widget'),
+    widgetType: t('Widget type'),
+    allWidgets: t('All widgets'),
     component: t('Component'),
     evidence: t('Evidence'),
     browser: t('Browser context'),
@@ -5998,12 +6010,13 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
   const body = `
 <h1>${esc(target.domain)}: ${t('Findings explorer')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('explorer')}
-<p class="meta">${t('Inspect the week\'s findings by region and component. This view reads the same sanitized evidence as the <a href="@report">Accessibility report</a>; the full finding detail stays there and every row links back to it.', { '@report': esc(pageHref('accessibility')) })}</p>
+<p class="meta">${t('Inspect the week\'s findings by region, widget type and component. This view reads the same sanitized evidence as the <a href="@report">Accessibility report</a>; the full finding detail stays there and every row links back to it.', { '@report': esc(pageHref('accessibility')) })}</p>
 <section aria-labelledby="h-explorer-find">
 <h2 id="h-explorer-find">${t('Find and inspect a finding')}</h2>
 <p class="meta">${t('The filters and detail panel need JavaScript. Without it, the complete static index below remains available and links to each finding\'s full report.')}</p>
 <form id="explorer-filters" class="explorer-filters" hidden>
   <div class="explorer-field"><label for="explorer-region">${t('Region')}</label><select id="explorer-region"><option value="">${t('All regions')}</option>${regionOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-widget">${t('Widget type')}</label><select id="explorer-widget"><option value="">${t('All widgets')}</option>${widgetOptions}</select></div>
   <div class="explorer-field"><label for="explorer-component">${t('Component')}</label><select id="explorer-component"><option value="">${t('All components')}</option>${componentOptions}</select></div>
   <div class="explorer-field"><label for="explorer-engine">${t('Engine')}</label><select id="explorer-engine"><option value="">${t('All engines')}</option>${options(engines.map((engine) => ({ key: engine, label: engine === 'axe-core' ? 'axe' : engine })))}</select></div>
   <div class="explorer-field"><label for="explorer-severity">${t('Severity')}</label><select id="explorer-severity"><option value="">${t('All severities')}</option>${options(severities.map((severity) => ({ key: severity, label: t(severity) })))}</select></div>
@@ -6023,9 +6036,9 @@ ${subnav('explorer')}
 <p class="meta">${t('Static index (no JavaScript needed). Every finding is placed by its first stored example, a sample; pages are the finding\'s affected-page count.')}${(bugs?.length ?? 0) > EXPLORER_ROW_LIMIT ? ` ${t('Showing the first @shown of @total; the CSV and JSON downloads on the Accessibility report have the complete list.', { '@shown': nf(EXPLORER_ROW_LIMIT), '@total': nf(bugs.length) })}` : ''}</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Findings table'))}">
 <table>
-<caption class="visually-hidden">${t('Findings with region and component attribution')}</caption>
-<thead><tr><th scope="col">${t('Finding')}</th><th scope="col">${t('Severity')}</th><th scope="col">${t('Engine')}</th><th scope="col">${t('Region')}</th><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Pages affected')}</th></tr></thead>
-<tbody>${rows || `<tr><td colspan="6">${t('No accessibility findings this week.')}</td></tr>`}</tbody>
+<caption class="visually-hidden">${t('Findings with region, widget and component attribution')}</caption>
+<thead><tr><th scope="col">${t('Finding')}</th><th scope="col">${t('Severity')}</th><th scope="col">${t('Engine')}</th><th scope="col">${t('Region')}</th><th scope="col">${t('Widget type')}</th><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Pages affected')}</th></tr></thead>
+<tbody>${rows || `<tr><td colspan="7">${t('No accessibility findings this week.')}</td></tr>`}</tbody>
 </table>
 </div>
 </section>
@@ -6037,11 +6050,19 @@ ${summary.regions?.regions?.length ? `<section aria-labelledby="h-explorer-regio
 <tbody>${regionRows}</tbody></table>
 </div>
 </section>` : ''}
+${summary.widgetGroups?.groups?.length ? `<section aria-labelledby="h-explorer-widgets">
+<h2 id="h-explorer-widgets">${t('By widget type')}</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Widget table'))}">
+<table><caption class="visually-hidden">${t('Findings by structural widget type')}</caption>
+<thead><tr><th scope="col">${t('Widget type')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th><th scope="col">${t('Components')}</th></tr></thead>
+<tbody>${widgetRows}</tbody></table>
+</div>
+</section>` : ''}
 ${summary.componentGroups?.groups?.length ? `<section aria-labelledby="h-explorer-components">
 <h2 id="h-explorer-components">${t('By component')}</h2>
 <div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Component table'))}">
-<table><caption class="visually-hidden">${t('Findings by configured component or candidate widget')}</caption>
-<thead><tr><th scope="col">${t('Component')}</th><th scope="col">${t('Attribution')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
+<table><caption class="visually-hidden">${t('Findings by configured shared component')}</caption>
+<thead><tr><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Verified findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
 <tbody>${componentRows}</tbody></table>
 </div>
 </section>` : ''}

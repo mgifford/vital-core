@@ -5,6 +5,8 @@ import {
   findingRegionLabel,
   findingComponentKey,
   findingComponentLabel,
+  findingWidgetKey,
+  findingWidgetLabel,
   filterFindings,
   filterOptions,
 } from '../../src/lib/finding-filter.js';
@@ -44,17 +46,21 @@ test('region keys and labels distinguish named, unnamed, unclassified and unknow
   assert.equal(findingRegionKey(bug({ semantic_context: null })), 'unknown');
 });
 
-test('component keys prefer a configured component over a widget candidate', () => {
+test('component and widget are separate identities', () => {
   const configured = bug({ component_scope: { component_id: 'cmp-consent', component_label: 'Consent dialog' } });
   assert.equal(findingComponentKey(configured), 'component:cmp-consent');
   assert.equal(findingComponentLabel(configured), 'Consent dialog');
 
   const widget = bug({ semantic_context: semantic({ role: 'main', name: null, unnamed: true }, { role: 'dialog', name: 'Privacy', unnamed: false }) });
-  assert.equal(findingComponentKey(widget), 'widget:dialog');
-  assert.equal(findingComponentLabel(widget), 'dialog (candidate)');
+  assert.equal(findingComponentKey(widget), '', 'a widget is not a component');
+  assert.equal(findingComponentLabel(widget), 'unattributed');
+  assert.equal(findingWidgetKey(widget), 'widget:dialog');
+  assert.equal(findingWidgetLabel(widget), 'dialog');
 
-  assert.equal(findingComponentKey(bug()), 'unattributed');
-  assert.equal(findingComponentLabel(bug()), 'unattributed');
+  const plain = bug();
+  assert.equal(findingComponentKey(plain), '');
+  assert.equal(findingWidgetKey(plain), '');
+  assert.equal(findingWidgetLabel(plain), 'no widget');
 });
 
 test('filterFindings applies every filter and a case-insensitive query', () => {
@@ -68,6 +74,9 @@ test('filterFindings applies every filter and a case-insensitive query', () => {
   assert.deepEqual(filterFindings(bugs, { severity: 'Minor' }).map((b) => b.instance_id), ['VS-b']);
   assert.deepEqual(filterFindings(bugs, { wcag: '4.1.2' }).map((b) => b.instance_id), ['VS-a', 'VS-c']);
   assert.deepEqual(filterFindings(bugs, { region: 'unclassified' }).map((b) => b.instance_id), ['VS-c']);
+  const dialog = bug({ instance_id: 'VS-d', semantic_context: semantic({ role: 'main', name: null, unnamed: true }, { role: 'dialog', name: 'Privacy', unnamed: false }) });
+  assert.deepEqual(filterFindings([...bugs, dialog], { widget: 'widget:dialog' }).map((b) => b.instance_id), ['VS-d']);
+  assert.equal(filterFindings([...bugs, dialog], { component: 'component:cmp-consent' }).length, 0, 'widget is not a component filter');
   assert.deepEqual(filterFindings(bugs, { query: 'CONTRAST' }).map((b) => b.instance_id), ['VS-b']);
   assert.deepEqual(filterFindings(bugs, { query: 'example.gov/a' }).map((b) => b.instance_id), ['VS-a']);
   assert.equal(filterFindings(bugs, { query: 'nothing matches' }).length, 0);
@@ -87,12 +96,14 @@ test('filterOptions counts regions, components, engines and severities', () => {
   assert.equal(main.label, 'main (unnamed)');
   assert.ok(options.regions.some((entry) => entry.key === 'unclassified'));
   assert.ok(options.regions.some((entry) => entry.key === 'unknown'));
+  assert.deepEqual(options.widgets, []);
+  assert.deepEqual(options.components, [], 'no configured components in this fixture');
   assert.deepEqual(options.severities.map((entry) => entry.key), ['Serious', 'Minor']);
   assert.deepEqual(options.engines.map((entry) => entry.key), ['axe-core', 'alfa']);
 });
 
 test('the filter functions are self-contained enough to run in the browser', () => {
-  const source = [findingRegionKey, findingRegionLabel, findingComponentKey, findingComponentLabel, filterFindings, filterOptions]
+  const source = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, filterFindings, filterOptions]
     .map((fn) => fn.toString())
     .join('\n');
   // No module scope is available here: stringification must carry everything.

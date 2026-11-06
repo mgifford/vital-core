@@ -181,11 +181,21 @@ adding screenshots and richer interaction.
 - Measured: ~775 B per enriched example (Walsall fixture ~830 B; 4-example
   fixture 3.1 KB). Summary keeps up to 5 coherent instances per rule.
 
-### PR B — Region, widget and component grouping (next)
+### PR B — Region, widget and component grouping (implemented)
 
-Separate semantic region, widget type and shared component identity; keep
-confidence/provenance and candidate/configured status; update grouping controls
-and fixtures.
+- `summary.widgetGroups` is a new structural dimension (dialog, tablist, …);
+  `summary.componentGroups` now contains **only configured shared components**,
+  with `verified_findings`, `classification_counts` and `confidence` from the
+  shared-component model.
+- Two unrelated dialogs share `widget:dialog` and are never one component; a
+  widget role never produces an implementation.
+- Explorer: separate region / widget / component filters, a widget column in the
+  static index, a "By widget type" table, and a component table limited to
+  configured components (with verified counts).
+- API: `scope_of_analysis.widget_groups`; component groups carry verification
+  provenance. Additive v1.
+- Tests: unrelated dialogs stay separate; configured component verification
+  counts; filter/API/Explorer assertions.
 
 ### PR C — Screenshots and visual inspection (planned)
 

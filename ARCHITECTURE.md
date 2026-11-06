@@ -433,13 +433,15 @@ reports (`occurrence_id`), never mixing fields across observations. The same
 bounded record travels into `summary.json`, bug reports, `bugs.json`, the JSON
 API and Markdown, so no consumer rescans the page.
 
-`src/lib/region-groups.js` then groups the week's findings by nearest landmark
-region and by configured component / candidate widget. Identity is split on
-purpose (type, implementation, occurrence) and `ownership_established` is always
-false: a widget role is a candidate, and a configured signature is a declared
-component, not proof of shared ownership or a fix count. The grouping is
-computed once in `summarizeRecords` and rendered (Accessibility page table), and
-exported (CSV, JSON API), from that same record.
+`src/lib/region-groups.js` then groups the week's findings in three separate
+dimensions: nearest landmark **region**, structural **widget type** (dialog,
+tablist, …) and configured shared **component**. A widget role is never a
+component and never implies a shared implementation; only a configured
+signature produces a component group, annotated with verification provenance
+from the shared-component model. Identity is split on purpose (type,
+implementation, occurrence) and `ownership_established` is always false. The
+grouping is computed once in `summarizeRecords` and rendered (Accessibility page
+and Explorer tables), exported (CSV, JSON API), from that same record.
 
 Manual validation guidance is generated deterministically from the finding's
 criterion or rule (`src/lib/manual-validation.js`) and rendered on the
