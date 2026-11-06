@@ -124,6 +124,27 @@ false. The Accessibility page gains a
 Component identity is split into type, implementation and occurrence; a type is
 not an implementation and grouping is not ownership.
 
+### Historical screenshots and visual inspection
+
+Screenshots are **opt-in and bounded** (`screenshots` in `config/targets.yml`,
+default off): at most `max_per_run` pages, one screenshot per page that has
+findings (never per violation), captured while the page is already open after
+auditing. Pages taller than `max_height` (default 6,000 CSS px) or wider than
+20,000 CSS px, or whose full-page JPEG exceeds `max_bytes` (default 500 KB),
+fall back to a top-viewport capture. JPEG `quality` bounds storage further, and
+`mask_selectors` masks forms or account widgets before capture. Images live
+under `data/<domain>/<week>/screenshots/`, are copied only into the report
+directories whose findings reference them, and are pruned with page detail.
+
+Each image records CSS width/height, device scale factor, scroll position and
+capture time; element evidence records `rect_page` (page coordinates), so the
+Finding Explorer can place a high-contrast marker without assuming the scroll
+position. The Explorer labels every image **"Screenshot captured during the
+scan. The current website may differ."**, offers a "hide annotations" control,
+and falls back to structured DOM/region evidence when there is no reliable
+rectangle, no screenshot, or the element is outside a viewport capture. It never
+embeds the live site in an iframe.
+
 ### Finding Explorer
 
 A per-week `explore.html` page turns the finding list into an inspection

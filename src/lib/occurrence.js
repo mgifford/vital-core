@@ -51,6 +51,7 @@ export function normalizeOccurrence(instance, index, { patternId, engineKey, eng
     element,
     semantic_context: semantic,
     component: typeof instance?.component === 'string' ? instance.component : null,
+    screenshot: instance?.screenshot ?? null,
     completeness: completenessOf(element, semantic),
     browser_context: instance?.browser_context ?? null,
     observation: {

@@ -121,6 +121,10 @@
           "type": ["object", "null"],
           "description": "Sanitized element identity for the primary example, or null when the engine could not locate one. available=false carries a reason (e.g. not-found, invalid-selector, unavailable). Element ids and ancestry are intentionally withheld from the public API."
         },
+        "screenshot": {
+          "type": ["object", "null"],
+          "description": "Historical screenshot metadata for the representative occurrence: available, file, width/height in CSS px, full_page, captured_at. The image was captured during the scan; it is not a live view. Null when the target has not opted in."
+        },
         "semantic_context": {
           "type": ["object", "null"],
           "description": "Landmark/widget context derived from the scanner's serialized ancestry: nearest_region, region_ancestry, widget, path, in_dialog, unnamed_landmarks, unclassified. Absent rather than invented when no ancestry was captured."

@@ -125,6 +125,11 @@ a page for a report.
   unsafe-selector and frame/shadow-boundary cases are `unavailable`; a changed
   element identity or engine version is reported as changed, not reproduced;
   exit codes 0–7.
+* **Screenshots** (`src/lib/screenshots.js`): opt-in, one JPEG per page with
+  findings, bounded by `max_per_run`/`max_height`/`max_bytes` and maskable;
+  stored in the data repo, copied only for referenced findings, pruned with page
+  detail. `rect_page` positions the Explorer marker; the image is labelled
+  historical and never presented as a live view.
 * **Manual validation** (`src/lib/manual-validation.js`): criterion/rule-specific
   prompts. The Explorer can download a blank review record; VITAL never stores
   it, never sets a reviewer or status, and never turns it into a conformance
@@ -135,10 +140,11 @@ a page for a report.
   breaking; see [API.md](API.md).
 
 Storage bounds: 3 examples per page per rule (each with coherent evidence),
-5 instances per rule in the summary. Reports select one representative
-occurrence as a whole (`occurrence_id`); never mix fields from different
-examples. Do not store full DOM, screenshots or per-violation artifacts
-without a measured budget.
+5 instances per rule in the summary, and at most `screenshots.max_per_run`
+images per run (one per page, never per finding; opt-in, JPEG, pruned with page
+detail). Reports select one representative occurrence as a whole
+(`occurrence_id`); never mix fields from different examples. Do not store full
+DOM or per-violation artifacts without a measured budget.
 
 ### Findings ledger
 
@@ -198,7 +204,8 @@ Current names include `accessible.html`, `fast.html` (Lighthouse),
 Most behavior is configured per target in `config/targets.yml`
 (`pages_per_run`, `max_pages_per_week`, `delay_ms`, `nav_timeout_ms`,
 `settle_delay_ms`, `retention_weeks`, `user_agent`, `sampling`, `reporting`,
-`finding_policy`, `component_signatures`, `page_families`, `consent_handling`),
+`screenshots`, `finding_policy`, `component_signatures`, `page_families`,
+`consent_handling`),
 not via environment variables.
 
 ## Spec Kitty Agent Surfaces

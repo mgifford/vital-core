@@ -47,6 +47,8 @@ test('deep layout wrappers do not hide main or the named region/form', async () 
   assert.equal(deep.semantic_context.nearest_region.name, 'Search form');
   assert.ok(!roles.includes('banner'), 'a header inside main is not the page banner');
   assert.ok(deep.semantic_context.path.length <= 5, 'layout wrappers are not serialized');
+  assert.ok(deep.element.rect_page.y >= deep.element.rect.y, 'page coordinates are recorded for screenshots');
+  assert.deepEqual(axe.context.scroll, { x: 0, y: 0 }, 'scroll position is recorded with the render context');
 });
 
 test('a dialog outside landmarks keeps dialog context and stays unclassified', async () => {

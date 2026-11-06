@@ -18,6 +18,7 @@ import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { runAxe } from './engines/axe.js';
 import { attachElementEvidence } from './lib/element-evidence.js';
+import { capturePageScreenshot } from './lib/screenshots.js';
 import { runComponentObservation, annotateComponentExamples } from './engines/component-observation.js';
 import { runConsentAction } from './engines/consent-action.js';
 import { runAlfa } from './engines/alfa.js';
@@ -181,8 +182,13 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 const rates = ratesFor(config, target);
 const enginesRun = {}; // engine -> count of pages it ran on this run
 const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, redirect: 0, error: 0 };
+// Historical screenshots: opt-in, bounded per run, one per page with findings.
+const screenshotConfig = target.screenshots ?? { enabled: false };
+const screenshotsEnabled = screenshotConfig.enabled === true;
+let screenshotsTaken = 0;
+
 const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAllowed: robots.isAllowed('/') }, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates,
-  browser: { userAgent: target.user_agent, viewport: { width: 1280, height: 800 } } };
+  browser: { userAgent: target.user_agent, viewport: { width: 1280, height: 800 } }, screenshots: { enabled: screenshotsEnabled, captured: 0 } };
 // Opt-in: dismiss a configured consent dialog once per run so it is audited once, not on every page.
 let consentDone = false;
 if (target.consentHandling) runLog.consent = { choice: target.consentHandling.choice, attempts: 0, clicked_on: null };
@@ -476,6 +482,26 @@ for (const item of batch) {
           record.lighthouse = lh;
           mark('lighthouse');
           log(`lighthouse ${urlPath} perf:${lh.scores.performance ?? '-'} a11y:${lh.scores.accessibility ?? '-'} seo:${lh.scores.seo ?? '-'}`);
+        }
+      }
+
+      // One historical screenshot per page with findings (never per violation).
+      // Capture while the page is open, before link discovery changes nothing
+      // visually; the full-page image is bounded and can be masked.
+      if (screenshotsEnabled && screenshotsTaken < screenshotConfig.max_per_run
+        && ((record.axe?.violationCount ?? 0) > 0 || (record.alfa?.failedCount ?? 0) > 0)) {
+        const shot = await capturePageScreenshot(page, {
+          dir: path.join(DIRS.data, target.key, week, 'screenshots'),
+          fileBase: recId,
+          config: screenshotConfig,
+        });
+        record.screenshot = shot;
+        if (shot.available) {
+          screenshotsTaken++;
+          runLog.screenshots.captured = screenshotsTaken;
+          log(`screenshot ${urlPath} ${shot.width}x${shot.height}${shot.full_page ? '' : ' (viewport)'} ${Math.round(shot.bytes / 1024)}KB`);
+        } else {
+          log(`screenshot unavailable ${urlPath}: ${shot.reason}`);
         }
       }
 

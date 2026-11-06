@@ -356,6 +356,8 @@ list, in three layers (progressive disclosure):
   scan, and "not reproduced" never means fixed. It also downloads a blank
   manual review record with finding-specific prompts; VITAL never stores it,
   never marks a review complete and never turns it into a conformance claim.
+  With `screenshots` enabled it shows the historical image with a page-coordinate
+  marker, labelled as historical; no live iframe.
 
 Conventions to preserve:
 

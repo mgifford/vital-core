@@ -244,6 +244,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         selector:       evidence?.selector ?? null,
         element:        evidence?.element ?? null,
         semantic_context: evidence?.semantic_context ?? null,
+        screenshot: b.screenshot ?? null,
         evidence:       b.evidence ? { ...b.evidence } : null,
         reproduction:   publicReproduction(b),
         manual_validation: b.manual_validation ? {

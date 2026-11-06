@@ -90,6 +90,10 @@ targets:
       reject_selectors: ['#fx-reject']
       accept_selectors: ['#fx-accept']
       wait_ms: 200
+    screenshots:
+      enabled: true
+      max_per_run: 5
+      quality: 60
     page_families:
       - id: numbered-pages
         label: Numbered pages
@@ -383,6 +387,15 @@ try {
   assert(/<label for="explorer-widget">Widget type<\/label>/.test(w1explore), 'explorer separates widget type from component');
   assert(/id="h-explorer-widgets">By widget type/.test(w1explore), 'explorer has a widget grouping table');
   assert(/id="h-explorer-components">By component/.test(w1explore), 'explorer has a component grouping table');
+  const week1BugsPath = reportFile('2026-W23', '_bugs.json');
+  assert(week1BugsPath, 'bugs.json published');
+  const week1Bugs = JSON.parse(fs.readFileSync(week1BugsPath, 'utf8'));
+  const shotBug = week1Bugs.reports.find((bug) => bug.screenshot?.available && bug.element?.rect_page);
+  assert(shotBug, 'a finding carries screenshot metadata with page coordinates');
+  const dataShots = fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'screenshots'));
+  const docsShots = fs.readdirSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'screenshots'));
+  assert(dataShots.length > 0 && dataShots.length <= 10, `screenshots bounded per run (${dataShots.length} across two runs)`);
+  assert(docsShots.length > 0, 'screenshots copied into the published report');
   assert(/explore\.html#VS-/.test(w1acc), 'each finding links to the explorer');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
@@ -710,6 +723,18 @@ try {
       assert(reviewRecord.review.reviewer === null, 'no reviewer is invented');
       assert(reviewRecord.not_a_conformance_claim === true, 'the record is explicitly not a conformance claim');
       assert(reviewRecord.guidance.prompts.length > 0, 'the record carries finding-specific prompts');
+      await explorerPage.locator('#explorer-close').focus();
+
+      // Historical visual evidence: deep link to a finding with a screenshot.
+      await explorerPage.goto(`http://127.0.0.1:${PORT}/docs/reports/localhost/2026-W23/explore.html#${shotBug.instance_id}`);
+      await explorerPage.waitForSelector('#explorer-detail:not([hidden])');
+      assert(await explorerPage.locator('.screenshot-figure img').count() === 1, 'screenshot shown for the finding');
+      assert(await explorerPage.locator('#explorer-marker').count() === 1, 'affected element marker shown');
+      assert(/Screenshot captured during the scan/.test(await explorerPage.locator('.screenshot-figure figcaption').innerText()), 'screenshot is labelled as historical');
+      assert(await explorerPage.locator('#explorer-hide-annotations').isVisible(), 'annotations can be hidden');
+      await explorerPage.locator('#explorer-hide-annotations').check();
+      assert(await explorerPage.locator('#explorer-marker').isHidden(), 'hiding annotations removes the marker');
+      await explorerPage.locator('#explorer-hide-annotations').uncheck();
       await explorerPage.locator('#explorer-close').focus();
       await explorerPage.keyboard.press('Enter');
       assert(await explorerPage.locator('#explorer-detail').isHidden(), 'Enter on close returns to the list');

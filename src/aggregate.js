@@ -262,6 +262,24 @@ for (const target of config.targets) {
     const repDir = path.join(DIRS.docs, 'reports', target.key, summary.week);
     fs.mkdirSync(repDir, { recursive: true });
 
+    // Historical screenshots are captured into data/; copy only the files the
+    // week's findings reference into the published report directory.
+    const screenshotNames = new Set();
+    for (const bug of reportBugs) {
+      for (const example of bug.examples ?? []) {
+        if (example.screenshot?.available && example.screenshot.file_name) screenshotNames.add(example.screenshot.file_name);
+      }
+    }
+    if (screenshotNames.size) {
+      const srcDir = path.join(DIRS.data, target.key, summary.week, 'screenshots');
+      const dstDir = path.join(repDir, 'screenshots');
+      fs.mkdirSync(dstDir, { recursive: true });
+      for (const name of screenshotNames) {
+        const src = path.join(srcDir, name);
+        if (fs.existsSync(src)) fs.copyFileSync(src, path.join(dstDir, name));
+      }
+    }
+
     // CSVs of affected pages, then link each bug to its per-rule CSV.
     const csvLinks = writeCsvs(repDir, summary);
     const clusterCsvLinks = writeComponentClusterCsvs(repDir, summary);
@@ -1362,6 +1380,7 @@ function addInstances(rule, rec, examples, engineVersion) {
       engine_version: engineVersion ?? null,
       consent_state: rec.consent?.state ?? null,
       browser_context: browserContext,
+      screenshot: rec.screenshot ?? null,
     }));
   }
 }
