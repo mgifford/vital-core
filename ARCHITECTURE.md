@@ -420,14 +420,18 @@ No report should perform its own scanning or independent measurements. Reports c
 ### Finding evidence: element and semantic context
 
 Each axe audit is followed, while the page is still open, by one
-`attachElementEvidence()` call (`src/lib/element-evidence.js`). For the first
-stored example of each failing rule, it records the element's tag, explicit
-role, name attributes, selector match count, rendering state, bounding
-rectangle, and the serialized ancestor chain. `src/lib/semantic-context.js`
-then classifies that chain into the nearest landmark region and any containing
-widget (dialog, tablist, navigation, …). The same bounded record travels with
-the example into `summary.json`, bug reports, `bugs.json`, the JSON API and
-Markdown, so no consumer rescans the page.
+`attachElementEvidence()` call (`src/lib/element-evidence.js`). For every stored
+example of each failing rule (up to three per page), it records the element's
+tag, explicit role, name attributes, selector match count, rendering state,
+bounding rectangle, and the ancestor chain. The chain is walked in full but only
+meaningful boundaries are serialized, so deep layout wrappers cannot hide
+`main`; `src/lib/semantic-context.js` classifies that chain into the nearest
+landmark region and any containing widget (dialog, tablist, navigation, …).
+Each example keeps its own URL, selector, context and scan provenance, and
+`src/lib/occurrence.js` selects one representative occurrence as a whole for
+reports (`occurrence_id`), never mixing fields across observations. The same
+bounded record travels into `summary.json`, bug reports, `bugs.json`, the JSON
+API and Markdown, so no consumer rescans the page.
 
 `src/lib/region-groups.js` then groups the week's findings by nearest landmark
 region and by configured component / candidate widget. Identity is split on

@@ -25,7 +25,7 @@ const bug = (over = {}) => ({
   selector: '.qc-cmp2-toggle',
   engine_key: 'axe-core',
   rule_id: 'button-name',
-  element: { available: true, selector: '.qc-cmp2-toggle', tag: 'button' },
+  element: { available: true, selector: '.qc-cmp2-toggle', tag: 'button', role: 'switch', name: null, name_source: 'none' },
   browser_context: { viewport: { width: 1280, height: 800 }, color_scheme: 'light', forced_colors: 'none', reduced_motion: 'no-preference', locale: 'en' },
   ...over,
 });
@@ -46,6 +46,13 @@ test('reproduction plan: ready evidence carries the selector, rule and browser c
     locale: 'en',
   });
   assert.deepEqual(p.steps, []);
+  assert.equal(p.element_identity.tag, 'button');
+  assert.equal(p.occurrence_id, null);
+});
+
+test('reproduction plan: frames and shadow boundaries are unavailable, not guessed', () => {
+  assert.equal(plan({ element: { available: true, selector: '.qc-cmp2-toggle', shadow: true } }).reason, 'frame-or-shadow-boundary');
+  assert.equal(plan({ element: { available: true, selector: '.qc-cmp2-toggle', iframe: true } }).reason, 'frame-or-shadow-boundary');
 });
 
 test('reproduction plan: missing or unsafe evidence is unavailable with a reason', () => {
@@ -68,6 +75,9 @@ test('playwrightTestFor refuses an unavailable plan and emits a runnable standal
   assert.match(code, /"\.qc-cmp2-toggle"/);
   assert.match(code, /executeReproduction/);
   assert.match(code, /process\.exit\(EXIT_CODES\[result\.status\]/);
+  assert.match(code, /Requirements: Node\.js >= 22/);
+  assert.match(code, /npx playwright install chromium/);
+  assert.match(code, /7 element identity changed/);
   assert.equal(REPRODUCTION_EXIT_CODES.reproduced, 0);
   assert.equal(REPRODUCTION_EXIT_CODES.ambiguous_locator, 3);
 });
@@ -101,7 +111,7 @@ test('executeReproduction distinguishes reproduced, not reproduced, missing, amb
     assert.ok(ambiguous.matches > 1);
 
     // The list rule fails on the page, but on a different element.
-    const elsewhere = await run({ selector: '#orphaned-preference', rule_id: 'list' });
+    const elsewhere = await run({ selector: '#orphaned-preference', rule_id: 'list', element: { available: true, selector: '#orphaned-preference', tag: 'button', role: 'listitem', name: 'Preference details', name_source: 'aria-label' } });
     assert.equal(elsewhere.status, 'not_reproduced');
     assert.equal(elsewhere.rule_fails_elsewhere, true);
 
@@ -110,6 +120,50 @@ test('executeReproduction distinguishes reproduced, not reproduced, missing, amb
 
     const unknownRule = await run({ rule_id: 'definitely-not-an-axe-rule' });
     assert.equal(unknownRule.status, 'rule_or_engine_changed');
+  } finally {
+    await browser.close();
+  }
+});
+
+test('executeReproduction refuses a changed element identity or engine version', async () => {
+  const browser = await chromium.launch();
+  try {
+    const run = async (over) => {
+      const page = await browser.newPage();
+      try {
+        await page.goto(FIXTURE, { waitUntil: 'load' });
+        return await executeReproduction(page, AXE_SOURCE, plan(over));
+      } finally {
+        await page.close();
+      }
+    };
+    const changedTag = await run({ element: { available: true, selector: '.qc-cmp2-toggle', tag: 'img' } });
+    assert.equal(changedTag.status, 'element_identity_changed');
+    assert.match(changedTag.detail, /tag/);
+
+    const changedRole = await run({ element: { available: true, selector: '.qc-cmp2-toggle', tag: 'button', role: 'button' } });
+    assert.equal(changedRole.status, 'element_identity_changed');
+    assert.match(changedRole.detail, /role/);
+
+    const changedName = await run({ element: { available: true, selector: '.qc-cmp2-toggle', tag: 'button', role: 'switch', name: 'Different label', name_source: 'aria-label' } });
+    assert.equal(changedName.status, 'element_identity_changed');
+    assert.match(changedName.detail, /aria-label/);
+
+    const changedEngine = await run({ observation: { engine_version: '0.0.1' } });
+    assert.equal(changedEngine.status, 'rule_or_engine_changed');
+    assert.match(changedEngine.detail, /recorded axe-core 0\.0\.1/);
+
+    // Identity/version checks happen before the rule, so no false 'reproduced'.
+    const planWithOccurrence = plan({ occurrence_id: 'VO-abc12345' });
+    assert.equal(planWithOccurrence.occurrence_id, 'VO-abc12345');
+    const page = await browser.newPage();
+    try {
+      await page.goto(FIXTURE, { waitUntil: 'load' });
+      const reproduced = await executeReproduction(page, AXE_SOURCE, planWithOccurrence);
+      assert.equal(reproduced.occurrence_id, 'VO-abc12345');
+    } finally {
+      await page.close();
+    }
   } finally {
     await browser.close();
   }

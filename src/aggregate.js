@@ -25,7 +25,7 @@ import { applyFindingPolicy } from './lib/finding-policy.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
-import { condenseInstance, MAX_RULE_INSTANCES } from './lib/element-evidence.js';
+import { condenseInstance, MAX_RULE_INSTANCES, pickBrowserContext } from './lib/element-evidence.js';
 import { buildComponentGroups, buildRegionGroups, findingsFromRules } from './lib/region-groups.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { assessAccess, withoutBlockedAudits } from './lib/access.js';
@@ -807,7 +807,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
         if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
-        addInstances(r, rec.url, v.examples);
+        addInstances(r, rec, v.examples, rec.axe.version);
         clusterTracker.observe('axe-core', id, v.impact ?? null, rec.url, v.examples);
         componentTracker.observe('axe-core', id, rec.url, v.examples, v.count);
       }
@@ -824,7 +824,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
         if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
-        addInstances(r, rec.url, v.examples);
+        addInstances(r, rec, v.examples, rec.alfa.version);
         clusterTracker.observe('alfa', id, null, rec.url, v.examples);
         componentTracker.observe('alfa', id, rec.url, v.examples, v.count);
       }
@@ -836,7 +836,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         r.pages++;
         if (r.examplePages.length < 3) r.examplePages.push(rec.url);
         if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
-        addInstances(r, rec.url, v.examples);
+        addInstances(r, rec, v.examples, null);
         clusterTracker.observe('deprecated-html', id, null, rec.url, v.examples);
         componentTracker.observe('deprecated-html', id, rec.url, v.examples, v.count);
       }
@@ -1336,11 +1336,23 @@ function diffWeeks(prev, curr) {
 // (page URL, element selector/snippet, and the bounded element + semantic
 // evidence collected at scan time) so bug reports carry real DOM context.
 // Caps total per rule to keep summary.json small.
-function addInstances(rule, url, examples) {
+function addInstances(rule, rec, examples, engineVersion) {
   if (!Array.isArray(examples)) return;
+  // The render context belongs to the page observation, not to a later page:
+  // each occurrence keeps its own copy so reports cannot borrow another run's.
+  const browserContext = pickBrowserContext(rec.axe?.context ?? rec.alfa?.context ?? null);
   for (const ex of examples) {
     if (rule.instances.length >= MAX_RULE_INSTANCES) break;
-    rule.instances.push(condenseInstance({ ...ex, url }));
+    rule.instances.push(condenseInstance({
+      ...ex,
+      url: rec.url,
+      page_id: rec.pageId ?? null,
+      run_id: rec.runId ?? null,
+      scanned_at: rec.scannedAt ?? null,
+      engine_version: engineVersion ?? null,
+      consent_state: rec.consent?.state ?? null,
+      browser_context: browserContext,
+    }));
   }
 }
 

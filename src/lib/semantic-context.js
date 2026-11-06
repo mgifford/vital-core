@@ -42,7 +42,9 @@ const LANDMARKS = new Set(LANDMARK_ROLES);
 const WIDGETS = new Set(WIDGET_ROLES);
 
 /** Bounds applied to the serialized ancestry (children before ancestors). */
-export const MAX_ANCESTRY = 8;
+// The scanner serializes only meaningful boundaries, so this is a safety cap,
+// not a traversal limit (layout wrappers no longer consume the budget).
+export const MAX_ANCESTRY = 32;
 export const MAX_NAME = 80;
 
 /**

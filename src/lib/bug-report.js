@@ -10,6 +10,7 @@ import { sanitizeBugEvidence } from './finding-reporting.js';
 import { attachComponentScope } from './shared-components.js';
 import { MAX_RULE_INSTANCES } from './element-evidence.js';
 import { manualValidationFor } from './manual-validation.js';
+import { occurrencesFor, occurrenceSummary, selectRepresentative } from './occurrence.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -59,11 +60,16 @@ export function buildBugReports(target, summary) {
     const wcag_category = classifyFinding(engine, { tags: rule.tags, ruleId }, wcag);
     const severity = severityFor(rule.impact ?? null, rule.pages, total);
     const patternId = `${PREFIX}-${shortHash(engine, ruleId)}`;
+    // `instance_id` is the historical report anchor and keeps its frozen
+    // formula over the first captured instance. Displayed evidence comes from
+    // ONE representative occurrence selected as a whole — never a URL from one
+    // instance and element evidence from another.
     const first = rule.instances?.[0];
-    // First stored example whose element was actually located at scan time.
-    // Alfa targets are serialized node descriptions, so it is usually null for
-    // Alfa; the field stays explicitly absent rather than guessed.
-    const firstEvidence = (rule.instances ?? []).find((instance) => instance.element?.available) ?? null;
+    const engineVersion = engine === 'axe-core'
+      ? summary.axe?.version ?? null
+      : engine === 'alfa' ? summary.alfa?.version ?? null : null;
+    const occurrences = occurrencesFor(rule, { patternId, engineKey: engine, engineVersion });
+    const representative = selectRepresentative(occurrences);
     const instanceId = `${PREFIX}-${shortHash(patternId, first?.url ?? '', first?.target ?? '')}`;
     const scLabel = wcag
       ? `WCAG ${wcag.sc}`
@@ -111,27 +117,29 @@ export function buildBugReports(target, summary) {
       a11y_pattern_display_id: a11yPattern.displayId,
       a11y_occurrence_fingerprint: a11yOccurrence.fingerprint,
       a11y_occurrence_display_id: a11yOccurrence.displayId,
-      url: first?.url ?? summary.domain,
+      occurrence_id: representative?.occurrence_id ?? null,
+      observation: representative?.observation ?? null,
+      occurrence_selection: representative?.completeness ?? 'none',
+      url: representative?.url ?? summary.domain,
       // `xpath` is retained for backward compatibility; for axe it has always
       // held the CSS selector, not an XPath. `selector` names it correctly.
-      xpath: first?.target ?? null,
-      selector: first?.target ?? null,
-      html_snippet: first?.html ?? null,
-      // Bounded structured evidence captured once at scan time. Absent (not
-      // invented) when the engine cannot supply it.
-      element: firstEvidence?.element ?? null,
-      semantic_context: firstEvidence?.semantic_context ?? null,
-      browser_context: firstEvidence ? summary.axe?.context ?? null : null,
+      xpath: representative?.selector ?? null,
+      selector: representative?.selector ?? null,
+      html_snippet: representative?.html_snippet ?? null,
+      // Bounded structured evidence from the representative occurrence.
+      element: representative?.element ?? null,
+      semantic_context: representative?.semantic_context ?? null,
+      browser_context: representative?.browser_context ?? null,
       evidence: {
+        ...occurrenceSummary(occurrences, representative),
         instances_total: rule.count,
-        examples_captured: rule.instances?.length ?? 0,
+        examples_captured: occurrences.length,
         example_limit: MAX_RULE_INSTANCES,
         // Truncated means the engine observed more instances than the examples
         // kept here, not merely that the cap was reached exactly.
-        examples_truncated: rule.count > (rule.instances?.length ?? 0),
-        element_identity: firstEvidence ? 'captured' : engine === 'alfa' ? 'unavailable' : 'not-captured',
-        semantic_context: firstEvidence?.semantic_context ? 'captured' : 'unavailable',
-        notes: 'Capped representative examples, not a complete instance list.',
+        examples_truncated: rule.count > occurrences.length,
+        element_identity: representative?.element?.available ? 'captured' : engine === 'alfa' ? 'unavailable' : 'not-captured',
+        semantic_context: representative?.semantic_context ? 'captured' : 'unavailable',
       },
       wcag_sc: wcag?.sc ?? null,
       wcag_name: wcag?.name ?? null,
@@ -165,13 +173,17 @@ export function buildBugReports(target, summary) {
       summary: `${component} (${scLabel})`,
       description: `${component}. Detected by ${toolName} rule ${ruleId} on ${rule.pages} of ${total} scanned pages (${rule.count} instances).`,
       // Capped representative instances with real DOM context.
-      examples: (rule.instances ?? []).map((i) => ({
-        url: i.url,
-        xpath: i.target ?? null,
-        selector: i.target ?? null,
-        html_snippet: i.html ?? null,
-        element: i.element ?? null,
-        semantic_context: i.semantic_context ?? null,
+      examples: occurrences.map((occurrence) => ({
+        occurrence_id: occurrence.occurrence_id,
+        url: occurrence.url,
+        xpath: occurrence.selector,
+        selector: occurrence.selector,
+        html_snippet: occurrence.html_snippet,
+        element: occurrence.element,
+        semantic_context: occurrence.semantic_context,
+        component: occurrence.component,
+        browser_context: occurrence.browser_context,
+        observation: occurrence.observation,
       })),
       example_pages: rule.examplePages ?? [],
       // Up to 25 affected-page URLs for inline listing in the report; the
@@ -185,10 +197,10 @@ export function buildBugReports(target, summary) {
       manual_validation: manualValidationFor({ wcag_sc: wcag?.sc ?? null, rule_id: ruleId }),
       testing_environment: `Automated: ${toolName}, headless Chromium (Playwright). Manual AT verification: ${PLACEHOLDER}`,
       steps_to_reproduce: [
-        `Open ${first?.url ?? 'an affected page (see example pages)'}.`,
-        first?.target ? `Locate the element: ${first.target}` : 'Locate the affected element.',
-        ...(firstEvidence?.semantic_context?.nearest_region
-          ? [`It is inside the ${regionLabel(firstEvidence.semantic_context.nearest_region)} region.`]
+        `Open ${representative?.url ?? 'an affected page (see example pages)'}.`,
+        representative?.selector ? `Locate the element: ${representative.selector}` : 'Locate the affected element.',
+        ...(representative?.semantic_context?.nearest_region
+          ? [`It is inside the ${regionLabel(representative.semantic_context.nearest_region)} region.`]
           : []),
         `Confirm the ${toolName} finding for rule ${ruleId}${wcag ? ` against ${scLabel} ${wcag.name}` : ''}.`,
       ],

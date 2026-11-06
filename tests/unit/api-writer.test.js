@@ -365,11 +365,16 @@ test('buildWeekFindings publishes reproduction state without claiming a run', ()
   const bug = {
     pattern_id: 'VS-p', instance_id: 'VS-i', rule_id: 'button-name', rule_label: 'Button', engine_key: 'axe-core',
     severity: 'Serious', frequency: { pages_affected: 1, instances: 1, total_pages_scanned: 1 },
-    url: 'https://example.gov/a', selector: 'button', element: { available: true, selector: 'button' },
+    url: 'https://example.gov/a', selector: 'button', element: { available: true, selector: 'button', tag: 'button', role: null, name_source: 'none' },
+    occurrence_id: 'VO-abc12345', occurrence_selection: 'complete',
+    observation: { scanned_at: '2026-11-06T00:00:00.000Z', engine_key: 'axe-core', engine_version: '4.12.1', consent_state: 'no_dialog', page_id: 'internal', run_id: 'internal-run' },
     browser_context: { viewport: { width: 1280, height: 800 }, color_scheme: 'light' },
     manual_validation: { status: 'not_reviewed', prompts: ['Try it with a keyboard.'], environment_note: 'Use the conditions that apply.', limitations: ['Automated tools find a subset.'] },
   };
   const data = buildWeekFindings(FAKE_TARGET, summary, [bug], {});
+  assert.equal(data.findings[0].occurrence_id, 'VO-abc12345');
+  assert.equal(data.findings[0].observation.scanned_at, '2026-11-06T00:00:00.000Z');
+  assert.equal('page_id' in data.findings[0].observation, false, 'internal identifiers stay internal');
   assert.equal(data.findings[0].reproduction.status, 'not_attempted');
   assert.equal(data.findings[0].reproduction.verified_at, null);
   assert.deepEqual(data.findings[0].reproduction.locator, { strategy: 'css', value: 'button' });

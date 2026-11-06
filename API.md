@@ -275,6 +275,31 @@ findings.
 - Per-week CSV: `<domain>_<DDMONYYYY>_regions.csv` (one row per region:
   findings, summed pages/instances, components, representative URLs).
 
+### Evidence occurrence (additive v1 fields)
+
+A finding aggregates rule-level results, but every displayed or replayed field
+comes from **one** stored occurrence:
+
+- `findings[].occurrence_id` — stable `VO-…` identity (pattern + URL + selector
+  + component). Distinct from the aggregated `finding_id` and the frozen
+  `instance_id` anchor.
+- `findings[].occurrence_selection` — `complete`, `partial`, `unavailable` or
+  `none`. `url`, `selector`, `element`, `semantic_context`, `browser_context`
+  and `observation` all come from that occurrence.
+- `findings[].observation` — `scanned_at`, `engine_key`, `engine_version` and
+  `consent_state`. Internal page/run identifiers are not published.
+- `findings[].reporting.representative_evidence[]` carries each example's own
+  `occurrence_id`, `element`, `semantic_context` and `observation`; examples are
+  never mixed.
+- `semantic_context.ancestry_complete` / `ancestry_depth` — whether the whole
+  ancestor chain was walked and how deep it was. Only meaningful boundaries
+  (landmarks, sectioning elements, widgets, the target) are serialized, so deep
+  layout wrappers no longer hide `main`.
+
+Historical records without enriched evidence keep `occurrence_selection:
+"unavailable"` and null evidence fields; the week-level render context is not
+substituted.
+
 ### Reproduction state (additive v1 fields)
 
 `findings[].reproduction` says whether the stored evidence can be replayed, not
@@ -293,7 +318,10 @@ whether a run happened. The API never runs anything.
   `scripts/reproduce.js` from the same plan; its outcomes use the statuses in
   `src/lib/reproduction.js` (`reproduced`, `not_reproduced`,
   `locator_not_found`, `ambiguous_locator`, `interaction_state_unavailable`,
-  `page_unavailable`, `rule_or_engine_changed`, `inconclusive`).
+  `page_unavailable`, `rule_or_engine_changed`, `element_identity_changed`,
+  `inconclusive`). Reproduction verifies the recorded tag/role/name-attribute
+  identity and engine version before claiming a rule result; exit code 7 is
+  `element_identity_changed`.
 
 ### Manual validation (additive v1 fields)
 

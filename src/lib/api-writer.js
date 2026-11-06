@@ -179,8 +179,11 @@ function publicReproduction(bug) {
   if (plan.status === 'unavailable') return { status: 'unavailable', reason: plan.reason };
   return {
     status: 'not_attempted',
+    occurrence_id: plan.occurrence_id,
     locator: plan.locator,
     rule: plan.rule,
+    engine_version: plan.engine_version,
+    element_identity: plan.element_identity,
     context: plan.context,
     interaction_required: plan.interaction_required,
     steps: plan.steps,
@@ -218,6 +221,14 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
       return {
         finding_id:     b.pattern_id,
         instance_id:    b.instance_id ?? null,
+        occurrence_id:  b.occurrence_id ?? null,
+        occurrence_selection: b.occurrence_selection ?? null,
+        observation:    b.observation ? {
+          scanned_at: b.observation.scanned_at,
+          engine_key: b.observation.engine_key,
+          engine_version: b.observation.engine_version,
+          consent_state: b.observation.consent_state,
+        } : null,
         reporting:      findingReporting,
         rule_id:        b.rule_id,
         rule_label:     b.rule_label,

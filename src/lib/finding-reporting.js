@@ -31,6 +31,13 @@ export function sanitizeEvidence(example, opts = {}) {
     html: example.html_snippet ? serialize(fragment).slice(0, 4000) : null,
     element: sanitizeElementEvidence(example.element),
     semantic_context: sanitizeSemanticContext(example.semantic_context),
+    occurrence_id: typeof example.occurrence_id === 'string' ? example.occurrence_id : null,
+    observation: example.observation ? {
+      scanned_at: example.observation.scanned_at ?? null,
+      engine_key: example.observation.engine_key ?? null,
+      engine_version: example.observation.engine_version ?? null,
+      consent_state: example.observation.consent_state ?? null,
+    } : null,
     sanitized: true,
     text_and_values_omitted: true,
   };
@@ -45,6 +52,15 @@ export function sanitizeBugEvidence(bug, opts = {}) {
   out.html_snippet = primary.html;
   out.element = primary.element;
   out.semantic_context = primary.semantic_context;
+  if (bug.observation) {
+    // Internal page/run identifiers stay internal.
+    out.observation = {
+      scanned_at: bug.observation.scanned_at ?? null,
+      engine_key: bug.observation.engine_key ?? null,
+      engine_version: bug.observation.engine_version ?? null,
+      consent_state: bug.observation.consent_state ?? null,
+    };
+  }
   if (Array.isArray(bug.affected_pages)) out.affected_pages = bug.affected_pages.map((url) => redactUrl(url, opts));
   if (Array.isArray(bug.example_pages)) out.example_pages = bug.example_pages.map((url) => redactUrl(url, opts));
   if (Array.isArray(bug.steps_to_reproduce)) {
@@ -53,7 +69,7 @@ export function sanitizeBugEvidence(bug, opts = {}) {
   if (Array.isArray(bug.examples)) {
     out.examples = bug.examples.slice(0, 3).map((example) => {
       const evidence = sanitizeEvidence({ url: example.url, xpath: example.xpath ?? example.target, html_snippet: example.html_snippet ?? example.html, element: example.element, semantic_context: example.semantic_context }, opts);
-      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, element: evidence.element, semantic_context: evidence.semantic_context, sanitized: true };
+      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, element: evidence.element, semantic_context: evidence.semantic_context, occurrence_id: evidence.occurrence_id, observation: evidence.observation, sanitized: true };
     });
   }
   return out;

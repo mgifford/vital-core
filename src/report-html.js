@@ -1794,6 +1794,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('confirmed duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
+  ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code> <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
   <div><dt>${t('Inspect')}</dt><dd><a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
@@ -5762,6 +5763,16 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     var list = document.createElement('dl');
     list.appendChild(pair(LABELS.rule, bug.rule_id + (bug.rule_label ? ' — ' + bug.rule_label : '')));
     list.appendChild(pair(LABELS.engine, bug.engine_key));
+    if (bug.occurrence_id) {
+      list.appendChild(pair(LABELS.occurrence, bug.occurrence_id + ' · ' + (bug.occurrence_selection || LABELS.unavailable)));
+    }
+    if (bug.observation) {
+      var observed = [];
+      if (bug.observation.scanned_at) observed.push(bug.observation.scanned_at);
+      if (bug.observation.engine_key) observed.push(bug.observation.engine_key + (bug.observation.engine_version ? ' ' + bug.observation.engine_version : ''));
+      if (bug.observation.consent_state) observed.push(bug.observation.consent_state);
+      list.appendChild(pair(LABELS.observed, observed.join(' · ')));
+    }
     list.appendChild(pair(LABELS.severity, bug.severity));
     list.appendChild(pair(LABELS.wcag, bug.wcag_sc ? bug.wcag_sc + (bug.wcag_name ? ' — ' + bug.wcag_name : '') + (bug.wcag_level ? ' (' + LABELS.level + ' ' + bug.wcag_level + ')' : '') : ''));
     var frequency = bug.frequency || {};
@@ -5966,6 +5977,8 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     ownership: t('ownership not established'),
     unattributed: t('unattributed'),
     captured: t('captured'),
+    occurrence: t('Evidence occurrence'),
+    observed: t('Observed'),
     manualValidation: t('Manual validation'),
     notReviewed: t('Not reviewed. These prompts are specific to this finding; recording an answer does not establish conformance.'),
     downloadReview: t('Download manual review record'),

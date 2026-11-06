@@ -53,6 +53,19 @@
         "rule_id": { "type": "string", "description": "Engine rule id, e.g. color-contrast. Stable across weeks." },
         "rule_label": { "type": "string" },
         "instance_id": { "type": ["string", "null"] },
+        "occurrence_id": {
+          "type": ["string", "null"],
+          "description": "Stable identity of the representative stored occurrence (VO-hash of pattern + URL + selector + component). Distinct from the aggregated finding_id and from the frozen instance_id anchor."
+        },
+        "occurrence_selection": {
+          "type": ["string", "null"],
+          "enum": ["complete", "partial", "unavailable", "none", null],
+          "description": "Evidence completeness of the selected occurrence. URL, selector, element, semantic context and browser context all come from this one occurrence."
+        },
+        "observation": {
+          "type": ["object", "null"],
+          "description": "Provenance of the representative occurrence: scanned_at, engine_key, engine_version, consent_state. Internal page/run identifiers are not published."
+        },
         "reporting": {
           "type": "object",
           "properties": {
@@ -134,8 +147,11 @@
           "properties": {
             "status": { "enum": ["not_attempted", "unavailable"] },
             "reason": { "type": "string" },
+            "occurrence_id": { "type": ["string", "null"] },
             "locator": { "type": "object" },
             "rule": { "type": "object" },
+            "engine_version": { "type": ["string", "null"] },
+            "element_identity": { "type": "object" },
             "context": { "type": "object" },
             "interaction_required": { "type": "boolean" },
             "steps": { "type": "array" },

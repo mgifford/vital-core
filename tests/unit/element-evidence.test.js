@@ -39,6 +39,8 @@ const semantic = {
   in_dialog: true,
   unnamed_landmarks: [],
   unclassified: false,
+  ancestry_complete: true,
+  ancestry_depth: 6,
 };
 
 test('element evidence: public copy drops ids and ancestry but keeps locator facts', () => {

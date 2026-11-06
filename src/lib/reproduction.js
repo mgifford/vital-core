@@ -27,6 +27,7 @@ export const REPRODUCTION_STATUSES = Object.freeze([
   'locator_not_found',
   'ambiguous_locator',
   'interaction_state_unavailable',
+  'element_identity_changed',
   'page_unavailable',
   'timed_out',
   'rule_or_engine_changed',
@@ -40,6 +41,7 @@ export const REPRODUCTION_EXIT_CODES = Object.freeze({
   locator_not_found: 2,
   ambiguous_locator: 3,
   interaction_state_unavailable: 4,
+  element_identity_changed: 7,
   page_unavailable: 4,
   timed_out: 4,
   rule_or_engine_changed: 5,
@@ -67,6 +69,7 @@ export function reproductionPlan(bug) {
     badSelector: 'selector-not-replayable',
     redactedUrl: 'url-redacted-for-publication',
     engine: 'only-axe-core-findings-can-be-replayed',
+    boundary: 'frame-or-shadow-boundary',
   };
   const element = bug?.element ?? null;
   const selector = bug?.selector ?? element?.selector ?? null;
@@ -78,6 +81,11 @@ export function reproductionPlan(bug) {
   }
   if (bug.engine_key !== 'axe-core') {
     return { status: 'unavailable', reason: reasons.engine };
+  }
+  if (element.shadow === true || element.iframe === true) {
+    // A selector resolves in the top document. Replaying across a frame or
+    // shadow boundary needs boundary-aware locators we do not record yet.
+    return { status: 'unavailable', reason: reasons.boundary };
   }
   const url = typeof bug.url === 'string' ? bug.url : '';
   if (!url || url.includes('[REDACTED]')) {
@@ -95,11 +103,20 @@ export function reproductionPlan(bug) {
   return {
     status: 'not_attempted',
     instance_id: bug.instance_id ?? null,
+    occurrence_id: bug.occurrence_id ?? null,
     pattern_id: bug.pattern_id ?? null,
     url,
     selector,
     locator: { strategy: 'css', value: selector },
     rule: { engine: 'axe-core', id: bug.rule_id ?? null, impact: bug.engine_severity ?? null },
+    engine_version: bug.observation?.engine_version ?? null,
+    element_identity: {
+      tag: element.tag ?? null,
+      role: element.role ?? null,
+      name: element.name ?? null,
+      name_source: element.name_source ?? 'none',
+    },
+    observation: bug.observation ?? null,
     context,
     // A dialog may need interaction before the element exists; the runner then
     // reports interaction_state_unavailable instead of guessing a click.
@@ -117,6 +134,7 @@ export async function executeReproduction(page, axeSource, plan) {
   const result = {
     status: 'inconclusive',
     instance_id: plan?.instance_id ?? null,
+    occurrence_id: plan?.occurrence_id ?? null,
     rule_id: plan?.rule?.id ?? null,
     selector: plan?.selector ?? null,
     url: plan?.url ?? null,
@@ -143,7 +161,45 @@ export async function executeReproduction(page, axeSource, plan) {
     return result;
   }
 
+  // The same selector can now point at a different element. Compare the
+  // recorded identity facts before claiming anything about the rule.
+  const liveIdentity = await page.evaluate((selector) => {
+    const el = document.querySelector(selector);
+    if (!el) return null;
+    const explicit = (el.getAttribute('role') || '').trim().toLowerCase().split(/\s+/)[0] || null;
+    return {
+      tag: el.localName,
+      role: explicit,
+      'aria-label': el.getAttribute('aria-label'),
+      alt: el.getAttribute('alt'),
+      title: el.getAttribute('title'),
+      placeholder: el.getAttribute('placeholder'),
+    };
+  }, plan.selector);
+  if (!liveIdentity) {
+    result.status = 'locator_not_found';
+    result.detail = 'the element disappeared while it was being inspected';
+    return result;
+  }
+  const recorded = plan.element_identity || {};
+  const nameAttribute = { 'aria-label': 'aria-label', alt: 'alt', title: 'title', placeholder: 'placeholder' }[recorded.name_source];
+  let changed = null;
+  if (recorded.tag && recorded.tag !== liveIdentity.tag) changed = `tag (${recorded.tag} → ${liveIdentity.tag})`;
+  else if ((recorded.role ?? null) !== liveIdentity.role) changed = `role (${recorded.role ?? 'none'} → ${liveIdentity.role ?? 'none'})`;
+  else if (nameAttribute && recorded.name != null && recorded.name !== liveIdentity[nameAttribute]) changed = `${nameAttribute} value changed`;
+  if (changed) {
+    result.status = 'element_identity_changed';
+    result.detail = `the selector now matches a different element: ${changed}`;
+    return result;
+  }
+
   await page.evaluate(axeSource);
+  const liveEngineVersion = await page.evaluate(() => (window.axe && window.axe.version) || null);
+  if (plan.engine_version && liveEngineVersion && plan.engine_version !== liveEngineVersion) {
+    result.status = 'rule_or_engine_changed';
+    result.detail = `recorded axe-core ${plan.engine_version}, installed ${liveEngineVersion}`;
+    return result;
+  }
   const outcome = await page.evaluate(async ({ selector, ruleId }) => {
     const target = document.querySelector(selector);
     if (!target) return { error: 'target-not-found' };
@@ -203,12 +259,23 @@ export function playwrightTestFor(plan, { generatedAt = new Date().toISOString()
   }
   return `#!/usr/bin/env node
 // Generated by vital-core, ${generatedAt}.
-// Finding: ${plan.instance_id ?? '(unknown)'} (pattern ${plan.pattern_id ?? '(unknown)'})
-// Rule: ${plan.rule.engine}:${plan.rule.id}
-// This test replays recorded evidence only. Exit codes:
-//   0 reproduced · 1 not reproduced · 2 locator not found · 3 ambiguous locator
-//   4 page/interaction unavailable · 5 rule or engine changed · 6 inconclusive
-// Run from a vital-core checkout: node <this-file>
+// Finding: ${plan.instance_id ?? '(unknown)'} (pattern ${plan.pattern_id ?? '(unknown)'}, occurrence ${plan.occurrence_id ?? '(unknown)'})
+// Rule: ${plan.rule.engine}:${plan.rule.id}${plan.engine_version ? ` (recorded ${plan.engine_version})` : ''}
+//
+// This test replays recorded evidence only: one URL, one selector, one rule.
+// It never claims a reproduction from a different element.
+//
+// Requirements: Node.js >= 22; run from a vital-core checkout so 'playwright'
+// and 'axe-core' resolve; install Chromium once with
+// 'npx playwright install chromium'.
+//
+// Run:      node <this-file>
+// Output:   one JSON object on stdout (status, occurrence, rule, matches, detail)
+// Exit:     0 reproduced · 1 not reproduced · 2 locator not found
+//           3 ambiguous locator · 4 page/interaction unavailable
+//           5 rule or engine changed · 6 inconclusive · 7 element identity changed
+// Evidence: the recorded URL/selector/rule and the JSON outcome above; no
+//           screenshot and no page content are stored by this script.
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
