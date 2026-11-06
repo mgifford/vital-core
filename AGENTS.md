@@ -16,6 +16,7 @@ historical remediation** across US government sites.
 3. **Historical Evidence**: Preserve historical data integrity to prove when issues were introduced and resolved. Weekly summaries are kept forever; page-level detail is pruned after `retention_weeks`.
 4. **Actionable Remediation**: Provide practical developer guidance that helps teams clear their weekly backlog.
 5. **Efficient Scanning**: Optimize scanning of high-value pages to support recurring, automated weekly schedules without bloated resource consumption.
+6. **Honest Evidence**: Never present a heuristic, a capped sample, an unavailable value, an unrun reproduction, or an unrecorded manual review as a verified fact.
 
 ## Core Architectural Rule
 
@@ -28,120 +29,171 @@ In particular:
 * Reuse existing evidence before introducing new scans.
 * Reports, APIs, AI summaries, exports, and dashboards consume shared evidence rather than generating it.
 
-## Scan Engine Inventory
+## How a Scan Works
 
-Every URL in the batch is processed by the engines listed in the
-target's `engines` config (default: all three). Each engine writes a
-compact, comparison-friendly record onto the per-page JSON.
+```bash
+node src/scan.js --domain example.gov [--budget 50] [--base-url http://localhost:8080]
+```
 
-| Engine file | Tool | What it produces |
-|-------------|------|------------------|
-| `src/engines/axe.js` | **axe-core** (injected into the page) | WCAG 2.x / Section 508 violations, reduced to rule ids, counts, and pages affected (full node lists are not stored). |
-| `src/engines/alfa.js` | **Siteimprove Alfa** (`@siteimprove/alfa-*`) | Independent ACT-rules audit. Alfa is the open source core of Siteimprove's commercial checker. |
-| `src/engines/plain-language.js` | text analysis (in-page) | Readability (Flesch / Flesch-Kincaid), sentence/passive-voice heuristics, unexplained acronyms, and spelling against the target's `spelling_locale` dictionary (`src/lib/spell.js`; en-US default, en-GB, en-CA, en-AU). `scored: false` when there's too little prose. |
-| `src/engines/deprecated-html.js` | DOM query (in-page) | Obsolete/legacy HTML (`<font>`, `<center>`, `<marquee>`, presentational attrs). Example of a rate-controlled scanner. |
-| `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD model v4) | Page weight (decoded body bytes) and estimated emissions. |
-| `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO / agentic-browsing scores + Core Web Vitals, plus the failing non-a11y **audits** (recommendations) via `extractAudits`. Drives its own browser. Aggregated into `summary.lighthouse.recommendations` and rendered on `lighthouse.html`. |
-| `src/engines/images.js` | DOM eval + response interceptor | Per-page image inventory: src, alt text, dimensions, loading/decoding attrs, byte size, decorative/missing-alt flags, and an alt-text quality verdict from `src/lib/alt-text.js` (`assessAltText`: MISSING/FILENAME/SUSPICIOUS/TOO_SHORT/TOO_LONG/DECORATIVE/GOOD). Capped at 500 images/page. Aggregate deduplicates by src with an occurrence count. |
-| `src/engines/tech.js` | **HTTPArchive/wappalyzer** (vendored, GPL-3.0) | Technology fingerprinting from in-page signals; aggregated by highest confidence across sampled pages. Update via `scripts/update-wappalyzer.sh`. |
-| `src/engines/third-party.js` | response hook + Resource Timing API | Per-page third-party (different eTLD+1) resource cost: requests, bytes, load duration, script count per origin. Collector attached before navigation, like sustainability. Rolled up per vendor in `src/lib/third-party-rollup.js`. |
-| `src/lib/links.js` (`link-check`) | `fetch` HEAD/GET probes | Broken links (4xx/5xx, DNS, timeout) found on sampled pages, checked once per run, capped and polite. |
+There is **no `engines` config list**. Every engine is gated by its weekly
+sampling rate in `config/targets.yml` (`sampling:`), and a few engines are
+config-driven instead of sampled (see the table). Each engine writes a compact,
+comparison-friendly record onto the per-page JSON.
 
-#### Weekly sampling rates
+### Scan engine inventory
 
-Each engine has a weekly coverage rate set in one place,
-`config/targets.yml` under `sampling:` (e.g. `axe: 100`, `alfa: 30`,
-`lighthouse: 10`). The rate is the share of the week's unique pages an
-engine runs on; `0` or omitted disables it. Selection is **deterministic
-per page** (`src/lib/sampling.js`: a stable hash of `pageId + engine +
-week`), so coverage is reproducible, stable within a week, and
-independent per engine. A target may override individual rates with its
-own `sampling:` block.
+| Engine file | Tool | What it produces | Gate |
+|-------------|------|------------------|------|
+| `src/engines/axe.js` | **axe-core** (injected into the page) | WCAG 2.x / Section 508 violations, reduced to rule ids, counts and pages affected (full node lists are not stored). | `sampling.axe` (100) |
+| `src/engines/alfa.js` | **Siteimprove Alfa** (`@siteimprove/alfa-*`) | Independent ACT-rules audit; Alfa is the open source core of Siteimprove's commercial checker. | `sampling.alfa` (50) |
+| `src/engines/plain-language.js` | text analysis (in-page) | Readability (Flesch / Flesch-Kincaid), sentence/passive-voice heuristics, unexplained acronyms, spelling against the target's `spelling_locale` dictionary (`src/lib/spell.js`; en-US default, en-GB, en-CA, en-AU). `scored: false` when there is too little prose. | `sampling.plain-language` (50) |
+| `src/engines/deprecated-html.js` | DOM query (in-page) | Obsolete/legacy HTML (`<font>`, `<center>`, `<marquee>`, presentational attrs). The worked example for a rate-controlled scanner. | `sampling.deprecated-html` (10) |
+| `src/engines/resources.js` | DOM inventory | PDFs, Office documents, iframes and embedded media a page links to or embeds (URLs and types; the files are not fetched). | `sampling.resources` (100) |
+| `src/engines/images.js` | DOM eval + response interceptor | Per-page image inventory: src, alt text, dimensions, loading/decoding, byte size, decorative/missing-alt flags, and an alt-text verdict from `src/lib/alt-text.js`. Capped at 500 images/page; the aggregate deduplicates by src. | `sampling.images` (100) |
+| `src/engines/standards.js` | DOM/metadata checks | schema.org, canonical, hreflang, title, description, charset, lang, viewport, Open Graph, Twitter cards, social presence. | `sampling.standards` (50) |
+| `src/engines/security.js` | HTTP header + domain checks | Per origin: HTTPS, HSTS, CSP, X-Content-Type-Options, clickjacking protection, security.txt, government TLD, www resolution. | `sampling.security` (10) |
+| `src/engines/public-interest.js` | HTTP checks | Per origin: accessibility statement, carbon.txt, Green Web Foundation, sitemaps. | `sampling.public-interest` (10) |
+| `src/engines/offline-resilience.js` | own browser context | Offline fallback, service worker and Cache Storage evidence. Opt-in cost. | `sampling.offline-resilience` (0) |
+| `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD v4) | Page weight (decoded body bytes) and estimated emissions/energy. | `sampling.sustainability` (10) |
+| `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO / agentic-browsing scores, Core Web Vitals, and failing non-a11y audits via `extractAudits`. Rendered on `fast.html`. | `sampling.lighthouse` (10) |
+| `src/engines/tech.js` | **HTTPArchive/wappalyzer** (vendored, GPL-3.0) | Technology fingerprinting from in-page signals, merged by highest confidence. Update via `scripts/update-wappalyzer.sh`. | `sampling.tech` (10) |
+| `src/engines/third-party.js` | response hook + Resource Timing | Per-page third-party (different eTLD+1) cost: requests, bytes, duration, scripts per origin. Rolled up in `src/lib/third-party-rollup.js`. | `sampling.third-party` (25) |
+| `src/lib/links.js` (`link-check`) | `fetch` HEAD/GET probes | Broken links (4xx/5xx, DNS, timeout) on sampled pages, checked once per run after the crawl, capped and polite. | `sampling.link-check` (100) + `VITAL_LINK_CHECK_CAP` |
+| `src/engines/component-observation.js` | read-only DOM snapshot | Presence, visibility, dialog role and visible button labels for configured `component_signatures`; also annotates axe examples with their DOM component. | only when `component_signatures` is configured |
+| `src/engines/consent-action.js` | one click per run | Clicks the site's configured consent button once per run (opt-in `consent_handling`); never guesses, never writes cookies, never removes elements. | only when `consent_handling` is configured |
 
-**Adding a scanner** (the single, well-defined extension point): write an
-engine module in `src/engines/` returning a compact `{ engine, ...,
-rules: { ruleId: { count, help, examples } } }` record, dispatch it in
-`src/scan.js` behind `runs('<name>')`, aggregate its rules in
-`src/aggregate.js`, and add a rate line under `sampling:`. The
-deprecated-html engine is a complete worked example.
+### Weekly sampling rates
 
-#### Page selection: priority + weekly sampling
+Rates live in one place, `config/targets.yml` under `sampling:` (current defaults
+include `axe: 100`, `alfa: 50`, `lighthouse: 10`, `third-party: 25`). A rate is
+the share of the week's unique pages an engine runs on; `0` or omitted disables
+it. Selection is **deterministic per page** (`src/lib/sampling.js`: a stable
+hash of `pageId + engine + week`), so coverage is reproducible, stable within a
+week and independent per engine. A target may override individual rates with
+its own `sampling:` block.
 
-`pickBatch` (`src/lib/state.js`) decides which pages each run scans. The
-default rule is that pages with a completed outcome are not rescanned in
-the same ISO week (`lastScannedWeek` excludes them), so coverage
-accumulates across the week's runs without repeats. Timeout/error pages
-are intentionally retried in-week (up to 3 failed attempts) to recover
-from transient failures. Within that:
+**Adding a scanner** (the single well-defined extension point): write an engine
+module in `src/engines/`, return a compact record (accessibility engines use
+`rules: { ruleId: { count, help, examples } }`), dispatch it in `src/scan.js`
+behind `runs('<name>')` (or as a config-driven step when it must not be
+sampled), aggregate it in `src/aggregate.js`, and add a rate line under
+`sampling:`. `deprecated-html.js` is a complete worked example.
 
-1. **Priority URLs first.** A target's `priority_urls` / `priority_urls_file`
-   (top tasks, e.g. from top-task-finder — one URL per line, `#` comments
-   ok) are seeded at depth 0 with `priority: true` every run and scanned
-   before anything else, so they're always covered early in the week.
-2. **Then never-scanned before previously-scanned**, for trend freshness.
-3. **Then a stable per-week random order** (hash of `pageId + week`), so a
-   large site gets a different random sample each week instead of the same
-   shallow pages — reproducible within a week for replay.
+### Page selection
 
-`importance` (1–5, default 3) per target scales `max_pages_per_week`
-(3 = the configured cap, 1 = a third, 5 = 5/3) so low-value domains
-(near-identical open-data sites) consume less weekly budget than key
-ones.
+`pickBatch` (`src/lib/state.js`) decides which pages each run scans. Pages with
+a completed outcome are not rescanned in the same ISO week, so coverage
+accumulates across the week's runs. Timeout/error pages are retried in-week (up
+to 3 failed attempts), then once more in a later week.
 
-#### Findings ledger
+1. **Priority URLs first** (`priority_urls` / `priority_urls_file`: one URL per
+   line, `#` comments ok), seeded at depth 0 with `priority: true`.
+2. **Then never-scanned before previously-scanned.**
+3. **Then a stable per-week random order** (hash of `pageId + week`), so a large
+   site gets a different sample each week while staying reproducible.
 
-`data/<domain>/findings.json` (committed) tracks every unique finding by
-`pattern_id` with `firstSeen` / `lastSeen` / `weeksSeen`, accumulated
-across the domain's whole history (survives page-detail pruning). Updated
-by `src/lib/findings.js` during aggregation; surfaced as first/last-seen
-in bug reports.
+`importance` (1–5, default 3) scales `max_pages_per_week` (3 = the configured
+cap, 1 = a third, 5 = 5/3), so low-value domains consume less weekly budget.
 
-#### Technology ↔ finding association
+## Finding Evidence and Inspection
 
-`src/lib/tech-findings.js` joins each page's detected technologies with its
-accessibility findings (both already in the page record), building a
-per-page co-occurrence model in `summarizeRecords`. The per-domain page
-lists a finding when it is at least 1.5 times as common on pages with a
-technology as on pages without it (`rankAssociations`), with at least 5 pages
-with the tech, with both, and without the tech; a tech on nearly every page
-has nothing to compare against and is named as not compared. Comparing with
-all pages instead (**lift** = `P(finding | tech) / P(finding)`, still in the
-data for API consumers) gave a tech on 59 of 60 pages a lift of 1.02 for
-every finding. Only pages where both tech and an accessibility engine ran
-are counted. The model is stored on the weekly summary (`techFindings`,
-~9 KB) and ranked when rendered, so older weeks follow the current rule.
-Each finding links to its report on the Accessibility page. It is rendered
-per-domain as `tech-findings.html`, and merged across
-domains on the dashboard (`mergeFleet` / `rankFleetAssociations`) into the
-**Cross-technology issues** matrix scored by `lift × sites`. It is an
-*association* surface — co-located technologies share identical lift, so the
-UI says "associated with", never "caused by".
+Accessibility findings carry canonical, bounded evidence collected once, while
+the audited page is still open. Do not add a second evidence pipeline or rescan
+a page for a report.
 
-#### Third-party evaluation
+* **Element + semantic evidence** (`src/lib/element-evidence.js`,
+  `src/lib/semantic-context.js`): for the **first stored example per rule**,
+  tag, explicit role, name-bearing attributes (never text content), selector
+  match count, visibility, rect, shadow/iframe state, render context, and the
+  nearest landmark region / containing widget. Alfa reports serialized node
+  descriptions, so its element evidence is explicitly **unavailable** — never
+  guessed.
+* **Grouping** (`src/lib/region-groups.js`): `summary.regions` and
+  `summary.componentGroups` are sample-based; `unclassified` and
+  “no evidence” are separate counts; a widget role is a candidate, and
+  `ownership_established` is always false.
+* **Finding Explorer** (`explore.html`, `renderExplorerPage`): complete static
+  index without JavaScript, plus filters and a detail panel as progressive
+  enhancement. It reads published `bugs.json`; it does not rescan and does not
+  replace the canonical finding on the Accessibility page.
+* **Reproduction** (`src/lib/reproduction.js`, `scripts/reproduce.js`,
+  `npm run reproduce`): plan → standalone Playwright test → outcome. It checks
+  the recorded element and rule, never merely the page; `not_reproduced` does
+  **not** mean fixed; nothing runs during a scheduled scan; Alfa/redacted/
+  unsafe-selector cases are `unavailable`; exit codes 0–6.
+* **Manual validation** (`src/lib/manual-validation.js`): criterion/rule-specific
+  prompts. The Explorer can download a blank review record; VITAL never stores
+  it, never sets a reviewer or status, and never turns it into a conformance
+  claim.
+* **API**: additive v1 fields (`selector`, `element`, `semantic_context`,
+  `evidence`, `reproduction`, `manual_validation`, `scope_of_analysis.regions`
+  / `component_groups`). Keep `schema_version: "1"` unless the change is
+  breaking; see [API.md](API.md).
 
-`src/engines/third-party.js` records, per page, every third-party origin's
-load cost; `src/lib/third-party-rollup.js` rolls it up per vendor for the
-week (`summary.thirdParty`), and `src/lib/third-party-ledger.js` keeps a
-committed `third-parties.json` with first/last-seen per vendor (annotated
-in-memory for the report after `summary.json` is written, same pattern as
-the link ledger). Rendered as `third-party.html` + `third-party.csv`.
-"Pages w/ finding" is co-occurrence (association), not a causal claim — the
-rigorous blocked-load comparison is a planned heavier mode, not yet built.
+Storage bounds: 3 examples per page per rule, 5 instances per rule in the
+summary, one enriched example per rule. Do not store full DOM, screenshots or
+per-violation artifacts without a measured budget.
 
-### Environment variables
+### Findings ledger
+
+`data/<domain>/findings.json` tracks every unique finding by `pattern_id` with
+`firstSeen` / `lastSeen` / `weeksSeen`, surviving page-detail pruning. It is
+tracked in the **data repo** (`data_repo` in `config/targets.yml`, default
+`mgifford/vital-core-data`), which CI checks out into `data/`. `data/` is not
+tracked in this repository. Updated by `src/lib/findings.js` during aggregation
+and surfaced as first/last-seen in bug reports.
+
+### Technology ↔ finding association
+
+`src/lib/tech-findings.js` joins a page's detected technologies with its
+accessibility findings (both already in the page record). A finding is listed
+when it is at least 1.5× as common on pages with a technology as on pages
+without it (`rankAssociations`), with at least 5 pages with the tech, with both,
+and without it; a tech on nearly every page is named as not comparable.
+Comparing with all pages instead (**lift**) remains in the data for API
+consumers. Only pages where both tech and an accessibility engine ran count.
+The model lives on the weekly summary and is ranked at render time. Rendered as
+`tech-findings.html`; merged across domains into the **Cross-technology issues**
+matrix scored by `lift × sites`. It is an *association* surface: say
+"associated with", never "caused by".
+
+### Third-party evaluation
+
+`src/engines/third-party.js` records each page's third-party origin cost;
+`src/lib/third-party-rollup.js` rolls it up per vendor (`summary.thirdParty`),
+and `src/lib/third-party-ledger.js` keeps `third-parties.json` (in the data
+repo) with first/last-seen. Rendered as `third-parties.html` and
+`<domain>_<DDMMMYYYY>_third-party.csv`. "Pages w/ finding" is co-occurrence,
+not a causal claim; the rigorous blocked-load comparison is a planned heavier
+mode.
+
+## Report Pages
+
+Basenames live in the `PAGES` map in `src/report-html.js`; link with
+`pageHref(key, anchor)`, never a hard-coded filename. Renames require a
+`PAGE_REDIRECTS` entry so a hash-preserving stub is written at the old name.
+Current names include `accessible.html`, `fast.html` (Lighthouse),
+`findable.html` (readability), `third-parties.html`, `explore.html`,
+`history.html`, `archive.html`.
+
+## Environment Variables
 
 | Variable | Purpose |
 |----------|---------|
 | `VITAL_WEEK` | Pin the ISO week (e.g. `2026-W23`). Used by the e2e test for determinism; normally derived from the run date. |
-| `VITAL_A11Y_SETTLE_DELAY_MS` | Override `settle_delay_ms` — the wait after page load before auditing, which lets client-side hydration finish and removes transient false positives. |
+| `VITAL_A11Y_SETTLE_DELAY_MS` | Override `settle_delay_ms` — the wait after page load before auditing, so client-side hydration can finish and transient false positives are reduced. |
 | `VITAL_LINK_CHECK_CAP` | Override the per-run broken-link probe cap (default 500). |
-| `VITAL_OLLAMA_URL` | Optional Ollama base URL for local AI summaries in `ai-findings` output. Defaults to `http://localhost:11434`. |
-| `VITAL_OLLAMA_MODEL` | Optional Ollama model override. Defaults to the first available model, then `llama3`. |
+| `VITAL_SCAN_TIME_BUDGET_MINUTES` | Stop starting new pages after this many minutes, so a run exits cleanly before the CI timeout. |
+| `VITAL_DATA_ROOT` | Redirect `data/`, `state/` and `docs/` to a persistent volume (Hugging Face appliance). Config is always read from the repo. |
+| `VITAL_PROFILE` | Deployment profile for `aggregate` / the HF appliance (e.g. `va`). |
+| `VITAL_OLLAMA_URL` | Optional OpenAI-compatible endpoint for local `ai-findings` summaries. Defaults to `http://localhost:11434`. |
+| `VITAL_OLLAMA_MODEL` | Optional model override. Defaults to the first model reported by `/v1/models`, then `local-model`. |
 
 Most behavior is configured per target in `config/targets.yml`
 (`pages_per_run`, `max_pages_per_week`, `delay_ms`, `nav_timeout_ms`,
-`settle_delay_ms`, `retention_weeks`, `engines`, `user_agent`), not via
-environment variables.
+`settle_delay_ms`, `retention_weeks`, `user_agent`, `sampling`, `reporting`,
+`finding_policy`, `component_signatures`, `page_families`, `consent_handling`),
+not via environment variables.
 
 ## Spec Kitty Agent Surfaces
 
@@ -173,19 +225,24 @@ The durable surface guide is `kitty-specs/AGENT_SURFACES.md`.
 
 1. **Plain Node, no build step, no TypeScript.** Source is `.js` under `src/` and runs directly with `node`. Do not reintroduce a build step, TypeScript, or a database. Third-party client runtimes (e.g. ParaCharts) are vendored as **prebuilt** bundles under `vendor/` and served first-party — never built from source in the pipeline.
 1a. **Reports degrade gracefully.** Report HTML must be fully usable with no JavaScript. Charts render as static accessible SVG + a data-table fallback; JS is only ever a *progressive enhancement* layered on top (e.g. the ParaCharts upgrade — `src/lib/paracharts.js` builds the manifest, a lazy `import()` loader in `report-html.js` mounts `<para-chart>` and hides the SVG fallback, restoring it if the runtime fails). Never make a report's core content depend on JS.
-2. **Preserve schema compatibility.** Never introduce breaking changes to the per-page JSON record or `summary.json` without a migration plan — breaking changes destroy historical weekly trend graphs.
-3. **Stable identity.** `src/lib/urls.js` defines page identity everywhere; treat it as a frozen contract. Week-over-week comparison depends on it. The same applies to `pattern_id`/`instance_id` in `src/lib/bug-report.js`: `pattern_id` is intentionally identical across domains for the same engine+rule (`VS-hash(engine, ruleId)`) — `mergeFleetPatterns`/`rankFleetPatterns` (`src/lib/priority.js`) depend on that cross-domain identity to surface shared CMS/template bugs (see `kitty-specs/cross-domain-pattern-analysis-01KXKV69/spec.md`). Do not scope `pattern_id`/`instance_id` to the domain to "fix" cross-domain collisions — that is the feature, not a bug. `src/lib/fingerprint-core.js`'s `a11y_pattern_fingerprint`/`a11y_occurrence_fingerprint` are a separate, additive, domain-scoped identifier dual-written alongside `pattern_id`/`instance_id` for cross-project correlation with `drupal-core`/`open-scans` (see [ACCESSIBILITY.md's fingerprint profiles](https://mgifford.github.io/ACCESSIBILITY.md/examples/fingerprints/README.html)); it is never read by the fleet-pattern code path and must not be substituted for `pattern_id` there.
+2. **Preserve schema compatibility.** Never introduce breaking changes to the per-page JSON record, `summary.json` or the v1 API without a migration plan — breaking changes destroy historical weekly trend graphs and consumers. Additive fields are preferred.
+3. **Stable identity.** `src/lib/urls.js` defines page identity everywhere; treat it as a frozen contract. The same applies to `pattern_id`/`instance_id` in `src/lib/bug-report.js`: `pattern_id` is intentionally identical across domains for the same engine+rule (`VS-hash(engine, ruleId)`) — `mergeFleetPatterns`/`rankFleetPatterns` depend on that cross-domain identity to surface shared CMS/template bugs (see `kitty-specs/cross-domain-pattern-analysis-01KXKV69/spec.md`). Do not scope them to the domain. `src/lib/fingerprint-core.js`'s `a11y_pattern_fingerprint`/`a11y_occurrence_fingerprint` are a separate, additive, domain-scoped dual-write for cross-project correlation; they are never read by the fleet-pattern path (see [ACCESSIBILITY.md's fingerprint profiles](https://mgifford.github.io/ACCESSIBILITY.md/examples/fingerprints/README.html)).
 4. Keep changes small, reviewable, and test-backed.
 5. Prefer host-scoped, HTML-focused discovery by default.
-6. Include tests for behavior changes in discovery, scanning, or aggregation.
+6. Include tests for behavior changes in discovery, scanning, aggregation, evidence or report rendering.
 7. Avoid broad refactors unless requested.
-8. **Clean up branches after merging.** When a PR is merged, immediately delete the feature branch — do not leave it in the remote. Use `git push origin --delete <branch>` or the GitHub UI. Stale branches accumulate and obscure active work. The only branches that should exist at any time are `main`, any branch with an open PR, and branches actively being worked on in the current session.
-9. **Fleets send engine fixes upstream.** In a repo made from this template (a fleet such as `vital-core-nsf`), record discoveries every fleet would want in `docs-internal/UPSTREAM-SUGGESTIONS.md`, and fix them in vital-core on a branch from `upstream/main`. Never copy changes across by hand. See CLAUDE.md, "Fleets made from this template".
+8. **Clean up branches after merging.** Delete the feature branch as soon as its PR merges (`git push origin --delete <branch>` or the GitHub UI). The only branches that should exist are `main`, branches with open PRs, and active work in the current session.
+9. **Fleets send engine fixes upstream.** In a fleet repo made from this template (e.g. `vital-core-nsf`, `vital-core-lgd`), record discoveries every fleet would want in `docs-internal/UPSTREAM-SUGGESTIONS.md`, and fix them in vital-core on a branch from `upstream/main`. Never copy changes across by hand. vital-core itself does not ship that file.
+10. **Never fabricate evidence.** Do not claim a reproduction, manual review, fix or conformance result that did not happen. `not_reproduced` is not fixed; a review record is not conformance; `unavailable`/`unclassified` are valid answers and must not be replaced with guesses.
 
 ## Testing
 
-- `npm run test:unit` — `node --test` over `tests/unit/` (URL identity, ISO weeks, robots.txt parsing, batch picking).
-- `npm run test:e2e` — full pipeline over a local fixture site simulating two weeks, asserting week-over-week diffs. Requires Playwright's bundled Chromium (`npx playwright install chromium`).
+- `npm run test:unit` — `node --test` over `tests/unit/`. Several suites launch Chromium (component observation, consent, resilience/standards, reproduction), so install it once with `npx playwright install chromium`.
+- `npm run test:e2e` — full pipeline over a local fixture site simulating two weeks, including no-JS and browser checks. Requires the same Chromium.
+- `npm run test` — both.
+- `npm run i18n:check` — fails if `src/locales/template.json` is stale (`npm run i18n:extract` to refresh).
+- `npm run check:alfa-metadata` — Alfa rule labels/mappings after a dependency upgrade.
+- `npm run check:spec-kitty` — governance surfaces.
 
 ## Prompting Pattern for Agents
 
@@ -193,8 +250,8 @@ When making changes, always include:
 
 1. Objective (How does this improve the weekly scan experience?)
 2. In-scope files
-3. Acceptance criteria (including backward compatibility of data records)
-4. Validation steps (run `test:unit`; run `test:e2e` for pipeline changes)
+3. Acceptance criteria (including backward compatibility of data records and evidence honesty)
+4. Validation steps (run `test:unit`; run `test:e2e` for pipeline, evidence or report changes)
 5. Rollback plan
 
 ## Review Checklist
@@ -205,3 +262,6 @@ When making changes, always include:
 4. Are tests updated and passing?
 5. Is the scan load proportionate to user value, given this runs on a recurring weekly schedule?
 6. Does it stay within the plain-JS, no-build, no-database architecture?
+7. Is the evidence honest — no invented values, no false reproduction or review claims, unavailable states preserved?
+8. Does it stay within the stored-evidence bounds and avoid new per-page or per-run bloat?
+9. Are reports still fully usable with JavaScript off?
