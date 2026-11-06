@@ -17,6 +17,7 @@ import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { runAxe } from './engines/axe.js';
+import { attachElementEvidence } from './lib/element-evidence.js';
 import { runComponentObservation, annotateComponentExamples } from './engines/component-observation.js';
 import { runConsentAction } from './engines/consent-action.js';
 import { runAlfa } from './engines/alfa.js';
@@ -396,6 +397,17 @@ for (const item of batch) {
       if (runs('axe')) {
         record.axe = await runAxe(page);
         mark('axe');
+        // Element + semantic evidence is collected once here, while the page is
+        // open, and rides along with the same capped examples every report, API
+        // and export already reads. A failure must not fail the page.
+        try {
+          await attachElementEvidence(page, record.axe);
+        } catch (error) {
+          record.axe.element_evidence = {
+            status: 'unavailable',
+            reason: `collection-failed: ${String(error?.message ?? error).slice(0, 120)}`,
+          };
+        }
         if (target.componentSignatures?.length) {
           try { await annotateComponentExamples(page, target.componentSignatures, record.axe); } catch { /* best effort */ }
         }

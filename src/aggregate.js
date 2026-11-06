@@ -25,6 +25,7 @@ import { applyFindingPolicy } from './lib/finding-policy.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
+import { condenseInstance, MAX_RULE_INSTANCES } from './lib/element-evidence.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { assessAccess, withoutBlockedAudits } from './lib/access.js';
 import { omitHeavyLists, trendSeries } from './lib/trend.js';
@@ -56,7 +57,6 @@ const DIFF_TOLERANCE_PP = 0.02;
  *   docs/data/<domain>/weekly.json      (trend series for anyone to reuse)
  */
 
-const MAX_RULE_INSTANCES = 5; // representative failing instances kept per rule
 const MAX_AFFECTED_PAGES = 5000; // full affected-page list cap per rule (for CSV)
 const MAX_RESOURCE_EXAMPLE_PAGES = 5; // source pages kept per resource (issue #217)
 
@@ -680,6 +680,11 @@ function summarizeRecords(target, week, records, brokenLinks) {
   const axeRules = {}; // ruleId -> { count, pages, impact, help, helpUrl, examples }
   const alfaRules = {};
   const deprecatedRules = {}; // ruleId -> { count, pages, help, examplePages, instances }
+  // Render/evidence context is identical for every page in a run, so it is
+  // kept once on the summary rather than copied per rule.
+  let axeContext = null;
+  let axeEvidenceFailures = 0;
+  let alfaEvidence = null;
   const enginePageCounts = {}; // engine -> unique pages it ran on (coverage)
   const resourceMap = new Map(); // resource url -> { url, type, foundOn:Set }
   // Standards (per-page): checkId -> { label, pass, total } pass counts.
@@ -782,6 +787,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
       axeCountsPerPage.push(rec.axe.violationCount);
       if (rec.axe.violationCount > 0) { pagesWithAxeViolations++; pagesWithAxe.push(rec.url); }
       axeViolationTotal += rec.axe.violationCount;
+      axeContext ??= rec.axe.context ?? null;
+      if (rec.axe.element_evidence) axeEvidenceFailures++;
       for (const [id, v] of Object.entries(rec.axe.violations)) {
         const r = (axeRules[id] ??= { count: 0, pages: 0, impact: v.impact, help: v.help, helpUrl: v.helpUrl, tags: v.tags ?? [], examplePages: [], affectedPages: [], instances: [] });
         r.count += v.count;
@@ -798,6 +805,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
       alfaCountsPerPage.push(rec.alfa.failedCount);
       if (rec.alfa.failedCount > 0) { pagesWithAlfaFailures++; pagesWithAlfa.push(rec.url); }
       alfaFailedTotal += rec.alfa.failedCount;
+      alfaEvidence ??= rec.alfa.element_evidence ?? null;
       for (const [id, v] of Object.entries(rec.alfa.failed)) {
         const r = (alfaRules[id] ??= { count: 0, pages: 0, ruleUrl: v.ruleUrl, examplePages: [], affectedPages: [], instances: [] });
         r.count += v.count;
@@ -1014,6 +1022,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
       pagesWithViolations: pagesWithAxeViolations,
       pagesScanned: axeCountsPerPage.length,
       medianViolations: axeCountsPerPage.length ? median(axeCountsPerPage) : null,
+      context: axeContext,
+      element_evidence: axeEvidenceFailures > 0 ? { status: 'unavailable', pages_failed: axeEvidenceFailures } : null,
       rules: axeRules,
     },
     alfa: {
@@ -1021,6 +1031,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
       pagesWithFailures: pagesWithAlfaFailures,
       pagesScanned: alfaCountsPerPage.length,
       medianFailures: alfaCountsPerPage.length ? median(alfaCountsPerPage) : null,
+      element_evidence: alfaEvidence,
       rules: alfaRules,
     },
     // ACT-rule/page grouping for mapping overlap. Same-element duplicate
@@ -1297,17 +1308,14 @@ function diffWeeks(prev, curr) {
 }
 
 // Keep a small, capped set of representative failing instances per rule
-// (page URL + element selector/snippet) so bug reports carry real DOM
-// context. Caps total per rule to keep summary.json small.
+// (page URL, element selector/snippet, and the bounded element + semantic
+// evidence collected at scan time) so bug reports carry real DOM context.
+// Caps total per rule to keep summary.json small.
 function addInstances(rule, url, examples) {
   if (!Array.isArray(examples)) return;
   for (const ex of examples) {
     if (rule.instances.length >= MAX_RULE_INSTANCES) break;
-    rule.instances.push({
-      url,
-      target: ex.target ?? null, // CSS selector (axe) / element description (alfa)
-      html: ex.html ?? null, // minimal failing markup (axe only)
-    });
+    rule.instances.push(condenseInstance({ ...ex, url }));
   }
 }
 
