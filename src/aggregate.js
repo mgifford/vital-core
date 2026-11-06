@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS, DEFAULT_SPELLING_LOCALE } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderExplorerPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
@@ -426,6 +426,8 @@ for (const target of config.targets) {
       // Filenames are outcome-aligned (accessible/fast/findable/third-parties);
       // a redirect stub is written at each old basename below so existing deep
       // links keep working.
+      // Finding Explorer: static index always; filters/detail need JavaScript.
+      fs.writeFileSync(path.join(repDir, `explore${sfx}.html`), renderExplorerPage(target, summary, reportBugs, { bugsJson: bugsJsonName }));
       fs.writeFileSync(path.join(repDir, `accessible${sfx}.html`), renderAccessibilityPage(target, summary, reportBugs, csvLinks, {
         ...reporting, keyPages,
         priorityPagesCsv: priorityPages.csv,

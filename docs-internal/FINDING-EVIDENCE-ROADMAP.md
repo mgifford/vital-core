@@ -84,15 +84,40 @@ Acceptance: findings group by region and component; multiple instances do not
 become multiple fixes; similar HTML never implies shared ownership; existing
 `component_scope` output remains valid.
 
-### PR 3 — Finding Explorer and visual evidence
+### PR 3 — Finding Explorer (implemented, no screenshots yet)
 
-A static, no-JS-first page (or accessible panel) reachable from `#VS-…` finding
-anchors, reading prebuilt JSON. Region/component/rule/WCAG filters, element
-inspection, evidence completeness, screenshot + overlay where captured.
-Screenshots are historical evidence, labelled as such, and never a live iframe.
+- `explore.html` per domain/week with a complete static index (no JavaScript)
+  and a progressive-enhancement layer that fetches the published `bugs.json`.
+- Filters: region, component (configured or candidate widget), engine, severity,
+  free-text. Detail panel: rule, WCAG, URL, selector, element facts, region path,
+  widget, component attribution, evidence completeness, stored examples and
+  steps, with a link back to the canonical report anchor.
+- Filter logic is `src/lib/finding-filter.js`, unit-tested in Node and reused
+  verbatim in the browser via stringification.
+- Entry points: subnav item and an "Open in Finding Explorer" link on every
+  finding in the Accessibility report.
 
-Acceptance: keyboard and screen-reader usable; core information present with JS
-off; deep links preserved; no new framework.
+Still deferred from this PR: screenshots and bounding-box overlays (P1 below),
+which stay historical-evidence-only and never a live iframe. Acceptance met for
+keyboard/screen-reader usable (native controls, live status, focus move to the
+detail heading), core information present with JS off, deep links (`#VS-…`)
+preserved, no new framework.
+
+#### Manual/automated testing performed for the Explorer (PR 3)
+
+- Automated: axe-core on `explore.html` reports 0 violations in the e2e (the run
+  also fixed a pre-existing `label-content-name-mismatch` on the theme toggle by
+  composing its accessible name from the visible "Theme" label).
+- Keyboard: a result is focusable and Enter opens the detail panel; focus moves
+  to the detail heading; Enter on "Close details" returns to the list. The
+  existing no-JavaScript disclosure keyboard test still passes.
+- No JavaScript: the static index renders every finding (14 in the fixture) and
+  the filter form stays hidden.
+- Forced colours: native controls and the detail panel remain visible.
+- Zoom/reflow: at 390 CSS px the document has no horizontal overflow; wide
+  tables are focusable scroll regions (`role="region"`, `tabindex="0"`).
+- **Not performed:** a human screen-reader pass (NVDA/JAWS/VoiceOver), Dragon or
+  other assistive-technology testing. None is claimed.
 
 ### PR 4 — Deterministic Playwright reproduction
 
@@ -277,7 +302,10 @@ criteria, explicit exclusions, references, priority.
 - Accessible names come from name-bearing attributes only; text content is never
   collected for the failing element.
 - An axe frame/shadow path is not resolved; the example is marked unavailable.
-- No screenshots, no XPath, no reproduction scripts yet.
+- No screenshots, no XPath, no reproduction scripts yet. The Explorer's detail
+  panel says so rather than leaving a blank area.
+- The Explorer's detail panel is a view over the same sanitized findings; the
+  canonical full finding remains on the Accessibility page.
 - `evidence` counts describe stored examples, not every instance.
 - Region/component grouping is sample-based: pages and instances are summed
   across findings, not distinct counts; `ownership_established` is always false.

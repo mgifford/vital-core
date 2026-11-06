@@ -346,7 +346,12 @@ list, in three layers (progressive disclosure):
 - **Layer 2 "What do I do next?"** — the next-actions queue with triage on the
   Accessibility page (`#h-next-actions`).
 - **Layer 3 "Show me the evidence"** — the engine pages, grouped in the subnav
-  by outcome question.
+  by outcome question. The Findings explorer (`explore.html`, subnav "Findings
+  explorer") is an inspection surface over the same findings: a complete static
+  index without JavaScript, plus region/component/engine/severity filters and a
+  detail panel as progressive enhancement. It adds no scan and no data source;
+  every row links back to the finding's canonical anchor on the Accessibility
+  page.
 
 Conventions to preserve:
 

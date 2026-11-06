@@ -152,13 +152,17 @@ fs.writeFileSync(
   serverScript,
   `import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
 const SITE = ${JSON.stringify(SITE)};
+const DOCS = ${JSON.stringify(path.join(SANDBOX, 'docs'))};
 http.createServer((req, res) => {
   const reqPath = req.url.split('?')[0];
   if (reqPath === '/moved-page.html') { res.writeHead(301, { location: '/page-1.html' }); res.end(); return; }
   if (reqPath === '/challenge.html') { res.writeHead(202, { 'content-type': 'text/html', 'x-amzn-waf-action': 'challenge' }); res.end('<!DOCTYPE html><html><head><title>Challenge</title></head><body><img src="/x.png"></body></html>'); return; }
-  const f = path.join(SITE, reqPath === '/' ? 'index.html' : reqPath);
+  // The generated report site is served too, so browser checks exercise the
+  // same HTTP origin production uses (fetch() cannot read file:// URLs).
+  const docsRequest = reqPath.startsWith('/docs/');
+  const f = path.join(docsRequest ? DOCS : SITE, docsRequest ? reqPath.slice('/docs'.length) : reqPath === '/' ? 'index.html' : reqPath);
   if (fs.existsSync(f) && fs.statSync(f).isFile()) {
-    res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.js') ? 'application/javascript' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
+    res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.js') ? 'application/javascript' : f.endsWith('.json') ? 'application/json' : f.endsWith('.css') ? 'text/css' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
     res.end(fs.readFileSync(f));
   } else {
     res.statusCode = 404; res.setHeader('content-type', 'text/html');
@@ -373,6 +377,10 @@ try {
   assert(/href="tech-findings.html">Tech/.test(w1index), 'subnav links to tech-findings page');
   assert(/class="note scope-summary">[^<]*distinct URLs scanned[^<]*verified shared-component findings[^<]*<a href="accessible\.html#h-scope">/.test(w1index), 'landing page carries the scope summary with a link to the Scope of analysis');
   const w1acc = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessible.html'), 'utf8');
+  const w1explore = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'explore.html'), 'utf8');
+  assert(/All findings this week/.test(w1explore), 'explorer has a static findings index');
+  assert(/id="explorer-filters"/.test(w1explore) && /id="explorer-detail"/.test(w1explore), 'explorer has filters and a detail panel slot');
+  assert(/explore\.html#VS-/.test(w1acc), 'each finding links to the explorer');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
   assert(/id="h-scope-regions">Findings by page region/.test(w1acc), 'accessibility page groups findings by region');
@@ -483,7 +491,7 @@ try {
   assert(report.includes('Changes since 2026-W23'), 'report includes week-over-week section');
   assert(report.includes('lang="en"') && report.includes('Skip to content'), 'report has basic accessibility scaffolding');
   // Theme toggle: action-describing aria-label, sun+moon icons, no-flash script.
-  assert(report.includes('id="theme-toggle"') && /aria-label="Switch to (dark|light) mode"/.test(report), 'theme toggle present with action label');
+  assert(report.includes('id="theme-toggle"') && /aria-label="Theme: Switch to (dark|light) mode"/.test(report), 'theme toggle present with action label');
   assert(report.includes('icon-sun') && report.includes('icon-moon'), 'toggle has sun and moon icons');
   assert(report.includes("data-theme") && report.includes('vital-theme'), 'no-flash theme script + persistence present');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'index.html')), 'dashboard generated');
@@ -571,7 +579,7 @@ try {
   // page (including archive.html) carries the identical full subnav. A
   // criterion with no data this week still renders, with an empty-state page.
   const weekDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23');
-  const SUBPAGES = ['index', 'accessible', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'pdfs', 'history', 'archive'];
+  const SUBPAGES = ['index', 'accessible', 'explore', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'pdfs', 'history', 'archive'];
   const navOf = (html) => {
     const m = html.match(/<nav class="subnav"[\s\S]*?<\/nav>/);
     if (!m) return null;
@@ -656,6 +664,33 @@ try {
       } finally {
         await reportContext.close();
       }
+    }
+
+    // Finding Explorer: filters and the detail panel are progressive enhancement.
+    const explorerContext = await reportBrowser.newContext({ viewport: { width: 1280, height: 900 } });
+    try {
+      const explorerPage = await explorerContext.newPage();
+      await explorerPage.goto(`http://127.0.0.1:${PORT}/docs/reports/localhost/2026-W23/explore.html`);
+      await explorerPage.waitForSelector('#explorer-filters:not([hidden])');
+      await explorerPage.waitForSelector('#explorer-results li a');
+      assert(await explorerPage.locator('#explorer-results li a').count() > 0, 'explorer lists findings once JavaScript loads');
+      assert(await explorerPage.locator('#explorer-detail').isHidden(), 'detail panel starts closed');
+      await explorerPage.selectOption('#explorer-region', 'main|');
+      assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'region filter updates the live status');
+      // Keyboard-only: focus a result, open it with Enter, close with Enter.
+      await explorerPage.locator('#explorer-results li a').first().focus();
+      await explorerPage.keyboard.press('Enter');
+      assert(await explorerPage.locator('#explorer-detail').isVisible(), 'Enter on a result opens the detail panel');
+      assert(await explorerPage.locator('#explorer-detail a[href*="accessible.html#"]').count() > 0, 'detail panel links to the canonical report');
+      assert(/#VS-/.test(explorerPage.url()), 'selecting a finding updates the URL fragment');
+      assert(await explorerPage.evaluate(() => document.activeElement?.id === 'explorer-detail-title'), 'focus moves to the detail heading');
+      await explorerPage.locator('#explorer-close').focus();
+      await explorerPage.keyboard.press('Enter');
+      assert(await explorerPage.locator('#explorer-detail').isHidden(), 'Enter on close returns to the list');
+      const explorerAxe = await runAxe(explorerPage);
+      assert(Object.keys(explorerAxe.violations).length === 0, `explorer page has no automated axe violations (${Object.keys(explorerAxe.violations).join(', ')})`);
+    } finally {
+      await explorerContext.close();
     }
   } finally {
     await reportBrowser.close();
