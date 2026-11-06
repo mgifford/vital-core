@@ -100,6 +100,22 @@ text), and travels with the same examples every report, CSV and JSON API
 consumer reads. Data contracts and remaining work are documented in
 [`docs-internal/FINDING-EVIDENCE-ROADMAP.md`](docs-internal/FINDING-EVIDENCE-ROADMAP.md).
 
+### Findings by region and component
+
+The stored evidence is grouped two ways for readers who think in pages rather
+than rules: **by landmark region** (main, navigation "Primary", an explicit
+`unclassified` entry, and a separate count for findings the scanner could not
+locate) and **by component** — a configured `component_signatures` id with
+`attribution: configured`, or the nearest widget role (dialog, tablist, …) as a
+`candidate` that never claims a shared implementation. Grouping is sample-based:
+pages and instances are summed across findings, not distinct counts, and
+`ownership_established` is always false. The Accessibility page gains a
+"Findings by page region" table (no JavaScript needed), the JSON API exposes
+`scope_of_analysis.regions` / `component_groups` and per-finding
+`reporting.region`, and a `<domain>_<date>_regions.csv` export is written.
+Component identity is split into type, implementation and occurrence; a type is
+not an implementation and grouping is not ownership.
+
 ### Cross-engine consensus (ACT-rule deduplication)
 
 axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.

@@ -236,6 +236,45 @@ Both are opt-in per target (`component_signatures`, `page_families` in
   scores. Page-family counts do not change page identity: every query variant is
   still its own URL.
 
+### Region and component grouping (additive v1 fields)
+
+Both groupings are built from the bounded stored examples (PR 1 evidence), so
+they are sample-based and never a fix count. They appear only when a week has
+findings.
+
+- `scope_of_analysis.regions`: `{ basis: "stored_examples", findings_total,
+  findings_with_region, findings_unclassified, findings_without_evidence,
+  regions: [...] }`. Each region has `key`, `role`, `name`, `label`,
+  `unclassified`, `findings`, `pages_affected_sum`, `instances_total`,
+  `stored_instances` (examples that carried this region), `engines`,
+  `components` (configured ids with finding counts) and
+  `representative` (at most three redacted URLs + sanitized selectors).
+  Landmark roles and names distinguish regions (`main`, `navigation "Primary"`);
+  an element with evidence but no landmark is its own `unclassified` entry; a
+  finding with no captured evidence is counted in `findings_without_evidence`,
+  never folded into unclassified. `pages_affected_sum` and `instances_total`
+  are sums across findings, not distinct counts.
+- `scope_of_analysis.component_groups`: `{ basis, findings_total, attributed,
+  unattributed, ownership_basis, groups: [...] }`. A group has `key`, `type`,
+  `label`, `attribution` (`configured` | `candidate`), `implementation`
+  (a configured signature id, or null), `ownership_established` (always false),
+  `instance_identity` (`page_url_and_selector_of_stored_examples`), `findings`,
+  `instances_total`, `stored_instances`, `pages_affected_sum`, `regions` and
+  `representative`. A configured component wins over a widget role; a widget
+  role (e.g. `widget:dialog`) is only a candidate attribution and never implies
+  a shared implementation. Verification of a configured component remains in
+  `scope_of_analysis.shared_components`; grouping never upgrades a candidate.
+- `findings[].reporting.region` is the finding's `nearest_region` (or null),
+  with `region_unclassified` (true when evidence exists but no landmark was
+  found, null when evidence is unavailable) and `region_evidence`
+  (`captured` | `unavailable`).
+- `findings[].reporting.component_scope` now also carries `component_type`,
+  `implementation`, `attribution` and `ownership_established` alongside the
+  existing classification. Identity is split on purpose: a type is not an
+  implementation, and grouping is not ownership.
+- Per-week CSV: `<domain>_<DDMONYYYY>_regions.csv` (one row per region:
+  findings, summed pages/instances, components, representative URLs).
+
 ### Snapshot Contents
 
 Full per-domain history: a `summary` block (severity counts + pages scanned),

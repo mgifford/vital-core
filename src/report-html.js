@@ -2591,7 +2591,8 @@ function scopeSignalLabel(signal) {
 function scopeOfAnalysisBlock(summary, bugs) {
   const model = summary.sharedComponents ?? null;
   const families = summary.pageFamilies ?? null;
-  if (!model && !families) return '';
+  const regions = summary.regions ?? null;
+  if (!model && !families && !regions) return '';
   const link = (b) => `<a href="#${esc(b.instance_id)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}:${esc(b.rule_id)}</a>`;
   const list = (items) => items.length === 0
     ? `<p class="meta">${t('None.')}</p>`
@@ -2659,11 +2660,27 @@ function scopeOfAnalysisBlock(summary, bugs) {
 </section>`;
   }).join('');
 
+  const regionRows = (regions?.regions ?? []).slice(0, SCOPE_LIST_CAP).map((region) => {
+    const components = (region.components ?? []).map((component) => esc(component.id)).join(', ');
+    return `<tr><th scope="row">${esc(region.label)}</th><td class="num">${nf(region.findings)}</td><td class="num">${nf(region.pages_affected_sum)}</td><td class="num">${nf(region.instances_total)}</td><td>${components || '—'}</td></tr>`;
+  }).join('');
+  const regionsBlock = regions && (regions.regions.length > 0 || regions.findings_without_evidence > 0)
+    ? `<section id="scope-regions" aria-labelledby="h-scope-regions">
+<h4 id="h-scope-regions">${t('Findings by page region')}</h4>
+<p class="meta">${t('Each finding is placed by its first stored example, so these are sample-based counts. Pages and instances are summed across findings, not distinct counts.')}</p>
+${regions.regions.length > 0 ? `<table><caption class="visually-hidden">${t('Findings grouped by the landmark region of their first stored example')}</caption>
+<thead><tr><th scope="col">${t('Region')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th><th scope="col" class="num">${t('Instances (sum)')}</th><th scope="col">${t('Component(s)')}</th></tr></thead>
+<tbody>${regionRows}</tbody></table>` : ''}
+<p class="meta">${t('@unclassified finding(s) had no landmark; @noevidence could not be located by the scanner.', { '@unclassified': nf(regions.findings_unclassified), '@noevidence': nf(regions.findings_without_evidence) })}${regions.csv ? ` <a href="${esc(regions.csv)}">${t('Download region CSV')}</a>.` : ''}</p>
+</section>`
+    : '';
+
   return `<section class="scope-of-analysis" aria-labelledby="h-scope">
 <h3 id="h-scope">${t('Scope of analysis')}</h3>
 <p class="note">${t('Every observed failure is counted. A failure is counted as an independent defect only when the evidence supports it. Attribution uses a sample of stored examples and does not change the score.')}</p>
 <ul>${urlLine}${familySummary}${familyLines}${classLine}${observationLines}${consentLine}</ul>
-<nav aria-label="${esc(t('Scope views'))}"><ul class="scope-nav"><li><a href="#scope-full">${t('Full-page findings')}</a></li>${model ? `<li><a href="#scope-page">${t('Page-specific findings')}</a></li><li><a href="#scope-shared">${t('Shared-component findings')}</a></li>` : ''}</ul></nav>
+${regionsBlock}
+<nav aria-label="${esc(t('Scope views'))}"><ul class="scope-nav"><li><a href="#scope-full">${t('Full-page findings')}</a></li>${regionsBlock ? `<li><a href="#scope-regions">${t('Findings by page region')}</a></li>` : ''}${model ? `<li><a href="#scope-page">${t('Page-specific findings')}</a></li><li><a href="#scope-shared">${t('Shared-component findings')}</a></li>` : ''}</ul></nav>
 <section id="scope-full" aria-labelledby="h-scope-full">
 <h4 id="h-scope-full">${t('Full-page findings')}</h4>
 <p class="meta">${t('All @n detected findings, including shared third-party components. This is the primary full-page evidence view and the one the score uses.', { '@n': bugs.length })}</p>

@@ -1353,3 +1353,45 @@ test('scope of analysis explains consent handling: dialog audited on the first p
   assert.match(html, /Consent dialog handling \(the scanner chose "reject" once per run\): audited with the dialog open on 1 pages, after the dialog had been dismissed on 2 pages, with no dialog seen on 1 pages\./);
   assert.match(html, /recorded on the first page of each run, not on every page/);
 });
+
+test('renderAccessibilityPage groups findings by page region, sample-based and accessible', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25', pagesScanned: 4, pagesAudited: 4,
+    axe: { rules: {} }, alfa: { rules: {} }, deprecatedHtml: { rules: {} },
+    componentClusters: null, consensus: null,
+    regions: {
+      basis: 'stored_examples',
+      findings_total: 3,
+      findings_with_region: 3,
+      findings_unclassified: 1,
+      findings_without_evidence: 1,
+      regions: [
+        { key: 'main|', role: 'main', name: null, label: 'main (unnamed)', unclassified: false, findings: 2, pages_affected_sum: 5, instances_total: 8, components: [{ id: 'cmp-consent', findings: 1 }], representative: [] },
+        { key: 'unclassified', role: null, name: null, label: 'unclassified (no landmark)', unclassified: true, findings: 1, pages_affected_sum: 1, instances_total: 1, components: [], representative: [] },
+      ],
+      csv: 'www.example.gov_16JUN2026_regions.csv',
+    },
+  };
+  const bug = {
+    instance_id: 'VS-region01', pattern_id: 'VS-region-p', url: 'https://example.gov/a', xpath: 'main',
+    wcag_sc: '1.3.1', wcag_name: 'Info and Relationships', wcag_level: 'A', wcag_version: '2.0',
+    wcag_category: 'WCAG 2.0 A', rule_id: 'region', rule_label: 'Landmark', engine_key: 'axe-core',
+    tool: 'axe-core', rule_url: null, severity: 'Moderate',
+    frequency: { instances: 2, pages_affected: 2, total_pages_scanned: 4 },
+    summary: 'Landmark', description: 'd', examples: [], example_pages: [], affected_pages: [],
+    impact: { groups: [], summary: '' }, testing_environment: 'e', steps_to_reproduce: [],
+    remediation_tip: null, suggested_fix: 'f', default_visible: true, priority_tier: 0,
+    obligation: 'required', handling: 'report',
+  };
+  const html = renderAccessibilityPage(target, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
+  assert.match(html, /id="h-scope-regions">Findings by page region/);
+  assert.match(html, /<th scope="row">main \(unnamed\)<\/th>/);
+  assert.match(html, /<th scope="row">unclassified \(no landmark\)<\/th>/);
+  assert.match(html, /cmp-consent/);
+  assert.match(html, /<caption class="visually-hidden">Findings grouped by the landmark region/);
+  assert.match(html, /Download region CSV/);
+  // Sample-based wording, not a claim about every instance.
+  assert.match(html, /sample-based counts/);
+  assert.match(html, /1 finding\(s\) had no landmark; 1 could not be located/);
+});

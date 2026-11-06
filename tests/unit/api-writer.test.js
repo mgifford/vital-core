@@ -316,3 +316,46 @@ describe('buildWeekFindings scope of analysis (additive)', () => {
     assert.equal(plain.findings[0].reporting.component_scope, null);
   });
 });
+
+test('buildWeekFindings publishes region and component groupings with redacted representatives', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 2,
+    regions: {
+      basis: 'stored_examples',
+      findings_total: 1,
+      findings_with_region: 1,
+      findings_unclassified: 0,
+      findings_without_evidence: 0,
+      regions: [{
+        key: 'main|', role: 'main', name: null, label: 'main (unnamed)', unclassified: false,
+        findings: 1, pages_affected_sum: 2, instances_total: 3,
+        engines: { 'axe-core': 1 }, components: [{ id: 'cmp-consent', findings: 1 }],
+        representative: [{ url: 'https://example.gov/a?token=SECRET', selector: 'input[value="SECRET"]' }],
+      }],
+    },
+    componentGroups: {
+      basis: 'stored_examples',
+      findings_total: 1,
+      attributed: 1,
+      unattributed: 0,
+      ownership_basis: 'Configured signatures and widget roles only.',
+      groups: [{
+        key: 'component:cmp-consent', type: 'component:cmp-consent', label: 'Consent dialog',
+        attribution: 'configured', implementation: 'cmp-consent', ownership_established: false,
+        findings: 1, instances_total: 3, pages_affected_sum: 2, regions: [{ key: 'main|', findings: 1 }],
+        representative: [{ url: 'https://example.gov/a?token=SECRET', selector: 'button[aria-label="Ok"]' }],
+      }],
+    },
+  };
+  const data = buildWeekFindings(FAKE_TARGET, summary, [], {});
+  const scope = data.scope_of_analysis;
+  assert.equal(scope.regions.basis, 'stored_examples');
+  assert.equal(scope.regions.regions[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');
+  assert.equal(scope.regions.regions[0].representative[0].selector, null, 'unsafe selector withheld');
+  assert.equal(scope.component_groups.groups[0].attribution, 'configured');
+  assert.equal(scope.component_groups.groups[0].ownership_established, false);
+  assert.equal(scope.component_groups.groups[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');
+  assert.equal(scope.component_groups.groups[0].representative[0].selector, 'button[aria-label="Ok"]');
+  assert.ok(!JSON.stringify(data).includes('SECRET'));
+});

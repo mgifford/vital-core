@@ -48,7 +48,7 @@ second navigation is explicitly expected, and it is user-requested per finding.
 
 ## 3. PR plan
 
-### PR 1 — Canonical element and semantic evidence (this branch)
+### PR 1 — Canonical element and semantic evidence (PR #299)
 
 - `src/lib/semantic-context.js`: pure landmark/widget classification over a
   serialized ancestor chain.
@@ -67,11 +67,18 @@ Acceptance: existing scans/report formats/history unchanged; known fixture
 elements get correct regions; unknown stays explicitly unknown; evidence
 bounded and sanitized; the Walsall consent fixture still exercises both engines.
 
-### PR 2 — Region and component grouping
+### PR 2 — Region and component grouping (implemented)
 
-Extend `shared-components.js` (not a new classifier) with region-level grouping,
-component type vs implementation vs instance identity, and provenance/confidence
-already defined by `scope_classifications` plus new region dimensions.
+- `src/lib/region-groups.js`: pure grouping by nearest landmark region
+  (`unclassified` explicit; findings without evidence counted separately) and
+  by configured component / candidate widget, with type vs implementation split
+  and `ownership_established: false`.
+- `summarizeRecords` computes `summary.regions` / `summary.componentGroups`
+  once; the Accessibility page renders a "Findings by page region" table;
+  `regions.csv` is written; `scope_of_analysis.regions` / `component_groups`
+  and per-finding `reporting.region` are posted to the v1 API.
+- `shared-components.js` now carries `component_type`, `implementation`,
+  `attribution` and `ownership_established`.
 
 Acceptance: findings group by region and component; multiple instances do not
 become multiple fixes; similar HTML never implies shared ownership; existing
@@ -272,6 +279,10 @@ criteria, explicit exclusions, references, priority.
 - An axe frame/shadow path is not resolved; the example is marked unavailable.
 - No screenshots, no XPath, no reproduction scripts yet.
 - `evidence` counts describe stored examples, not every instance.
+- Region/component grouping is sample-based: pages and instances are summed
+  across findings, not distinct counts; `ownership_established` is always false.
+- A widget role (`widget:dialog`) is a candidate attribution only. Only a
+  configured `component_signatures` id yields an `implementation`.
 
 ## 6. Explicit exclusions
 
