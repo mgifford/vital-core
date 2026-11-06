@@ -359,3 +359,21 @@ test('buildWeekFindings publishes region and component groupings with redacted r
   assert.equal(scope.component_groups.groups[0].representative[0].selector, 'button[aria-label="Ok"]');
   assert.ok(!JSON.stringify(data).includes('SECRET'));
 });
+
+test('buildWeekFindings publishes reproduction state without claiming a run', () => {
+  const summary = { week: '2026-W25', pagesScanned: 1 };
+  const bug = {
+    pattern_id: 'VS-p', instance_id: 'VS-i', rule_id: 'button-name', rule_label: 'Button', engine_key: 'axe-core',
+    severity: 'Serious', frequency: { pages_affected: 1, instances: 1, total_pages_scanned: 1 },
+    url: 'https://example.gov/a', selector: 'button', element: { available: true, selector: 'button' },
+    browser_context: { viewport: { width: 1280, height: 800 }, color_scheme: 'light' },
+  };
+  const data = buildWeekFindings(FAKE_TARGET, summary, [bug], {});
+  assert.equal(data.findings[0].reproduction.status, 'not_attempted');
+  assert.equal(data.findings[0].reproduction.verified_at, null);
+  assert.deepEqual(data.findings[0].reproduction.locator, { strategy: 'css', value: 'button' });
+
+  const unavailable = buildWeekFindings(FAKE_TARGET, summary, [{ ...bug, element: null }], {});
+  assert.equal(unavailable.findings[0].reproduction.status, 'unavailable');
+  assert.equal(unavailable.findings[0].reproduction.reason, 'element-evidence-unavailable');
+});

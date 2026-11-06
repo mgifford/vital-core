@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { redactUrl, deepRedactUrls } from './api-redact.js';
 import { buildFindingReporting, sanitizeEvidence } from './finding-reporting.js';
 import { safeSelector } from './element-evidence.js';
+import { reproductionPlan } from './reproduction.js';
 
 export const SCHEMA_VERSION = '1';
 
@@ -167,6 +168,26 @@ function publicGrouping(grouping, denyParams) {
   return redacted;
 }
 
+/**
+ * Public reproduction state for a finding. The API never claims a run happened:
+ * `not_attempted` means the evidence can be replayed, `unavailable` carries the
+ * reason. The test itself is generated on demand by the Finding Explorer or the
+ * `scripts/reproduce.js` CLI, not stored per finding.
+ */
+function publicReproduction(bug) {
+  const plan = reproductionPlan(bug);
+  if (plan.status === 'unavailable') return { status: 'unavailable', reason: plan.reason };
+  return {
+    status: 'not_attempted',
+    locator: plan.locator,
+    rule: plan.rule,
+    context: plan.context,
+    interaction_required: plan.interaction_required,
+    steps: plan.steps,
+    verified_at: null,
+  };
+}
+
 export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
   const reporting = buildFindingReporting(bugs, { denyParams: target.api_redact_params ?? [], summary });
   return {
@@ -212,6 +233,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         element:        evidence?.element ?? null,
         semantic_context: evidence?.semantic_context ?? null,
         evidence:       b.evidence ? { ...b.evidence } : null,
+        reproduction:   publicReproduction(b),
         pages_affected: b.frequency.pages_affected,
         trend_status:   deriveTrend(b, ledgerEntry),
         first_seen:     b.first_seen ?? null,

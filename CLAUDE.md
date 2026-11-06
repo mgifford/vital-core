@@ -351,7 +351,9 @@ list, in three layers (progressive disclosure):
   index without JavaScript, plus region/component/engine/severity filters and a
   detail panel as progressive enhancement. It adds no scan and no data source;
   every row links back to the finding's canonical anchor on the Accessibility
-  page.
+  page. It can also generate a standalone Playwright reproduction test on
+  demand (the same plan `scripts/reproduce.js` runs); neither runs during a
+  scan, and "not reproduced" never means fixed.
 
 Conventions to preserve:
 

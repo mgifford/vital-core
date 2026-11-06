@@ -133,6 +133,22 @@ verbatim in the browser, so the static and enhanced views cannot drift. The
 panel explicitly says when evidence, screenshots or reproduction scripts are
 not available yet.
 
+### Deterministic Playwright reproduction
+
+A finding with captured element evidence can be replayed as a standalone
+Playwright test, generated on demand from the Explorer's detail panel or with
+`npm run reproduce -- --bugs <bugs.json> --id <VS-id> --out test.mjs`. The
+script opens the recorded URL with the recorded viewport/colour scheme/forced
+colours/reduced motion/locale, verifies that the recorded selector matches
+exactly one element, runs axe-core with **only the recorded rule**, and checks
+that the failure is on **that element** — a rule failing elsewhere is reported
+as `not_reproduced`, never as a reproduction. Outcomes are explicit
+(`reproduced`, `not_reproduced`, `locator_not_found`, `ambiguous_locator`,
+`interaction_state_unavailable`, `page_unavailable`, `rule_or_engine_changed`,
+`inconclusive`) and map to exit codes 0–6. Nothing runs during a scheduled scan,
+Alfa findings are reported as unavailable rather than guessed, and a failure to
+reproduce never means the issue is fixed.
+
 ### Cross-engine consensus (ACT-rule deduplication)
 
 axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.

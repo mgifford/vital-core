@@ -437,6 +437,14 @@ component, not proof of shared ownership or a fix count. The grouping is
 computed once in `summarizeRecords` and rendered (Accessibility page table), and
 exported (CSV, JSON API), from that same record.
 
+Reproduction is an explicit consumer, never a scheduled step:
+`src/lib/reproduction.js` turns stored evidence into a plan, and
+`scripts/reproduce.js` / the Explorer generate or run a standalone Playwright
+test from that plan. The runner and the generated script share the same
+`executeReproduction()` function, so their outcomes cannot diverge. A
+reproduction checks the recorded element, not just the page, and its
+`not_reproduced` outcome is never treated as a fix.
+
 The Finding Explorer (`explore.html`) is rendered from the same `reportBugs`
 list. Its static index is server-rendered and complete without JavaScript; the
 progressive enhancement fetches the published `bugs.json` and filters it with

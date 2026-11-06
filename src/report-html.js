@@ -10,6 +10,7 @@ import { rulePlainLabel } from './lib/rule-label.js';
 import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
 import { scopeViewsFor } from './lib/shared-components.js';
 import { findingRegionLabel, findingComponentLabel, findingRegionKey, findingComponentKey, filterFindings } from './lib/finding-filter.js';
+import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -5588,11 +5589,16 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   const filterSource = [findingRegionKey, findingRegionLabel, findingComponentKey, findingComponentLabel, filterFindings]
     .map((fn) => fn.toString())
     .join('\n');
+  const reproductionSource = [isReplayableSelector, reproductionPlan, executeReproduction, playwrightTestFor]
+    .map((fn) => fn.toString())
+    .join('\n');
   return `<script>
 (function () {
   'use strict';
   var LABELS = ${JSON.stringify(labels)};
+  var REPRODUCTION_EXIT_CODES = ${JSON.stringify(REPRODUCTION_EXIT_CODES)};
   ${filterSource}
+  ${reproductionSource}
   var BUGS_JSON = ${JSON.stringify(bugsJson)};
   var REPORT_HREF = ${JSON.stringify(reportHref)};
   var form = document.getElementById('explorer-filters');
@@ -5651,6 +5657,41 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     });
     if (context.widget) parts.push((context.widget.role || '') + (context.widget.name ? ' "' + context.widget.name + '"' : ''));
     return parts.length ? parts.join(' > ') : findingRegionLabel(bug);
+  }
+  function downloadReproduction(bug) {
+    var plan = reproductionPlan(bug);
+    if (plan.status === 'unavailable') return;
+    var code = playwrightTestFor(plan, { generatedAt: new Date().toISOString() });
+    var blob = new Blob([code], { type: 'text/javascript' });
+    var url = URL.createObjectURL(blob);
+    var anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = (plan.instance_id || 'finding') + '.spec.mjs';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+  function reproductionRow(bug) {
+    var row = document.createElement('div');
+    row.appendChild(text('dt', LABELS.reproduction));
+    var dd = document.createElement('dd');
+    var plan = reproductionPlan(bug);
+    if (plan.status === 'unavailable') {
+      dd.textContent = LABELS.unavailable + ': ' + (LABELS.reproReasons[plan.reason] || plan.reason);
+      row.appendChild(dd);
+      return row;
+    }
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'triage-btn';
+    button.id = 'explorer-download-test';
+    button.textContent = LABELS.downloadTest;
+    button.addEventListener('click', function () { downloadReproduction(bug); });
+    dd.appendChild(button);
+    dd.appendChild(text('span', LABELS.testReady, 'bug-meta'));
+    row.appendChild(dd);
+    return row;
   }
   function componentText(bug) {
     var scope = bug.component_scope;
@@ -5724,7 +5765,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       list.appendChild(pair(LABELS.browser, ctx.join(' · ')));
     }
     list.appendChild(pair(LABELS.interaction, LABELS.notCaptured));
-    list.appendChild(pair(LABELS.reproduction, LABELS.notGenerated));
+    list.appendChild(reproductionRow(bug));
     detailBody.appendChild(list);
     if (Array.isArray(bug.steps_to_reproduce) && bug.steps_to_reproduce.length) {
       detailBody.appendChild(text('h4', LABELS.steps));
@@ -5776,7 +5817,9 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   }
   form.hidden = false;
   form.addEventListener('submit', function (event) { event.preventDefault(); apply(); });
-  form.addEventListener('change', apply);
+  // The input event covers selects and text fields. A separate change listener
+  // would also fire when focus leaves the search box — rebuilding the list and
+  // dropping focus just after a result was focused for keyboard activation.
   form.addEventListener('input', apply);
   if (clearButton) clearButton.addEventListener('click', function () { form.reset(); apply(); });
   if (closeButton) closeButton.addEventListener('click', closeDetail);
@@ -5882,7 +5925,15 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     ownership: t('ownership not established'),
     unattributed: t('unattributed'),
     captured: t('captured'),
-    notGenerated: t('Not generated yet (see the roadmap).'),
+    downloadTest: t('Download Playwright test'),
+    testReady: t('Generated on demand; it is not run automatically.'),
+    reproReasons: {
+      'element-evidence-unavailable': t('no element evidence was captured'),
+      'element-not-found-at-scan': t('the element was not found when the page was scanned'),
+      'selector-not-replayable': t('the recorded selector cannot be replayed'),
+      'url-redacted-for-publication': t('the published URL is redacted'),
+      'only-axe-core-findings-can-be-replayed': t('only axe-core findings can be replayed'),
+    },
   };
   const script = explorerScript({ bugsJson, reportHref: pageHref('accessibility'), labels });
 
@@ -5936,7 +5987,7 @@ ${summary.componentGroups?.groups?.length ? `<section aria-labelledby="h-explore
 <tbody>${componentRows}</tbody></table>
 </div>
 </section>` : ''}
-<p class="meta">${t('Reproduction scripts, screenshots and manual review records are not generated yet. See the finding evidence roadmap in the repository.')}</p>`;
+<p class="meta">${t('Playwright tests are generated on demand from recorded evidence; screenshots and manual review records are not available yet. See the finding evidence roadmap in the repository.')}</p>`;
 
   return layout({
     title: `${target.domain} Findings explorer ${summary.week} | vital-scans`,

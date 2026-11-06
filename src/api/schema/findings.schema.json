@@ -116,6 +116,22 @@
           "type": ["object", "null"],
           "description": "Completeness of the stored evidence: instances_total, examples_captured, example_limit, examples_truncated, element_identity and semantic_context capture status. Capped examples are a sample, not every instance."
         },
+        "reproduction": {
+          "type": "object",
+          "description": "Deterministic reproduction state. not_attempted means the stored evidence can be replayed; unavailable carries a reason and no selector. Tests are generated on demand; the API never implies a run happened.",
+          "required": ["status"],
+          "properties": {
+            "status": { "enum": ["not_attempted", "unavailable"] },
+            "reason": { "type": "string" },
+            "locator": { "type": "object" },
+            "rule": { "type": "object" },
+            "context": { "type": "object" },
+            "interaction_required": { "type": "boolean" },
+            "steps": { "type": "array" },
+            "verified_at": { "type": "null" }
+          },
+          "additionalProperties": true
+        },
         "pages_affected": { "type": "integer", "minimum": 0 },
         "trend_status": {
           "description": "Week-over-week status derived from the findings ledger.",
