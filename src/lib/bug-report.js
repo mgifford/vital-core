@@ -9,6 +9,7 @@ import { attachFindingCorrelations } from './finding-correlation.js';
 import { sanitizeBugEvidence } from './finding-reporting.js';
 import { attachComponentScope } from './shared-components.js';
 import { MAX_RULE_INSTANCES } from './element-evidence.js';
+import { manualValidationFor } from './manual-validation.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -180,6 +181,8 @@ export function buildBugReports(target, summary) {
       // prevalence). Empty groups => undetermined SC; falls back to the
       // manual-testing note. Severity/exact reproduction still need a human.
       impact,
+      // Finding-relevant manual guidance; never a completion claim.
+      manual_validation: manualValidationFor({ wcag_sc: wcag?.sc ?? null, rule_id: ruleId }),
       testing_environment: `Automated: ${toolName}, headless Chromium (Playwright). Manual AT verification: ${PLACEHOLDER}`,
       steps_to_reproduce: [
         `Open ${first?.url ?? 'an affected page (see example pages)'}.`,
@@ -285,6 +288,11 @@ export function bugReportToMarkdown(r) {
     const excl = g.estimatedExcluded != null ? ` — ~${g.estimatedExcluded.toLocaleString()} people/week potentially excluded` : '';
     lines.push(`- **${g.group}** (${g.percent} of population)${excl}`);
   }
+  lines.push('');
+  lines.push('### Manual validation');
+  lines.push('**Status:** not reviewed. These prompts are specific to this finding; recording an answer does not establish conformance.');
+  for (const prompt of r.manual_validation?.prompts ?? []) lines.push(`- ${prompt}`);
+  if (r.manual_validation?.environment_note) lines.push('', r.manual_validation.environment_note);
   lines.push('');
   lines.push('### Affected pages');
   // <=25 affected pages: list the URLs inline (more useful than a CSV link

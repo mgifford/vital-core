@@ -11,6 +11,7 @@ import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './
 import { scopeViewsFor } from './lib/shared-components.js';
 import { findingRegionLabel, findingComponentLabel, findingRegionKey, findingComponentKey, filterFindings } from './lib/finding-filter.js';
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
+import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -1800,6 +1801,7 @@ ${heading('h-bugs', t('Bug reports'))}
   <div><dt>${t('Requirement')}</dt><dd>${requirementCell(b)}</dd></div>
   <div><dt>${t('Obligation')}</dt><dd>${esc(b.obligation ?? 'unmapped')}</dd></div>
   <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
+  <div><dt>${t('Manual validation')}</dt><dd>${t('Not reviewed.')}${(b.manual_validation?.prompts ?? []).length ? `<ul class="manual-validation">${b.manual_validation.prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join('')}</ul>` : ''}<span class="bug-meta">${esc(b.manual_validation?.environment_note ?? '')}</span></dd></div>
   <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
   <div><dt>${t('Rule')}</dt><dd>${ruleLink}</dd></div>
   <div><dt>${t('Engine impact')}</dt><dd>${esc(evidenceReport.engine_severity ?? t('Not supplied by the engine'))}</dd></div>
@@ -5572,6 +5574,8 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .explorer-detail { border: 2px solid var(--accent); border-radius: 4px; padding: 1rem; margin: 1.25rem 0; }
 .explorer-detail:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .explorer-detail h3 { margin-top: 0; }
+.manual-validation-block { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .75rem; }
+.manual-validation-block ul { margin: .4rem 0; }
 @media (max-width: 40rem) { .explorer-field { min-width: 100%; } }
 `;
 
@@ -5592,6 +5596,9 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   const reproductionSource = [isReplayableSelector, reproductionPlan, executeReproduction, playwrightTestFor]
     .map((fn) => fn.toString())
     .join('\n');
+  const manualSource = [manualValidationFor, manualReviewRecord]
+    .map((fn) => fn.toString())
+    .join('\n');
   return `<script>
 (function () {
   'use strict';
@@ -5599,6 +5606,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   var REPRODUCTION_EXIT_CODES = ${JSON.stringify(REPRODUCTION_EXIT_CODES)};
   ${filterSource}
   ${reproductionSource}
+  ${manualSource}
   var BUGS_JSON = ${JSON.stringify(bugsJson)};
   var REPORT_HREF = ${JSON.stringify(reportHref)};
   var form = document.getElementById('explorer-filters');
@@ -5671,6 +5679,38 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     anchor.click();
     anchor.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+  function downloadReview(bug) {
+    var record = manualReviewRecord(bug, { generatedAt: new Date().toISOString() });
+    var blob = new Blob([JSON.stringify(record, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = (record.finding.instance_id || 'finding') + '.manual-review.json';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+  function manualSection(bug) {
+    var guidance = manualValidationFor(bug);
+    var section = document.createElement('section');
+    section.className = 'manual-validation-block';
+    section.appendChild(text('h4', LABELS.manualValidation));
+    section.appendChild(text('p', LABELS.notReviewed, 'bug-meta'));
+    var prompts = document.createElement('ul');
+    guidance.prompts.forEach(function (prompt) { prompts.appendChild(text('li', prompt)); });
+    section.appendChild(prompts);
+    section.appendChild(text('p', guidance.environment_note, 'bug-meta'));
+    section.appendChild(text('p', LABELS.reviewNotSaved, 'bug-meta'));
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'triage-btn';
+    button.id = 'explorer-download-review';
+    button.textContent = LABELS.downloadReview;
+    button.addEventListener('click', function () { downloadReview(bug); });
+    section.appendChild(button);
+    return section;
   }
   function reproductionRow(bug) {
     var row = document.createElement('div');
@@ -5790,6 +5830,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       detailBody.appendChild(text('h4', LABELS.impact));
       detailBody.appendChild(text('p', bug.impact.summary));
     }
+    detailBody.appendChild(manualSection(bug));
     detailBody.appendChild(text('p', '')).appendChild(externalLink(REPORT_HREF + '#' + bug.instance_id, LABELS.fullReport));
     detail.hidden = false;
     if (updateHash) history.replaceState(null, '', '#' + bug.instance_id);
@@ -5925,6 +5966,10 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     ownership: t('ownership not established'),
     unattributed: t('unattributed'),
     captured: t('captured'),
+    manualValidation: t('Manual validation'),
+    notReviewed: t('Not reviewed. These prompts are specific to this finding; recording an answer does not establish conformance.'),
+    downloadReview: t('Download manual review record'),
+    reviewNotSaved: t('Not saved by VITAL; fill it in and share it through your own process.'),
     downloadTest: t('Download Playwright test'),
     testReady: t('Generated on demand; it is not run automatically.'),
     reproReasons: {

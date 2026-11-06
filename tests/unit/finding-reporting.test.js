@@ -240,7 +240,11 @@ test('buildBugReports carries element, region and evidence completeness without 
   // Two observed instances, one stored example: the sample is explicitly truncated.
   assert.equal(axe.evidence.examples_truncated, true);
   assert.match(axe.steps_to_reproduce.join(' '), /main "Content" region/);
+  assert.equal(axe.manual_validation.status, 'not_reviewed');
+  assert.ok(axe.manual_validation.prompts.length > 0);
   const markdown = bugReportToMarkdown(axe);
+  assert.match(markdown, /### Manual validation/);
+  assert.match(markdown, /Status:\*\* not reviewed/);
   assert.match(markdown, /\*\*Element:\*\* `<button>`/);
   assert.match(markdown, /\*\*Semantic region:\*\* main "Content"/);
 

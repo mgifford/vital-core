@@ -1383,6 +1383,7 @@ test('renderAccessibilityPage groups findings by page region, sample-based and a
     impact: { groups: [], summary: '' }, testing_environment: 'e', steps_to_reproduce: [],
     remediation_tip: null, suggested_fix: 'f', default_visible: true, priority_tier: 0,
     obligation: 'required', handling: 'report',
+    manual_validation: { status: 'not_reviewed', prompts: ['Test with a keyboard only.'], environment_note: 'Use the conditions that apply.', limitations: ['Automated tools find a subset.'] },
   };
   const html = renderAccessibilityPage(target, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
   assert.match(html, /id="h-scope-regions">Findings by page region/);
@@ -1394,6 +1395,8 @@ test('renderAccessibilityPage groups findings by page region, sample-based and a
   // Sample-based wording, not a claim about every instance.
   assert.match(html, /sample-based counts/);
   assert.match(html, /1 finding\(s\) had no landmark; 1 could not be located/);
+  assert.match(html, /<dt>Manual validation<\/dt><dd>Not reviewed\./);
+  assert.match(html, /Test with a keyboard only\./);
 });
 
 test('renderExplorerPage has a no-JS static index, filters and a detail panel', () => {

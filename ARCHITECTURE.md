@@ -437,6 +437,12 @@ component, not proof of shared ownership or a fix count. The grouping is
 computed once in `summarizeRecords` and rendered (Accessibility page table), and
 exported (CSV, JSON API), from that same record.
 
+Manual validation guidance is generated deterministically from the finding's
+criterion or rule (`src/lib/manual-validation.js`) and rendered on the
+Accessibility page and in the Explorer. The structured review record is created
+in the browser on demand: VITAL never stores it, never marks a review complete
+and never converts it into a conformance claim.
+
 Reproduction is an explicit consumer, never a scheduled step:
 `src/lib/reproduction.js` turns stored evidence into a plan, and
 `scripts/reproduce.js` / the Explorer generate or run a standalone Playwright
