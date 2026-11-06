@@ -275,6 +275,26 @@ findings.
 - Per-week CSV: `<domain>_<DDMONYYYY>_regions.csv` (one row per region:
   findings, summed pages/instances, components, representative URLs).
 
+### Reproduction state (additive v1 fields)
+
+`findings[].reproduction` says whether the stored evidence can be replayed, not
+whether a run happened. The API never runs anything.
+
+- `status: "not_attempted"` — the evidence is sufficient. The object carries
+  `locator` (`{ strategy: "css", value }`), `rule` (`{ engine, id, impact }`),
+  `context` (recorded viewport/colour scheme/forced colours/reduced motion/
+  locale), `interaction_required`, `steps` (empty until interaction sequences
+  are recorded) and `verified_at: null`.
+- `status: "unavailable"` — with `reason`: `element-evidence-unavailable`,
+  `element-not-found-at-scan`, `selector-not-replayable`,
+  `url-redacted-for-publication`, or
+  `only-axe-core-findings-can-be-replayed`. No selector is guessed.
+- The runnable test is generated on demand by the Finding Explorer or
+  `scripts/reproduce.js` from the same plan; its outcomes use the statuses in
+  `src/lib/reproduction.js` (`reproduced`, `not_reproduced`,
+  `locator_not_found`, `ambiguous_locator`, `interaction_state_unavailable`,
+  `page_unavailable`, `rule_or_engine_changed`, `inconclusive`).
+
 ### Snapshot Contents
 
 Full per-domain history: a `summary` block (severity counts + pages scanned),

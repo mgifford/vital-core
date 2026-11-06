@@ -24,7 +24,7 @@ a build step, or a required browser extension. See "Explicit exclusions".
 | **Semantic region / landmark / widget context** | **Added (PR 1)** | `src/lib/semantic-context.js` |
 | **Structured element identity + render context** | **Added (PR 1)** | `src/lib/element-evidence.js` |
 | Screenshots / bounding-box overlays | Not built | — |
-| Deterministic Playwright reproduction | Not built | — (issue: PR 4) |
+| Deterministic Playwright reproduction | Added (PR 4) | `src/lib/reproduction.js`, `scripts/reproduce.js` |
 | Manual validation records | Not built | — (issue: PR 5) |
 | ARRM task/role mapping | Deferred | — |
 
@@ -119,16 +119,25 @@ preserved, no new framework.
 - **Not performed:** a human screen-reader pass (NVDA/JAWS/VoiceOver), Dragon or
   other assistive-technology testing. None is claimed.
 
-### PR 4 — Deterministic Playwright reproduction
+### PR 4 — Deterministic Playwright reproduction (implemented)
 
-A generator that emits a plain Playwright test from structured evidence
-(allow-listed actions only, no arbitrary JS), verifies locator cardinality and
-the specific rule, and reports distinct outcomes (`reproduced`, `not_reproduced`,
-`locator_not_found`, `ambiguous_locator`, `rule_changed`, `inconclusive`, …).
-Playwright MCP is optional discovery aid only, never a runtime dependency.
+- `src/lib/reproduction.js`: `reproductionPlan()` (evidence → replayable plan,
+  or `unavailable` with a reason), `executeReproduction()` (one element, one
+  axe rule, element-identity check), `playwrightTestFor()` (standalone `.mjs`).
+- `src/lib/reproduction-runner.js` runs the same function as the generated
+  script, so the CLI and the export cannot diverge; `scripts/reproduce.js`
+  (`npm run reproduce`) runs or exports a finding from a published `bugs.json`.
+- Explorer detail panel downloads `<VS-id>.spec.mjs` on demand; the API exposes
+  `findings[].reproduction` (`not_attempted` / `unavailable`, never a claim that
+  a run happened).
+- Distinct statuses and exit codes 0–6; no arbitrary page JavaScript; no AI.
+- Document-level rules (e.g. `region`, `list`) run document-level axe and then
+  check the recorded element by identity, so a rule failing elsewhere is
+  `not_reproduced`.
 
-Acceptance: fixture defect reproduces; stale/ambiguous locators are explicit
-failures, not false success; scheduled scans never auto-run reproductions.
+Deferred: declarative interaction sequences (steps are empty; a dialog finding
+reports `interaction_state_unavailable` rather than guessing clicks), locator
+recovery, and MCP-assisted discovery (P2 below).
 
 ### PR 5 — Manual validation and handoff
 
@@ -302,8 +311,13 @@ criteria, explicit exclusions, references, priority.
 - Accessible names come from name-bearing attributes only; text content is never
   collected for the failing element.
 - An axe frame/shadow path is not resolved; the example is marked unavailable.
-- No screenshots, no XPath, no reproduction scripts yet. The Explorer's detail
-  panel says so rather than leaving a blank area.
+- No screenshots and no XPath yet. Reproduction is available for axe findings
+  with element evidence; Alfa findings are explicitly unavailable. The Explorer
+  states when a download is unavailable rather than leaving a blank area.
+- No interaction steps are recorded yet, so a finding that needs a dialog or
+  menu opened first is reported as `interaction_state_unavailable`.
+- Reproduction outcomes are not yet stored back into the reports (`verified_at`
+  is null); running a test is a local/CI action.
 - The Explorer's detail panel is a view over the same sanitized findings; the
   canonical full finding remains on the Accessibility page.
 - `evidence` counts describe stored examples, not every instance.
