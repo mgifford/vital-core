@@ -353,7 +353,9 @@ list, in three layers (progressive disclosure):
   every row links back to the finding's canonical anchor on the Accessibility
   page. It can also generate a standalone Playwright reproduction test on
   demand (the same plan `scripts/reproduce.js` runs); neither runs during a
-  scan, and "not reproduced" never means fixed.
+  scan, and "not reproduced" never means fixed. It also downloads a blank
+  manual review record with finding-specific prompts; VITAL never stores it,
+  never marks a review complete and never turns it into a conformance claim.
 
 Conventions to preserve:
 

@@ -149,6 +149,21 @@ as `not_reproduced`, never as a reproduction. Outcomes are explicit
 Alfa findings are reported as unavailable rather than guessed, and a failure to
 reproduce never means the issue is fixed.
 
+### Manual validation guidance and review records
+
+Every finding carries **finding-relevant** manual prompts (for example contrast
+in light, dark and forced-colours modes for 1.4.3; keyboard-only operation for
+2.1.1), suggested test conditions and an explicit limit: automated tools find
+roughly a third of barriers, and recording a review does not establish
+conformance. The prompts appear on the Accessibility page's finding detail and
+in `bugs.md`. The Explorer can download a structured
+`<VS-id>.manual-review.json` with the finding, guidance and a blank review block
+(`status: "not_reviewed"`, reviewer/date/environment/AT/steps/outcome/notes
+empty, `not_a_conformance_claim: true`) for the reviewer to fill in and share
+through their own process — nothing is stored or submitted by VITAL, and no
+status is ever set on the reviewer's behalf. A guided assessment workflow and
+ARRM task/role mapping remain documented follow-ups.
+
 ### Cross-engine consensus (ACT-rule deduplication)
 
 axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.

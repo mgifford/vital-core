@@ -367,11 +367,14 @@ test('buildWeekFindings publishes reproduction state without claiming a run', ()
     severity: 'Serious', frequency: { pages_affected: 1, instances: 1, total_pages_scanned: 1 },
     url: 'https://example.gov/a', selector: 'button', element: { available: true, selector: 'button' },
     browser_context: { viewport: { width: 1280, height: 800 }, color_scheme: 'light' },
+    manual_validation: { status: 'not_reviewed', prompts: ['Try it with a keyboard.'], environment_note: 'Use the conditions that apply.', limitations: ['Automated tools find a subset.'] },
   };
   const data = buildWeekFindings(FAKE_TARGET, summary, [bug], {});
   assert.equal(data.findings[0].reproduction.status, 'not_attempted');
   assert.equal(data.findings[0].reproduction.verified_at, null);
   assert.deepEqual(data.findings[0].reproduction.locator, { strategy: 'css', value: 'button' });
+  assert.equal(data.findings[0].manual_validation.status, 'not_reviewed');
+  assert.deepEqual(data.findings[0].manual_validation.prompts, ['Try it with a keyboard.']);
 
   const unavailable = buildWeekFindings(FAKE_TARGET, summary, [{ ...bug, element: null }], {});
   assert.equal(unavailable.findings[0].reproduction.status, 'unavailable');

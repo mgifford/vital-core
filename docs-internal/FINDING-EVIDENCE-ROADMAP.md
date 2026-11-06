@@ -25,7 +25,7 @@ a build step, or a required browser extension. See "Explicit exclusions".
 | **Structured element identity + render context** | **Added (PR 1)** | `src/lib/element-evidence.js` |
 | Screenshots / bounding-box overlays | Not built | — |
 | Deterministic Playwright reproduction | Added (PR 4) | `src/lib/reproduction.js`, `scripts/reproduce.js` |
-| Manual validation records | Not built | — (issue: PR 5) |
+| Manual validation guidance + record export | Added (PR 5) | `src/lib/manual-validation.js`, Explorer download |
 | ARRM task/role mapping | Deferred | — |
 
 There is one component-classification system (`shared-components.js`). This
@@ -139,14 +139,23 @@ Deferred: declarative interaction sequences (steps are empty; a dialog finding
 reports `interaction_state_unavailable` rather than guessing clicks), locator
 recovery, and MCP-assisted discovery (P2 below).
 
-### PR 5 — Manual validation and handoff
+### PR 5 — Manual validation and handoff (implemented)
 
-Per-finding "Manual validation" guidance, downloadable review record, explicit
-statuses, documentation, and the final deferral list. A checkbox is never
-evidence; no wording implies conformance.
+- `src/lib/manual-validation.js`: criterion/rule-specific prompts (max three),
+  suggested conditions, and limitations that state automation covers roughly a
+  third of barriers and a review is not a conformance claim.
+- Rendered on the Accessibility page's finding detail and in `bugs.md`; the
+  Explorer adds a "Manual validation" block and downloads a blank
+  `<VS-id>.manual-review.json` (`status: not_reviewed`, reviewer/date/
+  environment/AT/steps/outcome/notes empty, `not_a_conformance_claim: true`).
+- The API exposes `findings[].manual_validation` (status always
+  `not_reviewed`); it never publishes or invents a review.
+- No storage: the record is generated on demand and shared through the
+  reviewer's own process.
 
-Acceptance: automated vs manual records stay separate; no "verified"/"compliant"
-claims; all deferred items discoverable here.
+Not implemented (deliberately): a guided manual assessment platform, hosted
+review storage, GitHub submission, and ARRM task/role mapping. The guided
+assessment and ARRM items remain in "Deferred work" below.
 
 ## 4. Deferred work
 
@@ -286,6 +295,21 @@ criteria, explicit exclusions, references, priority.
 - **Exclusions:** no automatic assignment or issue creation.
 - **Priority:** P3.
 
+### P3 — Cache the Explorer script as a site asset
+
+- **Motivation:** the Explorer inlines ~31 KB of script per week/locale page
+  (filters, reproduction and manual-record generators). Weekly archives
+  accumulate it.
+- **Proposed behaviour:** emit one `explorer.js` under `docs/`, pass per-page
+  data (bugs JSON name, report href, labels) through data attributes, and
+  reference the shared file so browsers cache it.
+- **Dependencies:** PR 3/4/5 script modules.
+- **Acceptance:** identical behaviour; one cached file; Explorer page weight
+  drops by roughly the script size; no inline data beyond small attributes.
+- **Exclusions:** no build step and no bundler; the asset is written by
+  `writeAsset()` like `style.css`.
+- **Priority:** P3.
+
 ### P3 — Historical component trends
 
 - **Motivation:** the programme exists to track improvement over weeks.
@@ -318,6 +342,11 @@ criteria, explicit exclusions, references, priority.
   menu opened first is reported as `interaction_state_unavailable`.
 - Reproduction outcomes are not yet stored back into the reports (`verified_at`
   is null); running a test is a local/CI action.
+- Manual review records are generated on demand and are not stored by VITAL;
+  no review status is persisted, and a recorded review is never converted into
+  a conformance claim.
+- A guided manual assessment workflow, hosted/GitHub review submission and
+  ARRM task/role mapping remain deferred (P2 below).
 - The Explorer's detail panel is a view over the same sanitized findings; the
   canonical full finding remains on the Accessibility page.
 - `evidence` counts describe stored examples, not every instance.

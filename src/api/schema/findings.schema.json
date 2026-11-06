@@ -116,6 +116,17 @@
           "type": ["object", "null"],
           "description": "Completeness of the stored evidence: instances_total, examples_captured, example_limit, examples_truncated, element_identity and semantic_context capture status. Capped examples are a sample, not every instance."
         },
+        "manual_validation": {
+          "type": ["object", "null"],
+          "description": "Finding-specific manual guidance. status is only ever not_reviewed: VITAL never marks a review complete, and recording one does not establish conformance.",
+          "properties": {
+            "status": { "const": "not_reviewed" },
+            "prompts": { "type": "array", "items": { "type": "string" } },
+            "environment_note": { "type": "string" },
+            "limitations": { "type": "array", "items": { "type": "string" } }
+          },
+          "required": ["status"]
+        },
         "reproduction": {
           "type": "object",
           "description": "Deterministic reproduction state. not_attempted means the stored evidence can be replayed; unavailable carries a reason and no selector. Tests are generated on demand; the API never implies a run happened.",

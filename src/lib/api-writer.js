@@ -234,6 +234,12 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         semantic_context: evidence?.semantic_context ?? null,
         evidence:       b.evidence ? { ...b.evidence } : null,
         reproduction:   publicReproduction(b),
+        manual_validation: b.manual_validation ? {
+          status: b.manual_validation.status,
+          prompts: b.manual_validation.prompts,
+          environment_note: b.manual_validation.environment_note,
+          limitations: b.manual_validation.limitations,
+        } : null,
         pages_affected: b.frequency.pages_affected,
         trend_status:   deriveTrend(b, ledgerEntry),
         first_seen:     b.first_seen ?? null,

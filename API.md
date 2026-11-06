@@ -295,6 +295,23 @@ whether a run happened. The API never runs anything.
   `locator_not_found`, `ambiguous_locator`, `interaction_state_unavailable`,
   `page_unavailable`, `rule_or_engine_changed`, `inconclusive`).
 
+### Manual validation (additive v1 fields)
+
+`findings[].manual_validation` carries finding-specific guidance, never a
+completion claim:
+
+- `status` is always `"not_reviewed"`.
+- `prompts` (at most three) are chosen from the WCAG success criterion or the
+  rule, with a generic fallback.
+- `environment_note` says which conditions may apply (not every item applies to
+  every finding).
+- `limitations` states that automated tools find roughly a third of barriers and
+  that recording a review does not establish conformance.
+
+The structured review record is generated and downloaded client-side by the
+Finding Explorer (`<VS-id>.manual-review.json`); it is not published by the API
+and never sets a reviewer, date, outcome or status.
+
 ### Snapshot Contents
 
 Full per-domain history: a `summary` block (severity counts + pages scanned),
