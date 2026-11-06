@@ -590,3 +590,29 @@ export function writePriorityPages(repDir, domain, week, generatedAt, bugs, lhDe
 
   return { csv: csvName, json: jsonName };
 }
+
+/**
+ * Write a regions.csv: one row per landmark region, with the sample-based
+ * counts from summary.regions. Pages/instances are sums across findings, not
+ * distinct counts; the file says so in the header comments of the report page.
+ * Returns the filename or null when there are no regions.
+ */
+export function writeRegionCsv(repDir, domain, week, regions) {
+  const rows = regions?.regions ?? [];
+  if (!rows.length) return null;
+  const headers = ['region', 'role', 'name', 'unclassified', 'findings', 'pages_affected_sum', 'instances_total', 'components', 'representative_urls'];
+  const data = rows.map((region) => [
+    region.label,
+    region.role ?? '',
+    region.name ?? '',
+    region.unclassified ? 'true' : 'false',
+    region.findings,
+    region.pages_affected_sum,
+    region.instances_total,
+    (region.components ?? []).map((component) => component.id).join(' | '),
+    [...new Set((region.representative ?? []).map((item) => item.url))].join(' | '),
+  ]);
+  const name = `${filePrefix(domain, week)}_regions.csv`;
+  fs.writeFileSync(path.join(repDir, name), toCsv(headers, data));
+  return name;
+}

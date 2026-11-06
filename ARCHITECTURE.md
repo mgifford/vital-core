@@ -429,6 +429,14 @@ widget (dialog, tablist, navigation, …). The same bounded record travels with
 the example into `summary.json`, bug reports, `bugs.json`, the JSON API and
 Markdown, so no consumer rescans the page.
 
+`src/lib/region-groups.js` then groups the week's findings by nearest landmark
+region and by configured component / candidate widget. Identity is split on
+purpose (type, implementation, occurrence) and `ownership_established` is always
+false: a widget role is a candidate, and a configured signature is a declared
+component, not proof of shared ownership or a fix count. The grouping is
+computed once in `summarizeRecords` and rendered (Accessibility page table), and
+exported (CSV, JSON API), from that same record.
+
 Limits are explicit rather than implied: examples are a capped sample (3 per
 page per rule, 5 per rule per week); Alfa targets are serialized node
 descriptions, so Alfa element evidence is recorded as unavailable; computed

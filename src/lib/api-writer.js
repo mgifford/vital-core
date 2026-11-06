@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { redactUrl, deepRedactUrls } from './api-redact.js';
 import { buildFindingReporting, sanitizeEvidence } from './finding-reporting.js';
+import { safeSelector } from './element-evidence.js';
 
 export const SCHEMA_VERSION = '1';
 
@@ -146,6 +147,26 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
   };
 }
 
+/**
+ * Public copy of a region/component grouping: every `url` value is redacted by
+ * deepRedactUrls, selectors pass the same allowlist as finding evidence, and
+ * representative lists stay capped.
+ */
+function publicGrouping(grouping, denyParams) {
+  if (!grouping) return null;
+  const redacted = deepRedactUrls(grouping, { denyParams });
+  for (const key of ['regions', 'groups']) {
+    for (const entry of redacted[key] ?? []) {
+      if (!Array.isArray(entry.representative)) continue;
+      entry.representative = entry.representative.slice(0, 3).map((item) => ({
+        url: item.url ?? null,
+        selector: safeSelector(item.selector),
+      }));
+    }
+  }
+  return redacted;
+}
+
 export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
   const reporting = buildFindingReporting(bugs, { denyParams: target.api_redact_params ?? [], summary });
   return {
@@ -155,8 +176,15 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
     generated_at: new Date().toISOString(),
     pages_scanned: summary.pagesScanned ?? 0,
     reporting: reporting.summary,
-    ...(summary.sharedComponents || summary.pageFamilies
-      ? { scope_of_analysis: { shared_components: summary.sharedComponents ? { ...summary.sharedComponents, rules: undefined } : null, page_families: summary.pageFamilies ?? null } }
+    ...(summary.sharedComponents || summary.pageFamilies || summary.regions || summary.componentGroups
+      ? {
+          scope_of_analysis: {
+            shared_components: summary.sharedComponents ? { ...summary.sharedComponents, rules: undefined } : null,
+            page_families: summary.pageFamilies ?? null,
+            ...(summary.regions ? { regions: publicGrouping(summary.regions, target.api_redact_params ?? []) } : {}),
+            ...(summary.componentGroups ? { component_groups: publicGrouping(summary.componentGroups, target.api_redact_params ?? []) } : {}),
+          },
+        }
       : {}),
     top_actions: apiTopActions(summary, target.api_redact_params ?? []),
     findings: bugs.map(b => {

@@ -375,6 +375,15 @@ try {
   const w1acc = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessible.html'), 'utf8');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
+  assert(/id="h-scope-regions">Findings by page region/.test(w1acc), 'accessibility page groups findings by region');
+  assert(/<th scope="row">main \(unnamed\)<\/th>/.test(w1acc), 'main is a region row');
+  assert(/could not be located by the scanner/.test(w1acc), 'findings without element evidence are counted separately');
+  assert(/Download region CSV/.test(w1acc), 'region grouping links its CSV export');
+  const regionsCsv = fs.readdirSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23'))
+    .find((name) => /_regions\.csv$/.test(name));
+  assert(!!regionsCsv, 'regions.csv is written');
+  const regionsCsvText = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', regionsCsv), 'utf8');
+  assert(/^region,role,name,unclassified,findings/.test(regionsCsvText), 'regions.csv has the documented header');
 
   // Third-party JS: every page loads a script from 127.0.0.1 while the page
   // itself is on localhost — a different registrable domain — so the engine

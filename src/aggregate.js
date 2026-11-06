@@ -10,7 +10,7 @@ import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { weekDeltas, severityBurndown, streaks, deltaSeries } from './lib/progress.js';
 import { loadPdfLedger, pdfReportView } from './lib/pdf-audit.js';
-import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writePdfsCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs, writeTrendsCsv } from './lib/csv.js';
+import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writePdfsCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs, writeTrendsCsv, writeRegionCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { resolvePageRecord } from './lib/page-records.js';
@@ -26,6 +26,7 @@ import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { condenseInstance, MAX_RULE_INSTANCES } from './lib/element-evidence.js';
+import { buildComponentGroups, buildRegionGroups, findingsFromRules } from './lib/region-groups.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { assessAccess, withoutBlockedAudits } from './lib/access.js';
 import { omitHeavyLists, trendSeries } from './lib/trend.js';
@@ -107,6 +108,10 @@ for (const target of config.targets) {
     const summary = summarizeWeek(target, week);
     if (summary) {
       series.push(summary);
+      // The region CSV is written later, but its name is deterministic, so
+      // record it here: summary.json is written below and a pruned week must
+      // still link to the export it shipped with.
+      if (summary.regions) summary.regions.csv = `${filePfx(target.domain, week)}_regions.csv`;
       const summaryPath = path.join(domainDir, week, 'summary.json');
       // summarizeRecords() stamps a fresh generatedAt on every call, even
       // for weeks whose underlying page data hasn't changed since the last
@@ -369,6 +374,11 @@ for (const target of config.targets) {
       summary.techJson = techJsonName;
     }
     const tpCsv = summary.thirdParty?.vendors?.length ? writeThirdPartyCsv(repDir, target.domain, summary.week, summary) : null;
+    // Region grouping is sample-based; the CSV is the complete grouped export.
+    if (summary.regions) {
+      const regionCsv = writeRegionCsv(repDir, target.domain, summary.week, summary.regions);
+      if (regionCsv) summary.regions.csv = regionCsv;
+    }
     const imagesCsv = summary.images?.imageRows?.length ? writeImagesCsv(repDir, target.domain, summary.week, summary) : null;
     // Deduplicated image inventory as JSON (src, alt, bytes, occurrences,
     // alt-text verdict, example pages).
@@ -1001,6 +1011,15 @@ function summarizeRecords(target, week, records, brokenLinks) {
       ? { status: Number(dominantStatus) }
       : null;
 
+  // Where the findings sit, from the stored examples PR 1 records: by landmark
+  // region and by configured component / candidate widget. Computed once here
+  // so reports, the CSV and the API all read the same grouping.
+  const regionFindings = findingsFromRules({ axe: axeRules, alfa: alfaRules, deprecatedHtml: deprecatedRules });
+  const regions = regionFindings.length ? buildRegionGroups(regionFindings) : null;
+  const componentGroups = regionFindings.length
+    ? buildComponentGroups(regionFindings, { signatures: target.componentSignatures ?? [] })
+    : null;
+
   return {
     domain: target.domain,
     week,
@@ -1037,6 +1056,10 @@ function summarizeRecords(target, week, records, brokenLinks) {
     // ACT-rule/page grouping for mapping overlap. Same-element duplicate
     // judgments are attached later to bug reports using observation evidence.
     consensus: buildConsensus(axeRules, alfaRules),
+    // Sample-based grouping of findings by page region and by component/widget.
+    // Null when there are no findings, so an empty week stays empty.
+    regions,
+    componentGroups: componentGroups?.attributed ? componentGroups : null,
     sustainability: bytesList.length
       ? {
           pages: bytesList.length,

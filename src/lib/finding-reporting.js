@@ -143,6 +143,11 @@ export function buildFindingReporting(bugs, opts = {}) {
       remediation_task_count: null,
       ownership: 'not_established',
       component_scope: bug.component_scope ?? null,
+      // Where the finding was found, from the first stored example (sample).
+      // Null when no element evidence was captured; unclassified is explicit.
+      region: bug.semantic_context?.nearest_region ?? null,
+      region_unclassified: bug.semantic_context ? !bug.semantic_context.nearest_region : null,
+      region_evidence: bug.semantic_context ? 'captured' : 'unavailable',
       page_family: pageFamilyFor(urls, pageCount, opts.summary?.pageFamilies),
       engine_observation_count: bug.frequency?.instances ?? null,
       engine_severity: bug.engine_severity ?? rule?.impact ?? null,
