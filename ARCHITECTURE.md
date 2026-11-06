@@ -437,6 +437,14 @@ component, not proof of shared ownership or a fix count. The grouping is
 computed once in `summarizeRecords` and rendered (Accessibility page table), and
 exported (CSV, JSON API), from that same record.
 
+The Finding Explorer (`explore.html`) is rendered from the same `reportBugs`
+list. Its static index is server-rendered and complete without JavaScript; the
+progressive enhancement fetches the published `bugs.json` and filters it with
+the same `finding-filter.js` functions the server uses, rendering the detail
+panel with DOM text nodes (never HTML injection). It adds no scan and no new
+data source; the canonical full finding stays on the Accessibility page and
+every row links back to its anchor.
+
 Limits are explicit rather than implied: examples are a capped sample (3 per
 page per rule, 5 per rule per week); Alfa targets are serialized node
 descriptions, so Alfa element evidence is recorded as unavailable; computed

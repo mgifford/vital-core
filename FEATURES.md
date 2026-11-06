@@ -116,6 +116,23 @@ pages and instances are summed across findings, not distinct counts, and
 Component identity is split into type, implementation and occurrence; a type is
 not an implementation and grouping is not ownership.
 
+### Finding Explorer
+
+A per-week `explore.html` page turns the finding list into an inspection
+surface. **Without JavaScript** it renders a complete static index — every
+finding with severity, engine, region, component and affected pages, each
+linking to its full report anchor — plus the week's by-region and by-component
+tables. **With JavaScript** it adds filters (region, component, engine,
+severity, free-text search) and a detail panel for the selected finding: rule,
+WCAG, URL, selector, captured element facts (tag, explicit role, name
+attributes, match count, visibility, shadow/iframe), region path, widget,
+component attribution and evidence completeness, stored examples and steps to
+reproduce — always with a link back to the canonical report. The filter logic
+lives in `src/lib/finding-filter.js`, is unit-tested in Node and is reused
+verbatim in the browser, so the static and enhanced views cannot drift. The
+panel explicitly says when evidence, screenshots or reproduction scripts are
+not available yet.
+
 ### Cross-engine consensus (ACT-rule deduplication)
 
 axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.

@@ -9,6 +9,7 @@ import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
 import { scopeViewsFor } from './lib/shared-components.js';
+import { findingRegionLabel, findingComponentLabel, findingRegionKey, findingComponentKey, filterFindings } from './lib/finding-filter.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -309,6 +310,7 @@ const PAGES = {
   errors: 'errors',
   tech: 'tech',
   'tech-findings': 'tech-findings',
+  explorer: 'explore',
   history: 'history',
   archive: 'archive',
 };
@@ -340,7 +342,7 @@ function pageHref(key, anchor = '') {
  */
 const SUBNAV_GROUPS = [
   { label: null, items: [['overview', 'Overview']] },
-  { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['images', 'Images'], ['pdfs', 'PDFs']] },
+  { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['explorer', 'Findings explorer'], ['images', 'Images'], ['pdfs', 'PDFs']] },
   { label: 'Fast?', items: [['lighthouse', 'Lighthouse']] },
   { label: 'Findable?', items: [['readability', 'Readability'], ['standards', 'Standards']] },
   { label: 'Trustworthy?', items: [['security', 'Security'], ['third-party', 'Third parties'], ['errors', 'Errors']] },
@@ -555,14 +557,16 @@ ${inner}
  * Accessible light/dark theme toggle, following the light-dark-mode skill
  * from mgifford/accessibility-skills:
  *  - defaults to prefers-color-scheme; manual choice persists in localStorage
- *  - aria-label describes the ACTION ("Switch to dark mode"), updated on click
+ *  - aria-label contains the visible "Theme" label and describes the ACTION,
+ *    updated on click (label-content-name-mismatch, WCAG 2.5.3)
  *  - shows the moon in light mode (action: go dark) and sun in dark mode
  *  - keyboard-operable native <button>, placed after nav, not sticky
- * The toggle and its tiny script are the only JS in the reports; with JS
- * off, prefers-color-scheme still applies (progressive enhancement).
+ * JS in the reports is progressive only (theme toggle, Explorer filters,
+ * triage/exclusion helpers); with JS off, every page's core content and
+ * prefers-color-scheme still apply.
  */
 function themeToggle() {
-  return `<button id="theme-toggle" type="button" class="theme-toggle" aria-label="${esc(t('Switch to dark mode'))}" aria-pressed="false" hidden>
+  return `<button id="theme-toggle" type="button" class="theme-toggle" aria-label="${esc(t('Theme'))}: ${esc(t('Switch to dark mode'))}" aria-pressed="false" hidden>
   <svg class="icon-sun" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20">
     <circle cx="12" cy="12" r="5" fill="currentColor"/>
     <path stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"
@@ -585,8 +589,9 @@ function themeToggle() {
     }
     function sync() {
       var dark = current() === 'dark';
-      // Label/pressed describe the action and state for screen readers.
-      btn.setAttribute('aria-label', dark ? ${JSON.stringify(t('Switch to light mode'))} : ${JSON.stringify(t('Switch to dark mode'))});
+      // The accessible name starts with the visible "Theme" label (WCAG 2.5.3)
+      // and then describes the action/state. Both parts stay translated.
+      btn.setAttribute('aria-label', ${JSON.stringify(t('Theme'))} + ': ' + (dark ? ${JSON.stringify(t('Switch to light mode'))} : ${JSON.stringify(t('Switch to dark mode'))}));
       btn.setAttribute('aria-pressed', String(dark));
     }
     sync();
@@ -1787,6 +1792,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('confirmed duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd><a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -5549,4 +5555,397 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .page-result-summary { cursor: pointer; padding: .6rem 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .6rem; }
 .violation-item { border-top: 1px solid var(--rule); padding: .5rem 0; }
 .violation-item + .violation-item { padding-top: .5rem; }
+/* Finding Explorer: static index stays usable without JavaScript; filters and
+   the detail panel are the enhancement. No colour-only meaning. */
+.explorer-filters { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: end; margin: 1rem 0; }
+.explorer-filters[hidden] { display: none; }
+.explorer-field { display: flex; flex-direction: column; gap: .25rem; min-width: 11rem; }
+.explorer-field label { font-weight: 600; }
+.explorer-field input, .explorer-field select { font: inherit; padding: .35rem .45rem; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; }
+.explorer-field input:focus-visible, .explorer-field select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.explorer-results { list-style: none; padding: 0; margin: 1rem 0; }
+.explorer-results li { padding: .45rem 0; border-bottom: 1px solid var(--rule); }
+.explorer-results a { display: block; }
+.explorer-results .bug-meta { display: block; margin-top: .2rem; }
+.explorer-detail { border: 2px solid var(--accent); border-radius: 4px; padding: 1rem; margin: 1.25rem 0; }
+.explorer-detail:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.explorer-detail h3 { margin-top: 0; }
+@media (max-width: 40rem) { .explorer-field { min-width: 100%; } }
 `;
+
+// ---------------------------------------------------------------------------
+// Finding Explorer
+// ---------------------------------------------------------------------------
+
+const EXPLORER_ROW_LIMIT = 200;
+
+/**
+ * The page reuses finding-filter.js in the browser, so the filter logic has
+ * exactly one implementation (unit-tested in Node, stringified here).
+ */
+function explorerScript({ bugsJson, reportHref, labels }) {
+  const filterSource = [findingRegionKey, findingRegionLabel, findingComponentKey, findingComponentLabel, filterFindings]
+    .map((fn) => fn.toString())
+    .join('\n');
+  return `<script>
+(function () {
+  'use strict';
+  var LABELS = ${JSON.stringify(labels)};
+  ${filterSource}
+  var BUGS_JSON = ${JSON.stringify(bugsJson)};
+  var REPORT_HREF = ${JSON.stringify(reportHref)};
+  var form = document.getElementById('explorer-filters');
+  var results = document.getElementById('explorer-results');
+  var status = document.getElementById('explorer-status');
+  var detail = document.getElementById('explorer-detail');
+  var detailTitle = document.getElementById('explorer-detail-title');
+  var detailBody = document.getElementById('explorer-detail-body');
+  var closeButton = document.getElementById('explorer-close');
+  var clearButton = document.getElementById('explorer-clear');
+  var staticIndex = document.getElementById('explorer-static');
+  if (!form || !results || !status || !detail || !detailTitle || !detailBody) return;
+  var bugs = [];
+  var activeId = null;
+
+  function text(tag, value, className) {
+    var node = document.createElement(tag);
+    if (value !== null && value !== undefined) node.textContent = String(value);
+    if (className) node.className = className;
+    return node;
+  }
+  function externalLink(href, value) {
+    var node = document.createElement('a');
+    node.href = href;
+    node.textContent = String(value);
+    node.rel = 'noreferrer noopener';
+    return node;
+  }
+  function pair(label, value) {
+    var row = document.createElement('div');
+    row.appendChild(text('dt', label));
+    var dd = document.createElement('dd');
+    if (value && value.nodeType) dd.appendChild(value);
+    else dd.textContent = value === null || value === undefined || value === '' ? LABELS.notCaptured : String(value);
+    row.appendChild(dd);
+    return row;
+  }
+  function fieldValue(id) {
+    var node = document.getElementById(id);
+    return node ? node.value : '';
+  }
+  function readState() {
+    return {
+      region: fieldValue('explorer-region'),
+      component: fieldValue('explorer-component'),
+      engine: fieldValue('explorer-engine'),
+      severity: fieldValue('explorer-severity'),
+      query: fieldValue('explorer-query'),
+    };
+  }
+  function regionPath(bug) {
+    var context = bug.semantic_context;
+    if (!context) return LABELS.evidenceUnavailable;
+    var parts = (context.region_ancestry || []).map(function (entry) {
+      return entry.name ? entry.role + ' "' + entry.name + '"' : entry.role;
+    });
+    if (context.widget) parts.push((context.widget.role || '') + (context.widget.name ? ' "' + context.widget.name + '"' : ''));
+    return parts.length ? parts.join(' > ') : findingRegionLabel(bug);
+  }
+  function componentText(bug) {
+    var scope = bug.component_scope;
+    if (scope && scope.component_id) {
+      return (scope.component_label || scope.component_id) + ' · ' + LABELS.configured + ' · ' + LABELS.implementation + ': ' + (scope.implementation || scope.component_id) + ' · ' + LABELS.ownership;
+    }
+    var widget = bug.semantic_context && bug.semantic_context.widget;
+    if (widget && widget.role) return widget.role + ' · ' + LABELS.candidate + ' · ' + LABELS.ownership;
+    return LABELS.unattributed;
+  }
+  function closeDetail() {
+    if (!activeId) return;
+    var previous = activeId;
+    detail.hidden = true;
+    detailBody.textContent = '';
+    activeId = null;
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    var back = results.querySelector('a[data-id="' + previous + '"]');
+    if (back) back.focus();
+  }
+  function select(id, updateHash) {
+    var bug = null;
+    for (var i = 0; i < bugs.length; i++) if (bugs[i].instance_id === id) { bug = bugs[i]; break; }
+    if (!bug) return;
+    activeId = id;
+    detailBody.textContent = '';
+    detailTitle.textContent = (bug.summary || bug.rule_label || bug.rule_id) + ' — ' + id;
+    var list = document.createElement('dl');
+    list.appendChild(pair(LABELS.rule, bug.rule_id + (bug.rule_label ? ' — ' + bug.rule_label : '')));
+    list.appendChild(pair(LABELS.engine, bug.engine_key));
+    list.appendChild(pair(LABELS.severity, bug.severity));
+    list.appendChild(pair(LABELS.wcag, bug.wcag_sc ? bug.wcag_sc + (bug.wcag_name ? ' — ' + bug.wcag_name : '') + (bug.wcag_level ? ' (' + LABELS.level + ' ' + bug.wcag_level + ')' : '') : ''));
+    var frequency = bug.frequency || {};
+    list.appendChild(pair(LABELS.pages, (frequency.pages_affected || 0) + ' / ' + (frequency.total_pages_scanned || 0)));
+    if (bug.url) list.appendChild(pair(LABELS.url, externalLink(bug.url, bug.url)));
+    if (bug.selector) list.appendChild(pair(LABELS.selector, text('code', bug.selector)));
+    var element = bug.element;
+    if (element && element.available) {
+      var parts = ['<' + element.tag + '>'];
+      if (element.role) parts.push('role=' + element.role);
+      if (element.name) parts.push('name="' + element.name + '"');
+      parts.push((element.selector_matches === null || element.selector_matches === undefined ? '?' : element.selector_matches) + ' ' + LABELS.matches);
+      parts.push(element.visible ? LABELS.visible : LABELS.hidden);
+      if (element.shadow) parts.push(LABELS.shadow);
+      if (element.iframe) parts.push(LABELS.iframe);
+      list.appendChild(pair(LABELS.element, parts.join(' · ')));
+    } else {
+      list.appendChild(pair(LABELS.element, LABELS.noEvidence));
+    }
+    list.appendChild(pair(LABELS.region, regionPath(bug)));
+    if (bug.semantic_context && bug.semantic_context.widget) {
+      list.appendChild(pair(LABELS.widget, bug.semantic_context.widget.role + (bug.semantic_context.widget.name ? ' "' + bug.semantic_context.widget.name + '"' : '')));
+    }
+    list.appendChild(pair(LABELS.component, componentText(bug)));
+    var evidence = bug.evidence;
+    if (evidence) {
+      var ev = [evidence.element_identity === 'captured' ? LABELS.captured : LABELS.evidenceUnavailable];
+      if (evidence.examples_captured !== undefined) ev.push(evidence.examples_captured + ' / ' + evidence.example_limit + ' ' + LABELS.examples);
+      ev.push(evidence.examples_truncated ? LABELS.truncated : LABELS.complete);
+      list.appendChild(pair(LABELS.evidence, ev.join(' · ')));
+    }
+    var context = bug.browser_context;
+    if (context) {
+      var ctx = [];
+      if (context.viewport) ctx.push(context.viewport.width + '×' + context.viewport.height);
+      if (context.color_scheme) ctx.push(context.color_scheme);
+      if (context.forced_colors) ctx.push(context.forced_colors);
+      if (context.reduced_motion) ctx.push(context.reduced_motion);
+      if (context.locale) ctx.push(context.locale);
+      if (context.final_url) ctx.push(context.final_url);
+      list.appendChild(pair(LABELS.browser, ctx.join(' · ')));
+    }
+    list.appendChild(pair(LABELS.interaction, LABELS.notCaptured));
+    list.appendChild(pair(LABELS.reproduction, LABELS.notGenerated));
+    detailBody.appendChild(list);
+    if (Array.isArray(bug.steps_to_reproduce) && bug.steps_to_reproduce.length) {
+      detailBody.appendChild(text('h4', LABELS.steps));
+      var steps = document.createElement('ol');
+      bug.steps_to_reproduce.forEach(function (step) { steps.appendChild(text('li', step)); });
+      detailBody.appendChild(steps);
+    }
+    if (Array.isArray(bug.examples) && bug.examples.length) {
+      detailBody.appendChild(text('h4', LABELS.examples));
+      bug.examples.forEach(function (example) {
+        if (example.selector) detailBody.appendChild(text('p', example.selector, 'bug-meta'));
+        if (example.html_snippet) {
+          var pre = document.createElement('pre');
+          var code = document.createElement('code');
+          code.textContent = example.html_snippet;
+          pre.appendChild(code);
+          detailBody.appendChild(pre);
+        }
+      });
+    }
+    if (bug.impact && bug.impact.summary) {
+      detailBody.appendChild(text('h4', LABELS.impact));
+      detailBody.appendChild(text('p', bug.impact.summary));
+    }
+    detailBody.appendChild(text('p', '')).appendChild(externalLink(REPORT_HREF + '#' + bug.instance_id, LABELS.fullReport));
+    detail.hidden = false;
+    if (updateHash) history.replaceState(null, '', '#' + bug.instance_id);
+    detailTitle.setAttribute('tabindex', '-1');
+    detailTitle.focus();
+  }
+  function apply() {
+    var filtered = filterFindings(bugs, readState());
+    status.textContent = LABELS.showing.replace('@shown', filtered.length).replace('@total', bugs.length);
+    results.textContent = '';
+    filtered.forEach(function (bug) {
+      var li = document.createElement('li');
+      var anchor = document.createElement('a');
+      anchor.href = '#' + bug.instance_id;
+      anchor.setAttribute('data-id', bug.instance_id);
+      anchor.appendChild(text('span', bug.severity, 'sev-badge sev-' + String(bug.severity).toLowerCase()));
+      anchor.appendChild(document.createTextNode(' '));
+      anchor.appendChild(text('span', bug.rule_id, 'rule-badge'));
+      anchor.appendChild(document.createTextNode(' ' + (bug.summary || bug.rule_label || '')));
+      anchor.appendChild(text('span', findingRegionLabel(bug) + ' · ' + findingComponentLabel(bug), 'bug-meta'));
+      li.appendChild(anchor);
+      results.appendChild(li);
+    });
+    if (!filtered.length) results.appendChild(text('li', LABELS.none, 'meta'));
+  }
+  form.hidden = false;
+  form.addEventListener('submit', function (event) { event.preventDefault(); apply(); });
+  form.addEventListener('change', apply);
+  form.addEventListener('input', apply);
+  if (clearButton) clearButton.addEventListener('click', function () { form.reset(); apply(); });
+  if (closeButton) closeButton.addEventListener('click', closeDetail);
+  results.addEventListener('click', function (event) {
+    var anchor = event.target.closest ? event.target.closest('a[data-id]') : null;
+    if (!anchor) return;
+    event.preventDefault();
+    select(anchor.getAttribute('data-id'), true);
+  });
+  window.addEventListener('hashchange', function () {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (id) select(id, false);
+    else closeDetail();
+  });
+  fetch(BUGS_JSON, { credentials: 'same-origin' }).then(function (response) {
+    if (!response.ok) throw new Error(String(response.status));
+    return response.json();
+  }).then(function (data) {
+    bugs = Array.isArray(data.reports) ? data.reports : [];
+    if (staticIndex) staticIndex.hidden = true;
+    apply();
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (id) {
+      if (!filterFindings(bugs, readState()).some(function (bug) { return bug.instance_id === id; })) {
+        form.reset();
+        apply();
+      }
+      select(id, false);
+    }
+  }).catch(function () {
+    status.textContent = LABELS.loadError;
+    if (staticIndex) staticIndex.hidden = false;
+  });
+})();
+</script>`;
+}
+
+/**
+ * Finding Explorer: a lightweight inspection surface over the sanitized
+ * bugs.json every report already publishes. The static page (no JavaScript)
+ * lists every finding with its region and component and links to the full
+ * report; with JavaScript it adds filters and a detail panel. It never
+ * duplicates the canonical report: full finding detail stays on the
+ * Accessibility page, and every row links back to its anchor there.
+ */
+export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.json' } = {}) {
+  const rows = (bugs ?? []).slice(0, EXPLORER_ROW_LIMIT).map((bug) => {
+    const href = pageHref('accessibility', bug.instance_id);
+    return `<tr id="${esc(bug.instance_id)}"><th scope="row"><a href="${esc(href)}">${esc(bug.summary || bug.rule_label || bug.rule_id)}</a></th><td><span class="sev-badge">${esc(t(bug.severity))}</span></td><td>${esc(bug.engine_key === 'axe-core' ? 'axe' : bug.engine_key)}</td><td>${esc(findingRegionLabel(bug))}</td><td>${esc(findingComponentLabel(bug))}</td><td class="num">${nf(bug.frequency?.pages_affected ?? 0)}</td></tr>`;
+  }).join('');
+  const regionRows = (summary.regions?.regions ?? []).map((region) =>
+    `<tr><th scope="row">${esc(region.label)}</th><td class="num">${nf(region.findings)}</td><td class="num">${nf(region.pages_affected_sum)}</td></tr>`).join('');
+  const componentRows = (summary.componentGroups?.groups ?? []).map((group) =>
+    `<tr><th scope="row">${esc(group.label)}</th><td>${esc(group.attribution)}</td><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.pages_affected_sum)}</td></tr>`).join('');
+  const options = (items) => items.map((item) =>
+    `<option value="${esc(item.key)}">${esc(item.label)}${item.count ? ` (${nf(item.count)})` : ''}</option>`).join('');
+  const regionOptions = options((summary.regions?.regions ?? []).map((region) => ({ key: region.key, label: region.label, count: region.findings })));
+  const componentOptions = options((summary.componentGroups?.groups ?? []).map((group) => ({
+    key: group.implementation ? `component:${group.implementation}` : `widget:${group.label.replace(' (candidate)', '')}`,
+    label: group.label,
+    count: group.findings,
+  })));
+  const engines = [...new Set((bugs ?? []).map((bug) => bug.engine_key))].sort();
+  const severities = ['Critical', 'Serious', 'Moderate', 'Minor'].filter((severity) => (bugs ?? []).some((bug) => bug.severity === severity));
+
+  const labels = {
+    showing: t('Showing @shown of @total finding(s).'),
+    none: t('No findings match these filters.'),
+    loadError: t('The finding data could not be loaded. The static list below remains available.'),
+    rule: t('Rule'),
+    engine: t('Engine'),
+    severity: t('Severity'),
+    wcag: t('WCAG'),
+    level: t('Level'),
+    pages: t('Pages affected'),
+    url: t('Affected URL'),
+    selector: t('Selector'),
+    element: t('Element'),
+    region: t('Region'),
+    widget: t('Widget'),
+    component: t('Component'),
+    evidence: t('Evidence'),
+    browser: t('Browser context'),
+    interaction: t('Interaction state'),
+    reproduction: t('Reproduction'),
+    steps: t('Steps to reproduce'),
+    examples: t('Stored examples'),
+    impact: t('Impact'),
+    fullReport: t('Open the full report'),
+    noEvidence: t('No element evidence was captured for this finding.'),
+    notCaptured: t('Not captured'),
+    evidenceUnavailable: t('unavailable'),
+    matches: t('match(es)'),
+    visible: t('visible'),
+    hidden: t('not visible'),
+    shadow: t('inside a shadow root'),
+    iframe: t('inside an iframe'),
+    truncated: t('sample truncated'),
+    complete: t('all examples stored'),
+    configured: t('configured'),
+    candidate: t('candidate'),
+    implementation: t('implementation'),
+    ownership: t('ownership not established'),
+    unattributed: t('unattributed'),
+    captured: t('captured'),
+    notGenerated: t('Not generated yet (see the roadmap).'),
+  };
+  const script = explorerScript({ bugsJson, reportHref: pageHref('accessibility'), labels });
+
+  const body = `
+<h1>${esc(target.domain)}: ${t('Findings explorer')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
+${subnav('explorer')}
+<p class="meta">${t('Inspect the week\'s findings by region and component. This view reads the same sanitized evidence as the <a href="@report">Accessibility report</a>; the full finding detail stays there and every row links back to it.', { '@report': esc(pageHref('accessibility')) })}</p>
+<section aria-labelledby="h-explorer-find">
+<h2 id="h-explorer-find">${t('Find and inspect a finding')}</h2>
+<p class="meta">${t('The filters and detail panel need JavaScript. Without it, the complete static index below remains available and links to each finding\'s full report.')}</p>
+<form id="explorer-filters" class="explorer-filters" hidden>
+  <div class="explorer-field"><label for="explorer-region">${t('Region')}</label><select id="explorer-region"><option value="">${t('All regions')}</option>${regionOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-component">${t('Component')}</label><select id="explorer-component"><option value="">${t('All components')}</option>${componentOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-engine">${t('Engine')}</label><select id="explorer-engine"><option value="">${t('All engines')}</option>${options(engines.map((engine) => ({ key: engine, label: engine === 'axe-core' ? 'axe' : engine })))}</select></div>
+  <div class="explorer-field"><label for="explorer-severity">${t('Severity')}</label><select id="explorer-severity"><option value="">${t('All severities')}</option>${options(severities.map((severity) => ({ key: severity, label: t(severity) })))}</select></div>
+  <div class="explorer-field"><label for="explorer-query">${t('Search')}</label><input id="explorer-query" type="search" autocomplete="off"></div>
+  <button type="button" id="explorer-clear" class="triage-btn">${t('Clear filters')}</button>
+</form>
+<p id="explorer-status" role="status" aria-live="polite" class="meta"></p>
+<ul id="explorer-results" class="explorer-results"></ul>
+<section id="explorer-detail" class="explorer-detail" aria-labelledby="explorer-detail-title" tabindex="-1" hidden>
+  <h3 id="explorer-detail-title"></h3>
+  <p><button type="button" id="explorer-close" class="triage-btn">${t('Close details')}</button></p>
+  <div id="explorer-detail-body"></div>
+</section>
+</section>
+<section id="explorer-static" aria-labelledby="h-explorer-static">
+<h2 id="h-explorer-static">${t('All findings this week')}</h2>
+<p class="meta">${t('Static index (no JavaScript needed). Every finding is placed by its first stored example, a sample; pages are the finding\'s affected-page count.')}${(bugs?.length ?? 0) > EXPLORER_ROW_LIMIT ? ` ${t('Showing the first @shown of @total; the CSV and JSON downloads on the Accessibility report have the complete list.', { '@shown': nf(EXPLORER_ROW_LIMIT), '@total': nf(bugs.length) })}` : ''}</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Findings table'))}">
+<table>
+<caption class="visually-hidden">${t('Findings with region and component attribution')}</caption>
+<thead><tr><th scope="col">${t('Finding')}</th><th scope="col">${t('Severity')}</th><th scope="col">${t('Engine')}</th><th scope="col">${t('Region')}</th><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Pages affected')}</th></tr></thead>
+<tbody>${rows || `<tr><td colspan="6">${t('No accessibility findings this week.')}</td></tr>`}</tbody>
+</table>
+</div>
+</section>
+${summary.regions?.regions?.length ? `<section aria-labelledby="h-explorer-regions">
+<h2 id="h-explorer-regions">${t('By region')}</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Region table'))}">
+<table><caption class="visually-hidden">${t('Findings by landmark region')}</caption>
+<thead><tr><th scope="col">${t('Region')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
+<tbody>${regionRows}</tbody></table>
+</div>
+</section>` : ''}
+${summary.componentGroups?.groups?.length ? `<section aria-labelledby="h-explorer-components">
+<h2 id="h-explorer-components">${t('By component')}</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Component table'))}">
+<table><caption class="visually-hidden">${t('Findings by configured component or candidate widget')}</caption>
+<thead><tr><th scope="col">${t('Component')}</th><th scope="col">${t('Attribution')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
+<tbody>${componentRows}</tbody></table>
+</div>
+</section>` : ''}
+<p class="meta">${t('Reproduction scripts, screenshots and manual review records are not generated yet. See the finding evidence roadmap in the repository.')}</p>`;
+
+  return layout({
+    title: `${target.domain} Findings explorer ${summary.week} | vital-scans`,
+    page: 'explorer',
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t('Findings explorer')}</li>`,
+    body,
+    depth: 3,
+    extraScript: script,
+    apiFinding: { key: target.key, week: summary.week },
+    target,
+  });
+}

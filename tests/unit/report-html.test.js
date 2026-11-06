@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import { renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
 import { buildCooccurrence } from '../../src/lib/tech-findings.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
@@ -1394,4 +1394,39 @@ test('renderAccessibilityPage groups findings by page region, sample-based and a
   // Sample-based wording, not a claim about every instance.
   assert.match(html, /sample-based counts/);
   assert.match(html, /1 finding\(s\) had no landmark; 1 could not be located/);
+});
+
+test('renderExplorerPage has a no-JS static index, filters and a detail panel', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25', pagesScanned: 4,
+    regions: { basis: 'stored_examples', findings_total: 1, regions: [{ key: 'main|', role: 'main', name: null, label: 'main (unnamed)', findings: 1, pages_affected_sum: 2 }] },
+    componentGroups: { basis: 'stored_examples', groups: [{ key: 'component:cmp', label: 'Consent dialog', attribution: 'configured', implementation: 'cmp', findings: 1, pages_affected_sum: 2 }] },
+  };
+  const bug = {
+    instance_id: 'VS-explore1', pattern_id: 'VS-p', rule_id: 'button-name',
+    rule_label: 'Buttons must have discernible text', summary: 'Button name', url: 'https://example.gov/a',
+    engine_key: 'axe-core', severity: 'Serious', wcag_sc: '4.1.2', wcag_name: 'Name, Role, Value', wcag_level: 'A',
+    frequency: { instances: 2, pages_affected: 2, total_pages_scanned: 4 },
+    semantic_context: { nearest_region: { role: 'main', name: null, unnamed: true }, region_ancestry: [{ role: 'main', name: null }], widget: null, path: [{ role: 'main', name: null }], unclassified: false },
+    component_scope: { component_id: 'cmp', component_label: 'Consent dialog', implementation: 'cmp' },
+    element: { available: true, tag: 'button', role: null, name: 'Opt-Outs', selector_matches: 1, visible: true, shadow: false, iframe: false },
+    evidence: { element_identity: 'captured', examples_captured: 1, example_limit: 5, examples_truncated: true },
+    browser_context: { viewport: { width: 1280, height: 900 }, color_scheme: 'light', forced_colors: 'none', reduced_motion: 'no-preference', locale: 'en' },
+    examples: [{ url: 'https://example.gov/a', selector: 'button', html_snippet: '<button></button>' }],
+    steps_to_reproduce: ['Open the page.'], impact: { summary: 'Affects screen reader users.' },
+  };
+  const html = renderExplorerPage(target, summary, [bug], { bugsJson: 'example_bugs.json' });
+  assert.match(html, /id="explorer-static"/, 'static index present');
+  assert.match(html, /href="accessible\.html#VS-explore1"/, 'static row links to the canonical finding');
+  assert.match(html, /<tr id="VS-explore1">/, 'static row is a no-JS deep-link target');
+  assert.match(html, /<label for="explorer-region">/, 'filters have visible labels');
+  assert.match(html, /id="explorer-status"[^>]*aria-live="polite"/, 'status is a live region');
+  assert.match(html, /example_bugs\.json/, 'client fetches the published bugs JSON');
+  assert.match(html, /main \(unnamed\)/, 'region column/count present');
+  assert.match(html, /Consent dialog/, 'component table present');
+  assert.match(html, /<caption class="visually-hidden">/, 'tables have captions');
+  // Empty state is honest rather than an empty table.
+  const empty = renderExplorerPage(target, { week: '2026-W25', pagesScanned: 1 }, []);
+  assert.match(empty, /No accessibility findings this week\./);
 });
