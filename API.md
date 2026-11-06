@@ -132,6 +132,55 @@ observation-based heuristics, not verified task counts or causal ownership.
 Queue items now explicitly say `counting_basis: engine_observations_not_tasks`
 and `remediation_task_count: null`. No API version bump or data migration occurs.
 
+### Element and semantic evidence (additive v1 fields)
+
+Captured once at scan time, while the page is already open, and carried by the
+same capped examples every consumer reads. Additive: existing fields keep their
+meaning and `schema_version` stays `"1"`.
+
+- `findings[].selector` is the sanitized CSS selector of the primary stored
+  example (or null). Internally the older `xpath` name still holds the same
+  value for compatibility; for Alfa it is a node description, not a selector.
+- `findings[].element` is the element identity for the primary stored example,
+  or null. When the scanner could not locate the node, it is
+  `{ "available": false, "reason": "not-found" | "invalid-selector" |
+  "alfa-target-is-a-serialized-node-description-not-a-selector" | … }`.
+  When present: `available`, `selector`, `selector_matches` (how many nodes the
+  selector matched when captured), `tag`, `role` (the **explicit** role
+  attribute only — the computed accessibility role is not recorded), `name` and
+  `name_source` (only name-bearing attributes: `aria-label`, `alt`, `title`,
+  `placeholder`, or `aria-labelledby` with `labelledby_ids`), `shadow`,
+  `iframe`, `visible`, `rect`. Element ids and the raw ancestry are withheld
+  from the public API.
+- `findings[].semantic_context` is derived from the serialized ancestor chain:
+  `nearest_region`, `region_ancestry`, `widget`, `widget_ancestry`, `path`,
+  `in_dialog`, `unnamed_landmarks`, `unclassified`. Landmark and widget roles are
+  classified separately. A `<header>`/`<footer>` scoped to
+  `article/aside/main/nav/section` is not `banner`/`contentinfo`; an
+  unnamed `<section>`/`<form>` (or `role="region"`/`role="form"`) is recorded as
+  unnamed, never as a landmark; when no landmark exists the element is
+  `unclassified` rather than assigned an invented region.
+- `findings[].evidence` states completeness: `instances_total`,
+  `examples_captured`, `example_limit` (5), `examples_truncated`,
+  `element_identity` (`captured`/`unavailable`/`not-captured`) and
+  `semantic_context`. Stored examples are a capped sample, not every instance.
+- `findings[].reporting.representative_evidence[]` also carries `element` and
+  `semantic_context` for the **first** sanitized example (at most three examples
+  are stored; only the first is enriched, to bound the weekly summary that is
+  kept forever).
+- The render context is recorded once per week on the summary, not repeated per
+  finding: viewport, device scale factor, colour scheme, forced colours, reduced
+  motion, document language, user agent, and the final URL reduced to origin +
+  path (query strings are dropped because this block is published). No
+  screenshot is captured yet, so `screenshot_captured` is `false`. The summary
+  also carries `axe.element_evidence` (null, or
+  `{ "status": "unavailable", "pages_failed": n }` when collection failed on
+  some pages) and `alfa.element_evidence` (always unavailable).
+
+Not available by design: computed accessibility roles, element text, XPath,
+screenshots, and element evidence for Alfa findings (Alfa reports serialized
+node descriptions, so no selector is invented).
+
 ### Shared-component scope and page families (additive v1 fields)
 
 Both are opt-in per target (`component_signatures`, `page_families` in

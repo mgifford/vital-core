@@ -417,6 +417,24 @@ The aggregation pipeline is responsible for **transforming evidence into reusabl
 
 No report should perform its own scanning or independent measurements. Reports consume aggregated evidence rather than generating it.
 
+### Finding evidence: element and semantic context
+
+Each axe audit is followed, while the page is still open, by one
+`attachElementEvidence()` call (`src/lib/element-evidence.js`). For the first
+stored example of each failing rule, it records the element's tag, explicit
+role, name attributes, selector match count, rendering state, bounding
+rectangle, and the serialized ancestor chain. `src/lib/semantic-context.js`
+then classifies that chain into the nearest landmark region and any containing
+widget (dialog, tablist, navigation, …). The same bounded record travels with
+the example into `summary.json`, bug reports, `bugs.json`, the JSON API and
+Markdown, so no consumer rescans the page.
+
+Limits are explicit rather than implied: examples are a capped sample (3 per
+page per rule, 5 per rule per week); Alfa targets are serialized node
+descriptions, so Alfa element evidence is recorded as unavailable; computed
+accessibility roles and element text are not collected; and an axe
+frame/shadow path is not resolved against the top document.
+
 - **`scan.yml`** runs on a staggered set of off-hours cron schedules,
   one parallel job per domain. Each job scans its budget, commits only
   its own `data/<domain>/` files and uploads only its own crawl-state

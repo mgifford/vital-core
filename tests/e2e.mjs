@@ -23,6 +23,7 @@ import { Audit } from '@siteimprove/alfa-test-utils';
 import { Playwright as AlfaPlaywright } from '@siteimprove/alfa-playwright';
 import { runAxe } from '../src/engines/axe.js';
 import { runAlfa } from '../src/engines/alfa.js';
+import { attachElementEvidence } from '../src/lib/element-evidence.js';
 import { buildBugReports } from '../src/lib/bug-report.js';
 
 const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
@@ -713,6 +714,7 @@ try {
     await consentPage.goto(pathToFileURL(path.join(ROOT, 'tests', 'fixtures', 'walsall-consent.html')).href);
     const consentAxe = await runAxe(consentPage);
     const consentAlfa = await runAlfa(consentPage);
+    await attachElementEvidence(consentPage, consentAxe);
     assert(!!consentAxe.violations.list, 'consent list fixture triggers axe list evidence');
     assert(!!consentAxe.violations['aria-required-parent'], 'orphan list item triggers axe parent evidence');
     assert(!!consentAxe.violations['color-contrast'], 'low contrast consent text triggers axe contrast evidence');
@@ -721,11 +723,20 @@ try {
     assert(!!consentAlfa.failed['sia-r69'], 'consent text triggers Alfa contrast evidence');
     assert(!!consentAxe.violations['button-name'] && !!consentAlfa.failed['sia-r8'], 'unnamed consent switch is observed independently by both engines');
 
+    const consentSwitch = consentAxe.violations['button-name']?.examples?.[0];
+    assert(consentSwitch?.element?.available === true, 'button-name example resolves to a live element');
+    assert(consentSwitch.element.selector_matches >= 1, 'selector match count is recorded at capture time');
+    assert(consentSwitch.element.tag === 'button', 'element tag is recorded');
+    assert(consentSwitch.semantic_context?.nearest_region?.role === 'main', 'consent dialog sits inside main');
+    assert(consentSwitch.semantic_context?.in_dialog === true, 'the switch is inside the dialog widget');
+    assert(consentAxe.context?.viewport?.width > 0, 'the render context is captured');
+    assert(consentAlfa.element_evidence?.status === 'unavailable', 'Alfa element evidence is explicitly unavailable');
+
     const observedUrl = 'https://walsall.example.test/consent';
     const axeRules = Object.fromEntries(Object.entries(consentAxe.violations).map(([ruleId, rule]) => [ruleId, {
       ...rule,
       pages: 1,
-      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target, html: example.html })),
+      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target, html: example.html, element: example.element, semantic_context: example.semantic_context })),
       affectedPages: [{ url: observedUrl, instances: rule.count }],
     }]));
     const alfaRules = Object.fromEntries(Object.entries(consentAlfa.failed).map(([ruleId, rule]) => [ruleId, {
@@ -736,9 +747,20 @@ try {
     }]));
     const consentReports = buildBugReports({ domain: 'walsall.example.test', key: 'walsall.example.test' }, {
       domain: 'walsall.example.test', pagesScanned: 1,
-      axe: { version: consentAxe.version, rules: axeRules },
+      axe: { version: consentAxe.version, context: consentAxe.context, rules: axeRules },
       alfa: { version: consentAlfa.version, rules: alfaRules },
     });
+    const consentButton = consentReports.find((report) => report.rule_id === 'button-name');
+    assert(/qc-cmp2-toggle/.test(consentButton.selector ?? ''), 'the report carries the captured selector');
+    assert(consentButton.element?.tag === 'button', 'the report carries element identity');
+    assert(consentButton.element?.selector_matches >= 1, 'the report carries the match count');
+    assert(consentButton.semantic_context?.nearest_region?.role === 'main', 'the report carries the semantic region');
+    assert(consentButton.semantic_context?.in_dialog === true, 'the report records the containing dialog');
+    assert(consentButton.evidence?.element_identity === 'captured', 'evidence completeness says captured');
+    assert(consentButton.browser_context?.viewport?.width === 1280, 'the report carries the render context');
+    const consentAlfaReport = consentReports.find((report) => report.rule_id === 'sia-r8');
+    assert(consentAlfaReport.element === null, 'Alfa element identity stays unavailable rather than guessed');
+    assert(consentAlfaReport.evidence?.element_identity === 'unavailable', 'Alfa evidence completeness is explicit');
     const related = (ruleId, peerRuleId) => consentReports.find((report) => report.rule_id === ruleId)?.cross_engine_correlations?.find((correlation) =>
       consentReports.find((candidate) => candidate.instance_id === correlation.peer_instance_id)?.rule_id === peerRuleId
     );

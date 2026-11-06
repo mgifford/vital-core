@@ -84,6 +84,22 @@ banner is a different variant), pull the idea from here instead of rebuilding it
 Not solved: seeing the variant a visitor in another country would see. The
 scheduled scans run on GitHub's cloud servers.
 
+### Element and semantic evidence
+
+For the first stored failing-element example of each rule, the scanner records
+the element's tag, explicit role, name-bearing attributes (never text content),
+selector match count, visibility, bounding rectangle, and its serialized
+ancestor chain, then classifies that chain into the nearest landmark region and
+any containing widget (dialog, tablist, navigation, …). Unnamed
+`<section>`/`<form>` elements stay unnamed rather than being promoted to
+landmarks, and elements outside any landmark are marked `unclassified` instead
+of being assigned an invented region. Alfa reports node descriptions rather than
+selectors, so its element evidence is recorded as explicitly unavailable. The
+evidence is bounded, sanitized for publication (no element ids, no ancestry, no
+text), and travels with the same examples every report, CSV and JSON API
+consumer reads. Data contracts and remaining work are documented in
+[`docs-internal/FINDING-EVIDENCE-ROADMAP.md`](docs-internal/FINDING-EVIDENCE-ROADMAP.md).
+
 ### Cross-engine consensus (ACT-rule deduplication)
 
 axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.

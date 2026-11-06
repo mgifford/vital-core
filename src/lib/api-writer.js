@@ -161,10 +161,15 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
     top_actions: apiTopActions(summary, target.api_redact_params ?? []),
     findings: bugs.map(b => {
       const ledgerEntry = ledgerFindings?.[b.pattern_id] ?? null;
+      const findingReporting = reporting.byFindingId.get(b.pattern_id);
+      // Sanitized element/region evidence (ids and ancestry withheld) so the
+      // API carries the same inspectable facts as the reports without exposing
+      // anything the public sanitizer removed.
+      const evidence = (findingReporting?.representative_evidence ?? []).find((example) => example.element?.available) ?? null;
       return {
         finding_id:     b.pattern_id,
         instance_id:    b.instance_id ?? null,
-        reporting:      reporting.byFindingId.get(b.pattern_id),
+        reporting:      findingReporting,
         rule_id:        b.rule_id,
         rule_label:     b.rule_label,
         engine:         b.engine_key,
@@ -175,6 +180,10 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         included_in_primary_score: b.included_in_primary_score === true,
         wcag_sc:        b.wcag_sc ?? null,
         wcag_level:     b.wcag_level ?? null,
+        selector:       evidence?.selector ?? null,
+        element:        evidence?.element ?? null,
+        semantic_context: evidence?.semantic_context ?? null,
+        evidence:       b.evidence ? { ...b.evidence } : null,
         pages_affected: b.frequency.pages_affected,
         trend_status:   deriveTrend(b, ledgerEntry),
         first_seen:     b.first_seen ?? null,

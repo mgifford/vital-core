@@ -2,6 +2,7 @@ import { parseFragment, serialize } from 'parse5';
 import { actRulesFor } from './finding-correlation.js';
 import { priorityScore, tierOf } from './priority.js';
 import { redactUrl } from './api-redact.js';
+import { safeSelector, sanitizeElementEvidence, sanitizeSemanticContext } from './element-evidence.js';
 import { routeMatches } from './page-families.js';
 import actMapping from '../data/act-mapping.json' with { type: 'json' };
 
@@ -23,12 +24,13 @@ export function sanitizeEvidence(example, opts = {}) {
     }
   }
   clean(fragment);
-  const selector = typeof example.xpath === 'string' && !/^\s*text:/i.test(example.xpath) && !/[<>]|\[\s*(?:value|data-|.*(?:token|secret|password|session))/i.test(example.xpath)
-    ? example.xpath.slice(0, 1000) : null;
+  const selector = safeSelector(example.xpath)?.slice(0, 1000) ?? null;
   return {
     url: typeof example.url === 'string' ? redactUrl(example.url, opts) : null,
     selector,
     html: example.html_snippet ? serialize(fragment).slice(0, 4000) : null,
+    element: sanitizeElementEvidence(example.element),
+    semantic_context: sanitizeSemanticContext(example.semantic_context),
     sanitized: true,
     text_and_values_omitted: true,
   };
@@ -37,10 +39,12 @@ export function sanitizeEvidence(example, opts = {}) {
 export function sanitizeBugEvidence(bug, opts = {}) {
   if (!bug || typeof bug !== 'object') return bug;
   const out = { ...bug };
-  const primary = sanitizeEvidence({ url: bug.url, xpath: bug.xpath, html_snippet: bug.html_snippet }, opts);
+  const primary = sanitizeEvidence({ url: bug.url, xpath: bug.xpath, html_snippet: bug.html_snippet, element: bug.element, semantic_context: bug.semantic_context }, opts);
   out.url = primary.url;
   out.xpath = primary.selector;
   out.html_snippet = primary.html;
+  out.element = primary.element;
+  out.semantic_context = primary.semantic_context;
   if (Array.isArray(bug.affected_pages)) out.affected_pages = bug.affected_pages.map((url) => redactUrl(url, opts));
   if (Array.isArray(bug.example_pages)) out.example_pages = bug.example_pages.map((url) => redactUrl(url, opts));
   if (Array.isArray(bug.steps_to_reproduce)) {
@@ -48,8 +52,8 @@ export function sanitizeBugEvidence(bug, opts = {}) {
   }
   if (Array.isArray(bug.examples)) {
     out.examples = bug.examples.slice(0, 3).map((example) => {
-      const evidence = sanitizeEvidence({ url: example.url, xpath: example.xpath ?? example.target, html_snippet: example.html_snippet ?? example.html }, opts);
-      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, sanitized: true };
+      const evidence = sanitizeEvidence({ url: example.url, xpath: example.xpath ?? example.target, html_snippet: example.html_snippet ?? example.html, element: example.element, semantic_context: example.semantic_context }, opts);
+      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, element: evidence.element, semantic_context: evidence.semantic_context, sanitized: true };
     });
   }
   return out;

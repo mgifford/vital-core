@@ -4,6 +4,15 @@ import { Playwright } from '@siteimprove/alfa-playwright';
 const MAX_EXAMPLES = 3;
 const MAX_SNIPPET = 200;
 
+// Alfa reports each outcome's target as a serialized node description (tag,
+// attributes, text), not a CSS selector or DOM path. It therefore cannot be
+// located in the live document honestly, so element evidence is recorded as
+// explicitly unavailable rather than guessed at a look-alike element.
+const ELEMENT_EVIDENCE = Object.freeze({
+  status: 'unavailable',
+  reason: 'alfa-target-is-a-serialized-node-description-not-a-selector',
+});
+
 /**
  * Run Siteimprove's Alfa engine against a snapshot of the live page.
  * Alfa is the open source core of Siteimprove's commercial checker,
@@ -59,6 +68,7 @@ export async function runAlfa(page) {
       failed,
       cantTellCount,
       passedRules,
+      element_evidence: { ...ELEMENT_EVIDENCE },
     };
   } finally {
     await documentHandle.dispose().catch(() => {});

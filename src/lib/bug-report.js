@@ -8,6 +8,7 @@ import { computeA11yPatternFingerprint, computeA11yOccurrenceFingerprint } from 
 import { attachFindingCorrelations } from './finding-correlation.js';
 import { sanitizeBugEvidence } from './finding-reporting.js';
 import { attachComponentScope } from './shared-components.js';
+import { MAX_RULE_INSTANCES } from './element-evidence.js';
 
 /**
  * Turn the weekly per-rule summary into structured accessibility bug
@@ -38,6 +39,12 @@ function componentLabel(engineKey, ruleId, help, wcag) {
   return label.replace(/\s+/g, ' ').trim().slice(0, 80);
 }
 
+/** "navigation \"Primary\"" / "main (unnamed)" for a semantic-context entry. */
+function regionLabel(entry) {
+  if (!entry?.role) return null;
+  return entry.name ? `${entry.role} "${entry.name}"` : `${entry.role} (unnamed)`;
+}
+
 /**
  * Build the list of bug-report objects for a domain/week.
  * Returns [] when there are no findings.
@@ -52,6 +59,10 @@ export function buildBugReports(target, summary) {
     const severity = severityFor(rule.impact ?? null, rule.pages, total);
     const patternId = `${PREFIX}-${shortHash(engine, ruleId)}`;
     const first = rule.instances?.[0];
+    // First stored example whose element was actually located at scan time.
+    // Alfa targets are serialized node descriptions, so it is usually null for
+    // Alfa; the field stays explicitly absent rather than guessed.
+    const firstEvidence = (rule.instances ?? []).find((instance) => instance.element?.available) ?? null;
     const instanceId = `${PREFIX}-${shortHash(patternId, first?.url ?? '', first?.target ?? '')}`;
     const scLabel = wcag
       ? `WCAG ${wcag.sc}`
@@ -100,8 +111,27 @@ export function buildBugReports(target, summary) {
       a11y_occurrence_fingerprint: a11yOccurrence.fingerprint,
       a11y_occurrence_display_id: a11yOccurrence.displayId,
       url: first?.url ?? summary.domain,
+      // `xpath` is retained for backward compatibility; for axe it has always
+      // held the CSS selector, not an XPath. `selector` names it correctly.
       xpath: first?.target ?? null,
+      selector: first?.target ?? null,
       html_snippet: first?.html ?? null,
+      // Bounded structured evidence captured once at scan time. Absent (not
+      // invented) when the engine cannot supply it.
+      element: firstEvidence?.element ?? null,
+      semantic_context: firstEvidence?.semantic_context ?? null,
+      browser_context: firstEvidence ? summary.axe?.context ?? null : null,
+      evidence: {
+        instances_total: rule.count,
+        examples_captured: rule.instances?.length ?? 0,
+        example_limit: MAX_RULE_INSTANCES,
+        // Truncated means the engine observed more instances than the examples
+        // kept here, not merely that the cap was reached exactly.
+        examples_truncated: rule.count > (rule.instances?.length ?? 0),
+        element_identity: firstEvidence ? 'captured' : engine === 'alfa' ? 'unavailable' : 'not-captured',
+        semantic_context: firstEvidence?.semantic_context ? 'captured' : 'unavailable',
+        notes: 'Capped representative examples, not a complete instance list.',
+      },
       wcag_sc: wcag?.sc ?? null,
       wcag_name: wcag?.name ?? null,
       wcag_level: wcag?.level ?? null,
@@ -137,7 +167,10 @@ export function buildBugReports(target, summary) {
       examples: (rule.instances ?? []).map((i) => ({
         url: i.url,
         xpath: i.target ?? null,
+        selector: i.target ?? null,
         html_snippet: i.html ?? null,
+        element: i.element ?? null,
+        semantic_context: i.semantic_context ?? null,
       })),
       example_pages: rule.examplePages ?? [],
       // Up to 25 affected-page URLs for inline listing in the report; the
@@ -151,6 +184,9 @@ export function buildBugReports(target, summary) {
       steps_to_reproduce: [
         `Open ${first?.url ?? 'an affected page (see example pages)'}.`,
         first?.target ? `Locate the element: ${first.target}` : 'Locate the affected element.',
+        ...(firstEvidence?.semantic_context?.nearest_region
+          ? [`It is inside the ${regionLabel(firstEvidence.semantic_context.nearest_region)} region.`]
+          : []),
         `Confirm the ${toolName} finding for rule ${ruleId}${wcag ? ` against ${scLabel} ${wcag.name}` : ''}.`,
       ],
       remediation_tip: remediationTip(engine, ruleId),
@@ -210,6 +246,12 @@ export function bugReportToMarkdown(r) {
   lines.push(`**Pattern ID:** \`${r.pattern_id}\`  `);
   lines.push(`**URL:** ${r.url}  `);
   lines.push(`**XPath / selector:** ${r.xpath ? `\`${r.xpath}\`` : '_n/a_'}  `);
+  if (r.element?.available) {
+    lines.push(`**Element:** \`<${r.element.tag}>\`${r.element.selector_matches != null ? ` — ${r.element.selector_matches} match(es) when captured` : ''}  `);
+  }
+  if (r.semantic_context?.nearest_region) {
+    lines.push(`**Semantic region:** ${regionLabel(r.semantic_context.nearest_region)}  `);
+  }
   lines.push(
     `**WCAG SC:** ${r.wcag_sc ? `${r.wcag_sc} — ${r.wcag_name} (Level ${r.wcag_level})` : '_undetermined_'}  `
   );
