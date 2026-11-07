@@ -402,7 +402,7 @@ try {
   assert(/bookmarklet-visual/.test(w1acc), 'the bookmarks-bar visual is present');
   assert(/Copy bookmarklet/.test(w1acc), 'the manual bookmarklet fallback is present');
   assert(/class="inspect-copy" data-inspect-code="/.test(w1acc), 'a URL-free inspection code is available');
-  assert(/class="live-inspect-help" open>/.test(w1acc), 'the bookmarklet install section is open by default');
+  assert(/id="live-inspect-help" class="live-inspect-help" open>/.test(w1acc), 'the bookmarklet install section has a stable anchor and is open by default');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
   assert(/id="h-scope-regions">Findings by page region/.test(w1acc), 'accessibility page groups findings by region');
