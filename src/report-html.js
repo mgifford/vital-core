@@ -5942,6 +5942,17 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       inspectLink.textContent = LABELS.highlightOnSite;
       inspectNote.appendChild(inspectLink);
       inspectNote.appendChild(document.createTextNode(' ' + LABELS.highlightHint));
+      var inspectCode = inspectCodeFor(bug);
+      if (inspectCode) {
+        var copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'inspect-copy';
+        copy.id = 'explorer-inspect-code';
+        copy.setAttribute('data-inspect-code', inspectCode);
+        copy.textContent = LABELS.copyInspectCode;
+        inspectNote.appendChild(document.createTextNode(' '));
+        inspectNote.appendChild(copy);
+      }
       detailBody.appendChild(inspectNote);
     }
     detailBody.appendChild(list);
@@ -6119,7 +6130,8 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     captured: t('captured'),
     highlightOnSite: t('Highlight on site'),
     highlightUnavailable: t('Live highlighting is unavailable.'),
-    highlightHint: t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.'),
+    highlightHint: t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.'),
+    copyInspectCode: t('Copy inspection code'),
     screenshot: t('Screenshot'),
     screenshotAlt: t('Screenshot of the affected page'),
     historical: t('Screenshot captured during the scan. The current website may differ.'),

@@ -1,7 +1,7 @@
 # Live inspection bookmarklet — hardening notes
 
-Status: PR 1, PR 2 and PR 3 of the hardening sequence. PR 4 (integration/docs)
-remains.
+Status: PR 1–4 of the hardening sequence are complete. Packaged-extension,
+interaction-replay and cross-browser/manual-AT work remain deferred.
 
 The bookmarklet is an **inspection aid**. It locates a recorded element; it does
 not run a new accessibility assessment or prove that a historical violation
@@ -117,14 +117,14 @@ this; users must not weaken the site's CSP.
 
 ## Performance measurements
 
-- Bookmarklet source: **23,279 bytes** (unminified except whitespace; PR 3 added the shadow-root UI and observers).
+- Bookmarklet source: **23,397 bytes** (unminified except whitespace; PR 3 added the shadow-root UI and observers).
 - Typical inspection code: **424 bytes**; decoded payload **318 bytes**.
 - No external dependencies, network requests, full-DOM serialization or
   background observers.
 - Initialization and selector lookup are bounded by `querySelectorAll`; the
   panel updates on scroll/resize with `requestAnimationFrame`. No continuous
   polling. Repeated activation removes the previous UI (covered by tests).
-- Observed activation-to-panel time in Chromium: **median 49 ms** over five
+- Observed activation-to-panel time in Chromium: **median 48 ms** over five
   runs (Playwright click + wait, so this includes automation overhead; not a
   user-perceived benchmark).
 - These are static measurements; cross-browser/user-device timings are not yet
@@ -146,6 +146,21 @@ this; users must not weaken the site's CSP.
 - Forced-colors and dark-mode CSS, a 320px viewport check, shadow isolation,
   collapse/move, and an axe-core overlay check are covered in Chromium.
 - Manual screen-reader and cross-browser testing is still **not performed**.
+
+## Integration (PR 4)
+
+- The overlay now shows the occurrence id, and Collapse declares
+  `aria-controls` on the details region.
+- The Finding Explorer offers the same **Copy inspection code** as the
+  Accessibility page; the install block is open by default.
+- E2E assertions cover the open install block, the URL-free code on both
+  surfaces, and the existing Explorer/accessibility workflow.
+- The unsupported-context message, the historical-guidance label and the
+  “not re-tested” status are retained; no terminology implies a fresh pass.
+
+Final measured values: bookmarklet **23,397 bytes**, typical code **424 bytes**,
+decoded payload **318 bytes**. Chromium activation-to-panel remains in the tens
+of milliseconds; see the measurements section.
 
 ## Deferred
 
