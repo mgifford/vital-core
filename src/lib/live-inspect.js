@@ -299,7 +299,7 @@ export function vitalInspect(validate) {
       '<button type="button" id="vital-inspect-find">Find again</button>' +
       '<button type="button" id="vital-inspect-toggle">Hide highlight</button>' +
       '<button type="button" id="vital-inspect-show-changed">Show changed element</button>' +
-      '<button type="button" id="vital-inspect-collapse" aria-expanded="true">Collapse</button>' +
+      '<button type="button" id="vital-inspect-collapse" aria-expanded="true" aria-controls="vital-inspect-details">Collapse</button>' +
       '<button type="button" id="vital-inspect-move">Move panel</button>' +
       '</div></div></div>';
     document.body.appendChild(host);
@@ -515,6 +515,7 @@ export function vitalInspect(validate) {
       statusLine.textContent = 'No element on this page matches the recorded selector.';
     }
     addDetail('p', 'Rule: ' + (payload.rule || 'unknown') + (payload.w ? ' · WCAG ' + payload.w : ''), 'margin:10px 0 4px;');
+    if (payload.id) addDetail('p', 'Occurrence: ' + payload.id, 'margin:0 0 4px;');
     addDetail('p', 'Selector', 'margin:8px 0 2px;font-weight:700;');
     var code = document.createElement('code');
     code.textContent = payload.s;
