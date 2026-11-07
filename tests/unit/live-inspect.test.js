@@ -109,7 +109,7 @@ test('a unique element with recorded name identity is matched, not called a repr
     assert.match(panel, /Historical remediation guidance/);
     assert.match(panel, /Add an accessible name/);
     assert.match(panel, /Runs locally in your browser/);
-    assert.equal(await page.evaluate(() => document.activeElement?.textContent), 'Close');
+    assert.equal(await page.evaluate(() => document.activeElement?.shadowRoot?.activeElement?.textContent), 'Close');
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#vital-inspect-ui').count(), 0);
     assert.equal(await page.locator('#vital-inspect-box').count(), 0);
@@ -197,6 +197,8 @@ test('inspection codes are bounded, versioned and origin-scoped', () => {
   assert.match(validateInspectPayload({ ...payload, extra: true }).reason, /unexpected/);
   assert.match(validateInspectPayload({ ...payload, s: 'x'.repeat(501) }).reason, /selector/);
   assert.match(validateInspectPayload({ ...payload, org: 'https://example.gov/path' }).reason, /origin/);
+  assert.match(validateInspectPayload({ ...payload, s: '<h3 id="x">' }).reason, /not CSS/);
+  assert.match(validateInspectPayload({ ...payload, s: '{"type":"document"}' }).reason, /not CSS/);
   assert.match(validateInspectPayload({ ...payload, h: 'javascript:alert(1)' }).reason, /documentation/);
   assert.throws(() => decodeInspectToken('a'.repeat(8193)), /encoding/);
   assert.throws(() => decodeInspectToken('not-base64!'), /encoding/);
@@ -283,5 +285,111 @@ test('repeated activation replaces the overlay and leaves no duplicate UI', asyn
     assert.equal(await page.locator('#vital-inspect-box').count(), 1);
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#vital-inspect-box').count(), 0);
+  });
+});
+
+async function withPage(html, fn, contextOptions = {}) {
+  const server = http.createServer((req, res) => {
+    res.setHeader('content-type', 'text/html; charset=utf-8');
+    res.end(html);
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const browser = await chromium.launch();
+  try {
+    const context = await browser.newContext(contextOptions);
+    const page = await context.newPage();
+    await fn({ page, base: `http://127.0.0.1:${server.address().port}` });
+    await context.close();
+  } finally {
+    await browser.close();
+    server.close();
+  }
+}
+
+test('removal and replacement suspend the highlight and require Find again', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    await openInspect(page, base);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1);
+    await page.evaluate(() => document.getElementById('named').remove());
+    await page.waitForFunction(() => /removed or replaced/.test(document.querySelector('#vital-inspect-host').shadowRoot.querySelector('#vital-inspect-status').textContent));
+    assert.equal(await page.locator('#vital-inspect-box').count(), 0);
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /Live element changed/);
+  });
+});
+
+test('a hidden element suspends and then restores the highlight', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    await openInspect(page, base);
+    await page.evaluate(() => { document.getElementById('named').style.display = 'none'; });
+    await page.waitForFunction(() => /hidden/.test(document.querySelector('#vital-inspect-host').shadowRoot.querySelector('#vital-inspect-status').textContent));
+    assert.equal(await page.locator('#vital-inspect-box').count(), 0);
+    await page.evaluate(() => { document.getElementById('named').style.display = ''; });
+    await page.waitForFunction(() => /does not re-test/.test(document.querySelector('#vital-inspect-host').shadowRoot.querySelector('#vital-inspect-status').textContent));
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1);
+  });
+});
+
+test('an identity attribute change while open is reported, not silently accepted', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    await openInspect(page, base);
+    await page.evaluate(() => document.getElementById('named').setAttribute('aria-label', 'Changed while open'));
+    await page.waitForFunction(() => /identity changed/.test(document.querySelector('#vital-inspect-host').shadowRoot.querySelector('#vital-inspect-status').textContent));
+    assert.match(await page.locator('#vital-inspect-ui').innerText(), /aria-label: recorded "Save changes", live "Changed while open"/);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 0);
+  });
+});
+
+test('the panel is isolated from aggressive page CSS and can collapse/move', async () => {
+  const html = '<!doctype html><html><body><button id="named" aria-label="Save">Save</button><style>button { display: none !important; } div { border: 12px solid red !important; }</style></body></html>';
+  await withPage(html, async ({ page, base }) => {
+    await page.goto(inspectUrlFor(bug({ url: `${base}/page` })));
+    await page.evaluate(vitalInspect);
+    assert.equal(await page.locator('#vital-inspect-close').isVisible(), true, 'shadow UI is not hidden by page button rules');
+    await page.getByRole('button', { name: 'Collapse' }).click();
+    assert.equal(await page.locator('#vital-inspect-details').isHidden(), true);
+    await page.getByRole('button', { name: 'Expand' }).click();
+    const before = await page.locator('#vital-inspect-ui').getAttribute('data-corner');
+    await page.getByRole('button', { name: 'Move panel' }).click();
+    assert.notEqual(await page.locator('#vital-inspect-ui').getAttribute('data-corner'), before);
+  });
+});
+
+test('the panel fits a 320px viewport and exposes keyboard controls', async () => {
+  await withPage(fs.readFileSync(FIXTURE, 'utf8'), async ({ page, base }) => {
+    await page.setViewportSize({ width: 320, height: 600 });
+    await page.goto(inspectUrlFor(bug({ url: `${base}/page` })));
+    await page.evaluate(vitalInspect);
+    const box = await page.locator('#vital-inspect-ui').boundingBox();
+    assert.ok(box.x >= 0 && box.x + box.width <= 320, `panel fits: ${JSON.stringify(box)}`);
+    await page.getByRole('button', { name: 'Move panel' }).focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#vital-inspect-close').isVisible(), true);
+    await page.getByRole('button', { name: 'Close' }).click();
+    assert.equal(await page.locator('#vital-inspect-host').count(), 0);
+  });
+});
+
+test('forced-colors mode keeps the overlay visible', async () => {
+  await withPage(fs.readFileSync(FIXTURE, 'utf8'), async ({ page, base }) => {
+    await page.goto(inspectUrlFor(bug({ url: `${base}/page` })));
+    await page.evaluate(vitalInspect);
+    assert.equal(await page.locator('#vital-inspect-ui').isVisible(), true);
+    const border = await page.locator('#vital-inspect-box').evaluate((el) => getComputedStyle(el).borderTopStyle);
+    assert.ok(border && border !== 'none', 'highlight has a visible border in forced colors');
+  }, { forcedColors: 'active' });
+});
+
+test('axe-core finds no violations inside the overlay', async () => {
+  await withPage(fs.readFileSync(FIXTURE, 'utf8'), async ({ page, base }) => {
+    await page.goto(inspectUrlFor(bug({ url: `${base}/page` })));
+    await page.evaluate(vitalInspect);
+    const axeSource = fs.readFileSync(path.join(ROOT, 'node_modules', 'axe-core', 'axe.min.js'), 'utf8');
+    await page.evaluate(axeSource);
+    const results = await page.evaluate(async () => window.axe.run(document));
+    const overlay = results.violations.filter((violation) => violation.nodes.some((node) => JSON.stringify(node.target).includes('vital-inspect')));
+    assert.deepEqual(overlay, []);
   });
 });

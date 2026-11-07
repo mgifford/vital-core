@@ -1,7 +1,7 @@
 # Live inspection bookmarklet — hardening notes
 
-Status: PR 1 and PR 2 of the hardening sequence. PR 3 (dynamic DOM/overlay
-accessibility) and PR 4 (integration/docs) remain.
+Status: PR 1, PR 2 and PR 3 of the hardening sequence. PR 4 (integration/docs)
+remains.
 
 The bookmarklet is an **inspection aid**. It locates a recorded element; it does
 not run a new accessibility assessment or prove that a historical violation
@@ -117,7 +117,7 @@ this; users must not weaken the site's CSP.
 
 ## Performance measurements
 
-- Bookmarklet source: **16,345 bytes** (unminified except whitespace).
+- Bookmarklet source: **23,279 bytes** (unminified except whitespace; PR 3 added the shadow-root UI and observers).
 - Typical inspection code: **424 bytes**; decoded payload **318 bytes**.
 - No external dependencies, network requests, full-DOM serialization or
   background observers.
@@ -130,6 +130,23 @@ this; users must not weaken the site's CSP.
 - These are static measurements; cross-browser/user-device timings are not yet
   measured.
 
+## Dynamic DOM and overlay (PR 3)
+
+- The UI lives in an open shadow root on a fixed host, so aggressive page CSS
+  (`button { display:none !important }`, global borders) does not reach it.
+- MutationObserver (document tree and target attributes) plus ResizeObserver
+  detect removal/replacement, hidden state, and identity-attribute changes.
+  Updates are coalesced with requestAnimationFrame; observers and listeners are
+  disconnected on close and on Find again. There is no polling or automatic
+  clicking.
+- Removal/replacement or an identity change suspends the marker and requires
+  Find again; hidden elements suspend the marker and restore it when visible.
+- Controls: Close, Previous/Next candidate, Find again, Hide highlight, Show
+  changed element, Collapse/Expand, Move panel. Escape closes; focus returns.
+- Forced-colors and dark-mode CSS, a 320px viewport check, shadow isolation,
+  collapse/move, and an axe-core overlay check are covered in Chromium.
+- Manual screen-reader and cross-browser testing is still **not performed**.
+
 ## Deferred
 
 - **P2 packaged extension** — reliable execution where bookmarklets are blocked,
@@ -141,6 +158,4 @@ this; users must not weaken the site's CSP.
 - **P2 ARRM task/role mapping** — separate milestone.
 - **P3 cross-fleet adoption** — downstream fleets, including LocalGov Drupal,
   without modifying them now.
-- PR 3: MutationObserver/ResizeObserver-based replacement detection, forced
-  colors, zoom/small-screen/panel placement, repeated activation cleanup.
 - PR 4: Explorer workflow, terminology, integration tests, final measurements.

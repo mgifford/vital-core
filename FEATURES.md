@@ -183,8 +183,16 @@ live page with a compact VITAL payload in the URL fragment. Clicking the
 - **Element not found** — with possible causes and a **Find again** action.
 
 The panel shows the rule, WCAG mapping, selector, recorded and live identity,
-differences and historical remediation guidance. `Escape` or Close removes it.
-It reads only the page in front of you, sends nothing, and stores nothing.
+differences and historical remediation guidance. It is rendered in a shadow
+root so aggressive page CSS cannot hide it, can be collapsed or moved between
+corners, and offers Hide highlight, Find again, and candidate navigation. It
+detects when the element is removed or replaced, becomes hidden, or changes a
+recorded identity attribute while the panel is open: the marker is suspended,
+the change is reported, and the user must Find again — it never switches to a
+different element on its own. `Escape` or Close removes it and cleans up its
+observers/listeners. It reads only the page in front of you, sends nothing, and
+stores nothing. The install block is open by default at the top of the
+Accessibility page and Explorer.
 
 Inspection codes are versioned, size-bounded and origin-scoped; they carry the
 selector and recorded identity, **not the full URL, query string, page text or

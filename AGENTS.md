@@ -134,8 +134,10 @@ a page for a report.
   or incomplete evidence stays a candidate, and a changed element is not
   highlighted as the occurrence. Payloads are versioned, bounded and
   origin-scoped, carry no full URL, and have a URL-free clipboard fallback; a
-  strict `script-src` CSP can block bookmarklets. It sends nothing and does not
-  replace canonical evidence or the Explorer.
+  strict `script-src` CSP can block bookmarklets. The UI is shadow-root
+  isolated, detects removal/replacement/hidden/identity changes with observers,
+  and requires Find again rather than switching elements. It sends nothing and
+  does not replace canonical evidence or the Explorer.
 * **Screenshots** (`src/lib/screenshots.js`): opt-in, one JPEG per page with
   findings, bounded by `max_per_run`/`max_height`/`max_bytes` and maskable;
   stored in the data repo, copied only for referenced findings, pruned with page
