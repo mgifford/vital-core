@@ -81,6 +81,8 @@ test('inspect URL is null when the live highlight cannot be honest', () => {
   assert.equal(inspectUrlFor(bug({ url: 'file:///tmp/page.html' })), null);
   assert.equal(inspectUrlFor(bug({ selector: '' })), null);
   assert.equal(inspectUrlFor(bug({ url: null })), null);
+  assert.equal(inspectUrlFor({ ...bug(), element: null }), null, 'missing element evidence is not a highlightable target');
+  assert.equal(inspectUnavailableReason({ ...bug(), element: null }), 'no-element-evidence');
   assert.equal(inspectUrlFor(bug({ element: { available: true, shadow: true } })), null);
   assert.equal(inspectUrlFor(bug({ element: { available: true, iframe: true } })), null);
   assert.equal(inspectUrlFor(bug({ element: { available: false, reason: 'frame-or-shadow-path' } })), null);

@@ -14,7 +14,7 @@ export const INSPECT_HASH = 'vital-inspect';
 export function inspectUnavailableReason(bug) {
   if (!bug) return 'no-finding';
   if (bug.element?.reason === 'frame-or-shadow-path') return 'frame-or-shadow-path';
-  if (bug.element && bug.element.available !== true) return 'no-element-evidence';
+  if (!bug.element || bug.element.available !== true) return 'no-element-evidence';
   if (bug.element?.shadow === true) return 'shadow-root';
   if (bug.element?.iframe === true) return 'iframe';
   const hasXPath = typeof bug.xpath === 'string' && /^(?:\/|\(|\.\/|\.\.\/)/.test(bug.xpath.trim());
