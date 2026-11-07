@@ -128,9 +128,12 @@ a page for a report.
   staging URL or selector without rewriting recorded identity; exit codes 0–7.
 * **Live highlight** (`src/lib/live-inspect.js`): a one-time bookmarklet plus
   a per-finding “Highlight on site” link. The target page receives only a
-  selector/rule/WCAG/fix payload in the fragment; the bookmarklet runs locally,
-  outlines the element, reports identity/multiple/not-found cases, and sends
-  nothing. It does not replace canonical evidence or the Explorer.
+  selector/rule/WCAG/fix payload in the fragment; the bookmarklet runs locally
+  and reports an explicit **located / possible / changed / not found** status.
+  Only a unique selector plus matching recorded identity is “located”; multiple
+  or incomplete evidence stays a candidate, and a changed element is not
+  highlighted as the occurrence. It sends nothing and does not replace canonical
+  evidence or the Explorer.
 * **Screenshots** (`src/lib/screenshots.js`): opt-in, one JPEG per page with
   findings, bounded by `max_per_run`/`max_height`/`max_bytes` and maskable;
   stored in the data repo, copied only for referenced findings, pruned with page

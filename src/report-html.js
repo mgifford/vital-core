@@ -13,7 +13,7 @@ import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingR
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
-import { inspectBookmarklet, inspectUrlFor } from './lib/live-inspect.js';
+import { inspectBookmarklet, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -1803,6 +1803,7 @@ ${heading('h-bugs', t('Bug reports'))}
         : '';
       const scope = b.component_scope;
       const inspectUrl = inspectUrlFor(b);
+      const inspectReason = inspectUnavailableReason(b);
       const componentScopeNote = scope
         ? `<div><dt>${t('Component scope')}</dt><dd>${esc(scopeClassLabel(scope.classification))}${scope.component_label ? ` — ${esc(scope.component_label)} (${esc(scopeConfidenceLabel(scope.confidence))})` : ''}. ${t('@in of @total stored example(s) are inside the component; @out outside, @und undetermined. Sample-based: not every instance is inspected.', { '@in': scope.examples_in_component, '@total': scope.examples_total, '@out': scope.examples_outside_component, '@und': scope.examples_undetermined })}</dd></div>`
         : '';
@@ -1812,7 +1813,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code> <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.')}</span><br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))}</span><br>`}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -5630,7 +5631,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     .map((fn) => fn.toString())
     .join('\n');
   const screenshotSource = markerGeometry.toString();
-  const liveInspectSource = inspectUrlFor.toString();
+  const liveInspectSource = [inspectUrlFor, inspectUnavailableReason, inspectUnavailableText].map((fn) => fn.toString()).join('\n');
   return `<script>
 (function () {
   'use strict';
@@ -5902,6 +5903,10 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     list.appendChild(pair(LABELS.screenshot, bug.screenshot?.available ? LABELS.captured : (bug.screenshot?.reason || LABELS.noScreenshot)));
     list.appendChild(reproductionRow(bug));
     var inspect = inspectUrlFor(bug);
+    var inspectReason = inspectUnavailableReason(bug);
+    if (!inspect && inspectReason) {
+      detailBody.appendChild(text('p', LABELS.highlightUnavailable + ' ' + inspectUnavailableText(inspectReason), 'bug-meta'));
+    }
     if (inspect) {
       var inspectNote = document.createElement('p');
       var inspectLink = document.createElement('a');
@@ -6088,6 +6093,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     unattributed: t('unattributed'),
     captured: t('captured'),
     highlightOnSite: t('Highlight on site'),
+    highlightUnavailable: t('Live highlighting is unavailable.'),
     highlightHint: t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.'),
     screenshot: t('Screenshot'),
     screenshotAlt: t('Screenshot of the affected page'),
