@@ -547,7 +547,7 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /Cross-engine ACT evidence/);
   assert.match(html, /Highlight on site/, 'finding links to a live highlight');
   assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
-  assert.match(html, /Install the VITAL Inspect bookmarklet \(one time\)/, 'the bookmarklet install help is present');
+  assert.match(html, /id="live-inspect-help"/, 'the bookmarklet install section has a stable anchor');
   assert.match(html, /class="bookmarklet-link bookmarklet-button" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
   assert.match(html, /bookmarklet-visual/, 'the bookmarks-bar visual is present');
   assert.match(html, /Copy bookmarklet/, 'the manual copy fallback is present');

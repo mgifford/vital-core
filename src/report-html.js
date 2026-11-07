@@ -1660,9 +1660,10 @@ function nextActionsScript() {
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
  */
 function liveInspectHelp() {
-  return `<details class="live-inspect-help" open>
+  return `<details id="live-inspect-help" class="live-inspect-help" open>
 <summary>${t('Install the VITAL Inspect bookmarklet (one time)')}</summary>
-<p>${t('VITAL reports are static, so the highlight runs in your browser on the live page. Show your bookmarks bar, then drag the button into it.')}</p>
+<p>${t('VITAL reports are static, so the highlight runs in your browser on the live page. This bookmarklet is page-level, not per finding: install it once, then use a finding’s Highlight on site link. Alfa findings without element evidence cannot be highlighted.')}</p>
+<p>${t('Show your bookmarks bar, then drag the button into it.')}</p>
 <div class="bookmarklet-visual" role="img" aria-label="${esc(t('A browser bookmarks bar with the VITAL Inspect button ready to be dragged into it.'))}">
   <div class="bookmarklet-visual-bar">
     <span class="bookmarklet-visual-button">VITAL Inspect</span>
@@ -1874,7 +1875,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code> <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))}</span><br>`}${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>`}${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -5656,7 +5657,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .explorer-detail { border: 2px solid var(--accent); border-radius: 4px; padding: 1rem; margin: 1.25rem 0; }
 .explorer-detail:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .explorer-detail h3 { margin-top: 0; }
-.live-inspect-help { margin: 1rem 0; }
+.live-inspect-help { margin: 1rem 0; scroll-margin-top: 6rem; }
 .bookmarklet-visual { border: 1px solid var(--rule); border-radius: 4px; padding: .75rem 1rem; margin: .75rem 0; background: var(--surface, #f7f7f7); }
 .bookmarklet-visual-bar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: .5rem; }
 .bookmarklet-visual-button { border: 2px solid var(--accent); border-radius: 4px; padding: .25rem .5rem; font-weight: 700; }
@@ -5979,7 +5980,12 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     var inspect = inspectUrlFor(bug);
     var inspectReason = inspectUnavailableReason(bug);
     if (!inspect && inspectReason) {
-      detailBody.appendChild(text('p', LABELS.highlightUnavailable + ' ' + inspectUnavailableText(inspectReason), 'bug-meta'));
+      var unavailable = text('p', LABELS.highlightUnavailable + ' ' + inspectUnavailableText(inspectReason) + ' ', 'bug-meta');
+      var helpLink = document.createElement('a');
+      helpLink.href = '#live-inspect-help';
+      helpLink.textContent = LABELS.aboutLiveInspection;
+      unavailable.appendChild(helpLink);
+      detailBody.appendChild(unavailable);
     }
     if (inspect) {
       var inspectNote = document.createElement('p');
@@ -6179,6 +6185,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     captured: t('captured'),
     highlightOnSite: t('Highlight on site'),
     highlightUnavailable: t('Live highlighting is unavailable.'),
+    aboutLiveInspection: t('About live inspection'),
     highlightHint: t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.'),
     copyInspectCode: t('Copy inspection code'),
     screenshot: t('Screenshot'),
