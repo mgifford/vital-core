@@ -800,7 +800,7 @@ try {
     const axeRules = Object.fromEntries(Object.entries(consentAxe.violations).map(([ruleId, rule]) => [ruleId, {
       ...rule,
       pages: 1,
-      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target, html: example.html, element: example.element, semantic_context: example.semantic_context })),
+      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target, html: example.html, element: example.element, semantic_context: example.semantic_context, browser_context: consentAxe.context })),
       affectedPages: [{ url: observedUrl, instances: rule.count }],
     }]));
     const alfaRules = Object.fromEntries(Object.entries(consentAlfa.failed).map(([ruleId, rule]) => [ruleId, {

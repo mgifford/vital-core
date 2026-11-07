@@ -102,8 +102,8 @@ the audited page is still open. Do not add a second evidence pipeline or rescan
 a page for a report.
 
 * **Element + semantic evidence** (`src/lib/element-evidence.js`,
-  `src/lib/semantic-context.js`): for the **first stored example per rule**,
-  tag, explicit role, name-bearing attributes (never text content), selector
+  `src/lib/semantic-context.js`): for **each stored example per rule**
+  (up to 3/page/rule), tag, explicit role, name-bearing attributes (never text content), selector
   match count, visibility, rect, shadow/iframe state, render context, and the
   nearest landmark region / containing widget. Alfa reports serialized node
   descriptions, so its element evidence is explicitly **unavailable** — never
@@ -120,7 +120,9 @@ a page for a report.
   `npm run reproduce`): plan → standalone Playwright test → outcome. It checks
   the recorded element and rule, never merely the page; `not_reproduced` does
   **not** mean fixed; nothing runs during a scheduled scan; Alfa/redacted/
-  unsafe-selector cases are `unavailable`; exit codes 0–6.
+  unsafe-selector and frame/shadow-boundary cases are `unavailable`; a changed
+  element identity or engine version is reported as changed, not reproduced;
+  exit codes 0–7.
 * **Manual validation** (`src/lib/manual-validation.js`): criterion/rule-specific
   prompts. The Explorer can download a blank review record; VITAL never stores
   it, never sets a reviewer or status, and never turns it into a conformance
@@ -130,9 +132,11 @@ a page for a report.
   / `component_groups`). Keep `schema_version: "1"` unless the change is
   breaking; see [API.md](API.md).
 
-Storage bounds: 3 examples per page per rule, 5 instances per rule in the
-summary, one enriched example per rule. Do not store full DOM, screenshots or
-per-violation artifacts without a measured budget.
+Storage bounds: 3 examples per page per rule (each with coherent evidence),
+5 instances per rule in the summary. Reports select one representative
+occurrence as a whole (`occurrence_id`); never mix fields from different
+examples. Do not store full DOM, screenshots or per-violation artifacts
+without a measured budget.
 
 ### Findings ledger
 

@@ -157,6 +157,45 @@ Not implemented (deliberately): a guided manual assessment platform, hosted
 review storage, GitHub submission, and ARRM task/role mapping. The guided
 assessment and ARRM items remain in "Deferred work" below.
 
+## 3b. Milestone: evidence integrity and visual inspection (2026-11)
+
+Focused follow-up to the five-PR milestone: make evidence trustworthy before
+adding screenshots and richer interaction.
+
+### PR A — Evidence integrity (implemented)
+
+- `src/lib/occurrence.js`: one coherent occurrence per stored example
+  (`VO-…` identity from pattern + URL + selector + component). Reports select a
+  representative occurrence **as a whole** (complete → partial → unavailable);
+  `instance_id`/`pattern_id` keep their frozen formulas.
+- Every stored example is enriched, not just the first; each carries its own
+  URL, selector, element, semantic context, browser context, `scanned_at`,
+  engine version and consent state.
+- Ancestry is walked in full (crossing shadow hosts) but only meaningful
+  boundaries are serialized, so deep layout wrappers no longer hide `main`.
+  `ancestry_complete`/`ancestry_depth` are recorded.
+- Reproduction verifies the recorded tag/role/name-attribute identity and axe
+  version before claiming a result; new status `element_identity_changed`
+  (exit 7). Frame/shadow paths are `unavailable` rather than resolved in the
+  wrong document.
+- Measured: ~775 B per enriched example (Walsall fixture ~830 B; 4-example
+  fixture 3.1 KB). Summary keeps up to 5 coherent instances per rule.
+
+### PR B — Region, widget and component grouping (next)
+
+Separate semantic region, widget type and shared component identity; keep
+confidence/provenance and candidate/configured status; update grouping controls
+and fixtures.
+
+### PR C — Screenshots and visual inspection (planned)
+
+Bounded per-page screenshots, element annotations, nonvisual fallback, privacy
+controls, Explorer visual panel, measured storage.
+
+### PR D — Reproduction/manual refinements (planned)
+
+Export usability, manual guidance accuracy, docs and final integration tests.
+
 ## 4. Deferred work
 
 Each item lists: motivation, proposed behaviour, dependencies, acceptance
@@ -270,6 +309,39 @@ criteria, explicit exclusions, references, priority.
   automation.
 - **Priority:** P2.
 
+### P2 — Deterministic interaction replay
+
+- **Motivation:** dialog, menu and tab findings currently report
+  `interaction_state_unavailable`.
+- **Proposed behaviour:** record a declarative, bounded action sequence
+  (click/fill/press/wait-for-state) from an allow-list and replay it before
+  locating the element.
+- **Acceptance:** recorded steps are deterministic, reviewed and bounded; no
+  arbitrary page JavaScript; unsupported sequences stay unavailable.
+- **Priority:** P2.
+
+### P2 — Computed accessible names
+
+- **Motivation:** evidence records name-bearing attributes, not the computed
+  accessible name; reports say so.
+- **Proposed behaviour:** compute names only where a reliable browser/API
+  result is available, store the source, and never label an attribute as the
+  computed name otherwise.
+- **Acceptance:** labels distinguish name attribute, hint and computed name;
+  tests cover `aria-labelledby`, native labels, contents and hidden references.
+- **Priority:** P2.
+
+### P3 — Downstream fleet adoption
+
+- **Motivation:** fleets such as `vital-core-lgd` must adopt the evidence and
+  Explorer changes deliberately.
+- **Proposed behaviour:** document the upstream merge, data regeneration and
+  verification steps (including the Walsall example) without changing fleet
+  repositories from vital-core.
+- **Acceptance:** a documented, repeatable checklist; no cross-repository
+  changes from this milestone.
+- **Priority:** P3.
+
 ### P3 — Design-system integration
 
 - **Motivation:** component ownership is strongest when a design system declares
@@ -342,6 +414,12 @@ criteria, explicit exclusions, references, priority.
   menu opened first is reported as `interaction_state_unavailable`.
 - Reproduction outcomes are not yet stored back into the reports (`verified_at`
   is null); running a test is a local/CI action.
+- Every stored example is enriched (up to 3/page/rule), so page records grow
+  roughly 3× versus first-only evidence (~775 B per example); summary records
+  keep up to five coherent occurrences per rule.
+- Reproduction identity checks cover tag, explicit role and direct
+  name-attribute values; computed role/name changes and cross-frame/shadow
+  replay remain unavailable.
 - Manual review records are generated on demand and are not stored by VITAL;
   no review status is persisted, and a recorded review is never converted into
   a conformance claim.

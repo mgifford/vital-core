@@ -86,11 +86,16 @@ scheduled scans run on GitHub's cloud servers.
 
 ### Element and semantic evidence
 
-For the first stored failing-element example of each rule, the scanner records
-the element's tag, explicit role, name-bearing attributes (never text content),
-selector match count, visibility, bounding rectangle, and its serialized
-ancestor chain, then classifies that chain into the nearest landmark region and
-any containing widget (dialog, tablist, navigation, …). Unnamed
+For every stored failing-element example of each rule (up to three per page),
+the scanner records the element's tag, explicit role, name-bearing attributes
+(never text content), selector match count, visibility, bounding rectangle, and
+its serialized ancestor chain. Only meaningful boundaries (landmarks, sectioning
+elements, widgets and the target) are serialized, so deep layout wrappers no
+longer hide `main`; the chain is classified into the nearest landmark region and
+any containing widget (dialog, tablist, navigation, …). Each example keeps its
+own URL, selector, context and scan provenance, and reports select one
+representative occurrence as a whole (`occurrence_id`) instead of mixing fields
+from different observations. Unnamed
 `<section>`/`<form>` elements stay unnamed rather than being promoted to
 landmarks, and elements outside any landmark are marked `unclassified` instead
 of being assigned an invented region. Alfa reports node descriptions rather than

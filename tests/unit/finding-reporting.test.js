@@ -216,7 +216,12 @@ test('buildBugReports carries element, region and evidence completeness without 
         'button-name': {
           count: 2, pages: 1, impact: 'serious', help: 'Buttons must have discernible text', helpUrl: null, tags: ['wcag412'],
           examplePages: [url], affectedPages: [{ url, instances: 2 }],
-          instances: [{ url, target: element.selector, html: '<button>', element, semantic_context: semantic }],
+          instances: [{
+            url, target: element.selector, html: '<button>', element, semantic_context: semantic,
+            page_id: 'page-hash', run_id: 'run-1', scanned_at: '2026-06-13T00:00:00.000Z',
+            engine_version: '4.12.1', consent_state: 'no_dialog',
+            browser_context: { viewport: { width: 1280, height: 800 }, color_scheme: 'light', forced_colors: 'none', reduced_motion: 'no-preference', locale: 'en' },
+          }],
         },
       },
     },

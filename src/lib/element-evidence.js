@@ -29,13 +29,14 @@ export const MAX_RULE_INSTANCES = 5;
 /** Bounds for stored element evidence. */
 export const MAX_SELECTOR = 500;
 export const MAX_ATTR = 100;
+const MAX_WALK = 200;
 
 /**
  * Runs inside the page (stringified by attachElementEvidence). Returns the
  * render context once plus one evidence record per selector. Must stay
  * self-contained: it cannot close over module scope.
  */
-function collectElementEvidenceInPage({ selectors, maxAncestry, maxName, maxSelector }) {
+function collectElementEvidenceInPage({ selectors, maxAncestry, maxWalk, maxName, maxSelector }) {
   const clip = (value, max) => {
     if (typeof value !== 'string') return null;
     const text = value.replace(/\s+/g, ' ').trim();
@@ -94,6 +95,14 @@ function collectElementEvidenceInPage({ selectors, maxAncestry, maxName, maxSele
       return true; // cross-origin parent: we are framed but cannot inspect it
     }
   };
+  // Cross a shadow boundary via its host; stop at the document otherwise.
+  const parentOf = (node) => {
+    if (node.parentElement) return node.parentElement;
+    const root = node.getRootNode?.();
+    if (typeof ShadowRoot !== 'undefined' && root instanceof ShadowRoot) return root.host ?? null;
+    return null;
+  };
+  const MEANINGFUL_TAGS = ['header', 'footer', 'main', 'nav', 'aside', 'section', 'form', 'article', 'dialog', 'search'];
   const media = (query) => {
     try {
       return window.matchMedia(query).matches;
@@ -125,15 +134,32 @@ function collectElementEvidenceInPage({ selectors, maxAncestry, maxName, maxSele
     const rect = el.getBoundingClientRect();
     const style = window.getComputedStyle(el);
     const name = elementName(el);
+    // Walk the complete chain (crossing shadow hosts) but serialize only
+    // meaningful boundaries: landmarks, sectioning elements, widgets and the
+    // target. Layout wrappers would otherwise consume the ancestry budget and
+    // hide `main` behind eight <div>s.
     const ancestry = [];
-    for (let node = el; node && ancestry.length < maxAncestry; node = node.parentElement) {
-      ancestry.unshift({
-        tag: node.localName,
-        role: explicitRole(node),
-        // Only compute a landmark name when the node could be one; this keeps
-        // the walk cheap and avoids resolving text for arbitrary wrappers.
-        ...(node.matches('header,footer,main,nav,aside,section,form,[role]') ? landmarkName(node) : { name: null, name_source: 'none' }),
-      });
+    let depth = 0;
+    let complete = false;
+    let node = el;
+    while (node && depth < maxWalk) {
+      const isTarget = node === el;
+      const tag = node.localName;
+      const role = explicitRole(node);
+      if (isTarget || role || MEANINGFUL_TAGS.includes(tag)) {
+        ancestry.unshift({
+          tag,
+          role,
+          // Only compute a landmark name when the node could be one; this
+          // keeps the walk cheap and avoids resolving text for wrappers.
+          ...(node.matches('header,footer,main,nav,aside,section,form,article,dialog,search,[role]')
+            ? landmarkName(node)
+            : { name: null, name_source: 'none' }),
+        });
+      }
+      depth++;
+      if (node === document.documentElement) { complete = true; break; }
+      node = parentOf(node);
     }
     const root = el.getRootNode?.();
     return {
@@ -150,7 +176,9 @@ function collectElementEvidenceInPage({ selectors, maxAncestry, maxName, maxSele
       iframe: isFramed(),
       visible: rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden',
       rect: { x: Math.round(rect.x), y: Math.round(rect.y), width: Math.round(rect.width), height: Math.round(rect.height) },
-      ancestry,
+      ancestry: ancestry.slice(-maxAncestry),
+      ancestry_depth: depth,
+      ancestry_complete: complete,
     };
   });
   return { context, evidence };
@@ -165,11 +193,12 @@ export async function attachElementEvidence(page, axeRecord) {
   const slots = [];
   for (const [ruleId, violation] of Object.entries(axeRecord?.violations ?? {})) {
     for (const [index, example] of (violation.examples ?? []).entries()) {
-      // Only the first stored example per rule is enriched. Later examples keep
-      // their selector and snippet, which bounds both the per-page record and
-      // the weekly summary that is kept forever.
-      if (index !== 0) continue;
-      if (Array.isArray(example.target_path) && example.target_path.length > 1) continue;
+      // A frame/shadow path is not a selector for the top document. Record it
+      // as explicitly unavailable rather than resolving the wrong node.
+      if (Array.isArray(example.target_path) && example.target_path.length > 1) {
+        example.element = { available: false, reason: 'frame-or-shadow-path', selector: example.target ?? null };
+        continue;
+      }
       if (typeof example.target !== 'string' || !example.target) continue;
       slots.push({ ruleId, index, selector: example.target });
     }
@@ -178,6 +207,7 @@ export async function attachElementEvidence(page, axeRecord) {
   const args = JSON.stringify({
     selectors: slots.map((slot) => slot.selector),
     maxAncestry: MAX_ANCESTRY,
+    maxWalk: MAX_WALK,
     maxName: MAX_NAME,
     maxSelector: MAX_SELECTOR,
   });
@@ -191,7 +221,12 @@ export async function attachElementEvidence(page, axeRecord) {
     const example = axeRecord.violations[slot.ruleId].examples[slot.index];
     const record = boundedElement(evidence[i], slot.selector);
     example.element = record;
-    if (record.available) example.semantic_context = resolveSemanticContext(evidence[i].ancestry);
+    if (record.available && Array.isArray(evidence[i].ancestry)) {
+      const semantic = resolveSemanticContext(evidence[i].ancestry);
+      semantic.ancestry_complete = evidence[i].ancestry_complete === true;
+      semantic.ancestry_depth = Number.isInteger(evidence[i].ancestry_depth) ? evidence[i].ancestry_depth : null;
+      example.semantic_context = semantic;
+    }
   });
 }
 
@@ -205,7 +240,24 @@ export function condenseInstance(example) {
   if (example.element) out.element = cloneElement(example.element);
   if (example.semantic_context) out.semantic_context = cloneSemantic(example.semantic_context);
   if (example.component) out.component = example.component;
+  for (const key of ['page_id', 'run_id', 'scanned_at', 'engine_version', 'consent_state']) {
+    if (example[key] != null) out[key] = String(example[key]).slice(0, 100);
+  }
+  if (example.browser_context) out.browser_context = pickBrowserContext(example.browser_context);
   return out;
+}
+
+/** The compact, per-occurrence render context (no UA or final URL). */
+export function pickBrowserContext(context) {
+  if (!context || typeof context !== 'object') return null;
+  return {
+    viewport: context.viewport ?? null,
+    device_scale_factor: context.device_scale_factor ?? null,
+    color_scheme: context.color_scheme ?? null,
+    forced_colors: context.forced_colors ?? null,
+    reduced_motion: context.reduced_motion ?? null,
+    locale: context.locale ?? null,
+  };
 }
 
 /** Public-safe element evidence: no ids, no ancestry, bounded strings. */
@@ -333,5 +385,7 @@ function cloneSemantic(semantic) {
     in_dialog: semantic.in_dialog === true,
     unnamed_landmarks: (semantic.unnamed_landmarks ?? []).map((entry) => ({ ...entry })),
     unclassified: semantic.unclassified === true,
+    ancestry_complete: semantic.ancestry_complete === true,
+    ancestry_depth: Number.isInteger(semantic.ancestry_depth) ? semantic.ancestry_depth : null,
   };
 }
