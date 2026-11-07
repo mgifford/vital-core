@@ -9,6 +9,7 @@ import {
   reproductionPlan,
   executeReproduction,
   playwrightTestFor,
+  applyReproductionOverrides,
   isReplayableSelector,
   REPRODUCTION_EXIT_CODES,
 } from '../../src/lib/reproduction.js';
@@ -76,10 +77,54 @@ test('playwrightTestFor refuses an unavailable plan and emits a runnable standal
   assert.match(code, /executeReproduction/);
   assert.match(code, /process\.exit\(EXIT_CODES\[result\.status\]/);
   assert.match(code, /Requirements: Node\.js >= 22/);
-  assert.match(code, /npx playwright install chromium/);
+  assert.match(code, /npm install playwright axe-core/);
+  assert.match(code, /REPRO_URL=https:\/\/staging/);
+  assert.match(code, /REPRO_SELECTOR/);
+  assert.match(code, /REPRO_HEADED/);
   assert.match(code, /7 element identity changed/);
   assert.equal(REPRODUCTION_EXIT_CODES.reproduced, 0);
   assert.equal(REPRODUCTION_EXIT_CODES.ambiguous_locator, 3);
+});
+
+test('replay overrides are explicit, validated and never change recorded identity', () => {
+  const base = plan();
+  const changed = applyReproductionOverrides(base, {
+    url: 'https://staging.example.gov/page',
+    selector: '#main .button',
+    timeoutMs: 45000,
+  });
+  assert.equal(changed.url, 'https://staging.example.gov/page');
+  assert.equal(changed.selector, '#main .button');
+  assert.deepEqual(changed.locator, { strategy: 'css', value: '#main .button' });
+  assert.equal(changed.timeout_ms, 45000);
+  assert.deepEqual(changed.element_identity, base.element_identity, 'identity facts stay recorded');
+  assert.throws(() => applyReproductionOverrides(base, { url: 'file:///etc/passwd' }), /http/);
+  assert.throws(() => applyReproductionOverrides(base, { selector: 'text: PRIVATE' }), /selector/);
+  assert.throws(() => applyReproductionOverrides(base, { timeoutMs: 10 }), /timeout/);
+});
+
+test('the reproduction CLI can print an overridden plan without running a browser', () => {
+  const dir = fs.mkdtempSync(path.join(ROOT, '.tmp-repro-cli-'));
+  const bugsFile = path.join(dir, 'bugs.json');
+  fs.writeFileSync(bugsFile, JSON.stringify({ reports: [bug()] }));
+  try {
+    const stdout = execFileSync(process.execPath, [
+      path.join(ROOT, 'scripts', 'reproduce.js'),
+      '--bugs', bugsFile,
+      '--id', 'VS-repro01',
+      '--plan',
+      '--url', 'https://staging.example.gov/page',
+      '--selector', '#main .button',
+      '--timeout', '45000',
+    ], { cwd: ROOT, encoding: 'utf8', timeout: 30000 });
+    const output = JSON.parse(stdout);
+    assert.equal(output.url, 'https://staging.example.gov/page');
+    assert.equal(output.selector, '#main .button');
+    assert.equal(output.timeout_ms, 45000);
+    assert.equal(output.status, 'not_attempted');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test('executeReproduction distinguishes reproduced, not reproduced, missing, ambiguous and fails-elsewhere', async () => {

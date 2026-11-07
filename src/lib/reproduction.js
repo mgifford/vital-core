@@ -121,8 +121,37 @@ export function reproductionPlan(bug) {
     // A dialog may need interaction before the element exists; the runner then
     // reports interaction_state_unavailable instead of guessing a click.
     interaction_required: Boolean(bug.semantic_context?.in_dialog),
+    timeout_ms: 30000,
     steps: [],
   };
+}
+
+/**
+ * Apply explicit replay overrides to a plan (CLI `--url`/`--selector`/
+ * `--timeout`, or the generated script's environment). Overrides never change
+ * the recorded identity facts; a selector that now matches another element is
+ * still reported as `element_identity_changed`.
+ */
+export function applyReproductionOverrides(plan, overrides = {}) {
+  if (!plan || plan.status !== 'not_attempted') return plan;
+  const next = { ...plan, locator: { ...(plan.locator ?? {}) } };
+  if (overrides.url != null) {
+    const url = String(overrides.url).trim();
+    if (!/^https?:\/\//i.test(url)) throw new Error('reproduction URL must start with http:// or https://');
+    next.url = url;
+  }
+  if (overrides.selector != null) {
+    const selector = String(overrides.selector).trim();
+    if (!isReplayableSelector(selector)) throw new Error('reproduction selector is not replayable');
+    next.selector = selector;
+    next.locator = { strategy: 'css', value: selector };
+  }
+  if (overrides.timeoutMs != null) {
+    const timeout = Number(overrides.timeoutMs);
+    if (!Number.isInteger(timeout) || timeout < 1000 || timeout > 180000) throw new Error('reproduction timeout must be 1000-180000 ms');
+    next.timeout_ms = timeout;
+  }
+  return next;
 }
 
 /**
@@ -265,17 +294,25 @@ export function playwrightTestFor(plan, { generatedAt = new Date().toISOString()
 // This test replays recorded evidence only: one URL, one selector, one rule.
 // It never claims a reproduction from a different element.
 //
-// Requirements: Node.js >= 22; run from a vital-core checkout so 'playwright'
-// and 'axe-core' resolve; install Chromium once with
-// 'npx playwright install chromium'.
+// Requirements: Node.js >= 22, a Playwright-supported OS.
+// Setup (in any directory; no vital-core checkout needed):
+//   npm init -y
+//   npm install playwright axe-core
+//   npx playwright install chromium
 //
 // Run:      node <this-file>
+// Override: REPRO_URL=https://staging.example.gov/page node <this-file>
+//           REPRO_SELECTOR='main .button' node <this-file>
+//           REPRO_HEADED=1 node <this-file>
+//           REPRO_TIMEOUT_MS=45000 node <this-file>
 // Output:   one JSON object on stdout (status, occurrence, rule, matches, detail)
 // Exit:     0 reproduced · 1 not reproduced · 2 locator not found
 //           3 ambiguous locator · 4 page/interaction unavailable
 //           5 rule or engine changed · 6 inconclusive · 7 element identity changed
 // Evidence: the recorded URL/selector/rule and the JSON outcome above; no
 //           screenshot and no page content are stored by this script.
+// Honesty:  an override changes where you look, not what was recorded. A
+//           selector that now matches another element is not a reproduction.
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
@@ -287,18 +324,31 @@ const EXIT_CODES = ${JSON.stringify(REPRODUCTION_EXIT_CODES, null, 2)};
 
 ${executeReproduction.toString()}
 
-const browser = await chromium.launch();
-const context = await browser.newContext(PLAN.context || {});
+const plan = { ...PLAN, locator: { ...(PLAN.locator || {}) } };
+if (process.env.REPRO_URL) plan.url = process.env.REPRO_URL;
+if (process.env.REPRO_SELECTOR) {
+  plan.selector = process.env.REPRO_SELECTOR;
+  plan.locator = { strategy: 'css', value: plan.selector };
+}
+const timeoutMs = Number(process.env.REPRO_TIMEOUT_MS) || PLAN.timeout_ms || 30000;
+const headed = /^(1|true|yes)$/i.test(process.env.REPRO_HEADED || '');
+if (!(plan.url.startsWith('http://') || plan.url.startsWith('https://') || plan.url.startsWith('file://'))) {
+  console.log(JSON.stringify({ status: 'page_unavailable', detail: 'target URL must be http(s) or a local file' }, null, 2));
+  process.exit(EXIT_CODES.page_unavailable ?? 4);
+}
+const browser = await chromium.launch({ headless: !headed });
+const context = await browser.newContext(plan.context || {});
 const page = await context.newPage();
-page.setDefaultNavigationTimeout(30000);
+page.setDefaultTimeout(timeoutMs);
+page.setDefaultNavigationTimeout(timeoutMs);
 try {
-  await page.goto(PLAN.url, { waitUntil: 'load' });
+  await page.goto(plan.url, { waitUntil: 'load' });
 } catch (error) {
   console.log(JSON.stringify({ status: 'page_unavailable', detail: String((error && error.message) || error) }, null, 2));
   await browser.close();
   process.exit(EXIT_CODES.page_unavailable ?? 4);
 }
-const result = await executeReproduction(page, AXE_SOURCE, PLAN);
+const result = await executeReproduction(page, AXE_SOURCE, plan);
 await browser.close();
 console.log(JSON.stringify(result, null, 2));
 process.exit(EXIT_CODES[result.status] ?? 6);

@@ -46,6 +46,7 @@ export function manualValidationFor(bug) {
   const LIMITATIONS = [
     'Automated tools find roughly a third of accessibility barriers; absence of a finding is not evidence of accessibility.',
     'Recording a review does not establish conformance; it records what one reviewer observed in one environment.',
+    'A screenshot, when present, shows the page at scan time; re-check the live page before drawing a conclusion.',
   ];
   const criterion = typeof bug?.wcag_sc === 'string' ? bug.wcag_sc : '';
   const rule = typeof bug?.rule_id === 'string' ? bug.rule_id : '';
@@ -112,6 +113,40 @@ export function manualValidationFor(bug) {
     '4.1.3': [
       'Trigger the status message and confirm it is announced without moving focus.',
     ],
+    '1.4.1': [
+      'Check whether colour alone conveys meaning (an error, a required field, a link in body text).',
+      'Look for a second cue such as text, an icon with a name, or an underline.',
+    ],
+    '1.4.5': [
+      'Check whether text is presented as an image of text; it should reflow and remain readable when zoomed.',
+    ],
+    '2.2.2': [
+      'If content moves, blinks or auto-updates, check that it can be paused, stopped or hidden.',
+    ],
+    '2.4.1': [
+      'Tab from the top of the page and confirm a skip link or landmark navigation bypasses repeated blocks.',
+    ],
+    '2.4.2': [
+      'Check the page title describes the page purpose and is unique within the site.',
+    ],
+    '3.1.1': [
+      'Confirm the page language is set and matches the main content language.',
+    ],
+    '3.1.2': [
+      'Check passages in another language are marked so a screen reader switches pronunciation.',
+    ],
+    '3.2.1': [
+      'Move focus through the page and confirm nothing unexpectedly changes context.',
+    ],
+    '3.2.2': [
+      'Change a form control and confirm the page does not unexpectedly submit or navigate.',
+    ],
+    '3.3.4': [
+      'Check that legal, financial or data-deletion submissions can be reviewed, corrected or confirmed.',
+    ],
+    '4.1.1': [
+      'Check the markup for duplicate IDs and malformed nesting that could break assistive technology.',
+    ],
   };
   const byRule = {
     'image-alt': byCriterion['1.1.1'],
@@ -128,6 +163,26 @@ export function manualValidationFor(bug) {
       'Confirm the content you are checking is inside a landmark that a screen reader announces.',
       'Check the landmark names distinguish repeated regions (for example two navigation areas).',
     ],
+    'document-title': byCriterion['2.4.2'],
+    'html-has-lang': byCriterion['3.1.1'],
+    'html-lang-valid': byCriterion['3.1.1'],
+    'valid-lang': byCriterion['3.1.2'],
+    'heading-order': byCriterion['1.3.1'],
+    'empty-heading': byCriterion['1.3.1'],
+    'page-has-heading-one': byCriterion['1.3.1'],
+    'landmark-one-main': byCriterion['1.3.1'],
+    'frame-title': byCriterion['4.1.2'],
+    'aria-hidden-focus': byCriterion['4.1.2'],
+    'nested-interactive': byCriterion['4.1.2'],
+    'input-button-name': byCriterion['4.1.2'],
+    'select-name': byCriterion['3.3.2'],
+    'aria-valid-attr-value': byCriterion['4.1.2'],
+    'aria-allowed-attr': byCriterion['4.1.2'],
+    'aria-required-attr': byCriterion['4.1.2'],
+    'duplicate-id': byCriterion['4.1.1'],
+    'duplicate-id-aria': byCriterion['4.1.1'],
+    'link-in-text-block': byCriterion['1.4.1'],
+    'bypass': byCriterion['2.4.1'],
   };
   const prompts = (byCriterion[criterion] ?? byRule[rule] ?? GENERIC_PROMPTS).slice(0, 3);
   return {
@@ -147,6 +202,21 @@ export function manualValidationFor(bug) {
 export function manualReviewRecord(bug, { generatedAt = new Date().toISOString() } = {}) {
   const guidance = manualValidationFor(bug);
   const region = bug?.semantic_context?.nearest_region ?? null;
+  const element = bug?.element?.available === true ? {
+    tag: bug.element.tag ?? null,
+    role: bug.element.role ?? null,
+    name: bug.element.name ?? null,
+    name_source: bug.element.name_source ?? 'none',
+  } : null;
+  const screenshot = bug?.screenshot?.available === true ? {
+    file: bug.screenshot.file ?? null,
+    captured_at: bug.screenshot.captured_at ?? null,
+    full_page: bug.screenshot.full_page === true,
+    historical: true,
+  } : null;
+  if (screenshot) {
+    guidance.screenshot_note = 'The screenshot is historical evidence from the scan, not a live view; confirm the current page before recording an outcome.';
+  }
   return {
     schema: 1,
     generated_at: generatedAt,
@@ -154,6 +224,7 @@ export function manualReviewRecord(bug, { generatedAt = new Date().toISOString()
     finding: {
       instance_id: bug?.instance_id ?? null,
       pattern_id: bug?.pattern_id ?? null,
+      occurrence_id: bug?.occurrence_id ?? null,
       rule_id: bug?.rule_id ?? null,
       engine: bug?.engine_key ?? null,
       severity: bug?.severity ?? null,
@@ -162,6 +233,9 @@ export function manualReviewRecord(bug, { generatedAt = new Date().toISOString()
       selector: bug?.selector ?? null,
       region: region ? (region.name ? `${region.role} "${region.name}"` : `${region.role} (unnamed)`) : null,
       component: bug?.component_scope?.component_label ?? null,
+      element,
+      screenshot,
+      stored_examples: bug?.evidence?.stored_examples ?? bug?.examples?.length ?? null,
     },
     guidance,
     review: {
@@ -176,6 +250,6 @@ export function manualReviewRecord(bug, { generatedAt = new Date().toISOString()
       notes: null,
       evidence: [],
     },
-    instructions: 'Fill in review, keep the guidance with it, and share it through your own channel. This file is generated on demand and is not saved by VITAL.',
+    instructions: 'Fill in review, keep the guidance with it, and share it through your own channel. This file is generated on demand and is not saved by VITAL. Remove personal or sensitive data from notes and screenshots before sharing.',
   };
 }

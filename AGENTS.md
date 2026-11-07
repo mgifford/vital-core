@@ -124,16 +124,17 @@ a page for a report.
   **not** mean fixed; nothing runs during a scheduled scan; Alfa/redacted/
   unsafe-selector and frame/shadow-boundary cases are `unavailable`; a changed
   element identity or engine version is reported as changed, not reproduced;
-  exit codes 0–7.
+  `REPRO_URL`/`REPRO_SELECTOR`/`REPRO_TIMEOUT_MS` (and the CLI flags) replay a
+  staging URL or selector without rewriting recorded identity; exit codes 0–7.
 * **Screenshots** (`src/lib/screenshots.js`): opt-in, one JPEG per page with
   findings, bounded by `max_per_run`/`max_height`/`max_bytes` and maskable;
   stored in the data repo, copied only for referenced findings, pruned with page
   detail. `rect_page` positions the Explorer marker; the image is labelled
   historical and never presented as a live view.
 * **Manual validation** (`src/lib/manual-validation.js`): criterion/rule-specific
-  prompts. The Explorer can download a blank review record; VITAL never stores
-  it, never sets a reviewer or status, and never turns it into a conformance
-  claim.
+  prompts. The Explorer can download a blank review record (occurrence,
+  element, screenshot reference, privacy note); VITAL never stores it, never
+  sets a reviewer or status, and never turns it into a conformance claim.
 * **API**: additive v1 fields (`selector`, `element`, `semantic_context`,
   `evidence`, `reproduction`, `manual_validation`, `scope_of_analysis.regions`
   / `component_groups`). Keep `schema_version: "1"` unless the change is
