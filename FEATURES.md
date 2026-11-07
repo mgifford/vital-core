@@ -169,12 +169,22 @@ A static report cannot draw on another origin, so the WAVE/Accessibility Insight
 equivalent is a **one-time bookmarklet**, not a stored screenshot per issue.
 Every finding with a selector gets a **“Highlight on site”** link that opens the
 live page with a compact VITAL payload in the URL fragment. Clicking the
-**VITAL Inspect** bookmarklet there outlines the recorded element (high-contrast
-red box plus a label), scrolls it into view, and shows a panel with the rule,
-WCAG mapping, selector and remediation tip. It reports when the selector now
-matches a different element, matches several elements, or cannot be found;
-`Escape` or Close removes the overlay. It reads only the page in front of you,
-sends nothing, and stores nothing.
+**VITAL Inspect** bookmarklet there shows an explicit match status:
+
+- **Recorded element located** — a unique selector and every available identity
+  check agree. This confirms only that the element is still present; it does
+  **not** re-test the violation.
+- **Possible matching element. Verification required.** — several elements
+  match, or the recorded tag/role/name evidence is incomplete. Candidates are
+  outlined with a dashed box and can be inspected with Previous/Next.
+- **Recorded element changed** — the selector matches, but the recorded tag,
+  role or name attribute differs. The element is **not** highlighted as the
+  original occurrence unless the user explicitly chooses “Show changed element”.
+- **Element not found** — with possible causes and a **Find again** action.
+
+The panel shows the rule, WCAG mapping, selector, recorded and live identity,
+differences and historical remediation guidance. `Escape` or Close removes it.
+It reads only the page in front of you, sends nothing, and stores nothing.
 
 The bookmarklet is installed once by dragging it to the bookmarks bar (or
 copying its link into a bookmark). It follows the recorded selector, so it cannot

@@ -502,6 +502,7 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
       pattern_id: 'VS-12345678',
       url: 'https://example.gov/a',
       selector: 'img.hero',
+      element: { available: true, tag: 'img', role: null, name: null, name_source: 'none' },
       xpath: 'img',
       wcag_sc: '1.1.1',
       wcag_name: 'Non-text Content',
