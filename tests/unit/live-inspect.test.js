@@ -106,6 +106,7 @@ test('a unique element with recorded name identity is matched, not called a repr
     assert.match(await page.locator('#vital-inspect-title').innerText(), /Recorded element located/);
     const panel = await page.locator('#vital-inspect-ui').innerText();
     assert.match(panel, /does not re-test the accessibility violation/);
+    assert.match(panel, /Occurrence: VO-abc12345/);
     assert.match(panel, /Historical remediation guidance/);
     assert.match(panel, /Add an accessible name/);
     assert.match(panel, /Runs locally in your browser/);

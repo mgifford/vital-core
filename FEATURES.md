@@ -182,8 +182,8 @@ live page with a compact VITAL payload in the URL fragment. Clicking the
   original occurrence unless the user explicitly chooses “Show changed element”.
 - **Element not found** — with possible causes and a **Find again** action.
 
-The panel shows the rule, WCAG mapping, selector, recorded and live identity,
-differences and historical remediation guidance. It is rendered in a shadow
+The panel shows the occurrence id, rule, WCAG mapping, selector, recorded and
+live identity, differences and historical remediation guidance. It is rendered in a shadow
 root so aggressive page CSS cannot hide it, can be collapsed or moved between
 corners, and offers Hide highlight, Find again, and candidate navigation. It
 detects when the element is removed or replaced, becomes hidden, or changes a

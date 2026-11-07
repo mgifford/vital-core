@@ -53,6 +53,9 @@ not prove the historical violation still exists.
   script may prevent the bookmarklet from running at all, so no error can be
   shown. Do not weaken the site's policy; use the Finding Explorer or the
   Playwright reproduction instead.
+- **Copy inspection code:** both the Accessibility page and Finding Explorer
+  offer a URL-free code for pages that use hash routing or when a fragment is
+  lost.
 - **Frames and shadow roots:** live highlighting is unavailable and the report
   says so rather than guessing.
 - **Manual assistive-technology testing of the bookmarklet has not been
