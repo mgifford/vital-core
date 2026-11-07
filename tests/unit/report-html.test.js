@@ -501,6 +501,7 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
       instance_id: 'VS-12345678',
       pattern_id: 'VS-12345678',
       url: 'https://example.gov/a',
+      selector: 'img.hero',
       xpath: 'img',
       wcag_sc: '1.1.1',
       wcag_name: 'Non-text Content',
@@ -543,6 +544,10 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /<span class="rule-badge">image-alt<\/span>/);
   assert.match(html, /Images must have alternative text/);
   assert.match(html, /Cross-engine ACT evidence/);
+  assert.match(html, /Highlight on site/, 'finding links to a live highlight');
+  assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
+  assert.match(html, /Highlight a finding on the live site/, 'the bookmarklet install help is present');
+  assert.match(html, /class="bookmarklet-link" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
   assert.match(html, /ACT rule\/page group\(s\) overlap between engines/);
   assert.match(html, /A matching ACT rule and page shows rule\/page overlap only/);
   assert.doesNotMatch(html, /same issue is often caught by both/);

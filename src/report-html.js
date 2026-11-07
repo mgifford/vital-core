@@ -13,6 +13,7 @@ import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingR
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
+import { inspectBookmarklet, inspectUrlFor } from './lib/live-inspect.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -1657,6 +1658,20 @@ function nextActionsScript() {
  * issues appear first. Downloadable as CSV, Markdown,
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
  */
+function liveInspectHelp() {
+  return `<details class="live-inspect-help">
+<summary>${t('Highlight a finding on the live site')}</summary>
+<p>${t('VITAL reports are static, so the highlight runs in your browser on the live page. Install the bookmarklet once:')}</p>
+<ol>
+<li>${t('Drag "VITAL Inspect" to your bookmarks bar (or copy its link and create a bookmark).')}</li>
+<li>${t('In a finding, choose "Highlight on site".')}</li>
+<li>${t('On the page that opens, click the VITAL Inspect bookmark.')}</li>
+</ol>
+<p><a class="bookmarklet-link" href="${esc(inspectBookmarklet())}" draggable="true">${t('VITAL Inspect')}</a></p>
+<p class="meta">${t('The overlay shows the recorded rule, selector, WCAG mapping and fix text. It sends nothing and is not stored. It follows the recorded selector; if the element has changed, it says so rather than guessing.')}</p>
+</details>`;
+}
+
 function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}, excludePatterns = []) {
   const filteredBugs = filterBugsByExclusion(bugs, excludePatterns);
   const laneRank = (b) => {
@@ -1787,6 +1802,7 @@ ${heading('h-bugs', t('Bug reports'))}
         }).join('')}</ul></dd></div>`
         : '';
       const scope = b.component_scope;
+      const inspectUrl = inspectUrlFor(b);
       const componentScopeNote = scope
         ? `<div><dt>${t('Component scope')}</dt><dd>${esc(scopeClassLabel(scope.classification))}${scope.component_label ? ` — ${esc(scope.component_label)} (${esc(scopeConfidenceLabel(scope.confidence))})` : ''}. ${t('@in of @total stored example(s) are inside the component; @out outside, @und undetermined. Sample-based: not every instance is inspected.', { '@in': scope.examples_in_component, '@total': scope.examples_total, '@out': scope.examples_outside_component, '@und': scope.examples_undetermined })}</dd></div>`
         : '';
@@ -1796,7 +1812,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code> <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd><a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -4304,6 +4320,7 @@ ${subnav('accessibility')}
 ${accessBanner(summary.access, target.user_agent)}
 ${acrNote}
 ${scopeSummaryLine(summary, '#h-scope')}
+${liveInspectHelp()}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${nextActionsSection(summary, bugs, reporting)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting, excludePatterns)}
@@ -5576,6 +5593,9 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .explorer-detail { border: 2px solid var(--accent); border-radius: 4px; padding: 1rem; margin: 1.25rem 0; }
 .explorer-detail:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .explorer-detail h3 { margin-top: 0; }
+.live-inspect-help { margin: 1rem 0; }
+.live-inspect-help .bookmarklet-link { display: inline-block; padding: .4rem .6rem; border: 2px solid var(--accent); border-radius: 4px; font-weight: 600; text-decoration: none; }
+.live-inspect-help .bookmarklet-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .screenshot-figure { margin: 1rem 0; }
 .screenshot-scroll { max-height: 70vh; overflow: auto; border: 1px solid var(--rule); }
 .screenshot-inner { position: relative; }
@@ -5610,6 +5630,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     .map((fn) => fn.toString())
     .join('\n');
   const screenshotSource = markerGeometry.toString();
+  const liveInspectSource = inspectUrlFor.toString();
   return `<script>
 (function () {
   'use strict';
@@ -5619,6 +5640,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   ${reproductionSource}
   ${manualSource}
   ${screenshotSource}
+  ${liveInspectSource}
   var BUGS_JSON = ${JSON.stringify(bugsJson)};
   var REPORT_HREF = ${JSON.stringify(reportHref)};
   var form = document.getElementById('explorer-filters');
@@ -5879,6 +5901,19 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     list.appendChild(pair(LABELS.interaction, LABELS.notCaptured));
     list.appendChild(pair(LABELS.screenshot, bug.screenshot?.available ? LABELS.captured : (bug.screenshot?.reason || LABELS.noScreenshot)));
     list.appendChild(reproductionRow(bug));
+    var inspect = inspectUrlFor(bug);
+    if (inspect) {
+      var inspectNote = document.createElement('p');
+      var inspectLink = document.createElement('a');
+      inspectLink.id = 'explorer-highlight';
+      inspectLink.href = inspect;
+      inspectLink.target = '_blank';
+      inspectLink.rel = 'noopener';
+      inspectLink.textContent = LABELS.highlightOnSite;
+      inspectNote.appendChild(inspectLink);
+      inspectNote.appendChild(document.createTextNode(' ' + LABELS.highlightHint));
+      detailBody.appendChild(inspectNote);
+    }
     detailBody.appendChild(list);
     var shotFigure = screenshotSection(bug);
     if (shotFigure) detailBody.appendChild(shotFigure);
@@ -6052,6 +6087,8 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     ownership: t('ownership not established'),
     unattributed: t('unattributed'),
     captured: t('captured'),
+    highlightOnSite: t('Highlight on site'),
+    highlightHint: t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.'),
     screenshot: t('Screenshot'),
     screenshotAlt: t('Screenshot of the affected page'),
     historical: t('Screenshot captured during the scan. The current website may differ.'),
@@ -6082,6 +6119,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
 <h1>${esc(target.domain)}: ${t('Findings explorer')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('explorer')}
 <p class="meta">${t('Inspect the week\'s findings by region, widget type and component. This view reads the same sanitized evidence as the <a href="@report">Accessibility report</a>; the full finding detail stays there and every row links back to it.', { '@report': esc(pageHref('accessibility')) })}</p>
+${liveInspectHelp()}
 <section aria-labelledby="h-explorer-find">
 <h2 id="h-explorer-find">${t('Find and inspect a finding')}</h2>
 <p class="meta">${t('The filters and detail panel need JavaScript. Without it, the complete static index below remains available and links to each finding\'s full report.')}</p>
