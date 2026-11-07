@@ -7,9 +7,13 @@
  *   npm run inspect -- --url https://example.gov/page --selector '#main h2'
  *   npm run inspect -- --url https://example.gov/page --xpath '//main//h2'
  *   npm run inspect -- --bugs ... --id ... --dry-run
+ *   npm run inspect -- --bugs ... --id ... --print-url
  *
  * No extension and no bookmark are needed. The browser stays open until you
  * close it. `--headless` exists for automation and is not useful visually.
+ * `--print-url` prints a URL carrying the payload and exits; open it in your
+ * normal browser (with its cookies/session) and use the VITAL Inspect bookmarklet
+ * when a site blocks automated browsers.
  */
 import fs from 'node:fs';
 import { chromium } from 'playwright';
@@ -26,7 +30,7 @@ for (let i = 2; i < process.argv.length; i++) {
 
 function usage(message) {
   if (message) console.error(message);
-  console.error('Usage: npm run inspect -- (--bugs <file|URL> --id <VS-id|pattern-id> | --url <http(s) URL> (--selector <css> | --xpath <xpath>)) [--dry-run] [--headless] [--timeout <ms>]');
+  console.error('Usage: npm run inspect -- (--bugs <file|URL> --id <VS-id|pattern-id> | --url <http(s) URL> (--selector <css> | --xpath <xpath>)) [--dry-run|--print-url] [--headless] [--timeout <ms>] [--user-agent <ua>]');
   process.exit(2);
 }
 
@@ -74,15 +78,32 @@ async function main() {
     }, null, 2));
     return;
   }
+  if (args['print-url']) {
+    console.log(target);
+    return;
+  }
 
   const timeout = Number(args.timeout) > 0 ? Number(args.timeout) : 30000;
   const browser = await chromium.launch({ headless: args.headless === true });
   try {
-    const context = await browser.newContext();
+    const context = await browser.newContext(args['user-agent'] ? { userAgent: String(args['user-agent']) } : {});
     const page = await context.newPage();
     page.setDefaultTimeout(timeout);
     page.setDefaultNavigationTimeout(timeout);
-    await page.goto(target, { waitUntil: 'load' });
+    const response = await page.goto(target, { waitUntil: 'load' });
+    if (response && response.status() >= 400) {
+      console.error(`The site returned HTTP ${response.status()} instead of the page. It may be blocking automated browsers; the audited HTML was not loaded.`);
+      console.error('Try --print-url, open that URL in your normal browser, and run the VITAL Inspect bookmarklet there.');
+      process.exitCode = 3;
+      return;
+    }
+    const visibleText = `${await page.title().catch(() => '')}\n${await page.locator('body').innerText({ timeout: 2000 }).catch(() => '')}`;
+    if (/access denied|errors\.edgesuite\.net|request unsuccessful|reference #\s*\d/i.test(visibleText)) {
+      console.error('The site served an access-denied or bot-block page instead of the audited page. The recorded selector cannot be found there.');
+      console.error('Try --print-url, open that URL in your normal browser, and run the VITAL Inspect bookmarklet there.');
+      process.exitCode = 3;
+      return;
+    }
     await page.evaluate(inspectBookmarklet().replace(/^javascript:/, ''));
     console.log('VITAL Inspect opened. Change the page state if needed, use Find again, then close the browser window to exit.');
     await new Promise((resolve) => browser.on('disconnected', resolve));

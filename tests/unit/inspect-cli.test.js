@@ -18,6 +18,9 @@ test('the local inspector dry-run builds a CSS or XPath payload', () => {
   assert.equal(xpath.xpath, '//main//h2');
   assert.equal(xpath.selector, null);
   assert.match(xpath.url, /#vital-inspect=/);
+
+  const printed = execFileSync(process.execPath, [CLI, '--url', 'https://example.gov/page', '--selector', '#main h2', '--print-url'], { cwd: ROOT, encoding: 'utf8' }).trim();
+  assert.match(printed, /^https:\/\/example\.gov\/page#vital-inspect=/);
 });
 
 test('the local inspector loads a finding by instance or pattern id', () => {

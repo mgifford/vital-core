@@ -234,8 +234,14 @@ npm run inspect -- --url https://example.gov/page --xpath '//main//h2'
 
 It opens the page in a headed Chromium, injects the same VITAL Inspect
 highlighter, and keeps the browser open. `--dry-run` prints the payload/target
-without launching a browser; `--headless` and `--timeout` support automation.
-The browser is a normal local Playwright window, not an iframe in the report.
+without launching a browser; `--print-url` prints just the payload URL;
+`--headless`, `--timeout` and `--user-agent` support automation. The browser is
+a normal local Playwright window, not an iframe in the report.
+
+If a site returns a firewall/bot-block page (for example Akamai “Access Denied”)
+the inspector now says so instead of reporting “element not found”. Use
+`--print-url`, open that URL in your normal browser with its cookies/session, and
+run the VITAL Inspect bookmarklet there.
 
 ### Deterministic Playwright reproduction
 

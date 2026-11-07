@@ -142,7 +142,9 @@ a page for a report.
   replace canonical evidence or the Explorer.
 * **Local inspector** (`scripts/inspect.js`, `npm run inspect`): opens a
   finding or an ad-hoc CSS/XPath target in headed Playwright with the same
-  highlighter. No extension/bookmark; `--dry-run` is browser-free.
+  highlighter. No extension/bookmark; `--dry-run` is browser-free, and
+  `--print-url` supports sites that block automated browsers (open the URL in
+  the normal browser and use the bookmarklet).
 * **Screenshots** (`src/lib/screenshots.js`): opt-in, one JPEG per page with
   findings, bounded by `max_per_run`/`max_height`/`max_bytes` and maskable;
   stored in the data repo, copied only for referenced findings, pruned with page
