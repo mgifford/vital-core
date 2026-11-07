@@ -452,6 +452,14 @@ directory; pruning removes them with page detail. The Explorer draws the marker
 from `rect_page` and the recorded CSS dimensions, labels the image as
 historical, and falls back to textual evidence when geometry is unavailable.
 
+Live highlighting is deliberately browser-side. `src/lib/live-inspect.js`
+builds a compact payload (selector, rule, WCAG mapping, fix text) and a
+bookmarklet; the report's “Highlight on site” link opens the target page with
+that payload in the fragment, and the bookmarklet draws the outline and panel in
+the user's browser. Nothing is sent to a server, stored, or inserted into the
+target site's own code. This is the static-report equivalent of a WAVE/AIW
+visual helper; it cannot cross frames, shadow roots or unrecorded interactions.
+
 Manual validation guidance is generated deterministically from the finding's
 criterion or rule (`src/lib/manual-validation.js`) and rendered on the
 Accessibility page and in the Explorer. The structured review record is created

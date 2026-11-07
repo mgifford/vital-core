@@ -163,6 +163,26 @@ verbatim in the browser, so the static and enhanced views cannot drift. The
 panel explicitly says when evidence, screenshots or reproduction scripts are
 not available yet.
 
+### Live highlight on the target site
+
+A static report cannot draw on another origin, so the WAVE/Accessibility Insights
+equivalent is a **one-time bookmarklet**, not a stored screenshot per issue.
+Every finding with a selector gets a **“Highlight on site”** link that opens the
+live page with a compact VITAL payload in the URL fragment. Clicking the
+**VITAL Inspect** bookmarklet there outlines the recorded element (high-contrast
+red box plus a label), scrolls it into view, and shows a panel with the rule,
+WCAG mapping, selector and remediation tip. It reports when the selector now
+matches a different element, matches several elements, or cannot be found;
+`Escape` or Close removes the overlay. It reads only the page in front of you,
+sends nothing, and stores nothing.
+
+The bookmarklet is installed once by dragging it to the bookmarks bar (or
+copying its link into a bookmark). It follows the recorded selector, so it cannot
+cross shadow roots, iframe boundaries or interaction-gated content; those cases
+are reported rather than guessed. A page with a strict CSP may block the
+bookmarklet's inline styles; the report says it is a browser-side tool, not a
+server-side highlight.
+
 ### Deterministic Playwright reproduction
 
 A finding with captured element evidence can be replayed as a standalone

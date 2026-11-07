@@ -397,6 +397,8 @@ try {
   assert(dataShots.length > 0 && dataShots.length <= 10, `screenshots bounded per run (${dataShots.length} across two runs)`);
   assert(docsShots.length > 0, 'screenshots copied into the published report');
   assert(/explore\.html#VS-/.test(w1acc), 'each finding links to the explorer');
+  assert(/Highlight on site/.test(w1acc) && /#vital-inspect=/.test(w1acc), 'findings link to a live highlight payload');
+  assert(/class="bookmarklet-link" href="javascript:/.test(w1acc), 'the VITAL Inspect bookmarklet is offered');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
   assert(/id="h-scope-regions">Findings by page region/.test(w1acc), 'accessibility page groups findings by region');
@@ -703,6 +705,7 @@ try {
       assert(await explorerPage.locator('#explorer-detail').isVisible(), 'Enter on a result opens the detail panel');
       assert(await explorerPage.locator('#explorer-detail a[href*="accessible.html#"]').count() > 0, 'detail panel links to the canonical report');
       assert(/#VS-/.test(explorerPage.url()), 'selecting a finding updates the URL fragment');
+      assert(await explorerPage.locator('#explorer-highlight').count() === 1, 'the detail panel offers a live highlight');
       assert(await explorerPage.evaluate(() => document.activeElement?.id === 'explorer-detail-title'), 'focus moves to the detail heading');
       assert(await explorerPage.locator('#explorer-download-test').isVisible(), 'a ready finding offers a Playwright test download');
       const [download] = await Promise.all([

@@ -341,12 +341,16 @@ criteria, explicit exclusions, references, priority.
   https://www.w3.org/WAI/planning/arrm/roles/
 - **Priority:** P2.
 
-### P2 — Browser extension for live highlighting
+### P2 — Live highlight (bookmarklet implemented; packaged extension deferred)
 
 - **Motivation:** static evidence ages; a live check needs the current DOM.
-- **Proposed behaviour:** open a finding URL, resolve the recorded selector,
-  highlight matches, show rule/region/component context, handle same-origin
-  frames and shadow roots.
+- **Implemented:** `src/lib/live-inspect.js` plus “Highlight on site” links on
+  the Accessibility page and Explorer. A one-time bookmarklet reads a compact
+  selector/rule/WCAG/fix payload from the fragment, outlines the matching
+  element, reports not-found/multiple/identity-changed cases, and sends nothing.
+- **Remaining:** a packaged browser extension for one-click install and
+  cross-frame/shadow-root support; the bookmarklet cannot cross those
+  boundaries.
 - **Dependencies:** PR 3 deep links, PR 1 selector/context.
 - **Acceptance:** minimal permissions; no page data leaves the browser, not even
   to VITAL; explicit "not found"/"ambiguous" states.
