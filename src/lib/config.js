@@ -6,6 +6,7 @@ import { DEFAULT_FINDING_POLICY, mergeFindingPolicy, validateFindingPolicy } fro
 import { resolveComponentSignatures } from './shared-components.js';
 import { resolvePageFamilies } from './page-families.js';
 import { resolveConsentHandling } from '../engines/consent-action.js';
+import { resolveScreenshotConfig } from './screenshots.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
@@ -106,6 +107,8 @@ export function loadConfig(rawYaml) {
     t.spelling_locale = resolveSpellingLocale(t.spelling_locale, `target ${t.domain}`);
     t.governmentDomains = resolveGovernmentDomains(t.government_domains, `target ${t.domain}`);
     t.pdfAudit = resolvePdfAudit({ ...(defaults.pdf_audit ?? {}), ...(t.pdf_audit ?? {}) }, `target ${t.domain}`);
+    // Historical screenshots are opt-in and bounded; off unless a target asks.
+    t.screenshots = resolveScreenshotConfig({ ...(defaults.screenshots ?? {}), ...(t.screenshots ?? {}) }, `target ${t.domain}`);
     // Both are opt-in and data-only; a target's list replaces the global default.
     t.componentSignatures = resolveComponentSignatures(t.component_signatures ?? defaults.component_signatures, `target ${t.domain}`);
     t.pageFamilies = resolvePageFamilies(t.page_families ?? defaults.page_families, `target ${t.domain}`);

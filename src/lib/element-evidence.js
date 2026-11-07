@@ -117,6 +117,7 @@ function collectElementEvidenceInPage({ selectors, maxAncestry, maxWalk, maxName
     forced_colors: media('(forced-colors: active)') ? 'active' : 'none',
     reduced_motion: media('(prefers-reduced-motion: reduce)') ? 'reduce' : 'no-preference',
     locale: document.documentElement.getAttribute('lang') || null,
+    scroll: { x: window.scrollX, y: window.scrollY },
     final_url: location.href,
     user_agent: navigator.userAgent,
     screenshot_captured: false,
@@ -176,6 +177,9 @@ function collectElementEvidenceInPage({ selectors, maxAncestry, maxWalk, maxName
       iframe: isFramed(),
       visible: rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden',
       rect: { x: Math.round(rect.x), y: Math.round(rect.y), width: Math.round(rect.width), height: Math.round(rect.height) },
+      // Page coordinates, so a full-page screenshot can be annotated even when
+      // the page was scrolled while it was audited.
+      rect_page: { x: Math.round(rect.x + window.scrollX), y: Math.round(rect.y + window.scrollY), width: Math.round(rect.width), height: Math.round(rect.height) },
       ancestry: ancestry.slice(-maxAncestry),
       ancestry_depth: depth,
       ancestry_complete: complete,
@@ -244,7 +248,25 @@ export function condenseInstance(example) {
     if (example[key] != null) out[key] = String(example[key]).slice(0, 100);
   }
   if (example.browser_context) out.browser_context = pickBrowserContext(example.browser_context);
+  if (example.screenshot) out.screenshot = pickScreenshot(example.screenshot);
   return out;
+}
+
+/** Bounded screenshot metadata (never the image itself). */
+export function pickScreenshot(shot) {
+  if (!shot || shot.available !== true) return shot ? { available: false, reason: shot.reason ?? 'unavailable' } : null;
+  return {
+    available: true,
+    file: String(shot.file ?? '').slice(0, 200),
+    file_name: String(shot.file_name ?? '').slice(0, 120),
+    width: shot.width ?? null,
+    height: shot.height ?? null,
+    full_page: shot.full_page === true,
+    captured_at: shot.captured_at ?? null,
+    format: shot.format ?? 'jpeg',
+    bytes: Number.isFinite(shot.bytes) ? shot.bytes : null,
+    note: typeof shot.note === 'string' ? shot.note.slice(0, 160) : null,
+  };
 }
 
 /** The compact, per-occurrence render context (no UA or final URL). */
@@ -279,6 +301,7 @@ export function sanitizeElementEvidence(element) {
     iframe: element.iframe === true,
     visible: element.visible === true,
     rect: element.rect ?? null,
+    rect_page: element.rect_page ?? null,
   };
 }
 
@@ -313,6 +336,7 @@ function boundedElement(evidence, fallbackSelector) {
     iframe: evidence.iframe === true,
     visible: evidence.visible === true,
     rect: boundedRect(evidence.rect),
+    rect_page: boundedRect(evidence.rect_page),
   };
 }
 
@@ -331,6 +355,7 @@ function boundedContext(context) {
     forced_colors: context.forced_colors ?? null,
     reduced_motion: context.reduced_motion ?? null,
     locale: context.locale ?? null,
+    scroll: context.scroll ?? null,
     // Origin + path only: the context can reach the public API, and a final
     // URL's query string may carry tokens or personal data.
     final_url: pathOnly(context.final_url),
@@ -372,6 +397,7 @@ function cloneElement(element) {
     iframe: element.iframe === true,
     visible: element.visible === true,
     rect: element.rect ? { ...element.rect } : null,
+    rect_page: element.rect_page ? { ...element.rect_page } : null,
   };
 }
 

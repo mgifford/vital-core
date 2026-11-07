@@ -443,6 +443,15 @@ implementation, occurrence) and `ownership_established` is always false. The
 grouping is computed once in `summarizeRecords` and rendered (Accessibility page
 and Explorer tables), exported (CSV, JSON API), from that same record.
 
+Historical screenshots are opt-in (`screenshots` in `config/targets.yml`). The
+scan captures at most `max_per_run` pages, one image per page with findings,
+after auditing and while the page is still open; page records store bounded
+metadata and element evidence stores `rect_page` (page coordinates). Aggregate
+copies only the images referenced by a week's findings into the report
+directory; pruning removes them with page detail. The Explorer draws the marker
+from `rect_page` and the recorded CSS dimensions, labels the image as
+historical, and falls back to textual evidence when geometry is unavailable.
+
 Manual validation guidance is generated deterministically from the finding's
 criterion or rule (`src/lib/manual-validation.js`) and rendered on the
 Accessibility page and in the Explorer. The structured review record is created

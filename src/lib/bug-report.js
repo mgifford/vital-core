@@ -130,6 +130,7 @@ export function buildBugReports(target, summary) {
       element: representative?.element ?? null,
       semantic_context: representative?.semantic_context ?? null,
       browser_context: representative?.browser_context ?? null,
+      screenshot: representative?.screenshot ?? null,
       evidence: {
         ...occurrenceSummary(occurrences, representative),
         instances_total: rule.count,
@@ -183,6 +184,7 @@ export function buildBugReports(target, summary) {
         semantic_context: occurrence.semantic_context,
         component: occurrence.component,
         browser_context: occurrence.browser_context,
+        screenshot: occurrence.screenshot,
         observation: occurrence.observation,
       })),
       example_pages: rule.examplePages ?? [],

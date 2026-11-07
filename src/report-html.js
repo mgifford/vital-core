@@ -12,6 +12,7 @@ import { scopeViewsFor } from './lib/shared-components.js';
 import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, filterFindings } from './lib/finding-filter.js';
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
+import { markerGeometry } from './lib/screenshots.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -5575,6 +5576,14 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .explorer-detail { border: 2px solid var(--accent); border-radius: 4px; padding: 1rem; margin: 1.25rem 0; }
 .explorer-detail:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .explorer-detail h3 { margin-top: 0; }
+.screenshot-figure { margin: 1rem 0; }
+.screenshot-scroll { max-height: 70vh; overflow: auto; border: 1px solid var(--rule); }
+.screenshot-inner { position: relative; }
+.screenshot-inner img { display: block; width: 100%; height: auto; }
+.screenshot-marker { position: absolute; border: 3px solid #ffbf47; box-shadow: 0 0 0 2px #000, inset 0 0 0 2px #000; pointer-events: none; }
+.screenshot-marker-label { position: absolute; top: -1.6rem; left: -3px; background: #000; color: #fff; font-weight: 700; font-size: .8rem; padding: .05rem .35rem; border-radius: 2px; }
+.screenshot-toggle { display: inline-flex; gap: .4rem; align-items: center; margin-top: .4rem; }
+.screenshot-figure figcaption { font-size: .9rem; color: var(--muted); margin-top: .4rem; }
 .manual-validation-block { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .75rem; }
 .manual-validation-block ul { margin: .4rem 0; }
 @media (max-width: 40rem) { .explorer-field { min-width: 100%; } }
@@ -5600,6 +5609,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   const manualSource = [manualValidationFor, manualReviewRecord]
     .map((fn) => fn.toString())
     .join('\n');
+  const screenshotSource = markerGeometry.toString();
   return `<script>
 (function () {
   'use strict';
@@ -5608,6 +5618,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   ${filterSource}
   ${reproductionSource}
   ${manualSource}
+  ${screenshotSource}
   var BUGS_JSON = ${JSON.stringify(bugsJson)};
   var REPORT_HREF = ${JSON.stringify(reportHref)};
   var form = document.getElementById('explorer-filters');
@@ -5714,6 +5725,55 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     section.appendChild(button);
     return section;
   }
+  function screenshotSection(bug) {
+    var shot = bug.screenshot;
+    if (!shot || shot.available !== true || !shot.file) return null;
+    var figure = document.createElement('figure');
+    figure.className = 'screenshot-figure';
+    var scroll = document.createElement('div');
+    scroll.className = 'screenshot-scroll';
+    var inner = document.createElement('div');
+    inner.className = 'screenshot-inner';
+    var img = document.createElement('img');
+    img.src = shot.file;
+    img.alt = LABELS.screenshotAlt + (bug.selector ? ' (' + bug.selector + ')' : '');
+    img.loading = 'lazy';
+    inner.appendChild(img);
+    var geom = markerGeometry(bug.element && bug.element.rect_page, shot);
+    if (geom && geom.visible) {
+      var marker = document.createElement('span');
+      marker.className = 'screenshot-marker';
+      marker.id = 'explorer-marker';
+      marker.style.left = geom.left + '%';
+      marker.style.top = geom.top + '%';
+      marker.style.width = geom.width + '%';
+      marker.style.height = geom.height + '%';
+      marker.setAttribute('role', 'img');
+      marker.setAttribute('aria-label', LABELS.markerLabel);
+      marker.appendChild(text('span', '1', 'screenshot-marker-label'));
+      inner.appendChild(marker);
+    }
+    scroll.appendChild(inner);
+    figure.appendChild(scroll);
+    var caption = document.createElement('figcaption');
+    caption.textContent = LABELS.historical + (shot.full_page ? '' : ' ' + LABELS.viewportOnly);
+    figure.appendChild(caption);
+    if (geom && !geom.visible) figure.appendChild(text('p', LABELS.markerOutside, 'bug-meta'));
+    if (geom && geom.visible) {
+      var label = document.createElement('label');
+      label.className = 'screenshot-toggle';
+      var checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = 'explorer-hide-annotations';
+      checkbox.addEventListener('change', function () {
+        marker.hidden = checkbox.checked;
+      });
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(' ' + LABELS.hideAnnotations));
+      figure.appendChild(label);
+    }
+    return figure;
+  }
   function reproductionRow(bug) {
     var row = document.createElement('div');
     row.appendChild(text('dt', LABELS.reproduction));
@@ -5817,8 +5877,11 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       list.appendChild(pair(LABELS.browser, ctx.join(' · ')));
     }
     list.appendChild(pair(LABELS.interaction, LABELS.notCaptured));
+    list.appendChild(pair(LABELS.screenshot, bug.screenshot?.available ? LABELS.captured : (bug.screenshot?.reason || LABELS.noScreenshot)));
     list.appendChild(reproductionRow(bug));
     detailBody.appendChild(list);
+    var shotFigure = screenshotSection(bug);
+    if (shotFigure) detailBody.appendChild(shotFigure);
     if (Array.isArray(bug.steps_to_reproduce) && bug.steps_to_reproduce.length) {
       detailBody.appendChild(text('h4', LABELS.steps));
       var steps = document.createElement('ol');
@@ -5989,6 +6052,14 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     ownership: t('ownership not established'),
     unattributed: t('unattributed'),
     captured: t('captured'),
+    screenshot: t('Screenshot'),
+    screenshotAlt: t('Screenshot of the affected page'),
+    historical: t('Screenshot captured during the scan. The current website may differ.'),
+    viewportOnly: t('This is a viewport capture; the element may be outside it.'),
+    markerOutside: t('The affected element is outside this screenshot.'),
+    markerLabel: t('Highlighted affected element'),
+    hideAnnotations: t('Hide annotations'),
+    noScreenshot: t('No screenshot was captured for this page.'),
     occurrence: t('Evidence occurrence'),
     observed: t('Observed'),
     manualValidation: t('Manual validation'),

@@ -387,6 +387,7 @@ test('buildWeekFindings publishes reproduction state without claiming a run', ()
     observation: { scanned_at: '2026-11-06T00:00:00.000Z', engine_key: 'axe-core', engine_version: '4.12.1', consent_state: 'no_dialog', page_id: 'internal', run_id: 'internal-run' },
     browser_context: { viewport: { width: 1280, height: 800 }, color_scheme: 'light' },
     manual_validation: { status: 'not_reviewed', prompts: ['Try it with a keyboard.'], environment_note: 'Use the conditions that apply.', limitations: ['Automated tools find a subset.'] },
+    screenshot: { available: true, file: 'screenshots/abc.jpg', file_name: 'abc.jpg', width: 1280, height: 900, full_page: true, captured_at: '2026-11-06T00:00:00.000Z', format: 'jpeg' },
   };
   const data = buildWeekFindings(FAKE_TARGET, summary, [bug], {});
   assert.equal(data.findings[0].occurrence_id, 'VO-abc12345');
@@ -397,6 +398,7 @@ test('buildWeekFindings publishes reproduction state without claiming a run', ()
   assert.deepEqual(data.findings[0].reproduction.locator, { strategy: 'css', value: 'button' });
   assert.equal(data.findings[0].manual_validation.status, 'not_reviewed');
   assert.deepEqual(data.findings[0].manual_validation.prompts, ['Try it with a keyboard.']);
+  assert.equal(data.findings[0].screenshot.file, 'screenshots/abc.jpg');
 
   const unavailable = buildWeekFindings(FAKE_TARGET, summary, [{ ...bug, element: null }], {});
   assert.equal(unavailable.findings[0].reproduction.status, 'unavailable');

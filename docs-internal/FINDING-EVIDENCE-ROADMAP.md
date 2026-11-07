@@ -197,10 +197,31 @@ adding screenshots and richer interaction.
 - Tests: unrelated dialogs stay separate; configured component verification
   counts; filter/API/Explorer assertions.
 
-### PR C — Screenshots and visual inspection (planned)
+### PR C — Screenshots and visual inspection (implemented)
 
-Bounded per-page screenshots, element annotations, nonvisual fallback, privacy
-controls, Explorer visual panel, measured storage.
+- Opt-in `screenshots` config (`enabled`, `max_per_run`, `max_height`,
+  `max_bytes`, `quality`, `mask_selectors`), validated per target; off by
+  default.
+- One JPEG per page with findings (never per violation), captured while the page
+  is open; full page, or top viewport when taller/wider than the cap or when the
+  JPEG exceeds `max_bytes`. Element evidence records `rect_page` and the render
+  context records scroll. Measured on fixtures: ~12–22 KB for a short page,
+  ~470 KB for a 2,462 px text page at quality 70; the byte budget forces the
+  viewport fallback for long pages.
+- Images live in `data/<domain>/<week>/screenshots/`; aggregate copies only the
+  files referenced by the week's findings into the report directory; pruning
+  removes them with page detail.
+- Explorer: historical-image panel with a high-contrast marker from
+  `rect_page`, "hide annotations", explicit historical label, viewport/outside
+  messages, and structured-evidence fallback when there is no reliable
+  rectangle or image.
+- API: `findings[].screenshot` + `element.rect_page` + context scroll.
+- Privacy: opt-in, mask selectors, bounded count/size; images can still contain
+  page content, so enabling is a reviewed decision.
+- Limitation: a screenshot's `captured_at` is part of the page record, so pages
+  with screenshots do not deduplicate to the previous week's unchanged stub.
+  Crops, multiple pages per finding and redaction beyond configured masks remain
+  deferred.
 
 ### PR D — Reproduction/manual refinements (planned)
 

@@ -21,6 +21,13 @@ defaults:
   retention_weeks: 2        # page-level detail kept this long; weekly summaries kept forever
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
   spelling_locale: en-US     # dictionary for spell checks: en-US, en-GB, en-CA or en-AU (per-target override below)
+  screenshots:                # historical, bounded evidence; opt-in (privacy)
+    enabled: false            # no screenshot is captured unless a target enables it
+    max_per_run: 25           # pages per run (one screenshot per page, never per finding)
+    max_height: 6000          # taller pages fall back to a top-viewport capture
+    max_bytes: 500000         # a full-page JPEG above this falls back to the viewport
+    quality: 70               # JPEG quality, to bound storage
+    mask_selectors: []        # CSS selectors to mask before capture (forms, account widgets)
   reporting:
     max_html_issues: 50
     moderate_issue_threshold_percent: 5

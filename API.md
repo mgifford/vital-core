@@ -309,6 +309,26 @@ Historical records without enriched evidence keep `occurrence_selection:
 "unavailable"` and null evidence fields; the week-level render context is not
 substituted.
 
+### Historical screenshots (additive v1 fields)
+
+When a target enables `screenshots`, findings can carry bounded, historical
+image evidence:
+
+- `findings[].screenshot` — `{ available, file, file_name, width, height,
+  full_page, captured_at, format, bytes }` or `{ available: false, reason }`.
+  Dimensions are CSS pixels; `file` is a path relative to the week report
+  (e.g. `screenshots/<page-id>.jpg`). `captured_at` describes the scan, not the
+  current site.
+- `findings[].element.rect_page` — element rectangle in page coordinates, used
+  to position the marker. `findings[].browser_context.scroll` records the scroll
+  position at evidence capture.
+- Each `reporting.representative_evidence[]` entry carries its own `screenshot`
+  when that occurrence's page was captured.
+
+Screenshots are off by default and are pruned with page detail; older weeks may
+have none. The image is a historical artifact and must not be presented as a
+live view.
+
 ### Reproduction state (additive v1 fields)
 
 `findings[].reproduction` says whether the stored evidence can be replayed, not

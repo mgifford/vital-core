@@ -37,7 +37,7 @@ for (const target of config.targets) {
       console.log(`promoted ${promoted} stub(s) off ${target.key}/${week} before pruning`);
     }
 
-    for (const sub of ['pages', 'runs']) {
+    for (const sub of ['pages', 'runs', 'screenshots']) {
       const dir = path.join(domainDir, week, sub);
       if (fs.existsSync(dir)) {
         fs.rmSync(dir, { recursive: true });
