@@ -394,3 +394,15 @@ test('axe-core finds no violations inside the overlay', async () => {
     assert.deepEqual(overlay, []);
   });
 });
+
+test('an XPath payload locates the element for the local inspector', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    const url = inspectUrlFor(bug({ url: `${base}/page`, selector: null, xpath: '//*[@id="named"]' }));
+    assert.ok(url);
+    await page.goto(url);
+    await page.evaluate(vitalInspect);
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /Recorded element located/);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1);
+  });
+});

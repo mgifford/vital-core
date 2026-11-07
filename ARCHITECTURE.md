@@ -456,7 +456,9 @@ Live highlighting is deliberately browser-side. `src/lib/live-inspect.js`
 builds a compact payload (selector, rule, WCAG mapping, fix text) and a
 bookmarklet; the report's “Highlight on site” link opens the target page with
 that payload in the fragment, and the bookmarklet draws the outline and panel in
-the user's browser. The payload is versioned, size-bounded, origin-scoped and
+the user's browser. Text-bearing elements also store a bounded 80-character
+visible-text anchor for a native `#:~:text=` link; a local `npm run inspect`
+command can open a finding or an ad-hoc CSS/XPath target in headed Playwright. The payload is versioned, size-bounded, origin-scoped and
 contains no full URL or page content; a URL-free clipboard code is the fallback
 for hash-routed pages. Nothing is sent to a server, stored, or inserted into the
 target site's own code. This is the static-report equivalent of a WAVE/AIW

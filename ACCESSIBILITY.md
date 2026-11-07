@@ -53,6 +53,10 @@ not prove the historical violation still exists.
   script may prevent the bookmarklet from running at all, so no error can be
   shown. Do not weaken the site's policy; use the Finding Explorer or the
   Playwright reproduction instead.
+- **Native text fragment:** “Highlight text on site” uses the browser’s
+  `#:~:text=` support. It requires no bookmark, but highlights text rather than
+  the element box, may select the first matching text, and is unavailable when
+  the page already uses its fragment. It is a location aid, not a VITAL panel.
 - **Copy inspection code:** both the Accessibility page and Finding Explorer
   offer a URL-free code for pages that use hash routing or when a fragment is
   lost.

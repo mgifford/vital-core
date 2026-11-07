@@ -194,6 +194,15 @@ observers/listeners. It reads only the page in front of you, sends nothing, and
 stores nothing. The install block is open by default at the top of the
 Accessibility page and Explorer.
 
+Findings with a recorded visible text anchor also get a **“Highlight text on
+site”** link. That is a native `#:~:text=` fragment: the browser scrolls to and
+highlights the text with no JavaScript, bookmark or extension. It highlights
+text rather than an element box, may choose the first matching occurrence, and
+does not show the VITAL panel. Chrome 80+, Firefox 131+ and Safari 16.1+
+support it; hash-routed pages get no text link because the fragment must own the
+hash. The anchor is visible element text, capped at 80 characters, and is not
+captured for form controls.
+
 Inspection codes are versioned, size-bounded and origin-scoped; they carry the
 selector and recorded identity, **not the full URL, query string, page text or
 HTML**. Because a fragment can interfere with hash-routed sites, every finding
@@ -208,6 +217,21 @@ cross shadow roots, iframe boundaries or interaction-gated content; those cases
 are reported rather than guessed. A page with a strict CSP may block the
 bookmarklet's inline styles; the report says it is a browser-side tool, not a
 server-side highlight.
+
+### Local Playwright inspector
+
+For developers who want a live, headed view without a bookmarklet or extension:
+
+```bash
+npm run inspect -- --bugs <bugs.json|URL> --id <VS-id|pattern-id>
+npm run inspect -- --url https://example.gov/page --selector '#main h2'
+npm run inspect -- --url https://example.gov/page --xpath '//main//h2'
+```
+
+It opens the page in a headed Chromium, injects the same VITAL Inspect
+highlighter, and keeps the browser open. `--dry-run` prints the payload/target
+without launching a browser; `--headless` and `--timeout` support automation.
+The browser is a normal local Playwright window, not an iframe in the report.
 
 ### Deterministic Playwright reproduction
 

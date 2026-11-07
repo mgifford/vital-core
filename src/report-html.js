@@ -14,6 +14,7 @@ import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableS
 import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
 import { inspectBookmarklet, inspectCodeFor, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
+import { textFragmentUrl } from './lib/text-fragment.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -1826,6 +1827,7 @@ ${heading('h-bugs', t('Bug reports'))}
       const scope = b.component_scope;
       const inspectUrl = inspectUrlFor(b);
       const inspectCode = inspectCodeFor(b);
+      const textUrl = textFragmentUrl(b);
       const inspectReason = inspectUnavailableReason(b);
       const targetUsesHash = (() => { try { return Boolean(new URL(b.url).hash); } catch (error) { return false; } })();
       const componentScopeNote = scope
@@ -1837,7 +1839,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code> <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))}</span><br>`}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))}</span><br>`}${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>

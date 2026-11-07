@@ -363,6 +363,14 @@ criteria, explicit exclusions, references, priority.
   automation.
 - **Priority:** P2.
 
+### P2 — Local Playwright inspector (implemented)
+
+- `scripts/inspect.js` / `npm run inspect` opens a finding (by bugs file or URL
+  + id) or an ad-hoc CSS/XPath target in headed Playwright and injects the same
+  highlighter. `--dry-run` is browser-free. No extension or bookmark.
+- Remaining: optional MCP-oriented output and a report-side “copy command”
+  affordance; no AI-generated steps.
+
 ### P2 — Deterministic interaction replay
 
 - **Motivation:** dialog, menu and tab findings currently report

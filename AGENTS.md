@@ -136,8 +136,13 @@ a page for a report.
   origin-scoped, carry no full URL, and have a URL-free clipboard fallback; a
   strict `script-src` CSP can block bookmarklets. The UI is shadow-root
   isolated, detects removal/replacement/hidden/identity changes with observers,
-  and requires Find again rather than switching elements. It sends nothing and
-  does not replace canonical evidence or the Explorer.
+  and requires Find again rather than switching elements. Text-bearing elements
+  also get a native `#:~:text=` link from a bounded 80-character visible-text
+  anchor; it is text-only and needs no install. It sends nothing and does not
+  replace canonical evidence or the Explorer.
+* **Local inspector** (`scripts/inspect.js`, `npm run inspect`): opens a
+  finding or an ad-hoc CSS/XPath target in headed Playwright with the same
+  highlighter. No extension/bookmark; `--dry-run` is browser-free.
 * **Screenshots** (`src/lib/screenshots.js`): opt-in, one JPEG per page with
   findings, bounded by `max_per_run`/`max_height`/`max_bytes` and maskable;
   stored in the data repo, copied only for referenced findings, pruned with page
@@ -152,8 +157,9 @@ a page for a report.
   / `component_groups`). Keep `schema_version: "1"` unless the change is
   breaking; see [API.md](API.md).
 
-Storage bounds: 3 examples per page per rule (each with coherent evidence),
-5 instances per rule in the summary, and at most `screenshots.max_per_run`
+Storage bounds: 3 examples per page per rule (each with coherent evidence; a
+text-bearing element may add an 80-character visible-text anchor for a native
+text link), 5 instances per rule in the summary, and at most `screenshots.max_per_run`
 images per run (one per page, never per finding; opt-in, JPEG, pruned with page
 detail). Reports select one representative occurrence as a whole
 (`occurrence_id`); never mix fields from different examples. Do not store full
