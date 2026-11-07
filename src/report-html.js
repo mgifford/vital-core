@@ -1662,13 +1662,33 @@ function nextActionsScript() {
 function liveInspectHelp() {
   return `<details class="live-inspect-help" open>
 <summary>${t('Install the VITAL Inspect bookmarklet (one time)')}</summary>
-<p>${t('VITAL reports are static, so the highlight runs in your browser on the live page. Install the bookmarklet once:')}</p>
-<ol>
-<li>${t('Drag "VITAL Inspect" to your bookmarks bar (or copy its link and create a bookmark).')}</li>
-<li>${t('In a finding, choose "Highlight on site".')}</li>
+<p>${t('VITAL reports are static, so the highlight runs in your browser on the live page. Show your bookmarks bar, then drag the button into it.')}</p>
+<div class="bookmarklet-visual" role="img" aria-label="${esc(t('A browser bookmarks bar with the VITAL Inspect button ready to be dragged into it.'))}">
+  <div class="bookmarklet-visual-bar">
+    <span class="bookmarklet-visual-button">VITAL Inspect</span>
+    <span class="bookmarklet-visual-arrow" aria-hidden="true">←</span>
+    <span class="bookmarklet-visual-label">${t('Bookmarks bar')}</span>
+  </div>
+  <p class="bookmarklet-visual-hint">${t('Drag it here')}</p>
+</div>
+<ol class="bookmarklet-steps">
+<li>${t('Show the bookmarks bar:')} <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (${t('Windows/Linux')}) ${t('or')} <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (${t('Mac')}). ${t('In Safari, use View → Show Favorites Bar.')}</li>
+<li>${t('Drag the VITAL Inspect button into the bookmarks bar.')}</li>
+<li>${t('Open a finding and choose “Highlight on site”.')}</li>
 <li>${t('On the page that opens, click the VITAL Inspect bookmark.')}</li>
 </ol>
-<p><a class="bookmarklet-link" href="${esc(inspectBookmarklet())}" draggable="true">${t('VITAL Inspect')}</a></p>
+<p class="bookmarklet-install"><a class="bookmarklet-link bookmarklet-button" href="${esc(inspectBookmarklet())}" draggable="true"><span class="bookmarklet-icon" aria-hidden="true">★</span> <span>${t('VITAL Inspect')}</span> <small>${t('Drag me to the bookmarks bar')}</small></a></p>
+<p class="meta">${t('If dragging does not work, use Copy bookmarklet, then create a bookmark manually and paste the code as its address.')} <button type="button" class="copy-bookmarklet" hidden>${t('Copy bookmarklet')}</button></p>
+<details class="bookmarklet-manual">
+<summary>${t('Dragging not working? Add it manually')}</summary>
+<ol>
+<li>${t('Right-click the VITAL Inspect button and choose “Copy link” (or use Copy bookmarklet).')}</li>
+<li>${t('Open your browser’s bookmark manager and add a new bookmark.')}</li>
+<li>${t('Paste the copied code as the bookmark’s address/URL and name it “VITAL Inspect”.')}</li>
+<li>${t('Open a finding’s Highlight on site link, then click the new bookmark.')}</li>
+</ol>
+<p class="meta">${t('Bookmarklets work in desktop browsers. Some browsers hide the bookmarks bar by default; the shortcut above shows it.')}</p>
+</details>
 <p class="meta">${t('The overlay shows the recorded rule, selector, WCAG mapping and fix text. It sends nothing and is not stored. It follows the recorded selector; if the element has changed, it says so rather than guessing.')}</p>
 <p class="meta">${t('If the site uses its URL fragment for routing, or the highlight link does not carry the code, use Copy inspection code and paste it when the bookmarklet asks.')}</p>
 <p class="meta">${t('Browser restriction: a page with a strict script-src Content-Security-Policy can block bookmarklets. Do not weaken the site policy; use the Finding Explorer or the Playwright reproduction instead.')}</p>
@@ -1679,6 +1699,21 @@ function inspectCopyScript() {
   return `<script>
 (function () {
   document.addEventListener('click', function (event) {
+    var copyBookmarklet = event.target.closest && event.target.closest('.copy-bookmarklet');
+    if (copyBookmarklet) {
+      var link = document.querySelector('.bookmarklet-link');
+      if (!link) return;
+      var bookmarklet = link.getAttribute('href') || '';
+      var originalBookmarkletText = copyBookmarklet.textContent;
+      var restoreBookmarklet = function () { copyBookmarklet.textContent = originalBookmarkletText; };
+      var copiedBookmarklet = function () { copyBookmarklet.textContent = 'Copied'; setTimeout(restoreBookmarklet, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(bookmarklet).then(copiedBookmarklet).catch(function () { window.prompt('Copy this bookmarklet code', bookmarklet); });
+      } else {
+        window.prompt('Copy this bookmarklet code', bookmarklet);
+      }
+      return;
+    }
     var button = event.target.closest && event.target.closest('.inspect-copy');
     if (!button) return;
     var code = button.getAttribute('data-inspect-code') || '';
@@ -1690,7 +1725,7 @@ function inspectCopyScript() {
       window.prompt('Copy this inspection code', code);
     }
   });
-  Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy'), function (button) { button.hidden = false; });
+  Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy, .copy-bookmarklet'), function (button) { button.hidden = false; });
 })();
 <\/script>`;
 }
@@ -5622,6 +5657,18 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .explorer-detail:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .explorer-detail h3 { margin-top: 0; }
 .live-inspect-help { margin: 1rem 0; }
+.bookmarklet-visual { border: 1px solid var(--rule); border-radius: 4px; padding: .75rem 1rem; margin: .75rem 0; background: var(--surface, #f7f7f7); }
+.bookmarklet-visual-bar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: .5rem; }
+.bookmarklet-visual-button { border: 2px solid var(--accent); border-radius: 4px; padding: .25rem .5rem; font-weight: 700; }
+.bookmarklet-visual-arrow { font-size: 1.6rem; line-height: 1; }
+.bookmarklet-visual-label { color: var(--muted); }
+.bookmarklet-visual-hint { margin: .4rem 0 0; font-size: .9rem; color: var(--muted); }
+.bookmarklet-steps { margin: .75rem 0; }
+.bookmarklet-install { margin: 1rem 0; }
+.bookmarklet-button { display: inline-flex; align-items: center; gap: .5rem; padding: .65rem .9rem; border: 2px solid var(--accent); border-radius: 6px; font-weight: 700; text-decoration: none; cursor: grab; }
+.bookmarklet-button small { font-weight: 400; }
+.bookmarklet-button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.bookmarklet-icon { font-size: 1.2rem; }
 .live-inspect-help .bookmarklet-link { display: inline-block; padding: .4rem .6rem; border: 2px solid var(--accent); border-radius: 4px; font-weight: 600; text-decoration: none; }
 .live-inspect-help .bookmarklet-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .screenshot-figure { margin: 1rem 0; }

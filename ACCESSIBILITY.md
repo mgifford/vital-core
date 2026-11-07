@@ -36,9 +36,10 @@ live site. It is an inspection aid, not a fresh audit: a visible element does
 not prove the historical violation still exists.
 
 - **Keyboard:** the install section is open by default at the top of the
-  Accessibility page and Explorer. Install it through the bookmarks manager if
-  dragging is not possible; focus the report link, copy its address, and create
-  a bookmark. Close with `Escape` or the Close button; Previous/Next, Find
+  Accessibility page and Explorer. If dragging is not possible, use **Copy
+  bookmarklet** or the link’s “Copy link” action, then create a bookmark
+  manually and paste the code as its address. The instructions include the
+  bookmarks-bar shortcut for each desktop browser. Close with `Escape` or the Close button; Previous/Next, Find
   again, Hide highlight, Collapse/Expand and Move panel are ordinary buttons;
   focus returns to the page after closing.
 - **Dynamic pages:** if the element is removed, replaced, hidden or changes a
