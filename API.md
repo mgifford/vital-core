@@ -337,14 +337,18 @@ whether a run happened. The API never runs anything.
 - `status: "not_attempted"` — the evidence is sufficient. The object carries
   `locator` (`{ strategy: "css", value }`), `rule` (`{ engine, id, impact }`),
   `context` (recorded viewport/colour scheme/forced colours/reduced motion/
-  locale), `interaction_required`, `steps` (empty until interaction sequences
-  are recorded) and `verified_at: null`.
+  locale), `interaction_required`, `timeout_ms` (default 30000), `steps`
+  (empty until interaction sequences are recorded) and `verified_at: null`.
 - `status: "unavailable"` — with `reason`: `element-evidence-unavailable`,
   `element-not-found-at-scan`, `selector-not-replayable`,
   `url-redacted-for-publication`, or
   `only-axe-core-findings-can-be-replayed`. No selector is guessed.
 - The runnable test is generated on demand by the Finding Explorer or
-  `scripts/reproduce.js` from the same plan; its outcomes use the statuses in
+  `scripts/reproduce.js` from the same plan. The generated script is standalone
+  apart from `playwright` and `axe-core`; `REPRO_URL`, `REPRO_SELECTOR`,
+  `REPRO_HEADED` and `REPRO_TIMEOUT_MS` (or the CLI's `--url`, `--selector`,
+  `--headed`, `--timeout`) retest another URL/selector without changing the
+  recorded identity. Its outcomes use the statuses in
   `src/lib/reproduction.js` (`reproduced`, `not_reproduced`,
   `locator_not_found`, `ambiguous_locator`, `interaction_state_unavailable`,
   `page_unavailable`, `rule_or_engine_changed`, `element_identity_changed`,
@@ -362,12 +366,15 @@ completion claim:
   rule, with a generic fallback.
 - `environment_note` says which conditions may apply (not every item applies to
   every finding).
-- `limitations` states that automated tools find roughly a third of barriers and
-  that recording a review does not establish conformance.
+- `limitations` states that automated tools find roughly a third of barriers,
+  that recording a review does not establish conformance, and that any
+  screenshot is historical.
 
 The structured review record is generated and downloaded client-side by the
 Finding Explorer (`<VS-id>.manual-review.json`); it is not published by the API
-and never sets a reviewer, date, outcome or status.
+and never sets a reviewer, date, outcome or status. It carries the occurrence
+id, recorded element, stored-example count and any screenshot reference, plus a
+note that the image is historical and a reminder to remove personal data.
 
 ### Snapshot Contents
 

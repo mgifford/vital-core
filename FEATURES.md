@@ -174,10 +174,18 @@ exactly one element, runs axe-core with **only the recorded rule**, and checks
 that the failure is on **that element** — a rule failing elsewhere is reported
 as `not_reproduced`, never as a reproduction. Outcomes are explicit
 (`reproduced`, `not_reproduced`, `locator_not_found`, `ambiguous_locator`,
-`interaction_state_unavailable`, `page_unavailable`, `rule_or_engine_changed`,
-`inconclusive`) and map to exit codes 0–6. Nothing runs during a scheduled scan,
-Alfa findings are reported as unavailable rather than guessed, and a failure to
-reproduce never means the issue is fixed.
+`interaction_state_unavailable`, `element_identity_changed`,
+`page_unavailable`, `rule_or_engine_changed`, `inconclusive`) and map to exit
+codes 0–7. The generated file is self-contained apart from `playwright` and
+`axe-core`: its header gives copy-paste setup (`npm init -y`, `npm install
+playwright axe-core`, `npx playwright install chromium`), and it accepts
+`REPRO_URL`, `REPRO_SELECTOR`, `REPRO_HEADED` and `REPRO_TIMEOUT_MS` for
+retesting a staging URL, a changed selector or a headed run. `scripts/reproduce.js`
+accepts the same as `--url`, `--selector`, `--headed` and `--timeout`; overrides
+never change the recorded identity, so a selector that now matches another
+element is still `element_identity_changed`. Nothing runs during a scheduled
+scan, Alfa/frame/shadow findings are reported as unavailable rather than
+guessed, and a failure to reproduce never means the issue is fixed.
 
 ### Manual validation guidance and review records
 
@@ -187,12 +195,16 @@ in light, dark and forced-colours modes for 1.4.3; keyboard-only operation for
 roughly a third of barriers, and recording a review does not establish
 conformance. The prompts appear on the Accessibility page's finding detail and
 in `bugs.md`. The Explorer can download a structured
-`<VS-id>.manual-review.json` with the finding, guidance and a blank review block
-(`status: "not_reviewed"`, reviewer/date/environment/AT/steps/outcome/notes
-empty, `not_a_conformance_claim: true`) for the reviewer to fill in and share
-through their own process — nothing is stored or submitted by VITAL, and no
-status is ever set on the reviewer's behalf. A guided assessment workflow and
-ARRM task/role mapping remain documented follow-ups.
+`<VS-id>.manual-review.json` with the finding (including `occurrence_id`, the
+recorded element and any historical screenshot reference), guidance and a blank
+review block (`status: "not_reviewed"`, reviewer/date/environment/AT/steps/
+outcome/notes empty, `not_a_conformance_claim: true`) for the reviewer to fill
+in and share through their own process. When a screenshot is present the record
+says it is historical and must be re-checked against the live page, and the
+instructions ask the reviewer to remove personal or sensitive data before
+sharing. Nothing is stored or submitted by VITAL, and no status is ever set on
+the reviewer's behalf. A guided assessment workflow and ARRM task/role mapping
+remain documented follow-ups.
 
 ### Cross-engine consensus (ACT-rule deduplication)
 

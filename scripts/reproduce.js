@@ -6,16 +6,20 @@
  *   node scripts/reproduce.js --bugs <bugs.json> --id VS-1a2b3c4d --plan    # print the plan
  *   node scripts/reproduce.js --bugs <bugs.json> --id VS-1a2b3c4d --out test.mjs
  *
+ * Replay against another environment or with a different viewport setup:
+ *   --url <http(s)://…> --selector <css> --timeout <ms> --headed
+ *
  * `--id` matches the finding's instance_id (the `#VS-…` anchor) or its
  * pattern_id. Exit codes follow the generated test: 0 reproduced, 1 not
  * reproduced, 2 locator not found, 3 ambiguous locator, 4 page/interaction
- * unavailable, 5 rule or engine changed, 6 inconclusive/unavailable.
+ * unavailable, 5 rule or engine changed, 6 inconclusive/unavailable,
+ * 7 element identity changed.
  *
  * Running needs Playwright Chromium (`npx playwright install chromium`).
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { reproductionPlan, playwrightTestFor, REPRODUCTION_EXIT_CODES } from '../src/lib/reproduction.js';
+import { reproductionPlan, playwrightTestFor, applyReproductionOverrides, REPRODUCTION_EXIT_CODES } from '../src/lib/reproduction.js';
 
 const args = {};
 for (let i = 2; i < process.argv.length; i++) {
@@ -27,7 +31,7 @@ for (let i = 2; i < process.argv.length; i++) {
 }
 
 if (!args.bugs || !args.id) {
-  console.error('Usage: node scripts/reproduce.js --bugs <bugs.json> --id <VS-id|pattern-id> [--plan|--out <file>]');
+  console.error('Usage: node scripts/reproduce.js --bugs <bugs.json> --id <VS-id|pattern-id> [--plan|--out <file>] [--url <url>] [--selector <css>] [--timeout <ms>] [--headed]');
   process.exit(2);
 }
 
@@ -39,7 +43,17 @@ if (!bug) {
   process.exit(2);
 }
 
-const plan = reproductionPlan(bug);
+let plan = reproductionPlan(bug);
+try {
+  plan = applyReproductionOverrides(plan, {
+    url: args.url,
+    selector: args.selector,
+    timeoutMs: args.timeout,
+  });
+} catch (error) {
+  console.error(error.message);
+  process.exit(2);
+}
 if (args.plan) {
   console.log(JSON.stringify(plan, null, 2));
   process.exit(plan.status === 'unavailable' ? REPRODUCTION_EXIT_CODES.unavailable : 0);
@@ -56,6 +70,9 @@ if (args.out) {
 }
 
 const { runReproduction } = await import('../src/lib/reproduction-runner.js');
-const result = await runReproduction(plan);
+const result = await runReproduction(plan, {
+  headed: args.headed === true,
+  timeoutMs: plan.timeout_ms,
+});
 console.log(JSON.stringify(result, null, 2));
 process.exit(REPRODUCTION_EXIT_CODES[result.status] ?? 6);

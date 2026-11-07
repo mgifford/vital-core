@@ -223,9 +223,23 @@ adding screenshots and richer interaction.
   Crops, multiple pages per finding and redaction beyond configured masks remain
   deferred.
 
-### PR D — Reproduction/manual refinements (planned)
+### PR D — Reproduction/manual refinements (implemented)
 
-Export usability, manual guidance accuracy, docs and final integration tests.
+- Generated test header now gives copy-paste setup in any directory
+  (`npm init -y`, `npm install playwright axe-core`, Chromium install) and
+  supports `REPRO_URL`, `REPRO_SELECTOR`, `REPRO_HEADED` and
+  `REPRO_TIMEOUT_MS`; the CLI mirrors these as `--url`, `--selector`,
+  `--headed` and `--timeout`. Overrides never change recorded identity, and
+  invalid URLs/selectors/timeouts fail before a browser opens.
+- `timeout_ms` is part of the plan; the runner/generator apply it.
+- Manual guidance adds page/language/colour/before-input/error-prevention
+  prompts and rule mappings; the review record carries the occurrence id,
+  recorded element, stored-example count and screenshot reference, plus
+  historical and personal-data notes.
+- Docs/API/FEATURES/AGENTS updated; full unit and e2e integration re-run.
+
+**Milestone implementation complete** (PRs #305–#308 open, stacked). The
+remaining work is review/merge and fleet adoption, not new scope.
 
 ## 4. Deferred work
 
