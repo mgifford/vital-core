@@ -35,10 +35,16 @@ The optional **VITAL Inspect** bookmarklet locates a recorded finding on the
 live site. It is an inspection aid, not a fresh audit: a visible element does
 not prove the historical violation still exists.
 
-- **Keyboard:** install it through the bookmarks manager if dragging is not
-  possible; focus the report link, copy its address, and create a bookmark.
-  Close with `Escape` or the Close button; Previous/Next candidate buttons are
-  ordinary buttons; focus returns to the page after closing.
+- **Keyboard:** the install section is open by default at the top of the
+  Accessibility page and Explorer. Install it through the bookmarks manager if
+  dragging is not possible; focus the report link, copy its address, and create
+  a bookmark. Close with `Escape` or the Close button; Previous/Next, Find
+  again, Hide highlight, Collapse/Expand and Move panel are ordinary buttons;
+  focus returns to the page after closing.
+- **Dynamic pages:** if the element is removed, replaced, hidden or changes a
+  recorded identity attribute, the highlight is suspended and the panel says
+  so. Use Find again after changing the page state; the bookmarklet never
+  clicks, accepts consent, opens dialogs or switches to a different element.
 - **Status is text, not colour:** "Recorded element located", "Possible matching
   element. Verification required.", "Recorded element changed" and "Element not
   found" are written in the panel, and the candidate/changed boxes use dashed

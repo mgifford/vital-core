@@ -351,8 +351,9 @@ criteria, explicit exclusions, references, priority.
   highlight changed or unsupported contexts, and sends nothing. The full URL is
   not transported; hash-routed pages have a URL-free clipboard fallback.
 - **Remaining:** packaged browser extension for reliable execution where CSP
-  blocks bookmarklets and for same-origin frames/open shadow roots; PR 3
-  dynamic-DOM/overlay accessibility; PR 4 workflow/docs.
+  blocks bookmarklets and for same-origin frames/open shadow roots; PR 4
+  workflow/docs. PR 3 added shadow-root isolation, MutationObserver/ResizeObserver
+  dynamic detection, forced-colors/320px checks, collapse/move and cleanup.
 - **Dependencies:** PR 3 deep links, PR 1 selector/context.
 - **Acceptance:** minimal permissions; no page data leaves the browser, not even
   to VITAL; explicit "not found"/"ambiguous" states.
