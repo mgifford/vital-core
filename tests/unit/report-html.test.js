@@ -1404,7 +1404,8 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   const summary = {
     week: '2026-W25', pagesScanned: 4,
     regions: { basis: 'stored_examples', findings_total: 1, regions: [{ key: 'main|', role: 'main', name: null, label: 'main (unnamed)', findings: 1, pages_affected_sum: 2 }] },
-    componentGroups: { basis: 'stored_examples', groups: [{ key: 'component:cmp', label: 'Consent dialog', attribution: 'configured', implementation: 'cmp', findings: 1, pages_affected_sum: 2 }] },
+    componentGroups: { basis: 'stored_examples', groups: [{ key: 'component:cmp', label: 'Consent dialog', attribution: 'configured', implementation: 'cmp', findings: 1, verified_findings: 1, pages_affected_sum: 2 }] },
+    widgetGroups: { basis: 'stored_examples', groups: [{ key: 'widget:dialog', widget: 'dialog', label: 'dialog', attribution: 'widget-type', implementation: null, findings: 1, pages_affected_sum: 2, components: [{ id: 'cmp', findings: 1 }] }] },
   };
   const bug = {
     instance_id: 'VS-explore1', pattern_id: 'VS-p', rule_id: 'button-name',
@@ -1428,6 +1429,9 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   assert.match(html, /example_bugs\.json/, 'client fetches the published bugs JSON');
   assert.match(html, /main \(unnamed\)/, 'region column/count present');
   assert.match(html, /Consent dialog/, 'component table present');
+  assert.match(html, /<label for="explorer-widget">Widget type<\/label>/, 'widget filter is labelled');
+  assert.match(html, /id="h-explorer-widgets">By widget type/, 'widget table present');
+  assert.match(html, /<th scope="col">Widget type<\/th>/, 'static index has a widget column');
   assert.match(html, /<caption class="visually-hidden">/, 'tables have captions');
   // Empty state is honest rather than an empty table.
   const empty = renderExplorerPage(target, { week: '2026-W25', pagesScanned: 1 }, []);

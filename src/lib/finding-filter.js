@@ -28,20 +28,31 @@ export function findingRegionLabel(bug) {
   return region.name ? `${region.role} "${region.name}"` : `${region.role} (unnamed)`;
 }
 
-/** Configured component id, else the containing widget role, else "unattributed". */
+/**
+ * Configured shared component only. A widget role is NOT a component: the two
+ * are separate dimensions (see findingWidgetKey) so two unrelated dialogs are
+ * never presented as one component.
+ */
 export function findingComponentKey(bug) {
   const scope = bug?.component_scope;
-  if (scope?.component_id) return `component:${scope.component_id}`;
-  const widget = bug?.semantic_context?.widget?.role;
-  return widget ? `widget:${widget}` : 'unattributed';
+  return scope?.component_id ? `component:${scope.component_id}` : '';
 }
 
-/** Readable component label; a widget is named as a candidate, never a component. */
+/** Readable configured component label, or "unattributed". */
 export function findingComponentLabel(bug) {
   const scope = bug?.component_scope;
-  if (scope?.component_id) return scope.component_label || scope.component_id;
-  const widget = bug?.semantic_context?.widget?.role;
-  return widget ? `${widget} (candidate)` : 'unattributed';
+  return scope?.component_id ? (scope.component_label || scope.component_id) : 'unattributed';
+}
+
+/** Nearest structural widget role (dialog, tablist, …), or empty. */
+export function findingWidgetKey(bug) {
+  const role = bug?.semantic_context?.widget?.role;
+  return role ? `widget:${role}` : '';
+}
+
+/** Readable widget role, or "no widget". */
+export function findingWidgetLabel(bug) {
+  return bug?.semantic_context?.widget?.role ?? 'no widget';
 }
 
 /**
@@ -55,6 +66,7 @@ export function filterFindings(bugs, filters = {}) {
   return list.filter((bug) => {
     if (filters.region && findingRegionKey(bug) !== filters.region) return false;
     if (filters.component && findingComponentKey(bug) !== filters.component) return false;
+    if (filters.widget && findingWidgetKey(bug) !== filters.widget) return false;
     if (filters.engine && bug.engine_key !== filters.engine) return false;
     if (filters.severity && bug.severity !== filters.severity) return false;
     if (filters.wcag && (bug.wcag_sc ?? '') !== filters.wcag) return false;
@@ -85,6 +97,7 @@ export function filterOptions(bugs) {
     .filter((entry) => entry.count > 0);
   return {
     regions: collect(findingRegionKey, findingRegionLabel),
+    widgets: collect(findingWidgetKey, findingWidgetLabel),
     components: collect(findingComponentKey, findingComponentLabel),
     engines: collect((bug) => bug.engine_key, (bug) => bug.engine_key),
     severities,

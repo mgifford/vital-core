@@ -108,10 +108,12 @@ a page for a report.
   nearest landmark region / containing widget. Alfa reports serialized node
   descriptions, so its element evidence is explicitly **unavailable** — never
   guessed.
-* **Grouping** (`src/lib/region-groups.js`): `summary.regions` and
-  `summary.componentGroups` are sample-based; `unclassified` and
-  “no evidence” are separate counts; a widget role is a candidate, and
-  `ownership_established` is always false.
+* **Grouping** (`src/lib/region-groups.js`): `summary.regions`,
+  `summary.widgetGroups` and `summary.componentGroups` are three separate
+  dimensions. A widget role is a structural category, never a component; only a
+  configured signature produces a component group. `unclassified` and
+  “no evidence” are separate counts, and `ownership_established` is always
+  false.
 * **Finding Explorer** (`explore.html`, `renderExplorerPage`): complete static
   index without JavaScript, plus filters and a detail panel as progressive
   enhancement. It reads published `bugs.json`; it does not rescan and does not

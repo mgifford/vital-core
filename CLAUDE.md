@@ -348,7 +348,7 @@ list, in three layers (progressive disclosure):
 - **Layer 3 "Show me the evidence"** — the engine pages, grouped in the subnav
   by outcome question. The Findings explorer (`explore.html`, subnav "Findings
   explorer") is an inspection surface over the same findings: a complete static
-  index without JavaScript, plus region/component/engine/severity filters and a
+  index without JavaScript, plus region/widget/component/engine/severity filters and a
   detail panel as progressive enhancement. It adds no scan and no data source;
   every row links back to the finding's canonical anchor on the Accessibility
   page. It can also generate a standalone Playwright reproduction test on

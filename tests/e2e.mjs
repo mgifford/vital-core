@@ -380,6 +380,9 @@ try {
   const w1explore = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'explore.html'), 'utf8');
   assert(/All findings this week/.test(w1explore), 'explorer has a static findings index');
   assert(/id="explorer-filters"/.test(w1explore) && /id="explorer-detail"/.test(w1explore), 'explorer has filters and a detail panel slot');
+  assert(/<label for="explorer-widget">Widget type<\/label>/.test(w1explore), 'explorer separates widget type from component');
+  assert(/id="h-explorer-widgets">By widget type/.test(w1explore), 'explorer has a widget grouping table');
+  assert(/id="h-explorer-components">By component/.test(w1explore), 'explorer has a component grouping table');
   assert(/explore\.html#VS-/.test(w1acc), 'each finding links to the explorer');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
@@ -677,6 +680,9 @@ try {
       assert(await explorerPage.locator('#explorer-detail').isHidden(), 'detail panel starts closed');
       await explorerPage.selectOption('#explorer-region', 'main|');
       assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'region filter updates the live status');
+      await explorerPage.selectOption('#explorer-widget', 'widget:dialog');
+      assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'widget filter updates the live status');
+      await explorerPage.selectOption('#explorer-widget', '');
       // Keyboard-only: focus a result, open it with Enter, close with Enter.
       await explorerPage.fill('#explorer-query', 'image-alt');
       await explorerPage.locator('#explorer-results li a').first().focus();

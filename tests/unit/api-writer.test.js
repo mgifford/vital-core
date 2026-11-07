@@ -334,6 +334,20 @@ test('buildWeekFindings publishes region and component groupings with redacted r
         representative: [{ url: 'https://example.gov/a?token=SECRET', selector: 'input[value="SECRET"]' }],
       }],
     },
+    widgetGroups: {
+      basis: 'stored_examples',
+      findings_total: 1,
+      attributed: 1,
+      unattributed: 0,
+      ownership_basis: 'Widget roles are structural categories.',
+      groups: [{
+        key: 'widget:dialog', type: 'widget:dialog', widget: 'dialog', label: 'dialog',
+        attribution: 'widget-type', implementation: null, ownership_established: false,
+        findings: 1, instances_total: 3, pages_affected_sum: 2,
+        regions: [{ key: 'main|', findings: 1 }],
+        representative: [{ url: 'https://example.gov/a?token=SECRET', selector: 'div[role="dialog"]' }],
+      }],
+    },
     componentGroups: {
       basis: 'stored_examples',
       findings_total: 1,
@@ -353,6 +367,9 @@ test('buildWeekFindings publishes region and component groupings with redacted r
   assert.equal(scope.regions.basis, 'stored_examples');
   assert.equal(scope.regions.regions[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');
   assert.equal(scope.regions.regions[0].representative[0].selector, null, 'unsafe selector withheld');
+  assert.equal(scope.widget_groups.groups[0].widget, 'dialog');
+  assert.equal(scope.widget_groups.groups[0].implementation, null);
+  assert.equal(scope.widget_groups.groups[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');
   assert.equal(scope.component_groups.groups[0].attribution, 'configured');
   assert.equal(scope.component_groups.groups[0].ownership_established, false);
   assert.equal(scope.component_groups.groups[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');

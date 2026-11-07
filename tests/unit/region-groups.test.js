@@ -5,6 +5,7 @@ import {
   regionOf,
   buildRegionGroups,
   buildComponentGroups,
+  buildWidgetGroups,
   MAX_GROUP_REPRESENTATIVES,
 } from '../../src/lib/region-groups.js';
 
@@ -123,19 +124,56 @@ test('component groups: a configured signature wins over the widget role', () =>
   assert.deepEqual(group.regions, [{ key: 'main|', findings: 1 }]);
 });
 
-test('component groups: a widget without a configured component is only a candidate', () => {
-  const model = buildComponentGroups([
+test('component groups: a widget without a configured component is not a component', () => {
+  const findings = [
     finding({ instances: [instance({ semantic_context: semantic({ role: 'main', name: null, unnamed: true }, { role: 'dialog', name: 'Privacy', unnamed: false }) })] }),
-  ]);
-  const [group] = model.groups;
+  ];
+  const components = buildComponentGroups(findings);
+  assert.equal(components.groups.length, 0, 'no component is invented from a widget role');
+  assert.equal(components.attributed, 0);
+  assert.equal(components.unattributed, 1);
+
+  const widgets = buildWidgetGroups(findings);
+  const [group] = widgets.groups;
   assert.equal(group.type, 'widget:dialog');
   assert.equal(group.label, 'dialog');
-  assert.equal(group.attribution, 'candidate');
+  assert.equal(group.attribution, 'widget-type');
   assert.equal(group.implementation, null);
   assert.equal(group.ownership_established, false);
   assert.equal(group.stored_instances, 1);
-  assert.equal(model.attributed, 1);
-  assert.equal(model.unattributed, 0);
+  assert.equal(widgets.attributed, 1);
+});
+
+test('two unrelated dialogs share a widget type but never a component', () => {
+  const findings = [
+    finding({ rule_id: 'a', instances: [instance({ component: undefined, semantic_context: semantic({ role: 'main', name: null, unnamed: true }, { role: 'dialog', name: 'Consent A', unnamed: false }) })] }),
+    finding({ rule_id: 'b', instances: [instance({ component: undefined, semantic_context: semantic({ role: 'main', name: null, unnamed: true }, { role: 'dialog', name: 'Consent B', unnamed: false }) })] }),
+  ];
+  const components = buildComponentGroups(findings);
+  assert.equal(components.groups.length, 0, 'unrelated dialogs are not grouped as one component');
+  const widgets = buildWidgetGroups(findings);
+  assert.equal(widgets.groups.length, 1);
+  assert.equal(widgets.groups[0].widget, 'dialog');
+  assert.equal(widgets.groups[0].findings, 2);
+  assert.deepEqual(widgets.groups[0].components, []);
+});
+
+test('component groups: verification provenance comes from the shared-component model', () => {
+  const model = buildComponentGroups([
+    finding({ rule_id: 'a', instances: [instance({ component: 'cmp', semantic_context: semantic({ role: 'main', name: null, unnamed: true }) })] }),
+    finding({ rule_id: 'b', instances: [instance({ component: 'cmp', semantic_context: semantic({ role: 'main', name: null, unnamed: true }) })] }),
+  ], {
+    signatures: [{ id: 'cmp', label: 'Consent dialog' }],
+    scopes: {
+      'axe-core:a': { classification: 'shared_component', verified: true, confidence: 'high' },
+      'axe-core:b': { classification: 'candidate_shared_component', verified: false, confidence: 'low' },
+    },
+  });
+  const [group] = model.groups;
+  assert.equal(group.verified_findings, 1);
+  assert.deepEqual(group.classification_counts, { shared_component: 1, candidate_shared_component: 1 });
+  assert.equal(group.confidence, 'high');
+  assert.equal(group.ownership_established, false);
 });
 
 test('component groups: findings with neither component nor widget stay unattributed', () => {

@@ -26,7 +26,7 @@ import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { condenseInstance, MAX_RULE_INSTANCES, pickBrowserContext } from './lib/element-evidence.js';
-import { buildComponentGroups, buildRegionGroups, findingsFromRules } from './lib/region-groups.js';
+import { buildComponentGroups, buildRegionGroups, buildWidgetGroups, findingsFromRules } from './lib/region-groups.js';
 import { buildUrlIndex, writeUrlIndex } from './lib/url-index.js';
 import { assessAccess, withoutBlockedAudits } from './lib/access.js';
 import { omitHeavyLists, trendSeries } from './lib/trend.js';
@@ -1018,9 +1018,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   // so reports, the CSV and the API all read the same grouping.
   const regionFindings = findingsFromRules({ axe: axeRules, alfa: alfaRules, deprecatedHtml: deprecatedRules });
   const regions = regionFindings.length ? buildRegionGroups(regionFindings) : null;
-  const componentGroups = regionFindings.length
-    ? buildComponentGroups(regionFindings, { signatures: target.componentSignatures ?? [] })
-    : null;
+  const widgetGroups = regionFindings.length ? buildWidgetGroups(regionFindings) : null;
 
   return {
     domain: target.domain,
@@ -1061,7 +1059,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
     // Sample-based grouping of findings by page region and by component/widget.
     // Null when there are no findings, so an empty week stays empty.
     regions,
-    componentGroups: componentGroups?.attributed ? componentGroups : null,
+    widgetGroups: widgetGroups?.groups?.length ? widgetGroups : null,
     sustainability: bytesList.length
       ? {
           pages: bytesList.length,
@@ -1260,7 +1258,19 @@ function summarizeRecords(target, week, records, brokenLinks) {
       const componentClusters = clusterTracker.finalize(pagesScanned, target.reporting?.template_page_threshold ?? 10);
       const outside = actionIdsOutsideComponents(componentClusters.clusters, sharedComponents);
       if (outside) componentClusters.top_action_ids_outside_components = outside;
-      return { componentClusters, sharedComponents };
+      // Component grouping needs the shared-component model for verification
+      // provenance, so it is built here rather than with the region pass.
+      const componentGroups = regionFindings.length
+        ? buildComponentGroups(regionFindings, {
+            signatures: target.componentSignatures ?? [],
+            scopes: sharedComponents?.rules ?? null,
+          })
+        : null;
+      return {
+        componentClusters,
+        sharedComponents,
+        componentGroups: componentGroups?.groups?.length ? componentGroups : null,
+      };
     })(),
     pageFamilies: familyTracker.finalize(),
   };

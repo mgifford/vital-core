@@ -75,12 +75,6 @@ function componentOf(finding) {
   return instance?.component ?? null;
 }
 
-/** The nearest widget role (dialog, tablist, …) on a stored example, if any. */
-function widgetOf(finding) {
-  const instance = primaryInstanceWith(finding, (candidate) => candidate?.semantic_context?.widget?.role);
-  return instance?.semantic_context?.widget?.role ?? null;
-}
-
 function addRepresentative(entry, instance) {
   if (!instance || typeof instance.url !== 'string' || !instance.url) return;
   if (entry.representative.length >= MAX_GROUP_REPRESENTATIVES) return;
@@ -153,43 +147,30 @@ export function buildRegionGroups(findings = []) {
 }
 
 /**
- * Group findings by a configured component or, failing that, by the nearest
- * widget role as a candidate.
+ * Group findings by a **configured** shared component. A widget role is never
+ * treated as a component: two unrelated dialogs stay one structural widget
+ * category (see buildWidgetGroups) and no implementation is invented.
  *
- * Identity is explicit: `type` is the grouping key, `implementation` is only a
- * configured component id (never a structural guess), and
- * `ownership_established` is always false. Verification of a configured
- * component still lives in summarizeRecords()' `sharedComponents` model; this
- * grouping does not upgrade a candidate into a verified component.
+ * `scopes` is the sharedComponents rule model (`engine:rule` →
+ * `{ classification, verified, confidence }`), used only to report provenance,
+ * never to upgrade a candidate into a verified component.
  */
-export function buildComponentGroups(findings = [], { signatures = [] } = {}) {
+export function buildComponentGroups(findings = [], { signatures = [], scopes = null } = {}) {
   const labels = new Map((signatures ?? []).map((signature) => [signature.id, signature.label || signature.id]));
   const groups = new Map();
   let attributed = 0;
 
   for (const finding of findings) {
     const component = componentOf(finding);
-    const widget = widgetOf(finding);
-    let identity = null;
-    if (component) {
-      identity = {
-        key: `component:${component}`,
-        type: `component:${component}`,
-        label: labels.get(component) ?? component,
-        attribution: 'configured',
-        implementation: component,
-      };
-    } else if (widget) {
-      identity = {
-        key: `widget:${widget}`,
-        type: `widget:${widget}`,
-        label: widget,
-        attribution: 'candidate',
-        implementation: null,
-      };
-    }
-    if (!identity) continue;
+    if (!component) continue;
     attributed++;
+    const identity = {
+      key: `component:${component}`,
+      type: `component:${component}`,
+      label: labels.get(component) ?? component,
+      attribution: 'configured',
+      implementation: component,
+    };
     const entry = groups.get(identity.key) ?? {
       ...identity,
       ownership_established: false,
@@ -198,15 +179,20 @@ export function buildComponentGroups(findings = [], { signatures = [] } = {}) {
       instances_total: 0,
       stored_instances: 0,
       pages_affected_sum: 0,
+      verified_findings: 0,
+      classification_counts: {},
+      confidence: null,
       regions: new Map(),
       representative: [],
     };
     entry.findings++;
     entry.instances_total += Number.isFinite(finding.instances_total) ? finding.instances_total : 0;
-    entry.stored_instances += instancesOf(finding).filter((candidate) => (identity.implementation
-      ? candidate?.component === identity.implementation
-      : candidate?.semantic_context?.widget?.role === widget)).length;
+    entry.stored_instances += instancesOf(finding).filter((candidate) => candidate?.component === component).length;
     entry.pages_affected_sum += Number.isFinite(finding.pages) ? finding.pages : 0;
+    const scope = scopes?.[`${finding.engine_key}:${finding.rule_id}`] ?? null;
+    if (scope?.classification) entry.classification_counts[scope.classification] = (entry.classification_counts[scope.classification] ?? 0) + 1;
+    if (scope?.verified === true) entry.verified_findings++;
+    if (scope?.confidence) entry.confidence = higherConfidence(entry.confidence, scope.confidence);
     const region = regionOf(primaryInstanceWith(finding, (candidate) => candidate?.semantic_context));
     if (region) entry.regions.set(region.key, (entry.regions.get(region.key) ?? 0) + 1);
     addRepresentative(entry, primaryInstanceWith(finding, (candidate) => candidate?.semantic_context));
@@ -227,7 +213,87 @@ export function buildComponentGroups(findings = [], { signatures = [] } = {}) {
     findings_total: findings.length,
     attributed,
     unattributed: findings.length - attributed,
-    ownership_basis: 'Configured signatures and widget roles only. Grouping never establishes ownership or a fix count.',
+    ownership_basis: 'Only configured component signatures are grouped as components. Widget roles are separate structural categories; grouping never establishes ownership or a fix count.',
     groups: grouped,
+  };
+}
+
+const CONFIDENCE_RANK = { low: 1, medium: 2, high: 3 };
+
+function higherConfidence(current, next) {
+  return (CONFIDENCE_RANK[next] ?? 0) > (CONFIDENCE_RANK[current] ?? 0) ? next : current;
+}
+
+/**
+ * Group findings by the nearest widget role (dialog, tablist, menu, …). This is
+ * a structural category, not a shared implementation: `implementation` is
+ * always null, and `components` lists configured component ids seen among the
+ * group's findings so a reader can move from widget to verified component.
+ */
+export function buildWidgetGroups(findings = []) {
+  const groups = new Map();
+  let attributed = 0;
+
+  for (const finding of findings) {
+    const identity = firstWidgetIdentity(finding);
+    if (!identity) continue;
+    attributed++;
+    const entry = groups.get(identity.key) ?? {
+      ...identity,
+      ownership_established: false,
+      instance_identity: 'page_url_and_selector_of_stored_examples',
+      findings: 0,
+      instances_total: 0,
+      stored_instances: 0,
+      pages_affected_sum: 0,
+      components: new Map(),
+      regions: new Map(),
+      representative: [],
+    };
+    entry.findings++;
+    entry.instances_total += Number.isFinite(finding.instances_total) ? finding.instances_total : 0;
+    entry.stored_instances += instancesOf(finding).filter((candidate) => candidate?.semantic_context?.widget?.role === identity.widget).length;
+    entry.pages_affected_sum += Number.isFinite(finding.pages) ? finding.pages : 0;
+    const component = componentOf(finding);
+    if (component) entry.components.set(component, (entry.components.get(component) ?? 0) + 1);
+    const region = regionOf(primaryInstanceWith(finding, (candidate) => candidate?.semantic_context));
+    if (region) entry.regions.set(region.key, (entry.regions.get(region.key) ?? 0) + 1);
+    addRepresentative(entry, primaryInstanceWith(finding, (candidate) => candidate?.semantic_context));
+    groups.set(identity.key, entry);
+  }
+
+  const grouped = [...groups.values()]
+    .map((entry) => ({
+      ...entry,
+      components: [...entry.components.entries()]
+        .map(([id, count]) => ({ id, findings: count }))
+        .sort((a, b) => b.findings - a.findings || a.id.localeCompare(b.id)),
+      regions: [...entry.regions.entries()]
+        .map(([key, count]) => ({ key, findings: count }))
+        .sort((a, b) => b.findings - a.findings || a.key.localeCompare(b.key)),
+    }))
+    .sort((a, b) => b.findings - a.findings || a.label.localeCompare(b.label));
+
+  return {
+    basis: REGION_BASIS,
+    findings_total: findings.length,
+    attributed,
+    unattributed: findings.length - attributed,
+    ownership_basis: 'Widget roles are structural categories. They do not identify a shared implementation and never establish ownership.',
+    groups: grouped,
+  };
+}
+
+function firstWidgetIdentity(finding) {
+  const instance = primaryInstanceWith(finding, (candidate) => candidate?.semantic_context?.widget?.role);
+  const widget = instance?.semantic_context?.widget;
+  if (!widget?.role) return null;
+  return {
+    key: `widget:${widget.role}`,
+    type: `widget:${widget.role}`,
+    widget: widget.role,
+    label: widget.role,
+    attribution: 'widget-type',
+    implementation: null,
   };
 }

@@ -254,15 +254,24 @@ findings.
   finding with no captured evidence is counted in `findings_without_evidence`,
   never folded into unclassified. `pages_affected_sum` and `instances_total`
   are sums across findings, not distinct counts.
+- `scope_of_analysis.widget_groups`: `{ basis, findings_total, attributed,
+  unattributed, ownership_basis, groups: [...] }`. A group is a **structural
+  widget type** (dialog, tablist, menu, …) with `key`/`type`
+  (`widget:<role>`), `widget`, `label`, `attribution: "widget-type"`,
+  `implementation: null` (always), `ownership_established: false`, `findings`,
+  `instances_total`, `stored_instances`, `pages_affected_sum`, `regions`,
+  `components` (configured ids that also occurred in the group) and up to three
+  representative URLs. Two unrelated dialogs share this category; they are not
+  a component.
 - `scope_of_analysis.component_groups`: `{ basis, findings_total, attributed,
-  unattributed, ownership_basis, groups: [...] }`. A group has `key`, `type`,
-  `label`, `attribution` (`configured` | `candidate`), `implementation`
-  (a configured signature id, or null), `ownership_established` (always false),
-  `instance_identity` (`page_url_and_selector_of_stored_examples`), `findings`,
-  `instances_total`, `stored_instances`, `pages_affected_sum`, `regions` and
-  `representative`. A configured component wins over a widget role; a widget
-  role (e.g. `widget:dialog`) is only a candidate attribution and never implies
-  a shared implementation. Verification of a configured component remains in
+  unattributed, ownership_basis, groups: [...] }`. Only **configured shared
+  components** appear here: `key`/`type` (`component:<id>`), `label`,
+  `attribution: "configured"`, `implementation` (the configured signature id),
+  `ownership_established` (always false), `instance_identity`
+  (`page_url_and_selector_of_stored_examples`), `findings`, `instances_total`,
+  `stored_instances`, `pages_affected_sum`, `verified_findings`,
+  `classification_counts`, `confidence`, `regions` and `representative`. A
+  widget role never appears as a component. Verification still comes from
   `scope_of_analysis.shared_components`; grouping never upgrades a candidate.
 - `findings[].reporting.region` is the finding's `nearest_region` (or null),
   with `region_unclassified` (true when evidence exists but no landmark was
