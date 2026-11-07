@@ -502,7 +502,7 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
       pattern_id: 'VS-12345678',
       url: 'https://example.gov/a',
       selector: 'img.hero',
-      element: { available: true, tag: 'img', role: null, name: null, name_source: 'none' },
+      element: { available: true, tag: 'img', role: null, name: null, name_source: 'none', text_anchor: 'Images must have alternative text' },
       xpath: 'img',
       wcag_sc: '1.1.1',
       wcag_name: 'Non-text Content',
@@ -551,6 +551,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /class="bookmarklet-link" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
   assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
   assert.match(html, /Copy inspection code/, 'the code fallback is labelled');
+  assert.match(html, /Highlight text on site/, 'a native text-fragment link is offered');
+  assert.match(html, /#:~:text=/, 'the text link carries a text directive');
   assert.match(html, /strict script-src Content-Security-Policy/, 'the CSP limitation is documented');
   assert.match(html, /ACT rule\/page group\(s\) overlap between engines/);
   assert.match(html, /A matching ACT rule and page shows rule\/page overlap only/);

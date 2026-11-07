@@ -163,6 +163,12 @@ function collectElementEvidenceInPage({ selectors, maxAncestry, maxWalk, maxName
       node = parentOf(node);
     }
     const root = el.getRootNode?.();
+    const anchorText = (() => {
+      const textTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'button', 'label', 'summary', 'td', 'th', 'p', 'li', 'legend', 'figcaption', 'blockquote', 'caption'];
+      if (!textTags.includes(el.localName)) return null;
+      const value = String(el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
+      return value.length >= 3 ? value.slice(0, 80) : null;
+    })();
     return {
       available: true,
       selector: clip(selector, maxSelector),
@@ -173,6 +179,7 @@ function collectElementEvidenceInPage({ selectors, maxAncestry, maxWalk, maxName
       name_source: name.name_source,
       labelledby_ids: name.labelledby_ids,
       id: clip(el.getAttribute('id'), 100),
+      text_anchor: anchorText,
       shadow: typeof ShadowRoot !== 'undefined' && root instanceof ShadowRoot,
       iframe: isFramed(),
       visible: rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden',
@@ -302,6 +309,7 @@ export function sanitizeElementEvidence(element) {
     visible: element.visible === true,
     rect: element.rect ?? null,
     rect_page: element.rect_page ?? null,
+    text_anchor: typeof element.text_anchor === 'string' ? element.text_anchor.slice(0, 80) : null,
   };
 }
 
@@ -337,6 +345,7 @@ function boundedElement(evidence, fallbackSelector) {
     visible: evidence.visible === true,
     rect: boundedRect(evidence.rect),
     rect_page: boundedRect(evidence.rect_page),
+    text_anchor: typeof evidence.text_anchor === 'string' ? evidence.text_anchor.slice(0, 80) : null,
   };
 }
 
@@ -398,6 +407,7 @@ function cloneElement(element) {
     visible: element.visible === true,
     rect: element.rect ? { ...element.rect } : null,
     rect_page: element.rect_page ? { ...element.rect_page } : null,
+    text_anchor: typeof element.text_anchor === 'string' ? element.text_anchor.slice(0, 80) : null,
   };
 }
 

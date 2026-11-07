@@ -20,6 +20,7 @@ npm run scan          # crawl + audit one target (VITAL_DOMAIN=www.cms.gov)
 npm run aggregate     # build docs/ from data/
 npm run test:unit     # unit tests (Node built-in runner)
 npm run test:e2e      # smoke test
+npm run inspect       # headed Playwright highlight: --bugs/--id or --url/--selector/--xpath
 npm run check:public-interest www.cms.gov   # quick 4-check diagnostic
 ```
 

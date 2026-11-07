@@ -14,10 +14,11 @@ export const INSPECT_HASH = 'vital-inspect';
 export function inspectUnavailableReason(bug) {
   if (!bug) return 'no-finding';
   if (bug.element?.reason === 'frame-or-shadow-path') return 'frame-or-shadow-path';
-  if (bug.element && bug.element.available !== true) return 'no-element-evidence';
+  if (!bug.element || bug.element.available !== true) return 'no-element-evidence';
   if (bug.element?.shadow === true) return 'shadow-root';
   if (bug.element?.iframe === true) return 'iframe';
-  if (typeof bug.selector !== 'string' || !bug.selector.trim()) return 'no-selector';
+  const hasXPath = typeof bug.xpath === 'string' && /^(?:\/|\(|\.\/|\.\.\/)/.test(bug.xpath.trim());
+  if ((typeof bug.selector !== 'string' || !bug.selector.trim()) && !hasXPath) return 'no-selector';
   if (typeof bug.url !== 'string' || !/^https?:\/\//i.test(bug.url)) return 'no-live-url';
   return null;
 }
@@ -45,9 +46,13 @@ export function inspectCodeFor(bug) {
   if (inspectUnavailableReason(bug)) return null;
   let origin;
   try { origin = new URL(bug.url).origin; } catch (error) { return null; }
+  const selector = typeof bug.selector === 'string' && bug.selector.trim() ? bug.selector.slice(0, 500) : null;
+  const xpath = !selector && typeof bug.xpath === 'string' && /^(?:\/|\(|\.\/|\.\.\/)/.test(bug.xpath.trim()) ? bug.xpath.slice(0, 500) : null;
+  if (!selector && !xpath) return null;
   const payload = {
     v: 1,
-    s: bug.selector.slice(0, 500),
+    s: selector,
+    x: xpath,
     t: typeof bug.element?.tag === 'string' ? bug.element.tag.slice(0, 50) : null,
     r: typeof bug.element?.role === 'string' ? bug.element.role.slice(0, 50) : null,
     n: typeof bug.element?.name === 'string' ? bug.element.name.slice(0, 200) : null,
@@ -99,16 +104,22 @@ export function decodeInspectToken(token) {
 
 /** Validate an inspection payload before it is used. Returns {ok} or {ok:false, reason}. */
 export function validateInspectPayload(payload, pageHref) {
-  const payloadKeys = ['v', 's', 't', 'r', 'n', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id'];
+  const payloadKeys = ['v', 's', 'x', 't', 'r', 'n', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id'];
   const nameSources = ['aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby', 'aria-labelledby-unresolved', 'none'];
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { ok: false, reason: 'inspection payload must be an object' };
   for (const key of Object.keys(payload)) {
     if (!payloadKeys.includes(key)) return { ok: false, reason: `unexpected inspection property: ${key}` };
   }
   if (payload.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
-  if (typeof payload.s !== 'string' || !payload.s.trim() || payload.s.length > 500) return { ok: false, reason: 'invalid selector in inspection payload' };
-  if (/[\u0000-\u001f]/.test(payload.s)) return { ok: false, reason: 'invalid control character in selector' };
-  if (/^[\s]*[<{]/.test(payload.s)) return { ok: false, reason: 'inspection selector is not CSS (HTML or serialized node data)' };
+  const hasSelector = typeof payload.s === 'string' && payload.s.trim();
+  const hasXPath = typeof payload.x === 'string' && payload.x.trim();
+  if (!hasSelector && !hasXPath) return { ok: false, reason: 'inspection payload has no selector or XPath' };
+  if (hasSelector) {
+    if (payload.s.length > 500) return { ok: false, reason: 'invalid selector in inspection payload' };
+    if (/[\u0000-\u001f]/.test(payload.s)) return { ok: false, reason: 'invalid control character in selector' };
+    if (/^[\s]*[<{]/.test(payload.s)) return { ok: false, reason: 'inspection selector is not CSS (HTML or serialized node data)' };
+  }
+  if (hasXPath && (payload.x.length > 500 || !/^(?:\/|\(|\.\/|\.\.\/)/.test(payload.x.trim()))) return { ok: false, reason: 'invalid XPath in inspection payload' };
   if (typeof payload.org !== 'string' || !/^https?:\/\/[^/]+$/i.test(payload.org)) return { ok: false, reason: 'invalid origin in inspection payload' };
   try {
     if (new URL(payload.org).origin !== payload.org) return { ok: false, reason: 'inspection origin must be an origin only' };
@@ -202,7 +213,7 @@ export function vitalInspect(validate) {
 
   function localValidate(value) {
     if (!value || value.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
-    if (typeof value.s !== 'string' || !value.s.trim() || value.s.length > 500) return { ok: false, reason: 'invalid selector in inspection payload' };
+    if (!(typeof value.s === 'string' && value.s.trim()) && !(typeof value.x === 'string' && value.x.trim())) return { ok: false, reason: 'inspection payload has no selector or XPath' };
     if (value.org !== window.location.origin) return { ok: false, reason: 'this inspection code belongs to a different site origin' };
     return { ok: true };
   }
@@ -254,8 +265,13 @@ export function vitalInspect(validate) {
     matches = [];
     index = 0;
     try {
-      var found = document.querySelectorAll(payload.s);
-      for (var i = 0; i < found.length; i++) matches.push(found[i]);
+      if (payload.x) {
+        var snapshot = document.evaluate(payload.x, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        for (var i = 0; i < snapshot.snapshotLength; i++) matches.push(snapshot.snapshotItem(i));
+      } else {
+        var found = document.querySelectorAll(payload.s);
+        for (var j = 0; j < found.length; j++) matches.push(found[j]);
+      }
     } catch (error) {
       matches = [];
     }
@@ -518,7 +534,7 @@ export function vitalInspect(validate) {
     if (payload.id) addDetail('p', 'Occurrence: ' + payload.id, 'margin:0 0 4px;');
     addDetail('p', 'Selector', 'margin:8px 0 2px;font-weight:700;');
     var code = document.createElement('code');
-    code.textContent = payload.s;
+    code.textContent = payload.s || payload.x;
     details.appendChild(code);
     if (target) {
       addIdentity('Recorded identity', [

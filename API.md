@@ -322,6 +322,9 @@ image evidence:
 - `findings[].element.rect_page` — element rectangle in page coordinates, used
   to position the marker. `findings[].browser_context.scroll` records the scroll
   position at evidence capture.
+- `findings[].element.text_anchor` — up to 80 characters of the element's
+  visible text, captured only for text-bearing elements. It powers the native
+  `#:~:text=` link; it is not a description of the finding.
 - Each `reporting.representative_evidence[]` entry carries its own `screenshot`
   when that occurrence's page was captured.
 

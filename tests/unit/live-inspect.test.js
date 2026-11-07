@@ -81,6 +81,8 @@ test('inspect URL is null when the live highlight cannot be honest', () => {
   assert.equal(inspectUrlFor(bug({ url: 'file:///tmp/page.html' })), null);
   assert.equal(inspectUrlFor(bug({ selector: '' })), null);
   assert.equal(inspectUrlFor(bug({ url: null })), null);
+  assert.equal(inspectUrlFor({ ...bug(), element: null }), null, 'missing element evidence is not a highlightable target');
+  assert.equal(inspectUnavailableReason({ ...bug(), element: null }), 'no-element-evidence');
   assert.equal(inspectUrlFor(bug({ element: { available: true, shadow: true } })), null);
   assert.equal(inspectUrlFor(bug({ element: { available: true, iframe: true } })), null);
   assert.equal(inspectUrlFor(bug({ element: { available: false, reason: 'frame-or-shadow-path' } })), null);
@@ -392,5 +394,17 @@ test('axe-core finds no violations inside the overlay', async () => {
     const results = await page.evaluate(async () => window.axe.run(document));
     const overlay = results.violations.filter((violation) => violation.nodes.some((node) => JSON.stringify(node.target).includes('vital-inspect')));
     assert.deepEqual(overlay, []);
+  });
+});
+
+test('an XPath payload locates the element for the local inspector', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    const url = inspectUrlFor(bug({ url: `${base}/page`, selector: null, xpath: '//*[@id="named"]' }));
+    assert.ok(url);
+    await page.goto(url);
+    await page.evaluate(vitalInspect);
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /Recorded element located/);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1);
   });
 });

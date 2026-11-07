@@ -77,3 +77,19 @@ test('unnamed section and form are recorded but not promoted to landmarks', asyn
   assert.ok(!link.semantic_context.region_ancestry.some((region) => region.role === 'region'), 'unnamed section is not a region');
   assert.ok(!link.semantic_context.region_ancestry.some((region) => region.role === 'form'), 'unnamed form is not a landmark');
 });
+
+test('text-bearing elements keep a bounded visible text anchor', async () => {
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    await page.setContent('<main><p style="color:#ddd;background:#fff">Low contrast passage for the text anchor.</p></main>');
+    const axe = await runAxe(page);
+    await attachElementEvidence(page, axe);
+    const example = axe.violations['color-contrast']?.examples?.[0];
+    assert.ok(example, 'color-contrast example captured');
+    assert.match(example.element.text_anchor, /Low contrast passage/);
+    assert.ok(example.element.text_anchor.length <= 80);
+  } finally {
+    await browser.close();
+  }
+});
