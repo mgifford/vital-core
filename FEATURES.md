@@ -211,8 +211,12 @@ bookmarklet, and paste the code when prompted. A strict `script-src`
 Content-Security-Policy can block the bookmarklet before it can show any
 message; the report warns about that and never suggests weakening site policy.
 
-The bookmarklet is installed once by dragging it to the bookmarks bar (or
-copying its link into a bookmark). It follows the recorded selector, so it cannot
+The bookmarklet is installed once by showing the bookmarks bar and dragging the
+large **VITAL Inspect** button into it. The report shows a bookmarks-bar visual,
+the keyboard shortcut for each browser, and a manual fallback (right-click →
+Copy link, or **Copy bookmarklet**, then create a bookmark and paste the code as
+its address). Clicking the button on the report page only runs it there; it must
+be dragged to the bar or saved as a bookmark. It follows the recorded selector, so it cannot
 cross shadow roots, iframe boundaries or interaction-gated content; those cases
 are reported rather than guessed. A page with a strict CSP may block the
 bookmarklet's inline styles; the report says it is a browser-side tool, not a

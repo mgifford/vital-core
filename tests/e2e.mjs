@@ -398,7 +398,9 @@ try {
   assert(docsShots.length > 0, 'screenshots copied into the published report');
   assert(/explore\.html#VS-/.test(w1acc), 'each finding links to the explorer');
   assert(/Highlight on site/.test(w1acc) && /#vital-inspect=/.test(w1acc), 'findings link to a live highlight payload');
-  assert(/class="bookmarklet-link" href="javascript:/.test(w1acc), 'the VITAL Inspect bookmarklet is offered');
+  assert(/class="bookmarklet-link bookmarklet-button" href="javascript:/.test(w1acc), 'the VITAL Inspect bookmarklet is offered');
+  assert(/bookmarklet-visual/.test(w1acc), 'the bookmarks-bar visual is present');
+  assert(/Copy bookmarklet/.test(w1acc), 'the manual bookmarklet fallback is present');
   assert(/class="inspect-copy" data-inspect-code="/.test(w1acc), 'a URL-free inspection code is available');
   assert(/class="live-inspect-help" open>/.test(w1acc), 'the bookmarklet install section is open by default');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
