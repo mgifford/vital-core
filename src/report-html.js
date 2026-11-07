@@ -13,7 +13,7 @@ import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingR
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
-import { inspectBookmarklet, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
+import { inspectBookmarklet, inspectCodeFor, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
 
@@ -1669,7 +1669,29 @@ function liveInspectHelp() {
 </ol>
 <p><a class="bookmarklet-link" href="${esc(inspectBookmarklet())}" draggable="true">${t('VITAL Inspect')}</a></p>
 <p class="meta">${t('The overlay shows the recorded rule, selector, WCAG mapping and fix text. It sends nothing and is not stored. It follows the recorded selector; if the element has changed, it says so rather than guessing.')}</p>
+<p class="meta">${t('If the site uses its URL fragment for routing, or the highlight link does not carry the code, use Copy inspection code and paste it when the bookmarklet asks.')}</p>
+<p class="meta">${t('Browser restriction: a page with a strict script-src Content-Security-Policy can block bookmarklets. Do not weaken the site policy; use the Finding Explorer or the Playwright reproduction instead.')}</p>
 </details>`;
+}
+
+function inspectCopyScript() {
+  return `<script>
+(function () {
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest && event.target.closest('.inspect-copy');
+    if (!button) return;
+    var code = button.getAttribute('data-inspect-code') || '';
+    var reset = function () { button.textContent = 'Copy inspection code'; };
+    var done = function () { button.textContent = 'Copied'; setTimeout(reset, 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done).catch(function () { window.prompt('Copy this inspection code', code); });
+    } else {
+      window.prompt('Copy this inspection code', code);
+    }
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy'), function (button) { button.hidden = false; });
+})();
+<\/script>`;
 }
 
 function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}, excludePatterns = []) {
@@ -1803,7 +1825,9 @@ ${heading('h-bugs', t('Bug reports'))}
         : '';
       const scope = b.component_scope;
       const inspectUrl = inspectUrlFor(b);
+      const inspectCode = inspectCodeFor(b);
       const inspectReason = inspectUnavailableReason(b);
+      const targetUsesHash = (() => { try { return Boolean(new URL(b.url).hash); } catch (error) { return false; } })();
       const componentScopeNote = scope
         ? `<div><dt>${t('Component scope')}</dt><dd>${esc(scopeClassLabel(scope.classification))}${scope.component_label ? ` — ${esc(scope.component_label)} (${esc(scopeConfidenceLabel(scope.confidence))})` : ''}. ${t('@in of @total stored example(s) are inside the component; @out outside, @und undetermined. Sample-based: not every instance is inspected.', { '@in': scope.examples_in_component, '@total': scope.examples_total, '@out': scope.examples_outside_component, '@und': scope.examples_undetermined })}</dd></div>`
         : '';
@@ -1813,7 +1837,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code> <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.')}</span><br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))}</span><br>`}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Opens the live page with a VITAL marker; click the VITAL Inspect bookmarklet there.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))}</span><br>`}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -4348,6 +4372,7 @@ ${consensusSection(summary, bugs)}
     page: "accessibility",
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Accessibility</li>`,
     body,
+    extraScript: inspectCopyScript(),
     depth: 3,
     apiFinding: { key: target.key, week: summary.week },
     target,
@@ -5631,7 +5656,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     .map((fn) => fn.toString())
     .join('\n');
   const screenshotSource = markerGeometry.toString();
-  const liveInspectSource = [inspectUrlFor, inspectUnavailableReason, inspectUnavailableText].map((fn) => fn.toString()).join('\n');
+  const liveInspectSource = [inspectCodeFor, inspectUrlFor, inspectUnavailableReason, inspectUnavailableText].map((fn) => fn.toString()).join('\n');
   return `<script>
 (function () {
   'use strict';
@@ -6189,7 +6214,7 @@ ${summary.componentGroups?.groups?.length ? `<section aria-labelledby="h-explore
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t('Findings explorer')}</li>`,
     body,
     depth: 3,
-    extraScript: script,
+    extraScript: script + inspectCopyScript(),
     apiFinding: { key: target.key, week: summary.week },
     target,
   });

@@ -29,6 +29,30 @@ Alfa (Siteimprove). They implement WCAG conformance testing differently and
 catch different problems; disagreements between them are informative, not
 noise.
 
+## Live inspection bookmarklet
+
+The optional **VITAL Inspect** bookmarklet locates a recorded finding on the
+live site. It is an inspection aid, not a fresh audit: a visible element does
+not prove the historical violation still exists.
+
+- **Keyboard:** install it through the bookmarks manager if dragging is not
+  possible; focus the report link, copy its address, and create a bookmark.
+  Close with `Escape` or the Close button; Previous/Next candidate buttons are
+  ordinary buttons; focus returns to the page after closing.
+- **Status is text, not colour:** "Recorded element located", "Possible matching
+  element. Verification required.", "Recorded element changed" and "Element not
+  found" are written in the panel, and the candidate/changed boxes use dashed
+  borders and labels as well as colour.
+- **Strict Content-Security-Policy:** a page whose `script-src` blocks inline
+  script may prevent the bookmarklet from running at all, so no error can be
+  shown. Do not weaken the site's policy; use the Finding Explorer or the
+  Playwright reproduction instead.
+- **Frames and shadow roots:** live highlighting is unavailable and the report
+  says so rather than guessing.
+- **Manual assistive-technology testing of the bookmarklet has not been
+  performed yet.** Keyboard behaviour is tested in Chromium; screen reader,
+  forced-colors and cross-browser checks remain manual work.
+
 ## Reporting problems
 
 If a generated report is hard to use with a screen reader, keyboard,
