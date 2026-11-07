@@ -549,6 +549,9 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
   assert.match(html, /Highlight a finding on the live site/, 'the bookmarklet install help is present');
   assert.match(html, /class="bookmarklet-link" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
+  assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
+  assert.match(html, /Copy inspection code/, 'the code fallback is labelled');
+  assert.match(html, /strict script-src Content-Security-Policy/, 'the CSP limitation is documented');
   assert.match(html, /ACT rule\/page group\(s\) overlap between engines/);
   assert.match(html, /A matching ACT rule and page shows rule\/page overlap only/);
   assert.doesNotMatch(html, /same issue is often caught by both/);

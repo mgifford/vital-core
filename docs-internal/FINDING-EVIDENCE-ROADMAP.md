@@ -341,16 +341,18 @@ criteria, explicit exclusions, references, priority.
   https://www.w3.org/WAI/planning/arrm/roles/
 - **Priority:** P2.
 
-### P2 — Live highlight (bookmarklet implemented; packaged extension deferred)
+### P2 — Live highlight (bookmarklet hardening; packaged extension deferred)
 
 - **Motivation:** static evidence ages; a live check needs the current DOM.
 - **Implemented:** `src/lib/live-inspect.js` plus “Highlight on site” links on
-  the Accessibility page and Explorer. A one-time bookmarklet reads a compact
-  selector/rule/WCAG/fix payload from the fragment, outlines the matching
-  element, reports not-found/multiple/identity-changed cases, and sends nothing.
-- **Remaining:** a packaged browser extension for one-click install and
-  cross-frame/shadow-root support; the bookmarklet cannot cross those
-  boundaries.
+  the Accessibility page and Explorer. A one-time bookmarklet reads a compact,
+  versioned, origin-scoped selector/rule/WCAG/fix payload from the fragment (or
+  a pasted code), reports located/possible/changed/not-found, refuses to
+  highlight changed or unsupported contexts, and sends nothing. The full URL is
+  not transported; hash-routed pages have a URL-free clipboard fallback.
+- **Remaining:** packaged browser extension for reliable execution where CSP
+  blocks bookmarklets and for same-origin frames/open shadow roots; PR 3
+  dynamic-DOM/overlay accessibility; PR 4 workflow/docs.
 - **Dependencies:** PR 3 deep links, PR 1 selector/context.
 - **Acceptance:** minimal permissions; no page data leaves the browser, not even
   to VITAL; explicit "not found"/"ambiguous" states.

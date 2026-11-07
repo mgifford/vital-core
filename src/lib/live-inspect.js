@@ -37,41 +37,103 @@ export function inspectUnavailableText(reason) {
 }
 
 /**
- * Build the target URL with a compact inspect payload. Only http(s) findings
- * with a selector can be highlighted; everything else returns null instead of
- * guessing.
+ * Build the compact inspection code (base64url JSON). It contains no full URL
+ * and no page content: only the selector, recorded identity, rule/WCAG/fix and
+ * the expected origin, so query parameters and personal data are not carried.
  */
-export function inspectUrlFor(bug) {
+export function inspectCodeFor(bug) {
   if (inspectUnavailableReason(bug)) return null;
+  let origin;
+  try { origin = new URL(bug.url).origin; } catch (error) { return null; }
   const payload = {
     v: 1,
-    u: bug.url,
-    s: bug.selector,
-    t: bug.element?.tag ?? null,
-    r: bug.element?.role ?? null,
-    n: bug.element?.name ?? null,
+    s: bug.selector.slice(0, 500),
+    t: typeof bug.element?.tag === 'string' ? bug.element.tag.slice(0, 50) : null,
+    r: typeof bug.element?.role === 'string' ? bug.element.role.slice(0, 50) : null,
+    n: typeof bug.element?.name === 'string' ? bug.element.name.slice(0, 200) : null,
     ns: bug.element?.name_source ?? 'none',
-    rule: bug.rule_id ?? null,
-    label: bug.rule_label ?? bug.summary ?? null,
-    w: bug.wcag_sc ?? null,
-    fix: String(bug.remediation_tip || bug.suggested_fix || '').slice(0, 600),
-    h: bug.rule_url ?? bug.help_url ?? null,
-    o: bug.occurrence_id ?? null,
+    rule: typeof bug.rule_id === 'string' ? bug.rule_id.slice(0, 100) : null,
+    label: String(bug.rule_label ?? bug.summary ?? '').slice(0, 200) || null,
+    w: typeof bug.wcag_sc === 'string' ? bug.wcag_sc.slice(0, 20) : null,
+    fix: String(bug.remediation_tip || bug.suggested_fix || '').slice(0, 400),
+    h: /^https?:\/\//i.test(bug.rule_url ?? '') ? bug.rule_url.slice(0, 500) : null,
+    org: origin,
+    id: typeof bug.occurrence_id === 'string' ? bug.occurrence_id.slice(0, 100) : null,
   };
   const json = JSON.stringify(payload);
   const base64 = typeof Buffer !== 'undefined'
     ? Buffer.from(json, 'utf8').toString('base64')
     : btoa(unescape(encodeURIComponent(json)));
-  const token = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+/**
+ * Build the target URL with an inspection code in the fragment. This is the
+ * one-click path. Callers should warn when the target already uses its hash
+ * for routing; `inspectCodeFor` is the URL-free alternative.
+ */
+export function inspectUrlFor(bug) {
+  const token = inspectCodeFor(bug);
+  if (!token) return null;
   const url = new URL(bug.url);
   const existing = url.hash ? url.hash.slice(1) + '&' : '';
   url.hash = `${existing}vital-inspect=${token}`;
   return url.href;
 }
 
-/** A one-time bookmarklet; reads the payload from the current page's hash. */
+/** Decode and size-check an inspection code. Throws a plain reason on failure. */
+export function decodeInspectToken(token) {
+  if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{1,8192}$/.test(token)) throw new Error('invalid inspection code encoding');
+  const b64 = token.replace(/-/g, '+').replace(/_/g, '/');
+  let json;
+  try {
+    json = typeof Buffer !== 'undefined'
+      ? Buffer.from(b64, 'base64').toString('utf8')
+      : decodeURIComponent(escape(atob(b64)));
+  } catch (error) {
+    throw new Error('the inspection code could not be decoded');
+  }
+  if (json.length > 6000) throw new Error('the inspection code is too large');
+  try { return JSON.parse(json); } catch (error) { throw new Error('the inspection code is not valid JSON'); }
+}
+
+/** Validate an inspection payload before it is used. Returns {ok} or {ok:false, reason}. */
+export function validateInspectPayload(payload, pageHref) {
+  const payloadKeys = ['v', 's', 't', 'r', 'n', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id'];
+  const nameSources = ['aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby', 'aria-labelledby-unresolved', 'none'];
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { ok: false, reason: 'inspection payload must be an object' };
+  for (const key of Object.keys(payload)) {
+    if (!payloadKeys.includes(key)) return { ok: false, reason: `unexpected inspection property: ${key}` };
+  }
+  if (payload.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
+  if (typeof payload.s !== 'string' || !payload.s.trim() || payload.s.length > 500) return { ok: false, reason: 'invalid selector in inspection payload' };
+  if (/[\u0000-\u001f]/.test(payload.s)) return { ok: false, reason: 'invalid control character in selector' };
+  if (typeof payload.org !== 'string' || !/^https?:\/\/[^/]+$/i.test(payload.org)) return { ok: false, reason: 'invalid origin in inspection payload' };
+  try {
+    if (new URL(payload.org).origin !== payload.org) return { ok: false, reason: 'inspection origin must be an origin only' };
+    if (pageHref && new URL(pageHref).origin !== payload.org) return { ok: false, reason: 'this inspection code belongs to a different site origin' };
+  } catch (error) {
+    return { ok: false, reason: 'invalid page or inspection origin' };
+  }
+  const stringOrNull = (key, max) => {
+    const value = payload[key];
+    if (value == null) return true;
+    if (typeof value !== 'string' || value.length > max) return false;
+    return true;
+  };
+  if (!stringOrNull('t', 50) || !stringOrNull('r', 50) || !stringOrNull('n', 200) || !stringOrNull('rule', 100) || !stringOrNull('label', 200) || !stringOrNull('w', 20) || !stringOrNull('fix', 400) || !stringOrNull('h', 500) || !stringOrNull('id', 100)) {
+    return { ok: false, reason: 'inspection payload field is too long or the wrong type' };
+  }
+  if (payload.ns != null && !nameSources.includes(payload.ns)) return { ok: false, reason: 'invalid name source in inspection payload' };
+  if (payload.h != null && !/^https?:\/\//i.test(payload.h)) return { ok: false, reason: 'unsafe documentation URL in inspection payload' };
+  return { ok: true };
+}
+
+/** A one-time bookmarklet; reads the payload from the current page's hash. *//** A one-time bookmarklet; reads a payload from the hash or a pasted code. */
 export function inspectBookmarklet() {
-  return `javascript:(${vitalInspect.toString().replace(/\s+/g, ' ').trim()})()`;
+  const inspect = vitalInspect.toString().replace(/\s+/g, ' ').trim();
+  const validate = validateInspectPayload.toString().replace(/\s+/g, ' ').trim();
+  return `javascript:(function(){var validate=${validate};(${inspect})(validate);})()`;
 }
 
 /**
@@ -80,22 +142,28 @@ export function inspectBookmarklet() {
  * panel with the recorded rule/WCAG/selector/fix, checks that the selector
  * still points at the recorded kind of element, and removes itself on close.
  */
-export function vitalInspect() {
+export function vitalInspect(validate) {
   var marker = 'vital-inspect=';
   var hash = window.location.hash || '';
   var start = hash.indexOf(marker);
-  if (start < 0) {
-    window.alert('Open a VITAL "Highlight on site" link first, then click the VITAL Inspect bookmarklet.');
-    return;
+  var token = start < 0 ? '' : hash.slice(start + marker.length).split('&')[0];
+  if (!token) {
+    token = (window.prompt('VITAL: paste the inspection code copied from the finding, or open a "Highlight on site" link first.') || '').trim();
+    if (!token) return;
   }
-  var token = hash.slice(start + marker.length).split('&')[0];
   var payload;
   try {
+    if (!/^[A-Za-z0-9_-]{1,8192}$/.test(token)) throw new Error('encoding');
     var b64 = token.replace(/-/g, '+').replace(/_/g, '/');
     while (b64.length % 4) b64 += '=';
     payload = JSON.parse(decodeURIComponent(escape(window.atob(b64))));
   } catch (error) {
-    window.alert('VITAL: this inspect link is damaged.');
+    window.alert('VITAL: this inspection code is damaged or unsupported.');
+    return;
+  }
+  var checked = typeof validate === 'function' ? validate(payload, window.location.href) : localValidate(payload);
+  if (!checked.ok) {
+    window.alert('VITAL: ' + checked.reason);
     return;
   }
 
@@ -104,6 +172,13 @@ export function vitalInspect() {
   var oldBox = document.getElementById('vital-inspect-box');
   if (oldBox) oldBox.remove();
   var previousFocus = document.activeElement;
+
+  function localValidate(value) {
+    if (!value || value.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
+    if (typeof value.s !== 'string' || !value.s.trim() || value.s.length > 500) return { ok: false, reason: 'invalid selector in inspection payload' };
+    if (value.org !== window.location.origin) return { ok: false, reason: 'this inspection code belongs to a different site origin' };
+    return { ok: true };
+  }
 
   var matches = [];
   var index = 0;

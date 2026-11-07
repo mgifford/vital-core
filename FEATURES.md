@@ -186,6 +186,14 @@ The panel shows the rule, WCAG mapping, selector, recorded and live identity,
 differences and historical remediation guidance. `Escape` or Close removes it.
 It reads only the page in front of you, sends nothing, and stores nothing.
 
+Inspection codes are versioned, size-bounded and origin-scoped; they carry the
+selector and recorded identity, **not the full URL, query string, page text or
+HTML**. Because a fragment can interfere with hash-routed sites, every finding
+also offers **Copy inspection code**: open the page normally, activate the
+bookmarklet, and paste the code when prompted. A strict `script-src`
+Content-Security-Policy can block the bookmarklet before it can show any
+message; the report warns about that and never suggests weakening site policy.
+
 The bookmarklet is installed once by dragging it to the bookmarks bar (or
 copying its link into a bookmark). It follows the recorded selector, so it cannot
 cross shadow roots, iframe boundaries or interaction-gated content; those cases

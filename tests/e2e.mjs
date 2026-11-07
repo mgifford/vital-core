@@ -399,6 +399,7 @@ try {
   assert(/explore\.html#VS-/.test(w1acc), 'each finding links to the explorer');
   assert(/Highlight on site/.test(w1acc) && /#vital-inspect=/.test(w1acc), 'findings link to a live highlight payload');
   assert(/class="bookmarklet-link" href="javascript:/.test(w1acc), 'the VITAL Inspect bookmarklet is offered');
+  assert(/class="inspect-copy" data-inspect-code="/.test(w1acc), 'a URL-free inspection code is available');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
   assert(/id="h-scope-regions">Findings by page region/.test(w1acc), 'accessibility page groups findings by region');
