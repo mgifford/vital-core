@@ -108,6 +108,7 @@ export function validateInspectPayload(payload, pageHref) {
   if (payload.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
   if (typeof payload.s !== 'string' || !payload.s.trim() || payload.s.length > 500) return { ok: false, reason: 'invalid selector in inspection payload' };
   if (/[\u0000-\u001f]/.test(payload.s)) return { ok: false, reason: 'invalid control character in selector' };
+  if (/^[\s]*[<{]/.test(payload.s)) return { ok: false, reason: 'inspection selector is not CSS (HTML or serialized node data)' };
   if (typeof payload.org !== 'string' || !/^https?:\/\/[^/]+$/i.test(payload.org)) return { ok: false, reason: 'invalid origin in inspection payload' };
   try {
     if (new URL(payload.org).origin !== payload.org) return { ok: false, reason: 'inspection origin must be an origin only' };
@@ -167,11 +168,37 @@ export function vitalInspect(validate) {
     return;
   }
 
-  var old = document.getElementById('vital-inspect-ui');
-  if (old) old.remove();
-  var oldBox = document.getElementById('vital-inspect-box');
-  if (oldBox) oldBox.remove();
+  var previous = document.getElementById('vital-inspect-host');
+  if (previous) previous.remove();
   var previousFocus = document.activeElement;
+  var matches = [];
+  var index = 0;
+  var target = null;
+  var hidden = false;
+  var liveState = 'ok';
+  var corner = 'right';
+  var scheduled = false;
+  var resizeObserver = null;
+  var attributeObserver = null;
+  var treeObserver = null;
+  var host = null;
+  var root = null;
+  var ui = null;
+  var heading = null;
+  var statusLine = null;
+  var body = null;
+  var details = null;
+  var controls = null;
+  var close = null;
+  var previousButton = null;
+  var nextButton = null;
+  var findAgain = null;
+  var toggle = null;
+  var showChanged = null;
+  var collapse = null;
+  var move = null;
+  var box = null;
+  var label = null;
 
   function localValidate(value) {
     if (!value || value.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
@@ -179,15 +206,6 @@ export function vitalInspect(validate) {
     if (value.org !== window.location.origin) return { ok: false, reason: 'this inspection code belongs to a different site origin' };
     return { ok: true };
   }
-
-  var matches = [];
-  var index = 0;
-  var target = null;
-  var box = null;
-  var label = null;
-  var hidden = false;
-  var scheduled = false;
-
   function liveRole(el) {
     var value = (el.getAttribute('role') || '').trim().toLowerCase().split(/\s+/)[0];
     return value || null;
@@ -202,9 +220,7 @@ export function vitalInspect(validate) {
   }
   function liveName(el, source) {
     if (source === 'aria-labelledby') return labelledByText(el);
-    if (source === 'aria-label' || source === 'alt' || source === 'title' || source === 'placeholder') {
-      return el.getAttribute(source);
-    }
+    if (source === 'aria-label' || source === 'alt' || source === 'title' || source === 'placeholder') return el.getAttribute(source);
     return null;
   }
   function compare(el) {
@@ -227,14 +243,11 @@ export function vitalInspect(validate) {
     if (!nameChecked) return { status: 'candidate', reason: 'No reliable recorded name attribute is available to confirm this is the same element.' };
     return { status: 'matched' };
   }
-
   function evaluate() {
     target = matches[index] || null;
     if (!target) return { status: 'not_located' };
     var result = compare(target);
-    if (matches.length > 1) {
-      return { status: 'candidate', reason: matches.length + ' elements match the selector. Compare them before choosing.', comparison: result };
-    }
+    if (matches.length > 1) return { status: 'candidate', reason: matches.length + ' elements match the selector. Compare them before choosing.', comparison: result };
     return result;
   }
   function collect() {
@@ -249,57 +262,100 @@ export function vitalInspect(validate) {
     return evaluate();
   }
 
-  var ui = document.createElement('div');
-  ui.id = 'vital-inspect-ui';
-  ui.setAttribute('role', 'region');
-  ui.setAttribute('aria-label', 'VITAL inspect');
-  ui.style.cssText = 'position:fixed;z-index:2147483647;right:16px;bottom:16px;max-width:min(460px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#1b1b1b;border:2px solid #1b1b1b;border-radius:6px;box-shadow:0 6px 28px rgba(0,0,0,.4);font:14px/1.45 system-ui,-apple-system,sans-serif;padding:16px 18px;';
+  function build() {
+    host = document.createElement('div');
+    host.id = 'vital-inspect-host';
+    host.style.cssText = 'all: initial; position: fixed; inset: 0; z-index: 2147483647; pointer-events: none;';
+    host.setAttribute('dir', document.documentElement.getAttribute('dir') || 'ltr');
+    root = host.attachShadow({ mode: 'open' });
+    root.innerHTML = '<style>' +
+      ':host { direction: inherit; }' +
+      '#vital-inspect-ui { position: fixed; right: 16px; bottom: 16px; max-width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; background: #fff; color: #1b1b1b; border: 2px solid #1b1b1b; border-radius: 6px; box-shadow: 0 6px 28px rgba(0,0,0,.4); font: 14px/1.45 system-ui,-apple-system,sans-serif; padding: 16px 18px; pointer-events: auto; }' +
+      '#vital-inspect-ui[data-corner="left"] { left: 16px; right: auto; }' +
+      '#vital-inspect-ui[data-corner="top-right"] { top: 16px; bottom: auto; }' +
+      '#vital-inspect-ui[data-corner="top-left"] { top: 16px; bottom: auto; left: 16px; right: auto; }' +
+      '#vital-inspect-ui h2 { margin: 0 64px 4px 0; font-size: 1.05rem; line-height: 1.3; }' +
+      '#vital-inspect-ui p { margin: 0 0 8px; }' +
+      '#vital-inspect-ui ul { margin: 0 0 8px 1.1rem; padding: 0; }' +
+      '#vital-inspect-ui code { display: block; white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f3f3; padding: 6px; border-radius: 3px; margin-bottom: 10px; }' +
+      '#vital-inspect-ui button { font: inherit; padding: 4px 8px; border: 1px solid #1b1b1b; border-radius: 4px; background: #fff; color: #1b1b1b; cursor: pointer; }' +
+      '#vital-inspect-ui button:focus-visible { outline: 3px solid #0b57d0; outline-offset: 2px; }' +
+      '#vital-inspect-close { position: absolute; top: 10px; right: 10px; font-weight: 600; }' +
+      '#vital-inspect-controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }' +
+      '#vital-inspect-box { position: fixed; z-index: 2147483646; pointer-events: none; border: 3px solid #d4351c; box-shadow: 0 0 0 2px #fff, 0 0 0 5px #1b1b1b; border-radius: 2px; }' +
+      '#vital-inspect-label { position: fixed; z-index: 2147483647; pointer-events: none; background: #1b1b1b; color: #fff; font: 700 12px/1.4 system-ui,sans-serif; padding: 2px 6px; border-radius: 2px; }' +
+      '@media (forced-colors: active) { #vital-inspect-ui { background: Canvas; color: CanvasText; border-color: CanvasText; } #vital-inspect-box { border-color: Highlight; outline: 3px solid Highlight; } #vital-inspect-label { background: CanvasText; color: Canvas; } }' +
+      '@media (prefers-color-scheme: dark) { #vital-inspect-ui { background: #1b1b1b; color: #fff; border-color: #fff; } #vital-inspect-ui code { background: #333; } #vital-inspect-ui button { background: #1b1b1b; color: #fff; border-color: #fff; } }' +
+      '</style>' +
+      '<div id="vital-inspect-ui" role="region" aria-labelledby="vital-inspect-title" data-corner="right">' +
+      '<button type="button" id="vital-inspect-close" aria-label="Close VITAL inspect">Close</button>' +
+      '<h2 id="vital-inspect-title"></h2>' +
+      '<p id="vital-inspect-status" aria-live="polite"></p>' +
+      '<div id="vital-inspect-body">' +
+      '<div id="vital-inspect-details"></div>' +
+      '<div id="vital-inspect-controls">' +
+      '<button type="button" id="vital-inspect-previous">Previous candidate</button>' +
+      '<button type="button" id="vital-inspect-next">Next candidate</button>' +
+      '<button type="button" id="vital-inspect-find">Find again</button>' +
+      '<button type="button" id="vital-inspect-toggle">Hide highlight</button>' +
+      '<button type="button" id="vital-inspect-show-changed">Show changed element</button>' +
+      '<button type="button" id="vital-inspect-collapse" aria-expanded="true">Collapse</button>' +
+      '<button type="button" id="vital-inspect-move">Move panel</button>' +
+      '</div></div></div>';
+    document.body.appendChild(host);
+    ui = root.querySelector('#vital-inspect-ui');
+    heading = root.querySelector('#vital-inspect-title');
+    statusLine = root.querySelector('#vital-inspect-status');
+    body = root.querySelector('#vital-inspect-body');
+    details = root.querySelector('#vital-inspect-details');
+    controls = root.querySelector('#vital-inspect-controls');
+    close = root.querySelector('#vital-inspect-close');
+    previousButton = root.querySelector('#vital-inspect-previous');
+    nextButton = root.querySelector('#vital-inspect-next');
+    findAgain = root.querySelector('#vital-inspect-find');
+    toggle = root.querySelector('#vital-inspect-toggle');
+    showChanged = root.querySelector('#vital-inspect-show-changed');
+    collapse = root.querySelector('#vital-inspect-collapse');
+    move = root.querySelector('#vital-inspect-move');
+    ui.style.cssText = 'position: fixed; right: 16px; bottom: 16px; max-width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; background: #fff; color: #1b1b1b; border: 2px solid #1b1b1b; border-radius: 6px; box-shadow: 0 6px 28px rgba(0,0,0,.4); font: 14px/1.45 system-ui,-apple-system,sans-serif; padding: 16px 18px; pointer-events: auto;';
+    close.addEventListener('click', cleanup);
+    previousButton.addEventListener('click', function () { if (index > 0) { index--; target = matches[index]; stopWatchers(); watch(); render(evaluate()); } });
+    nextButton.addEventListener('click', function () { if (index < matches.length - 1) { index++; target = matches[index]; stopWatchers(); watch(); render(evaluate()); } });
+    findAgain.addEventListener('click', function () { run(); });
+    toggle.addEventListener('click', function () {
+      hidden = !hidden;
+      if (box) box.hidden = hidden;
+      if (label) label.hidden = hidden;
+      toggle.textContent = hidden ? 'Show highlight' : 'Hide highlight';
+    });
+    showChanged.addEventListener('click', function () {
+      if (target) {
+        drawBox('changed', 'Different element — not the recorded occurrence');
+        showChanged.hidden = true;
+        toggle.hidden = false;
+      }
+    });
+    collapse.addEventListener('click', function () {
+      details.hidden = !details.hidden;
+      collapse.textContent = details.hidden ? 'Expand' : 'Collapse';
+      collapse.setAttribute('aria-expanded', details.hidden ? 'false' : 'true');
+    });
+    move.addEventListener('click', function () {
+      corner = corner === 'right' ? 'left' : corner === 'left' ? 'top-right' : corner === 'top-right' ? 'top-left' : 'right';
+      applyCorner();
+    });
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('scroll', schedule, true);
+    window.addEventListener('resize', schedule);
+  }
 
-  var close = document.createElement('button');
-  close.type = 'button';
-  close.textContent = 'Close';
-  close.setAttribute('aria-label', 'Close VITAL inspect');
-  close.style.cssText = 'position:absolute;top:10px;right:10px;font:inherit;font-weight:600;padding:4px 8px;border:2px solid #1b1b1b;border-radius:4px;background:#fff;color:#1b1b1b;cursor:pointer;';
-  ui.appendChild(close);
-
-  var heading = document.createElement('h2');
-  heading.id = 'vital-inspect-title';
-  heading.style.cssText = 'margin:0 64px 4px 0;font-size:1.05rem;line-height:1.3;';
-  ui.setAttribute('aria-labelledby', heading.id);
-  ui.appendChild(heading);
-
-  var statusLine = document.createElement('p');
-  statusLine.setAttribute('aria-live', 'polite');
-  statusLine.style.cssText = 'margin:0 0 10px;font-weight:700;';
-  ui.appendChild(statusLine);
-
-  var details = document.createElement('div');
-  ui.appendChild(details);
-
-  var controls = document.createElement('div');
-  controls.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;';
-  ui.appendChild(controls);
-
-  var previous = document.createElement('button');
-  previous.type = 'button';
-  previous.textContent = 'Previous candidate';
-  var next = document.createElement('button');
-  next.type = 'button';
-  next.textContent = 'Next candidate';
-  var findAgain = document.createElement('button');
-  findAgain.type = 'button';
-  findAgain.textContent = 'Find again';
-  var toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.textContent = 'Hide highlight';
-  var showChanged = document.createElement('button');
-  showChanged.type = 'button';
-  showChanged.textContent = 'Show changed element';
-  [previous, next, findAgain, toggle, showChanged].forEach(function (button) {
-    button.style.cssText = 'font:inherit;padding:4px 8px;border:1px solid #1b1b1b;border-radius:4px;background:#fff;color:#1b1b1b;cursor:pointer;';
-    controls.appendChild(button);
-  });
-
+  function applyCorner() {
+    ui.setAttribute('data-corner', corner);
+    if (corner === 'right') { ui.style.left = 'auto'; ui.style.right = '16px'; ui.style.top = 'auto'; ui.style.bottom = '16px'; }
+    if (corner === 'left') { ui.style.left = '16px'; ui.style.right = 'auto'; ui.style.top = 'auto'; ui.style.bottom = '16px'; }
+    if (corner === 'top-right') { ui.style.left = 'auto'; ui.style.right = '16px'; ui.style.top = '16px'; ui.style.bottom = 'auto'; }
+    if (corner === 'top-left') { ui.style.left = '16px'; ui.style.right = 'auto'; ui.style.top = '16px'; ui.style.bottom = 'auto'; }
+  }
   function addDetail(tag, text, css) {
     var node = document.createElement(tag);
     if (text != null) node.textContent = String(text);
@@ -310,7 +366,6 @@ export function vitalInspect(validate) {
   function addIdentity(title, values) {
     addDetail('p', title, 'margin:10px 0 2px;font-weight:700;');
     var list = document.createElement('ul');
-    list.style.cssText = 'margin:0 0 0 1.1rem;padding:0;';
     values.forEach(function (value) {
       var item = document.createElement('li');
       item.textContent = value;
@@ -318,7 +373,6 @@ export function vitalInspect(validate) {
     });
     details.appendChild(list);
   }
-
   function removeBox() {
     if (box && box.parentNode) box.remove();
     if (label && label.parentNode) label.remove();
@@ -328,28 +382,27 @@ export function vitalInspect(validate) {
   function drawBox(kind, text) {
     removeBox();
     if (!target) return;
-    var colors = kind === 'matched'
+    box = document.createElement('div');
+    box.id = 'vital-inspect-box';
+    box.setAttribute('aria-hidden', 'true');
+    box.style.cssText = kind === 'matched'
       ? 'border:3px solid #d4351c;box-shadow:0 0 0 2px #fff,0 0 0 5px #1b1b1b;'
       : kind === 'candidate'
         ? 'border:3px dashed #8a5a00;box-shadow:0 0 0 2px #fff,0 0 0 4px #1b1b1b;'
         : 'border:3px dashed #4a4a4a;box-shadow:0 0 0 2px #fff;';
-    box = document.createElement('div');
-    box.id = 'vital-inspect-box';
-    box.setAttribute('aria-hidden', 'true');
-    box.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border-radius:2px;' + colors;
     label = document.createElement('div');
+    label.id = 'vital-inspect-label';
     label.setAttribute('aria-hidden', 'true');
     label.textContent = text;
-    label.style.cssText = 'position:fixed;z-index:2147483647;pointer-events:none;background:#1b1b1b;color:#fff;font:700 12px/1.4 system-ui,sans-serif;padding:2px 6px;border-radius:2px;';
-    document.body.appendChild(box);
-    document.body.appendChild(label);
+    root.appendChild(box);
+    root.appendChild(label);
     hidden = false;
     toggle.textContent = 'Hide highlight';
     toggle.hidden = false;
     place();
   }
   function place() {
-    if (!target || !box || hidden) return;
+    if (!target || !box || hidden || liveState !== 'ok') return;
     var r = target.getBoundingClientRect();
     box.style.left = Math.max(0, r.left - 3) + 'px';
     box.style.top = Math.max(0, r.top - 3) + 'px';
@@ -363,15 +416,89 @@ export function vitalInspect(validate) {
   function schedule() {
     if (scheduled) return;
     scheduled = true;
-    window.requestAnimationFrame(function () { scheduled = false; place(); });
+    (window.requestAnimationFrame || function (fn) { setTimeout(fn, 16); })(function () { scheduled = false; checkLive(); });
+  }
+  function stopWatchers() {
+    if (resizeObserver) { resizeObserver.disconnect(); resizeObserver = null; }
+    if (attributeObserver) { attributeObserver.disconnect(); attributeObserver = null; }
+    if (treeObserver) { treeObserver.disconnect(); treeObserver = null; }
+  }
+  function watch() {
+    stopWatchers();
+    if (!target) return;
+    if (typeof ResizeObserver === 'function') {
+      resizeObserver = new ResizeObserver(function () { place(); });
+      resizeObserver.observe(target);
+    }
+    if (typeof MutationObserver === 'function') {
+      attributeObserver = new MutationObserver(function () { schedule(); });
+      attributeObserver.observe(target, { attributes: true, attributeFilter: ['role', 'aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby', 'hidden', 'style', 'class', 'id'] });
+      treeObserver = new MutationObserver(function () { schedule(); });
+      treeObserver.observe(document.documentElement, { childList: true, subtree: true });
+    }
+  }
+  function checkLive() {
+    if (!target) return;
+    if (!target.isConnected) {
+      stopWatchers();
+      removeBox();
+      liveState = 'broken';
+      heading.textContent = 'Live element changed';
+      statusLine.textContent = 'The recorded element was removed or replaced while the panel was open. It is not being switched to another element.';
+      details.textContent = '';
+      addDetail('p', 'Use Find again after the page has settled; candidates are re-validated before anything is highlighted.', 'margin:8px 0;');
+      previousButton.hidden = true;
+      nextButton.hidden = true;
+      toggle.hidden = true;
+      showChanged.hidden = true;
+      return;
+    }
+    var style = window.getComputedStyle(target);
+    var invisible = target.getClientRects().length === 0 || style.visibility === 'hidden' || style.display === 'none';
+    if (invisible) {
+      if (liveState !== 'hidden') {
+        liveState = 'hidden';
+        removeBox();
+        statusLine.textContent = 'The live element is hidden. The highlight is suspended until it becomes visible again.';
+        toggle.hidden = true;
+      }
+      return;
+    }
+    if (liveState === 'hidden') {
+      liveState = 'ok';
+      render(evaluate());
+      watch();
+      return;
+    }
+    if (liveState === 'broken') return;
+    var result = compare(target);
+    if (result.status === 'changed') {
+      stopWatchers();
+      removeBox();
+      liveState = 'broken';
+      heading.textContent = 'Live element changed';
+      statusLine.textContent = 'The recorded identity changed while the panel was open. The element is no longer highlighted as the original occurrence.';
+      details.textContent = '';
+      addDetail('p', 'Differences', 'margin:8px 0 2px;font-weight:700;');
+      var list = document.createElement('ul');
+      result.differences.forEach(function (difference) { var li = document.createElement('li'); li.textContent = difference; list.appendChild(li); });
+      details.appendChild(list);
+      addDetail('p', 'Use Find again after the page has settled.', 'margin:8px 0;');
+      previousButton.hidden = true;
+      nextButton.hidden = true;
+      toggle.hidden = true;
+      showChanged.hidden = true;
+      return;
+    }
+    place();
   }
 
   function render(result) {
     details.textContent = '';
-    previous.hidden = matches.length < 2;
-    next.hidden = matches.length < 2;
-    previous.disabled = index === 0;
-    next.disabled = index >= matches.length - 1;
+    previousButton.hidden = matches.length < 2;
+    nextButton.hidden = matches.length < 2;
+    previousButton.disabled = index === 0;
+    nextButton.disabled = index >= matches.length - 1;
     toggle.hidden = !box || result.status === 'changed';
     showChanged.hidden = result.status !== 'changed';
     if (result.status === 'matched') {
@@ -391,7 +518,6 @@ export function vitalInspect(validate) {
     addDetail('p', 'Selector', 'margin:8px 0 2px;font-weight:700;');
     var code = document.createElement('code');
     code.textContent = payload.s;
-    code.style.cssText = 'display:block;white-space:pre-wrap;word-break:break-word;background:#f3f3f3;padding:6px;border-radius:3px;';
     details.appendChild(code);
     if (target) {
       addIdentity('Recorded identity', [
@@ -408,12 +534,7 @@ export function vitalInspect(validate) {
     if (result.differences && result.differences.length) {
       addDetail('p', 'Differences', 'margin:10px 0 2px;font-weight:700;');
       var ul = document.createElement('ul');
-      ul.style.cssText = 'margin:0 0 0 1.1rem;padding:0;';
-      result.differences.forEach(function (difference) {
-        var li = document.createElement('li');
-        li.textContent = difference;
-        ul.appendChild(li);
-      });
+      result.differences.forEach(function (difference) { var li = document.createElement('li'); li.textContent = difference; ul.appendChild(li); });
       details.appendChild(ul);
     }
     if (result.status === 'not_located') {
@@ -433,49 +554,43 @@ export function vitalInspect(validate) {
       link.target = '_blank';
       link.rel = 'noopener';
       link.textContent = 'Rule documentation';
-      link.style.cssText = 'color:#0b57d0;';
       details.appendChild(link);
     }
-    addDetail('p', 'Runs locally in your browser. VITAL sends nothing; this overlay is not stored. A visible element is not proof the violation persists.', 'margin:12px 0 0;font-size:.85rem;color:#4a4a4a;');
+    addDetail('p', 'Runs locally in your browser. VITAL sends nothing; this overlay is not stored. A visible element is not proof the violation persists.', 'margin:12px 0 0;font-size:.85rem;color:inherit;');
     if (result.status === 'matched') drawBox('matched', 'Recorded element');
     else if (result.status === 'candidate') drawBox('candidate', 'Candidate ' + (index + 1) + ' of ' + matches.length + ' — verify');
-    else if (result.status === 'changed') removeBox();
     else removeBox();
+    avoidTarget();
   }
-
-  function run() {
-    render(collect());
-  }
-  previous.addEventListener('click', function () { if (index > 0) { index--; render(evaluate()); } });
-  next.addEventListener('click', function () { if (index < matches.length - 1) { index++; render(evaluate()); } });
-  findAgain.addEventListener('click', function () { run(); });
-  toggle.addEventListener('click', function () {
-    hidden = !hidden;
-    if (box) box.hidden = hidden;
-    if (label) label.hidden = hidden;
-    toggle.textContent = hidden ? 'Show highlight' : 'Hide highlight';
-  });
-  showChanged.addEventListener('click', function () {
-    if (target) {
-      drawBox('changed', 'Different element — not the recorded occurrence');
-      showChanged.hidden = true;
-      toggle.hidden = false;
+  function avoidTarget() {
+    if (!target || !ui || hidden) return;
+    var panel = ui.getBoundingClientRect();
+    var r = target.getBoundingClientRect();
+    var overlap = panel.left < r.right && panel.right > r.left && panel.top < r.bottom && panel.bottom > r.top;
+    if (overlap) {
+      corner = corner === 'right' ? 'left' : corner === 'left' ? 'top-right' : corner;
+      applyCorner();
     }
-  });
-  close.addEventListener('click', cleanup);
+  }
+  function run() {
+    stopWatchers();
+    liveState = 'ok';
+    render(collect());
+    watch();
+  }
   function onKey(event) { if (event.key === 'Escape') cleanup(); }
   function cleanup() {
+    stopWatchers();
+    document.removeEventListener('keydown', onKey);
     window.removeEventListener('scroll', schedule, true);
     window.removeEventListener('resize', schedule);
-    document.removeEventListener('keydown', onKey);
     removeBox();
-    if (ui.parentNode) ui.remove();
+    if (host && host.parentNode) host.remove();
     if (previousFocus && previousFocus.focus) previousFocus.focus();
   }
-  document.addEventListener('keydown', onKey);
-  document.body.appendChild(ui);
-  window.addEventListener('scroll', schedule, true);
-  window.addEventListener('resize', schedule);
+
+  build();
+  applyCorner();
   run();
   close.focus();
 }
