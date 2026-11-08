@@ -159,6 +159,9 @@ assessment and ARRM items remain in "Deferred work" below.
 
 ## Evidence reliability and reporting integrity (2026-11)
 
+The milestone handoff, tested-vs-implemented record and local measurements are
+in [EVIDENCE-RELIABILITY-HANDOFF.md](EVIDENCE-RELIABILITY-HANDOFF.md).
+
 PR 1 delivered the identity audit, additive `finding_ref`/`observation_id`,
 deterministic representative selection and cross-surface tests; see
 [EVIDENCE-IDENTITY-AUDIT.md](EVIDENCE-IDENTITY-AUDIT.md). PR 2 added real
@@ -468,7 +471,7 @@ criteria, explicit exclusions, references, priority.
 - **Exclusions:** no causal claims from association alone.
 - **Priority:** P3.
 
-## 5. Known limitations (as of PR 1)
+## 5. Known limitations (as of the 2026-11 evidence-reliability milestone)
 
 - Only axe examples get structured element evidence; Alfa is explicitly
   `unavailable`.
@@ -499,6 +502,24 @@ criteria, explicit exclusions, references, priority.
   a conformance claim.
 - A guided manual assessment workflow, hosted/GitHub review submission and
   ARRM task/role mapping remain deferred (P2 below).
+- The manual review record now captures reviewer, status, browser, assistive
+  technology and viewport, but VITAL still does not store or submit it.
+- Legacy `#VS-…` anchors can still move when the first stored example changes;
+  `finding_ref` (`VFR-…`) is the durable reference, and an alias ledger is not
+  implemented.
+- `occurrence_id` includes component attribution, so a changed component
+  configuration can change it; a versioned key would be needed before changing
+  that policy.
+- The OpenACR export is an INCOMPLETE DRAFT. Automation cannot establish
+  support; every A/AA criterion without a manual outcome is `not-evaluated`.
+- Technology associations use an approximate 95% interval to suppress weak
+  pairs, but the surface remains exploratory and does not control for
+  confounding.
+- Live-inspection browser coverage is Chromium and WebKit through the
+  `javascript:` link proxy; actual bookmark-bar UI, Firefox/Edge/Safari/mobile
+  and screen readers are untested.
+- The headline is an axe-only automated health indicator, not a conformance
+  score; Alfa is separate.
 - The Explorer's detail panel is a view over the same sanitized findings; the
   canonical full finding remains on the Accessibility page.
 - `evidence` counts describe stored examples, not every instance.

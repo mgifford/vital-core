@@ -199,8 +199,11 @@ export function manualValidationFor(bug) {
  * submitted by VITAL; the reviewer fills it in and shares it through their own
  * process. `not_a_conformance_claim` is always true.
  */
-export function manualReviewRecord(bug, { generatedAt = new Date().toISOString() } = {}) {
+export function manualReviewRecord(bug, { generatedAt = new Date().toISOString(), review = {} } = {}) {
   const guidance = manualValidationFor(bug);
+  const STATUSES = ['not_reviewed', 'in_progress', 'confirmed', 'not_reproduced', 'false_positive', 'needs_investigation'];
+  const clean = (value, max = 300) => (typeof value === 'string' && value.trim() ? value.trim().slice(0, max) : null);
+  const status = STATUSES.includes(review.status) ? review.status : 'not_reviewed';
   const region = bug?.semantic_context?.nearest_region ?? null;
   const element = bug?.element?.available === true ? {
     tag: bug.element.tag ?? null,
@@ -240,13 +243,15 @@ export function manualReviewRecord(bug, { generatedAt = new Date().toISOString()
       stored_examples: bug?.evidence?.stored_examples ?? bug?.examples?.length ?? null,
     },
     guidance,
+    automated_evidence_only: true,
+    manual_validation_required: true,
     review: {
-      status: 'not_reviewed',
-      reviewer: null,
-      reviewed_at: null,
-      browser: null,
-      assistive_technology: null,
-      viewport: null,
+      status,
+      reviewer: status === 'not_reviewed' ? null : clean(review.reviewer, 120),
+      reviewed_at: status === 'not_reviewed' ? null : (clean(review.reviewed_at, 40) ?? generatedAt),
+      browser: status === 'not_reviewed' ? null : clean(review.browser, 160),
+      assistive_technology: status === 'not_reviewed' ? null : clean(review.assistive_technology, 160),
+      viewport: status === 'not_reviewed' ? null : clean(review.viewport, 80),
       steps: [],
       outcome: null,
       notes: null,

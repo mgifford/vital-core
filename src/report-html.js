@@ -11,7 +11,7 @@ import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './
 import { scopeViewsFor } from './lib/shared-components.js';
 import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, filterFindings } from './lib/finding-filter.js';
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
-import { manualValidationFor, manualReviewRecord } from './lib/manual-validation.js';
+import { manualValidationFor, manualReviewRecord, MANUAL_REVIEW_STATUSES } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
 import { inspectBookmarklet, inspectCodeFor, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
 import { textFragmentUrl } from './lib/text-fragment.js';
@@ -1934,7 +1934,7 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Requirement')}</dt><dd>${requirementCell(b)}</dd></div>
   <div><dt>${t('Obligation')}</dt><dd>${esc(b.obligation ?? 'unmapped')}</dd></div>
   <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
-  <div><dt>${t('Manual validation')}</dt><dd>${t('Not reviewed.')}${(b.manual_validation?.prompts ?? []).length ? `<ul class="manual-validation">${b.manual_validation.prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join('')}</ul>` : ''}<span class="bug-meta">${esc(b.manual_validation?.environment_note ?? '')}</span></dd></div>
+  <div><dt>${t('Manual validation')}</dt><dd>${t('Not reviewed.')}${(b.manual_validation?.prompts ?? []).length ? `<ul class="manual-validation">${b.manual_validation.prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join('')}</ul>` : ''}<span class="bug-meta">${esc(b.manual_validation?.environment_note ?? '')} ${t('Automated evidence: open this finding in the Explorer to download a blank review record for the reviewer and testing environment.')}</span></dd></div>
   <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
   <div><dt>${t('Rule')}</dt><dd>${ruleLink}</dd></div>
   <div><dt>${t('Engine impact')}</dt><dd>${esc(evidenceReport.engine_severity ?? t('Not supplied by the engine'))}</dd></div>
@@ -5741,6 +5741,9 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .screenshot-figure figcaption { font-size: .9rem; color: var(--muted); margin-top: .4rem; }
 .manual-validation-block { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .75rem; }
 .manual-validation-block ul { margin: .4rem 0; }
+.manual-review-fields { display: flex; flex-wrap: wrap; gap: .6rem; margin: .8rem 0; padding: .6rem; border: 1px solid var(--rule); }
+.manual-review-fields label { display: flex; flex-direction: column; gap: .2rem; font-size: .9rem; }
+.manual-review-fields input, .manual-review-fields select { font: inherit; padding: .3rem; }
 @media (max-width: 40rem) { .explorer-field { min-width: 100%; } }
 `;
 
@@ -5770,6 +5773,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
 (function () {
   'use strict';
   var LABELS = ${JSON.stringify(labels)};
+  var MANUAL_REVIEW_STATUSES = ${JSON.stringify(MANUAL_REVIEW_STATUSES)};
   var REPRODUCTION_EXIT_CODES = ${JSON.stringify(REPRODUCTION_EXIT_CODES)};
   ${filterSource}
   ${reproductionSource}
@@ -5851,7 +5855,16 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
   }
   function downloadReview(bug) {
-    var record = manualReviewRecord(bug, { generatedAt: new Date().toISOString() });
+    var record = manualReviewRecord(bug, {
+      generatedAt: new Date().toISOString(),
+      review: {
+        status: fieldValue('manual-review-status') || 'not_reviewed',
+        reviewer: fieldValue('manual-reviewer'),
+        browser: fieldValue('manual-browser'),
+        assistive_technology: fieldValue('manual-at'),
+        viewport: fieldValue('manual-viewport'),
+      },
+    });
     var blob = new Blob([JSON.stringify(record, null, 2)], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
     var anchor = document.createElement('a');
@@ -5867,12 +5880,50 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     var section = document.createElement('section');
     section.className = 'manual-validation-block';
     section.appendChild(text('h4', LABELS.manualValidation));
+    section.appendChild(text('p', LABELS.manualAutomated, 'bug-meta'));
     section.appendChild(text('p', LABELS.notReviewed, 'bug-meta'));
     var prompts = document.createElement('ul');
     guidance.prompts.forEach(function (prompt) { prompts.appendChild(text('li', prompt)); });
     section.appendChild(prompts);
     section.appendChild(text('p', guidance.environment_note, 'bug-meta'));
-    section.appendChild(text('p', LABELS.reviewNotSaved, 'bug-meta'));
+
+    var fieldset = document.createElement('fieldset');
+    fieldset.className = 'manual-review-fields';
+    var legend = document.createElement('legend');
+    legend.textContent = LABELS.reviewFields;
+    fieldset.appendChild(legend);
+    function addField(id, labelText, type) {
+      var label = document.createElement('label');
+      label.setAttribute('for', id);
+      label.textContent = labelText;
+      var input = document.createElement('input');
+      input.type = type || 'text';
+      input.id = id;
+      input.name = id;
+      label.appendChild(input);
+      fieldset.appendChild(label);
+    }
+    addField('manual-reviewer', LABELS.reviewer);
+    addField('manual-browser', LABELS.reviewBrowser);
+    addField('manual-at', LABELS.reviewAt);
+    addField('manual-viewport', LABELS.reviewViewport);
+    var statusLabel = document.createElement('label');
+    statusLabel.setAttribute('for', 'manual-review-status');
+    statusLabel.textContent = LABELS.reviewStatus;
+    var select = document.createElement('select');
+    select.id = 'manual-review-status';
+    select.name = 'manual-review-status';
+    MANUAL_REVIEW_STATUSES.forEach(function (status) {
+      var option = document.createElement('option');
+      option.value = status;
+      option.textContent = (LABELS.reviewStatuses && LABELS.reviewStatuses[status]) || status;
+      select.appendChild(option);
+    });
+    statusLabel.appendChild(select);
+    fieldset.appendChild(statusLabel);
+    section.appendChild(fieldset);
+    section.appendChild(text('p', LABELS.reviewFieldsNote, 'bug-meta'));
+
     var button = document.createElement('button');
     button.type = 'button';
     button.className = 'triage-btn';
@@ -6262,6 +6313,22 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     observed: t('Observed'),
     manualValidation: t('Manual validation'),
     notReviewed: t('Not reviewed. These prompts are specific to this finding; recording an answer does not establish conformance.'),
+    manualAutomated: t('This is automated evidence, not a confirmed failure. Test the task with a keyboard and, where relevant, a screen reader before recording an outcome.'),
+    reviewFields: t('Reviewer and testing environment'),
+    reviewer: t('Reviewer name'),
+    reviewStatus: t('Review status'),
+    reviewBrowser: t('Browser and version'),
+    reviewAt: t('Assistive technology'),
+    reviewViewport: t('Viewport or zoom'),
+    reviewFieldsNote: t('These values are written only into the downloaded JSON record. VITAL does not store them or submit them anywhere.'),
+    reviewStatuses: {
+      not_reviewed: t('Not reviewed'),
+      in_progress: t('In progress'),
+      confirmed: t('Confirmed'),
+      not_reproduced: t('Not reproduced'),
+      false_positive: t('False positive'),
+      needs_investigation: t('Needs investigation'),
+    },
     downloadReview: t('Download manual review record'),
     reviewNotSaved: t('Not saved by VITAL; fill it in and share it through your own process.'),
     downloadTest: t('Download Playwright test'),

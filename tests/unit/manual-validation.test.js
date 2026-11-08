@@ -79,3 +79,38 @@ test('the guidance functions can run in the browser (self-contained)', () => {
   assert.equal(record.review.status, 'not_reviewed');
   assert.match(record.guidance.prompts.join(' '), /keyboard/i);
 });
+
+test('reviewer and environment are written into the downloaded record, not stored', () => {
+  const record = manualReviewRecord(
+    { instance_id: 'VS-3', rule_id: 'color-contrast', wcag_sc: '1.4.3' },
+    {
+      generatedAt: '2026-11-08T12:00:00.000Z',
+      review: {
+        status: 'confirmed',
+        reviewer: '  Alex Example  ',
+        browser: 'Firefox 145',
+        assistive_technology: 'NVDA 2025.3',
+        viewport: '1280×800',
+      },
+    }
+  );
+  assert.equal(record.review.status, 'confirmed');
+  assert.equal(record.review.reviewer, 'Alex Example');
+  assert.equal(record.review.reviewed_at, '2026-11-08T12:00:00.000Z');
+  assert.equal(record.review.browser, 'Firefox 145');
+  assert.equal(record.review.assistive_technology, 'NVDA 2025.3');
+  assert.equal(record.review.viewport, '1280×800');
+  assert.equal(record.automated_evidence_only, true);
+  assert.equal(record.manual_validation_required, true);
+  assert.equal(record.not_a_conformance_claim, true);
+});
+
+test('an invalid review status falls back to not_reviewed and drops environment claims', () => {
+  const record = manualReviewRecord(
+    { instance_id: 'VS-4', wcag_sc: '2.1.1' },
+    { review: { status: 'passed', reviewer: 'A', browser: 'Chrome' } }
+  );
+  assert.equal(record.review.status, 'not_reviewed');
+  assert.equal(record.review.reviewer, null);
+  assert.equal(record.review.browser, null);
+});
