@@ -157,6 +157,14 @@ Not implemented (deliberately): a guided manual assessment platform, hosted
 review storage, GitHub submission, and ARRM task/role mapping. The guided
 assessment and ARRM items remain in "Deferred work" below.
 
+## Evidence reliability and reporting integrity (2026-11)
+
+PR 1 delivered the identity audit, additive `finding_ref`/`observation_id`,
+deterministic representative selection and cross-surface tests; see
+[EVIDENCE-IDENTITY-AUDIT.md](EVIDENCE-IDENTITY-AUDIT.md). Remaining PRs cover
+live-inspection reliability, coverage/component reporting, reporting integrity
+(associations, scores, ACR, Lighthouse) and manual-validation/docs.
+
 ## 3b. Milestone: evidence integrity and visual inspection (2026-11)
 
 Focused follow-up to the five-PR milestone: make evidence trustworthy before

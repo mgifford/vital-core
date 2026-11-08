@@ -289,9 +289,16 @@ findings.
 A finding aggregates rule-level results, but every displayed or replayed field
 comes from **one** stored occurrence:
 
+- `findings[].finding_ref` — stable `VFR-…` reference for the rule finding
+  within the domain. Independent of which example is selected.
 - `findings[].occurrence_id` — stable `VO-…` identity (pattern + URL + selector
-  + component). Distinct from the aggregated `finding_id` and the frozen
+  + component). Distinct from the aggregated `finding_id` and the legacy
   `instance_id` anchor.
+- `findings[].observation_id` — `VOB-…` identity for one scan observation
+  (occurrence + page/run/time/engine). Changes on a new run.
+- `findings[].evidence_reference` — durable reference fields (`finding_ref`,
+  occurrence/observation id, URL, selector, scan time, engine/version) plus the
+  page-detail retention window and an availability note.
 - `findings[].occurrence_selection` — `complete`, `partial`, `unavailable` or
   `none`. `url`, `selector`, `element`, `semantic_context`, `browser_context`
   and `observation` all come from that occurrence.
@@ -325,6 +332,8 @@ image evidence:
 - `findings[].element.text_anchor` — up to 80 characters of the element's
   visible text, captured only for text-bearing elements. It powers the native
   `#:~:text=` link; it is not a description of the finding.
+- `findings[].element.rect_page` and the screenshot reference describe the same
+  representative occurrence; they are not combined with another example.
 - Each `reporting.representative_evidence[]` entry carries its own `screenshot`
   when that occurrence's page was captured.
 
@@ -338,7 +347,8 @@ live view.
 whether a run happened. The API never runs anything.
 
 - `status: "not_attempted"` — the evidence is sufficient. The object carries
-  `locator` (`{ strategy: "css", value }`), `rule` (`{ engine, id, impact }`),
+  `occurrence_id`, `observation_id`, `locator` (`{ strategy: "css", value }`),
+  `rule` (`{ engine, id, impact }`),
   `context` (recorded viewport/colour scheme/forced colours/reduced motion/
   locale), `interaction_required`, `timeout_ms` (default 30000), `steps`
   (empty until interaction sequences are recorded) and `verified_at: null`.

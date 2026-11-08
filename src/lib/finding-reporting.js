@@ -32,6 +32,7 @@ export function sanitizeEvidence(example, opts = {}) {
     element: sanitizeElementEvidence(example.element),
     semantic_context: sanitizeSemanticContext(example.semantic_context),
     occurrence_id: typeof example.occurrence_id === 'string' ? example.occurrence_id : null,
+    observation_id: typeof example.observation_id === 'string' ? example.observation_id : null,
     screenshot: pickScreenshot(example.screenshot),
     observation: example.observation ? {
       scanned_at: example.observation.scanned_at ?? null,
@@ -70,7 +71,7 @@ export function sanitizeBugEvidence(bug, opts = {}) {
   if (Array.isArray(bug.examples)) {
     out.examples = bug.examples.slice(0, 3).map((example) => {
       const evidence = sanitizeEvidence({ url: example.url, xpath: example.xpath ?? example.target, html_snippet: example.html_snippet ?? example.html, element: example.element, semantic_context: example.semantic_context }, opts);
-      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, element: evidence.element, semantic_context: evidence.semantic_context, occurrence_id: evidence.occurrence_id, observation: evidence.observation, screenshot: evidence.screenshot, sanitized: true };
+      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, element: evidence.element, semantic_context: evidence.semantic_context, occurrence_id: evidence.occurrence_id, observation_id: evidence.observation_id, observation: evidence.observation, screenshot: evidence.screenshot, sanitized: true };
     });
   }
   return out;

@@ -136,6 +136,13 @@ fall back to a top-viewport capture. JPEG `quality` bounds storage further, and
 under `data/<domain>/<week>/screenshots/`, are copied only into the report
 directories whose findings reference them, and are pruned with page detail.
 
+Every finding also carries a content-independent `finding_ref` (`VFR-…`) and
+each occurrence a `observation_id` (`VOB-…`) for the specific scan run.
+Representative selection is deterministic by evidence completeness and stable
+occurrence fields, not capture order. `finding_ref` is the durable link target;
+the legacy `#VS-…` anchor remains frozen for old links, while page-detail and
+screenshot availability still follow the retention policy.
+
 Each image records CSS width/height, device scale factor, scroll position and
 capture time; element evidence records `rect_page` (page coordinates), so the
 Finding Explorer can place a high-contrast marker without assuming the scroll

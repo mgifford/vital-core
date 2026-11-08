@@ -224,7 +224,9 @@ export function manualReviewRecord(bug, { generatedAt = new Date().toISOString()
     finding: {
       instance_id: bug?.instance_id ?? null,
       pattern_id: bug?.pattern_id ?? null,
+      finding_ref: bug?.finding_ref ?? null,
       occurrence_id: bug?.occurrence_id ?? null,
+      observation_id: bug?.observation_id ?? null,
       rule_id: bug?.rule_id ?? null,
       engine: bug?.engine_key ?? null,
       severity: bug?.severity ?? null,
