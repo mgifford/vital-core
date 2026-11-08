@@ -1679,6 +1679,16 @@ function liveInspectHelp() {
 <li>${t('On the page that opens, click the VITAL Inspect bookmark.')}</li>
 </ol>
 <p class="bookmarklet-install"><a class="bookmarklet-link bookmarklet-button" href="${esc(inspectBookmarklet())}" draggable="true"><span class="bookmarklet-icon" aria-hidden="true">★</span> <span>${t('VITAL Inspect')}</span> <small>${t('Drag me to the bookmarks bar')}</small></a></p>
+<details class="inspect-ways">
+<summary>${t('Which inspection should I use?')}</summary>
+<dl>
+<dt>${t('View historical evidence')}</dt><dd>${t('Use the Finding Explorer to see what VITAL recorded for this finding. A screenshot, when enabled, is a historical capture, not the live page.')}</dd>
+<dt>${t('Highlight on the live site')}</dt><dd>${t('Use the bookmarklet to locate the recorded element in the current page. Locating it does not re-test the accessibility violation.')}</dd>
+<dt>${t('Highlight text on the live site')}</dt><dd>${t('Use the native text-fragment link when the finding has visible text. It highlights text, may choose the first match, and does not show the VITAL panel.')}</dd>
+<dt>${t('Reproduce with Playwright')}</dt><dd>${t('Download the generated test to check whether the recorded rule still fails on the recorded element.')}</dd>
+<dt>${t('Manual validation')}</dt><dd>${t('Use the prompts and blank review record to investigate user impact with a keyboard, screen reader or other assistive technology. VITAL does not store the review or mark it complete.')}</dd>
+</dl>
+</details>
 <p class="meta">${t('If dragging does not work, use Copy bookmarklet, then create a bookmark manually and paste the code as its address.')} <button type="button" class="copy-bookmarklet" hidden>${t('Copy bookmarklet')}</button></p>
 <details class="bookmarklet-manual">
 <summary>${t('Dragging not working? Add it manually')}</summary>
@@ -5672,6 +5682,9 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .bookmarklet-button small { font-weight: 400; }
 .bookmarklet-button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .bookmarklet-icon { font-size: 1.2rem; }
+.inspect-ways { margin: 1rem 0; }
+.inspect-ways dt { font-weight: 700; margin-top: .6rem; }
+.inspect-ways dd { margin: .1rem 0 .4rem 0; }
 .live-inspect-help .bookmarklet-link { display: inline-block; padding: .4rem .6rem; border: 2px solid var(--accent); border-radius: 4px; font-weight: 600; text-decoration: none; }
 .live-inspect-help .bookmarklet-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .screenshot-figure { margin: 1rem 0; }

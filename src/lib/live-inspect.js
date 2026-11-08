@@ -256,6 +256,10 @@ export function vitalInspect(validate) {
     if (!nameChecked) return { status: 'candidate', reason: 'No reliable recorded name attribute is available to confirm this is the same element.' };
     return { status: 'matched' };
   }
+  function blockedPage() {
+    const text = `${document.title || ''} ${document.body?.innerText || ''}`.slice(0, 20000);
+    return /access denied|errors\.edgesuite\.net|request unsuccessful|reference #\s*\d/i.test(text);
+  }
   function evaluate() {
     target = matches[index] || null;
     if (!target) return { status: 'not_located' };
@@ -528,6 +532,9 @@ export function vitalInspect(validate) {
     } else if (result.status === 'changed') {
       heading.textContent = 'Recorded element changed';
       statusLine.textContent = 'The selector matches an element, but its recorded identity differs. It is not highlighted as the original occurrence.';
+    } else if (blockedPage()) {
+      heading.textContent = 'Page access blocked';
+      statusLine.textContent = 'This is an access-denied or bot-block page, not the audited page. The recorded selector cannot be evaluated here.';
     } else {
       heading.textContent = 'Element not found';
       statusLine.textContent = 'No element on this page matches the recorded selector.';
@@ -556,7 +563,9 @@ export function vitalInspect(validate) {
       result.differences.forEach(function (difference) { var li = document.createElement('li'); li.textContent = difference; ul.appendChild(li); });
       details.appendChild(ul);
     }
-    if (result.status === 'not_located') {
+    if (result.status === 'not_located' && blockedPage()) {
+      addDetail('p', 'Try the same inspection URL in your normal browser, where your session and cookies may allow access. Do not weaken the site’s access controls.', 'margin:8px 0;');
+    } else if (result.status === 'not_located') {
       addDetail('p', 'Possible causes: the element was removed, the locator changed, an interaction is required, content loads dynamically, it is inside a frame or shadow root, the page is in another state, or access is restricted.', 'margin:8px 0;');
       addDetail('p', 'Change the page state if needed, then choose Find again.', 'margin:0 0 8px;');
     }

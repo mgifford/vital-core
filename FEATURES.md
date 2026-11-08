@@ -246,9 +246,9 @@ without launching a browser; `--print-url` prints just the payload URL;
 a normal local Playwright window, not an iframe in the report.
 
 If a site returns a firewall/bot-block page (for example Akamai “Access Denied”)
-the inspector now says so instead of reporting “element not found”. Use
-`--print-url`, open that URL in your normal browser with its cookies/session, and
-run the VITAL Inspect bookmarklet there.
+the inspector and bookmarklet now say **Page access blocked** instead of
+reporting “element not found”. Use `--print-url`, open that URL in your normal
+browser with its cookies/session, and run the VITAL Inspect bookmarklet there.
 
 ### Deterministic Playwright reproduction
 
