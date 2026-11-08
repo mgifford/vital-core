@@ -145,6 +145,11 @@ a page for a report.
   highlighter. No extension/bookmark; `--dry-run` is browser-free, and
   `--print-url` supports sites that block automated browsers (open the URL in
   the normal browser and use the bookmarklet).
+* **Coverage** (`src/lib/evidence-coverage.js`): finding-level counts for
+  element evidence, locators, semantic regions, widgets, components,
+  screenshots and reproduction. Keep `not_captured`, `not_applicable`,
+  `unsupported_dom_boundary`, `no_stored_examples`, `no_containing_landmark`
+  and `unavailable` distinct; never use “unclassified” for missing evidence.
 * **Screenshots** (`src/lib/screenshots.js`): opt-in, one JPEG per page with
   findings, bounded by `max_per_run`/`max_height`/`max_bytes` and maskable;
   stored in the data repo, copied only for referenced findings, pruned with page

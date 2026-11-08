@@ -1206,6 +1206,46 @@ function scopeSummaryLine(summary, href) {
   return `<p class="note scope-summary">${parts.map(esc).join(' ')} <a href="${esc(href)}">${t('Scope of analysis')}</a></p>`;
 }
 
+function evidenceCoverageSection(summary) {
+  const c = summary.evidenceCoverage;
+  if (!c || !c.findings_total) return '';
+  const row = (label, value) => `<tr><th scope="row">${esc(label)}</th><td>${value}</td></tr>`;
+  return `<section class="evidence-coverage" aria-labelledby="h-evidence-coverage">
+<h2 id="h-evidence-coverage">${t('Evidence coverage')}</h2>
+<p class="meta">${t('@with of @total findings have element evidence; @locator have a usable locator; @region have semantic-region evidence; @repro are eligible for deterministic reproduction.', {
+  '@with': nf(c.findings_with_detailed_evidence),
+  '@total': nf(c.findings_total),
+  '@locator': nf(c.usable_locator.captured),
+  '@region': nf(c.semantic_region.captured),
+  '@repro': nf(c.reproduction.eligible),
+})} ${t('Counts are findings, not element occurrences.')}</p>
+<details>
+<summary>${t('Coverage details')}</summary>
+<table>
+<caption>${t('Finding-level evidence coverage')}</caption>
+<thead><tr><th scope="col">${t('Evidence')}</th><th scope="col">${t('Status')}</th></tr></thead>
+<tbody>
+${row(t('Element evidence'), t('Captured @n · not captured @m · not applicable to this engine @a · unsupported DOM boundary @u · no stored examples @x', {
+  '@n': nf(c.element_evidence.captured), '@m': nf(c.element_evidence.not_captured), '@a': nf(c.element_evidence.not_applicable),
+  '@u': nf(c.element_evidence.unsupported_dom_boundary), '@x': nf(c.element_evidence.no_stored_examples),
+}))}
+${row(t('Usable locator'), t('Captured @n · unavailable @m', { '@n': nf(c.usable_locator.captured), '@m': nf(c.usable_locator.unavailable) }))}
+${row(t('Semantic region'), t('Captured @n · no containing landmark @m · unavailable @u', {
+  '@n': nf(c.semantic_region.captured), '@m': nf(c.semantic_region.no_containing_landmark), '@u': nf(c.semantic_region.unavailable),
+}))}
+${row(t('Widget type'), t('Captured @n · no widget @m · unavailable @u', {
+  '@n': nf(c.widget.captured), '@m': nf(c.widget.no_widget), '@u': nf(c.widget.unavailable),
+}))}
+${row(t('Configured component'), t('Attributed @n · unattributed @m', { '@n': nf(c.component.attributed), '@m': nf(c.component.unattributed) }))}
+${row(t('Historical screenshot'), t('Available @n · unavailable @m', { '@n': nf(c.screenshot.available), '@m': nf(c.screenshot.unavailable) }))}
+${row(t('Playwright reproduction'), t('Eligible @n · unavailable @m', { '@n': nf(c.reproduction.eligible), '@m': nf(c.reproduction.unavailable) }))}
+${row(t('Detailed evidence'), t('@n with · @m without', { '@n': nf(c.findings_with_detailed_evidence), '@m': nf(c.findings_without_detailed_evidence) }))}
+</tbody></table>
+<p class="meta">${t('A missing locator is not evidence that the page has no landmark or that a component is absent. Screenshots and page detail follow the retention policy.')}</p>
+</details>
+</section>`;
+}
+
 function nextActionsSection(summary, bugs, reporting = {}) {
   const cc = summary.componentClusters;
   const actions = cc?.top_actions ?? [];
@@ -4395,6 +4435,7 @@ ${subnav('accessibility')}
 ${accessBanner(summary.access, target.user_agent)}
 ${acrNote}
 ${scopeSummaryLine(summary, '#h-scope')}
+${evidenceCoverageSection(summary)}
 ${liveInspectHelp()}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${nextActionsSection(summary, bugs, reporting)}
@@ -6140,7 +6181,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
   const widgetRows = (summary.widgetGroups?.groups ?? []).map((group) =>
     `<tr><th scope="row">${esc(group.label)}</th><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.pages_affected_sum)}</td><td>${esc((group.components ?? []).map((component) => component.id).join(', ') || '—')}</td></tr>`).join('');
   const componentRows = (summary.componentGroups?.groups ?? []).map((group) =>
-    `<tr><th scope="row">${esc(group.label)}</th><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.verified_findings ?? 0)}</td><td class="num">${nf(group.pages_affected_sum)}</td></tr>`).join('');
+    `<tr><th scope="row">${esc(group.label)}</th><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.verified_findings ?? 0)}</td><td class="num">${nf(group.inspection_evidence?.locator ?? 0)}</td><td class="num">${nf(group.pages_affected_sum)}</td></tr>`).join('');
   const options = (items) => items.map((item) =>
     `<option value="${esc(item.key)}">${esc(item.label)}${item.count ? ` (${nf(item.count)})` : ''}</option>`).join('');
   const regionOptions = options((summary.regions?.regions ?? []).map((region) => ({ key: region.key, label: region.label, count: region.findings })));
@@ -6235,6 +6276,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
   const body = `
 <h1>${esc(target.domain)}: ${t('Findings explorer')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('explorer')}
+${evidenceCoverageSection(summary)}
 <p class="meta">${t('Inspect the week\'s findings by region, widget type and component. This view reads the same sanitized evidence as the <a href="@report">Accessibility report</a>; the full finding detail stays there and every row links back to it.', { '@report': esc(pageHref('accessibility')) })}</p>
 ${liveInspectHelp()}
 <section aria-labelledby="h-explorer-find">
@@ -6288,7 +6330,7 @@ ${summary.componentGroups?.groups?.length ? `<section aria-labelledby="h-explore
 <h2 id="h-explorer-components">${t('By component')}</h2>
 <div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Component table'))}">
 <table><caption class="visually-hidden">${t('Findings by configured shared component')}</caption>
-<thead><tr><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Verified findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
+<thead><tr><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Verified findings')}</th><th scope="col" class="num">${t('With locator')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
 <tbody>${componentRows}</tbody></table>
 </div>
 </section>` : ''}

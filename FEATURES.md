@@ -124,6 +124,19 @@ false. The Accessibility page gains a
 Component identity is split into type, implementation and occurrence; a type is
 not an implementation and grouping is not ownership.
 
+### Evidence coverage
+
+Each weekly summary carries a finding-level coverage block: how many findings
+have element evidence, a usable locator, semantic-region evidence, widget
+classification, configured component attribution, a historical screenshot, or
+eligibility for deterministic reproduction — with exact denominators.
+
+The statuses distinguish **not captured**, **not applicable to this engine**
+(for example Alfa, which does not provide a DOM selector), **unsupported DOM
+boundary**, **no stored examples**, **no containing landmark** and
+**unavailable**. A missing locator is never presented as evidence that the page
+has no landmark. Counts are findings, not element occurrences.
+
 ### Historical screenshots and visual inspection
 
 Screenshots are **opt-in and bounded** (`screenshots` in `config/targets.yml`,

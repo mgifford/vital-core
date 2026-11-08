@@ -161,9 +161,11 @@ assessment and ARRM items remain in "Deferred work" below.
 
 PR 1 delivered the identity audit, additive `finding_ref`/`observation_id`,
 deterministic representative selection and cross-surface tests; see
-[EVIDENCE-IDENTITY-AUDIT.md](EVIDENCE-IDENTITY-AUDIT.md). Remaining PRs cover
-live-inspection reliability, coverage/component reporting, reporting integrity
-(associations, scores, ACR, Lighthouse) and manual-validation/docs.
+[EVIDENCE-IDENTITY-AUDIT.md](EVIDENCE-IDENTITY-AUDIT.md). PR 2 added real
+Chromium/WebKit activation tests, access-block detection and inspection
+guidance. PR 3 adds finding-level evidence coverage and component inspection
+counts. Remaining PRs cover reporting integrity (associations, scores, ACR,
+Lighthouse) and manual-validation/docs.
 
 ## 3b. Milestone: evidence integrity and visual inspection (2026-11)
 

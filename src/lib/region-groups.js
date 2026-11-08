@@ -182,6 +182,7 @@ export function buildComponentGroups(findings = [], { signatures = [], scopes = 
       verified_findings: 0,
       classification_counts: {},
       confidence: null,
+      inspection_evidence: { element: 0, locator: 0, reproduction_eligible: 0 },
       regions: new Map(),
       representative: [],
     };
@@ -193,6 +194,16 @@ export function buildComponentGroups(findings = [], { signatures = [], scopes = 
     if (scope?.classification) entry.classification_counts[scope.classification] = (entry.classification_counts[scope.classification] ?? 0) + 1;
     if (scope?.verified === true) entry.verified_findings++;
     if (scope?.confidence) entry.confidence = higherConfidence(entry.confidence, scope.confidence);
+    const evidenceInstance = primaryInstanceWith(finding, (candidate) => candidate?.element || candidate?.semantic_context);
+    const element = evidenceInstance?.element;
+    if (element?.available === true) {
+      entry.inspection_evidence.element++;
+      if (evidenceInstance.selector) entry.inspection_evidence.locator++;
+      const httpUrl = typeof evidenceInstance.url === 'string' && /^https?:\/\//i.test(evidenceInstance.url);
+      if (finding.engine_key === 'axe-core' && evidenceInstance.selector && !element.shadow && !element.iframe && httpUrl) {
+        entry.inspection_evidence.reproduction_eligible++;
+      }
+    }
     const region = regionOf(primaryInstanceWith(finding, (candidate) => candidate?.semantic_context));
     if (region) entry.regions.set(region.key, (entry.regions.get(region.key) ?? 0) + 1);
     addRepresentative(entry, primaryInstanceWith(finding, (candidate) => candidate?.semantic_context));
