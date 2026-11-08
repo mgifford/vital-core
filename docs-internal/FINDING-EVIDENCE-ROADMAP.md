@@ -164,8 +164,10 @@ deterministic representative selection and cross-surface tests; see
 [EVIDENCE-IDENTITY-AUDIT.md](EVIDENCE-IDENTITY-AUDIT.md). PR 2 added real
 Chromium/WebKit activation tests, access-block detection and inspection
 guidance. PR 3 adds finding-level evidence coverage and component inspection
-counts. Remaining PRs cover reporting integrity (associations, scores, ACR,
-Lighthouse) and manual-validation/docs.
+counts. PR 4 adds confidence-qualified technology associations, automated-health
+score wording, an explicitly incomplete draft OpenACR export and per-page
+Lighthouse savings percentiles. Remaining work covers manual-validation
+usability, final accessibility/performance measurements and handoff.
 
 ## 3b. Milestone: evidence integrity and visual inspection (2026-11)
 

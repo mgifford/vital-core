@@ -31,6 +31,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import YAML from 'yaml';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -1374,6 +1375,20 @@ test('buildAcrData: zero-page failure is partially-supports, not supports', () =
   assert.equal(sc111.pagesAffected, 0);
 });
 
+test('buildAcrData: no automated failure is never reported as supports', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 50,
+    axe: { pagesScanned: 50, rules: {} },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap, incomplete } = buildAcrData(summary);
+  assert.ok([...scMap.values()].every((entry) => entry.adherence !== 'supports'), 'no supports from absence of findings');
+  assert.equal(scMap.get('1.4.3').adherence, 'not-evaluated');
+  assert.ok(incomplete.includes('1.4.3'));
+  assert.ok(incomplete.length > 20, 'the draft names its unverified A/AA criteria');
+});
+
 test('buildAcrData: not-evaluated for SCs no engine covers', () => {
   const summary = {
     week: '2026-W25',
@@ -1425,7 +1440,22 @@ test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
   assert.match(yaml, /chapters:/, 'has chapters section');
   assert.match(yaml, /success_criteria_level_a:/, 'has Level A section');
   assert.match(yaml, /success_criteria_level_aa:/, 'has Level AA section');
-  assert.match(yaml, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence values');
+  assert.match(yaml, /does-not-support|partially-supports|not-evaluated/, 'contains evidence adherence values');
+  assert.doesNotMatch(yaml, /level: supports/, 'contains no supports claim');
+  assert.match(yaml, /INCOMPLETE DRAFT/, 'declares the incomplete draft');
+  assert.match(yaml, /legal_disclaimer: "DRAFT/, 'carries a draft legal disclaimer');
+  const parsed = YAML.parse(yaml);
+  assert.equal(parsed.catalog, '2.5-edition-wcag-2.2-en');
+  assert.equal(parsed.version, 1, 'OpenACR requires an integer version');
+  assert.match(parsed.report_date, /^\d{4}-\d{2}-\d{2}$/, 'report date is a quoted string');
+  assert.ok(parsed.author?.email, 'OpenACR requires an author email');
+  assert.match(parsed.author.name, /unreviewed draft/, 'the author is not a fabricated person');
+  assert.ok(parsed.legal_disclaimer.startsWith('DRAFT'), 'draft disclaimer parses');
+  assert.match(parsed.notes, /^INCOMPLETE DRAFT/, 'incomplete marker is the first note');
+  const criteria = [...parsed.chapters.success_criteria_level_a.criteria, ...parsed.chapters.success_criteria_level_aa.criteria];
+  assert.ok(criteria.length > 20, 'criteria tables are populated');
+  assert.ok(criteria.every((criterion) => criterion.components[0].adherence.level !== 'supports'), 'no supports claims');
+  assert.ok(criteria.some((criterion) => criterion.components[0].adherence.level === 'not-evaluated'));
 });
 
 test('renderAcrHtml: produces self-contained HTML with WCAG table structure', () => {
@@ -1446,7 +1476,10 @@ test('renderAcrHtml: produces self-contained HTML with WCAG table structure', ()
   assert.match(html, /<style>/, 'has inline style block');
   assert.match(html, /Level A Success Criteria/, 'has Level A heading');
   assert.match(html, /Level AA Success Criteria/, 'has Level AA heading');
-  assert.match(html, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence classes');
+  assert.match(html, /does-not-support|partially-supports|not-evaluated/, 'contains evidence adherence classes');
+  assert.match(html, /DRAFT — not an Accessibility Conformance Report/, 'states this is not an ACR');
+  assert.match(html, /INCOMPLETE DRAFT/, 'lists incomplete criteria');
+  assert.doesNotMatch(html, /class="adherence supports"/, 'contains no supports claim');
   assert.match(html, /WAI\/WCAG22\/Understanding\//, 'links to WCAG Understanding docs');
   assert.match(html, /acr\.yaml/, 'links back to yaml');
   assert.ok(!html.includes('uswds') && !html.includes('cdn.'), 'no design system or CDN dependency');
@@ -1616,11 +1649,24 @@ test('tech-findings: rankAssociations compares pages with and without the tech, 
   for (let i = 0; i < 6; i++) pages.push({ techs: [], findings: i < 3 ? ['axe:y'] : [] });
   const m = buildCooccurrence(pages);
   const ranked = rankAssociations(m, { minPages: 3 });
-  assert.deepEqual(ranked[0], { tech: 'A', finding: 'axe:x', ratio: 4, lift: 2, pairPages: 6, techPages: 6, findingPages: 9, withoutPages: 12, withoutFindingPages: 3 },
+  assert.deepEqual(ranked[0], { tech: 'A', finding: 'axe:x', ratio: 4, ci_low: 1.5, ci_high: 10.66, certainty: 'ci_above_one', lift: 2, pairPages: 6, techPages: 6, findingPages: 9, withoutPages: 12, withoutFindingPages: 3 },
     'x on 6 of 6 A pages (100%) against 3 of 12 others (25%)');
   const y = ranked.find((a) => a.tech === 'B' && a.finding === 'axe:y');
   assert.equal(y.ratio, 4, 'y on 6 of 6 B pages against 3 of 12 others');
   assert.ok(!ranked.some((a) => a.tech === 'B' && a.finding === 'axe:x'), 'x is on 50% of pages with B and 50% without: not listed');
+});
+
+test('tech-findings: a ratio above 1.5 is suppressed when its interval includes no difference', () => {
+  const pages = [];
+  for (let i = 0; i < 20; i++) pages.push({ techs: ['Small'], findings: i < 5 ? ['axe:x'] : [] });
+  for (let i = 0; i < 40; i++) pages.push({ techs: [], findings: i < 5 ? ['axe:x'] : [] });
+  const m = buildCooccurrence(pages);
+  const all = rankAssociations(m, { minPages: 5, minLower: 0 });
+  const row = all.find((a) => a.tech === 'Small' && a.finding === 'axe:x');
+  assert.equal(row.ratio, 2);
+  assert.ok(row.ci_low < 1, 'interval includes no difference');
+  assert.equal(row.certainty, 'ci_includes_one');
+  assert.deepEqual(rankAssociations(m, { minPages: 5 }).filter((a) => a.tech === 'Small'), [], 'uncertain pair is not a lead');
 });
 
 test('tech-findings: a tech on nearly every page is not compared (Google Ads, 59 of 60 pages)', () => {
@@ -1641,8 +1687,8 @@ test('tech-findings: an Alfa finding is compared across the pages Alfa checked (
   const m = buildCooccurrence(pages);
   assert.deepEqual(m.engines.alfa, { pages: 41, tech: { 'Amazon Advertising': 34 } });
   assert.deepEqual(rankAssociations(m), [], 'on every page Alfa checked, with or without the tech: 1×, not 1.5×');
-  assert.deepEqual(rankAssociations(m, { minRatio: 0 }).find((a) => a.finding === 'alfa:sia-r66'),
-    { tech: 'Amazon Advertising', finding: 'alfa:sia-r66', ratio: 1, lift: 1, pairPages: 34, techPages: 34, findingPages: 41, withoutPages: 7, withoutFindingPages: 7 });
+  assert.deepEqual(rankAssociations(m, { minRatio: 0, minLower: 0 }).find((a) => a.finding === 'alfa:sia-r66'),
+    { tech: 'Amazon Advertising', finding: 'alfa:sia-r66', ratio: 1, ci_low: null, ci_high: null, certainty: 'no_comparison', lift: 1, pairPages: 34, techPages: 34, findingPages: 41, withoutPages: 7, withoutFindingPages: 7 });
 
   const fleet = mergeFleet([{ domain: 'a', model: m }, { domain: 'b', model: m }]);
   assert.equal(fleet.engines.alfa.pages, 82);

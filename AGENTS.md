@@ -145,6 +145,10 @@ a page for a report.
   highlighter. No extension/bookmark; `--dry-run` is browser-free, and
   `--print-url` supports sites that block automated browsers (open the URL in
   the normal browser and use the bookmarklet).
+* **ACR** (`src/lib/acr.js`): always an **incomplete automated draft**, never a
+  conformance report. No automated failure is `not-evaluated`, not `supports`;
+  the YAML/HTML carry `INCOMPLETE DRAFT`, a draft legal disclaimer and the
+  unverified A/AA criteria. A qualified human must complete and sign it.
 * **Coverage** (`src/lib/evidence-coverage.js`): finding-level counts for
   element evidence, locators, semantic regions, widgets, components,
   screenshots and reproduction. Keep `not_captured`, `not_applicable`,
@@ -191,8 +195,11 @@ and surfaced as first/last-seen in bug reports.
 `src/lib/tech-findings.js` joins a page's detected technologies with its
 accessibility findings (both already in the page record). A finding is listed
 when it is at least 1.5× as common on pages with a technology as on pages
-without it (`rankAssociations`), with at least 5 pages with the tech, with both,
-and without it; a tech on nearly every page is named as not comparable.
+without it, **and** the approximate 95% risk-ratio interval excludes 1
+(`rankAssociations`), with at least 5 pages with the tech, with both, and
+without it; a tech on nearly every page is named as not comparable. The
+interval suppresses weak pairs but is not a causal model; keep the association
+surface labelled exploratory.
 Comparing with all pages instead (**lift**) remains in the data for API
 consumers. Only pages where both tech and an accessibility engine ran count.
 The model lives on the weekly summary and is ranked at render time. Rendered as

@@ -124,6 +124,21 @@ false. The Accessibility page gains a
 Component identity is split into type, implementation and occurrence; a type is
 not an implementation and grouping is not ownership.
 
+### Reporting integrity
+
+- The headline is labelled **Automated accessibility health (axe)**, not a
+  WCAG conformance score; Alfa is reported separately and manual testing is
+  incomplete.
+- Technology associations require at least 1.5× and an approximate 95%
+  risk-ratio interval that excludes 1. Point estimates alone are not presented
+  as implementation leads; the interval does not control for confounding.
+- Lighthouse recommendations show the median and 75th percentile saving **per
+  affected page**, plus total transfer across sampled pages. Time savings are
+  never summed into a single visitor-experience claim.
+- The OpenACR export is an **INCOMPLETE DRAFT**, not a conformance report. No
+  automated failure is `not-evaluated` rather than `supports`; the unverified
+  A/AA criteria, draft legal disclaimer and manual-testing gap are explicit.
+
 ### Evidence coverage
 
 Each weekly summary carries a finding-level coverage block: how many findings
@@ -404,7 +419,7 @@ Two engines replicate, at site scale, the gaps between vital-core and [ScanGov](
 - **Security** (`src/engines/security.js`, per origin): HTTPS, HSTS, CSP, X-Content-Type-Options, clickjacking protection (X-Frame-Options or CSP frame-ancestors), published `security.txt`, sponsored government TLD (.gov/.mil/.edu), and www resolution. Reported as a per-origin pass/fail checklist.
 - **Standards & metadata** (`src/engines/standards.js`, per page): schema.org GovernmentOrganization, canonical, hreflang, `<title>`, meta description, charset, document `lang`, responsive viewport (zoom not disabled), Open Graph tags (≥4/6), Twitter card — reported as a pass-rate table across checked pages. Also detects **open social presence** (Mastodon via `rel="me"`/known hosts, Bluesky) and surfaces the links.
 
-Both are rate-controlled engines (security low/per-origin, standards per-page) with their own report section, and roll into the per-domain `domain.json` export. We deliberately keep these out of the accessibility score — security and SEO are different dimensions.
+Both are rate-controlled engines (security low/per-origin, standards per-page) with their own report section, and roll into the per-domain `domain.json` export. We deliberately keep these out of the automated accessibility health indicator — security and SEO are different dimensions.
 
 ### Time windows: rolling 7 days vs ISO-week archive
 

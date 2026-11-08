@@ -1,6 +1,6 @@
 /**
- * A single comparable accessibility score per domain, designed to drive
- * action — not to award a participation F to everyone.
+ * A single comparable automated accessibility health indicator per domain,
+ * designed to drive action — not a conformance grade or an award.
  *
  * Why not "share of perfectly clean pages": with two strict engines
  * (axe + Alfa), almost every real government page has at least one minor
@@ -100,7 +100,7 @@ export function scoreMeaning(summary, sc) {
   const action = topAxe
     ? `Biggest lever: fix “${topAxe.id}” — it affects ${topAxe.pages} page(s).`
     : 'Keep the typical page’s issue count low.';
-  return `The typical page has ${sc.medianIssues} axe violation(s). ${action}`;
+  return `Automated accessibility health (axe): the typical page has ${sc.medianIssues} axe violation(s). ${action}`;
 }
 
 function topRule(rules) {
