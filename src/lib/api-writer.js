@@ -212,6 +212,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
           },
         }
       : {}),
+    evidence_coverage: summary.evidenceCoverage ?? null,
     top_actions: apiTopActions(summary, target.api_redact_params ?? []),
     findings: bugs.map(b => {
       const ledgerEntry = ledgerFindings?.[b.pattern_id] ?? null;

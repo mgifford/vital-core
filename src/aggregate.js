@@ -6,6 +6,7 @@ import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
 import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderExplorerPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
+import { summarizeEvidenceCoverage } from './lib/evidence-coverage.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { loadFindings, saveFindings, updateFindings } from './lib/findings.js';
 import { weekDeltas, severityBurndown, streaks, deltaSeries } from './lib/progress.js';
@@ -107,6 +108,7 @@ for (const target of config.targets) {
   for (const week of weeks) {
     const summary = summarizeWeek(target, week);
     if (summary) {
+      summary.evidenceCoverage = summarizeEvidenceCoverage(summary);
       series.push(summary);
       // The region CSV is written later, but its name is deterministic, so
       // record it here: summary.json is written below and a pruned week must

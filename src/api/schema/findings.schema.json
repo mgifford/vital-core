@@ -27,6 +27,10 @@
       },
       "additionalProperties": true
     },
+    "evidence_coverage": {
+      "description": "Finding-level evidence coverage with exact denominators: element evidence, usable locators, semantic regions, widget types, configured components, screenshots and reproduction eligibility. Counts are findings, not element occurrences.",
+      "type": ["object", "null"]
+    },
     "top_actions": {
       "description": "Optional component-cluster next-actions queue. Null or absent when no clusters were computed.",
       "type": ["object", "null"]

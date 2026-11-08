@@ -489,6 +489,16 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   const summary = {
     week: '2026-W25',
     pagesScanned: 4,
+    evidenceCoverage: {
+      findings_total: 1, findings_with_detailed_evidence: 1, findings_without_detailed_evidence: 0,
+      element_evidence: { captured: 1, not_captured: 0, not_applicable: 0, unsupported_dom_boundary: 0, no_stored_examples: 0 },
+      usable_locator: { captured: 1, unavailable: 0 },
+      semantic_region: { captured: 1, no_containing_landmark: 0, unavailable: 0 },
+      widget: { captured: 0, no_widget: 1, unavailable: 0 },
+      component: { attributed: 0, unattributed: 1 },
+      screenshot: { available: 0, unavailable: 1 },
+      reproduction: { eligible: 1, unavailable: 0 },
+    },
     axe: { rules: { 'image-alt': { count: 2, pages: 2, help: 'Images must have alt text', helpUrl: 'https://example.gov/axe/image-alt', tags: ['wcag111'], examplePages: ['https://example.gov/a'], affectedPages: [{ url: 'https://example.gov/a', instances: 2 }], instances: [{ url: 'https://example.gov/a', target: 'img', html: '<img>' }], impact: 'serious' } } },
     alfa: { rules: { 'sia-r12': { count: 1, pages: 1, ruleUrl: 'https://example.gov/alfa/sia-r12', examplePages: ['https://example.gov/b'], affectedPages: [{ url: 'https://example.gov/b', instances: 1 }], instances: [{ url: 'https://example.gov/b', target: 'a', html: '<a>' }], impact: 'serious' } } },
     consensus: {
@@ -548,6 +558,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /Highlight on site/, 'finding links to a live highlight');
   assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
   assert.match(html, /id="live-inspect-help"/, 'the bookmarklet install section has a stable anchor');
+  assert.match(html, /Evidence coverage/, 'the evidence coverage section is rendered');
+  assert.match(html, /no containing landmark/, 'missing landmark is separate from unavailable evidence');
   assert.match(html, /class="bookmarklet-link bookmarklet-button" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
   assert.match(html, /bookmarklet-visual/, 'the bookmarks-bar visual is present');
   assert.match(html, /Which inspection should I use\?/, 'inspection methods are distinguished');

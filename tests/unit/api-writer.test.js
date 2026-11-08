@@ -304,11 +304,13 @@ describe('buildWeekFindings scope of analysis (additive)', () => {
       ...FAKE_SUMMARY,
       sharedComponents: { schema: 1, counts: { engine_findings: 1 }, components: [{ id: 'consent-dialog', verified: true }], rules: { 'axe-core:x': scope } },
       pageFamilies: { schema: 1, urls_total: 3, known_implementation_count: 1, families: [] },
+      evidenceCoverage: { findings_total: 1, findings_with_detailed_evidence: 1, findings_without_detailed_evidence: 0 },
     };
     const wf = buildWeekFindings(FAKE_TARGET, summary, [bug], FAKE_LEDGER.findings);
     assert.deepEqual(wf.findings[0].reporting.component_scope, scope);
     assert.equal(wf.scope_of_analysis.page_families.known_implementation_count, 1);
     assert.equal(wf.scope_of_analysis.shared_components.components[0].id, 'consent-dialog');
+    assert.equal(wf.evidence_coverage.findings_total, 1);
     assert.equal(JSON.parse(JSON.stringify(wf)).scope_of_analysis.shared_components.rules, undefined, 'per-rule map is carried on each finding instead');
     assert.equal(wf.schema_version, SCHEMA_VERSION, 'no schema version bump');
     const plain = buildWeekFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER.findings);

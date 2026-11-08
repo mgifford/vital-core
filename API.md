@@ -270,7 +270,8 @@ findings.
   `ownership_established` (always false), `instance_identity`
   (`page_url_and_selector_of_stored_examples`), `findings`, `instances_total`,
   `stored_instances`, `pages_affected_sum`, `verified_findings`,
-  `classification_counts`, `confidence`, `regions` and `representative`. A
+  `classification_counts`, `confidence`, `inspection_evidence` (`element`,
+  `locator`, `reproduction_eligible`), `regions` and `representative`. A
   widget role never appears as a component. Verification still comes from
   `scope_of_analysis.shared_components`; grouping never upgrades a candidate.
 - `findings[].reporting.region` is the finding's `nearest_region` (or null),
@@ -315,6 +316,23 @@ comes from **one** stored occurrence:
 Historical records without enriched evidence keep `occurrence_selection:
 "unavailable"` and null evidence fields; the week-level render context is not
 substituted.
+
+### Evidence coverage (additive v1 fields)
+
+`evidence_coverage` is finding-level, not an occurrence count:
+
+- `findings_total`, `occurrences_stored`, `findings_with_detailed_evidence`,
+  `findings_without_detailed_evidence`.
+- `element_evidence`: `captured`, `not_captured`, `not_applicable` (engines such
+  as Alfa without a DOM selector), `unsupported_dom_boundary`,
+  `no_stored_examples`.
+- `usable_locator`, `semantic_region` (`captured`, `no_containing_landmark`,
+  `unavailable`), `widget` (`captured`, `no_widget`, `unavailable`),
+  `component` (`attributed`, `unattributed`), `screenshot` and `reproduction`.
+- `by_engine` breaks the element/locator/reproduction counts down by engine.
+
+A missing locator is not evidence that a page lacks a landmark. Counts are
+findings; use `findings[].evidence` for the capped occurrence sample.
 
 ### Historical screenshots (additive v1 fields)
 
