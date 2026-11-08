@@ -550,6 +550,7 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /id="live-inspect-help"/, 'the bookmarklet install section has a stable anchor');
   assert.match(html, /class="bookmarklet-link bookmarklet-button" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
   assert.match(html, /bookmarklet-visual/, 'the bookmarks-bar visual is present');
+  assert.match(html, /Which inspection should I use\?/, 'inspection methods are distinguished');
   assert.match(html, /Copy bookmarklet/, 'the manual copy fallback is present');
   assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
   assert.match(html, /Copy inspection code/, 'the code fallback is labelled');

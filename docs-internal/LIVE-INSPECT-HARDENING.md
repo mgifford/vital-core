@@ -83,22 +83,24 @@ It contains no page text, HTML, full URL or query string.
 
 ## Chromium test results (automated)
 
-Environment: Playwright 1.60, Chromium headless shell 156.0.8078.4, macOS.
+Environment: Playwright 1.60, macOS. Chromium 148.0.7778.96 and WebKit 26.4
+launched successfully; Firefox (1522) timed out at launch and is **untested**.
 
 | Page policy | Activation method | Result |
 |---|---|---|
-| No CSP | click a `javascript:` link in the page | overlay rendered |
-| `script-src 'self'; style-src 'self'` | same | **blocked** — no overlay |
-| `script-src 'none'` | same | **blocked** — no overlay |
-| `script-src 'unsafe-inline'; style-src 'none'` | same | overlay rendered; CSSOM positioning still works |
-| `script-src 'unsafe-inline'; style-src 'nonce-abc'` | same | overlay rendered |
+| No CSP | click a `javascript:` link in the page | overlay rendered in Chromium and WebKit |
+| `script-src 'self'; style-src 'self'` | same | **blocked** in Chromium and WebKit |
+| `script-src 'none'` | same | **blocked** in Chromium (WebKit not separately rerun) |
+| `script-src 'unsafe-inline'; style-src 'none'` | same | overlay rendered; CSSOM positioning still works (Chromium) |
+| `script-src 'unsafe-inline'; style-src 'nonce-abc'` | same | overlay rendered (Chromium) |
 
 The `javascript:` link is a proxy for bookmark activation, not a bookmark-bar
 click. A real bookmark may behave differently; this is not yet proven in any
 browser.
 
-**Firefox, Safari/WebKit, Edge, mobile browsers and actual bookmark-bar
-activation are untested.** Do not claim cross-browser support.
+**Firefox, Edge, mobile browsers and actual bookmark-bar activation are
+untested.** WebKit is tested through the same `javascript:` link proxy, not
+Safari bookmark UI. Do not claim cross-browser support.
 
 ## Manual verification procedure
 
@@ -161,6 +163,13 @@ this; users must not weaken the site's CSP.
 Final measured values: bookmarklet **23,397 bytes**, typical code **424 bytes**,
 decoded payload **318 bytes**. Chromium activation-to-panel remains in the tens
 of milliseconds; see the measurements section.
+
+## Access-block pages
+
+The bookmarklet now detects common Akamai/edge access-denied pages and reports
+**Page access blocked** instead of “element not found”. It does not attempt to
+bypass the block; the guidance is to use the same inspection URL in the user's
+normal browser or the local inspector's `--print-url`.
 
 ## Deferred
 

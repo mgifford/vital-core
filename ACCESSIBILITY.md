@@ -63,6 +63,12 @@ not prove the historical violation still exists.
   lost.
 - **Frames and shadow roots:** live highlighting is unavailable and the report
   says so rather than guessing.
+- **Which method?** The install panel distinguishes historical evidence, the
+  live element highlight, the native text-fragment link, Playwright
+  reproduction and manual validation. They answer different questions and are
+  not interchangeable.
+- **Access-denied pages:** the bookmarklet and local inspector report a firewall
+  or bot-block page explicitly; they do not try to bypass it.
 - **Manual assistive-technology testing of the bookmarklet has not been
   performed yet.** Keyboard behaviour is tested in Chromium; screen reader,
   forced-colors and cross-browser checks remain manual work.
