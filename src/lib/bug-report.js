@@ -34,6 +34,16 @@ function shortHash(...parts) {
   return crypto.createHash('sha256').update(parts.join('|')).digest('hex').slice(0, 8);
 }
 
+/**
+ * Stable, content-independent reference for a rule finding within a domain.
+ * Deliberately not derived from the first stored example, so adding/removing a
+ * sample cannot move it. `VS-` instance anchors remain frozen for old links;
+ * new durable links can use this reference.
+ */
+export function findingRef(target, patternId) {
+  return `VFR-${shortHash(target?.key ?? target?.domain ?? '', patternId ?? '')}`;
+}
+
 /** Derive a short human label from scanner metadata, with rule-id fallback. */
 function componentLabel(engineKey, ruleId, help, wcag) {
   const label = rulePlainLabel(engineKey, ruleId, { help, wcag });
@@ -60,6 +70,7 @@ export function buildBugReports(target, summary) {
     const wcag_category = classifyFinding(engine, { tags: rule.tags, ruleId }, wcag);
     const severity = severityFor(rule.impact ?? null, rule.pages, total);
     const patternId = `${PREFIX}-${shortHash(engine, ruleId)}`;
+    const stableRef = findingRef(target, patternId);
     // `instance_id` is the historical report anchor and keeps its frozen
     // formula over the first captured instance. Displayed evidence comes from
     // ONE representative occurrence selected as a whole — never a URL from one
@@ -70,6 +81,9 @@ export function buildBugReports(target, summary) {
       : engine === 'alfa' ? summary.alfa?.version ?? null : null;
     const occurrences = occurrencesFor(rule, { patternId, engineKey: engine, engineVersion });
     const representative = selectRepresentative(occurrences);
+    // Frozen legacy anchor: derived from the first captured example, so it can
+    // move when the week's sample changes. Do not change its formula; expose
+    // `finding_ref` for durable references and `observation_id` for one scan.
     const instanceId = `${PREFIX}-${shortHash(patternId, first?.url ?? '', first?.target ?? '')}`;
     const scLabel = wcag
       ? `WCAG ${wcag.sc}`
@@ -109,6 +123,7 @@ export function buildBugReports(target, summary) {
 
     return {
       instance_id: instanceId,
+      finding_ref: stableRef,
       pattern_id: patternId,
       // Dual-write only — see the comment above where these are computed.
       // Never read by mergeFleetPatterns()/rankFleetPatterns(); those
@@ -118,6 +133,7 @@ export function buildBugReports(target, summary) {
       a11y_occurrence_fingerprint: a11yOccurrence.fingerprint,
       a11y_occurrence_display_id: a11yOccurrence.displayId,
       occurrence_id: representative?.occurrence_id ?? null,
+      observation_id: representative?.observation_id ?? null,
       observation: representative?.observation ?? null,
       occurrence_selection: representative?.completeness ?? 'none',
       url: representative?.url ?? summary.domain,
@@ -141,6 +157,18 @@ export function buildBugReports(target, summary) {
         examples_truncated: rule.count > occurrences.length,
         element_identity: representative?.element?.available ? 'captured' : engine === 'alfa' ? 'unavailable' : 'not-captured',
         semantic_context: representative?.semantic_context ? 'captured' : 'unavailable',
+      },
+      evidence_reference: {
+        finding_ref: stableRef,
+        occurrence_id: representative?.occurrence_id ?? null,
+        observation_id: representative?.observation_id ?? null,
+        url: representative?.url ?? null,
+        selector: representative?.selector ?? null,
+        scanned_at: representative?.observation?.scanned_at ?? null,
+        engine: engine,
+        engine_version: representative?.observation?.engine_version ?? engineVersion,
+        page_detail_retention_weeks: target.retention_weeks ?? null,
+        note: 'Weekly finding summaries and representative evidence are retained. Screenshots and page-level detail follow the retention policy and may be unavailable.',
       },
       wcag_sc: wcag?.sc ?? null,
       wcag_name: wcag?.name ?? null,
@@ -176,6 +204,7 @@ export function buildBugReports(target, summary) {
       // Capped representative instances with real DOM context.
       examples: occurrences.map((occurrence) => ({
         occurrence_id: occurrence.occurrence_id,
+        observation_id: occurrence.observation_id,
         url: occurrence.url,
         xpath: occurrence.selector,
         selector: occurrence.selector,

@@ -180,6 +180,7 @@ function publicReproduction(bug) {
   return {
     status: 'not_attempted',
     occurrence_id: plan.occurrence_id,
+    observation_id: plan.observation_id,
     locator: plan.locator,
     rule: plan.rule,
     engine_version: plan.engine_version,
@@ -222,7 +223,9 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
       return {
         finding_id:     b.pattern_id,
         instance_id:    b.instance_id ?? null,
+        finding_ref:    b.finding_ref ?? null,
         occurrence_id:  b.occurrence_id ?? null,
+        observation_id: b.observation_id ?? null,
         occurrence_selection: b.occurrence_selection ?? null,
         observation:    b.observation ? {
           scanned_at: b.observation.scanned_at,
@@ -246,6 +249,7 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         semantic_context: evidence?.semantic_context ?? null,
         screenshot: b.screenshot ?? null,
         evidence:       b.evidence ? { ...b.evidence } : null,
+        evidence_reference: b.evidence_reference ?? null,
         reproduction:   publicReproduction(b),
         manual_validation: b.manual_validation ? {
           status: b.manual_validation.status,

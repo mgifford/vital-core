@@ -53,6 +53,18 @@
         "rule_id": { "type": "string", "description": "Engine rule id, e.g. color-contrast. Stable across weeks." },
         "rule_label": { "type": "string" },
         "instance_id": { "type": ["string", "null"] },
+        "finding_ref": {
+          "type": ["string", "null"],
+          "description": "Stable VFR- reference for this rule finding within the domain, independent of which sample is representative."
+        },
+        "observation_id": {
+          "type": ["string", "null"],
+          "description": "VOB- identity for the representative scan observation (occurrence plus page/run/time/engine)."
+        },
+        "evidence_reference": {
+          "type": ["object", "null"],
+          "description": "Durable reference: finding_ref, occurrence_id, observation_id, url, selector, scanned_at, engine, engine_version, page_detail_retention_weeks and an availability note."
+        },
         "occurrence_id": {
           "type": ["string", "null"],
           "description": "Stable identity of the representative stored occurrence (VO-hash of pattern + URL + selector + component). Distinct from the aggregated finding_id and from the frozen instance_id anchor."

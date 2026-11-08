@@ -64,6 +64,8 @@ export function inspectCodeFor(bug) {
     h: /^https?:\/\//i.test(bug.rule_url ?? '') ? bug.rule_url.slice(0, 500) : null,
     org: origin,
     id: typeof bug.occurrence_id === 'string' ? bug.occurrence_id.slice(0, 100) : null,
+    obs: typeof bug.observation_id === 'string' ? bug.observation_id.slice(0, 100) : null,
+    ref: typeof bug.finding_ref === 'string' ? bug.finding_ref.slice(0, 100) : null,
   };
   const json = JSON.stringify(payload);
   const base64 = typeof Buffer !== 'undefined'
@@ -104,7 +106,7 @@ export function decodeInspectToken(token) {
 
 /** Validate an inspection payload before it is used. Returns {ok} or {ok:false, reason}. */
 export function validateInspectPayload(payload, pageHref) {
-  const payloadKeys = ['v', 's', 'x', 't', 'r', 'n', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id'];
+  const payloadKeys = ['v', 's', 'x', 't', 'r', 'n', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id', 'obs', 'ref'];
   const nameSources = ['aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby', 'aria-labelledby-unresolved', 'none'];
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { ok: false, reason: 'inspection payload must be an object' };
   for (const key of Object.keys(payload)) {
@@ -133,7 +135,7 @@ export function validateInspectPayload(payload, pageHref) {
     if (typeof value !== 'string' || value.length > max) return false;
     return true;
   };
-  if (!stringOrNull('t', 50) || !stringOrNull('r', 50) || !stringOrNull('n', 200) || !stringOrNull('rule', 100) || !stringOrNull('label', 200) || !stringOrNull('w', 20) || !stringOrNull('fix', 400) || !stringOrNull('h', 500) || !stringOrNull('id', 100)) {
+  if (!stringOrNull('t', 50) || !stringOrNull('r', 50) || !stringOrNull('n', 200) || !stringOrNull('rule', 100) || !stringOrNull('label', 200) || !stringOrNull('w', 20) || !stringOrNull('fix', 400) || !stringOrNull('h', 500) || !stringOrNull('id', 100) || !stringOrNull('obs', 100) || !stringOrNull('ref', 100)) {
     return { ok: false, reason: 'inspection payload field is too long or the wrong type' };
   }
   if (payload.ns != null && !nameSources.includes(payload.ns)) return { ok: false, reason: 'invalid name source in inspection payload' };
@@ -531,7 +533,7 @@ export function vitalInspect(validate) {
       statusLine.textContent = 'No element on this page matches the recorded selector.';
     }
     addDetail('p', 'Rule: ' + (payload.rule || 'unknown') + (payload.w ? ' · WCAG ' + payload.w : ''), 'margin:10px 0 4px;');
-    if (payload.id) addDetail('p', 'Occurrence: ' + payload.id, 'margin:0 0 4px;');
+    if (payload.id) addDetail('p', 'Occurrence: ' + payload.id + (payload.obs ? ' · observation ' + payload.obs : ''), 'margin:0 0 4px;');
     addDetail('p', 'Selector', 'margin:8px 0 2px;font-weight:700;');
     var code = document.createElement('code');
     code.textContent = payload.s || payload.x;

@@ -154,6 +154,11 @@ a page for a report.
   prompts. The Explorer can download a blank review record (occurrence,
   element, screenshot reference, privacy note); VITAL never stores it, never
   sets a reviewer or status, and never turns it into a conformance claim.
+* **Identity**: `pattern_id` is cross-domain rule identity; `occurrence_id`
+  (`VO-…`) is the recorded element; `observation_id` (`VOB-…`) is one scan run;
+  `finding_ref` (`VFR-…`) is the durable finding link, independent of which
+  sample is representative. Keep the legacy `instance_id` formula frozen; see
+  `docs-internal/EVIDENCE-IDENTITY-AUDIT.md`.
 * **API**: additive v1 fields (`selector`, `element`, `semantic_context`,
   `evidence`, `reproduction`, `manual_validation`, `scope_of_analysis.regions`
   / `component_groups`). Keep `schema_version: "1"` unless the change is
