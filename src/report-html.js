@@ -3346,28 +3346,28 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
   const sections = LH_CATEGORY_ORDER
     .filter((cat) => byCat[cat]?.length)
     .map((cat) => {
+      const savings = (bytes, ms) => [bytes ? fmtSavingsBytes(bytes) : '', ms ? `${(ms / 1000).toFixed(1)}s` : '']
+        .filter(Boolean).join(' · ') || '—';
       const rows = byCat[cat]
-        .map((r) => {
-          const savings = [fmtSavingsBytes(r.savingsBytes), r.savingsMs ? `${(r.savingsMs / 1000).toFixed(1)}s` : '']
-            .filter(Boolean).join(' · ') || '—';
-          return `<tr>
+        .map((r) => `<tr>
   <th scope="row">${esc(r.title)}</th>
   <td class="num">${r.pages}/${pagesSampled}</td>
-  <td class="num">${savings}</td>
-</tr>`;
-        })
+  <td class="num">${savings(r.savingsBytesMedian, r.savingsMsMedian)}</td>
+  <td class="num">${savings(r.savingsBytesP75, r.savingsMsP75)}</td>
+  <td class="num">${r.savingsBytes ? fmtSavingsBytes(r.savingsBytes) : '—'}</td>
+</tr>`)
         .join('\n');
       return `<h3>${esc(t(LH_CATEGORY_LABELS[cat] ?? cat))}</h3>
 <table>
 <caption>${t('@cat recommendations from Lighthouse, by sampled pages affected.', { '@cat': esc(t(LH_CATEGORY_LABELS[cat] ?? cat)) })}</caption>
-<thead><tr><th scope="col">${t('Recommendation')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Est. saving')}</th></tr></thead>
+<thead><tr><th scope="col">${t('Recommendation')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Median per page')}</th><th scope="col" class="num">${t('75th percentile')}</th><th scope="col" class="num">${t('Total transfer (sampled pages)')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
     })
     .join('\n');
   return `<section aria-labelledby="h-lh-reco">
 ${heading('h-lh-reco', t('Recommendations'))}
-<p class="meta">${t('Issues Lighthouse flagged across the @n sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Estimated savings (transfer bytes or load time) are Lighthouse\'s own estimates where available. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessible.html">Accessibility page</a>.', { '@n': pagesSampled })}</p>
+<p class="meta">${t('Issues Lighthouse flagged across the @n sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Savings are Lighthouse\'s own estimates. Median and 75th percentile are per affected page; total transfer is summed across sampled pages and is not one visitor\'s saving. Time savings are per page and are never summed into a single user-experience claim. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessible.html">Accessibility page</a>.', { '@n': pagesSampled })}</p>
 ${sections}
 </section>`;
 }
@@ -3715,13 +3715,13 @@ export function renderTechFindingsPage(target, summary, bugs = [], excludePatter
   <th scope="col">${t('Finding')}</th>
   <th scope="col" class="num">${t('Pages with @tech', { '@tech': esc(tech) })}</th>
   <th scope="col" class="num">${t('Pages without it')}</th>
-  <th scope="col" class="num">${t('Times as common')}</th>
+  <th scope="col" class="num">${t('Times as common (95% CI)')}</th>
 </tr></thead>
 <tbody>${rows.map((a) => `<tr>
   <th scope="row">${findingCell(a.finding)}</th>
   ${share(a.pairPages, a.techPages)}
   ${share(a.withoutFindingPages, a.withoutPages)}
-  <td class="num" data-sort="${a.ratio ?? 1e9}">${a.ratio == null ? t('only with it') : `${a.ratio.toFixed(1)}×`}</td>
+  <td class="num" data-sort="${a.ratio ?? 1e9}">${a.ratio == null ? t('only with it') : a.ci_low == null ? `${a.ratio.toFixed(1)}×` : t('@ratio× (95% CI @low–@high)', { '@ratio': a.ratio.toFixed(1), '@low': a.ci_low.toFixed(1), '@high': a.ci_high.toFixed(1) })}</td>
 </tr>`).join('\n')}</tbody>
 </table>`)
     .join('\n');
@@ -3730,7 +3730,8 @@ export function renderTechFindingsPage(target, summary, bugs = [], excludePatter
 <h1>${esc(target.domain)}: ${t('technology ↔ issues')}</h1>
 ${subnav('tech-findings')}
 <p class="meta">${t('Accessibility findings that are more common on pages running a technology than on pages without it, across the @pages page(s) in <strong>@week</strong> where both technology detection and an accessibility engine ran. Each finding is compared across the pages its own engine checked, since axe and Alfa can run on different samples.', { '@pages': nf(model.pages), '@week': esc(summary.week) })}</p>
-<p class="meta">${t('<strong>Times as common</strong> compares the two groups: the share of pages with the technology that have the finding, divided by the share of pages without it that have it. 1× means no difference; 2× means twice as common. “Only with it” means no page without the technology had the finding. A finding is listed when it is at least 1.5 times as common and is on at least 5 pages with the technology, and only technologies with at least 5 pages each way are compared.')}</p>
+<p class="meta">${t('<strong>Times as common</strong> compares the two groups: the share of pages with the technology that have the finding, divided by the share of pages without it that have it. 1× means no difference; 2× means twice as common. “Only with it” means no page without the technology had the finding. A finding is listed when it is at least 1.5 times as common, its approximate 95% interval excludes no difference, and it is on at least 5 pages with the technology. Only technologies with at least 5 pages each way are compared.')}</p>
+<p class="meta">${t('The interval is an approximate risk-ratio interval (Katz log method). A pair whose interval includes 1 is compatible with no association and is suppressed, even when its point estimate is above 1.5. This is exploratory: it does not control for confounding technologies, page type or traffic.')}</p>
 ${notCompared}
 <p class="note">${t('This is an <em>association</em>, not proof of cause. Technologies detected on the same pages (e.g. a CMS, its host, and its language) show the same numbers, and the listing cannot tell which one in such a stack is responsible. Treat strong pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page\'s content.')}</p>
 <p class="meta">${t('Each finding links to its full report on the Accessibility page: the pages it is on, the failing elements and how to fix them.')}</p>
@@ -4132,7 +4133,7 @@ function historyComparison(series) {
     return tot ? Math.round((checks.reduce((a, c) => a + c.pass, 0) / tot) * 100) : null;
   };
   const METRICS = [
-    { label: 'Accessibility score', pick: (s) => scoreFor(s)?.score ?? null, goodWhenDown: false },
+    { label: 'Automated accessibility health (axe)', pick: (s) => scoreFor(s)?.score ?? null, goodWhenDown: false },
     { label: 'Median axe violations / page', pick: (s) => s.axe?.medianViolations ?? null, goodWhenDown: true },
     { label: 'Median page weight (KB)', pick: (s) => (s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null), goodWhenDown: true, unit: ' KB' },
     { label: 'Reading ease (Flesch)', pick: (s) => s.plainLanguage?.medianReadingEase ?? null, goodWhenDown: false },
@@ -4228,7 +4229,7 @@ export function renderHistoryPage(target, series, week) {
 ${subnav('history')}
 <p class="meta">${t('How this site has changed over time. The <a href="index.html">weekly overview</a> answers "what should I fix now?"; this page answers "how are we trending?"')}</p>
 ${weeks > 1
-    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''} ${t('Download the full trend series:')} <a href="../../../data/${esc(target.key)}/trends.csv">${t('CSV')}</a> · <a href="../../../data/${esc(target.key)}/weekly.json">${t('JSON')}</a>.</p>`
+    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Automated accessibility health (axe) is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''} ${t('Download the full trend series:')} <a href="../../../data/${esc(target.key)}/trends.csv">${t('CSV')}</a> · <a href="../../../data/${esc(target.key)}/weekly.json">${t('JSON')}</a>.</p>`
     : `<p class="note">${t('Only one week has been scanned so far. Trend charts appear here once there are at least two weeks to compare — check back after the next scan.')}</p>`}
 ${weeks > 1 ? historyComparison(series) : ''}
 <section aria-labelledby="h-history-a11y">
@@ -4301,12 +4302,13 @@ ${accessBanner(summary.access, target.user_agent)}
 ${prev ? t('Compared against @week (@n fetched).', { '@week': esc(prev.week), '@n': prev.pagesScanned }) : t('First recorded week; no comparison yet.')} ${t('The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.')}
 ${t('Machine-readable API:')} <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
 
-${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Accessibility scorecard">
+${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automated accessibility health (axe) scorecard">
+  <span class="score-label">${t('Automated accessibility health (axe)')}</span>
   ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
   ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
-  <span class="score-caveat">${t('Score reflects the typical page\'s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.')}</span>
+  <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score: it reflects the typical page\'s axe violation count vs other government sites. Alfa is reported separately and manual testing is incomplete; a high value is not proof of conformance.')}</span>
 </aside>
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
@@ -4427,7 +4429,7 @@ ${rows}
 export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}, excludePatterns = []) {
   const { trainingPriorities = [], trainingAdvice = null } = reporting;
   const acrNote = reporting.acrYaml
-    ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
+    ? `<p class="meta"><strong>Draft automated accessibility evidence (OpenACR format) — not a conformance report.</strong> <a href="${esc(reporting.acrYaml)}">Download draft YAML</a>. Machine-readable and compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Manual AT testing is incomplete; many criteria remain unknown.</p>`
     : '';
   const body = `
 <h1>${esc(target.domain)}: ${t('Accessibility')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
@@ -4988,7 +4990,7 @@ ${active.length === 0
         : `<p>${t('No accessibility or sustainability data could be collected yet: every target is blocked (see above).')}</p>`)
     : `
 <table>
-<caption>${t('Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.')}</caption>
+<caption>${t('Domains ranked by automated accessibility health (axe, best first). Trajectory compares the indicator against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size; this is not a conformance ranking.')}</caption>
 <thead><tr><th scope="col">${t('Domain')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col">${t('Trajectory')}</th><th scope="col" class="num">${t('Pages audited (7d)')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th><th scope="col">${t('Trend')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
@@ -5511,6 +5513,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .scorecard { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem;
   border: 1px solid var(--rule); border-left: 5px solid var(--accent); border-radius: 4px;
   padding: .8rem 1rem; margin: 1rem 0; }
+.scorecard .score-label { flex-basis: 100%; font-weight: 700; }
 .scorecard .grade { font-size: 2rem; font-weight: 700; line-height: 1;
   padding: .1rem .5rem; border-radius: 4px; border: 2px solid currentColor; }
 .grade-A { color: var(--better); } .grade-B { color: var(--better); }

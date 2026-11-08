@@ -317,6 +317,13 @@ Historical records without enriched evidence keep `occurrence_selection:
 "unavailable"` and null evidence fields; the week-level render context is not
 substituted.
 
+### Lighthouse recommendations (additive v1 fields)
+
+`summary.lighthouse.recommendations[]` keeps the sample totals (`savingsBytes`,
+`savingsMs`) and adds per-page distribution fields: `savingsBytesMedian`,
+`savingsBytesP75`, `savingsMsMedian`, `savingsMsP75`. The totals are sums across
+sampled pages, not a single visitor's experience; time savings are per page.
+
 ### Evidence coverage (additive v1 fields)
 
 `evidence_coverage` is finding-level, not an occurrence count:

@@ -247,6 +247,11 @@ test('renderLighthousePage embeds the Lighthouse category trend chart when multi
       scores: { performance: 76, accessibility: 79, bestPractices: 73, seo: 78, agentic: null },
       metrics: { firstContentfulPaintMs: 1180, largestContentfulPaintMs: 2210, speedIndexMs: 2800, totalBlockingTimeMs: 120, cumulativeLayoutShift: 0.11 },
     }],
+    recommendations: [{
+      id: 'render-blocking-resources', category: 'performance', title: 'Eliminate render-blocking resources',
+      pages: 3, savingsBytes: 90000, savingsMs: 3000,
+      savingsBytesMedian: 30000, savingsBytesP75: 45000, savingsMsMedian: 1000, savingsMsP75: 1500,
+    }],
   };
   const summary = { week: '2026-W25', lighthouse: lh };
   const series = [
@@ -258,6 +263,9 @@ test('renderLighthousePage embeds the Lighthouse category trend chart when multi
   assert.match(withHistory, /Lighthouse category scores over 2 weeks/, 'trend chart embedded with 2+ weeks of series data');
   assert.match(withHistory, /History &amp; Trends →/, 'still links to the full History \\& Trends page');
   assert.match(withHistory, /data-parachart="/, 'chart carries a ParaCharts manifest, same as every other trend chart');
+  assert.match(withHistory, /Median per page/, 'shows a per-page median saving');
+  assert.match(withHistory, /75th percentile/, 'shows a per-page 75th percentile');
+  assert.match(withHistory, /Total transfer \(sampled pages\)/, 'labels the sample total as a total, not a visitor saving');
 
   // Single-week (or omitted) series: no trend section, no crash, no dangling heading.
   const singleWeek = renderLighthousePage(target, summary, null, null, [series[1]]);

@@ -1015,11 +1015,13 @@ function summarizeRecords(target, week, records, brokenLinks) {
       // Roll up failing audits into recommendations (like axe rules): one
       // entry per audit id, counting pages affected and summing savings.
       for (const a of rec.lighthouse.audits ?? []) {
-        const r = (lhReco[a.id] ??= { id: a.id, category: a.category, title: a.title, pages: 0, examplePages: [], savingsBytes: 0, savingsMs: 0 });
+        const r = (lhReco[a.id] ??= { id: a.id, category: a.category, title: a.title, pages: 0, examplePages: [], savingsBytes: 0, savingsMs: 0, byteValues: [], msValues: [] });
         r.pages++;
         if (r.examplePages.length < 10) r.examplePages.push(rec.url);
         r.savingsBytes += a.savingsBytes ?? 0;
         r.savingsMs += a.savingsMs ?? 0;
+        r.byteValues.push(a.savingsBytes ?? 0);
+        r.msValues.push(a.savingsMs ?? 0);
       }
     }
   }
@@ -1199,8 +1201,14 @@ function summarizeRecords(target, week, records, brokenLinks) {
           pageDetail: lhPages, // per-sampled-page detail for the Lighthouse page (omitted from committed summary.json)
           // Aggregated non-accessibility recommendations, ranked by reach then
           // impact. Stored in the committed summary (compact, like axe rules).
-          recommendations: Object.values(lhReco).sort(
-            (a, b) => b.pages - a.pages || (b.savingsBytes + b.savingsMs * 1000) - (a.savingsBytes + a.savingsMs * 1000)
+          recommendations: Object.values(lhReco).map(({ byteValues, msValues, ...r }) => ({
+            ...r,
+            savingsBytesMedian: byteValues.length ? median(byteValues) : null,
+            savingsBytesP75: percentile(byteValues, 0.75),
+            savingsMsMedian: msValues.length ? median(msValues) : null,
+            savingsMsP75: percentile(msValues, 0.75),
+          })).sort(
+            (a, b) => b.pages - a.pages || (b.savingsBytesMedian ?? 0) - (a.savingsBytesMedian ?? 0)
           ),
         }
       : null,
@@ -1400,4 +1408,11 @@ function median(list) {
   const s = [...list].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
   return s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
+}
+
+function percentile(list, p) {
+  if (!list.length) return null;
+  const s = [...list].sort((a, b) => a - b);
+  const index = Math.min(s.length - 1, Math.max(0, Math.ceil(p * s.length) - 1));
+  return s[index];
 }
