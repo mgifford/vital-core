@@ -311,10 +311,11 @@ roughly a third of barriers, and recording a review does not establish
 conformance. The prompts appear on the Accessibility page's finding detail and
 in `bugs.md`. The Explorer can download a structured
 `<VS-id>.manual-review.json` with the finding (including `occurrence_id`, the
-recorded element and any historical screenshot reference), guidance and a blank
-review block (`status: "not_reviewed"`, reviewer/date/environment/AT/steps/
-outcome/notes empty, `not_a_conformance_claim: true`) for the reviewer to fill
-in and share through their own process. When a screenshot is present the record
+recorded element and any historical screenshot reference), guidance and a
+review block. The Explorer prompts for reviewer, review status, browser,
+assistive technology and viewport; those values are written into the downloaded
+record only. `not_a_conformance_claim: true` and
+`manual_validation_required: true` stay set, and VITAL stores nothing. When a screenshot is present the record
 says it is historical and must be re-checked against the live page, and the
 instructions ask the reviewer to remove personal or sensitive data before
 sharing. Nothing is stored or submitted by VITAL, and no status is ever set on

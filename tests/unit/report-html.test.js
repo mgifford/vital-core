@@ -1467,6 +1467,10 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   assert.match(html, /id="h-explorer-widgets">By widget type/, 'widget table present');
   assert.match(html, /<th scope="col">Widget type<\/th>/, 'static index has a widget column');
   assert.match(html, /<caption class="visually-hidden">/, 'tables have captions');
+  assert.match(html, /manual-reviewer/, 'manual review captures the reviewer');
+  assert.match(html, /manual-review-status/, 'manual review captures the review status');
+  assert.match(html, /Reviewer name/, 'review fields have visible labels');
+  assert.match(html, /automated evidence, not a confirmed failure/i, 'manual prompts distinguish automated evidence');
   // Empty state is honest rather than an empty table.
   const empty = renderExplorerPage(target, { week: '2026-W25', pagesScanned: 1 }, []);
   assert.match(empty, /No accessibility findings this week\./);
