@@ -362,6 +362,7 @@ test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted det
   // Biggest-win callout links to the top-ranked finding's canonical location.
   assert.match(html, /class="callout callout-win"/);
   assert.match(html, /Biggest available win/);
+  assert.match(html, /0–100; higher is better/);
   assert.match(html, /<a href="accessible\.html#VS-abc12345"><strong>Images must have alternative text<\/strong><\/a>/);
   // The callout headlines the highest-priority finding (Critical, 7 pages), not the Serious one.
   const callout = html.match(/<aside class="callout callout-win"[\s\S]*?<\/aside>/)[0];
@@ -1526,4 +1527,17 @@ test('accessibility page offers a WCAG-EM report when configured', () => {
   assert.match(withReport, /not a WCAG-EM representative sample/);
   const without = renderAccessibilityPage(target, summary, [], {}, {});
   assert.doesNotMatch(without, /WCAG-EM-aligned evaluation/);
+});
+
+test('the ACR download is presented as draft data, not a completed report', () => {
+  const target = { key: 'example.gov', domain: 'example.gov' };
+  const summary = {
+    week: '2026-W46', pagesScanned: 10, pagesAudited: 10,
+    axe: { version: '4.14.0', pagesScanned: 10, rules: {} },
+    alfa: { version: '0.117.0', pagesScanned: 5, rules: {} },
+  };
+  const html = renderAccessibilityPage(target, summary, [], {}, { acrYaml: 'acr.yaml' });
+  assert.match(html, /Download OpenACR-formatted data \(draft\)/);
+  assert.match(html, /not a completed ACR/);
+  assert.doesNotMatch(html, />Download ACR</);
 });
