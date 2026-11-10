@@ -429,6 +429,13 @@ test('a matched element below the viewport is scrolled into view and outlined', 
       selector: '#far',
       element: { available: true, tag: 'button', role: null, name: 'Far away', name_source: 'aria-label' },
     });
+    await page.waitForFunction(() => {
+      const host = document.getElementById('vital-inspect-host');
+      const box = host?.shadowRoot?.getElementById('vital-inspect-box');
+      if (!box) return false;
+      const rect = box.getBoundingClientRect();
+      return rect.top >= 0 && rect.top < window.innerHeight;
+    }, null, { timeout: 3000 });
     const scrollY = await page.evaluate(() => window.scrollY);
     assert.ok(scrollY > 100, 'the page scrolls toward the target');
     const box = await page.locator('#vital-inspect-box').boundingBox();

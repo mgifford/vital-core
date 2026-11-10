@@ -7,6 +7,7 @@ import { resolveComponentSignatures } from './shared-components.js';
 import { resolvePageFamilies } from './page-families.js';
 import { resolveConsentHandling } from '../engines/consent-action.js';
 import { resolveScreenshotConfig } from './screenshots.js';
+import { resolveTargetRetention } from './retention-policy.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
@@ -74,8 +75,11 @@ export function loadConfig(rawYaml) {
   if (!['openacr', 'wcag-em', 'both'].includes(evaluationReport)) {
     throw new Error(`evaluation_report must be openacr, wcag-em or both (got ${JSON.stringify(evaluationReport)})`);
   }
-  const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
-  for (const t of targets) {
+  const rawTargets = cfg.targets ?? [];
+  const globalRetention = defaults.retention ?? cfg.retention ?? null;
+  const targets = rawTargets.map((t) => ({ ...defaults, ...t }));
+  for (const [index, t] of targets.entries()) {
+    const rawTarget = rawTargets[index] ?? {};
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
     t.reporting = { ...(defaults.reporting ?? {}), ...(t.reporting ?? {}) };
     const ignoreParams = t.url_ignore_params ?? [];
@@ -83,6 +87,15 @@ export function loadConfig(rawYaml) {
       throw new Error(`target ${t.domain}: url_ignore_params must be a list of non-empty query parameter names`);
     }
     t.urlIgnoreParams = [...new Set(ignoreParams.map((name) => name.trim()))];
+    const retention = resolveTargetRetention({
+      defaultsRetention: globalRetention,
+      targetRetention: rawTarget.retention ?? null,
+      legacyWeeks: t.retention_weeks ?? null,
+    });
+    t.retentionPolicy = retention.policy;
+    t.retentionSource = retention.source;
+    t.retentionWarnings = retention.warnings;
+    for (const warning of retention.warnings) console.warn(`[config] ${t.domain}: ${warning}`);
     t.evaluationReport = t.evaluation_report ?? evaluationReport;
     if (!['openacr', 'wcag-em', 'both'].includes(t.evaluationReport)) {
       throw new Error(`target ${t.domain}: evaluation_report must be openacr, wcag-em or both`);

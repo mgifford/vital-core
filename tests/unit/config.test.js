@@ -267,3 +267,37 @@ test('config: url_ignore_params is optional, trimmed and validated', () => {
   assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: page\n'), /url_ignore_params must be a list/);
   assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: [""]\n'), /url_ignore_params must be a list/);
 });
+
+test('config: retention policy preserves legacy weeks unless explicitly configured', () => {
+  const legacy = loadConfig('defaults:\n  retention_weeks: 2\ntargets:\n  - domain: example.gov\n').targets[0];
+  assert.equal(legacy.retentionSource, 'retention_weeks');
+  assert.equal(legacy.retentionPolicy.live.mode, 'fixed');
+  assert.equal(legacy.retentionPolicy.live.weeks, 2);
+
+  const explicit = loadConfig(`
+defaults:
+  retention_weeks: 2
+  retention:
+    profile: research
+    live: { mode: fixed, weeks: 8 }
+targets:
+  - domain: example.gov
+`).targets[0];
+  assert.equal(explicit.retentionSource, 'retention');
+  assert.equal(explicit.retentionPolicy.profile, 'research');
+  assert.equal(explicit.retentionPolicy.live.weeks, 8);
+  assert.match(explicit.retentionWarnings.join(' '), /superseded/);
+
+  const targetOverride = loadConfig(`
+targets:
+  - domain: example.gov
+    retention:
+      profile: preserve
+      live: { mode: fixed, weeks: 12 }
+`).targets[0];
+  assert.equal(targetOverride.retentionPolicy.profile, 'preserve');
+  assert.equal(targetOverride.retentionPolicy.live.weeks, 12);
+
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    retention:\n      profile: impossible\n'), /Unknown retention profile/);
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    retention:\n      live: { mode: adaptive, minimum_weeks: 18, maximum_weeks: 4 }\n'), /invalid adaptive retention week range/);
+});
