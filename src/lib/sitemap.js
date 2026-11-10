@@ -7,7 +7,7 @@ import { normalizeUrl } from './urls.js';
  * and avoids an XML dependency. `origin` is the site's canonical origin, so
  * a sitemap that lists http:// or other-of-www URLs seeds them in that form.
  */
-export async function discoverFromSitemaps(origin, host, userAgent, cap = 20000) {
+export async function discoverFromSitemaps(origin, host, userAgent, cap = 20000, ignoreParams = []) {
   const found = new Set();
   const queue = [{ url: new URL('/sitemap.xml', origin).toString(), depth: 0 }];
   const seenSitemaps = new Set();
@@ -36,7 +36,7 @@ export async function discoverFromSitemaps(origin, host, userAgent, cap = 20000)
       for (const loc of locs.slice(0, 25)) queue.push({ url: loc, depth: depth + 1 });
     } else if (!isIndex) {
       for (const loc of locs) {
-        const norm = normalizeUrl(loc, origin, host, origin);
+        const norm = normalizeUrl(loc, origin, host, origin, ignoreParams);
         if (norm) found.add(norm);
         if (found.size >= cap) break;
       }

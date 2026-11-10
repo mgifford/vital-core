@@ -114,9 +114,9 @@ if (canonicalized.moved || canonicalized.merged) {
 // --- Seed -------------------------------------------------------------
 if (Object.keys(state.pages).length === 0) {
   log('state empty; seeding from sitemap and homepage');
-  const seeds = await discoverFromSitemaps(siteOrigin, host, target.user_agent);
+  const seeds = await discoverFromSitemaps(siteOrigin, host, target.user_agent, 20000, target.urlIgnoreParams ?? []);
   log(`sitemap yielded ${seeds.length} URLs`);
-  const homeNorm = normalizeUrl(siteOrigin + '/', siteOrigin, host, siteOrigin);
+  const homeNorm = normalizeUrl(siteOrigin + '/', siteOrigin, host, siteOrigin, target.urlIgnoreParams ?? []);
   if (homeNorm) addPage(state, pageId(homeNorm), homeNorm, 0);
   for (const u of seeds) addPage(state, pageId(u), u, 1);
   state.seededAt = new Date().toISOString();
@@ -313,7 +313,7 @@ for (const item of batch) {
     // own, and not rescanned this week.
     let recId = item.id;
     let recUrl = item.url;
-    const landed = normalizeUrl(page.url(), page.url(), host, siteOrigin);
+    const landed = normalizeUrl(page.url(), page.url(), host, siteOrigin, target.urlIgnoreParams ?? []);
     if (landed && landed !== item.url) {
       const landedId = pageId(landed);
       addPage(state, landedId, landed, item.depth);
@@ -516,7 +516,7 @@ for (const item of batch) {
         let added = 0;
         for (const href of hrefs) {
           // Normalize against the canonical domain, not the test base-url.
-          const norm = normalizeUrl(href, page.url(), host === 'localhost' || host === '127.0.0.1' ? host : new URL(`https://${target.domain}`).hostname, siteOrigin);
+          const norm = normalizeUrl(href, page.url(), host === 'localhost' || host === '127.0.0.1' ? host : new URL(`https://${target.domain}`).hostname, siteOrigin, target.urlIgnoreParams ?? []);
           if (norm && urlFilter(norm) && addPage(state, pageId(norm), norm, item.depth + 1)) added++;
         }
         if (added) log(`+${added} URLs discovered on ${urlPath}`);

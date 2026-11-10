@@ -22,6 +22,10 @@ defaults:
   # Evaluation export: openacr (US procurement default), wcag-em (W3C evaluation
   # report; recommended outside the US), or both. Per-target override below.
   evaluation_report: openacr
+  # Query parameters to ignore when identifying a page (default: none). Use
+  # only for values that do not change the content, e.g. [page] for a paginated
+  # index. Query variants remain distinct pages by default.
+  url_ignore_params: []
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
   spelling_locale: en-US     # dictionary for spell checks: en-US, en-GB, en-CA or en-AU (per-target override below)
   screenshots:                # historical, bounded evidence; opt-in (privacy)
@@ -255,6 +259,10 @@ targets:
   #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
   #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
   #
+  #   evaluation_report: openacr
+  # Query parameters to ignore when identifying a page (default: none). Use
+  # only for values that do not change the content, e.g. [page] for a paginated
+  # index. Query variants remain distinct pages by default.
   #   evaluation_report: openacr | wcag-em | both — which evaluation artifact
   #     the Accessibility page offers. US fleets usually want `openacr` (draft
   #     OpenACR/VPAT-compatible); non-US fleets evaluating a website should set

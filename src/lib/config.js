@@ -78,6 +78,11 @@ export function loadConfig(rawYaml) {
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
     t.reporting = { ...(defaults.reporting ?? {}), ...(t.reporting ?? {}) };
+    const ignoreParams = t.url_ignore_params ?? [];
+    if (!Array.isArray(ignoreParams) || ignoreParams.some((name) => typeof name !== 'string' || !name.trim())) {
+      throw new Error(`target ${t.domain}: url_ignore_params must be a list of non-empty query parameter names`);
+    }
+    t.urlIgnoreParams = [...new Set(ignoreParams.map((name) => name.trim()))];
     t.evaluationReport = t.evaluation_report ?? evaluationReport;
     if (!['openacr', 'wcag-em', 'both'].includes(t.evaluationReport)) {
       throw new Error(`target ${t.domain}: evaluation_report must be openacr, wcag-em or both`);

@@ -258,3 +258,12 @@ test('config: evaluation_report defaults to openacr and accepts wcag-em', () => 
   assert.equal(both.evaluationReport, 'both', 'global default is inherited');
   assert.throws(() => loadConfig('targets:\n  - domain: example.org\n    evaluation_report: vpat\n'), /evaluation_report must be openacr, wcag-em or both/);
 });
+
+
+test('config: url_ignore_params is optional, trimmed and validated', () => {
+  assert.deepEqual(loadConfig('targets:\n  - domain: example.gov\n').targets[0].urlIgnoreParams, []);
+  const target = loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: [page, " sort "]\n').targets[0];
+  assert.deepEqual(target.urlIgnoreParams, ['page', 'sort']);
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: page\n'), /url_ignore_params must be a list/);
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: [""]\n'), /url_ignore_params must be a list/);
+});
