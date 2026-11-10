@@ -4305,7 +4305,10 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   const prog = progress ?? { new: [], fixed: [], regressed: [] };
   const lanes = policyLaneCounts(bugs);
   // The single highest-leverage finding, surfaced as the one thing to do next.
-  const win = bugs.length ? rankBugs(bugs, 1)[0] : null;
+  // A "biggest available win" must be an actionable WCAG requirement; best
+  // practice/AAA findings belong in "Beyond the requirements", not the headline.
+  const winPool = bugs.filter((bug) => bug.wcag_sc && isRequiredFinding(bug));
+  const win = winPool.length ? rankBugs(winPool, 1)[0] : null;
   const changeCount = diff
     ? [diff.axe, diff.alfa].reduce((a, d) => a + d.appeared.length + d.resolved.length + d.changed.length, 0)
     : 0;
@@ -4352,7 +4355,7 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automa
   ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
-  <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score: it reflects the typical page\'s axe violation count vs other government sites. Alfa is reported separately and manual testing is incomplete; a high value is not proof of conformance.')}</span>
+  <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score. 0–100; higher is better. It maps the median axe violation count per audited page to a benchmark curve; Alfa is sampled and reported separately. Manual testing is incomplete, so a high value is not proof of conformance.')}</span>
 </aside>
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
@@ -4474,7 +4477,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
   const { trainingPriorities = [], trainingAdvice = null } = reporting;
   const evaluationNotes = [];
   if (reporting.acrYaml) {
-    evaluationNotes.push(`<p class="meta"><strong>Draft automated accessibility evidence (OpenACR format) — not a conformance report.</strong> <a href="${esc(reporting.acrYaml)}">Download draft YAML</a>. Machine-readable and compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Manual AT testing is incomplete; many criteria remain unknown.</p>`);
+    evaluationNotes.push(`<p class="meta"><strong>Draft automated accessibility evidence (OpenACR format) — not a conformance report.</strong> <a href="${esc(reporting.acrYaml)}">Download OpenACR-formatted data (draft)</a>. This is data for OpenACR tooling, not a completed ACR: machine-readable, but manual AT testing is incomplete and many criteria remain unknown.</p>`);
   }
   if (reporting.wcagEm) {
     evaluationNotes.push(`<p class="meta"><strong>Draft automated WCAG-EM-aligned evaluation — not a conformance claim.</strong> <a href="${esc(reporting.wcagEm)}">Download WCAG-EM report</a>. It describes the weekly sample and records each criterion as failure or not evaluated. The sample is not a WCAG-EM representative sample, and manual evaluation is incomplete.</p>`);
