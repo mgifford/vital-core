@@ -713,6 +713,7 @@ try {
       await explorerPage.keyboard.press('Enter');
       assert(await explorerPage.locator('#explorer-detail').isVisible(), 'Enter on a result opens the detail panel');
       assert(await explorerPage.locator('#explorer-detail a[href*="accessible.html#"]').count() > 0, 'detail panel links to the canonical report');
+      assert(await explorerPage.locator('#explorer-detail .mcp-copy').count() === 1, 'detail panel offers an optional Playwright MCP prompt');
       assert(/#VS-/.test(explorerPage.url()), 'selecting a finding updates the URL fragment');
       assert(await explorerPage.locator('#explorer-highlight').count() === 1, 'the detail panel offers a live highlight');
       assert(await explorerPage.locator('#explorer-detail .detail-actions').count() === 1, 'primary actions are grouped at the top of the detail');

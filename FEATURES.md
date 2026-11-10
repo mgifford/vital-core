@@ -296,6 +296,21 @@ the inspector and bookmarklet now say **Page access blocked** instead of
 reporting “element not found”. Use `--print-url`, open that URL in your normal
 browser with its cookies/session, and run the VITAL Inspect bookmarklet there.
 
+### Optional Playwright MCP investigation
+
+For developers already running an MCP client, the Accessibility page and Explorer
+offer **Copy Playwright MCP prompt**. It contains the recorded URL, selector,
+tag/role/name and occurrence, and asks the client to use Microsoft's Playwright
+MCP with the Playwright browser extension. That reuses the existing Chrome/Edge
+profile and signed-in tabs, which the bookmarklet cannot do.
+
+The prompt is observation-only: report matches, visibility, coverage and the
+page state needed to reveal the element; do not run a new audit, claim
+conformance or change the page. It is external and optional (Node, Chrome/Edge
+extension and an MCP client are required), not a VITAL dependency, and still
+does not prove the violation persists. See
+[`docs-internal/PLAYWRIGHT-MCP.md`](docs-internal/PLAYWRIGHT-MCP.md).
+
 ### Deterministic Playwright reproduction
 
 A finding with captured element evidence can be replayed as a standalone
