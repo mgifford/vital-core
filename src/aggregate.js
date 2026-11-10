@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS, DEFAULT_SPELLING_LOCALE } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderExplorerPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderExplorerPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, renderArchiveEvidencePage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { summarizeEvidenceCoverage } from './lib/evidence-coverage.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
@@ -24,6 +24,7 @@ import { loadThirdPartyLedger, saveThirdPartyLedger, updateThirdPartyLedger } fr
 import { buildAiFindings } from './lib/ai-findings.js';
 import { applyFindingPolicy } from './lib/finding-policy.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
+import { readArchiveIndex, withArchiveState, writeArchiveApi } from './lib/retention-archive-index.js';
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { condenseInstance, MAX_RULE_INSTANCES, pickBrowserContext } from './lib/element-evidence.js';
@@ -93,6 +94,7 @@ const apiIndexEntries = [];
 const apiSnapshots = [];
 const apiWeekFindings = [];
 const urlLookupDomains = [];
+const archiveIndexes = [];
 
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
@@ -102,6 +104,8 @@ for (const target of config.targets) {
   }
   const reporting = target.reporting ?? {};
   const keyPages = reporting.include_key_page_issues ? loadPriorityUrls(target) : [];
+  const archiveIndex = withArchiveState(readArchiveIndex(domainDir, target.key));
+  const archiveByWeek = new Map(archiveIndex.archives.map((entry) => [entry.week, entry]));
 
   const weeks = fs.readdirSync(domainDir).filter((w) => /^\d{4}-W\d{2}$/.test(w)).sort(compareWeeks);
   const series = [];
@@ -481,8 +485,10 @@ for (const target of config.targets) {
       fs.writeFileSync(path.join(repDir, `history${sfx}.html`), renderHistoryPage(target, series, summary.week));
       // Archive page (all weeks). Written in each week folder so the subnav
       // "Archive" link resolves from any week's report.
-      const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week);
+      const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week, archiveIndex);
       if (archiveHtml) fs.writeFileSync(path.join(repDir, `archive${sfx}.html`), archiveHtml);
+      fs.writeFileSync(path.join(repDir, `evidence${sfx}.html`),
+        renderArchiveEvidencePage(target, summary, archiveByWeek.get(summary.week) ?? null, series[series.length - 1].week));
       fs.writeFileSync(path.join(repDir, `index${sfx}.html`),
         renderDomainReport(target, summary, prev, diffs[summary.week] ?? null, series, reportBugs, csvLinks, isLatest ? invSummary : null, progress));
       // Redirect stubs at the pre-rename basenames (hash-preserving), for this
@@ -573,6 +579,7 @@ for (const target of config.targets) {
   const windowSummary = summarizeWindow(target, 7) ?? series[series.length - 1];
 
   dashboard.push({ target, series, diffs, inventory: invSummary, bugs: latestBugs, windowSummary });
+  archiveIndexes.push({ ...archiveIndex, domain: target.key });
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 
@@ -590,6 +597,7 @@ for (const locale of config.languages) {
 setLocale(config.defaultLanguage);
 writeAsset(DIRS.docs);
 writeApiFiles(DIRS.docs, apiIndexEntries, apiSnapshots, apiWeekFindings);
+writeArchiveApi(DIRS.docs, archiveIndexes);
 fs.writeFileSync(path.join(DIRS.docs, 'llms.txt'), buildLlmsTxt(config, apiIndexEntries));
 writeApiCatalog(DIRS.docs, config, apiIndexEntries);
 console.log('docs/ written');

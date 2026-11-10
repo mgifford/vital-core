@@ -601,6 +601,14 @@ try {
   assert(fs.existsSync(archivePath), 'archive page written');
   const archiveHtml = fs.readFileSync(archivePath, 'utf8');
   assert(/2026-W23/.test(archiveHtml) && /2026-W24/.test(archiveHtml), 'archive lists both weeks');
+  assert(/Raw evidence/.test(archiveHtml) && /Evidence details/.test(archiveHtml), 'archive links each week to its raw-evidence state');
+  const evidencePath = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'evidence.html');
+  assert(fs.existsSync(evidencePath), 'per-week evidence/tombstone page written');
+  const evidenceHtml = fs.readFileSync(evidencePath, 'utf8');
+  assert(/No verified archive recorded/.test(evidenceHtml), 'without an archive the evidence page is an honest tombstone');
+  assert(!/http-equiv="refresh"/i.test(evidenceHtml), 'the evidence page does not redirect to a newer finding');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'api', 'v1', 'archives', 'index.json')), 'machine-readable archive index written');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'api', 'v1', 'localhost', 'archives.json')), 'per-domain archive index written');
 
   // Consistent navigation: every sub-page is written for the week, and every
   // page (including archive.html) carries the identical full subnav. A

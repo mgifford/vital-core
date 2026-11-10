@@ -185,6 +185,36 @@ test('the archive CLI writes a verified archive and leaves source detail in plac
     assert.equal(result.archives[0].status, 'complete');
     assert.ok(fs.existsSync(path.join(archiveDir, f.domain, `${f.week}.zip`)));
     assert.ok(fs.existsSync(path.join(f.domainDir, f.week, 'pages', 'p1.json')));
+    const index = JSON.parse(fs.readFileSync(path.join(f.domainDir, 'archives.json')));
+    assert.equal(index.archives[0].week, f.week);
+    assert.equal(index.archives[0].status, 'complete');
+    assert.match(index.archives[0].key, new RegExp(`${f.week}\\.zip$`));
+  } finally {
+    fs.rmSync(f.root, { recursive: true, force: true });
+  }
+});
+
+test('archive publication retries transient backend failures', async () => {
+  const f = fixture();
+  try {
+    const archiveDir = path.join(f.root, 'archives');
+    const local = createArchiveBackend({ archive: { enabled: true, backend: 'local', path: archiveDir } });
+    let puts = 0;
+    const flaky = {
+      async put(key, data) { puts++; if (puts === 1) throw new Error('transient put'); return local.put(key, data); },
+      async get(key) { return local.get(key); },
+    };
+    const result = await archiveWeek({
+      target: { key: f.domain, domain: 'example.gov' },
+      domainDir: f.domainDir,
+      week: f.week,
+      policy: { ...policy, archive: { ...policy.archive, path: archiveDir } },
+      backend: flaky,
+      attempts: 2,
+    });
+    assert.equal(result.status, 'complete');
+    assert.equal(puts, 2);
+    assert.ok(fs.existsSync(path.join(archiveDir, f.domain, `${f.week}.zip`)));
   } finally {
     fs.rmSync(f.root, { recursive: true, force: true });
   }
