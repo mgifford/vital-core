@@ -1699,6 +1699,16 @@ function nextActionsScript() {
  * issues appear first. Downloadable as CSV, Markdown,
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
  */
+function falsePositiveHelp() {
+  return `<details id="false-positive-help" class="false-positive-help">
+<summary>${t('False positives and false assurance')}</summary>
+<p>${t('Automated findings are candidate defects. Tools do not understand context: a logo can look like a contrast failure, a link can look generic without its surrounding text, and a rule can be wrong about how a name is calculated. A finding that cannot be reproduced may be a false positive, not a fix.')}</p>
+<p>${t('The reverse is also true: a clean scan is not proof of conformance. Automated tools detect only a subset of barriers, and presence checks (such as an image having any alt text) do not prove the content is useful.')}</p>
+<p>${t('If this finding is wrong, open it in the Finding Explorer and record “false positive” or “not reproduced” in the manual review record with what you observed. VITAL does not store that record or treat the finding as fixed.')}</p>
+<p class="meta">${t('See the Department for Education guidance on')} <a href="https://accessibility.education.gov.uk/tools-testing/false-positives">${t('false positives and false assurance')}</a>.</p>
+</details>`;
+}
+
 function liveInspectHelp() {
   return `<details id="live-inspect-help" class="live-inspect-help" open>
 <summary>${t('Install the VITAL Inspect bookmarklet (one time)')}</summary>
@@ -1826,6 +1836,8 @@ function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting 
     return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', t('Bug reports'))}
 <p>${t('No accessibility findings to report this week.')}</p>
+<p class="note">${t('This is not evidence of conformance. Automated tools detect only a subset of barriers, and a clean scan can give false assurance.')}</p>
+${falsePositiveHelp()}
 </section>`;
   }
   const sevCount = ordered.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
@@ -1948,6 +1960,7 @@ ${heading('h-bugs', t('Bug reports'))}
 <summary id="${esc(b.instance_id)}">
 ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></span>` : ''}<a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('confirmed duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
+<p class="meta automated-caution">${t('Automated finding — unverified. False positives and false assurance are possible; confirm before treating it as a defect.')} <a href="#false-positive-help">${t('False positives and false assurance')}</a></p>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code>${b.observation_id ? ` · <code>${esc(b.observation_id)}</code>` : ''} <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
@@ -1959,7 +1972,7 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Requirement')}</dt><dd>${requirementCell(b)}</dd></div>
   <div><dt>${t('Obligation')}</dt><dd>${esc(b.obligation ?? 'unmapped')}</dd></div>
   <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
-  <div><dt>${t('Manual validation')}</dt><dd>${t('Not reviewed.')}${(b.manual_validation?.prompts ?? []).length ? `<ul class="manual-validation">${b.manual_validation.prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join('')}</ul>` : ''}<span class="bug-meta">${esc(b.manual_validation?.environment_note ?? '')} ${t('Automated evidence: open this finding in the Explorer to download a blank review record for the reviewer and testing environment.')}</span></dd></div>
+  <div><dt>${t('Manual validation')}</dt><dd>${t('Not reviewed.')}${(b.manual_validation?.prompts ?? []).length ? `<ul class="manual-validation">${b.manual_validation.prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join('')}</ul>` : ''}<span class="bug-meta">${esc(b.manual_validation?.environment_note ?? '')} ${esc(b.manual_validation?.false_positive_check ?? '')} ${t('Automated evidence: open this finding in the Explorer to download a blank review record for the reviewer and testing environment.')}</span></dd></div>
   <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
   <div><dt>${t('Rule')}</dt><dd>${ruleLink}</dd></div>
   <div><dt>${t('Engine impact')}</dt><dd>${esc(evidenceReport.engine_severity ?? t('Not supplied by the engine'))}</dd></div>
@@ -2083,6 +2096,7 @@ ${exclusionBox(target, { bugsJson: reporting.bugsJson ?? 'bugs.json' })}
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
 ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
 <p class="note">${t('Automated testing does not establish full WCAG conformance. Findings in the verification lane require manual testing before they are treated as confirmed failures.')}</p>
+${falsePositiveHelp()}
 <p class="note">${t('@observations engine finding(s), @groups remediation group(s). Only complete confirmed duplicates share a group. Related and possible duplicates remain separate. The number of fixes is unknown.', { '@observations': findingReporting.summary.engine_finding_count, '@groups': findingReporting.summary.remediation_group_count })}</p>
 ${priorityLine}
 ${dupLine}
@@ -2094,6 +2108,7 @@ ${scopeOfAnalysisBlock(summary, ordered)}
 <label class="triage-btn triage-import-label"><input type="file" id="triage-import" accept=".json" style="display:none">${t('Import (.json)')}</label>
 <span id="triage-io-status" class="triage-io-status" aria-live="polite"></span>
 </div>
+<p class="bug-meta">${t('Triage status and notes are stored only in this browser. They do not change the published report or VITAL data; use the Finding Explorer manual review record for a portable record.')}</p>
 ${filterBar}
 <div class="bug-list">${blocks}</div>
 <p class="bug-filter-empty" hidden>${t('No issues match the current filters.')} <button type="button" id="filter-reset-2">${t('Clear filters')}</button></p>
@@ -5916,6 +5931,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     guidance.prompts.forEach(function (prompt) { prompts.appendChild(text('li', prompt)); });
     section.appendChild(prompts);
     section.appendChild(text('p', guidance.environment_note, 'bug-meta'));
+    if (guidance.false_positive_check) section.appendChild(text('p', guidance.false_positive_check, 'bug-meta'));
 
     var fieldset = document.createElement('fieldset');
     fieldset.className = 'manual-review-fields';
@@ -6410,6 +6426,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
 <h1>${esc(target.domain)}: ${t('Findings explorer')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('explorer')}
 ${evidenceCoverageSection(summary)}
+${falsePositiveHelp()}
 <p class="meta">${t('Inspect the week\'s findings by region, widget type and component. This view reads the same sanitized evidence as the <a href="@report">Accessibility report</a>; the full finding detail stays there and every row links back to it.', { '@report': esc(pageHref('accessibility')) })}</p>
 ${liveInspectHelp()}
 <section aria-labelledby="h-explorer-find">

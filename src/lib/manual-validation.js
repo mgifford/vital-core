@@ -190,6 +190,7 @@ export function manualValidationFor(bug) {
     prompts,
     environment: ENVIRONMENT,
     environment_note: 'Use the conditions that can affect this finding; not every item applies to every finding.',
+    false_positive_check: 'If the finding does not reproduce, record “false positive” or “not reproduced” and what you observed. A missing finding is not evidence that the page is conformant, and a recorded review does not establish conformance.',
     limitations: LIMITATIONS,
   };
 }
