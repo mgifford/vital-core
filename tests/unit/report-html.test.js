@@ -1470,6 +1470,9 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   assert.match(html, /manual-reviewer/, 'manual review captures the reviewer');
   assert.match(html, /manual-review-status/, 'manual review captures the review status');
   assert.match(html, /Reviewer name/, 'review fields have visible labels');
+  assert.match(html, /Automated finding\./, 'detail starts with a concise automated-finding lead');
+  assert.match(html, /detail-actions/, 'primary actions are grouped before technical evidence');
+  assert.match(html, /explorer-manual/, 'manual validation is a direct anchor');
   assert.match(html, /automated evidence, not a confirmed failure/i, 'manual prompts distinguish automated evidence');
   // Empty state is honest rather than an empty table.
   const empty = renderExplorerPage(target, { week: '2026-W25', pagesScanned: 1 }, []);

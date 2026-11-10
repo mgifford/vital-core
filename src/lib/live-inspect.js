@@ -56,6 +56,7 @@ export function inspectCodeFor(bug) {
     t: typeof bug.element?.tag === 'string' ? bug.element.tag.slice(0, 50) : null,
     r: typeof bug.element?.role === 'string' ? bug.element.role.slice(0, 50) : null,
     n: typeof bug.element?.name === 'string' ? bug.element.name.slice(0, 200) : null,
+    txt: typeof bug.element?.text_anchor === 'string' ? bug.element.text_anchor.slice(0, 80) : null,
     ns: bug.element?.name_source ?? 'none',
     rule: typeof bug.rule_id === 'string' ? bug.rule_id.slice(0, 100) : null,
     label: String(bug.rule_label ?? bug.summary ?? '').slice(0, 200) || null,
@@ -106,7 +107,7 @@ export function decodeInspectToken(token) {
 
 /** Validate an inspection payload before it is used. Returns {ok} or {ok:false, reason}. */
 export function validateInspectPayload(payload, pageHref) {
-  const payloadKeys = ['v', 's', 'x', 't', 'r', 'n', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id', 'obs', 'ref'];
+  const payloadKeys = ['v', 's', 'x', 't', 'r', 'n', 'txt', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id', 'obs', 'ref'];
   const nameSources = ['aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby', 'aria-labelledby-unresolved', 'none'];
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { ok: false, reason: 'inspection payload must be an object' };
   for (const key of Object.keys(payload)) {
@@ -135,7 +136,7 @@ export function validateInspectPayload(payload, pageHref) {
     if (typeof value !== 'string' || value.length > max) return false;
     return true;
   };
-  if (!stringOrNull('t', 50) || !stringOrNull('r', 50) || !stringOrNull('n', 200) || !stringOrNull('rule', 100) || !stringOrNull('label', 200) || !stringOrNull('w', 20) || !stringOrNull('fix', 400) || !stringOrNull('h', 500) || !stringOrNull('id', 100) || !stringOrNull('obs', 100) || !stringOrNull('ref', 100)) {
+  if (!stringOrNull('t', 50) || !stringOrNull('r', 50) || !stringOrNull('n', 200) || !stringOrNull('txt', 80) || !stringOrNull('rule', 100) || !stringOrNull('label', 200) || !stringOrNull('w', 20) || !stringOrNull('fix', 400) || !stringOrNull('h', 500) || !stringOrNull('id', 100) || !stringOrNull('obs', 100) || !stringOrNull('ref', 100)) {
     return { ok: false, reason: 'inspection payload field is too long or the wrong type' };
   }
   if (payload.ns != null && !nameSources.includes(payload.ns)) return { ok: false, reason: 'invalid name source in inspection payload' };
@@ -185,6 +186,7 @@ export function vitalInspect(validate) {
   if (previous) previous.remove();
   var previousFocus = document.activeElement;
   var matches = [];
+  var fallbackReason = '';
   var index = 0;
   var target = null;
   var hidden = false;
@@ -207,6 +209,7 @@ export function vitalInspect(validate) {
   var nextButton = null;
   var findAgain = null;
   var toggle = null;
+  var showElement = null;
   var showChanged = null;
   var collapse = null;
   var move = null;
@@ -263,6 +266,7 @@ export function vitalInspect(validate) {
   function evaluate() {
     target = matches[index] || null;
     if (!target) return { status: 'not_located' };
+    if (fallbackReason) return { status: 'candidate', reason: fallbackReason, comparison: compare(target) };
     var result = compare(target);
     if (matches.length > 1) return { status: 'candidate', reason: matches.length + ' elements match the selector. Compare them before choosing.', comparison: result };
     return result;
@@ -280,6 +284,29 @@ export function vitalInspect(validate) {
       }
     } catch (error) {
       matches = [];
+    }
+    fallbackReason = '';
+    if (!matches.length) {
+      var fallback = [];
+      var wantedText = (payload.txt || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      var wantedName = typeof payload.n === 'string' ? payload.n : '';
+      var nameSource = ['aria-label', 'alt', 'title', 'placeholder'].indexOf(payload.ns) >= 0 ? payload.ns : null;
+      var tag = typeof payload.t === 'string' && /^[a-zA-Z][a-zA-Z0-9-]*$/.test(payload.t) ? payload.t : '*';
+      var all = document.querySelectorAll(tag);
+      for (var n = 0; n < all.length && fallback.length < 10; n++) {
+        var el = all[n];
+        var text = (el.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+        var byText = wantedText && text === wantedText;
+        var byName = nameSource && wantedName && el.getAttribute(nameSource) === wantedName;
+        if ((byText || byName) && !isInvisible(el)) fallback.push(el);
+      }
+      if (fallback.length) {
+        matches = fallback;
+        fallbackReason = fallback.length + ' element(s) match the recorded ' + (wantedText ? 'visible text' : 'name') + ', but the recorded selector no longer matches. This is a candidate, not a confirmed occurrence.';
+      }
+    }
+    for (var k = 0; k < matches.length; k++) {
+      if (!isInvisible(matches[k])) { index = k; break; }
     }
     return evaluate();
   }
@@ -319,6 +346,7 @@ export function vitalInspect(validate) {
       '<button type="button" id="vital-inspect-previous">Previous candidate</button>' +
       '<button type="button" id="vital-inspect-next">Next candidate</button>' +
       '<button type="button" id="vital-inspect-find">Find again</button>' +
+      '<button type="button" id="vital-inspect-show">Show element</button>' +
       '<button type="button" id="vital-inspect-toggle">Hide highlight</button>' +
       '<button type="button" id="vital-inspect-show-changed">Show changed element</button>' +
       '<button type="button" id="vital-inspect-collapse" aria-expanded="true" aria-controls="vital-inspect-details">Collapse</button>' +
@@ -335,15 +363,17 @@ export function vitalInspect(validate) {
     previousButton = root.querySelector('#vital-inspect-previous');
     nextButton = root.querySelector('#vital-inspect-next');
     findAgain = root.querySelector('#vital-inspect-find');
+    showElement = root.querySelector('#vital-inspect-show');
     toggle = root.querySelector('#vital-inspect-toggle');
     showChanged = root.querySelector('#vital-inspect-show-changed');
     collapse = root.querySelector('#vital-inspect-collapse');
     move = root.querySelector('#vital-inspect-move');
     ui.style.cssText = 'position: fixed; right: 16px; bottom: 16px; max-width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; background: #fff; color: #1b1b1b; border: 2px solid #1b1b1b; border-radius: 6px; box-shadow: 0 6px 28px rgba(0,0,0,.4); font: 14px/1.45 system-ui,-apple-system,sans-serif; padding: 16px 18px; pointer-events: auto;';
     close.addEventListener('click', cleanup);
-    previousButton.addEventListener('click', function () { if (index > 0) { index--; target = matches[index]; stopWatchers(); watch(); render(evaluate()); } });
-    nextButton.addEventListener('click', function () { if (index < matches.length - 1) { index++; target = matches[index]; stopWatchers(); watch(); render(evaluate()); } });
+    previousButton.addEventListener('click', function () { if (index > 0) { index--; target = matches[index]; stopWatchers(); watch(); render(evaluate()); reveal(); } });
+    nextButton.addEventListener('click', function () { if (index < matches.length - 1) { index++; target = matches[index]; stopWatchers(); watch(); render(evaluate()); reveal(); } });
     findAgain.addEventListener('click', function () { run(); });
+    showElement.addEventListener('click', reveal);
     toggle.addEventListener('click', function () {
       hidden = !hidden;
       if (box) box.hidden = hidden;
@@ -355,6 +385,7 @@ export function vitalInspect(validate) {
         drawBox('changed', 'Different element — not the recorded occurrence');
         showChanged.hidden = true;
         toggle.hidden = false;
+        reveal();
       }
     });
     collapse.addEventListener('click', function () {
@@ -408,9 +439,9 @@ export function vitalInspect(validate) {
     box.id = 'vital-inspect-box';
     box.setAttribute('aria-hidden', 'true');
     box.style.cssText = kind === 'matched'
-      ? 'border:3px solid #d4351c;box-shadow:0 0 0 2px #fff,0 0 0 5px #1b1b1b;'
+      ? 'border:3px solid #d4351c;background:rgba(212,53,28,.12);box-shadow:0 0 0 2px #fff,0 0 0 5px #1b1b1b;'
       : kind === 'candidate'
-        ? 'border:3px dashed #8a5a00;box-shadow:0 0 0 2px #fff,0 0 0 4px #1b1b1b;'
+        ? 'border:3px dashed #8a5a00;background:rgba(224,165,38,.14);box-shadow:0 0 0 2px #fff,0 0 0 4px #1b1b1b;'
         : 'border:3px dashed #4a4a4a;box-shadow:0 0 0 2px #fff;';
     label = document.createElement('div');
     label.id = 'vital-inspect-label';
@@ -423,6 +454,33 @@ export function vitalInspect(validate) {
     toggle.hidden = false;
     place();
   }
+  function isInvisible(el) {
+    if (!el || !el.isConnected) return true;
+    var style = window.getComputedStyle(el);
+    return el.getClientRects().length === 0 || style.visibility === 'hidden' || style.display === 'none' || style.opacity === '0';
+  }
+  function reveal() {
+    if (!target) return;
+    if (isInvisible(target)) {
+      liveState = 'hidden';
+      removeBox();
+      heading.textContent = 'Recorded element is hidden in this page state';
+      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again.';
+      toggle.hidden = true;
+      showElement.hidden = true;
+      return;
+    }
+    liveState = 'ok';
+    showElement.hidden = false;
+    try {
+      target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'auto' });
+    } catch (error) { /* older browsers: still place the fixed box */ }
+    var afterScroll = function () { place(); avoidTarget(); };
+    (window.requestAnimationFrame || function (fn) { setTimeout(fn, 16); })(function () {
+      afterScroll();
+      setTimeout(afterScroll, 80);
+    });
+  }
   function place() {
     if (!target || !box || hidden || liveState !== 'ok') return;
     var r = target.getBoundingClientRect();
@@ -431,8 +489,10 @@ export function vitalInspect(validate) {
     box.style.width = Math.max(2, r.width + 6) + 'px';
     box.style.height = Math.max(2, r.height + 6) + 'px';
     if (label) {
-      label.style.left = Math.max(0, Math.min(window.innerWidth - 160, r.left - 3)) + 'px';
-      label.style.top = Math.max(0, r.top - 27) + 'px';
+      label.style.left = Math.max(0, Math.min(window.innerWidth - 190, r.left - 3)) + 'px';
+      var labelTop = r.top - 27;
+      if (labelTop < 0 || r.top < 30) labelTop = Math.min(window.innerHeight - 26, r.bottom + 4);
+      label.style.top = Math.max(0, labelTop) + 'px';
     }
   }
   function schedule() {
@@ -481,8 +541,10 @@ export function vitalInspect(validate) {
       if (liveState !== 'hidden') {
         liveState = 'hidden';
         removeBox();
-        statusLine.textContent = 'The live element is hidden. The highlight is suspended until it becomes visible again.';
+        heading.textContent = 'Recorded element is hidden in this page state';
+        statusLine.textContent = 'The live element is hidden. Open the menu, tab, dialog or accordion that contains it, then choose Find again.';
         toggle.hidden = true;
+        showElement.hidden = true;
       }
       return;
     }
@@ -490,6 +552,7 @@ export function vitalInspect(validate) {
       liveState = 'ok';
       render(evaluate());
       watch();
+      reveal();
       return;
     }
     if (liveState === 'broken') return;
@@ -522,8 +585,14 @@ export function vitalInspect(validate) {
     previousButton.disabled = index === 0;
     nextButton.disabled = index >= matches.length - 1;
     toggle.hidden = !box || result.status === 'changed';
+    showElement.hidden = !target || result.status === 'changed' || liveState !== 'ok';
     showChanged.hidden = result.status !== 'changed';
-    if (result.status === 'matched') {
+    if (target && isInvisible(target) && (result.status === 'matched' || result.status === 'candidate')) {
+      heading.textContent = 'Recorded element is hidden in this page state';
+      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again.';
+      toggle.hidden = true;
+      showElement.hidden = true;
+    } else if (result.status === 'matched') {
       heading.textContent = 'Recorded element located';
       statusLine.textContent = 'The selector and recorded identity agree. This does not re-test the accessibility violation.';
     } else if (result.status === 'candidate') {
@@ -605,6 +674,7 @@ export function vitalInspect(validate) {
     liveState = 'ok';
     render(collect());
     watch();
+    reveal();
   }
   function onKey(event) { if (event.key === 'Escape') cleanup(); }
   function cleanup() {

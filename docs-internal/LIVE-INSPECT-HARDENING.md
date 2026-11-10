@@ -164,6 +164,21 @@ Final measured values: bookmarklet **23,397 bytes**, typical code **424 bytes**,
 decoded payload **318 bytes**. Chromium activation-to-panel remains in the tens
 of milliseconds; see the measurements section.
 
+## Finding the element
+
+The panel scrolls the first **visible** candidate into view on activation and
+offers **Show element** to re-centre it. A matched element with no visible box
+(display:none, visibility:hidden, opacity:0, zero rect) is reported as **hidden
+in this page state**, with instructions to open the containing menu/tab/dialog
+and choose **Find again**. It is never replaced with a different element just to
+produce a visible outline. The outline now includes a translucent fill as well
+as the high-contrast border.
+
+If the recorded selector no longer matches, the panel looks for up to ten
+visible elements of the recorded tag whose visible text anchor or recorded name
+attribute matches. They are offered as **candidates**, never as a located
+occurrence, and the panel says the recorded selector no longer matches.
+
 ## Access-block pages
 
 The bookmarklet now detects common Akamai/edge access-denied pages and reports

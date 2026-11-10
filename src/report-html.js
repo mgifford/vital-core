@@ -1927,7 +1927,7 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code>${b.observation_id ? ` · <code>${esc(b.observation_id)}</code>` : ''} <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
   ${b.finding_ref ? `<div><dt>${t('Stable reference')}</dt><dd><code>${esc(b.finding_ref)}</code> <span class="bug-meta">${t('Content-independent link target for this rule finding.')}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>`}${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page. The panel scrolls to the element and says when it is hidden behind a menu, tab or dialog.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>`}${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -5739,6 +5739,10 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .screenshot-marker-label { position: absolute; top: -1.6rem; left: -3px; background: #000; color: #fff; font-weight: 700; font-size: .8rem; padding: .05rem .35rem; border-radius: 2px; }
 .screenshot-toggle { display: inline-flex; gap: .4rem; align-items: center; margin-top: .4rem; }
 .screenshot-figure figcaption { font-size: .9rem; color: var(--muted); margin-top: .4rem; }
+.detail-lead { border-left: 4px solid var(--accent); padding: .4rem 0 .4rem .75rem; margin-bottom: .75rem; }
+.detail-lead p { margin: 0 0 .4rem; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: .4rem .8rem; align-items: center; }
+.detail-actions a, .detail-actions button { font: inherit; }
 .manual-validation-block { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .75rem; }
 .manual-validation-block ul { margin: .4rem 0; }
 .manual-review-fields { display: flex; flex-wrap: wrap; gap: .6rem; margin: .8rem 0; padding: .6rem; border: 1px solid var(--rule); }
@@ -5879,6 +5883,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     var guidance = manualValidationFor(bug);
     var section = document.createElement('section');
     section.className = 'manual-validation-block';
+    section.id = 'explorer-manual';
     section.appendChild(text('h4', LABELS.manualValidation));
     section.appendChild(text('p', LABELS.manualAutomated, 'bug-meta'));
     section.appendChild(text('p', LABELS.notReviewed, 'bug-meta'));
@@ -5938,6 +5943,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     if (!shot || shot.available !== true || !shot.file) return null;
     var figure = document.createElement('figure');
     figure.className = 'screenshot-figure';
+    figure.id = 'explorer-screenshot';
     var scroll = document.createElement('div');
     scroll.className = 'screenshot-scroll';
     var inner = document.createElement('div');
@@ -6029,6 +6035,67 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     activeId = id;
     detailBody.textContent = '';
     detailTitle.textContent = (bug.summary || bug.rule_label || bug.rule_id) + ' — ' + id;
+    var lead = document.createElement('div');
+    lead.className = 'detail-lead';
+    var leadText = document.createElement('p');
+    leadText.appendChild(text('strong', LABELS.automatedFinding + ' '));
+    leadText.appendChild(document.createTextNode(
+      (bug.severity || '') + ' · ' +
+      (bug.wcag_sc ? 'WCAG ' + bug.wcag_sc + ' · ' : '') +
+      ((bug.frequency && bug.frequency.pages_affected) || 0) + ' page(s) · ' +
+      regionPath(bug)
+    ));
+    lead.appendChild(leadText);
+    var actions = document.createElement('div');
+    actions.className = 'detail-actions';
+    var inspect = inspectUrlFor(bug);
+    var inspectReason = inspectUnavailableReason(bug);
+    if (inspect) {
+      var inspectLink = document.createElement('a');
+      inspectLink.id = 'explorer-highlight';
+      inspectLink.href = inspect;
+      inspectLink.target = '_blank';
+      inspectLink.rel = 'noopener';
+      inspectLink.textContent = LABELS.highlightOnSite;
+      actions.appendChild(inspectLink);
+      var inspectCode = inspectCodeFor(bug);
+      if (inspectCode) {
+        var copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'inspect-copy';
+        copy.id = 'explorer-inspect-code';
+        copy.setAttribute('data-inspect-code', inspectCode);
+        copy.textContent = LABELS.copyInspectCode;
+        actions.appendChild(copy);
+      }
+    } else if (inspectReason) {
+      var unavailable = document.createElement('a');
+      unavailable.href = '#live-inspect-help';
+      unavailable.textContent = LABELS.highlightUnavailable + ' ' + LABELS.aboutLiveInspection;
+      actions.appendChild(unavailable);
+    }
+    if (bug.screenshot?.available) {
+      var shotLink = document.createElement('a');
+      shotLink.href = '#explorer-screenshot';
+      shotLink.textContent = LABELS.viewScreenshot;
+      actions.appendChild(shotLink);
+    }
+    if (reproductionPlan(bug).status !== 'unavailable') {
+      var testButton = document.createElement('button');
+      testButton.type = 'button';
+      testButton.textContent = LABELS.downloadTest;
+      testButton.addEventListener('click', function () { downloadReproduction(bug); });
+      actions.appendChild(testButton);
+    }
+    var manualLink = document.createElement('a');
+    manualLink.href = '#explorer-manual';
+    manualLink.textContent = LABELS.manualValidation;
+    actions.appendChild(manualLink);
+    if (bug.instance_id) {
+      actions.appendChild(externalLink(REPORT_HREF + '#' + encodeURIComponent(bug.instance_id), LABELS.fullReport));
+    }
+    lead.appendChild(actions);
+    detailBody.appendChild(lead);
     var list = document.createElement('dl');
     list.appendChild(pair(LABELS.rule, bug.rule_id + (bug.rule_label ? ' — ' + bug.rule_label : '')));
     list.appendChild(pair(LABELS.engine, bug.engine_key));
@@ -6088,39 +6155,6 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     list.appendChild(pair(LABELS.interaction, LABELS.notCaptured));
     list.appendChild(pair(LABELS.screenshot, bug.screenshot?.available ? LABELS.captured : (bug.screenshot?.reason || LABELS.noScreenshot)));
     list.appendChild(reproductionRow(bug));
-    var inspect = inspectUrlFor(bug);
-    var inspectReason = inspectUnavailableReason(bug);
-    if (!inspect && inspectReason) {
-      var unavailable = text('p', LABELS.highlightUnavailable + ' ' + inspectUnavailableText(inspectReason) + ' ', 'bug-meta');
-      var helpLink = document.createElement('a');
-      helpLink.href = '#live-inspect-help';
-      helpLink.textContent = LABELS.aboutLiveInspection;
-      unavailable.appendChild(helpLink);
-      detailBody.appendChild(unavailable);
-    }
-    if (inspect) {
-      var inspectNote = document.createElement('p');
-      var inspectLink = document.createElement('a');
-      inspectLink.id = 'explorer-highlight';
-      inspectLink.href = inspect;
-      inspectLink.target = '_blank';
-      inspectLink.rel = 'noopener';
-      inspectLink.textContent = LABELS.highlightOnSite;
-      inspectNote.appendChild(inspectLink);
-      inspectNote.appendChild(document.createTextNode(' ' + LABELS.highlightHint));
-      var inspectCode = inspectCodeFor(bug);
-      if (inspectCode) {
-        var copy = document.createElement('button');
-        copy.type = 'button';
-        copy.className = 'inspect-copy';
-        copy.id = 'explorer-inspect-code';
-        copy.setAttribute('data-inspect-code', inspectCode);
-        copy.textContent = LABELS.copyInspectCode;
-        inspectNote.appendChild(document.createTextNode(' '));
-        inspectNote.appendChild(copy);
-      }
-      detailBody.appendChild(inspectNote);
-    }
     detailBody.appendChild(list);
     var shotFigure = screenshotSection(bug);
     if (shotFigure) detailBody.appendChild(shotFigure);
@@ -6297,7 +6331,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     highlightOnSite: t('Highlight on site'),
     highlightUnavailable: t('Live highlighting is unavailable.'),
     aboutLiveInspection: t('About live inspection'),
-    highlightHint: t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page.'),
+    highlightHint: t('Requires the VITAL Inspect bookmarklet; the panel scrolls to the element and reports when it is hidden in the current page state.'),
     copyInspectCode: t('Copy inspection code'),
     screenshot: t('Screenshot'),
     screenshotAlt: t('Screenshot of the affected page'),
@@ -6312,6 +6346,9 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     stableReference: t('Stable reference'),
     observed: t('Observed'),
     manualValidation: t('Manual validation'),
+    automatedFinding: t('Automated finding.'),
+    viewScreenshot: t('View historical screenshot'),
+    startHere: t('Start here'),
     notReviewed: t('Not reviewed. These prompts are specific to this finding; recording an answer does not establish conformance.'),
     manualAutomated: t('This is automated evidence, not a confirmed failure. Test the task with a keyboard and, where relevant, a screen reader before recording an outcome.'),
     reviewFields: t('Reviewer and testing environment'),

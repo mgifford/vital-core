@@ -65,6 +65,7 @@ test('inspect URL carries a compact payload for the live page', () => {
   assert.equal(payload.t, 'button');
   assert.equal(payload.r, null);
   assert.equal(payload.n, 'Save changes');
+  assert.equal(payload.txt, null, 'no text anchor for a button without visible text');
   assert.equal(payload.ns, 'aria-label');
   assert.equal(payload.rule, 'button-name');
   assert.equal(payload.w, '4.1.2');
@@ -168,11 +169,23 @@ test('incomplete historical identity is a candidate, not a match', async () => {
 test('a missing element is not found and offers Find again', async () => {
   await withFixture(async ({ browser, base }) => {
     const page = await browser.newPage();
-    await openInspect(page, base, { selector: '#not-here' });
+    await openInspect(page, base, { selector: '#not-here', element: { available: true, tag: 'button', role: null, name: 'Missing label', name_source: 'aria-label' } });
     assert.match(await page.locator('#vital-inspect-title').innerText(), /Element not found/);
     assert.match(await page.locator('#vital-inspect-ui').innerText(), /Possible causes/);
     assert.equal(await page.locator('#vital-inspect-box').count(), 0);
     assert.equal(await page.getByRole('button', { name: 'Find again' }).count(), 1);
+  });
+});
+
+test('a stale selector can fall back to a name candidate, clearly labelled', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    await openInspect(page, base, { selector: '#renamed-away' });
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /Possible matching element/i);
+    const panel = await page.locator('#vital-inspect-ui').innerText();
+    assert.match(panel, /recorded selector no longer matches/i);
+    assert.match(panel, /candidate, not a confirmed occurrence/i);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1, 'the candidate is outlined for verification');
   });
 });
 
@@ -405,6 +418,68 @@ test('an XPath payload locates the element for the local inspector', async () =>
     await page.goto(url);
     await page.evaluate(vitalInspect);
     assert.match(await page.locator('#vital-inspect-title').innerText(), /Recorded element located/);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1);
+  });
+});
+
+test('a matched element below the viewport is scrolled into view and outlined', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 600 } });
+    await openInspect(page, base, {
+      selector: '#far',
+      element: { available: true, tag: 'button', role: null, name: 'Far away', name_source: 'aria-label' },
+    });
+    const scrollY = await page.evaluate(() => window.scrollY);
+    assert.ok(scrollY > 100, 'the page scrolls toward the target');
+    const box = await page.locator('#vital-inspect-box').boundingBox();
+    assert.ok(box && box.y >= 0 && box.y < 600, 'the outline is inside the viewport');
+    assert.equal(await page.locator('#vital-inspect-show').isVisible(), true, 'a Show element control is offered');
+  });
+});
+
+test('an initially hidden element is reported as hidden, not silently unhighlighted', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    await openInspect(page, base, {
+      selector: '#hidden-initial',
+      element: { available: true, tag: 'button', role: null, name: 'Hidden target', name_source: 'aria-label' },
+    });
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /hidden in this page state/i);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 0, 'no zero-size outline');
+    assert.match(await page.locator('#vital-inspect-status').innerText(), /Open the menu, tab, dialog or accordion/i);
+
+    await page.evaluate(() => { document.getElementById('hidden-initial').style.display = 'inline-block'; });
+    await page.locator('#vital-inspect-find').click();
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /located/i);
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1, 'the element is outlined after it becomes visible');
+  });
+});
+
+test('multiple matches choose the first visible candidate, not a hidden one', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    await openInspect(page, base, {
+      selector: '.pick',
+      element: { available: true, tag: 'button', role: null, name: 'Pick me', name_source: 'aria-label' },
+    });
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /Possible matching element/i);
+    assert.match(await page.locator('#vital-inspect-status').innerText(), /Candidate 2 of 2/);
+    const box = await page.locator('#vital-inspect-box').boundingBox();
+    assert.ok(box && box.width > 0, 'the visible candidate is outlined');
+    assert.equal(await page.locator('#vital-inspect-box').count(), 1);
+  });
+});
+
+test('an escaped-colon desktop nav selector resolves the recorded FAQ link', async () => {
+  await withFixture(async ({ browser, base }) => {
+    const page = await browser.newPage();
+    await openInspect(page, base, {
+      selector: '.desktop\\:display-block > .usa-nav__secondary > .usa-nav__secondary-links > li > a[target="_self"][href$="faq"]',
+      element: { available: true, tag: 'a', role: null, name: 'Go to Frequently Asked Questions (FAQs)', name_source: 'aria-label' },
+    });
+    assert.match(await page.locator('#vital-inspect-title').innerText(), /located/i);
+    const panel = await page.locator('#vital-inspect-ui').innerText();
+    assert.match(panel, /Go to Frequently Asked Questions \(FAQs\)/);
     assert.equal(await page.locator('#vital-inspect-box').count(), 1);
   });
 });

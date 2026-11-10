@@ -210,15 +210,22 @@ live page with a compact VITAL payload in the URL fragment. Clicking the
   check agree. This confirms only that the element is still present; it does
   **not** re-test the violation.
 - **Possible matching element. Verification required.** — several elements
-  match, or the recorded tag/role/name evidence is incomplete. Candidates are
-  outlined with a dashed box and can be inspected with Previous/Next.
+  match, the recorded tag/role/name evidence is incomplete, or the selector is
+  stale and a visible element matches the recorded name/visible text. Candidates
+  are outlined with a dashed box and can be inspected with Previous/Next.
+- **Recorded element is hidden in this page state** — the selector matches a
+  real element with no visible box (closed menu/tab/dialog, `display:none`,
+  `visibility:hidden`, zero rect). The panel says so rather than drawing an
+  invisible outline; open the containing state and choose Find again.
 - **Recorded element changed** — the selector matches, but the recorded tag,
   role or name attribute differs. The element is **not** highlighted as the
   original occurrence unless the user explicitly chooses “Show changed element”.
 - **Element not found** — with possible causes and a **Find again** action.
 
-The panel shows the occurrence id, rule, WCAG mapping, selector, recorded and
-live identity, differences and historical remediation guidance. It is rendered in a shadow
+The panel scrolls the first visible candidate into view, offers **Show element**
+to re-centre it, and adds a translucent fill to the high-contrast outline. It
+shows the occurrence id, rule, WCAG mapping, selector, recorded and live
+identity, differences and historical remediation guidance. It is rendered in a shadow
 root so aggressive page CSS cannot hide it, can be collapsed or moved between
 corners, and offers Hide highlight, Find again, and candidate navigation. It
 detects when the element is removed or replaced, becomes hidden, or changes a

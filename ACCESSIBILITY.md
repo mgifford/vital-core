@@ -69,6 +69,10 @@ not prove the historical violation still exists.
   not interchangeable.
 - **Access-denied pages:** the bookmarklet and local inspector report a firewall
   or bot-block page explicitly; they do not try to bypass it.
+- **Can’t see the highlight?** The panel scrolls to the first visible candidate
+  and offers **Show element**. If the element is hidden in a closed menu, tab,
+  dialog or accordion, the panel says so and asks you to open it and choose
+  **Find again**; it never substitutes a different visible element.
 - **Manual assistive-technology testing of the bookmarklet has not been
   performed yet.** Keyboard behaviour is tested in Chromium; screen reader,
   forced-colors and cross-browser checks remain manual work.
