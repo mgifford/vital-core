@@ -1743,6 +1743,7 @@ function liveInspectHelp() {
 </details>
 <p class="meta">${t('The overlay shows the recorded rule, selector, WCAG mapping and fix text. It sends nothing and is not stored. It follows the recorded selector; if the element has changed, it says so rather than guessing.')}</p>
 <p class="meta">${t('If the site uses its URL fragment for routing, or the highlight link does not carry the code, use Copy inspection code and paste it when the bookmarklet asks.')}</p>
+<p class="meta">${t('If you cannot locate the element, do not close the finding as fixed. Record “not reproduced” or “false positive” in the Finding Explorer’s manual review record; a missing highlight is unverified evidence.')}</p>
 <p class="meta">${t('Browser restriction: a page with a strict script-src Content-Security-Policy can block bookmarklets. Do not weaken the site policy; use the Finding Explorer or the Playwright reproduction instead.')}</p>
 <details class="bookmarklet-troubleshoot">
 <summary>${t('Clicked VITAL Inspect and nothing happened?')}</summary>
