@@ -3859,7 +3859,8 @@ ${subnav('third-party')}
   <th scope="col" class="num">${t('Pages w/ finding')}</th>
 </tr></thead>
 <tbody>${rows}</tbody>
-</table>`;
+</table>
+`;
   return layout({
     title: `${target.domain} Third Parties ${summary.week} | vital-scans`,
     page: "third-party",
@@ -4136,12 +4137,41 @@ ${errorsSection}`;
 }
 
 /**
+ * Compact accounting for the archive page. These are deliberately different
+ * quantities: weekly summaries, archive objects and discovered observations
+ * are not interchangeable.
+ */
+function archiveAccounting(archiveIndex, observationSummary, summaryWeeks) {
+  const counts = archiveIndex?.counts ?? {};
+  const observations = observationSummary ?? {};
+  return `<section aria-labelledby="h-archive-accounting">
+${heading('h-archive-accounting', t('What is preserved'), 2)}
+<ul>
+  <li>${t('Weekly summaries: @n', { '@n': summaryWeeks })}</li>
+  <li>${t('Available archives: @available · expired: @expired · incomplete: @incomplete · missing: @missing', {
+    '@available': counts.available ?? 0,
+    '@expired': counts.expired ?? 0,
+    '@incomplete': counts.incomplete ?? 0,
+    '@missing': counts.missing ?? 0,
+  })}</li>
+  <li>${t('Discovered URLs: @total · never scanned: @never · stale successes: @stale · clean for automated engines: @clean', {
+    '@total': observations.total_urls ?? 0,
+    '@never': observations.never_scanned ?? 0,
+    '@stale': observations.stale ?? 0,
+    '@clean': observations.clean_without_automated_findings ?? 0,
+  })}</li>
+</ul>
+<p class="meta">${t('“Clean” means no axe or Alfa finding was recorded, not that the page conforms. Stale evidence and archived results are historical, not live.')}</p>
+</section>`;
+}
+
+/**
  * Archive page: every retained ISO-week report for a domain, newest
  * first, with key metrics and a week-over-week comparison. Lets reviewers
  * jump back to W24 etc. Lives at the domain's latest-week directory and
  * links into each week's own report folder.
  */
-export function renderArchivePage(target, series, latestWeek, archiveIndex = null) {
+export function renderArchivePage(target, series, latestWeek, archiveIndex = null, observationSummary = null) {
   if (!series || series.length === 0) return null;
   const scoreFormat = target.display?.score_format ?? 'both';
   const ordered = [...series].reverse(); // newest first
@@ -4179,7 +4209,9 @@ ${subnav('archive')}
 <caption>${t('Weekly reports for @domain (@n weeks).', { '@domain': esc(target.domain), '@n': series.length })}</caption>
 <thead><tr><th scope="col">${t('Week')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col" class="num">${t('Pages audited')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th><th scope="col">${t('Raw evidence')}</th></tr></thead>
 <tbody>${rows}</tbody>
-</table>`;
+</table>
+${archiveAccounting(archiveIndex, observationSummary, series.length)}
+`;
   return layout({
     title: `${target.domain} archive | vital-scans`,
     page: "archive",

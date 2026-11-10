@@ -145,7 +145,7 @@ export function manualValidationFor(bug) {
       'Check that legal, financial or data-deletion submissions can be reviewed, corrected or confirmed.',
     ],
     '4.1.1': [
-      'Check the markup for duplicate IDs and malformed nesting that could break assistive technology.',
+      'WCAG 2.0 only: Parsing was removed in WCAG 2.1 and is not part of a WCAG 2.2 A/AA review. Check duplicate IDs and malformed nesting only when evaluating against WCAG 2.0.',
     ],
   };
   const byRule = {

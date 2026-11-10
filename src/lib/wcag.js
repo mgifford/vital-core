@@ -68,7 +68,7 @@ const WCAG_CRITERIA = {
   '3.3.2': ['Labels or Instructions', 'A', '2.0'],
   '3.3.3': ['Error Suggestion', 'AA', '2.0'],
   '3.3.4': ['Error Prevention (Legal, Financial, Data)', 'AA', '2.0'],
-  '4.1.1': ['Parsing', 'A', '2.0'],  // deprecated in WCAG 2.2 but engines may still report it
+  '4.1.1': ['Parsing', 'A', '2.0'],  // removed in WCAG 2.1; retained for WCAG 2.0 engine findings only
   '4.1.2': ['Name, Role, Value', 'A', '2.0'],
   '4.1.3': ['Status Messages', 'AA', '2.1'],
   // --- WCAG 2.1 additions ---

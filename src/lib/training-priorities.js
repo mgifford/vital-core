@@ -24,7 +24,7 @@ const SC_LABELS = {
   '3.1.2': 'Language of Parts',
   '3.3.1': 'Error Identification',
   '3.3.2': 'Labels or Instructions',
-  '4.1.1': 'Parsing (HTML validity)',
+  '4.1.1': 'Parsing (WCAG 2.0 only; removed in WCAG 2.1)',
   '4.1.2': 'Name, Role, Value (ARIA)',
   '4.1.3': 'Status Messages',
 };

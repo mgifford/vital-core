@@ -1,6 +1,6 @@
 # ADR: safe retention and durable archives (issue #130)
 
-Status: **PR 1, PR 2 and PR 3 implemented — planning, archive publishing and static availability pages. No destructive change is enabled.**
+Status: **PR 1–4 implemented — planning, archives, availability pages, last-observation accounting and configured growth warnings. No destructive change is enabled.**
 Date: 2026-11-10
 
 ## Context
@@ -145,8 +145,18 @@ that a working-tree decrease shrinks Git history.
    pruning by default. See [RETENTION-ARCHIVE.md](RETENTION-ARCHIVE.md).
 3. **PR 3 (this change):** archive index/API, static evidence/tombstone pages and
    availability states; controlled prune authorization remains future work.
-4. **PR 4:** last-observation index, retention UI/API, growth alerts, fleet
-   documentation and final handoff.
+4. **PR 4 (this change):** last-observation index, configured storage-growth
+   warnings, archive/observation accounting, and documentation. See
+   [RETENTION-OBSERVATIONS.md](RETENTION-OBSERVATIONS.md).
+
+## Last-observation and growth (PR 4)
+
+The compact `data/<domain>/observations.json` index distinguishes last attempt,
+last success, never scanned, blocked/failed, stale evidence and
+clean-for-automated-engines. `clean` is never a conformance claim. Growth
+thresholds now live in validated `config/targets.yml` storage settings and are
+read by `scripts/storage-growth.js`; warnings remain advisory. Archive,
+observation and summary counts are reported separately in reports.
 
 ## Risks and open questions
 

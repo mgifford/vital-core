@@ -140,7 +140,9 @@ pruned week degrades gracefully rather than erroring.
 storage planner. It preserves legacy `retention_weeks` when no explicit
 `retention:` policy exists and never archives or deletes. See
 [`docs-internal/RETENTION-ADR.md`](docs-internal/RETENTION-ADR.md) for profiles,
-precedence, size measurements and the archive/prune PR sequence.
+precedence, size measurements and the archive/prune PR sequence. The additive
+`observations.json` index records last attempt/success, stale/never-scanned and
+clean-for-automated-engine state; `storage` thresholds live in validated config.
 
 **Git history policy:** `prune.js` deletes files from the working tree,
 but git history keeps every blob forever — deleting a file from a later

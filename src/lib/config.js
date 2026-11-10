@@ -8,6 +8,7 @@ import { resolvePageFamilies } from './page-families.js';
 import { resolveConsentHandling } from '../engines/consent-action.js';
 import { resolveScreenshotConfig } from './screenshots.js';
 import { resolveTargetRetention } from './retention-policy.js';
+import { resolveStorageLimits } from './storage-guard.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
@@ -71,6 +72,7 @@ export function loadConfig(rawYaml) {
   // exports). Trailing slash stripped so callers can always do `${base}${path}`.
   const reportBaseUrl = (cfg.report_base_url || '').replace(/\/+$/, '');
   const dataRepo = validateDataRepo(cfg.data_repo ?? DEFAULT_DATA_REPO, 'global config');
+  const storageLimits = resolveStorageLimits(cfg.storage ?? {});
   const evaluationReport = cfg.evaluation_report ?? defaults.evaluation_report ?? 'openacr';
   if (!['openacr', 'wcag-em', 'both'].includes(evaluationReport)) {
     throw new Error(`evaluation_report must be openacr, wcag-em or both (got ${JSON.stringify(evaluationReport)})`);
@@ -150,6 +152,7 @@ export function loadConfig(rawYaml) {
     showLanguageSwitcher: globalShowSwitcher,
     reportBaseUrl,
     dataRepo,
+    storageLimits,
     targets,
   };
 }

@@ -25,6 +25,7 @@ import { buildAiFindings } from './lib/ai-findings.js';
 import { applyFindingPolicy } from './lib/finding-policy.js';
 import { buildIndexEntry, buildSnapshot, buildWeekFindings, writeApiFiles } from './lib/api-writer.js';
 import { readArchiveIndex, withArchiveState, writeArchiveApi } from './lib/retention-archive-index.js';
+import { syncObservationsFromRecords, observationSummary as summarizeObservations } from './lib/observations.js';
 import { filterBugsByExclusion } from './report-html.js';
 import { redactBugs } from './lib/api-redact.js';
 import { condenseInstance, MAX_RULE_INSTANCES, pickBrowserContext } from './lib/element-evidence.js';
@@ -149,15 +150,22 @@ for (const target of config.targets) {
   // Updated incrementally from each retained week's page records (older
   // weeks may already be pruned, but their results persist in inventory).
   const inventory = loadInventory(target.key, target.domain);
+  const observationRecords = [];
   for (const week of weeks) {
     const pagesDir = path.join(domainDir, week, 'pages');
     if (!fs.existsSync(pagesDir)) continue;
     const records = fs.readdirSync(pagesDir)
       .filter((f) => f.endsWith('.json'))
       .map((f) => resolvePageRecord(domainDir, JSON.parse(fs.readFileSync(path.join(pagesDir, f), 'utf8'))));
+    observationRecords.push(...records);
     updateInventory(inventory, week, withoutBlockedAudits(records));
   }
   saveInventory(target.key, inventory);
+  const observationIndex = syncObservationsFromRecords(target.key, target.domain, observationRecords);
+  const observationSummary = summarizeObservations(observationIndex, {
+    now: new Date(),
+    staleDays: Math.max(7, (target.retentionPolicy?.live?.weeks ?? 2) * 7),
+  });
   const invSummary = inventorySummary(inventory, series[series.length - 1].week);
 
   // Week-over-week diffs between consecutive summaries.
@@ -485,7 +493,7 @@ for (const target of config.targets) {
       fs.writeFileSync(path.join(repDir, `history${sfx}.html`), renderHistoryPage(target, series, summary.week));
       // Archive page (all weeks). Written in each week folder so the subnav
       // "Archive" link resolves from any week's report.
-      const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week, archiveIndex);
+      const archiveHtml = renderArchivePage(target, series, series[series.length - 1].week, archiveIndex, observationSummary);
       if (archiveHtml) fs.writeFileSync(path.join(repDir, `archive${sfx}.html`), archiveHtml);
       fs.writeFileSync(path.join(repDir, `evidence${sfx}.html`),
         renderArchiveEvidencePage(target, summary, archiveByWeek.get(summary.week) ?? null, series[series.length - 1].week));
