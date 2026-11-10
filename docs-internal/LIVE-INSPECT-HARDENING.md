@@ -179,6 +179,20 @@ visible elements of the recorded tag whose visible text anchor or recorded name
 attribute matches. They are offered as **candidates**, never as a located
 occurrence, and the panel says the recorded selector no longer matches.
 
+## No-install and fallback paths
+
+The text-fragment link is offered first when the finding has recorded visible
+text. It needs no install and is the most reliable "show me something" path,
+though it highlights text only and does not open the VITAL panel.
+
+The report cannot know whether a bookmarklet ran on another origin. The
+live-page action therefore says, next to the link and in a live status after
+clicking, that a missing panel is not a fix and points to the no-install text
+link, Copy inspection code and reinstall. The panel itself says the occurrence
+is unverified when the selector is stale, the element is hidden, or no element
+is found. Record the outcome in the Explorer's manual review; VITAL does not
+store it.
+
 ## Stale installed bookmarklets
 
 The bookmarklet is self-contained and cannot auto-update. A copy installed

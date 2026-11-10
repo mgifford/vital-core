@@ -220,10 +220,13 @@ live page with a compact VITAL payload in the URL fragment. Clicking the
 - **Recorded element changed** — the selector matches, but the recorded tag,
   role or name attribute differs. The element is **not** highlighted as the
   original occurrence unless the user explicitly chooses “Show changed element”.
-- **Element not found** — with possible causes and a **Find again** action.
+- **Element not found** — with possible causes, a **Find again** action, and an
+  explicit reminder that a missing highlight means unverified, not fixed.
 
 The panel scrolls the first visible candidate into view, offers **Show element**
-to re-centre it, and adds a translucent fill to the high-contrast outline. The
+to re-centre it, and adds a translucent fill to the high-contrast outline. When
+the finding has recorded text, the report offers the no-install native text
+fragment first; the bookmarklet is an enhancement, not the only path. The
 install guide shows the current bookmarklet version and tells people who
 installed an earlier copy to drag it again; older copies can reject newer
 inspection codes. It

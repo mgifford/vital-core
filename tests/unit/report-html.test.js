@@ -577,6 +577,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
   assert.match(html, /Copy inspection code/, 'the code fallback is labelled');
   assert.match(html, /Highlight text on site/, 'a native text-fragment link is offered');
+  assert.ok(html.indexOf('#:~:text=') < html.indexOf('class="inspect-open"'), 'the no-install text link is offered before the bookmarklet');
+  assert.match(html, /inspect-launch-status|class="inspect-open"/, 'a fallback status is attached to the live-page action');
   assert.match(html, /#:~:text=/, 'the text link carries a text directive');
   assert.match(html, /strict script-src Content-Security-Policy/, 'the CSP limitation is documented');
   assert.match(html, /ACT rule\/page group\(s\) overlap between engines/);

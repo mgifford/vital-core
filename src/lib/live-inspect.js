@@ -466,7 +466,7 @@ export function vitalInspect(validate) {
       liveState = 'hidden';
       removeBox();
       heading.textContent = 'Recorded element is hidden in this page state';
-      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again.';
+      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again. The finding remains unverified.';
       toggle.hidden = true;
       showElement.hidden = true;
       return;
@@ -590,7 +590,7 @@ export function vitalInspect(validate) {
     showChanged.hidden = result.status !== 'changed';
     if (target && isInvisible(target) && (result.status === 'matched' || result.status === 'candidate')) {
       heading.textContent = 'Recorded element is hidden in this page state';
-      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again.';
+      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again. The finding remains unverified.';
       toggle.hidden = true;
       showElement.hidden = true;
     } else if (result.status === 'matched') {
@@ -637,7 +637,7 @@ export function vitalInspect(validate) {
       addDetail('p', 'Try the same inspection URL in your normal browser, where your session and cookies may allow access. Do not weaken the site’s access controls.', 'margin:8px 0;');
     } else if (result.status === 'not_located') {
       addDetail('p', 'Possible causes: the element was removed, the locator changed, an interaction is required, content loads dynamically, it is inside a frame or shadow root, the page is in another state, or access is restricted.', 'margin:8px 0;');
-      addDetail('p', 'Change the page state if needed, then choose Find again.', 'margin:0 0 8px;');
+      addDetail('p', 'Change the page state if needed, then choose Find again. A missing highlight does not mean the finding is fixed; treat it as unverified.', 'margin:0 0 8px;');
     }
     if (result.comparison && result.comparison.differences) {
       addDetail('p', 'This candidate also differs: ' + result.comparison.differences.join('; '), 'margin:8px 0;');
@@ -654,7 +654,7 @@ export function vitalInspect(validate) {
       link.textContent = 'Rule documentation';
       details.appendChild(link);
     }
-    addDetail('p', 'Runs locally in your browser. VITAL sends nothing; this overlay is not stored. A visible element is not proof the violation persists.', 'margin:12px 0 0;font-size:.85rem;color:inherit;');
+    addDetail('p', 'Runs locally in your browser. VITAL sends nothing; this overlay is not stored. A visible element is not proof the violation persists, and a missing element is not proof it is fixed. If this highlight is missing or wrong, record that in the Finding Explorer’s manual review record.', 'margin:12px 0 0;font-size:.85rem;color:inherit;');
     if (result.status === 'matched') drawBox('matched', 'Recorded element');
     else if (result.status === 'candidate') drawBox('candidate', 'Candidate ' + (index + 1) + ' of ' + matches.length + ' — verify');
     else removeBox();

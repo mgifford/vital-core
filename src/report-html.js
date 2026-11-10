@@ -1760,6 +1760,20 @@ function inspectCopyScript() {
   return `<script>
 (function () {
   document.addEventListener('click', function (event) {
+    var openInspect = event.target.closest && event.target.closest('.inspect-open');
+    if (openInspect) {
+      var host = openInspect.parentNode;
+      var status = host.querySelector('.inspect-launch-status');
+      if (!status) {
+        status = document.createElement('span');
+        status.className = 'bug-meta inspect-launch-status';
+        status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
+        host.appendChild(status);
+      }
+      status.textContent = ' Live page opened in a new tab. If the VITAL panel does not appear, the bookmarklet is missing, out of date or blocked. Use the no-install text link or Copy inspection code, or reinstall VITAL Inspect from the top of this page. A missing highlight means the occurrence is unverified, not fixed.';
+      return;
+    }
     var copyBookmarklet = event.target.closest && event.target.closest('.copy-bookmarklet');
     if (copyBookmarklet) {
       var link = document.querySelector('.bookmarklet-link');
@@ -1937,7 +1951,7 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code>${b.observation_id ? ` · <code>${esc(b.observation_id)}</code>` : ''} <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
   ${b.finding_ref ? `<div><dt>${t('Stable reference')}</dt><dd><code>${esc(b.finding_ref)}</code> <span class="bug-meta">${t('Content-independent link target for this rule finding.')}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd>${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page. The panel scrolls to the element and says when it is hidden behind a menu, tab or dialog.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>`}${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  <div><dt>${t('Inspect')}</dt><dd>${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('No install needed. Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener" class="inspect-open">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page. The panel scrolls to the element and says when it is hidden behind a menu, tab or dialog. If no panel appears, the bookmarklet is missing or blocked — use the text link or Copy inspection code instead.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>`}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -6063,6 +6077,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     if (inspect) {
       var inspectLink = document.createElement('a');
       inspectLink.id = 'explorer-highlight';
+      inspectLink.className = 'inspect-open';
       inspectLink.href = inspect;
       inspectLink.target = '_blank';
       inspectLink.rel = 'noopener';
