@@ -23,7 +23,8 @@
     "test": "npm run test:unit && npm run test:e2e",
     "reproduce": "node scripts/reproduce.js",
     "inspect": "node scripts/inspect.js",
-    "retention:plan": "node scripts/retention-plan.js"
+    "retention:plan": "node scripts/retention-plan.js",
+    "retention:archive": "node scripts/retention-archive.js"
   },
   "bin": {
     "vital-mcp": "mcp/server.js"
