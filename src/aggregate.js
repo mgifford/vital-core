@@ -756,6 +756,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   // is inherently deduplicated.
   const axeCountsPerPage = [];
   const alfaCountsPerPage = [];
+  const alfaSkipped = [];
   const auditedPageIds = new Set(); // pages scanned by axe and/or alfa
   const pagesWithAxe = []; // URLs with >=1 axe violation (for the CSV behind "37 of 598")
   const pagesWithAlfa = []; // URLs with >=1 alfa failure
@@ -839,20 +840,29 @@ function summarizeRecords(target, week, records, brokenLinks) {
       }
     }
     if (rec.alfa) {
-      auditedPageIds.add(rec.pageId ?? rec.url);
-      alfaCountsPerPage.push(rec.alfa.failedCount);
-      if (rec.alfa.failedCount > 0) { pagesWithAlfaFailures++; pagesWithAlfa.push(rec.url); }
-      alfaFailedTotal += rec.alfa.failedCount;
-      alfaEvidence ??= rec.alfa.element_evidence ?? null;
-      for (const [id, v] of Object.entries(rec.alfa.failed)) {
-        const r = (alfaRules[id] ??= { count: 0, pages: 0, ruleUrl: v.ruleUrl, examplePages: [], affectedPages: [], instances: [] });
-        r.count += v.count;
-        r.pages++;
-        if (r.examplePages.length < 3) r.examplePages.push(rec.url);
-        if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
-        addInstances(r, rec, v.examples, rec.alfa.version);
-        clusterTracker.observe('alfa', id, null, rec.url, v.examples);
-        componentTracker.observe('alfa', id, rec.url, v.examples, v.count);
+      if (rec.alfa.skipped) {
+        alfaSkipped.push({
+          url: rec.url,
+          reason: rec.alfa.skippedReason ?? 'unknown',
+          elements: rec.alfa.pageSize?.elements ?? null,
+          text_length: rec.alfa.pageSize?.textLength ?? null,
+        });
+      } else {
+        auditedPageIds.add(rec.pageId ?? rec.url);
+        alfaCountsPerPage.push(rec.alfa.failedCount);
+        if (rec.alfa.failedCount > 0) { pagesWithAlfaFailures++; pagesWithAlfa.push(rec.url); }
+        alfaFailedTotal += rec.alfa.failedCount;
+        alfaEvidence ??= rec.alfa.element_evidence ?? null;
+        for (const [id, v] of Object.entries(rec.alfa.failed)) {
+          const r = (alfaRules[id] ??= { count: 0, pages: 0, ruleUrl: v.ruleUrl, examplePages: [], affectedPages: [], instances: [] });
+          r.count += v.count;
+          r.pages++;
+          if (r.examplePages.length < 3) r.examplePages.push(rec.url);
+          if (r.affectedPages.length < MAX_AFFECTED_PAGES) r.affectedPages.push({ url: rec.url, instances: v.count });
+          addInstances(r, rec, v.examples, rec.alfa.version);
+          clusterTracker.observe('alfa', id, null, rec.url, v.examples);
+          componentTracker.observe('alfa', id, rec.url, v.examples, v.count);
+        }
       }
     }
     if (rec.deprecatedHtml) {
@@ -1077,6 +1087,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
       failedTotal: alfaFailedTotal,
       pagesWithFailures: pagesWithAlfaFailures,
       pagesScanned: alfaCountsPerPage.length,
+      skippedPages: alfaSkipped.length,
+      skipped: alfaSkipped.slice(0, 20),
       medianFailures: alfaCountsPerPage.length ? median(alfaCountsPerPage) : null,
       element_evidence: alfaEvidence,
       rules: alfaRules,

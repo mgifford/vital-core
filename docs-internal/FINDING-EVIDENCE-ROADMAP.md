@@ -473,6 +473,10 @@ criteria, explicit exclusions, references, priority.
 
 ## 5. Known limitations (as of the 2026-11 evidence-reliability milestone)
 
+- Alfa is skipped on pages over 20,000 elements or 1,000,000 text characters;
+  the report says so and does not treat the page as clean. This prevents the
+  CDC MMWR-sized OOM that failed scan runs.
+
 - Only axe examples get structured element evidence; Alfa is explicitly
   `unavailable`.
 - Only the **first** stored example per rule is enriched (later examples keep

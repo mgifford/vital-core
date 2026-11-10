@@ -4502,6 +4502,7 @@ export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporti
 <h1>${esc(target.domain)}: ${t('Accessibility')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('accessibility')}
 ${accessBanner(summary.access, target.user_agent)}
+${summary.alfa?.skippedPages ? `<p class="note">${t('Alfa skipped @n page(s) that were too large to audit safely. This is an engine limitation, not a clean result; axe results and the evidence coverage still apply.', { '@n': nf(summary.alfa.skippedPages) })}</p>` : ''}
 ${acrNote}
 ${scopeSummaryLine(summary, '#h-scope')}
 ${evidenceCoverageSection(summary)}
