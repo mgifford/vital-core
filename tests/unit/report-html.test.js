@@ -46,6 +46,7 @@ test('related-links: the fleet index has no domain-specific JSON alternate (no s
   // The help links (API.md/MCP.md) are unconditional, unlike the JSON alternate.
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md"/);
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
+  assert.match(html, /We scan thousands of pages per site over each week, with pauses so we do not overload the site\./);
 });
 
 test('webmcp bridge: reaches every domain sub-page via layout(), not just Accessibility/index', () => {
