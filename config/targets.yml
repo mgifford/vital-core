@@ -18,7 +18,14 @@ defaults:
   networkidle_cap_ms: 8000  # max wait for network-idle after load; passive listening (sends nothing), so capping never adds server load
   settle_delay_ms: 1000     # wait after load + network-idle before auditing (avoids pre-hydration false positives)
   max_crawl_depth: 10        # BFS depth from seeds
-  retention_weeks: 2        # page-level detail kept this long; weekly summaries kept forever
+  retention_weeks: 2        # legacy: page-level detail kept this long; weekly summaries kept forever
+  # Optional retention policy. When omitted, retention_weeks above is preserved
+  # exactly (fixed window, no archive). An explicit policy overrides the legacy
+  # field; the safe default profile is balanced (adaptive 4-16 weeks, 12-month
+  # archive) but no archive/prune runs until its implementation is authorized.
+  # retention:
+  #   profile: balanced
+  #   archive: { enabled: true, retention_months: 12, verify_before_prune: true }
   # Evaluation export: openacr (US procurement default), wcag-em (W3C evaluation
   # report; recommended outside the US), or both. Per-target override below.
   evaluation_report: openacr
@@ -269,6 +276,12 @@ targets:
   #     `wcag-em` for a W3C WCAG-EM-aligned report. `both` is available during
   #     migration. The automated WCAG-EM report is a pre-assessment, not a
   #     conformance claim. Example: evaluation_report: wcag-em
+  #
+  #   retention: optional policy (profile: minimal | balanced | research |
+  #     preserve, plus live/archive/storage overrides). Omit it to preserve
+  #     retention_weeks. Explicit policy wins over retention_weeks with a
+  #     warning when they disagree. Planning is read-only:
+  #     `npm run retention:plan`.
   #
   #   spelling_locale: en-US | en-GB | en-CA | en-AU — the English the spell
   #     checker accepts (default en-US, or defaults.spelling_locale). en-GB is

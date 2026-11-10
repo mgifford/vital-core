@@ -41,7 +41,12 @@ async function withServer(html, fn) {
   }
 }
 
-for (const [name, launcher] of [['Chromium', chromium], ['WebKit', webkit]]) {
+const browserLaunchers = [['Chromium', chromium]];
+try {
+  if (fs.existsSync(webkit.executablePath())) browserLaunchers.push(['WebKit', webkit]);
+} catch { /* WebKit is optional outside the full test job */ }
+
+for (const [name, launcher] of browserLaunchers) {
   test(`${name}: a javascript: activation runs without CSP and is blocked by script-src`, async () => {
     const browser = await launcher.launch();
     try {

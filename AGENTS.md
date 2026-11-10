@@ -248,7 +248,7 @@ Most behavior is configured per target in `config/targets.yml`
 (`pages_per_run`, `max_pages_per_week`, `delay_ms`, `nav_timeout_ms`,
 `settle_delay_ms`, `retention_weeks`, `user_agent`, `sampling`, `reporting`,
 `screenshots`, `finding_policy`, `evaluation_report`, `url_ignore_params`,
-`component_signatures`, `page_families`, `consent_handling`),
+`retention`, `component_signatures`, `page_families`, `consent_handling`),
 not via environment variables.
 
 ## Spec Kitty Agent Surfaces

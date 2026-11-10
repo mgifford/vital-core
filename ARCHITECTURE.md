@@ -136,6 +136,12 @@ newer scan supersedes is aggressively forgotten once it's rolled up into
 `url-index.js`) all check `fs.existsSync` before reading `pages/`, so a
 pruned week degrades gracefully rather than erroring.
 
+**Retention planning:** `npm run retention:plan` is a read-only policy and
+storage planner. It preserves legacy `retention_weeks` when no explicit
+`retention:` policy exists and never archives or deletes. See
+[`docs-internal/RETENTION-ADR.md`](docs-internal/RETENTION-ADR.md) for profiles,
+precedence, size measurements and the archive/prune PR sequence.
+
 **Git history policy:** `prune.js` deletes files from the working tree,
 but git history keeps every blob forever — deleting a file from a later
 commit does not shrink any earlier commit that still contains it, so the

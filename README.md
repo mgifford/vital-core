@@ -239,6 +239,7 @@ Tests:
 ```sh
 npm run test:unit   # URL identity, ISO weeks, robots.txt, batch picking
 npm run test:e2e    # full pipeline over a local fixture site simulating two weeks
+npm run retention:plan -- --domain example.gov   # read-only retention/storage plan
 ```
 
 ## Languages
