@@ -1471,7 +1471,8 @@ test('renderAcrHtml: produces self-contained HTML with WCAG table structure', ()
   const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
   assert.ok(html.startsWith('<!DOCTYPE html>'), 'starts with DOCTYPE');
   assert.match(html, /<html lang="en">/, 'has lang attribute');
-  assert.ok(!html.includes('<link rel='), 'no external stylesheet link');
+  assert.match(html, /<link rel="icon" href="data:image\/svg\+xml,/, 'embeds the self-contained favicon');
+  assert.ok(!html.includes('<link rel="stylesheet"'), 'no external stylesheet link');
   assert.ok(!html.includes('<script src='), 'no external script');
   assert.match(html, /<style>/, 'has inline style block');
   assert.match(html, /Level A Success Criteria/, 'has Level A heading');

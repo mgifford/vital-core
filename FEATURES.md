@@ -302,6 +302,16 @@ element is still `element_identity_changed`. Nothing runs during a scheduled
 scan, Alfa/frame/shadow findings are reported as unavailable rather than
 guessed, and a failure to reproduce never means the issue is fixed.
 
+### Brand mark and favicon
+
+Reports use one inline SVG brand mark: a bold V on deep teal with an amber
+ledger rule. It is written as `docs/favicon.svg` plus a 64 px `docs/favicon.png` fallback,
+advertised with both icon links on every report page, and repeated as the
+28 px header mark (empty alt text because the adjacent wordmark names it).
+The self-contained ACR embeds the same mark as a data URI. The mark is a static
+asset, adds no script or network request beyond the favicon, and remains legible
+at 16 px.
+
 ### Manual validation guidance and review records
 
 Every finding carries **finding-relevant** manual prompts (for example contrast

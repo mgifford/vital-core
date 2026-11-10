@@ -518,6 +518,11 @@ try {
   assert(report.includes("data-theme") && report.includes('vital-theme'), 'no-flash theme script + persistence present');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'index.html')), 'dashboard generated');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'style.css')), 'stylesheet generated');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'favicon.svg')), 'SVG favicon generated');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'favicon.png')), 'PNG favicon fallback generated');
+  assert(report.includes('rel="icon"') && report.includes('favicon.svg'), 'report advertises the SVG favicon');
+  assert(report.includes('favicon.png'), 'report advertises the PNG fallback');
+  assert(report.includes('class="brand-mark"') && report.includes('alt=""'), 'header brand mark is decorative');
   // Scorecard on the domain report; trend charts live on the History page (WP2).
   assert(/class="scorecard"/.test(report) && /class="grade grade-[A-F]"/.test(report), 'domain report shows a score + grade');
   assert(/href="history\.html"/.test(report) && /History &amp; Trends/.test(report), 'overview links to the History & Trends page');
