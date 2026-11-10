@@ -16,6 +16,7 @@ import path from 'node:path';
 import { DIRS, loadConfig } from '../src/lib/config.js';
 import { planDomain } from '../src/lib/retention-plan.js';
 import { collectRetentionMetrics } from '../src/lib/retention-metrics.js';
+import { recordVerifiedArchive } from '../src/lib/retention-archive-index.js';
 import {
   archiveWeek,
   assertArchivableTarget,
@@ -111,6 +112,18 @@ async function main() {
     try {
       if (args.write) {
         const archived = await archiveWeek({ target, domainDir, week, policy: target.retentionPolicy, backend });
+        const baseUrl = target.retentionPolicy.archive.public_base_url;
+        recordVerifiedArchive(domainDir, {
+          domain: target.key,
+          week,
+          key: archived.key,
+          backend: target.retentionPolicy.archive.backend,
+          archiveId: archived.archiveId,
+          zipSha256: archived.zipSha256,
+          bytes: archived.zip.length,
+          retentionMonths: target.retentionPolicy.archive.retention_months,
+          publicUrl: baseUrl ? `${baseUrl.replace(/\/+$/, '')}/${archived.key}` : null,
+        });
         archives.push({
           domain: target.domain,
           week,

@@ -320,6 +320,7 @@ const PAGES = {
   explorer: 'explore',
   history: 'history',
   archive: 'archive',
+  evidence: 'evidence',
 };
 
 /** Old basename → new basename, for the renamed pages only (redirect stubs). */
@@ -4140,32 +4141,43 @@ ${errorsSection}`;
  * jump back to W24 etc. Lives at the domain's latest-week directory and
  * links into each week's own report folder.
  */
-export function renderArchivePage(target, series, latestWeek) {
+export function renderArchivePage(target, series, latestWeek, archiveIndex = null) {
   if (!series || series.length === 0) return null;
   const scoreFormat = target.display?.score_format ?? 'both';
   const ordered = [...series].reverse(); // newest first
+  const archiveByWeek = new Map((archiveIndex?.archives ?? []).map((entry) => [entry.week, entry]));
+  const STATE_LABELS = {
+    available: t('Available'),
+    expired: t('Expired'),
+    incomplete: t('Incomplete'),
+    missing: t('No archive'),
+  };
   const rows = ordered
     .map((s, i) => {
       const newer = ordered[i - 1]; // the week after this one (for delta)
       const sc = scoreFor(s);
       const med = s.axe.medianViolations ?? 0;
       const d = newer ? med - (newer.axe.medianViolations ?? 0) : null;
+      const archive = archiveByWeek.get(s.week);
+      const state = archive?.state ?? 'missing';
+      const stateLabel = STATE_LABELS[state] ?? STATE_LABELS.missing;
       return `<tr>
   <th scope="row"><a href="../${esc(s.week)}/index.html">${esc(s.week)}</a></th>
   <td class="num">${fmtA11yGrade(sc, scoreFormat)}</td>
   <td class="num">${s.pagesAudited ?? s.pagesScanned}</td>
   <td class="num">${fmtMedian(s.axe.medianViolations)}${d != null && d !== 0 ? ` ${delta(d)}` : ''}</td>
   <td class="num">${fmtMedian(s.alfa.medianFailures)}</td>
+  <td>${stateLabel} <a href="../${esc(s.week)}/evidence.html">${t('Evidence details')}</a></td>
 </tr>`;
     })
     .join('\n');
   const body = `
 <h1>${esc(target.domain)}: ${t('report archive')}</h1>
 ${subnav('archive')}
-<p class="meta">${t('Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.')}</p>
+<p class="meta">${t('Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison. Archive state comes from the verified archive index; expiry never removes the weekly summary or findings.')}</p>
 <table>
 <caption>${t('Weekly reports for @domain (@n weeks).', { '@domain': esc(target.domain), '@n': series.length })}</caption>
-<thead><tr><th scope="col">${t('Week')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col" class="num">${t('Pages audited')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th></tr></thead>
+<thead><tr><th scope="col">${t('Week')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col" class="num">${t('Pages audited')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th><th scope="col">${t('Raw evidence')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
   return layout({
@@ -4175,6 +4187,61 @@ ${subnav('archive')}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: latestWeek },
+    target,
+  });
+}
+
+/**
+ * Per-week raw-evidence status. This is a static tombstone/explanation page,
+ * never a redirect: an expired or missing archive must not silently send a
+ * reader to a newer finding.
+ */
+export function renderArchiveEvidencePage(target, summary, archive, latestWeek) {
+  const state = archive?.state ?? 'missing';
+  const labels = {
+    available: t('Verified archive available'),
+    expired: t('Archive expired'),
+    incomplete: t('Archive incomplete'),
+    missing: t('No verified archive recorded'),
+  };
+  let detail;
+  if (state === 'available') {
+    detail = `<p>${t('A verified archive is recorded for this week. The weekly summary and findings remain available even if the raw archive later expires.')}</p>
+<p>${t('Archive key:')} <code>${esc(archive.key)}</code></p>
+${archive.public_url ? `<p><a href="${esc(archive.public_url)}" rel="external">${t('Download the evidence archive (ZIP)')}</a></p>` : `<p>${t('The archive is held in the operator-configured backend. Download links are not public.')}</p>`}
+<p class="meta">${t('SHA-256:')} <code>${esc(archive.zip_sha256 ?? '')}</code></p>`;
+  } else if (state === 'expired') {
+    detail = `<p>${t('The raw evidence archive has expired under the configured retention policy. Weekly summaries, findings and provenance remain available, but the original page records cannot be downloaded from this archive.')}</p>
+<p>${t('Expiry does not mean the finding was fixed, and this page does not redirect to a newer finding.')}</p>
+${archive.expires_at ? `<p class="meta">${t('Expired after:')} <time datetime="${esc(archive.expires_at)}">${esc(archive.expires_at.slice(0, 10))}</time></p>` : ''}`;
+  } else if (state === 'incomplete') {
+    detail = `<p>${t('The archive is incomplete because one or more deduplication dependencies could not be resolved. It is not a preservation claim and must not be used as the sole basis for deleting source data.')}</p>`;
+  } else {
+    detail = `<p>${t('No verified archive is recorded for this week. The weekly summary and findings remain available, but raw page detail may have been pruned.')}</p>
+<p>${t('This page is not a redirect; it explains what remains and what is unavailable.')}</p>`;
+  }
+  const body = `
+<h1>${esc(target.domain)}: ${esc(summary.week)} ${t('raw evidence')}</h1>
+${subnav('archive')}
+<section aria-labelledby="h-evidence-status">
+${heading('h-evidence-status', labels[state] ?? labels.missing, 2)}
+${detail}
+</section>
+<section aria-labelledby="h-evidence-report">
+${heading('h-evidence-report', t('Weekly report and provenance'), 2)}
+<ul>
+  <li><a href="index.html">${t('Weekly report for @week', { '@week': summary.week })}</a></li>
+  <li><a href="accessible.html">${t('Accessibility findings for @week', { '@week': summary.week })}</a></li>
+  <li><a href="archive.html">${t('All weeks and archive states')}</a></li>
+</ul>
+<p class="meta">${t('This page describes archived evidence; it is not a conformance claim and does not replace the canonical finding.')}</p>
+</section>`;
+  return layout({
+    title: `${target.domain} ${summary.week} evidence | vital-scans`,
+    page: 'evidence',
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">${t('Raw evidence')}</li>`,
+    body,
+    depth: 3,
     target,
   });
 }

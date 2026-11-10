@@ -38,7 +38,7 @@ export const RETENTION_PROFILES = Object.freeze({
 
 const TOP_KEYS = ['profile', 'live', 'archive', 'summary', 'storage'];
 const LIVE_KEYS = ['mode', 'weeks', 'minimum_weeks', 'maximum_weeks', 'scan_cycle_multiplier'];
-const ARCHIVE_KEYS = ['enabled', 'retention_months', 'storage', 'backend', 'path', 'endpoint', 'bucket', 'prefix', 'verify_before_prune'];
+const ARCHIVE_KEYS = ['enabled', 'retention_months', 'storage', 'backend', 'path', 'endpoint', 'bucket', 'prefix', 'public_base_url', 'verify_before_prune'];
 const STORAGE_KEYS = ['warning_mb', 'critical_mb', 'weekly_growth_warning_mb'];
 const positive = (value) => Number.isFinite(value) && value > 0;
 
@@ -98,6 +98,11 @@ function validate(policy, legacyFieldApplied = false) {
   if (policy.archive.endpoint != null && typeof policy.archive.endpoint !== 'string') throw new Error('archive.endpoint must be a string');
   if (policy.archive.bucket != null && typeof policy.archive.bucket !== 'string') throw new Error('archive.bucket must be a string');
   if (policy.archive.prefix != null && typeof policy.archive.prefix !== 'string') throw new Error('archive.prefix must be a string');
+  if (policy.archive.public_base_url != null) {
+    if (typeof policy.archive.public_base_url !== 'string' || !/^https?:\/\//.test(policy.archive.public_base_url)) {
+      throw new Error('archive.public_base_url must be an http(s) URL');
+    }
+  }
   if (policy.summary.retention !== 'indefinite') {
     throw new Error('summary.retention must be indefinite in this version');
   }

@@ -1,6 +1,6 @@
 # Retention archives: format and operation
 
-Status: **PR 2 implemented. Archive publishing is opt-in; pruning is unchanged.**
+Status: **PR 2 and PR 3 implemented. Archive publishing and availability reporting are opt-in; pruning is unchanged.**
 
 See [RETENTION-ADR.md](RETENTION-ADR.md) for the policy and four-PR sequence.
 
@@ -67,6 +67,8 @@ retention:
     endpoint: https://s3.example.gov
     bucket: vital-evidence
     prefix: weekly
+    # optional, only if the bucket is publicly readable:
+    # public_base_url: https://evidence.example.gov/weekly
 ```
 
 Credentials come only from the environment, never YAML:
@@ -153,14 +155,44 @@ No paid backend is required for local testing or a small deployment.
 A failed upload, download, checksum, missing manifest or incomplete archive
 throws and leaves source data untouched.
 
-## Not in PR 2
+## Archive index and availability
+
+`recordVerifiedArchive()` writes an additive
+`data/<domain>/archives.json` index after a verified upload. It records the
+week, object key, backend, archive ID, ZIP SHA-256, byte size, publication time,
+expiry and optional public URL. It never records an incomplete archive and never
+deletes a source week.
+
+Availability is computed when read:
+
+| State | Meaning |
+|---|---|
+| `available` | Complete archive, before expiry |
+| `expired` | Retention period passed; summary/findings remain |
+| `incomplete` | Unresolved/stale archive; not a preservation claim |
+| `missing` | No verified archive entry |
+
+The static reports expose:
+
+- `archive.html` — every week, its archive state and an **Evidence details** link.
+- `<week>/evidence.html` — a tombstone/explanation page with a download link
+  only when a public URL is configured. Expired/missing pages explicitly say raw
+  detail is unavailable and **never redirect** to a newer finding.
+- `/api/v1/archives/index.json` — fleet machine-readable archive index.
+- `/api/v1/<domain>/archives.json` — per-domain archive states.
+
+`public_base_url` can be set in the archive policy to make download links
+public; without it the evidence page says the archive is held in the
+operator-configured backend.
+
+## Not in PR 2/3
 
 - `src/prune.js` is unchanged. No deletion is enabled.
-- Archive index, tombstone/legacy-link pages, archive expiry UI and a
-  human-readable archive list are PR 3.
+- Archive retry policy, object lock, lifecycle rules and a verified restore
+  runbook are operator responsibilities before any prune authorization.
 - Last-observation index, growth alerts and fleet accounting are PR 4.
-- S3 object lock, lifecycle policy and a verified restore runbook are operator
-  responsibilities before any prune authorization.
+- Legacy-link handling is a **static evidence page**, not a redirect: a finding
+  that is no longer live is never silently mapped to a current occurrence.
 
 ## Tests
 

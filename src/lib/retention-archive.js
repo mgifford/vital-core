@@ -375,7 +375,15 @@ export function createArchiveBackend(policy, env = process.env) {
   return new LocalArchiveBackend({ root: archive.path ?? env.VITAL_ARCHIVE_DIR ?? 'archives' });
 }
 
-export async function archiveWeek({ target, domainDir, week, policy, backend = null }) {
+async function retry(operation, attempts = 3) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try { return await operation(); } catch (error) { lastError = error; }
+  }
+  throw lastError;
+}
+
+export async function archiveWeek({ target, domainDir, week, policy, backend = null, attempts = 3 }) {
   assertArchivableTarget(target);
   if (!policy?.archive?.enabled) throw new Error(`archiving is disabled for ${target.key}`);
   const archive = buildArchive({ domainDir, domainKey: target.key, week, policy });
@@ -384,8 +392,8 @@ export async function archiveWeek({ target, domainDir, week, policy, backend = n
   }
   const client = backend ?? createArchiveBackend(policy);
   const key = archiveObjectKey({ domainKey: target.key, week, prefix: policy.archive.prefix ?? '' });
-  const uploaded = await client.put(key, archive.zip);
-  const downloaded = await client.get(key);
+  const uploaded = await retry(() => client.put(key, archive.zip), attempts);
+  const downloaded = await retry(() => client.get(key), attempts);
   const verified = verifyArchive(downloaded, { expectedSha256: uploaded.sha256 });
   if (!verified.ok) throw new Error(`archive verification failed for ${key}: ${verified.errors.join('; ')}`);
   return { ...archive, key, uploaded, verified };
