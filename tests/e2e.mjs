@@ -717,6 +717,7 @@ try {
       assert(/#VS-/.test(explorerPage.url()), 'selecting a finding updates the URL fragment');
       assert(await explorerPage.locator('#explorer-highlight').count() === 1, 'the detail panel offers a live highlight');
       assert(await explorerPage.locator('#explorer-detail .detail-actions').count() === 1, 'primary actions are grouped at the top of the detail');
+      assert(await explorerPage.locator('#explorer-impact').count() === 1, 'disability impact-group filter is present');
       assert(await explorerPage.locator('#explorer-detail .detail-lead').count() === 1, 'detail begins with a short finding summary');
       assert(await explorerPage.locator('#explorer-inspect-code').count() === 1, 'the detail panel offers a URL-free inspection code');
       assert(await explorerPage.evaluate(() => document.activeElement?.id === 'explorer-detail-title'), 'focus moves to the detail heading');

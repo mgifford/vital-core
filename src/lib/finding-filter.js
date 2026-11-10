@@ -56,7 +56,15 @@ export function findingWidgetLabel(bug) {
 }
 
 /**
- * Filter the finding list. Every filter is optional; an empty filter object
+ * Estimated disability/impact groups for a finding. These come from the
+ * WCAG-to-FPC mapping and are not a count of affected people; a finding can
+ * have more than one group.
+ */
+export function findingImpactKeys(bug) {
+  return [...new Set((bug?.impact?.groups ?? []).map((group) => group?.group).filter(Boolean))];
+}
+
+/** Filter the finding list. Every filter is optional; an empty filter object
  * returns a copy of the input. `query` matches rule id/label, summary, URL and
  * WCAG success criterion, case-insensitively.
  */
@@ -70,6 +78,7 @@ export function filterFindings(bugs, filters = {}) {
     if (filters.engine && bug.engine_key !== filters.engine) return false;
     if (filters.severity && bug.severity !== filters.severity) return false;
     if (filters.wcag && (bug.wcag_sc ?? '') !== filters.wcag) return false;
+    if (filters.impact && !findingImpactKeys(bug).includes(filters.impact)) return false;
     if (!query) return true;
     const haystack = [
       bug.rule_id, bug.rule_label, bug.summary, bug.url, bug.wcag_sc,
@@ -92,6 +101,13 @@ export function filterOptions(bugs) {
     }
     return [...byKey.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
   };
+  const impactCounts = new Map();
+  for (const bug of list) {
+    for (const group of findingImpactKeys(bug)) impactCounts.set(group, (impactCounts.get(group) ?? 0) + 1);
+  }
+  const impacts = [...impactCounts.entries()]
+    .map(([key, count]) => ({ key, label: key, count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
   const severities = ['Critical', 'Serious', 'Moderate', 'Minor']
     .map((severity) => ({ key: severity, label: severity, count: list.filter((bug) => bug.severity === severity).length }))
     .filter((entry) => entry.count > 0);
@@ -100,6 +116,7 @@ export function filterOptions(bugs) {
     widgets: collect(findingWidgetKey, findingWidgetLabel),
     components: collect(findingComponentKey, findingComponentLabel),
     engines: collect((bug) => bug.engine_key, (bug) => bug.engine_key),
+    impacts,
     severities,
   };
 }

@@ -1479,6 +1479,8 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   assert.match(html, /main \(unnamed\)/, 'region column/count present');
   assert.match(html, /Consent dialog/, 'component table present');
   assert.match(html, /<label for="explorer-widget">Widget type<\/label>/, 'widget filter is labelled');
+  assert.match(html, /<label for="explorer-impact">Estimated impact group<\/label>/, 'impact group filter is labelled');
+  assert.match(html, /id="explorer-impact"/, 'impact group filter is present');
   assert.match(html, /id="h-explorer-widgets">By widget type/, 'widget table present');
   assert.match(html, /<th scope="col">Widget type<\/th>/, 'static index has a widget column');
   assert.match(html, /<caption class="visually-hidden">/, 'tables have captions');
