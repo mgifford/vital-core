@@ -4832,7 +4832,7 @@ export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
   // GitHub Pages default) it falls back to the original copy unchanged.
   const h1 = branding.title || t('Weekly quality ledger');
   const intro = branding.intro
-    || t('Accessibility and sustainability, measured continuously with open source engines. Thousands of pages per domain, scanned slowly and politely across each week.');
+    || t('Accessibility and sustainability, measured continuously with open source tools. We scan thousands of pages per site over each week, with pauses so we do not overload the site.');
   const pageTitle = branding.title ? `${branding.title} | vital-scans` : 'vital-scans | weekly quality ledger';
   // A target whose latest week audited nothing (a firewall, robots.txt or
   // network block) is listed in the access alert instead of the ranking, so
@@ -4900,10 +4900,10 @@ export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
   const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
   const worstSection = worst.length === 0 ? '' : `
 <section aria-labelledby="h-worst">
-${heading('h-worst', t('Worst offenders across all domains'))}
+${heading('h-worst', t('Highest-impact issues across all sites'))}
 <p class="meta">${t('Highest-impact issues fleet-wide: legally required findings first, then the rest of each site\'s conformance target, then AAA and best-practice findings. Within each, ranked by pages affected × severity × people reached.')}</p>
 <table>
-<caption>${t('Top @n issues across all active domains.', { '@n': worst.length })}</caption>
+<caption>${t('Top @n issues across all active sites.', { '@n': worst.length })}</caption>
 <thead><tr><th scope="col">${t('Domain')}</th><th scope="col">${t('Issue')}</th><th scope="col">${t('Requirement')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${worst
     .map((b) => `<tr>
@@ -5062,7 +5062,7 @@ ${active.length === 0
 <thead><tr><th scope="col">${t('Domain')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col">${t('Trajectory')}</th><th scope="col" class="num">${t('Pages audited (7d)')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th><th scope="col">${t('Trend')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
-<p class="score-caveat">${t('Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.')}</p>
+<p class="score-caveat">${t('Scores compare sites on axe violations per page. Axe runs on every page; Alfa is sampled separately. Automated tests find only about a third of barriers, so use scores to track direction, not as a pass/fail.')}</p>
 ${overlay}
 ${sustainTrend}
 ${worstSection}
@@ -5077,7 +5077,7 @@ ${heading('h-tools', t('Tools'))}
 </section>
 <section aria-labelledby="h-why">
 ${heading('h-why', t('Why this exists'))}
-<p>${t('Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more accessible and lighter over time, using <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (the open source engine behind Siteimprove) for accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.')}</p>
+<p>${t('One-off audits go out of date. This ledger shows whether each site is becoming more accessible and lighter over time. It uses <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (open source accessibility engines) and estimates page carbon with the <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> model. The scanner, data and reports are all open.')}</p>
 <p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), a machine-discovery <a href=".well-known/api-catalog">API catalog</a>, and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="https://github.com/mgifford/vital-core/blob/main/MCP.md">MCP server</a>.')}</p>
 </section>`;
   return layout({ title: pageTitle, breadcrumb: '', body, depth: 0, page: 'index' });
