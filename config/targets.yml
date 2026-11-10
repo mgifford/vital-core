@@ -19,6 +19,9 @@ defaults:
   settle_delay_ms: 1000     # wait after load + network-idle before auditing (avoids pre-hydration false positives)
   max_crawl_depth: 10        # BFS depth from seeds
   retention_weeks: 2        # page-level detail kept this long; weekly summaries kept forever
+  # Evaluation export: openacr (US procurement default), wcag-em (W3C evaluation
+  # report; recommended outside the US), or both. Per-target override below.
+  evaluation_report: openacr
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
   spelling_locale: en-US     # dictionary for spell checks: en-US, en-GB, en-CA or en-AU (per-target override below)
   screenshots:                # historical, bounded evidence; opt-in (privacy)
@@ -251,6 +254,13 @@ targets:
   #     Examples:
   #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
   #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
+  #
+  #   evaluation_report: openacr | wcag-em | both — which evaluation artifact
+  #     the Accessibility page offers. US fleets usually want `openacr` (draft
+  #     OpenACR/VPAT-compatible); non-US fleets evaluating a website should set
+  #     `wcag-em` for a W3C WCAG-EM-aligned report. `both` is available during
+  #     migration. The automated WCAG-EM report is a pre-assessment, not a
+  #     conformance claim. Example: evaluation_report: wcag-em
   #
   #   spelling_locale: en-US | en-GB | en-CA | en-AU — the English the spell
   #     checker accepts (default en-US, or defaults.spelling_locale). en-GB is

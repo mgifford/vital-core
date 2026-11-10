@@ -138,6 +138,11 @@ not an implementation and grouping is not ownership.
 - The OpenACR export is an **INCOMPLETE DRAFT**, not a conformance report. No
   automated failure is `not-evaluated` rather than `supports`; the unverified
   A/AA criteria, draft legal disclaimer and manual-testing gap are explicit.
+- Targets choose `evaluation_report: openacr` (US procurement default),
+  `wcag-em` (W3C evaluation report for a website; recommended outside the US),
+  or `both`. The WCAG-EM output records scope, the non-representative weekly
+  sample, methods, every A/AA outcome as failure or not-evaluated, step status
+  and limitations. See [`docs-internal/WCAG-EM.md`](docs-internal/WCAG-EM.md).
 
 ### Evidence coverage
 
