@@ -140,6 +140,11 @@ a page for a report.
   also get a native `#:~:text=` link from a bounded 80-character visible-text
   anchor; it is text-only and needs no install. It sends nothing and does not
   replace canonical evidence or the Explorer.
+* **Playwright MCP (optional external path)**: the Explorer can copy an
+  observation-only prompt for Microsoft's Playwright MCP with the Playwright
+  browser extension. It reuses the user's Chrome/Edge profile and session; it is
+  not a VITAL dependency, does not run during scans, and still does not prove
+  conformance. See `docs-internal/PLAYWRIGHT-MCP.md`.
 * **Local inspector** (`scripts/inspect.js`, `npm run inspect`): opens a
   finding or an ad-hoc CSS/XPath target in headed Playwright with the same
   highlighter. No extension/bookmark; `--dry-run` is browser-free, and
