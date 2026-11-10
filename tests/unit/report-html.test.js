@@ -1541,3 +1541,15 @@ test('the ACR download is presented as draft data, not a completed report', () =
   assert.match(html, /not a completed ACR/);
   assert.doesNotMatch(html, />Download ACR</);
 });
+
+test('the report discloses pages where Alfa was skipped as too large', () => {
+  const target = { key: 'example.gov', domain: 'example.gov' };
+  const summary = {
+    week: '2026-W46', pagesScanned: 10, pagesAudited: 10,
+    axe: { version: '4.14.0', pagesScanned: 10, rules: {} },
+    alfa: { version: '0.117.0', pagesScanned: 9, skippedPages: 1, rules: {} },
+  };
+  const html = renderAccessibilityPage(target, summary, [], {}, {});
+  assert.match(html, /Alfa skipped 1 page\(s\) that were too large/);
+  assert.match(html, /engine limitation, not a clean result/);
+});

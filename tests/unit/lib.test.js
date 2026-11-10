@@ -23,6 +23,7 @@ import { buildCooccurrence, lift, rankAssociations, onNearlyEveryPage, mergeFlee
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
 import { extractAudits, isDetachedTargetError, isClosedSessionError } from '../../src/engines/lighthouse.js';
+import { runAlfa, ALFA_MAX_ELEMENTS } from '../../src/engines/alfa.js';
 import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
 import { loadPriorityUrls } from '../../src/lib/top-tasks.js';
 import { prioritizeAccessibilityBugs } from '../../src/lib/accessibility-priority.js';
@@ -1930,4 +1931,15 @@ test('computeTrainingPriorities counts rules that are verified shared-component 
   assert.equal(row.shared_component_rule_count, 1, 'candidates and unscoped findings are not counted');
   const [plain] = computeTrainingPriorities([mk('image-alt', 9, null)]);
   assert.equal('shared_component_rule_count' in plain, false);
+});
+
+
+test('Alfa skips an oversized page instead of exhausting the Node heap', async () => {
+  const page = { evaluate: async () => ({ elements: ALFA_MAX_ELEMENTS + 1, textLength: 100 }) };
+  const result = await runAlfa(page);
+  assert.equal(result.skipped, true);
+  assert.equal(result.skippedReason, 'page-too-large');
+  assert.equal(result.failedCount, 0);
+  assert.deepEqual(result.failed, {});
+  assert.equal(result.pageSize.elements, ALFA_MAX_ELEMENTS + 1);
 });
