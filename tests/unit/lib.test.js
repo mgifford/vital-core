@@ -41,6 +41,11 @@ test('normalizeUrl: identity is stable and tracking-free', () => {
     'https://example.gov/a/b?a=2&z=1'
   );
   assert.equal(normalizeUrl('https://EXAMPLE.gov:443/path/', base, 'example.gov'), 'https://example.gov/path');
+  assert.equal(
+    normalizeUrl('https://example.gov/list?page=2&sort=date&utm_source=x', 'https://example.gov/', 'example.gov', undefined, ['page']),
+    'https://example.gov/list?sort=date',
+    'configured url_ignore_params drops only the named query parameter'
+  );
   assert.equal(normalizeUrl('https://other.gov/x', base, 'example.gov'), null, 'off-host rejected');
   assert.equal(normalizeUrl('/file.pdf', base, 'example.gov'), null, 'binary rejected');
   assert.equal(normalizeUrl('mailto:x@y.z', base, 'example.gov'), null);
