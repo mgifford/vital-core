@@ -9,7 +9,7 @@ import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
 import { scopeViewsFor } from './lib/shared-components.js';
-import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, filterFindings } from './lib/finding-filter.js';
+import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, findingImpactKeys, filterFindings, filterOptions } from './lib/finding-filter.js';
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord, MANUAL_REVIEW_STATUSES } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
@@ -5834,7 +5834,7 @@ const EXPLORER_ROW_LIMIT = 200;
  * exactly one implementation (unit-tested in Node, stringified here).
  */
 function explorerScript({ bugsJson, reportHref, labels }) {
-  const filterSource = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, filterFindings]
+  const filterSource = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, findingImpactKeys, filterFindings]
     .map((fn) => fn.toString())
     .join('\n');
   const reproductionSource = [isReplayableSelector, reproductionPlan, executeReproduction, playwrightTestFor]
@@ -5902,6 +5902,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
   function readState() {
     return {
       region: fieldValue('explorer-region'),
+      impact: fieldValue('explorer-impact'),
       widget: fieldValue('explorer-widget'),
       component: fieldValue('explorer-component'),
       engine: fieldValue('explorer-engine'),
@@ -6358,6 +6359,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
   const options = (items) => items.map((item) =>
     `<option value="${esc(item.key)}">${esc(item.label)}${item.count ? ` (${nf(item.count)})` : ''}</option>`).join('');
   const regionOptions = options((summary.regions?.regions ?? []).map((region) => ({ key: region.key, label: region.label, count: region.findings })));
+  const impactOptions = options(filterOptions(bugs ?? []).impacts);
   const widgetOptions = options((summary.widgetGroups?.groups ?? []).map((group) => ({
     key: `widget:${group.widget}`,
     label: group.label,
@@ -6385,6 +6387,8 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     selector: t('Selector'),
     element: t('Element'),
     region: t('Region'),
+    impactGroup: t('Estimated impact group'),
+    allImpactGroups: t('All estimated impact groups'),
     widget: t('Widget'),
     widgetType: t('Widget type'),
     allWidgets: t('All widgets'),
@@ -6478,6 +6482,8 @@ ${liveInspectHelp()}
 <p class="meta">${t('The filters and detail panel need JavaScript. Without it, the complete static index below remains available and links to each finding\'s full report.')}</p>
 <form id="explorer-filters" class="explorer-filters" hidden>
   <div class="explorer-field"><label for="explorer-region">${t('Region')}</label><select id="explorer-region"><option value="">${t('All regions')}</option>${regionOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-impact">${t('Estimated impact group')}</label><select id="explorer-impact"><option value="">${t('All estimated impact groups')}</option>${impactOptions}</select></div>
+  <p class="meta">${t('Impact groups are estimated from the WCAG-to-population mapping, not counts of people affected. Filtering is sample-based.')}</p>
   <div class="explorer-field"><label for="explorer-widget">${t('Widget type')}</label><select id="explorer-widget"><option value="">${t('All widgets')}</option>${widgetOptions}</select></div>
   <div class="explorer-field"><label for="explorer-component">${t('Component')}</label><select id="explorer-component"><option value="">${t('All components')}</option>${componentOptions}</select></div>
   <div class="explorer-field"><label for="explorer-engine">${t('Engine')}</label><select id="explorer-engine"><option value="">${t('All engines')}</option>${options(engines.map((engine) => ({ key: engine, label: engine === 'axe-core' ? 'axe' : engine })))}</select></div>

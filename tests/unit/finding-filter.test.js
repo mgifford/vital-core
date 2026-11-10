@@ -7,6 +7,7 @@ import {
   findingComponentLabel,
   findingWidgetKey,
   findingWidgetLabel,
+  findingImpactKeys,
   filterFindings,
   filterOptions,
 } from '../../src/lib/finding-filter.js';
@@ -78,6 +79,10 @@ test('filterFindings applies every filter and a case-insensitive query', () => {
   assert.deepEqual(filterFindings([...bugs, dialog], { widget: 'widget:dialog' }).map((b) => b.instance_id), ['VS-d']);
   assert.equal(filterFindings([...bugs, dialog], { component: 'component:cmp-consent' }).length, 0, 'widget is not a component filter');
   assert.deepEqual(filterFindings(bugs, { query: 'CONTRAST' }).map((b) => b.instance_id), ['VS-b']);
+  const impactBug = bug({ instance_id: 'VS-impact', impact: { groups: [{ group: 'Blind' }, { group: 'Low vision' }] } });
+  assert.deepEqual(filterFindings([...bugs, impactBug], { impact: 'Blind' }).map((b) => b.instance_id), ['VS-impact']);
+  assert.deepEqual(filterFindings([...bugs, impactBug], { impact: 'Low vision' }).map((b) => b.instance_id), ['VS-impact']);
+  assert.equal(filterFindings(bugs, { impact: 'Deaf' }).length, 0);
   assert.deepEqual(filterFindings(bugs, { query: 'example.gov/a' }).map((b) => b.instance_id), ['VS-a']);
   assert.equal(filterFindings(bugs, { query: 'nothing matches' }).length, 0);
   assert.equal(filterFindings(null).length, 0);
@@ -100,10 +105,13 @@ test('filterOptions counts regions, components, engines and severities', () => {
   assert.deepEqual(options.components, [], 'no configured components in this fixture');
   assert.deepEqual(options.severities.map((entry) => entry.key), ['Serious', 'Minor']);
   assert.deepEqual(options.engines.map((entry) => entry.key), ['axe-core', 'alfa']);
+  assert.deepEqual(options.impacts, []);
+  const impacted = filterOptions([...bugs, bug({ instance_id: 'VS-i', impact: { groups: [{ group: 'Blind' }, { group: 'Low vision' }] } })]);
+  assert.deepEqual(impacted.impacts.map((entry) => [entry.key, entry.count]), [['Blind', 1], ['Low vision', 1]]);
 });
 
 test('the filter functions are self-contained enough to run in the browser', () => {
-  const source = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, filterFindings, filterOptions]
+  const source = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, findingImpactKeys, filterFindings, filterOptions]
     .map((fn) => fn.toString())
     .join('\n');
   // No module scope is available here: stringification must carry everything.

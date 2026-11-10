@@ -144,6 +144,13 @@ not an implementation and grouping is not ownership.
   sample, methods, every A/AA outcome as failure or not-evaluated, step status
   and limitations. See [`docs-internal/WCAG-EM.md`](docs-internal/WCAG-EM.md).
 
+### Finding Explorer filters
+
+The Explorer filters by region, configured component, widget type, engine,
+severity and **estimated impact group**. Impact groups come from the
+WCAG-to-population mapping and are explicitly not counts of people; filtering
+uses the stored sample. ARRM role filters remain deferred.
+
 ### Evidence coverage
 
 Each weekly summary carries a finding-level coverage block: how many findings
