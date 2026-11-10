@@ -572,6 +572,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /Highlight on site/, 'finding links to a live highlight');
   assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
   assert.match(html, /id="live-inspect-help"/, 'the bookmarklet install section has a stable anchor');
+  assert.match(html, /data-inspect-version="2"/, 'the bookmarklet advertises its version');
+  assert.match(html, /Updated November 2026/, 'the install guide tells earlier installers to replace it');
   assert.match(html, /Evidence coverage/, 'the evidence coverage section is rendered');
   assert.match(html, /no containing landmark/, 'missing landmark is separate from unavailable evidence');
   assert.match(html, /class="bookmarklet-link bookmarklet-button" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
@@ -581,6 +583,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
   assert.match(html, /Copy inspection code/, 'the code fallback is labelled');
   assert.match(html, /Highlight text on site/, 'a native text-fragment link is offered');
+  assert.ok(html.indexOf('#:~:text=') < html.indexOf('class="inspect-open"'), 'the no-install text link is offered before the bookmarklet');
+  assert.match(html, /inspect-launch-status|class="inspect-open"/, 'a fallback status is attached to the live-page action');
   assert.match(html, /#:~:text=/, 'the text link carries a text directive');
   assert.match(html, /strict script-src Content-Security-Policy/, 'the CSP limitation is documented');
   assert.match(html, /ACT rule\/page group\(s\) overlap between engines/);
@@ -1476,6 +1480,9 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   assert.match(html, /manual-reviewer/, 'manual review captures the reviewer');
   assert.match(html, /manual-review-status/, 'manual review captures the review status');
   assert.match(html, /Reviewer name/, 'review fields have visible labels');
+  assert.match(html, /Automated finding\./, 'detail starts with a concise automated-finding lead');
+  assert.match(html, /detail-actions/, 'primary actions are grouped before technical evidence');
+  assert.match(html, /explorer-manual/, 'manual validation is a direct anchor');
   assert.match(html, /automated evidence, not a confirmed failure/i, 'manual prompts distinguish automated evidence');
   // Empty state is honest rather than an empty table.
   const empty = renderExplorerPage(target, { week: '2026-W25', pagesScanned: 1 }, []);

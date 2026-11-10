@@ -164,6 +164,44 @@ Final measured values: bookmarklet **23,397 bytes**, typical code **424 bytes**,
 decoded payload **318 bytes**. Chromium activation-to-panel remains in the tens
 of milliseconds; see the measurements section.
 
+## Finding the element
+
+The panel scrolls the first **visible** candidate into view on activation and
+offers **Show element** to re-centre it. A matched element with no visible box
+(display:none, visibility:hidden, opacity:0, zero rect) is reported as **hidden
+in this page state**, with instructions to open the containing menu/tab/dialog
+and choose **Find again**. It is never replaced with a different element just to
+produce a visible outline. The outline now includes a translucent fill as well
+as the high-contrast border.
+
+If the recorded selector no longer matches, the panel looks for up to ten
+visible elements of the recorded tag whose visible text anchor or recorded name
+attribute matches. They are offered as **candidates**, never as a located
+occurrence, and the panel says the recorded selector no longer matches.
+
+## No-install and fallback paths
+
+The text-fragment link is offered first when the finding has recorded visible
+text. It needs no install and is the most reliable "show me something" path,
+though it highlights text only and does not open the VITAL panel.
+
+The report cannot know whether a bookmarklet ran on another origin. The
+live-page action therefore says, next to the link and in a live status after
+clicking, that a missing panel is not a fix and points to the no-install text
+link, Copy inspection code and reinstall. The panel itself says the occurrence
+is unverified when the selector is stale, the element is hidden, or no element
+is found. Record the outcome in the Explorer's manual review; VITAL does not
+store it.
+
+## Stale installed bookmarklets
+
+The bookmarklet is self-contained and cannot auto-update. A copy installed
+before a payload change can reject newer fields; the report now shows the
+current version and tells earlier installers to drag it again. The help panel's
+**“Clicked VITAL Inspect and nothing happened?”** item names reinstall, CSP,
+clipboard fallback and blocked-automation routes. Do not treat an alert or no
+panel as evidence about the page until the current version is installed.
+
 ## Access-block pages
 
 The bookmarklet now detects common Akamai/edge access-denied pages and reports

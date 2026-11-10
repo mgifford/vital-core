@@ -69,6 +69,17 @@ not prove the historical violation still exists.
   not interchangeable.
 - **Access-denied pages:** the bookmarklet and local inspector report a firewall
   or bot-block page explicitly; they do not try to bypass it.
+- **Can’t see the highlight?** The no-install **Highlight text on site** link
+  comes first when the finding has recorded text. The bookmarklet panel scrolls
+  to the first visible candidate and offers **Show element**. If the element is
+  hidden in a closed menu, tab, dialog or accordion, the panel says so and asks
+  you to open it and choose **Find again**; it never substitutes a different
+  visible element. If the bookmarklet is missing, out of date or blocked, the
+  report row says so and points to Copy inspection code and the text link.
+- **A missing highlight is not a fix.** It means the occurrence is unverified.
+  Record **not reproduced** or **false positive** in the Finding Explorer’s
+  manual review record; do not close the finding just because it cannot be
+  located.
 - **Manual assistive-technology testing of the bookmarklet has not been
   performed yet.** Keyboard behaviour is tested in Chromium; screen reader,
   forced-colors and cross-browser checks remain manual work.
