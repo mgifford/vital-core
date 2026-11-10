@@ -36,6 +36,7 @@ import { buildLlmsTxt } from './lib/llms-txt.js';
 import { writeApiCatalog } from './lib/api-catalog.js';
 import { summarizeDistribution } from './lib/distribution.js';
 import { writeAcrYaml } from './lib/acr.js';
+import { writeWcagEmReport } from './lib/wcag-em.js';
 import { sanitizeBugEvidence } from './lib/finding-reporting.js';
 import { computeTrainingPriorities } from './lib/training-priorities.js';
 import { isAvailable as ollamaAvailable, chat as ollamaChat, detectModel as ollamaDetectModel } from './lib/ollama.js';
@@ -367,8 +368,12 @@ for (const target of config.targets) {
     const bugsJsonName = `${pfx2}_bugs.json`;
     const aiJsonName = `${pfx2}_ai-findings.json`;
 
-    // OpenACR YAML — written before the accessibility page so the path is available for the download link.
-    const acrResult = writeAcrYaml(repDir, target, summary, summary.week);
+    // Evaluation artifact — OpenACR for procurement (US default), or a
+    // WCAG-EM-aligned automated pre-assessment for website evaluations. Written
+    // before the accessibility page so the download link is available.
+    const ar = target.evaluationReport ?? 'openacr';
+    const acrResult = ar === 'wcag-em' ? null : writeAcrYaml(repDir, target, summary, summary.week);
+    const wcagEmResult = ar === 'openacr' ? null : writeWcagEmReport(repDir, target, summary, summary.week);
 
     // Training priorities: top WCAG SCs by pages affected, with optional Ollama advice.
     const trainingPriorities = computeTrainingPriorities(reportBugs);
@@ -456,7 +461,8 @@ for (const target of config.targets) {
         aiJson: aiJsonName,
         policySummary: policyResult.suppressionSummary,
         clusterCsvLinks,
-        acrYaml: acrResult.path,
+        acrYaml: acrResult?.path ?? null,
+        wcagEm: wcagEmResult?.path ?? null,
         trainingPriorities,
         trainingAdvice,
       }, target.url_exclude_patterns ?? []));

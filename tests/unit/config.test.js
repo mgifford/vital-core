@@ -248,3 +248,13 @@ targets:
   assert.throws(() => loadConfig('targets:\n  - domain: a.example\n    component_signatures: [{ id: x }]\n'), /target a\.example: component_signatures\[0\]: needs at least one of/);
   assert.throws(() => loadConfig('targets:\n  - domain: a.example\n    page_families: [{ id: x, route: nope }]\n'), /route must be a path/);
 });
+
+test('config: evaluation_report defaults to openacr and accepts wcag-em', () => {
+  const base = loadConfig('targets:\n  - domain: example.gov\n').targets[0];
+  assert.equal(base.evaluationReport, 'openacr', 'US default remains OpenACR');
+  const nonUs = loadConfig('targets:\n  - domain: example.org\n    evaluation_report: wcag-em\n').targets[0];
+  assert.equal(nonUs.evaluationReport, 'wcag-em');
+  const both = loadConfig('evaluation_report: both\ntargets:\n  - domain: example.org\n').targets[0];
+  assert.equal(both.evaluationReport, 'both', 'global default is inherited');
+  assert.throws(() => loadConfig('targets:\n  - domain: example.org\n    evaluation_report: vpat\n'), /evaluation_report must be openacr, wcag-em or both/);
+});

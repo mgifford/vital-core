@@ -70,10 +70,18 @@ export function loadConfig(rawYaml) {
   // exports). Trailing slash stripped so callers can always do `${base}${path}`.
   const reportBaseUrl = (cfg.report_base_url || '').replace(/\/+$/, '');
   const dataRepo = validateDataRepo(cfg.data_repo ?? DEFAULT_DATA_REPO, 'global config');
+  const evaluationReport = cfg.evaluation_report ?? defaults.evaluation_report ?? 'openacr';
+  if (!['openacr', 'wcag-em', 'both'].includes(evaluationReport)) {
+    throw new Error(`evaluation_report must be openacr, wcag-em or both (got ${JSON.stringify(evaluationReport)})`);
+  }
   const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
   for (const t of targets) {
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
     t.reporting = { ...(defaults.reporting ?? {}), ...(t.reporting ?? {}) };
+    t.evaluationReport = t.evaluation_report ?? evaluationReport;
+    if (!['openacr', 'wcag-em', 'both'].includes(t.evaluationReport)) {
+      throw new Error(`target ${t.domain}: evaluation_report must be openacr, wcag-em or both`);
+    }
     t.key = domainKey(t.domain);
     const langs = resolveLanguages(t.languages, t.default_language, `target ${t.domain}`, globalLangs);
     t.languages = langs.languages;

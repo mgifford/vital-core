@@ -4457,9 +4457,14 @@ ${rows}
  */
 export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}, excludePatterns = []) {
   const { trainingPriorities = [], trainingAdvice = null } = reporting;
-  const acrNote = reporting.acrYaml
-    ? `<p class="meta"><strong>Draft automated accessibility evidence (OpenACR format) — not a conformance report.</strong> <a href="${esc(reporting.acrYaml)}">Download draft YAML</a>. Machine-readable and compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Manual AT testing is incomplete; many criteria remain unknown.</p>`
-    : '';
+  const evaluationNotes = [];
+  if (reporting.acrYaml) {
+    evaluationNotes.push(`<p class="meta"><strong>Draft automated accessibility evidence (OpenACR format) — not a conformance report.</strong> <a href="${esc(reporting.acrYaml)}">Download draft YAML</a>. Machine-readable and compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Manual AT testing is incomplete; many criteria remain unknown.</p>`);
+  }
+  if (reporting.wcagEm) {
+    evaluationNotes.push(`<p class="meta"><strong>Draft automated WCAG-EM-aligned evaluation — not a conformance claim.</strong> <a href="${esc(reporting.wcagEm)}">Download WCAG-EM report</a>. It describes the weekly sample and records each criterion as failure or not evaluated. The sample is not a WCAG-EM representative sample, and manual evaluation is incomplete.</p>`);
+  }
+  const acrNote = evaluationNotes.join('\n');
   const body = `
 <h1>${esc(target.domain)}: ${t('Accessibility')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('accessibility')}

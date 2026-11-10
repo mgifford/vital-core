@@ -1506,3 +1506,18 @@ test('writeAsset emits the SVG favicon alongside the stylesheet', () => {
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('accessibility page offers a WCAG-EM report when configured', () => {
+  const target = { key: 'example.org', domain: 'example.org' };
+  const summary = {
+    week: '2026-W46', pagesScanned: 2, pagesAudited: 2,
+    axe: { version: '4.14.0', pagesScanned: 2, rules: {} },
+    alfa: { version: '0.117.0', pagesScanned: 1, rules: {} },
+  };
+  const withReport = renderAccessibilityPage(target, summary, [], {}, { wcagEm: 'wcag-em.html' });
+  assert.match(withReport, /Draft automated WCAG-EM-aligned evaluation/);
+  assert.match(withReport, /href="wcag-em\.html"/);
+  assert.match(withReport, /not a WCAG-EM representative sample/);
+  const without = renderAccessibilityPage(target, summary, [], {}, {});
+  assert.doesNotMatch(without, /WCAG-EM-aligned evaluation/);
+});
