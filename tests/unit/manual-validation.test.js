@@ -34,6 +34,8 @@ test('guidance is bounded and never claims a review happened', () => {
   assert.match(guidance.limitations.join(' '), /third of accessibility barriers/);
   assert.match(guidance.limitations.join(' '), /does not establish conformance/);
   assert.match(guidance.limitations.join(' '), /screenshot.*scan time/i);
+  assert.match(guidance.false_positive_check, /false positive/i);
+  assert.match(guidance.false_positive_check, /not evidence.*conformant|does not establish conformance/i);
   assert.deepEqual(MANUAL_REVIEW_STATUSES, ['not_reviewed', 'in_progress', 'confirmed', 'not_reproduced', 'false_positive', 'needs_investigation']);
 });
 

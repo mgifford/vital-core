@@ -570,6 +570,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /Images must have alternative text/);
   assert.match(html, /Cross-engine ACT evidence/);
   assert.match(html, /Highlight on site/, 'finding links to a live highlight');
+  assert.match(html, /Automated finding — unverified/, 'each finding is labelled unverified');
+  assert.match(html, /false-positive-help/, 'false-positive guidance is linked from the report');
   assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
   assert.match(html, /id="live-inspect-help"/, 'the bookmarklet install section has a stable anchor');
   assert.match(html, /data-inspect-version="2"/, 'the bookmarklet advertises its version');
@@ -1481,6 +1483,7 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   assert.match(html, /manual-review-status/, 'manual review captures the review status');
   assert.match(html, /Reviewer name/, 'review fields have visible labels');
   assert.match(html, /Automated finding\./, 'detail starts with a concise automated-finding lead');
+  assert.match(html, /false-positive-help/, 'the report carries false-positive/false-assurance guidance');
   assert.match(html, /detail-actions/, 'primary actions are grouped before technical evidence');
   assert.match(html, /explorer-manual/, 'manual validation is a direct anchor');
   assert.match(html, /automated evidence, not a confirmed failure/i, 'manual prompts distinguish automated evidence');
