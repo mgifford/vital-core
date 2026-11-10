@@ -179,6 +179,15 @@ visible elements of the recorded tag whose visible text anchor or recorded name
 attribute matches. They are offered as **candidates**, never as a located
 occurrence, and the panel says the recorded selector no longer matches.
 
+## Stale installed bookmarklets
+
+The bookmarklet is self-contained and cannot auto-update. A copy installed
+before a payload change can reject newer fields; the report now shows the
+current version and tells earlier installers to drag it again. The help panel's
+**“Clicked VITAL Inspect and nothing happened?”** item names reinstall, CSP,
+clipboard fallback and blocked-automation routes. Do not treat an alert or no
+panel as evidence about the page until the current version is installed.
+
 ## Access-block pages
 
 The bookmarklet now detects common Akamai/edge access-denied pages and reports

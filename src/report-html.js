@@ -13,7 +13,7 @@ import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingR
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord, MANUAL_REVIEW_STATUSES } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
-import { inspectBookmarklet, inspectCodeFor, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
+import { INSPECT_VERSION, inspectBookmarklet, inspectCodeFor, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
 import { textFragmentUrl } from './lib/text-fragment.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
@@ -1718,7 +1718,8 @@ function liveInspectHelp() {
 <li>${t('Open a finding and choose “Highlight on site”.')}</li>
 <li>${t('On the page that opens, click the VITAL Inspect bookmark.')}</li>
 </ol>
-<p class="bookmarklet-install"><a class="bookmarklet-link bookmarklet-button" href="${esc(inspectBookmarklet())}" draggable="true"><span class="bookmarklet-icon" aria-hidden="true">★</span> <span>${t('VITAL Inspect')}</span> <small>${t('Drag me to the bookmarks bar')}</small></a></p>
+<p class="bookmarklet-install"><a class="bookmarklet-link bookmarklet-button" href="${esc(inspectBookmarklet())}" draggable="true" data-inspect-version="${INSPECT_VERSION}"><span class="bookmarklet-icon" aria-hidden="true">★</span> <span>${t('VITAL Inspect')}</span> <small>${t('v@version · Drag me to the bookmarks bar', { '@version': INSPECT_VERSION })}</small></a></p>
+<p class="meta"><strong>${t('Updated November 2026 (v@version).', { '@version': INSPECT_VERSION })}</strong> ${t('If you installed VITAL Inspect earlier, drag the button again to replace it. Older copies can reject newer inspection codes and lack the scrolling and hidden-element handling.')}</p>
 <details class="inspect-ways">
 <summary>${t('Which inspection should I use?')}</summary>
 <dl>
@@ -1743,6 +1744,15 @@ function liveInspectHelp() {
 <p class="meta">${t('The overlay shows the recorded rule, selector, WCAG mapping and fix text. It sends nothing and is not stored. It follows the recorded selector; if the element has changed, it says so rather than guessing.')}</p>
 <p class="meta">${t('If the site uses its URL fragment for routing, or the highlight link does not carry the code, use Copy inspection code and paste it when the bookmarklet asks.')}</p>
 <p class="meta">${t('Browser restriction: a page with a strict script-src Content-Security-Policy can block bookmarklets. Do not weaken the site policy; use the Finding Explorer or the Playwright reproduction instead.')}</p>
+<details class="bookmarklet-troubleshoot">
+<summary>${t('Clicked VITAL Inspect and nothing happened?')}</summary>
+<ol>
+<li>${t('Reinstall the bookmarklet from this page. Older copies can reject newer inspection codes.')}</li>
+<li>${t('Check the page’s Content-Security-Policy; a strict script-src blocks bookmarklets.')}</li>
+<li>${t('Copy the inspection code and paste it when the bookmarklet asks, especially on sites that use the URL fragment for routing.')}</li>
+<li>${t('If the site blocks automated browsers, copy the page URL into your normal browser or use the local inspector from the repository.')}</li>
+</ol>
+</details>
 </details>`;
 }
 

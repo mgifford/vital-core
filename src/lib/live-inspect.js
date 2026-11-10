@@ -9,6 +9,7 @@
  */
 
 export const INSPECT_HASH = 'vital-inspect';
+export const INSPECT_VERSION = 2;
 
 /** Why a finding cannot be highlighted from the top-level document, if it cannot. */
 export function inspectUnavailableReason(bug) {

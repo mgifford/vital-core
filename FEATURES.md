@@ -223,7 +223,10 @@ live page with a compact VITAL payload in the URL fragment. Clicking the
 - **Element not found** — with possible causes and a **Find again** action.
 
 The panel scrolls the first visible candidate into view, offers **Show element**
-to re-centre it, and adds a translucent fill to the high-contrast outline. It
+to re-centre it, and adds a translucent fill to the high-contrast outline. The
+install guide shows the current bookmarklet version and tells people who
+installed an earlier copy to drag it again; older copies can reject newer
+inspection codes. It
 shows the occurrence id, rule, WCAG mapping, selector, recorded and live
 identity, differences and historical remediation guidance. It is rendered in a shadow
 root so aggressive page CSS cannot hide it, can be collapsed or moved between

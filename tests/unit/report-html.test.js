@@ -566,6 +566,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /Highlight on site/, 'finding links to a live highlight');
   assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
   assert.match(html, /id="live-inspect-help"/, 'the bookmarklet install section has a stable anchor');
+  assert.match(html, /data-inspect-version="2"/, 'the bookmarklet advertises its version');
+  assert.match(html, /Updated November 2026/, 'the install guide tells earlier installers to replace it');
   assert.match(html, /Evidence coverage/, 'the evidence coverage section is rendered');
   assert.match(html, /no containing landmark/, 'missing landmark is separate from unavailable evidence');
   assert.match(html, /class="bookmarklet-link bookmarklet-button" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
