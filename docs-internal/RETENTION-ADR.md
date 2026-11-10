@@ -1,6 +1,6 @@
 # ADR: safe retention and durable archives (issue #130)
 
-Status: **PR 1 implemented — planning only. No destructive change is enabled.**
+Status: **PR 1 and PR 2 implemented — planning and archive publishing only. No destructive change is enabled.**
 Date: 2026-11-10
 
 ## Context
@@ -138,11 +138,12 @@ that a working-tree decrease shrinks Git history.
 
 ## PR sequence
 
-1. **PR 1 (this change):** policy config, ISO-week calculations, metrics,
+1. **PR 1 (merged):** policy config, ISO-week calculations, metrics,
    non-destructive planner, CLI, tests, ADR.
-2. **PR 2:** archive creation/integrity, deterministic ZIP/index, backend
-   verification; still no pruning by default.
-3. **PR 3:** archive retry/verification and legacy-link resolution; controlled
+2. **PR 2 (this change):** archive creation/integrity, deterministic ZIP and
+   manifest, local and S3-compatible backends, checksum round-trip; still no
+   pruning by default. See [RETENTION-ARCHIVE.md](RETENTION-ARCHIVE.md).
+3. **PR 3:** archive index, legacy-link/tombstone resolution and controlled
    prune authorization.
 4. **PR 4:** last-observation index, retention UI/API, growth alerts, fleet
    documentation and final handoff.
@@ -177,3 +178,6 @@ the operator must explicitly approve:
 profile resolution, adaptive clamping, legacy precedence, storage warnings,
 non-destructive planning, missing summaries, stubs and metrics fallbacks.
 `tests/unit/config.test.js` covers config integration and invalid policies.
+`tests/unit/retention-archive.test.js` covers deterministic ZIPs, manifests,
+checksums, dedup expansion, incomplete archives, local/S3 round trips, `hf_only`
+refusal and the CLI.

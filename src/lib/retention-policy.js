@@ -12,25 +12,25 @@ const DEFAULT_STORAGE = Object.freeze({ warning_mb: 1300, critical_mb: 1600, wee
 export const RETENTION_PROFILES = Object.freeze({
   minimal: {
     live: { mode: 'fixed', weeks: 2 },
-    archive: { enabled: false, retention_months: 0, verify_before_prune: false },
+    archive: { enabled: false, retention_months: 0, verify_before_prune: false, backend: 'local', path: 'archives' },
     summary: { retention: 'indefinite' },
     storage: { ...DEFAULT_STORAGE },
   },
   balanced: {
     live: { mode: 'adaptive', minimum_weeks: 4, maximum_weeks: 16, scan_cycle_multiplier: 1.25 },
-    archive: { enabled: true, retention_months: 12, verify_before_prune: true },
+    archive: { enabled: true, retention_months: 12, verify_before_prune: true, backend: 'local', path: 'archives' },
     summary: { retention: 'indefinite' },
     storage: { ...DEFAULT_STORAGE },
   },
   research: {
     live: { mode: 'adaptive', minimum_weeks: 8, maximum_weeks: 26, scan_cycle_multiplier: 1.5 },
-    archive: { enabled: true, retention_months: 36, verify_before_prune: true },
+    archive: { enabled: true, retention_months: 36, verify_before_prune: true, backend: 'local', path: 'archives' },
     summary: { retention: 'indefinite' },
     storage: { ...DEFAULT_STORAGE },
   },
   preserve: {
     live: { mode: 'fixed', weeks: 52 },
-    archive: { enabled: true, retention_months: 'indefinite', verify_before_prune: true },
+    archive: { enabled: true, retention_months: 'indefinite', verify_before_prune: true, backend: 'local', path: 'archives' },
     summary: { retention: 'indefinite' },
     storage: { ...DEFAULT_STORAGE },
   },
@@ -38,7 +38,7 @@ export const RETENTION_PROFILES = Object.freeze({
 
 const TOP_KEYS = ['profile', 'live', 'archive', 'summary', 'storage'];
 const LIVE_KEYS = ['mode', 'weeks', 'minimum_weeks', 'maximum_weeks', 'scan_cycle_multiplier'];
-const ARCHIVE_KEYS = ['enabled', 'retention_months', 'storage', 'verify_before_prune'];
+const ARCHIVE_KEYS = ['enabled', 'retention_months', 'storage', 'backend', 'path', 'endpoint', 'bucket', 'prefix', 'verify_before_prune'];
 const STORAGE_KEYS = ['warning_mb', 'critical_mb', 'weekly_growth_warning_mb'];
 const positive = (value) => Number.isFinite(value) && value > 0;
 
@@ -93,6 +93,11 @@ function validate(policy, legacyFieldApplied = false) {
   if (policy.archive.enabled && policy.archive.verify_before_prune !== true) {
     throw new Error('archive.verify_before_prune must be true when archiving is enabled');
   }
+  if (!['local', 's3'].includes(policy.archive.backend)) throw new Error('archive.backend must be local or s3');
+  if (policy.archive.path != null && typeof policy.archive.path !== 'string') throw new Error('archive.path must be a string');
+  if (policy.archive.endpoint != null && typeof policy.archive.endpoint !== 'string') throw new Error('archive.endpoint must be a string');
+  if (policy.archive.bucket != null && typeof policy.archive.bucket !== 'string') throw new Error('archive.bucket must be a string');
+  if (policy.archive.prefix != null && typeof policy.archive.prefix !== 'string') throw new Error('archive.prefix must be a string');
   if (policy.summary.retention !== 'indefinite') {
     throw new Error('summary.retention must be indefinite in this version');
   }
@@ -157,7 +162,7 @@ export function resolveTargetRetention({ defaultsRetention = null, targetRetenti
     policy = {
       profile: 'legacy',
       live: { mode: 'fixed', weeks: legacyWeeks },
-      archive: { enabled: false, retention_months: 0, verify_before_prune: false },
+      archive: { enabled: false, retention_months: 0, verify_before_prune: false, backend: 'local', path: 'archives' },
       summary: { retention: 'indefinite' },
       storage: { ...DEFAULT_STORAGE },
       legacyFieldApplied: true,

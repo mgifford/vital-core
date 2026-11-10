@@ -35,6 +35,10 @@ dist/
 /data/
 
 # HF-only targets — scanned on Hugging Face, not GitHub Actions.
+# Local retention archives are evidence artifacts, not source. Keep them out
+# of Git by default; a remote archive backend is configured separately.
+/archives/
+
 # Guard against accidental commit of their scan data to this repo.
 # Unanchored on purpose, so they still match if VITAL_DATA_ROOT points at a
 # directory inside the checkout.
