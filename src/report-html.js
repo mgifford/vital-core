@@ -17,6 +17,7 @@ import { inspectBookmarklet, inspectCodeFor, inspectUnavailableReason, inspectUn
 import { textFragmentUrl } from './lib/text-fragment.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
+import { FAVICON_FILENAME, FAVICON_PNG_FILENAME, FAVICON_SVG } from './lib/brand.js';
 
 export { setLocale };
 
@@ -1002,7 +1003,10 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', a
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#083b3d">
 <title>${esc(title)}</title>
+<link rel="icon" href="${base}${FAVICON_FILENAME}" type="image/svg+xml">
+<link rel="icon" href="${base}${FAVICON_PNG_FILENAME}" type="image/png" sizes="64x64">
 <link rel="stylesheet" href="${base}style.css">
 <link rel="llms.txt" href="${base}llms.txt" title="Machine-readable guide for LLMs and agents">
 ${relatedLinks}
@@ -1019,7 +1023,7 @@ ${languageRuntime(page)}
 <body>
 <a class="skip" href="#main">${t('Skip to content')}</a>
 <header>
-  <p class="brand"><a href="${base}index${localeSuffix()}.html">vital-scans</a> <span class="tag">${t('open quality ledger')}</span></p>
+  <p class="brand"><a href="${base}index${localeSuffix()}.html"><img class="brand-mark" src="${base}${FAVICON_FILENAME}" alt="" width="28" height="28"> <span>vital-scans</span></a> <span class="tag">${t('open quality ledger')}</span></p>
   ${breadcrumb ? `<nav aria-label="${esc(t('Breadcrumb'))}"><ol class="crumbs">${breadcrumb}</ol></nav>` : ''}
   ${languageSwitcher(page)}
   ${themeToggle()}
@@ -5374,6 +5378,9 @@ export function renderUrlLookup(domains) {
 
 export function writeAsset(docsDir) {
   fs.writeFileSync(path.join(docsDir, 'style.css'), CSS);
+  fs.writeFileSync(path.join(docsDir, FAVICON_FILENAME), FAVICON_SVG);
+  const faviconPng = path.resolve(path.dirname(new URL(import.meta.url).pathname), 'assets/favicon.png');
+  if (fs.existsSync(faviconPng)) fs.copyFileSync(faviconPng, path.join(docsDir, FAVICON_PNG_FILENAME));
   // Serve the vendored ParaCharts runtime first-party (AGPL-3.0). Charts are
   // progressively enhanced: the static SVG + table render without it; this
   // bundle is lazy-imported only on report pages to upgrade them. Copied as a
@@ -5424,7 +5431,8 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   border: 2px solid var(--accent); z-index: 1; }
 header { border-bottom: 3px double var(--rule); padding-bottom: .5rem; margin-bottom: 1.5rem; }
 .brand { font-variant: small-caps; letter-spacing: .06em; font-size: 1.1rem; margin: 0; }
-.brand a { text-decoration: none; color: var(--ink); font-weight: 700; }
+.brand a { display: inline-flex; align-items: center; gap: .4rem; text-decoration: none; color: var(--ink); font-weight: 700; }
+.brand-mark { width: 1.75rem; height: 1.75rem; border-radius: 4px; flex: none; }
 .tag { color: var(--muted); font-size: .85rem; letter-spacing: .1em; }
 .crumbs { list-style: none; padding: 0; margin: .25rem 0 0; font-size: .9rem; }
 .crumbs li { display: inline; }

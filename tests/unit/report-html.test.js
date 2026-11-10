@@ -1,7 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS, writeAsset } from '../../src/report-html.js';
 import { buildCooccurrence } from '../../src/lib/tech-findings.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
@@ -11,6 +14,9 @@ test('related-links: a domain page links the JSON API, API.md, and MCP.md in <he
     standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
   };
   const html = renderStandardsPage(target, summary);
+  assert.match(html, /rel="icon" href="[^"]*favicon\.svg" type="image\/svg\+xml"/, 'pages advertise the SVG favicon');
+  assert.match(html, /rel="icon" href="[^"]*favicon\.png" type="image\/png" sizes="64x64"/, 'pages provide a PNG fallback');
+  assert.match(html, /class="brand-mark" src="[^"]*favicon\.svg" alt="" width="28" height="28"/, 'the header carries the brand mark with empty alt text');
   assert.match(
     html,
     /<link rel="alternate" type="application\/json" href="\.\.\/\.\.\/\.\.\/api\/v1\/d\/2026-W24\/findings\.json" title="This page's findings as JSON">/,
@@ -1474,4 +1480,22 @@ test('renderExplorerPage has a no-JS static index, filters and a detail panel', 
   // Empty state is honest rather than an empty table.
   const empty = renderExplorerPage(target, { week: '2026-W25', pagesScanned: 1 }, []);
   assert.match(empty, /No accessibility findings this week\./);
+});
+
+
+test('writeAsset emits the SVG favicon alongside the stylesheet', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-favicon-'));
+  try {
+    writeAsset(dir);
+    const svg = fs.readFileSync(path.join(dir, 'favicon.svg'), 'utf8');
+    assert.match(svg, /^<svg /, 'valid SVG document');
+    assert.match(svg, /<title id="vital-mark-title">vital-scans<\/title>/, 'mark has an accessible title');
+    assert.match(svg, /#083b3d/, 'deep-teal field');
+    assert.match(svg, /#e0a526/, 'amber ledger rule');
+    const png = fs.readFileSync(path.join(dir, 'favicon.png'));
+    assert.equal(png.subarray(1, 4).toString(), 'PNG', 'PNG fallback copied');
+    assert.ok(fs.existsSync(path.join(dir, 'style.css')), 'stylesheet still written');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

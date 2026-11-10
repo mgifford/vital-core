@@ -31,6 +31,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { resolveWcag } from './wcag.js';
+import { FAVICON_DATA_URI } from './brand.js';
 
 // All WCAG 2.2 Success Criteria in catalog order, with level and version.
 // This is the complete set for a WCAG 2.2 A+AA conformance target.
@@ -325,6 +326,7 @@ ${rows}
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="${FAVICON_DATA_URI}" type="image/svg+xml">
   <title>${domain}: DRAFT automated accessibility evidence — ${escHtml(weekLabel)}</title>
   <style>
     body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:1200px;color:#1b1b1b}
