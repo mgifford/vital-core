@@ -30,12 +30,14 @@ defaults:
   max_crawl_depth: 10        # BFS depth from seeds
   retention_weeks: 2        # legacy: page-level detail kept this long; weekly summaries kept forever
   # Optional retention policy. When omitted, retention_weeks above is preserved
-  # exactly (fixed window, no archive). An explicit policy overrides the legacy
-  # field; the safe default profile is balanced (adaptive 4-16 weeks, 12-month
-  # archive) but no archive/prune runs until its implementation is authorized.
+  # for reading/planning only; no automatic deletion occurs. Explicit policy
+  # overrides the legacy field with a warning. Recommended migration (leave it
+  # commented until a backend and restore drill are approved):
   # retention:
   #   profile: balanced
-  #   archive: { enabled: true, retention_months: 12, verify_before_prune: true }
+  #   live: { mode: adaptive, minimum_weeks: 4, maximum_weeks: 16, scan_cycle_multiplier: 1.25 }
+  #   archive: { enabled: true, retention_months: 12, verify_before_prune: true, backend: local, path: archives }
+  #   summary: { retention: indefinite }
   # Evaluation export: openacr (US procurement default), wcag-em (W3C evaluation
   # report; recommended outside the US), or both. Per-target override below.
   evaluation_report: openacr
