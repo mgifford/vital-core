@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {
   archiveExpiry,
+  archiveExpiryPlan,
   archiveState,
   emptyArchiveIndex,
   readArchiveIndex,
@@ -90,4 +91,52 @@ test('archive pages expose evidence states without a silent redirect', () => {
   }
   const expired = renderArchiveEvidencePage(target, summary, { state: 'expired', expires_at: '2020-01-01T00:00:00.000Z' }, summary.week);
   assert.match(expired, /does not redirect/);
+});
+
+
+test('the archive index does not truncate historical entries', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-archive-index-'));
+  try {
+    const domainDir = path.join(root, target.key);
+    for (let i = 0; i < 1005; i++) {
+      recordVerifiedArchive(domainDir, {
+        domain: target.key,
+        week: `20${String(10 + Math.floor(i / 52)).padStart(2, '0')}-W${String((i % 52) + 1).padStart(2, '0')}`,
+        key: `${target.key}/${i}.zip`, backend: 'local',
+        archiveId: String(i).padStart(64, '0'), zipSha256: 'b'.repeat(64), bytes: 1, retentionMonths: 12,
+      });
+    }
+    assert.equal(readArchiveIndex(domainDir, target.key).archives.length, 1005);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('archive expiry is based on the end of the scan week and is stable on re-upload', () => {
+  assert.match(archiveExpiry('2026-W01', 1), /^2026-02-04T23:59:59\.999Z$/);
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-archive-index-'));
+  try {
+    const domainDir = path.join(root, target.key);
+    recordVerifiedArchive(domainDir, {
+      domain: target.key, week: '2026-W01', key: `${target.key}/2026-W01.zip`, backend: 'local',
+      archiveId: 'a'.repeat(64), zipSha256: 'b'.repeat(64), bytes: 1, retentionMonths: 1,
+      publishedAt: '2026-01-10T00:00:00.000Z',
+    });
+    const first = readArchiveIndex(domainDir, target.key).archives[0];
+    recordVerifiedArchive(domainDir, {
+      domain: target.key, week: '2026-W01', key: `${target.key}/2026-W01.zip`, backend: 'local',
+      archiveId: 'c'.repeat(64), zipSha256: 'd'.repeat(64), bytes: 2, retentionMonths: 1,
+      publishedAt: '2026-06-01T00:00:00.000Z',
+    });
+    const second = readArchiveIndex(domainDir, target.key).archives[0];
+    assert.equal(second.expires_at, first.expires_at, 're-upload does not extend expiry');
+    assert.equal(second.first_published_at, first.published_at);
+    assert.equal(second.retention_basis, 'end-of-scan-week');
+    const plan = archiveExpiryPlan(readArchiveIndex(domainDir, target.key), new Date('2026-06-02T00:00:00Z'));
+    assert.equal(plan.archives[0].state, 'expired');
+    assert.equal(plan.archives[0].physical_deletion_performed, false);
+    assert.equal(plan.destructive_actions_performed, 0);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });

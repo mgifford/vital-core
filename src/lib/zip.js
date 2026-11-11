@@ -46,11 +46,15 @@ function asBuffer(data) {
  * @returns {Buffer}
  */
 export function createZip(entries) {
+  if (entries.length > 0xffff) {
+    throw new Error(`ZIP entry count ${entries.length} exceeds the conventional 65,535-entry limit; split the archive`);
+  }
   const sorted = [...entries].map((entry) => ({ path: safeName(entry.path), data: asBuffer(entry.data) }))
     .sort((a, b) => a.path.localeCompare(b.path));
   const seen = new Set();
   for (const entry of sorted) {
     if (seen.has(entry.path)) throw new Error(`duplicate ZIP path: ${entry.path}`);
+    if (entry.data.length > 0xffffffff) throw new Error(`ZIP entry too large: ${entry.path}`);
     seen.add(entry.path);
   }
 
