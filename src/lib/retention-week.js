@@ -42,3 +42,11 @@ export function ageInWeeks(value, now = new Date()) {
   const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
   return Math.floor((today - monday) / 604800000);
 }
+
+/** End of the ISO week (Sunday 23:59:59.999 UTC); evidence-retention basis. */
+export function endOfIsoWeek(value) {
+  const end = isoWeekMonday(value);
+  end.setUTCDate(end.getUTCDate() + 6);
+  end.setUTCHours(23, 59, 59, 999);
+  return end;
+}

@@ -26,7 +26,8 @@
     "retention:plan": "node scripts/retention-plan.js",
     "retention:archive": "node scripts/retention-archive.js",
     "retention:prune-check": "node scripts/retention-prune-check.js",
-    "retention:prune": "node scripts/retention-prune.js"
+    "retention:prune": "node scripts/retention-prune.js",
+    "retention:expire-plan": "node scripts/retention-expire-plan.js"
   },
   "bin": {
     "vital-mcp": "mcp/server.js"

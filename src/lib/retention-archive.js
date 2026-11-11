@@ -324,8 +324,11 @@ class S3ArchiveBackend {
     const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
     const date = amzDate.slice(0, 8);
     const payloadHash = sha256(payload ?? Buffer.alloc(0));
-    const canonicalHeaders = `host:${u.host}\nx-amz-content-sha256:${payloadHash}\nx-amz-date:${amzDate}\n`;
-    const signedHeaders = 'host;x-amz-content-sha256;x-amz-date';
+    const tokenHeader = this.sessionToken ? `x-amz-security-token:${this.sessionToken}\n` : '';
+    const canonicalHeaders = `host:${u.host}\nx-amz-content-sha256:${payloadHash}\nx-amz-date:${amzDate}\n${tokenHeader}`;
+    const signedHeaders = this.sessionToken
+      ? 'host;x-amz-content-sha256;x-amz-date;x-amz-security-token'
+      : 'host;x-amz-content-sha256;x-amz-date';
     const canonicalRequest = `${method}\n${u.pathname}\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`;
     const scope = `${date}/${this.region}/s3/aws4_request`;
     const stringToSign = `AWS4-HMAC-SHA256\n${amzDate}\n${scope}\n${sha256(Buffer.from(canonicalRequest))}`;

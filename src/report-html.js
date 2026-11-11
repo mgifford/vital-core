@@ -4241,7 +4241,8 @@ export function renderArchiveEvidencePage(target, summary, archive, latestWeek) 
     detail = `<p>${t('A verified archive is recorded for this week. The weekly summary and findings remain available even if the raw archive later expires.')}</p>
 <p>${t('Archive key:')} <code>${esc(archive.key)}</code></p>
 ${archive.public_url ? `<p><a href="${esc(archive.public_url)}" rel="external">${t('Download the evidence archive (ZIP)')}</a></p>` : `<p>${t('The archive is held in the operator-configured backend. Download links are not public.')}</p>`}
-<p class="meta">${t('SHA-256:')} <code>${esc(archive.zip_sha256 ?? '')}</code></p>`;
+<p class="meta">${t('SHA-256:')} <code>${esc(archive.zip_sha256 ?? '')}</code></p>
+<p class="meta">${t('Archive published:')} ${archive.published_at ? `<time datetime="${esc(archive.published_at)}">${esc(archive.published_at.slice(0, 10))}</time>` : t('unknown')} · ${t('Last verified:')} ${archive.verified_at ? `<time datetime="${esc(archive.verified_at)}">${esc(archive.verified_at.slice(0, 10))}</time>` : t('not recorded')} · ${t('Expires:')} ${archive.expires_at ? `<time datetime="${esc(archive.expires_at)}">${esc(archive.expires_at.slice(0, 10))}</time>` : t('never (indefinite)')}</p>`;
   } else if (state === 'expired') {
     detail = `<p>${t('The raw evidence archive has expired under the configured retention policy. Weekly summaries, findings and provenance remain available, but the original page records cannot be downloaded from this archive.')}</p>
 <p>${t('Expiry does not mean the finding was fixed, and this page does not redirect to a newer finding.')}</p>

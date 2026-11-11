@@ -13,6 +13,7 @@ import {
   createArchiveBackend,
   sha256,
   verifyArchive,
+  readZip,
 } from '../../src/lib/retention-archive.js';
 import { resolveRetention } from '../../src/lib/retention-policy.js';
 
@@ -78,6 +79,31 @@ test('archives are deterministic and self-contained across dedup stubs', () => {
   }
 });
 
+test('a verified archive restores complete page evidence into a fresh directory', () => {
+  const f = fixture();
+  try {
+    const built = buildArchive({ domainDir: f.domainDir, domainKey: f.domain, week: f.week, policy });
+    const entries = readZip(built.zip);
+    const out = fs.mkdtempSync(path.join(f.root, 'restored-'));
+    for (const [name, bytes] of entries) {
+      const target = path.join(out, name);
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.writeFileSync(target, bytes);
+    }
+    const restoredPage = JSON.parse(fs.readFileSync(path.join(out, 'pages', 'p1.json'), 'utf8'));
+    const sourcePage = JSON.parse(fs.readFileSync(path.join(f.domainDir, f.week, 'pages', 'p1.json'), 'utf8'));
+    assert.deepEqual(restoredPage, sourcePage, 'full page evidence matches the source');
+    const restoredStub = JSON.parse(fs.readFileSync(path.join(out, 'pages', 'p2.json'), 'utf8'));
+    assert.equal(restoredStub.unchanged, false);
+    assert.equal(restoredStub.archive_source.since, '2026-W43');
+    assert.ok(fs.existsSync(path.join(out, 'manifest.json')));
+    assert.ok(fs.existsSync(path.join(out, 'summary.json')));
+    assert.ok(fs.existsSync(path.join(out, 'screenshots', 'p1.jpg')));
+  } finally {
+    fs.rmSync(f.root, { recursive: true, force: true });
+  }
+});
+
 test('unresolved dedup stubs make an archive incomplete and are never published', async () => {
   const f = fixture();
   try {
@@ -118,7 +144,9 @@ test('local backend performs an atomic, verified round trip without pruning', as
 
 test('the S3-compatible backend signs and round-trips through an HTTP endpoint', async () => {
   const objects = new Map();
+  let lastHeaders = null;
   const server = http.createServer((req, res) => {
+    lastHeaders = req.headers;
     if (req.method === 'PUT') {
       const chunks = [];
       req.on('data', (chunk) => chunks.push(chunk));
@@ -141,6 +169,7 @@ test('the S3-compatible backend signs and round-trips through an HTTP endpoint',
     }, {
       VITAL_ARCHIVE_S3_ACCESS_KEY_ID: 'test-key',
       VITAL_ARCHIVE_S3_SECRET_ACCESS_KEY: 'test-secret',
+      VITAL_ARCHIVE_S3_SESSION_TOKEN: 'session-token',
     });
     const payload = Buffer.from('archive bytes');
     const key = 'weekly/example.gov/2026-W44.zip';
@@ -149,6 +178,8 @@ test('the S3-compatible backend signs and round-trips through an HTTP endpoint',
     assert.equal(await backend.exists(key), true);
     assert.deepEqual(await backend.get(key), payload);
     assert.match([...objects.keys()][0], /\/evidence\/weekly\/example\.gov\/2026-W44\.zip/);
+    assert.equal(lastHeaders['x-amz-security-token'], 'session-token');
+    assert.match(lastHeaders.authorization, /x-amz-security-token/);
   } finally {
     server.close();
   }

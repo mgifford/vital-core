@@ -9,9 +9,9 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { endOfIsoWeek } from './retention-week.js';
 
 export const ARCHIVE_INDEX_SCHEMA_VERSION = 1;
-const MAX_ENTRIES = 1000;
 
 export function archiveIndexPath(domainDir) {
   return path.join(domainDir, 'archives.json');
@@ -36,7 +36,7 @@ export function readArchiveIndex(domainDir, domainKey = null) {
       schema_version: ARCHIVE_INDEX_SCHEMA_VERSION,
       domain: parsed.domain ?? domainKey,
       updated_at: parsed.updated_at ?? null,
-      archives: Array.isArray(parsed.archives) ? parsed.archives.slice(0, MAX_ENTRIES) : [],
+      archives: Array.isArray(parsed.archives) ? parsed.archives : [],
     };
   } catch {
     return emptyArchiveIndex(domainKey);
@@ -50,8 +50,7 @@ export function writeArchiveIndex(domainDir, index) {
     domain: index.domain,
     updated_at: new Date().toISOString(),
     archives: [...(index.archives ?? [])]
-      .sort((a, b) => String(a.week).localeCompare(String(b.week)))
-      .slice(-MAX_ENTRIES),
+      .sort((a, b) => String(a.week).localeCompare(String(b.week))),
   };
   const file = archiveIndexPath(domainDir);
   const temp = `${file}.tmp-${process.pid}`;
@@ -70,10 +69,13 @@ export function addMonths(date, months) {
   return result;
 }
 
-export function archiveExpiry(publishedAt, retentionMonths) {
+export function archiveExpiry(weekOrPublishedAt, retentionMonths) {
   if (retentionMonths === 'indefinite') return null;
   if (!Number.isInteger(retentionMonths) || retentionMonths < 0) return null;
-  return addMonths(new Date(publishedAt), retentionMonths).toISOString();
+  const base = typeof weekOrPublishedAt === 'string' && /^\d{4}-W\d{2}$/.test(weekOrPublishedAt)
+    ? endOfIsoWeek(weekOrPublishedAt)
+    : new Date(weekOrPublishedAt);
+  return addMonths(base, retentionMonths).toISOString();
 }
 
 /**
@@ -114,6 +116,7 @@ export function upsertArchiveEntry(index, entry) {
 
 export function recordVerifiedArchive(domainDir, { domain, week, key, backend, archiveId, zipSha256, bytes, publishedAt = new Date().toISOString(), retentionMonths, publicUrl = null }) {
   const current = readArchiveIndex(domainDir, domain);
+  const existing = current.archives.find((candidate) => candidate.week === week);
   const entry = {
     week,
     key,
@@ -122,8 +125,11 @@ export function recordVerifiedArchive(domainDir, { domain, week, key, backend, a
     zip_sha256: zipSha256,
     bytes,
     status: 'complete',
+    first_published_at: existing?.first_published_at ?? publishedAt,
     published_at: publishedAt,
-    expires_at: archiveExpiry(publishedAt, retentionMonths),
+    verified_at: new Date().toISOString(),
+    retention_basis: 'end-of-scan-week',
+    expires_at: archiveExpiry(week, retentionMonths),
     ...(publicUrl ? { public_url: publicUrl } : {}),
   };
   return writeArchiveIndex(domainDir, upsertArchiveEntry(current, { domain, ...entry }));
@@ -158,4 +164,35 @@ export function writeArchiveApi(docsDir, domainIndexes, generatedAt = new Date()
     generated_at: generatedAt,
     domains,
   }, null, 1)}\n`);
+}
+
+/**
+ * Read-only expiry plan. Expiry is metadata; it never proves an object was
+ * removed and never authorizes deletion.
+ */
+export function archiveExpiryPlan(index, now = new Date()) {
+  const archives = (index?.archives ?? []).map((entry) => {
+    const state = archiveState(entry, now);
+    return {
+      week: entry.week,
+      key: entry.key,
+      state,
+      expires_at: entry.expires_at ?? null,
+      retention_basis: entry.retention_basis ?? 'publication-date',
+      retention_expired: state === 'expired',
+      physical_deletion_eligible: false,
+      physical_deletion_performed: false,
+      deletion_verified: false,
+    };
+  });
+  return {
+    domain: index?.domain ?? null,
+    checked_at: now.toISOString(),
+    destructive_actions_performed: 0,
+    counts: archives.reduce((acc, entry) => {
+      acc[entry.state] = (acc[entry.state] ?? 0) + 1;
+      return acc;
+    }, {}),
+    archives,
+  };
 }
