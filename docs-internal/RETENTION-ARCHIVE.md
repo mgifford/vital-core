@@ -187,7 +187,7 @@ operator-configured backend.
 
 ## Not in PR 2/3
 
-- `src/prune.js` is unchanged. No deletion is enabled.
+- `src/prune.js` is disabled and the report workflow never calls it. Only the verified, explicitly authorized `retention:prune` command can delete.
 - Archive retry policy, object lock, lifecycle rules and a verified restore
   runbook are operator responsibilities before any prune authorization.
 - Last-observation index, growth alerts and fleet accounting are PR 4.

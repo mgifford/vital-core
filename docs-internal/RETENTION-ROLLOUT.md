@@ -1,6 +1,6 @@
 # Prune rollout gate
 
-Status: **read-only readiness check. No deletion is enabled.**
+Status: **read-only readiness check. No automatic deletion is enabled.**
 
 Issue #130's destructive step is deliberately separate from archive creation.
 Before any operator authorizes a prune, run:
@@ -20,7 +20,7 @@ The check:
    and manifest checksums;
 5. reports `READY` or `BLOCKED` per week.
 
-It reports `destructiveActionsPerformed: 0`. It never calls `src/prune.js`.
+It reports `destructiveActionsPerformed: 0`. It never calls `src/prune.js`; that legacy entry point is disabled. The report workflow does not prune.
 
 `READY` is not authorization. An operator still needs:
 

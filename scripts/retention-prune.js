@@ -19,6 +19,7 @@ import { planDomain } from '../src/lib/retention-plan.js';
 import { readArchiveIndex, withArchiveState } from '../src/lib/retention-archive-index.js';
 import { createArchiveBackend } from '../src/lib/retention-archive.js';
 import { evaluatePruneReadiness } from '../src/lib/retention-rollout.js';
+import { DETAIL_DIRS, promoteStubsForWeek, removeWeekDetail } from '../src/lib/retention-detail.js';
 
 function parse(argv) {
   const out = { execute: false, json: false };
@@ -69,22 +70,25 @@ if (args.week && candidates.length === 0) throw new Error(`No verified archive c
 if (!readiness.ready && !args.week) throw new Error('prune is blocked; run retention:prune-check for details');
 
 const removed = [];
+const promoted = [];
 const errors = [];
 for (const entry of candidates) {
   const weekDir = path.join(domainDir, entry.week);
-  for (const subdir of ['pages', 'runs', 'screenshots']) {
-    const full = path.join(weekDir, subdir);
-    if (!fs.existsSync(full)) continue;
-    if (!args.execute) {
-      removed.push({ week: entry.week, path: full, executed: false });
-      continue;
+  if (!args.execute) {
+    for (const subdir of DETAIL_DIRS) {
+      const full = path.join(weekDir, subdir);
+      if (fs.existsSync(full)) removed.push({ week: entry.week, path: full, executed: false });
     }
-    try {
-      fs.rmSync(full, { recursive: true, force: false });
+    continue;
+  }
+  try {
+    const count = promoteStubsForWeek(domainDir, entry.week);
+    if (count) promoted.push({ week: entry.week, count });
+    for (const full of removeWeekDetail(domainDir, entry.week)) {
       removed.push({ week: entry.week, path: full, executed: true });
-    } catch (error) {
-      errors.push({ week: entry.week, path: full, error: error.message });
     }
+  } catch (error) {
+    errors.push({ week: entry.week, error: error.message });
   }
 }
 const result = {
@@ -92,6 +96,7 @@ const result = {
   dryRun: !args.execute,
   weeks: candidates.map((entry) => entry.week),
   removed,
+  promoted,
   errors,
   summariesRetained: candidates.every((entry) => fs.existsSync(path.join(domainDir, entry.week, 'summary.json'))),
   destructiveActionsPerformed: args.execute ? removed.length : 0,
@@ -99,6 +104,7 @@ const result = {
 if (args.json) console.log(JSON.stringify(result, null, 2));
 else {
   console.log(`${args.execute ? 'PRUNED' : 'DRY RUN'} ${target.key}: ${candidates.length} verified week(s)`);
+  for (const item of promoted) console.log(`  promoted ${item.count} dedup stub(s) off ${item.week}`);
   for (const item of removed) console.log(`  ${item.executed ? 'removed' : 'would remove'} ${item.path}`);
   for (const error of errors) console.log(`  ERROR ${error.path}: ${error.error}`);
   console.log('summary.json and historical reports are retained.');

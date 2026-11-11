@@ -9,13 +9,15 @@
 #
 # Steps, in order:
 #   1. aggregate       : computes summaries from data/, writes docs/
-#   2. prune           : removes page-level detail older than retention_weeks
-#   3. commit          : writes summaries and retention marker back to data/
+#   2. commit          : writes summaries and retention marker back to data/
 #                        (data/ is a checkout of the data repo, `data_repo`
 #                        in config/targets.yml; pushed with VITAL_DATA_DEPLOY_KEY)
-#   4. generate comment: creates docs/comment.md
-#   5. deploy          : publishes docs/ to GitHub Pages
-#   6. post comment    : posts weekly Markdown summary to a pinned issue
+#   3. generate comment: creates docs/comment.md
+#   4. deploy          : publishes docs/ to GitHub Pages
+#   5. post comment    : posts weekly Markdown summary to a pinned issue
+#
+# Pruning is intentionally absent. Historical detail may only be removed by
+# the manually authorized, archive-verified retention:prune command.
 
 name: report
 
@@ -174,10 +176,11 @@ jobs:
       - name: Aggregate
         run: node src/aggregate.js
 
-      - name: Prune old page-level detail
-        run: node src/prune.js
+      # No automatic prune. See docs-internal/RETENTION-ROLLOUT.md: every
+      # destructive run must re-verify archives and require explicit operator
+      # confirmation.
 
-      - name: Commit summaries and pruning
+      - name: Commit summaries and retention metadata
         working-directory: data
         env:
           REPO_SIZE_KB: ${{ needs.gate.outputs.repo_size_kb }}
