@@ -32,7 +32,7 @@ functions of the data directory.**
 - `data/<domain>/<ISO-week>/runs/*.json`: append-only run logs.
 - `data/<domain>/<ISO-week>/summary.json`: the weekly rollup, computed
   from the page records and committed. Old page-level detail is pruned
-  after `retention_weeks`; summaries are kept forever, so trend history
+  only by the verified, explicitly authorized retention command; summaries are kept forever, so trend history
   never breaks.
 - `docs/`: generated HTML, built at deploy time and shipped as a Pages
   artifact. **Never committed.** It cannot drift from the data because
@@ -83,7 +83,7 @@ Other deliberate choices:
    pages/domain/week, within the `max_pages_per_week` cap.
 3. After the night's scans finish, the `report` workflow aggregates the
    week, deploys the reports to GitHub Pages, and prunes page-level
-   detail older than `retention_weeks`.
+   detail older than a verified retention policy. Automatic pruning is disabled.
 4. Optionally, the `pdf-audit` workflow checks the PDFs each site links to
    (daily, for sites with `pdf_audit: { enabled: true }`, or for one site
    from Actions → pdf-audit), and the next report shows them on that

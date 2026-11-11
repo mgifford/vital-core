@@ -127,12 +127,11 @@ files that accumulate across the whole life of a site, so they survive
 page-detail pruning and answer "when did this first appear?".
 
 **Retention contract:** summaries and ledgers are kept forever; page-level
-detail under `pages/` and `runs/` is pruned after `retention_weeks`
-(set to 2 in `config/targets.yml`; `src/prune.js` falls back to 3 if
-unset) — this is an
-insight-delivery system, not an archive, so raw per-page detail that a
-newer scan supersedes is aggressively forgotten once it's rolled up into
-`summary.json` and the ledgers. Consumers (`aggregate.js`, CSV exports,
+detail under `pages/`, `runs/` and `screenshots/` may only be removed by the
+separate, manually authorized `retention:prune` command after a verified
+archive. `src/prune.js` and the report workflow no longer delete anything;
+there is no automatic pruning. Legacy `retention_weeks` is still parsed for
+planning and migration, but it is not an automatic deletion trigger. Consumers (`aggregate.js`, CSV exports,
 `url-index.js`) all check `fs.existsSync` before reading `pages/`, so a
 pruned week degrades gracefully rather than erroring.
 
@@ -144,8 +143,8 @@ precedence, size measurements and the archive/prune PR sequence. The additive
 `observations.json` index records last attempt/success, stale/never-scanned and
 clean-for-automated-engine state; `storage` thresholds live in validated config.
 
-**Git history policy:** `prune.js` deletes files from the working tree,
-but git history keeps every blob forever — deleting a file from a later
+**Git history policy:** the verified prune command deletes files from the
+working tree, but git history keeps every blob forever — deleting a file from a later
 commit does not shrink any earlier commit that still contains it, so the
 repo's `.git` size never decreases on its own; it can only grow slower.
 
@@ -409,7 +408,7 @@ scan.yml      (several scheduled runs per night, off-peak, one job per domain)
 
 report.yml    (after the night's scans complete)
   ├─ src/aggregate.js   read data/ → write summaries + docs/
-  ├─ src/prune.js       drop page detail older than retention_weeks
+  ├─ (no prune step)    automatic pruning is disabled
   ├─ commit summaries back into data/
   └─ deploy docs/ to GitHub Pages
 

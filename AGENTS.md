@@ -13,7 +13,7 @@ historical remediation** across US government sites.
 
 1. **Continuous Accessibility Tracking**: Prioritize week-over-week trends, progress, and regression tracking over isolated, single-run reports (WCAG 2.0 AA for federal, WCAG 2.1 AA for state/local).
 2. **Reliable, Deterministic Data**: Outputs must generate stable identifiers (page identity, rule ids) so findings can be deduplicated and compared cleanly across weekly scan boundaries.
-3. **Historical Evidence**: Preserve historical data integrity to prove when issues were introduced and resolved. Weekly summaries are kept forever; page-level detail is pruned after `retention_weeks`.
+3. **Historical Evidence**: Preserve historical data integrity to prove when issues were introduced and resolved. Weekly summaries are kept forever. Page-level detail is never pruned automatically; removal requires a verified archive and explicit operator authorization.
 4. **Actionable Remediation**: Provide practical developer guidance that helps teams clear their weekly backlog.
 5. **Efficient Scanning**: Optimize scanning of high-value pages to support recurring, automated weekly schedules without bloated resource consumption.
 6. **Honest Evidence**: Never present a heuristic, a capped sample, an unavailable value, an unrun reproduction, or an unrecorded manual review as a verified fact.
