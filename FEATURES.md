@@ -444,7 +444,7 @@ Every WCAG success criterion in `src/lib/wcag.js` now carries a `wcag_version` f
 
 ### Data Retention
 
-- Page-level detail (`data/<domain>/<week>/pages/*.json`) is pruned after `retention_weeks` by `src/prune.js`.
+- Page-level detail is not pruned automatically. Only the verified, explicitly authorized `retention:prune` command can remove it; `src/prune.js` is disabled.
 - Weekly `summary.json` files are kept forever, so trend graphs never break.
 
 ### Rolling site inventory (all pages ever scanned)

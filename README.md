@@ -38,6 +38,13 @@ functions of the data directory.**
   artifact. **Never committed.** It cannot drift from the data because
   it does not persist.
 
+## Retention
+
+Automatic pruning is disabled. Page-level detail can only be removed by the
+verified, explicitly confirmed retention command. See
+[docs-internal/RETENTION-RUNBOOK.md](docs-internal/RETENTION-RUNBOOK.md) and
+[docs-internal/RETENTION-ADR.md](docs-internal/RETENTION-ADR.md).
+
 Other deliberate choices:
 
 - **Stable page identity.** One URL normalization function
