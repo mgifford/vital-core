@@ -7,9 +7,10 @@ import { writeLedgerIfChanged } from './fs-utils.js';
  * Rolling per-domain page inventory: the most recent known result for
  * every URL ever scanned, even pages not scanned this week.
  *
- * The weekly scan only covers a sampled slice, and page-level detail is
- * pruned after retention_weeks — so neither the weekly summary nor the
- * page records can answer "what's the known state of the whole site?".
+ * The weekly scan only covers a sampled slice, and page-level detail may be
+ * removed by an explicitly authorized, archive-verified prune — so neither the
+ * weekly summary nor the page records can answer "what's the known state of
+ * the whole site?".
  * This inventory does: it accumulates last-known status per URL and is
  * committed (data/<domain>/inventory.json), so it survives pruning and
  * grows into a complete picture of the site over time.
@@ -37,7 +38,7 @@ import { writeLedgerIfChanged } from './fs-utils.js';
  * replays every retained week's page records on every run — without
  * guarding against that, the same week's same clean pages would be
  * re-counted every single run, growing without bound. `countedWeeks`
- * (a small array of ISO week strings, bounded by retention_weeks) is the
+ * (a small array of observed ISO weeks) is the
  * guard: a week's clean observations are folded into cleanCount once,
  * the first time that week is seen, and ignored on every later replay.
  */

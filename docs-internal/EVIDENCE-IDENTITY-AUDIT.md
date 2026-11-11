@@ -35,7 +35,7 @@ evidence-reliability milestone.
    `#VFR-…` anchor is stable; a redirect/alias ledger for old VS anchors is not
    implemented. Old links still fail with the browser's missing-anchor behavior.
 5. **Retention:** weekly summaries and representative evidence are retained;
-   screenshots and page-level detail are pruned after `retention_weeks`.
+   screenshots and page-level detail may be removed only by the verified, explicitly authorized retention command; no automatic pruning exists.
    `evidence_reference` states the retention window and the representative
    observation, but cannot keep a pruned screenshot available.
 
