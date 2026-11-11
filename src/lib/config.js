@@ -238,6 +238,35 @@ export function domainKey(domain) {
   return domain.toLowerCase().replace(/^https?:\/\//, '').replace(/\/+$/, '').replace(/[^a-z0-9.-]/g, '_');
 }
 
+/**
+ * Resolve a CLI target name leniently.
+ *
+ * Accepts an exact key/domain, or a parent domain when it identifies exactly
+ * one target (e.g. "example.gov" -> "www.example.gov"). Ambiguous bare domains
+ * list the choices instead of guessing; a typo lists configured keys.
+ */
+export function resolveTargetQuery(config, query) {
+  const normalized = String(query ?? '').trim().toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/\/+$/, '');
+  const targets = config.targets ?? [];
+  if (!normalized) throw new Error('A target domain or key is required');
+  const exact = targets.filter((target) => target.key === normalized || target.domain.toLowerCase() === normalized);
+  if (exact.length === 1) return exact[0];
+  if (exact.length > 1) {
+    throw new Error(`Target "${query}" is ambiguous: ${exact.map((target) => target.key).join(', ')}`);
+  }
+  const parentMatches = targets.filter((target) => {
+    const domain = target.domain.toLowerCase();
+    return domain.endsWith(`.${normalized}`) || `www.${normalized}` === domain;
+  });
+  if (parentMatches.length === 1) return parentMatches[0];
+  if (parentMatches.length > 1) {
+    throw new Error(`Target "${query}" is ambiguous. Use one of: ${parentMatches.map((target) => target.key).join(', ')}`);
+  }
+  throw new Error(`Unknown target "${query}". Configured keys: ${targets.map((target) => target.key).join(', ')}`);
+}
+
 export function getTarget(config, domainOrKey) {
   const k = domainKey(domainOrKey);
   const t = config.targets.find((t) => t.key === k || t.domain === domainOrKey);

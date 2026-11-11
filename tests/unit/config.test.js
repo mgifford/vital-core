@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveLanguages, loadConfig, ciDataRepo } from '../../src/lib/config.js';
+import { resolveLanguages, loadConfig, ciDataRepo, resolveTargetQuery } from '../../src/lib/config.js';
 
 test('config: defaults to [en]/en when nothing is set', () => {
   const r = resolveLanguages(undefined, undefined, 'x');
@@ -300,4 +300,21 @@ targets:
 
   assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    retention:\n      profile: impossible\n'), /Unknown retention profile/);
   assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    retention:\n      live: { mode: adaptive, minimum_weeks: 18, maximum_weeks: 4 }\n'), /invalid adaptive retention week range/);
+});
+
+test('config: resolveTargetQuery accepts a unique parent domain and lists ambiguous ones', () => {
+  const config = {
+    targets: [
+      { key: 'www.cms.gov', domain: 'www.cms.gov' },
+      { key: 'data.cms.gov', domain: 'data.cms.gov' },
+      { key: 'openpaymentsdata.cms.gov', domain: 'openpaymentsdata.cms.gov' },
+      { key: 'www.medicaid.gov', domain: 'www.medicaid.gov' },
+    ],
+  };
+  assert.equal(resolveTargetQuery(config, 'www.medicaid.gov').key, 'www.medicaid.gov');
+  assert.equal(resolveTargetQuery(config, 'https://www.medicaid.gov/').key, 'www.medicaid.gov');
+  assert.throws(() => resolveTargetQuery(config, 'cms.gov'), /ambiguous.*www\.cms\.gov.*data\.cms\.gov/s);
+  assert.throws(() => resolveTargetQuery(config, 'missing.gov'), /Configured keys/);
+  // A parent domain with one match resolves.
+  assert.equal(resolveTargetQuery({ targets: [{ key: 'www.example.gov', domain: 'www.example.gov' }] }, 'example.gov').key, 'www.example.gov');
 });

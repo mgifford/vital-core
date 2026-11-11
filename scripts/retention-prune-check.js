@@ -8,7 +8,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { DIRS, loadConfig } from '../src/lib/config.js';
+import { DIRS, loadConfig, resolveTargetQuery } from '../src/lib/config.js';
 import { collectRetentionMetrics } from '../src/lib/retention-metrics.js';
 import { planDomain } from '../src/lib/retention-plan.js';
 import { readArchiveIndex, withArchiveState } from '../src/lib/retention-archive-index.js';
@@ -34,16 +34,19 @@ if (args.help) {
   console.log('Usage: npm run retention:prune-check -- --domain <key> [--json] [--data-root path] [--config file] [--now YYYY-MM-DD]');
   process.exit(0);
 }
+try {
 if (!args.domain) throw new Error('--domain is required');
 const now = args.now ? new Date(`${args.now}T00:00:00Z`) : new Date();
 if (Number.isNaN(now.getTime())) throw new Error('Invalid --now date');
 const config = loadConfig(args.config ? fs.readFileSync(args.config, 'utf8') : undefined);
-const target = config.targets.find((candidate) => candidate.key === args.domain);
-if (!target) throw new Error(`Unknown domain: ${args.domain}`);
+const target = resolveTargetQuery(config, args.domain);
 const dataRoot = path.resolve(args.dataRoot ?? DIRS.data);
 const domainDir = path.join(dataRoot, target.key);
 const metrics = collectRetentionMetrics(dataRoot, target.key);
 const plan = planDomain({ dataRoot, domainKey: target.key, policy: target.retentionPolicy, metrics, now });
+if (plan.entries.length === 0) {
+  throw new Error(`No ISO-week data for ${target.key} at ${dataRoot}. Clone mgifford/vital-core-data into data/ or pass --data-root.`);
+}
 const archiveIndex = withArchiveState(readArchiveIndex(domainDir, target.key), now);
 let backend = null;
 try {
@@ -60,3 +63,7 @@ else {
   console.log('No files were deleted. This check does not authorize a prune.');
 }
 process.exitCode = readiness.ready ? 0 : 1;
+} catch (error) {
+  console.error(`retention:prune-check: ${error.message}`);
+  process.exitCode = 1;
+}
