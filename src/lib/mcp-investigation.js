@@ -15,7 +15,8 @@ export function mcpInvestigationPrompt(bug) {
     bug.element?.name ? `name: ${String(bug.element.name).slice(0, 200)}${bug.element.name_source ? ` (from ${bug.element.name_source})` : ''}` : null,
   ].filter(Boolean);
   return [
-    'Use Playwright MCP with the Playwright browser extension connected to my existing browser profile.',
+    'Use Playwright MCP with the Playwright browser extension connected to my existing Chrome/Edge profile.',
+    'Before opening anything, confirm the Playwright MCP server is running and the Playwright browser extension is connected. If either is missing, stop and tell me exactly what is missing.',
     `Open: ${url}`,
     `Locate ${selector ? `this CSS selector: ${selector}` : `this XPath: ${xpath}`}`,
     identity.length ? `Recorded identity: ${identity.join('; ')}.` : 'The recorded identity has no reliable tag/role/name evidence.',
@@ -25,7 +26,8 @@ export function mcpInvestigationPrompt(bug) {
     '- how many visible elements match, and whether each is the recorded tag/role/name;',
     '- whether the element is visible, hidden, clipped, covered by another element, or inside an iframe/shadow root;',
     '- the page state or interaction needed to reveal it (menu, tab, dialog, accordion);',
-    '- its bounding box and a short DOM/accessibility-tree snapshot if useful.',
+    '- its bounding box and a short DOM/accessibility-tree snapshot if useful;',
+    '- for relationship rules such as aria-required-children, the actual child tags/roles and which required children are absent.',
     '',
     'Do not run a new accessibility audit, do not claim conformance or that the finding is fixed, and do not change the page. If the selector is stale, say so and show candidate elements with their identity; do not guess.'
   ].join('\n');

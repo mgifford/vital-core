@@ -587,6 +587,11 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
   assert.match(html, /Copy inspection code/, 'the code fallback is labelled');
   assert.match(html, /Copy Playwright MCP prompt/, 'an optional Playwright MCP investigation prompt is offered');
+  assert.match(html, /More inspection options/, 'secondary inspection controls are collapsed');
+  assert.match(html, /Opens the page first\. Then click the VITAL Inspect bookmark/, 'the two-step live highlight is explicit');
+  assert.match(html, /Copy selector/, 'the representative selector can be copied');
+  assert.match(html, /Copy page URL/, 'the page URL can be copied');
+  assert.match(html, /class="bug-meta mcp-only"/, 'the MCP note is marked Chromium-only');
   assert.match(html, /data-mcp-prompt=/, 'the MCP prompt carries the finding locator');
   assert.match(html, /Highlight text on site/, 'a native text-fragment link is offered');
   assert.ok(html.indexOf('#:~:text=') < html.indexOf('class="inspect-open"'), 'the no-install text link is offered before the bookmarklet');

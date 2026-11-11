@@ -1811,6 +1811,18 @@ function inspectCopyScript() {
       }
       return;
     }
+    var copyText = event.target.closest && event.target.closest('.copy-text');
+    if (copyText) {
+      var copyValue = copyText.getAttribute('data-copy-text') || '';
+      var copyOriginal = copyText.textContent;
+      var copyDone = function () { copyText.textContent = 'Copied'; setTimeout(function () { copyText.textContent = copyOriginal; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyValue).then(copyDone).catch(function () { window.prompt('Copy this value', copyValue); });
+      } else {
+        window.prompt('Copy this value', copyValue);
+      }
+      return;
+    }
     var mcpButton = event.target.closest && event.target.closest('.mcp-copy');
     if (mcpButton) {
       var prompt = mcpButton.getAttribute('data-mcp-prompt') || '';
@@ -1838,7 +1850,7 @@ function inspectCopyScript() {
   var chromium = /Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent) && !/Firefox\/|OPR\//.test(navigator.userAgent);
   Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy, .copy-bookmarklet'), function (button) { button.hidden = false; });
   Array.prototype.forEach.call(document.querySelectorAll('.mcp-copy'), function (button) { if (chromium) button.hidden = false; });
-  Array.prototype.forEach.call(document.querySelectorAll('.mcp-only'), function (node) { if (!chromium) node.hidden = true; });
+  Array.prototype.forEach.call(document.querySelectorAll('.mcp-only, .mcp-help'), function (node) { if (!chromium) node.hidden = true; });
 })();
 <\/script>`;
 }
@@ -1848,6 +1860,10 @@ function inspectCopyScript() {
  * know that the live page opens first and the bookmarklet is clicked second.
  * The lower-level copy paths stay available without dominating every finding.
  */
+function copyTextButton(label, value) {
+  return `<button type="button" class="copy-text" data-copy-text="${esc(value)}">${esc(label)}</button>`;
+}
+
 function inspectCell({ textUrl, inspectUrl, inspectCode, mcpPrompt, targetUsesHash, inspectReason, instanceId }) {
   const explorer = `<a href="${esc(pageHref('explorer', instanceId))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span>`;
   if (!inspectUrl && !textUrl) {
@@ -2041,8 +2057,8 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Remediation priority score')}</dt><dd>${nf(evidenceReport.remediation_priority.score)}. ${t('Used for ordering, not engine severity or a count of fixes.')}</dd></div>
   <div><dt>${t('ACT mappings')}</dt><dd>${esc(actRuleLabels(evidenceReport.act_rules))}</dd></div>
   <div><dt>${t('Remediation group')}</dt><dd><code>${esc(evidenceReport.remediation_group_id)}</code>. ${t('Number of fixes and code ownership are not established.')}</dd></div>
-  <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
-  ${representative?.selector ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(representative.selector)}</code></dd></div>` : ''}
+  <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a> ${copyTextButton(t('Copy page URL'), b.url)}</dd></div>
+  ${representative?.selector ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(representative.selector)}</code> ${copyTextButton(t('Copy selector'), representative.selector)}</dd></div>` : ''}
   ${b.first_seen ? `<div><dt>${t('History')}</dt><dd>${t('first seen @first, last seen @last (@n wk)', { '@first': esc(b.first_seen), '@last': esc(b.last_seen), '@n': b.weeks_seen })}</dd></div>` : ''}
   ${dupNote}
   ${correlationNote}
@@ -6298,6 +6314,8 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       mcpButton.className = 'mcp-copy';
       mcpButton.setAttribute('data-mcp-prompt', mcpPrompt);
       mcpButton.textContent = LABELS.copyMcpPrompt;
+      var chromium = /Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent) && !/Firefox\/|OPR\//.test(navigator.userAgent);
+      mcpButton.hidden = !chromium;
       actions.appendChild(mcpButton);
     }
     if (bug.screenshot?.available) {
