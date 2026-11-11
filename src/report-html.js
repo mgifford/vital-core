@@ -1746,6 +1746,11 @@ function liveInspectHelp() {
 <dt>${t('Manual validation')}</dt><dd>${t('Use the prompts and blank review record to investigate user impact with a keyboard, screen reader or other assistive technology. VITAL does not store the review or mark it complete.')}</dd>
 </dl>
 </details>
+<details class="mcp-help">
+<summary>${t('Playwright MCP (Chrome or Edge only)')}</summary>
+<p>${t('The Copy Playwright MCP prompt action is shown only in Chromium browsers. It requires the Playwright browser extension connected to your existing Chrome or Edge profile. It is an optional developer path; it is not the VITAL Inspect bookmarklet and it does not run inside Firefox or Safari.')}</p>
+<p><a href="https://chromewebstore.google.com/detail/playwright-extension/mmlmfjhmonkocbjadbfplnigmagldckm" rel="external">${t('Install the Playwright browser extension')}</a></p>
+</details>
 <p class="meta">${t('If dragging does not work, use Copy bookmarklet, then create a bookmark manually and paste the code as its address.')} <button type="button" class="copy-bookmarklet" hidden>${t('Copy bookmarklet')}</button></p>
 <details class="bookmarklet-manual">
 <summary>${t('Dragging not working? Add it manually')}</summary>
@@ -1806,6 +1811,18 @@ function inspectCopyScript() {
       }
       return;
     }
+    var copyText = event.target.closest && event.target.closest('.copy-text');
+    if (copyText) {
+      var copyValue = copyText.getAttribute('data-copy-text') || '';
+      var copyOriginal = copyText.textContent;
+      var copyDone = function () { copyText.textContent = 'Copied'; setTimeout(function () { copyText.textContent = copyOriginal; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyValue).then(copyDone).catch(function () { window.prompt('Copy this value', copyValue); });
+      } else {
+        window.prompt('Copy this value', copyValue);
+      }
+      return;
+    }
     var mcpButton = event.target.closest && event.target.closest('.mcp-copy');
     if (mcpButton) {
       var prompt = mcpButton.getAttribute('data-mcp-prompt') || '';
@@ -1830,9 +1847,49 @@ function inspectCopyScript() {
       window.prompt('Copy this inspection code', code);
     }
   });
-  Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy, .mcp-copy, .copy-bookmarklet'), function (button) { button.hidden = false; });
+  var chromium = /Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent) && !/Firefox\/|OPR\//.test(navigator.userAgent);
+  Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy, .copy-bookmarklet'), function (button) { button.hidden = false; });
+  Array.prototype.forEach.call(document.querySelectorAll('.mcp-copy'), function (button) { if (chromium) button.hidden = false; });
+  Array.prototype.forEach.call(document.querySelectorAll('.mcp-only, .mcp-help'), function (node) { if (!chromium) node.hidden = true; });
 })();
 <\/script>`;
+}
+
+/**
+ * The per-finding inspection cell. Keep the default path short: users need to
+ * know that the live page opens first and the bookmarklet is clicked second.
+ * The lower-level copy paths stay available without dominating every finding.
+ */
+function copyTextButton(label, value) {
+  return `<button type="button" class="copy-text" data-copy-text="${esc(value)}">${esc(label)}</button>`;
+}
+
+function inspectCell({ textUrl, inspectUrl, inspectCode, mcpPrompt, targetUsesHash, inspectReason, instanceId }) {
+  const explorer = `<a href="${esc(pageHref('explorer', instanceId))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span>`;
+  if (!inspectUrl && !textUrl) {
+    return `<div><dt>${t('Inspect')}</dt><dd><span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>${explorer}</dd></div>`;
+  }
+  const text = textUrl
+    ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('No install needed. Highlights the recorded text, but does not open the VITAL panel.')}</span><br>`
+    : '';
+  const live = inspectUrl
+    ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener" class="inspect-open">${t('Highlight on site')}</a> <span class="bug-meta">${t('Opens the page first. Then click the VITAL Inspect bookmark. Install it once at the top of this page.')} <a href="#live-inspect-help">${t('Install VITAL Inspect')}</a>.</span><br>`
+    : '';
+  const hashNote = targetUsesHash
+    ? `<span class="bug-meta">${t('This page already uses a URL fragment. If it uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span><br>`
+    : '';
+  const code = inspectCode
+    ? `<button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>`
+    : '';
+  const mcp = mcpPrompt
+    ? `<button type="button" class="mcp-copy" data-mcp-prompt="${esc(mcpPrompt)}" hidden>${t('Copy Playwright MCP prompt')}</button> <span class="bug-meta mcp-only">${t('Chrome or Edge with the Playwright browser extension only.')}</span>`
+    : '';
+  return `<div><dt>${t('Inspect')}</dt><dd>${text}${live}${hashNote}<details class="inspect-more"><summary>${t('More inspection options')}</summary>
+<p class="meta">${t('Use a copied code when the bookmarklet is missing, out of date or blocked. A missing highlight means the occurrence is unverified, not fixed.')}</p>
+${code}
+${mcp}
+<p class="meta"><a href="#live-inspect-help">${t('Install or troubleshoot VITAL Inspect')}</a></p>
+</details>${explorer}</dd></div>`;
 }
 
 function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}, excludePatterns = []) {
@@ -1985,7 +2042,7 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
   ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code>${b.observation_id ? ` · <code>${esc(b.observation_id)}</code>` : ''} <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
   ${b.finding_ref ? `<div><dt>${t('Stable reference')}</dt><dd><code>${esc(b.finding_ref)}</code> <span class="bug-meta">${t('Content-independent link target for this rule finding.')}</span></dd></div>` : ''}
-  <div><dt>${t('Inspect')}</dt><dd>${textUrl ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('No install needed. Native browser text fragment: highlights the recorded text, may choose the first match, and does not open the VITAL panel.')}</span><br>` : ''}${inspectUrl ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener" class="inspect-open">${t('Highlight on site')}</a> <span class="bug-meta">${t('Requires the VITAL Inspect bookmarklet; install it once at the top of this page. The panel scrolls to the element and says when it is hidden behind a menu, tab or dialog. If no panel appears, the bookmarklet is missing or blocked — use the text link or Copy inspection code instead.')}</span>${inspectCode ? ` <button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>` : ''}${mcpPrompt ? ` <button type="button" class="mcp-copy" data-mcp-prompt="${esc(mcpPrompt)}" hidden>${t('Copy Playwright MCP prompt')}</button>` : ''}${targetUsesHash ? `<br><span class="bug-meta">${t('This page already uses a URL fragment. If the site uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span>` : ''}<br>` : `<span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>`}<a href="${esc(pageHref('explorer', b.instance_id))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span></dd></div>
+  ${inspectCell({ textUrl, inspectUrl, inspectCode, mcpPrompt, targetUsesHash, inspectReason, instanceId: b.instance_id })}
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
@@ -2000,8 +2057,8 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Remediation priority score')}</dt><dd>${nf(evidenceReport.remediation_priority.score)}. ${t('Used for ordering, not engine severity or a count of fixes.')}</dd></div>
   <div><dt>${t('ACT mappings')}</dt><dd>${esc(actRuleLabels(evidenceReport.act_rules))}</dd></div>
   <div><dt>${t('Remediation group')}</dt><dd><code>${esc(evidenceReport.remediation_group_id)}</code>. ${t('Number of fixes and code ownership are not established.')}</dd></div>
-  <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
-  ${representative?.selector ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(representative.selector)}</code></dd></div>` : ''}
+  <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a> ${copyTextButton(t('Copy page URL'), b.url)}</dd></div>
+  ${representative?.selector ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(representative.selector)}</code> ${copyTextButton(t('Copy selector'), representative.selector)}</dd></div>` : ''}
   ${b.first_seen ? `<div><dt>${t('History')}</dt><dd>${t('first seen @first, last seen @last (@n wk)', { '@first': esc(b.first_seen), '@last': esc(b.last_seen), '@n': b.weeks_seen })}</dd></div>` : ''}
   ${dupNote}
   ${correlationNote}
@@ -6257,6 +6314,8 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       mcpButton.className = 'mcp-copy';
       mcpButton.setAttribute('data-mcp-prompt', mcpPrompt);
       mcpButton.textContent = LABELS.copyMcpPrompt;
+      var chromium = /Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent) && !/Firefox\/|OPR\//.test(navigator.userAgent);
+      mcpButton.hidden = !chromium;
       actions.appendChild(mcpButton);
     }
     if (bug.screenshot?.available) {
