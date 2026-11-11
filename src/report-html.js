@@ -1847,7 +1847,7 @@ function inspectCopyScript() {
       window.prompt('Copy this inspection code', code);
     }
   });
-  var chromium = /Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent) && !/Firefox\/|OPR\//.test(navigator.userAgent);
+  var chromium = /Chrome|Chromium|Edg/.test(navigator.userAgent) && !/Firefox|OPR/.test(navigator.userAgent);
   Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy, .copy-bookmarklet'), function (button) { button.hidden = false; });
   Array.prototype.forEach.call(document.querySelectorAll('.mcp-copy'), function (button) { if (chromium) button.hidden = false; });
   Array.prototype.forEach.call(document.querySelectorAll('.mcp-only, .mcp-help'), function (node) { if (!chromium) node.hidden = true; });
@@ -6315,7 +6315,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
       mcpButton.className = 'mcp-copy';
       mcpButton.setAttribute('data-mcp-prompt', mcpPrompt);
       mcpButton.textContent = LABELS.copyMcpPrompt;
-      var chromium = /Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent) && !/Firefox\/|OPR\//.test(navigator.userAgent);
+      var chromium = /Chrome|Chromium|Edg/.test(navigator.userAgent) && !/Firefox|OPR/.test(navigator.userAgent);
       mcpButton.hidden = !chromium;
       actions.appendChild(mcpButton);
     }
