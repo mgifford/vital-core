@@ -15,6 +15,7 @@ import {
   verifyArchive,
   readZip,
 } from '../../src/lib/retention-archive.js';
+import { createZip } from '../../src/lib/zip.js';
 import { resolveRetention } from '../../src/lib/retention-policy.js';
 
 function fixture() {
@@ -77,6 +78,11 @@ test('archives are deterministic and self-contained across dedup stubs', () => {
   } finally {
     fs.rmSync(f.root, { recursive: true, force: true });
   }
+});
+
+test('the ZIP writer refuses an archive over the conventional entry limit', () => {
+  const entries = Array.from({ length: 65536 }, (_, i) => ({ path: `pages/${i}.json`, data: '{}' }));
+  assert.throws(() => createZip(entries), /65,535-entry limit/);
 });
 
 test('a verified archive restores complete page evidence into a fresh directory', () => {
