@@ -9,7 +9,7 @@ import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
 import { scopeViewsFor } from './lib/shared-components.js';
-import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, findingImpactKeys, filterFindings, filterOptions } from './lib/finding-filter.js';
+import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, findingImpactKeys, findingArrmRoles, filterFindings, filterOptions } from './lib/finding-filter.js';
 import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
 import { manualValidationFor, manualReviewRecord, MANUAL_REVIEW_STATUSES } from './lib/manual-validation.js';
 import { markerGeometry } from './lib/screenshots.js';
@@ -2047,6 +2047,7 @@ ${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></sp
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
   <div><dt>${t('Requirement')}</dt><dd>${requirementCell(b)}</dd></div>
+  ${b.arrm?.roles?.length ? `<div><dt>${t('ARRM roles')}</dt><dd>${b.arrm.roles.map((role) => `<span class="badge">${esc(role)}</span>`).join(' ')} <span class="bug-meta">${t('Mapped by WCAG SC to typical ARRM responsibilities; not an ownership assignment for this finding.')}</span>${b.arrm.tasks?.length ? `<details><summary>${t('ARRM tasks (@n)', { '@n': b.arrm.tasks.length })}</summary><ul>${b.arrm.tasks.map((task) => `<li><code>${esc(task.id)}</code> ${esc(task.task)}${task.primary?.length ? ` — ${esc(task.primary.join(', '))}` : ''}</li>`).join('')}</ul></details>` : ''}</dd></div>` : ''}
   <div><dt>${t('Obligation')}</dt><dd>${esc(b.obligation ?? 'unmapped')}</dd></div>
   <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
   <div><dt>${t('Manual validation')}</dt><dd>${t('Not reviewed.')}${(b.manual_validation?.prompts ?? []).length ? `<ul class="manual-validation">${b.manual_validation.prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join('')}</ul>` : ''}<span class="bug-meta">${esc(b.manual_validation?.environment_note ?? '')} ${esc(b.manual_validation?.false_positive_check ?? '')} ${t('Automated evidence: open this finding in the Explorer to download a blank review record for the reviewer and testing environment.')}</span></dd></div>
@@ -5991,7 +5992,7 @@ const EXPLORER_ROW_LIMIT = 200;
  * exactly one implementation (unit-tested in Node, stringified here).
  */
 function explorerScript({ bugsJson, reportHref, labels }) {
-  const filterSource = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, findingImpactKeys, filterFindings]
+  const filterSource = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, findingImpactKeys, findingArrmRoles, filterFindings]
     .map((fn) => fn.toString())
     .join('\n');
   const reproductionSource = [isReplayableSelector, reproductionPlan, executeReproduction, playwrightTestFor]
@@ -6060,6 +6061,7 @@ function explorerScript({ bugsJson, reportHref, labels }) {
     return {
       region: fieldValue('explorer-region'),
       impact: fieldValue('explorer-impact'),
+      arrmRole: fieldValue('explorer-arrm-role'),
       widget: fieldValue('explorer-widget'),
       component: fieldValue('explorer-component'),
       engine: fieldValue('explorer-engine'),
@@ -6519,6 +6521,7 @@ export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.jso
     `<option value="${esc(item.key)}">${esc(item.label)}${item.count ? ` (${nf(item.count)})` : ''}</option>`).join('');
   const regionOptions = options((summary.regions?.regions ?? []).map((region) => ({ key: region.key, label: region.label, count: region.findings })));
   const impactOptions = options(filterOptions(bugs ?? []).impacts);
+  const arrmRoleOptions = options(filterOptions(bugs ?? []).arrmRoles);
   const widgetOptions = options((summary.widgetGroups?.groups ?? []).map((group) => ({
     key: `widget:${group.widget}`,
     label: group.label,
@@ -6642,6 +6645,7 @@ ${liveInspectHelp()}
 <form id="explorer-filters" class="explorer-filters" hidden>
   <div class="explorer-field"><label for="explorer-region">${t('Region')}</label><select id="explorer-region"><option value="">${t('All regions')}</option>${regionOptions}</select></div>
   <div class="explorer-field"><label for="explorer-impact">${t('Estimated impact group')}</label><select id="explorer-impact"><option value="">${t('All estimated impact groups')}</option>${impactOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-arrm-role">${t('ARRM role')}</label><select id="explorer-arrm-role"><option value="">${t('All ARRM roles')}</option>${arrmRoleOptions}</select></div>
   <p class="meta">${t('Impact groups are estimated from the WCAG-to-population mapping, not counts of people affected. Filtering is sample-based.')}</p>
   <div class="explorer-field"><label for="explorer-widget">${t('Widget type')}</label><select id="explorer-widget"><option value="">${t('All widgets')}</option>${widgetOptions}</select></div>
   <div class="explorer-field"><label for="explorer-component">${t('Component')}</label><select id="explorer-component"><option value="">${t('All components')}</option>${componentOptions}</select></div>

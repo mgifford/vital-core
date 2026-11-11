@@ -719,6 +719,11 @@ try {
       await explorerPage.selectOption('#explorer-widget', 'widget:dialog');
       assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'widget filter updates the live status');
       await explorerPage.selectOption('#explorer-widget', '');
+      const arrmValue = await explorerPage.locator('#explorer-arrm-role option').nth(1).getAttribute('value');
+      assert(arrmValue, 'ARRM role filter has a mapped option');
+      await explorerPage.selectOption('#explorer-arrm-role', arrmValue);
+      assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'ARRM role filter updates the live status');
+      await explorerPage.selectOption('#explorer-arrm-role', '');
       // Keyboard-only: focus a result, open it with Enter, close with Enter.
       await explorerPage.fill('#explorer-query', 'image-alt');
       await explorerPage.locator('#explorer-results li a').first().focus();

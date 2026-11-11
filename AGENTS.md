@@ -168,6 +168,10 @@ a page for a report.
   prompts. The Explorer can download a blank review record (occurrence,
   element, screenshot reference, privacy note); VITAL never stores it, never
   sets a reviewer or status, and never turns it into a conformance claim.
+* **ARRM roles**: `src/data/arrm-tasks.json` is pinned to a W3C wai-arrm
+  revision. Findings are joined by WCAG SC to typical task primary roles; the
+  Explorer's ARRM filter is a responsibility lookup, **not** an ownership
+  assignment. See `docs-internal/ARRM-ROLES.md`.
 * **Identity**: `pattern_id` is cross-domain rule identity; `occurrence_id`
   (`VO-…`) is the recorded element; `observation_id` (`VOB-…`) is one scan run;
   `finding_ref` (`VFR-…`) is the durable finding link, independent of which
