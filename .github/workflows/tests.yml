@@ -30,7 +30,7 @@ jobs:
         run: npm ci --omit=optional --ignore-scripts
 
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium webkit
+        run: npx playwright install chromium webkit
 
       - name: i18n template is current
         run: npm run i18n:check
