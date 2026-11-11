@@ -408,7 +408,7 @@ scan.yml      (several scheduled runs per night, off-peak, one job per domain)
 
 report.yml    (after the night's scans complete)
   ├─ src/aggregate.js   read data/ → write summaries + docs/
-  ├─ src/prune.js       disabled legacy entry point; use retention:prune
+  ├─ (no prune step)    automatic pruning is disabled
   ├─ commit summaries back into data/
   └─ deploy docs/ to GitHub Pages
 
