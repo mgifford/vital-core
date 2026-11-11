@@ -10,6 +10,7 @@ import { sanitizeBugEvidence } from './finding-reporting.js';
 import { attachComponentScope } from './shared-components.js';
 import { MAX_RULE_INSTANCES } from './element-evidence.js';
 import { manualValidationFor } from './manual-validation.js';
+import { arrmForWcag, ARRM_SOURCE } from './arrm.js';
 import { occurrencesFor, occurrenceSummary, selectRepresentative } from './occurrence.js';
 
 /**
@@ -226,6 +227,21 @@ export function buildBugReports(target, summary) {
       impact,
       // Finding-relevant manual guidance; never a completion claim.
       manual_validation: manualValidationFor({ wcag_sc: wcag?.sc ?? null, rule_id: ruleId }),
+      arrm: (() => {
+        const mapping = arrmForWcag(wcag?.sc ?? null);
+        return {
+          source_revision: ARRM_SOURCE.revision,
+          roles: mapping.roles,
+          tasks: mapping.tasks.map((task) => ({
+            id: task.id,
+            task: task.task,
+            main_role: task.main_role,
+            primary: task.primary,
+            starter: task.starter,
+          })),
+          note: 'Mapped by WCAG SC to typical ARRM roles; this is not an ownership assignment for this finding.',
+        };
+      })(),
       testing_environment: `Automated: ${toolName}, headless Chromium (Playwright). Manual AT verification: ${PLACEHOLDER}`,
       steps_to_reproduce: [
         `Open ${representative?.url ?? 'an affected page (see example pages)'}.`,

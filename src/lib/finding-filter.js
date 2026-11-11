@@ -44,6 +44,11 @@ export function findingComponentLabel(bug) {
   return scope?.component_id ? (scope.component_label || scope.component_id) : 'unattributed';
 }
 
+/** Primary ARRM roles mapped from the finding's WCAG criterion. */
+export function findingArrmRoles(bug) {
+  return Array.isArray(bug?.arrm?.roles) ? bug.arrm.roles : [];
+}
+
 /** Nearest structural widget role (dialog, tablist, …), or empty. */
 export function findingWidgetKey(bug) {
   const role = bug?.semantic_context?.widget?.role;
@@ -79,6 +84,7 @@ export function filterFindings(bugs, filters = {}) {
     if (filters.severity && bug.severity !== filters.severity) return false;
     if (filters.wcag && (bug.wcag_sc ?? '') !== filters.wcag) return false;
     if (filters.impact && !findingImpactKeys(bug).includes(filters.impact)) return false;
+    if (filters.arrmRole && !findingArrmRoles(bug).includes(filters.arrmRole)) return false;
     if (!query) return true;
     const haystack = [
       bug.rule_id, bug.rule_label, bug.summary, bug.url, bug.wcag_sc,
@@ -117,6 +123,13 @@ export function filterOptions(bugs) {
     components: collect(findingComponentKey, findingComponentLabel),
     engines: collect((bug) => bug.engine_key, (bug) => bug.engine_key),
     impacts,
+    arrmRoles: (() => {
+      const counts = new Map();
+      for (const bug of list) for (const role of findingArrmRoles(bug)) counts.set(role, (counts.get(role) ?? 0) + 1);
+      return [...counts.entries()]
+        .map(([key, count]) => ({ key, label: key, count }))
+        .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+    })(),
     severities,
   };
 }

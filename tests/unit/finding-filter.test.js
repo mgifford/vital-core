@@ -8,6 +8,7 @@ import {
   findingWidgetKey,
   findingWidgetLabel,
   findingImpactKeys,
+  findingArrmRoles,
   filterFindings,
   filterOptions,
 } from '../../src/lib/finding-filter.js';
@@ -79,7 +80,10 @@ test('filterFindings applies every filter and a case-insensitive query', () => {
   assert.deepEqual(filterFindings([...bugs, dialog], { widget: 'widget:dialog' }).map((b) => b.instance_id), ['VS-d']);
   assert.equal(filterFindings([...bugs, dialog], { component: 'component:cmp-consent' }).length, 0, 'widget is not a component filter');
   assert.deepEqual(filterFindings(bugs, { query: 'CONTRAST' }).map((b) => b.instance_id), ['VS-b']);
-  const impactBug = bug({ instance_id: 'VS-impact', impact: { groups: [{ group: 'Blind' }, { group: 'Low vision' }] } });
+  const impactBug = bug({ instance_id: 'VS-impact', impact: { groups: [{ group: 'Blind' }, { group: 'Low vision' }] }, arrm: { roles: ['Content Authoring', 'Front-End Development'] } });
+  assert.deepEqual(findingArrmRoles(impactBug), ['Content Authoring', 'Front-End Development']);
+  assert.deepEqual(filterFindings([...bugs, impactBug], { arrmRole: 'Content Authoring' }).map((b) => b.instance_id), ['VS-impact']);
+  assert.equal(filterFindings(bugs, { arrmRole: 'Visual Design' }).length, 0);
   assert.deepEqual(filterFindings([...bugs, impactBug], { impact: 'Blind' }).map((b) => b.instance_id), ['VS-impact']);
   assert.deepEqual(filterFindings([...bugs, impactBug], { impact: 'Low vision' }).map((b) => b.instance_id), ['VS-impact']);
   assert.equal(filterFindings(bugs, { impact: 'Deaf' }).length, 0);
@@ -111,7 +115,7 @@ test('filterOptions counts regions, components, engines and severities', () => {
 });
 
 test('the filter functions are self-contained enough to run in the browser', () => {
-  const source = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, findingImpactKeys, filterFindings, filterOptions]
+  const source = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, findingImpactKeys, findingArrmRoles, filterFindings, filterOptions]
     .map((fn) => fn.toString())
     .join('\n');
   // No module scope is available here: stringification must carry everything.

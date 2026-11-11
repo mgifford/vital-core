@@ -552,6 +552,7 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
       steps_to_reproduce: ['Open https://example.gov/a.', 'Locate the affected element.', 'Confirm the axe-core finding for rule image-alt against WCAG 1.1.1 Non-text Content.'],
       remediation_tip: null,
       suggested_fix: 'See remediation guidance: https://example.gov/axe/image-alt',
+      arrm: { roles: ['Content Authoring', 'Front-End Development'], tasks: [{ id: 'IMG-001', task: 'Informative alternate text is provided.', main_role: 'Author', primary: ['Content Authoring'], starter: true }], source_revision: '70f9d027d7a87ab72058ded2037915a76795e46a' },
       default_visible: true,
       priority_tier: 0,
       cross_engine_correlations: [{
@@ -587,6 +588,9 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
   assert.match(html, /Copy inspection code/, 'the code fallback is labelled');
   assert.match(html, /Copy Playwright MCP prompt/, 'an optional Playwright MCP investigation prompt is offered');
+  assert.match(html, /ARRM roles/, 'the finding shows ARRM role responsibilities');
+  assert.match(html, /Content Authoring/, 'the mapped ARRM role is visible');
+  assert.match(html, /not an ownership assignment/, 'ARRM mapping is not presented as assignment');
   assert.match(html, /More inspection options/, 'secondary inspection controls are collapsed');
   assert.match(html, /Opens the page first\. Then click the VITAL Inspect bookmark/, 'the two-step live highlight is explicit');
   assert.match(html, /Copy selector/, 'the representative selector can be copied');
