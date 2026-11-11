@@ -13,7 +13,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { DIRS, loadConfig } from '../src/lib/config.js';
+import { DIRS, loadConfig, resolveTargetQuery } from '../src/lib/config.js';
 import { collectRetentionMetrics } from '../src/lib/retention-metrics.js';
 import { planDomain } from '../src/lib/retention-plan.js';
 import { readArchiveIndex, withArchiveState } from '../src/lib/retention-archive-index.js';
@@ -44,6 +44,7 @@ if (args.help) {
   console.log('Without --execute this is a dry run. The source summaries are never removed.');
   process.exit(0);
 }
+try {
 if (!args.domain) throw new Error('--domain is required');
 if (args.execute && args.confirmDomain !== args.domain) {
   throw new Error('--execute requires --confirm-domain with the exact domain key');
@@ -51,8 +52,7 @@ if (args.execute && args.confirmDomain !== args.domain) {
 const now = args.now ? new Date(`${args.now}T00:00:00Z`) : new Date();
 if (Number.isNaN(now.getTime())) throw new Error('Invalid --now date');
 const config = loadConfig(args.config ? fs.readFileSync(args.config, 'utf8') : undefined);
-const target = config.targets.find((candidate) => candidate.key === args.domain);
-if (!target) throw new Error(`Unknown domain: ${args.domain}`);
+const target = resolveTargetQuery(config, args.domain);
 if (target.hf_only) throw new Error(`refusing to prune hf_only target ${target.key}`);
 if (target.retentionPolicy.legacyFieldApplied) throw new Error('legacy retention_weeks policy: explicit policy required before pruning');
 if (!target.retentionPolicy.archive.enabled) throw new Error('archiving is disabled for this target');
@@ -61,6 +61,9 @@ const dataRoot = path.resolve(args.dataRoot ?? DIRS.data);
 const domainDir = path.join(dataRoot, target.key);
 const metrics = collectRetentionMetrics(dataRoot, target.key);
 const plan = planDomain({ dataRoot, domainKey: target.key, policy: target.retentionPolicy, metrics, now });
+if (plan.entries.length === 0) {
+  throw new Error(`No ISO-week data for ${target.key} at ${dataRoot}. Clone mgifford/vital-core-data into data/ or pass --data-root.`);
+}
 const archiveIndex = withArchiveState(readArchiveIndex(domainDir, target.key), now);
 const backend = createArchiveBackend(target.retentionPolicy);
 const readiness = await evaluatePruneReadiness({ plan, archiveIndex, backend, now });
@@ -104,3 +107,7 @@ else {
   console.log('summary.json and historical reports are retained.');
 }
 if (errors.length) process.exitCode = 1;
+} catch (error) {
+  console.error(`retention:prune: ${error.message}`);
+  process.exitCode = 1;
+}

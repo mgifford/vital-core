@@ -13,7 +13,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { DIRS, loadConfig } from '../src/lib/config.js';
+import { DIRS, loadConfig, resolveTargetQuery } from '../src/lib/config.js';
 import { planDomain } from '../src/lib/retention-plan.js';
 import { collectRetentionMetrics } from '../src/lib/retention-metrics.js';
 import { recordVerifiedArchive } from '../src/lib/retention-archive-index.js';
@@ -77,8 +77,7 @@ async function main() {
   if (args.week && args.allCandidates) throw new Error('use either --week or --all-candidates');
 
   const config = loadConfig(args.config ? fs.readFileSync(args.config, 'utf8') : undefined);
-  const target = config.targets.find((candidate) => candidate.key === args.domain);
-  if (!target) throw new Error(`Unknown domain: ${args.domain}`);
+  const target = resolveTargetQuery(config, args.domain);
   assertArchivableTarget(target);
   if (!target.retentionPolicy.archive.enabled) {
     throw new Error(`archiving is disabled for ${target.key}; update its retention policy explicitly`);

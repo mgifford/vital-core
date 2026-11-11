@@ -10,7 +10,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { DIRS, loadConfig } from '../src/lib/config.js';
+import { DIRS, loadConfig, resolveTargetQuery } from '../src/lib/config.js';
 import { collectRetentionMetrics } from '../src/lib/retention-metrics.js';
 import { planDomain, planSummary } from '../src/lib/retention-plan.js';
 import { storageWarnings } from '../src/lib/retention-policy.js';
@@ -90,8 +90,7 @@ function main() {
   const config = loadConfig(args.config ? fs.readFileSync(args.config, 'utf8') : undefined);
   const dataRoot = path.resolve(args.dataRoot ?? DIRS.data);
   const now = nowFrom(args.now);
-  const targets = args.domain ? config.targets.filter((target) => target.key === args.domain) : config.targets;
-  if (args.domain && targets.length === 0) throw new Error(`Unknown domain: ${args.domain}`);
+  const targets = args.domain ? [resolveTargetQuery(config, args.domain)] : config.targets;
 
   const domains = [];
   for (const target of targets) {
