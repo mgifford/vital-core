@@ -1,6 +1,6 @@
 # ADR: safe retention and durable archives (issue #130)
 
-Status: **PR 1–4 implemented — planning, archives, availability pages, last-observation accounting and configured growth warnings. No destructive change is enabled.**
+Status: **PR 1–4 and the prune-readiness gate implemented — planning, archives, availability pages, accounting and operator checks. No destructive change is enabled.**
 Date: 2026-11-10
 
 ## Context
@@ -171,9 +171,16 @@ observation and summary counts are reported separately in reports.
   pruning is enabled.
 - `hf_only`/sensitive targets must be excluded from any future archive upload.
 
+## Prune-readiness gate
+
+`npm run retention:prune-check` verifies that every candidate week has an
+available archive and re-checks the downloaded ZIP/manifest checksums. It never
+deletes and never calls `src/prune.js`. A READY result is input to an operator
+decision, not authorization. See [RETENTION-ROLLOUT.md](RETENTION-ROLLOUT.md).
+
 ## Approval gates
 
-Before merging anything that deletes working-tree data or rewrites Git history,
+Before enabling anything that deletes working-tree data or rewrites Git history,
 the operator must explicitly approve:
 
 - the archive backend and retention period;

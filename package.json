@@ -24,7 +24,8 @@
     "reproduce": "node scripts/reproduce.js",
     "inspect": "node scripts/inspect.js",
     "retention:plan": "node scripts/retention-plan.js",
-    "retention:archive": "node scripts/retention-archive.js"
+    "retention:archive": "node scripts/retention-archive.js",
+    "retention:prune-check": "node scripts/retention-prune-check.js"
   },
   "bin": {
     "vital-mcp": "mcp/server.js"
