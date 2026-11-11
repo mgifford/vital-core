@@ -16,6 +16,7 @@ import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
+import { syncObservationsFromState } from './lib/observations.js';
 import { runAxe } from './engines/axe.js';
 import { attachElementEvidence } from './lib/element-evidence.js';
 import { capturePageScreenshot } from './lib/screenshots.js';
@@ -636,6 +637,11 @@ runLog.tally = tally;
 runLog.finishedAt = new Date().toISOString();
 fs.writeFileSync(path.join(runsDir, `${runId}.json`), JSON.stringify(runLog, null, 1));
 saveState(target.key, state);
+try {
+  syncObservationsFromState(target.key, target.domain, state, week);
+} catch (error) {
+  console.warn(`[${target.key}] last-observation index not updated: ${error.message}`);
+}
 logMemory('before-browser-close');
 await browser.close();
 logMemory('end');

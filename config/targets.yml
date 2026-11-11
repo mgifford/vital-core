@@ -10,6 +10,16 @@
 # for slow pages under the 110-min job cap. The 5 weekly crons accumulate
 # coverage: 100 x 5 ~= 500 pages/week/domain (more for higher importance).
 
+# Size warnings are advisory, never deletion triggers. The report workflow
+# reads these values (scripts/storage-growth.js); lower a ceiling only with a
+# measured migration and explicit review.
+storage:
+  code_ceiling_mb: 100
+  data_warning_mb: 1300
+  data_critical_mb: 1600
+  weekly_growth_warning_mb: 100
+  run_growth_warning_mb: 50
+
 defaults:
   pages_per_run: 150        # max pages scanned per domain per workflow run (keeps runs < 2h)
   max_pages_per_week: 10000  # hard weekly cap per domain

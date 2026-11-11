@@ -555,6 +555,10 @@ try {
   const totalKnownPages = Object.keys(inv.pages).length + Object.keys(inv.fixed).length + (inv.cleanCount ?? 0);
   assert(totalKnownPages >= PAGES, `inventory summary still accounts for all known pages (${totalKnownPages})`);
   assert(/unique pages have been scanned at least once/.test(report), 'report cites total known pages from inventory');
+  const observations = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'observations.json')));
+  assert(Object.keys(observations.urls).length >= PAGES + 1, 'last-observation index covers discovered URLs');
+  assert(Object.values(observations.urls).every((entry) => typeof entry.outcome === 'string'), 'every observation has an explicit outcome');
+  assert(Object.values(observations.urls).some((entry) => entry.clean === true || entry.clean === false), 'clean-for-automated-engines is explicit for audited URLs');
   // ScanGov-style standards + security engines.
   assert(w1.security && w1.security.checks.some((c) => c.id === 'https'), 'security checks recorded (per origin)');
   assert(w1.security.checks.find((c) => c.id === 'gov-tld').pass === false, 'localhost is not a .gov (TLD check works)');

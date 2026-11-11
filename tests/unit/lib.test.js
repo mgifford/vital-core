@@ -1395,6 +1395,19 @@ test('buildAcrData: no automated failure is never reported as supports', () => {
   assert.ok(incomplete.length > 20, 'the draft names its unverified A/AA criteria');
 });
 
+test('buildAcrData: 4.1.1 is not part of the WCAG 2.2 A/AA catalog', () => {
+  const summary = {
+    week: '2026-W25', pagesScanned: 50,
+    axe: { pagesScanned: 50, rules: {} },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap } = buildAcrData(summary);
+  assert.equal(scMap.has('4.1.1'), false, 'Parsing was removed in WCAG 2.1 and is not a WCAG 2.2 criterion');
+  for (const sc of ['1.3.2', '3.1.1', '3.2.2', '3.2.6', '3.3.7']) {
+    assert.ok(scMap.has(sc), `${sc} remains in the WCAG 2.2 A/AA catalog`);
+  }
+});
+
 test('buildAcrData: not-evaluated for SCs no engine covers', () => {
   const summary = {
     week: '2026-W25',
