@@ -114,6 +114,9 @@ No paid backend is required for local testing or a small deployment.
   "files": [
     { "path": "pages/p1.json", "bytes": 123, "sha256": "…", "source_sha256": "…" }
   ],
+  "pages": [
+    { "path": "pages/p1.json", "page_id": "…", "url": "https://…", "status": 200 }
+  ],
   "record_ids": ["VO-…", "VFR-…"],
   "archive_id": "…"
 }
@@ -124,7 +127,8 @@ No paid backend is required for local testing or a small deployment.
   missing. **Incomplete archives are never uploaded.**
 - `files[].sha256` covers the archived bytes; `source_sha256` covers the
   original source when one exists.
-- `record_ids` links occurrence/observation/finding IDs to the manifest.
+- `pages` links every archived page record to its page ID and URL.
+- `record_ids` carries any occurrence/observation/finding IDs present in the source; raw page records usually contain page IDs rather than occurrence IDs, which are derived during aggregation.
 - `archive_id` is a deterministic SHA-256 of the manifest without that field.
 - The ZIP SHA-256 is returned by the command/backend and is not embedded in the
   ZIP (that would be circular).

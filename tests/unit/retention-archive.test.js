@@ -64,6 +64,8 @@ test('archives are deterministic and self-contained across dedup stubs', () => {
     assert.equal(first.manifest.schema_version, 1);
     assert.equal(first.status, 'complete');
     assert.ok(first.manifest.record_ids.includes('VO-1'));
+    assert.equal(first.manifest.pages.length, 2);
+    assert.ok(first.manifest.pages.some((page) => page.page_id === 'p2' && page.resolved_from === '2026-W43'));
     assert.ok(first.manifest.record_ids.includes('VO-2'));
     const stub = first.manifest.files.find((file) => file.path === 'pages/p2.json');
     assert.equal(stub.resolved_from, '2026-W43');
