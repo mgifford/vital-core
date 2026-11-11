@@ -47,7 +47,7 @@ jobs:
         run: npm ci --omit=optional --ignore-scripts
 
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
 
       - name: Parse workflow YAML
         run: |

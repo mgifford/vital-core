@@ -241,6 +241,7 @@ npm run test:unit   # URL identity, ISO weeks, robots.txt, batch picking
 npm run test:e2e    # full pipeline over a local fixture site simulating two weeks
 npm run retention:plan -- --domain example.gov   # read-only retention/storage plan
 npm run retention:prune-check -- --domain example.gov   # read-only archive coverage check
+npm run retention:prune -- --domain example.gov         # dry-run; --execute is explicit
 npm run retention:archive -- --domain example.gov --week 2026-W44   # dry-run ZIP + manifest
 # archive states: npm run aggregate → reports/<domain>/<week>/archive.html + evidence.html
 ```

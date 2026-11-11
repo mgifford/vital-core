@@ -176,7 +176,12 @@ observation and summary counts are reported separately in reports.
 `npm run retention:prune-check` verifies that every candidate week has an
 available archive and re-checks the downloaded ZIP/manifest checksums. It never
 deletes and never calls `src/prune.js`. A READY result is input to an operator
-decision, not authorization. See [RETENTION-ROLLOUT.md](RETENTION-ROLLOUT.md).
+decision, not authorization.
+
+The separate opt-in `npm run retention:prune -- --execute --confirm-domain <key>`
+command is the only destructive path. It is not in any workflow, re-verifies the
+archive in the same run, removes only page/run/screenshot detail, and keeps the
+summary. See [RETENTION-ROLLOUT.md](RETENTION-ROLLOUT.md).
 
 ## Approval gates
 

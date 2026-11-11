@@ -31,3 +31,31 @@ It reports `destructiveActionsPerformed: 0`. It never calls `src/prune.js`.
 
 Legacy `retention_weeks`, archive-disabled policies, missing summaries,
 expired/incomplete archives and unreadable/corrupt objects are all blockers.
+
+## Opt-in prune command
+
+After readiness is READY and the operator has approved the exact target, the
+gated command is:
+
+```sh
+# Always preview first
+npm run retention:prune -- --domain www.cms.gov
+
+# Destructive only with the exact confirmation
+npm run retention:prune -- --domain www.cms.gov --execute \
+  --confirm-domain www.cms.gov
+```
+
+`--execute` removes only `pages/`, `runs/` and `screenshots/` for weeks whose
+archive was re-verified in the same run. It always keeps `summary.json`,
+ledgers and historical reports. It refuses:
+
+- `hf_only` targets
+- legacy `retention_weeks`
+- archive-disabled policies
+- a missing, expired, incomplete or corrupt archive
+- a mismatched `--confirm-domain`
+
+It has **no workflow integration**. Running it against production is an
+operator action, not a report/scan step. Tests exercise it only against
+temporary fixtures.

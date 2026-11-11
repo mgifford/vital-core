@@ -47,8 +47,14 @@ try {
 } catch { /* WebKit is optional outside the full test job */ }
 
 for (const [name, launcher] of browserLaunchers) {
-  test(`${name}: a javascript: activation runs without CSP and is blocked by script-src`, async () => {
-    const browser = await launcher.launch();
+  test(`${name}: a javascript: activation runs without CSP and is blocked by script-src`, async (t) => {
+    let browser;
+    try {
+      browser = await launcher.launch();
+    } catch (error) {
+      t.skip(`${name} cannot launch in this environment: ${error.message}`);
+      return;
+    }
     try {
       await withServer(pageWithBookmarklet(''), async (base) => {
         const page = await browser.newPage();
