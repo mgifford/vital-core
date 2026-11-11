@@ -129,6 +129,7 @@ export function buildArchive({ domainDir, domainKey, week, policy }) {
   const manifestFiles = [];
   const unresolvedStubs = [];
   const recordIds = new Set();
+  const manifestPages = [];
   const addFile = (relativePath, data, { sourcePath = null, sourceSha256 = null, resolvedFrom = null } = {}) => {
     const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
     const digest = sha256(buffer);
@@ -163,6 +164,13 @@ export function buildArchive({ domainDir, domainKey, week, policy }) {
         sourcePath,
         sourceSha256: sha256(source),
         resolvedFrom: resolved.resolvedFrom,
+      });
+      manifestPages.push({
+        path: `pages/${file}`,
+        page_id: resolved.record.pageId ?? null,
+        url: resolved.record.url ?? null,
+        status: resolved.record.status ?? null,
+        ...(resolved.resolvedFrom ? { resolved_from: resolved.resolvedFrom } : {}),
       });
     }
   }
@@ -200,6 +208,7 @@ export function buildArchive({ domainDir, domainKey, week, policy }) {
     status: unresolvedStubs.length ? 'incomplete' : 'complete',
     unresolved_stubs: unresolvedStubs,
     files: manifestFiles.sort((a, b) => a.path.localeCompare(b.path)),
+    pages: manifestPages.sort((a, b) => String(a.page_id).localeCompare(String(b.page_id))),
     record_ids: [...recordIds].sort(),
     source_note: 'Deduplicated page stubs are expanded from their source week where available; stubs that cannot be resolved are listed in unresolved_stubs and make this archive incomplete.',
   };
