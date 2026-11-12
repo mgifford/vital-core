@@ -98,7 +98,7 @@ risks. Key results:
 - `finding_ref` survives sample changes, representative changes and
   re-aggregation.
 - Weekly summaries retain representative evidence; screenshots and page detail
-  remain subject to `retention_weeks`, and `evidence_reference` says so.
+  remain subject to the configured retention policy; page detail is removed only by the verified, explicitly authorized retention command.
 
 ## End-to-end example (local fixture)
 

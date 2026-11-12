@@ -13,11 +13,12 @@ this work GitHub reported:
 | `mgifford/vital-core` | 6,297 KB (~6.1 MB) |
 | `mgifford/vital-core-data` | 1,435,663 KB (~1.37 GiB) |
 
-Those are **repository-history sizes**, not the active working tree. The
-existing `retention_weeks: 2` removes `pages/`, `runs/` and `screenshots/`
-from the working tree after a summary exists; Git history still retains the
-old blobs. Deleting working-tree files therefore does not, by itself, reduce
-the data repository's history size.
+Those are **repository-history sizes**, not the active working tree. At the
+start of this work, `retention_weeks: 2` removed `pages/`, `runs/` and
+`screenshots/` from the working tree after a summary existed. That automatic
+call is now disabled; removal requires the verified, explicitly confirmed
+`retention:prune` command. Git history still retains old blobs, so
+working-tree pruning does not by itself reduce history size.
 
 Current data paths per domain:
 
@@ -164,9 +165,9 @@ observation and summary counts are reported separately in reports.
   ownership need operator approval.
 - `cleanCount` is approximate, so known-URL counts are not a complete clean-URL
   ledger. PR 4's last-observation index is the durable fix.
-- Legacy `retention_weeks` remains active until an operator explicitly adopts
-  a policy; the plan's `legacy_prune_requires_authorization` is deliberately
-  not a delete instruction.
+- Legacy `retention_weeks` remains readable/plannable but no longer deletes
+  automatically. The plan's `legacy_prune_requires_authorization` is
+  deliberately not a delete instruction.
 - Old report links and archive-expiry behaviour need PR 3 tests before any
   pruning is enabled.
 - `hf_only`/sensitive targets must be excluded from any future archive upload.
