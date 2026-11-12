@@ -111,6 +111,14 @@ describe('buildSnapshot', () => {
     assert.equal(snap.summary.serious_count, 1);
   });
 
+  test('exposes a compact coverage summary without inventing audited totals', () => {
+    const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
+    assert.equal(snap.coverage.pages_scanned, 100);
+    assert.equal(snap.coverage.pages_audited, null);
+    assert.equal(snap.coverage.known_urls_estimate, 500);
+    assert.match(snap.coverage.known_urls_note, /not an authoritative/);
+  });
+
   test('does not include top-level pages array', () => {
     const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
     assert.ok(!('pages' in snap));
