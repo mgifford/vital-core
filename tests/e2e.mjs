@@ -524,7 +524,7 @@ try {
   assert(report.includes('favicon.png'), 'report advertises the PNG fallback');
   assert(report.includes('class="brand-mark"') && report.includes('alt=""'), 'header brand mark is decorative');
   // Scorecard on the domain report; trend charts live on the History page (WP2).
-  assert(/class="scorecard"/.test(report) && /class="grade grade-[A-F]"/.test(report), 'domain report shows a score + grade');
+  assert(/class="scorecard"/.test(report) && /class="score"/.test(report) && !/class="grade grade-[A-F]"/.test(report), 'domain report shows a numeric score without a letter grade');
   assert(report.includes('How much was tested') && report.includes('Coverage is not the same as conformance'), 'domain report has a plain-language coverage summary');
   assert(/id="h-coverage-summary"/.test(report), 'coverage summary has a stable heading anchor');
   assert(/href="history\.html"/.test(report) && /History &amp; Trends/.test(report), 'overview links to the History & Trends page');
@@ -585,7 +585,7 @@ try {
   assert(/data\/localhost\/domain\.json/.test(report), 'report links the JSON download');
   // Dashboard: leaderboard score + trajectory + cross-domain chart.
   const dash = fs.readFileSync(path.join(SANDBOX, 'docs', 'index.html'), 'utf8');
-  assert(/<th\b[^>]*scope="col"[^>]*>\s*Score\s*<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
+  assert(/<th\b[^>]*scope="col"[^>]*>\s*Score\s*<\/th>/.test(dash) && /<td class="num">\d+<\/td>/.test(dash), 'dashboard leaderboard shows numeric scores');
   assert(/class="traj traj-/.test(dash), 'dashboard shows trajectory arrows');
   assert(dash.includes('all domains') && dash.includes('linechart'), 'dashboard has cross-domain overlay chart');
   assert(/id="h-worst"/.test(dash), 'dashboard has fleet-wide worst-offenders section');
