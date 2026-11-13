@@ -231,6 +231,8 @@ test('renderDomainReport links to History & Trends instead of embedding trend ch
   // overview links there rather than embedding them.
   assert.match(html, /History &amp; Trends →/);
   assert.match(html, /href="history\.html"/);
+  assert.match(html, /How much was tested/, 'coverage summary is visible on the domain report');
+  assert.match(html, /Coverage is not the same as conformance/, 'coverage does not imply conformance');
   assert.doesNotMatch(html, /Pages affected by axe severity over 2 weeks/);
   assert.doesNotMatch(html, /Lighthouse category scores over 2 weeks/);
   assert.doesNotMatch(html, /Score trends/);

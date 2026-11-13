@@ -525,6 +525,8 @@ try {
   assert(report.includes('class="brand-mark"') && report.includes('alt=""'), 'header brand mark is decorative');
   // Scorecard on the domain report; trend charts live on the History page (WP2).
   assert(/class="scorecard"/.test(report) && /class="grade grade-[A-F]"/.test(report), 'domain report shows a score + grade');
+  assert(report.includes('How much was tested') && report.includes('Coverage is not the same as conformance'), 'domain report has a plain-language coverage summary');
+  assert(/id="h-coverage-summary"/.test(report), 'coverage summary has a stable heading anchor');
   assert(/href="history\.html"/.test(report) && /History &amp; Trends/.test(report), 'overview links to the History & Trends page');
   const historyPage = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'history.html'), 'utf8');
   assert(historyPage.includes('id="h-history-a11y"') && /class="linechart/.test(historyPage), 'History page shows multi-week trend charts');
