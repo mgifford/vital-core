@@ -4232,7 +4232,7 @@ ${heading('h-archive-accounting', t('What is preserved'), 2)}
  */
 export function renderArchivePage(target, series, latestWeek, archiveIndex = null, observationSummary = null) {
   if (!series || series.length === 0) return null;
-  const scoreFormat = target.display?.score_format ?? 'both';
+  const scoreFormat = target.display?.score_format ?? 'percent';
   const ordered = [...series].reverse(); // newest first
   const archiveByWeek = new Map((archiveIndex?.archives ?? []).map((entry) => [entry.week, entry]));
   const STATE_LABELS = {
@@ -4494,7 +4494,7 @@ ${coverage.notes.length ? `<ul class="coverage-notes">${coverage.notes.map((note
 
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null, progress = { new: [], fixed: [], regressed: [] }) {
   const score = scoreFor(summary);
-  const scoreFormat = target.display?.score_format ?? 'both';
+  const scoreFormat = target.display?.score_format ?? 'percent';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
@@ -4552,6 +4552,18 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automa
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
   <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score. 0–100; higher is better. It maps the median axe violation count per audited page to a benchmark curve; Alfa is sampled and reported separately. Manual testing is incomplete, so a high value is not proof of conformance.')}</span>
+  ${(() => {
+    const cov = summarizeCoverage(summary, prev, invSummary);
+    if (!cov) return '';
+    const axe = cov.engines.find((entry) => entry.engine === 'axe');
+    const alfa = cov.engines.find((entry) => entry.engine === 'alfa');
+    return `<span class="score-coverage">${t('Coverage for this metric: @audited audited page(s) of @fetched fetched. Axe ran on @axe@alpha. Do not compare scores when coverage changes substantially.', {
+      '@audited': nf(cov.pages_audited ?? 0),
+      '@fetched': nf(cov.pages_scanned ?? 0),
+      '@axe': axe ? `${axe.pages}${axe.share != null ? ` (${axe.share}%)` : ''}` : t('not recorded'),
+      '@alpha': alfa ? `; Alfa on ${alfa.pages}${alfa.share != null ? ` (${alfa.share}%)` : ''}` : '',
+    })}</span>`;
+  })()}
 </aside>
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
@@ -5064,7 +5076,7 @@ export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
       const partly = latest.access?.level === 'partial' ? ` <strong class="access-flag">${t('Partly blocked')}</strong>` : '';
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a>${partly}</th>
-  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'both')}</td>
+  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'percent')}</td>
   <td>${arrow(traj)}</td>
   <td class="num">${win.pagesAudited ?? win.pagesScanned}</td>
   <td class="num">${fmtMedian(win.axe.medianViolations)}</td>

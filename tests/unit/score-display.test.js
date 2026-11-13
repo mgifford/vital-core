@@ -45,10 +45,11 @@ test('score_format none: suppresses scorecard entirely', () => {
   assert.doesNotMatch(html, /class="score"/);
 });
 
-test('score_format unset: defaults to both', () => {
+test('score_format unset: defaults to percent, not a letter grade', () => {
   const html = renderDomainReport(makeTarget(undefined), summary, null, null, [summary]);
-  assert.match(html, /class="grade grade-[A-F]"/);
+  assert.doesNotMatch(html, /class="grade grade-[A-F]"/);
   assert.match(html, /class="score"/);
+  assert.match(html, /Coverage for this metric/);
 });
 
 test('archive page: score_format both shows grade and number', () => {
