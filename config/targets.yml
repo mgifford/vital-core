@@ -64,11 +64,11 @@ defaults:
     template_page_threshold: 10
   display:
     # How the accessibility score appears in per-domain reports and the archive.
+    # percent — numeric score only (default; least likely to imply a grade)
     # letter  — letter grade only (A/B/C/D/F)
-    # percent — numeric score only (e.g. "78")
-    # both    — letter grade and numeric score (default)
+    # both    — letter grade and numeric score (opt in)
     # none    — suppress the score section entirely
-    score_format: both
+    score_format: percent
   finding_policy:
     # version/level is the build target: everything new should meet WCAG
     # 2.2 AA. legal_baseline is the legal minimum: Section 508 (36 CFR 1194)

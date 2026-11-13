@@ -5,6 +5,7 @@ import { redactUrl, deepRedactUrls } from './api-redact.js';
 import { buildFindingReporting, sanitizeEvidence } from './finding-reporting.js';
 import { safeSelector } from './element-evidence.js';
 import { reproductionPlan } from './reproduction.js';
+import { summarizeCoverage } from './coverage.js';
 
 export const SCHEMA_VERSION = '1';
 
@@ -139,6 +140,7 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
       pages_scanned: latest.pagesScanned ?? 0,
     },
     reporting: buildFindingReporting(latestBugs, opts).summary,
+    coverage: summarizeCoverage(latest, series[series.length - 2] ?? null, invSummary ?? null),
     inventory: invSummary ?? null,
     findings: ledger.findings ?? {},
     tech_findings: latest.techFindings?.associations ?? null,

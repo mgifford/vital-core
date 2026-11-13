@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
+import { summarizeCoverage } from './lib/coverage.js';
 import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
@@ -4231,7 +4232,7 @@ ${heading('h-archive-accounting', t('What is preserved'), 2)}
  */
 export function renderArchivePage(target, series, latestWeek, archiveIndex = null, observationSummary = null) {
   if (!series || series.length === 0) return null;
-  const scoreFormat = target.display?.score_format ?? 'both';
+  const scoreFormat = target.display?.score_format ?? 'percent';
   const ordered = [...series].reverse(); // newest first
   const archiveByWeek = new Map((archiveIndex?.archives ?? []).map((entry) => [entry.week, entry]));
   const STATE_LABELS = {
@@ -4469,9 +4470,31 @@ ${moreGroups}`;
   });
 }
 
+function coverageSummarySection(summary, prev, invSummary) {
+  const coverage = summarizeCoverage(summary, prev, invSummary);
+  if (!coverage) return '';
+  const total = coverage.pages_audited ?? coverage.pages_scanned;
+  const engines = coverage.engines.length
+    ? coverage.engines.map((entry) => `<li><strong>${esc(entry.engine)}</strong>: ${entry.pages} page(s)${entry.share != null ? ` (${entry.share}% of fetched pages)` : ''}</li>`).join('')
+    : `<li>${t('No engine coverage was recorded this week.')}</li>`;
+  const known = coverage.known_urls_estimate != null
+    ? `<p class="meta">${t('Known-URL estimate: @n. @note', { '@n': nf(coverage.known_urls_estimate), '@note': t(coverage.known_urls_note) })}</p>`
+    : `<p class="meta">${esc(t(coverage.known_urls_note))}</p>`;
+  return `<section class="coverage-summary" aria-labelledby="h-coverage-summary">
+${heading('h-coverage-summary', t('How much was tested'), 2)}
+<p><strong>${nf(total ?? 0)}</strong> ${t('unique page(s) audited')}${coverage.pages_scanned != null ? ` ${t('from @n fetched page(s)', { '@n': nf(coverage.pages_scanned) })}` : ''}.
+${coverage.pages_attempted != null ? ` ${t('@n attempted; @s succeeded.', { '@n': nf(coverage.pages_attempted), '@s': nf(coverage.pages_succeeded ?? 0) })}` : ''}
+${coverage.pages_blocked ? ` ${t('@n blocked.', { '@n': nf(coverage.pages_blocked) })}` : ''}</p>
+<ul class="coverage-engines">${engines}</ul>
+${known}
+${coverage.notes.length ? `<ul class="coverage-notes">${coverage.notes.map((note) => `<li>${esc(note)}</li>`).join('')}</ul>` : ''}
+<p class="meta">${t('Coverage is not the same as conformance. A clean automated result does not prove that untested pages are accessible, and a drop in findings may reflect lower coverage.')}</p>
+</section>`;
+}
+
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null, progress = { new: [], fixed: [], regressed: [] }) {
   const score = scoreFor(summary);
-  const scoreFormat = target.display?.score_format ?? 'both';
+  const scoreFormat = target.display?.score_format ?? 'percent';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
@@ -4529,8 +4552,22 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automa
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
   <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score. 0–100; higher is better. It maps the median axe violation count per audited page to a benchmark curve; Alfa is sampled and reported separately. Manual testing is incomplete, so a high value is not proof of conformance.')}</span>
+  ${(() => {
+    const cov = summarizeCoverage(summary, prev, invSummary);
+    if (!cov) return '';
+    const axe = cov.engines.find((entry) => entry.engine === 'axe');
+    const alfa = cov.engines.find((entry) => entry.engine === 'alfa');
+    return `<span class="score-coverage">${t('Coverage for this metric: @audited audited page(s) of @fetched fetched. Axe ran on @axe@alpha. Do not compare scores when coverage changes substantially.', {
+      '@audited': nf(cov.pages_audited ?? 0),
+      '@fetched': nf(cov.pages_scanned ?? 0),
+      '@axe': axe ? `${axe.pages}${axe.share != null ? ` (${axe.share}%)` : ''}` : t('not recorded'),
+      '@alpha': alfa ? `; Alfa on ${alfa.pages}${alfa.share != null ? ` (${alfa.share}%)` : ''}` : '',
+    })}</span>`;
+  })()}
 </aside>
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
+
+${coverageSummarySection(summary, prev, invSummary)}
 
 <p class="meta">${t('Primary standards queue: @n required finding type(s) (handling: report). Verification queue: @r required finding type(s) (handling: review). Aspirational queue: @asp finding type(s). Advisory queue: @a finding type(s). Unmapped review queue: @u finding type(s).', {
   '@n': lanes.requiredReport,
@@ -5039,7 +5076,7 @@ export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
       const partly = latest.access?.level === 'partial' ? ` <strong class="access-flag">${t('Partly blocked')}</strong>` : '';
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a>${partly}</th>
-  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'both')}</td>
+  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'percent')}</td>
   <td>${arrow(traj)}</td>
   <td class="num">${win.pagesAudited ?? win.pagesScanned}</td>
   <td class="num">${fmtMedian(win.axe.medianViolations)}</td>
