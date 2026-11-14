@@ -38,9 +38,10 @@ defaults:
   #   live: { mode: adaptive, minimum_weeks: 4, maximum_weeks: 16, scan_cycle_multiplier: 1.25 }
   #   archive: { enabled: true, retention_months: 12, verify_before_prune: true, backend: local, path: archives }
   #   summary: { retention: indefinite }
-  # Evaluation export: openacr (US procurement default), wcag-em (W3C evaluation
-  # report; recommended outside the US), or both. Per-target override below.
-  evaluation_report: openacr
+  # Evaluation export (evaluation_report): openacr (draft OpenACR, for US
+  # procurement), wcag-em (W3C WCAG-EM website evaluation report) or both. Unset,
+  # a site in a US government domain gets openacr and every other site wcag-em.
+  # Set it here or per target to choose.
   # Query parameters to ignore when identifying a page (default: none). Use
   # only for values that do not change the content, e.g. [page] for a paginated
   # index. Query variants remain distinct pages by default.
@@ -278,16 +279,14 @@ targets:
   #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
   #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
   #
-  #   evaluation_report: openacr
-  # Query parameters to ignore when identifying a page (default: none). Use
-  # only for values that do not change the content, e.g. [page] for a paginated
-  # index. Query variants remain distinct pages by default.
   #   evaluation_report: openacr | wcag-em | both — which evaluation artifact
-  #     the Accessibility page offers. US fleets usually want `openacr` (draft
-  #     OpenACR/VPAT-compatible); non-US fleets evaluating a website should set
-  #     `wcag-em` for a W3C WCAG-EM-aligned report. `both` is available during
-  #     migration. The automated WCAG-EM report is a pre-assessment, not a
-  #     conformance claim. Example: evaluation_report: wcag-em
+  #     the Accessibility page offers: a draft OpenACR (VPAT-compatible, for US
+  #     procurement) or a W3C WCAG-EM-aligned report. Unset, it is openacr for
+  #     a site in a US government domain (.gov, .mil, .edu, .fed.us, or a
+  #     government_domains entry whose country is the United States) and
+  #     wcag-em for every other site. `both` is available during migration. The
+  #     automated WCAG-EM report is a pre-assessment, not a conformance claim.
+  #     Example: evaluation_report: wcag-em
   #
   #   retention: optional policy (profile: minimal | balanced | research |
   #     preserve, plus live/archive/storage overrides). Omit it to preserve

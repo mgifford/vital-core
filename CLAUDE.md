@@ -336,9 +336,10 @@ dropped once, which made the config exclusion a no-op.
 carries on. It is unlisted, not private: anyone with a link can still open it.
 
 - **The data is untouched.** An unlisted site is scanned, aggregated and
-  pruned like any other, and `data/` comes out byte-for-byte the same
+  retained like any other, and `data/` comes out byte-for-byte the same
   (`tests/e2e.mjs` checks this). Never skip it in `aggregate`'s data steps:
-  page detail is pruned after `retention_weeks`, so a skipped week is lost.
+  page detail can be pruned (`npm run retention:prune`), so a week that was
+  never aggregated could be lost.
 - **Its pages stay at their URLs**, with `<meta name="robots"
   content="noindex">` (`layout()`), along with the JSON they link to.
 - **Nothing site-wide lists it**: the dashboard and its blocked-sites notice,
