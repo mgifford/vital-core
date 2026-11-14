@@ -319,6 +319,13 @@ export function createSharedComponentTracker(signatures = []) {
         classification,
         component_id: component?.signature.id ?? null,
         component_label: component?.signature.label ?? null,
+        // Identity is split deliberately: a configured signature is an
+        // implementation only when the site owner declared it, and grouping
+        // never establishes ownership or a fix count.
+        component_type: component ? `component:${component.signature.id}` : null,
+        implementation: component?.signature.id ?? null,
+        attribution: component ? 'configured' : null,
+        ownership_established: false,
         confidence: !component ? null : signalTypes.length >= 3 ? 'high' : signalTypes.length === 2 ? 'medium' : 'low',
         verified: classification === 'shared_component' || (classification === 'mixed' && verified),
         signals: signalTypes,
@@ -344,6 +351,10 @@ export function createSharedComponentTracker(signatures = []) {
       return {
         id: signature.id,
         label: signature.label,
+        component_type: `component:${signature.id}`,
+        implementation: signature.id,
+        attribution: 'configured',
+        ownership_established: false,
         min_signals: signature.min_signals,
         verified: observed.length > 0 && types.length >= signature.min_signals,
         confidence: types.length === 0 ? null : types.length >= 3 ? 'high' : types.length === 2 ? 'medium' : 'low',

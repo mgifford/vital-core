@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
+import { summarizeCoverage } from './lib/coverage.js';
 import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
 import { performanceImpact } from './lib/perf-impact.js';
@@ -9,8 +10,16 @@ import { buildLineManifest, buildMultiLineManifest } from './lib/paracharts.js';
 import { rulePlainLabel } from './lib/rule-label.js';
 import { buildFindingReporting, sanitizeBugEvidence, sanitizeEvidence } from './lib/finding-reporting.js';
 import { scopeViewsFor } from './lib/shared-components.js';
+import { findingRegionLabel, findingComponentLabel, findingWidgetLabel, findingRegionKey, findingComponentKey, findingWidgetKey, findingImpactKeys, findingArrmRoles, filterFindings, filterOptions } from './lib/finding-filter.js';
+import { reproductionPlan, executeReproduction, playwrightTestFor, isReplayableSelector, REPRODUCTION_EXIT_CODES } from './lib/reproduction.js';
+import { manualValidationFor, manualReviewRecord, MANUAL_REVIEW_STATUSES } from './lib/manual-validation.js';
+import { markerGeometry } from './lib/screenshots.js';
+import { INSPECT_VERSION, inspectBookmarklet, inspectCodeFor, inspectUnavailableReason, inspectUnavailableText, inspectUrlFor } from './lib/live-inspect.js';
+import { textFragmentUrl } from './lib/text-fragment.js';
+import { mcpInvestigationPrompt } from './lib/mcp-investigation.js';
 import { redactUrl } from './lib/api-redact.js';
 import { t, nf, getLocale, setLocale } from './lib/i18n.js';
+import { FAVICON_FILENAME, FAVICON_PNG_FILENAME, FAVICON_SVG } from './lib/brand.js';
 
 export { setLocale };
 
@@ -309,8 +318,10 @@ const PAGES = {
   errors: 'errors',
   tech: 'tech',
   'tech-findings': 'tech-findings',
+  explorer: 'explore',
   history: 'history',
   archive: 'archive',
+  evidence: 'evidence',
 };
 
 /** Old basename → new basename, for the renamed pages only (redirect stubs). */
@@ -340,7 +351,7 @@ function pageHref(key, anchor = '') {
  */
 const SUBNAV_GROUPS = [
   { label: null, items: [['overview', 'Overview']] },
-  { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['images', 'Images'], ['pdfs', 'PDFs']] },
+  { label: 'Accessible?', items: [['accessibility', 'Accessibility'], ['explorer', 'Findings explorer'], ['images', 'Images'], ['pdfs', 'PDFs']] },
   { label: 'Fast?', items: [['lighthouse', 'Lighthouse']] },
   { label: 'Findable?', items: [['readability', 'Readability'], ['standards', 'Standards']] },
   { label: 'Trustworthy?', items: [['security', 'Security'], ['third-party', 'Third parties'], ['errors', 'Errors']] },
@@ -555,14 +566,16 @@ ${inner}
  * Accessible light/dark theme toggle, following the light-dark-mode skill
  * from mgifford/accessibility-skills:
  *  - defaults to prefers-color-scheme; manual choice persists in localStorage
- *  - aria-label describes the ACTION ("Switch to dark mode"), updated on click
+ *  - aria-label contains the visible "Theme" label and describes the ACTION,
+ *    updated on click (label-content-name-mismatch, WCAG 2.5.3)
  *  - shows the moon in light mode (action: go dark) and sun in dark mode
  *  - keyboard-operable native <button>, placed after nav, not sticky
- * The toggle and its tiny script are the only JS in the reports; with JS
- * off, prefers-color-scheme still applies (progressive enhancement).
+ * JS in the reports is progressive only (theme toggle, Explorer filters,
+ * triage/exclusion helpers); with JS off, every page's core content and
+ * prefers-color-scheme still apply.
  */
 function themeToggle() {
-  return `<button id="theme-toggle" type="button" class="theme-toggle" aria-label="${esc(t('Switch to dark mode'))}" aria-pressed="false" hidden>
+  return `<button id="theme-toggle" type="button" class="theme-toggle" aria-label="${esc(t('Theme'))}: ${esc(t('Switch to dark mode'))}" aria-pressed="false" hidden>
   <svg class="icon-sun" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20">
     <circle cx="12" cy="12" r="5" fill="currentColor"/>
     <path stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"
@@ -585,8 +598,9 @@ function themeToggle() {
     }
     function sync() {
       var dark = current() === 'dark';
-      // Label/pressed describe the action and state for screen readers.
-      btn.setAttribute('aria-label', dark ? ${JSON.stringify(t('Switch to light mode'))} : ${JSON.stringify(t('Switch to dark mode'))});
+      // The accessible name starts with the visible "Theme" label (WCAG 2.5.3)
+      // and then describes the action/state. Both parts stay translated.
+      btn.setAttribute('aria-label', ${JSON.stringify(t('Theme'))} + ': ' + (dark ? ${JSON.stringify(t('Switch to light mode'))} : ${JSON.stringify(t('Switch to dark mode'))}));
       btn.setAttribute('aria-pressed', String(dark));
     }
     sync();
@@ -992,7 +1006,10 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', a
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#083b3d">
 ${target?.unlisted ? '<meta name="robots" content="noindex">\n' : ''}<title>${esc(title)}</title>
+<link rel="icon" href="${base}${FAVICON_FILENAME}" type="image/svg+xml">
+<link rel="icon" href="${base}${FAVICON_PNG_FILENAME}" type="image/png" sizes="64x64">
 <link rel="stylesheet" href="${base}style.css">
 <link rel="llms.txt" href="${base}llms.txt" title="Machine-readable guide for LLMs and agents">
 ${relatedLinks}
@@ -1009,7 +1026,7 @@ ${languageRuntime(page)}
 <body>
 <a class="skip" href="#main">${t('Skip to content')}</a>
 <header>
-  <p class="brand"><a href="${base}index${localeSuffix()}.html">vital-scans</a> <span class="tag">${t('open quality ledger')}</span></p>
+  <p class="brand"><a href="${base}index${localeSuffix()}.html"><img class="brand-mark" src="${base}${FAVICON_FILENAME}" alt="" width="28" height="28"> <span>vital-scans</span></a> <span class="tag">${t('open quality ledger')}</span></p>
   ${breadcrumb ? `<nav aria-label="${esc(t('Breadcrumb'))}"><ol class="crumbs">${breadcrumb}</ol></nav>` : ''}
   ${languageSwitcher(page)}
   ${themeToggle()}
@@ -1194,6 +1211,46 @@ function scopeSummaryLine(summary, href) {
     parts.push(t('@shared of @total engine findings are verified shared-component findings@names; every observation is still counted.', { '@shared': nf(model.counts.shared_component), '@total': nf(model.counts.engine_findings), '@names': names ? ` (${names})` : '' }));
   }
   return `<p class="note scope-summary">${parts.map(esc).join(' ')} <a href="${esc(href)}">${t('Scope of analysis')}</a></p>`;
+}
+
+function evidenceCoverageSection(summary) {
+  const c = summary.evidenceCoverage;
+  if (!c || !c.findings_total) return '';
+  const row = (label, value) => `<tr><th scope="row">${esc(label)}</th><td>${value}</td></tr>`;
+  return `<section class="evidence-coverage" aria-labelledby="h-evidence-coverage">
+<h2 id="h-evidence-coverage">${t('Evidence coverage')}</h2>
+<p class="meta">${t('@with of @total findings have element evidence; @locator have a usable locator; @region have semantic-region evidence; @repro are eligible for deterministic reproduction.', {
+  '@with': nf(c.findings_with_detailed_evidence),
+  '@total': nf(c.findings_total),
+  '@locator': nf(c.usable_locator.captured),
+  '@region': nf(c.semantic_region.captured),
+  '@repro': nf(c.reproduction.eligible),
+})} ${t('Counts are findings, not element occurrences.')}</p>
+<details>
+<summary>${t('Coverage details')}</summary>
+<table>
+<caption>${t('Finding-level evidence coverage')}</caption>
+<thead><tr><th scope="col">${t('Evidence')}</th><th scope="col">${t('Status')}</th></tr></thead>
+<tbody>
+${row(t('Element evidence'), t('Captured @n · not captured @m · not applicable to this engine @a · unsupported DOM boundary @u · no stored examples @x', {
+  '@n': nf(c.element_evidence.captured), '@m': nf(c.element_evidence.not_captured), '@a': nf(c.element_evidence.not_applicable),
+  '@u': nf(c.element_evidence.unsupported_dom_boundary), '@x': nf(c.element_evidence.no_stored_examples),
+}))}
+${row(t('Usable locator'), t('Captured @n · unavailable @m', { '@n': nf(c.usable_locator.captured), '@m': nf(c.usable_locator.unavailable) }))}
+${row(t('Semantic region'), t('Captured @n · no containing landmark @m · unavailable @u', {
+  '@n': nf(c.semantic_region.captured), '@m': nf(c.semantic_region.no_containing_landmark), '@u': nf(c.semantic_region.unavailable),
+}))}
+${row(t('Widget type'), t('Captured @n · no widget @m · unavailable @u', {
+  '@n': nf(c.widget.captured), '@m': nf(c.widget.no_widget), '@u': nf(c.widget.unavailable),
+}))}
+${row(t('Configured component'), t('Attributed @n · unattributed @m', { '@n': nf(c.component.attributed), '@m': nf(c.component.unattributed) }))}
+${row(t('Historical screenshot'), t('Available @n · unavailable @m', { '@n': nf(c.screenshot.available), '@m': nf(c.screenshot.unavailable) }))}
+${row(t('Playwright reproduction'), t('Eligible @n · unavailable @m', { '@n': nf(c.reproduction.eligible), '@m': nf(c.reproduction.unavailable) }))}
+${row(t('Detailed evidence'), t('@n with · @m without', { '@n': nf(c.findings_with_detailed_evidence), '@m': nf(c.findings_without_detailed_evidence) }))}
+</tbody></table>
+<p class="meta">${t('A missing locator is not evidence that the page has no landmark or that a component is absent. Screenshots and page detail follow the retention policy.')}</p>
+</details>
+</section>`;
 }
 
 function nextActionsSection(summary, bugs, reporting = {}) {
@@ -1649,6 +1706,193 @@ function nextActionsScript() {
  * issues appear first. Downloadable as CSV, Markdown,
  * and JSON. csvBugsHref is the relative path to bugs.csv (may be null).
  */
+function falsePositiveHelp() {
+  return `<details id="false-positive-help" class="false-positive-help">
+<summary>${t('False positives and false assurance')}</summary>
+<p>${t('Automated findings are candidate defects. Tools do not understand context: a logo can look like a contrast failure, a link can look generic without its surrounding text, and a rule can be wrong about how a name is calculated. A finding that cannot be reproduced may be a false positive, not a fix.')}</p>
+<p>${t('The reverse is also true: a clean scan is not proof of conformance. Automated tools detect only a subset of barriers, and presence checks (such as an image having any alt text) do not prove the content is useful.')}</p>
+<p>${t('If this finding is wrong, open it in the Finding Explorer and record “false positive” or “not reproduced” in the manual review record with what you observed. VITAL does not store that record or treat the finding as fixed.')}</p>
+<p class="meta">${t('See the Department for Education guidance on')} <a href="https://accessibility.education.gov.uk/tools-testing/false-positives">${t('false positives and false assurance')}</a>.</p>
+</details>`;
+}
+
+function liveInspectHelp() {
+  return `<details id="live-inspect-help" class="live-inspect-help" open>
+<summary>${t('Install the VITAL Inspect bookmarklet (one time)')}</summary>
+<p>${t('VITAL reports are static, so the highlight runs in your browser on the live page. This bookmarklet is page-level, not per finding: install it once, then use a finding’s Highlight on site link. Alfa findings without element evidence cannot be highlighted.')}</p>
+<p>${t('Show your bookmarks bar, then drag the button into it.')}</p>
+<div class="bookmarklet-visual" role="img" aria-label="${esc(t('A browser bookmarks bar with the VITAL Inspect button ready to be dragged into it.'))}">
+  <div class="bookmarklet-visual-bar">
+    <span class="bookmarklet-visual-button">VITAL Inspect</span>
+    <span class="bookmarklet-visual-arrow" aria-hidden="true">←</span>
+    <span class="bookmarklet-visual-label">${t('Bookmarks bar')}</span>
+  </div>
+  <p class="bookmarklet-visual-hint">${t('Drag it here')}</p>
+</div>
+<ol class="bookmarklet-steps">
+<li>${t('Show the bookmarks bar:')} <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (${t('Windows/Linux')}) ${t('or')} <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (${t('Mac')}). ${t('In Safari, use View → Show Favorites Bar.')}</li>
+<li>${t('Drag the VITAL Inspect button into the bookmarks bar.')}</li>
+<li>${t('Open a finding and choose “Highlight on site”.')}</li>
+<li>${t('On the page that opens, click the VITAL Inspect bookmark.')}</li>
+</ol>
+<p class="bookmarklet-install"><a class="bookmarklet-link bookmarklet-button" href="${esc(inspectBookmarklet())}" draggable="true" data-inspect-version="${INSPECT_VERSION}"><span class="bookmarklet-icon" aria-hidden="true">★</span> <span>${t('VITAL Inspect')}</span> <small>${t('v@version · Drag me to the bookmarks bar', { '@version': INSPECT_VERSION })}</small></a></p>
+<p class="meta"><strong>${t('Updated November 2026 (v@version).', { '@version': INSPECT_VERSION })}</strong> ${t('If you installed VITAL Inspect earlier, drag the button again to replace it. Older copies can reject newer inspection codes and lack the scrolling and hidden-element handling.')}</p>
+<details class="inspect-ways">
+<summary>${t('Which inspection should I use?')}</summary>
+<dl>
+<dt>${t('View historical evidence')}</dt><dd>${t('Use the Finding Explorer to see what VITAL recorded for this finding. A screenshot, when enabled, is a historical capture, not the live page.')}</dd>
+<dt>${t('Highlight on the live site')}</dt><dd>${t('Use the bookmarklet to locate the recorded element in the current page. Locating it does not re-test the accessibility violation.')}</dd>
+<dt>${t('Highlight text on the live site')}</dt><dd>${t('Use the native text-fragment link when the finding has visible text. It highlights text, may choose the first match, and does not show the VITAL panel.')}</dd>
+<dt>${t('Reproduce with Playwright')}</dt><dd>${t('Download the generated test to check whether the recorded rule still fails on the recorded element.')}</dd>
+<dt>${t('Manual validation')}</dt><dd>${t('Use the prompts and blank review record to investigate user impact with a keyboard, screen reader or other assistive technology. VITAL does not store the review or mark it complete.')}</dd>
+</dl>
+</details>
+<details class="mcp-help">
+<summary>${t('Playwright MCP (Chrome or Edge only)')}</summary>
+<p>${t('The Copy Playwright MCP prompt action is shown only in Chromium browsers. It requires the Playwright browser extension connected to your existing Chrome or Edge profile. It is an optional developer path; it is not the VITAL Inspect bookmarklet and it does not run inside Firefox or Safari.')}</p>
+<p><a href="https://chromewebstore.google.com/detail/playwright-extension/mmlmfjhmonkocbjadbfplnigmagldckm" rel="external">${t('Install the Playwright browser extension')}</a></p>
+</details>
+<p class="meta">${t('If dragging does not work, use Copy bookmarklet, then create a bookmark manually and paste the code as its address.')} <button type="button" class="copy-bookmarklet" hidden>${t('Copy bookmarklet')}</button></p>
+<details class="bookmarklet-manual">
+<summary>${t('Dragging not working? Add it manually')}</summary>
+<ol>
+<li>${t('Right-click the VITAL Inspect button and choose “Copy link” (or use Copy bookmarklet).')}</li>
+<li>${t('Open your browser’s bookmark manager and add a new bookmark.')}</li>
+<li>${t('Paste the copied code as the bookmark’s address/URL and name it “VITAL Inspect”.')}</li>
+<li>${t('Open a finding’s Highlight on site link, then click the new bookmark.')}</li>
+</ol>
+<p class="meta">${t('Bookmarklets work in desktop browsers. Some browsers hide the bookmarks bar by default; the shortcut above shows it.')}</p>
+</details>
+<p class="meta">${t('The overlay shows the recorded rule, selector, WCAG mapping and fix text. It sends nothing and is not stored. It follows the recorded selector; if the element has changed, it says so rather than guessing.')}</p>
+<p class="meta">${t('If the site uses its URL fragment for routing, or the highlight link does not carry the code, use Copy inspection code and paste it when the bookmarklet asks.')}</p>
+<p class="meta">${t('If you cannot locate the element, do not close the finding as fixed. Record “not reproduced” or “false positive” in the Finding Explorer’s manual review record; a missing highlight is unverified evidence.')}</p>
+<p class="meta">${t('Browser restriction: a page with a strict script-src Content-Security-Policy can block bookmarklets. Do not weaken the site policy; use the Finding Explorer or the Playwright reproduction instead.')}</p>
+<details class="bookmarklet-troubleshoot">
+<summary>${t('Clicked VITAL Inspect and nothing happened?')}</summary>
+<ol>
+<li>${t('Reinstall the bookmarklet from this page. Older copies can reject newer inspection codes.')}</li>
+<li>${t('Check the page’s Content-Security-Policy; a strict script-src blocks bookmarklets.')}</li>
+<li>${t('Copy the inspection code and paste it when the bookmarklet asks, especially on sites that use the URL fragment for routing.')}</li>
+<li>${t('If the site blocks automated browsers, copy the page URL into your normal browser or use the local inspector from the repository.')}</li>
+</ol>
+</details>
+</details>`;
+}
+
+function inspectCopyScript() {
+  return `<script>
+(function () {
+  document.addEventListener('click', function (event) {
+    var openInspect = event.target.closest && event.target.closest('.inspect-open');
+    if (openInspect) {
+      var host = openInspect.parentNode;
+      var status = host.querySelector('.inspect-launch-status');
+      if (!status) {
+        status = document.createElement('span');
+        status.className = 'bug-meta inspect-launch-status';
+        status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
+        host.appendChild(status);
+      }
+      status.textContent = ' Live page opened in a new tab. If the VITAL panel does not appear, the bookmarklet is missing, out of date or blocked. Use the no-install text link or Copy inspection code, or reinstall VITAL Inspect from the top of this page. A missing highlight means the occurrence is unverified, not fixed.';
+      return;
+    }
+    var copyBookmarklet = event.target.closest && event.target.closest('.copy-bookmarklet');
+    if (copyBookmarklet) {
+      var link = document.querySelector('.bookmarklet-link');
+      if (!link) return;
+      var bookmarklet = link.getAttribute('href') || '';
+      var originalBookmarkletText = copyBookmarklet.textContent;
+      var restoreBookmarklet = function () { copyBookmarklet.textContent = originalBookmarkletText; };
+      var copiedBookmarklet = function () { copyBookmarklet.textContent = 'Copied'; setTimeout(restoreBookmarklet, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(bookmarklet).then(copiedBookmarklet).catch(function () { window.prompt('Copy this bookmarklet code', bookmarklet); });
+      } else {
+        window.prompt('Copy this bookmarklet code', bookmarklet);
+      }
+      return;
+    }
+    var copyText = event.target.closest && event.target.closest('.copy-text');
+    if (copyText) {
+      var copyValue = copyText.getAttribute('data-copy-text') || '';
+      var copyOriginal = copyText.textContent;
+      var copyDone = function () { copyText.textContent = 'Copied'; setTimeout(function () { copyText.textContent = copyOriginal; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyValue).then(copyDone).catch(function () { window.prompt('Copy this value', copyValue); });
+      } else {
+        window.prompt('Copy this value', copyValue);
+      }
+      return;
+    }
+    var mcpButton = event.target.closest && event.target.closest('.mcp-copy');
+    if (mcpButton) {
+      var prompt = mcpButton.getAttribute('data-mcp-prompt') || '';
+      var originalMcpText = mcpButton.textContent;
+      var restoreMcp = function () { mcpButton.textContent = originalMcpText; };
+      var copiedMcp = function () { mcpButton.textContent = 'Copied'; setTimeout(restoreMcp, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(prompt).then(copiedMcp).catch(function () { window.prompt('Copy this Playwright MCP prompt', prompt); });
+      } else {
+        window.prompt('Copy this Playwright MCP prompt', prompt);
+      }
+      return;
+    }
+    var button = event.target.closest && event.target.closest('.inspect-copy');
+    if (!button) return;
+    var code = button.getAttribute('data-inspect-code') || '';
+    var reset = function () { button.textContent = 'Copy inspection code'; };
+    var done = function () { button.textContent = 'Copied'; setTimeout(reset, 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done).catch(function () { window.prompt('Copy this inspection code', code); });
+    } else {
+      window.prompt('Copy this inspection code', code);
+    }
+  });
+  var chromium = /Chrome|Chromium|Edg/.test(navigator.userAgent) && !/Firefox|OPR/.test(navigator.userAgent);
+  Array.prototype.forEach.call(document.querySelectorAll('.inspect-copy, .copy-bookmarklet'), function (button) { button.hidden = false; });
+  Array.prototype.forEach.call(document.querySelectorAll('.mcp-copy'), function (button) { if (chromium) button.hidden = false; });
+  Array.prototype.forEach.call(document.querySelectorAll('.mcp-only, .mcp-help'), function (node) { if (!chromium) node.hidden = true; });
+})();
+<\/script>`;
+}
+
+/**
+ * The per-finding inspection cell. Keep the default path short: users need to
+ * know that the live page opens first and the bookmarklet is clicked second.
+ * The lower-level copy paths stay available without dominating every finding.
+ */
+function copyTextButton(label, value) {
+  return `<button type="button" class="copy-text" data-copy-text="${esc(value)}">${esc(label)}</button>`;
+}
+
+function inspectCell({ textUrl, inspectUrl, inspectCode, mcpPrompt, targetUsesHash, inspectReason, instanceId }) {
+  const explorer = `<a href="${esc(pageHref('explorer', instanceId))}">${t('Open in Finding Explorer')}</a> <span class="bug-meta">${t('Region, element and component context in one view')}</span>`;
+  if (!inspectUrl && !textUrl) {
+    return `<div><dt>${t('Inspect')}</dt><dd><span class="bug-meta">${esc(t('Live highlighting is unavailable.') + ' ' + inspectUnavailableText(inspectReason))} <a href="#live-inspect-help">${t('About live inspection')}</a></span><br>${explorer}</dd></div>`;
+  }
+  const text = textUrl
+    ? `<a href="${esc(textUrl)}" target="_blank" rel="noopener">${t('Highlight text on site')}</a> <span class="bug-meta">${t('No install needed. Highlights the recorded text, but does not open the VITAL panel.')}</span><br>`
+    : '';
+  const live = inspectUrl
+    ? `<a href="${esc(inspectUrl)}" target="_blank" rel="noopener" class="inspect-open">${t('Highlight on site')}</a> <span class="bug-meta">${t('Opens the page first. Then click the VITAL Inspect bookmark. Install it once at the top of this page.')} <a href="#live-inspect-help">${t('Install VITAL Inspect')}</a>.</span><br>`
+    : '';
+  const hashNote = targetUsesHash
+    ? `<span class="bug-meta">${t('This page already uses a URL fragment. If it uses hash routing, copy the inspection code and paste it when the bookmarklet asks.')}</span><br>`
+    : '';
+  const code = inspectCode
+    ? `<button type="button" class="inspect-copy" data-inspect-code="${esc(inspectCode)}" hidden>${t('Copy inspection code')}</button>`
+    : '';
+  const mcp = mcpPrompt
+    ? `<button type="button" class="mcp-copy" data-mcp-prompt="${esc(mcpPrompt)}" hidden>${t('Copy Playwright MCP prompt')}</button> <span class="bug-meta mcp-only">${t('Chrome or Edge with the Playwright browser extension only.')}</span>`
+    : '';
+  return `<div><dt>${t('Inspect')}</dt><dd>${text}${live}${hashNote}<details class="inspect-more"><summary>${t('More inspection options')}</summary>
+<p class="meta">${t('Use a copied code when the bookmarklet is missing, out of date or blocked. A missing highlight means the occurrence is unverified, not fixed.')}</p>
+${code}
+${mcp}
+<p class="meta"><a href="#live-inspect-help">${t('Install or troubleshoot VITAL Inspect')}</a></p>
+</details>${explorer}</dd></div>`;
+}
+
 function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting = {}, excludePatterns = []) {
   const filteredBugs = filterBugsByExclusion(bugs, excludePatterns);
   const laneRank = (b) => {
@@ -1669,6 +1913,8 @@ function bugReportsSection(target, summary, bugs, csvBugsHref = null, reporting 
     return `<section aria-labelledby="h-bugs">
 ${heading('h-bugs', t('Bug reports'))}
 <p>${t('No accessibility findings to report this week.')}</p>
+<p class="note">${t('This is not evidence of conformance. Automated tools detect only a subset of barriers, and a clean scan can give false assurance.')}</p>
+${falsePositiveHelp()}
 </section>`;
   }
   const sevCount = ordered.reduce((m, b) => ((m[b.severity] = (m[b.severity] ?? 0) + 1), m), {});
@@ -1779,20 +2025,33 @@ ${heading('h-bugs', t('Bug reports'))}
         }).join('')}</ul></dd></div>`
         : '';
       const scope = b.component_scope;
+      const inspectUrl = inspectUrlFor(b);
+      const inspectCode = inspectCodeFor(b);
+      const textUrl = textFragmentUrl(b);
+      const inspectReason = inspectUnavailableReason(b);
+      const mcpPrompt = mcpInvestigationPrompt(b);
+      const targetUsesHash = (() => { try { return Boolean(new URL(b.url).hash); } catch (error) { return false; } })();
       const componentScopeNote = scope
         ? `<div><dt>${t('Component scope')}</dt><dd>${esc(scopeClassLabel(scope.classification))}${scope.component_label ? ` — ${esc(scope.component_label)} (${esc(scopeConfidenceLabel(scope.confidence))})` : ''}. ${t('@in of @total stored example(s) are inside the component; @out outside, @und undetermined. Sample-based: not every instance is inspected.', { '@in': scope.examples_in_component, '@total': scope.examples_total, '@out': scope.examples_outside_component, '@und': scope.examples_undetermined })}</dd></div>`
         : '';
       return `<details data-bug-id="${esc(b.instance_id)}" class="bug sev-${esc(b.severity.toLowerCase())}${b.possible_duplicate_of ? ' possible-dup' : ''}" data-severity="${esc(b.severity)}" data-category="${esc(b.wcag_category ?? 'Undetermined')}" data-obligation="${esc(b.obligation ?? '')}" data-handling="${esc(b.handling ?? '')}" data-default-visible="${b.default_visible ? '1' : '0'}" data-priority-tier="${esc(String(b.priority_tier ?? 5))}" data-example-url="${esc(b.url)}"${b.component_scope ? ` data-page-specific="${scopeViewsFor(b).pageSpecific ? '1' : '0'}" data-shared-component="${scopeViewsFor(b).sharedComponent ? '1' : '0'}"` : ''}${b.possible_duplicate_of ? ' data-duplicate="1"' : ''}${b.priority_key_page ? ' data-key-page="1"' : ''} data-triage="" data-excluded="">
-<summary id="${esc(b.instance_id)}"><a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
+<summary id="${esc(b.instance_id)}">
+${b.finding_ref ? `<span id="${esc(b.finding_ref)}" class="visually-hidden"></span>` : ''}<a href="#${esc(b.instance_id)}" class="bug-permalink"><span aria-hidden="true">#</span><span class="visually-hidden">${t('Link to this finding')}</span></a> <span class="sev-badge">${esc(t(b.severity))}</span> <span class="engine-badge" data-engine="${esc(b.engine_key)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}</span> <span class="rule-badge">${esc(b.rule_id)}</span> ${b.wcag_category ? `<span class="wcag-badge"${b.wcag_category === 'Best Practice' ? ' data-cat="best-practice"' : ''}>${esc(t(b.wcag_category))}</span> ` : ''}${esc(b.summary)}
 <span class="bug-meta">${t('@pages/@total pages · @instances instances', { '@pages': b.frequency.pages_affected, '@total': b.frequency.total_pages_scanned, '@instances': b.frequency.instances })}${b.possible_duplicate_of ? ' · ' + t('confirmed duplicate') : ''}</span>${b.likely_source && b.likely_source !== 'unknown' ? ` <span class="source-badge source-${esc(b.likely_source)}">${t('Likely @source', { '@source': t(b.likely_source) })}</span>` : ''}<span class="triage-badge" data-triage-id="${esc(b.instance_id)}" hidden></span></summary>
+<p class="meta automated-caution">${t('Automated finding — unverified. False positives and false assurance are possible; confirm before treating it as a defect.')} <a href="#false-positive-help">${t('False positives and false assurance')}</a></p>
 <dl class="bug-fields">
   <div><dt>${t('Bug ID')}</dt><dd><code>${esc(b.instance_id)}</code></dd></div>
+  ${b.occurrence_id ? `<div><dt>${t('Evidence occurrence')}</dt><dd><code>${esc(b.occurrence_id)}</code>${b.observation_id ? ` · <code>${esc(b.observation_id)}</code>` : ''} <span class="bug-meta">${esc(b.occurrence_selection ?? '')} · ${esc(b.observation?.scanned_at ?? '')}${b.observation?.engine_version ? ` · ${esc(b.observation.engine_version)}` : ''}${b.observation?.consent_state ? ` · ${esc(b.observation.consent_state)}` : ''}</span></dd></div>` : ''}
+  ${b.finding_ref ? `<div><dt>${t('Stable reference')}</dt><dd><code>${esc(b.finding_ref)}</code> <span class="bug-meta">${t('Content-independent link target for this rule finding.')}</span></dd></div>` : ''}
+  ${inspectCell({ textUrl, inspectUrl, inspectCode, mcpPrompt, targetUsesHash, inspectReason, instanceId: b.instance_id })}
   <div><dt>${t('Pattern ID')}</dt><dd><code>${esc(b.pattern_id)}</code></dd></div>
   <div><dt>${t('Combined ID')}</dt><dd><code>${esc(b.instance_id)}</code> ${t('(pattern <code>@pattern</code>) — use this format in JIRA/spreadsheets to filter by instance or pattern', { '@pattern': esc(b.pattern_id) })}</dd></div>
   <div><dt>${t('WCAG category')}</dt><dd>${t(b.wcag_category ?? 'Undetermined')}</dd></div>
   <div><dt>${t('Requirement')}</dt><dd>${requirementCell(b)}</dd></div>
+  ${b.arrm?.roles?.length ? `<div><dt>${t('ARRM roles')}</dt><dd>${b.arrm.roles.map((role) => `<span class="badge">${esc(role)}</span>`).join(' ')} <span class="bug-meta">${t('Mapped by WCAG SC to typical ARRM responsibilities; not an ownership assignment for this finding.')}</span>${b.arrm.tasks?.length ? `<details><summary>${t('ARRM tasks (@n)', { '@n': b.arrm.tasks.length })}</summary><ul>${b.arrm.tasks.map((task) => `<li><code>${esc(task.id)}</code> ${esc(task.task)}${task.primary?.length ? ` — ${esc(task.primary.join(', '))}` : ''}</li>`).join('')}</ul></details>` : ''}</dd></div>` : ''}
   <div><dt>${t('Obligation')}</dt><dd>${esc(b.obligation ?? 'unmapped')}</dd></div>
   <div><dt>${t('Handling')}</dt><dd>${esc(b.handling ?? 'review')}</dd></div>
+  <div><dt>${t('Manual validation')}</dt><dd>${t('Not reviewed.')}${(b.manual_validation?.prompts ?? []).length ? `<ul class="manual-validation">${b.manual_validation.prompts.map((prompt) => `<li>${esc(prompt)}</li>`).join('')}</ul>` : ''}<span class="bug-meta">${esc(b.manual_validation?.environment_note ?? '')} ${esc(b.manual_validation?.false_positive_check ?? '')} ${t('Automated evidence: open this finding in the Explorer to download a blank review record for the reviewer and testing environment.')}</span></dd></div>
   <div><dt>${t('WCAG SC')}</dt><dd>${wcagDetail}</dd></div>
   <div><dt>${t('Rule')}</dt><dd>${ruleLink}</dd></div>
   <div><dt>${t('Engine impact')}</dt><dd>${esc(evidenceReport.engine_severity ?? t('Not supplied by the engine'))}</dd></div>
@@ -1800,8 +2059,8 @@ ${heading('h-bugs', t('Bug reports'))}
   <div><dt>${t('Remediation priority score')}</dt><dd>${nf(evidenceReport.remediation_priority.score)}. ${t('Used for ordering, not engine severity or a count of fixes.')}</dd></div>
   <div><dt>${t('ACT mappings')}</dt><dd>${esc(actRuleLabels(evidenceReport.act_rules))}</dd></div>
   <div><dt>${t('Remediation group')}</dt><dd><code>${esc(evidenceReport.remediation_group_id)}</code>. ${t('Number of fixes and code ownership are not established.')}</dd></div>
-  <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a></dd></div>
-  ${representative?.selector ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(representative.selector)}</code></dd></div>` : ''}
+  <div><dt>${t('Example URL')}</dt><dd><a href="${esc(b.url)}">${esc(b.url)}</a> ${copyTextButton(t('Copy page URL'), b.url)}</dd></div>
+  ${representative?.selector ? `<div><dt>${t('XPath / selector')}</dt><dd><code>${esc(representative.selector)}</code> ${copyTextButton(t('Copy selector'), representative.selector)}</dd></div>` : ''}
   ${b.first_seen ? `<div><dt>${t('History')}</dt><dd>${t('first seen @first, last seen @last (@n wk)', { '@first': esc(b.first_seen), '@last': esc(b.last_seen), '@n': b.weeks_seen })}</dd></div>` : ''}
   ${dupNote}
   ${correlationNote}
@@ -1916,6 +2175,7 @@ ${exclusionBox(target, { bugsJson: reporting.bugsJson ?? 'bugs.json' })}
   <p class="meta">${t('Overall severity mix: @sev. By WCAG category: @cat. Ordered by severity, key-page impact, WCAG level, and prevalence. Following <a href="https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html">accessibility bug-reporting best practices</a>.', { '@sev': esc(sevSummary), '@cat': esc(catSummary) })}
 ${t('Download:')} <a href="bugs.md">${t('Markdown')}</a> · <a href="${esc(reporting.bugsJson ?? 'bugs.json')}">${t('JSON (full archive)')}</a> · <a href="${esc(reporting.aiJson ?? 'ai-findings.json')}">${t('JSON (AI diagnostic)')}</a>${csvLink}${reporting.priorityPagesCsv ? ` · <a href="${esc(reporting.priorityPagesCsv)}">${t('Priority pages CSV')}</a>` : ''}${reporting.priorityPagesJson ? ` · <a href="${esc(reporting.priorityPagesJson)}">${t('Priority pages JSON')}</a>` : ''}.</p>
 <p class="note">${t('Automated testing does not establish full WCAG conformance. Findings in the verification lane require manual testing before they are treated as confirmed failures.')}</p>
+${falsePositiveHelp()}
 <p class="note">${t('@observations engine finding(s), @groups remediation group(s). Only complete confirmed duplicates share a group. Related and possible duplicates remain separate. The number of fixes is unknown.', { '@observations': findingReporting.summary.engine_finding_count, '@groups': findingReporting.summary.remediation_group_count })}</p>
 ${priorityLine}
 ${dupLine}
@@ -1927,6 +2187,7 @@ ${scopeOfAnalysisBlock(summary, ordered)}
 <label class="triage-btn triage-import-label"><input type="file" id="triage-import" accept=".json" style="display:none">${t('Import (.json)')}</label>
 <span id="triage-io-status" class="triage-io-status" aria-live="polite"></span>
 </div>
+<p class="bug-meta">${t('Triage status and notes are stored only in this browser. They do not change the published report or VITAL data; use the Finding Explorer manual review record for a portable record.')}</p>
 ${filterBar}
 <div class="bug-list">${blocks}</div>
 <p class="bug-filter-empty" hidden>${t('No issues match the current filters.')} <button type="button" id="filter-reset-2">${t('Clear filters')}</button></p>
@@ -2591,7 +2852,8 @@ function scopeSignalLabel(signal) {
 function scopeOfAnalysisBlock(summary, bugs) {
   const model = summary.sharedComponents ?? null;
   const families = summary.pageFamilies ?? null;
-  if (!model && !families) return '';
+  const regions = summary.regions ?? null;
+  if (!model && !families && !regions) return '';
   const link = (b) => `<a href="#${esc(b.instance_id)}">${esc(b.engine_key === 'axe-core' ? 'axe' : b.engine_key)}:${esc(b.rule_id)}</a>`;
   const list = (items) => items.length === 0
     ? `<p class="meta">${t('None.')}</p>`
@@ -2659,11 +2921,27 @@ function scopeOfAnalysisBlock(summary, bugs) {
 </section>`;
   }).join('');
 
+  const regionRows = (regions?.regions ?? []).slice(0, SCOPE_LIST_CAP).map((region) => {
+    const components = (region.components ?? []).map((component) => esc(component.id)).join(', ');
+    return `<tr><th scope="row">${esc(region.label)}</th><td class="num">${nf(region.findings)}</td><td class="num">${nf(region.pages_affected_sum)}</td><td class="num">${nf(region.instances_total)}</td><td>${components || '—'}</td></tr>`;
+  }).join('');
+  const regionsBlock = regions && (regions.regions.length > 0 || regions.findings_without_evidence > 0)
+    ? `<section id="scope-regions" aria-labelledby="h-scope-regions">
+<h4 id="h-scope-regions">${t('Findings by page region')}</h4>
+<p class="meta">${t('Each finding is placed by its first stored example, so these are sample-based counts. Pages and instances are summed across findings, not distinct counts.')}</p>
+${regions.regions.length > 0 ? `<table><caption class="visually-hidden">${t('Findings grouped by the landmark region of their first stored example')}</caption>
+<thead><tr><th scope="col">${t('Region')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th><th scope="col" class="num">${t('Instances (sum)')}</th><th scope="col">${t('Component(s)')}</th></tr></thead>
+<tbody>${regionRows}</tbody></table>` : ''}
+<p class="meta">${t('@unclassified finding(s) had no landmark; @noevidence could not be located by the scanner.', { '@unclassified': nf(regions.findings_unclassified), '@noevidence': nf(regions.findings_without_evidence) })}${regions.csv ? ` <a href="${esc(regions.csv)}">${t('Download region CSV')}</a>.` : ''}</p>
+</section>`
+    : '';
+
   return `<section class="scope-of-analysis" aria-labelledby="h-scope">
 <h3 id="h-scope">${t('Scope of analysis')}</h3>
 <p class="note">${t('Every observed failure is counted. A failure is counted as an independent defect only when the evidence supports it. Attribution uses a sample of stored examples and does not change the score.')}</p>
 <ul>${urlLine}${familySummary}${familyLines}${classLine}${observationLines}${consentLine}</ul>
-<nav aria-label="${esc(t('Scope views'))}"><ul class="scope-nav"><li><a href="#scope-full">${t('Full-page findings')}</a></li>${model ? `<li><a href="#scope-page">${t('Page-specific findings')}</a></li><li><a href="#scope-shared">${t('Shared-component findings')}</a></li>` : ''}</ul></nav>
+${regionsBlock}
+<nav aria-label="${esc(t('Scope views'))}"><ul class="scope-nav"><li><a href="#scope-full">${t('Full-page findings')}</a></li>${regionsBlock ? `<li><a href="#scope-regions">${t('Findings by page region')}</a></li>` : ''}${model ? `<li><a href="#scope-page">${t('Page-specific findings')}</a></li><li><a href="#scope-shared">${t('Shared-component findings')}</a></li>` : ''}</ul></nav>
 <section id="scope-full" aria-labelledby="h-scope-full">
 <h4 id="h-scope-full">${t('Full-page findings')}</h4>
 <p class="meta">${t('All @n detected findings, including shared third-party components. This is the primary full-page evidence view and the one the score uses.', { '@n': bugs.length })}</p>
@@ -3187,28 +3465,28 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
   const sections = LH_CATEGORY_ORDER
     .filter((cat) => byCat[cat]?.length)
     .map((cat) => {
+      const savings = (bytes, ms) => [bytes ? fmtSavingsBytes(bytes) : '', ms ? `${(ms / 1000).toFixed(1)}s` : '']
+        .filter(Boolean).join(' · ') || '—';
       const rows = byCat[cat]
-        .map((r) => {
-          const savings = [fmtSavingsBytes(r.savingsBytes), r.savingsMs ? `${(r.savingsMs / 1000).toFixed(1)}s` : '']
-            .filter(Boolean).join(' · ') || '—';
-          return `<tr>
+        .map((r) => `<tr>
   <th scope="row">${esc(r.title)}</th>
   <td class="num">${r.pages}/${pagesSampled}</td>
-  <td class="num">${savings}</td>
-</tr>`;
-        })
+  <td class="num">${savings(r.savingsBytesMedian, r.savingsMsMedian)}</td>
+  <td class="num">${savings(r.savingsBytesP75, r.savingsMsP75)}</td>
+  <td class="num">${r.savingsBytes ? fmtSavingsBytes(r.savingsBytes) : '—'}</td>
+</tr>`)
         .join('\n');
       return `<h3>${esc(t(LH_CATEGORY_LABELS[cat] ?? cat))}</h3>
 <table>
 <caption>${t('@cat recommendations from Lighthouse, by sampled pages affected.', { '@cat': esc(t(LH_CATEGORY_LABELS[cat] ?? cat)) })}</caption>
-<thead><tr><th scope="col">${t('Recommendation')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col">${t('Est. saving')}</th></tr></thead>
+<thead><tr><th scope="col">${t('Recommendation')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Median per page')}</th><th scope="col" class="num">${t('75th percentile')}</th><th scope="col" class="num">${t('Total transfer (sampled pages)')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>`;
     })
     .join('\n');
   return `<section aria-labelledby="h-lh-reco">
 ${heading('h-lh-reco', t('Recommendations'))}
-<p class="meta">${t('Issues Lighthouse flagged across the @n sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Estimated savings (transfer bytes or load time) are Lighthouse\'s own estimates where available. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessible.html">Accessibility page</a>.', { '@n': pagesSampled })}</p>
+<p class="meta">${t('Issues Lighthouse flagged across the @n sampled page(s), beyond the headline scores — grouped by category and ranked by how many pages they affect. Savings are Lighthouse\'s own estimates. Median and 75th percentile are per affected page; total transfer is summed across sampled pages and is not one visitor\'s saving. Time savings are per page and are never summed into a single user-experience claim. Accessibility audits are intentionally omitted; they overlap with the axe-core findings on the <a href="accessible.html">Accessibility page</a>.', { '@n': pagesSampled })}</p>
 ${sections}
 </section>`;
 }
@@ -3556,13 +3834,13 @@ export function renderTechFindingsPage(target, summary, bugs = [], excludePatter
   <th scope="col">${t('Finding')}</th>
   <th scope="col" class="num">${t('Pages with @tech', { '@tech': esc(tech) })}</th>
   <th scope="col" class="num">${t('Pages without it')}</th>
-  <th scope="col" class="num">${t('Times as common')}</th>
+  <th scope="col" class="num">${t('Times as common (95% CI)')}</th>
 </tr></thead>
 <tbody>${rows.map((a) => `<tr>
   <th scope="row">${findingCell(a.finding)}</th>
   ${share(a.pairPages, a.techPages)}
   ${share(a.withoutFindingPages, a.withoutPages)}
-  <td class="num" data-sort="${a.ratio ?? 1e9}">${a.ratio == null ? t('only with it') : `${a.ratio.toFixed(1)}×`}</td>
+  <td class="num" data-sort="${a.ratio ?? 1e9}">${a.ratio == null ? t('only with it') : a.ci_low == null ? `${a.ratio.toFixed(1)}×` : t('@ratio× (95% CI @low–@high)', { '@ratio': a.ratio.toFixed(1), '@low': a.ci_low.toFixed(1), '@high': a.ci_high.toFixed(1) })}</td>
 </tr>`).join('\n')}</tbody>
 </table>`)
     .join('\n');
@@ -3571,7 +3849,8 @@ export function renderTechFindingsPage(target, summary, bugs = [], excludePatter
 <h1>${esc(target.domain)}: ${t('technology ↔ issues')}</h1>
 ${subnav('tech-findings')}
 <p class="meta">${t('Accessibility findings that are more common on pages running a technology than on pages without it, across the @pages page(s) in <strong>@week</strong> where both technology detection and an accessibility engine ran. Each finding is compared across the pages its own engine checked, since axe and Alfa can run on different samples.', { '@pages': nf(model.pages), '@week': esc(summary.week) })}</p>
-<p class="meta">${t('<strong>Times as common</strong> compares the two groups: the share of pages with the technology that have the finding, divided by the share of pages without it that have it. 1× means no difference; 2× means twice as common. “Only with it” means no page without the technology had the finding. A finding is listed when it is at least 1.5 times as common and is on at least 5 pages with the technology, and only technologies with at least 5 pages each way are compared.')}</p>
+<p class="meta">${t('<strong>Times as common</strong> compares the two groups: the share of pages with the technology that have the finding, divided by the share of pages without it that have it. 1× means no difference; 2× means twice as common. “Only with it” means no page without the technology had the finding. A finding is listed when it is at least 1.5 times as common, its approximate 95% interval excludes no difference, and it is on at least 5 pages with the technology. Only technologies with at least 5 pages each way are compared.')}</p>
+<p class="meta">${t('The interval is an approximate risk-ratio interval (Katz log method). A pair whose interval includes 1 is compatible with no association and is suppressed, even when its point estimate is above 1.5. This is exploratory: it does not control for confounding technologies, page type or traffic.')}</p>
 ${notCompared}
 <p class="note">${t('This is an <em>association</em>, not proof of cause. Technologies detected on the same pages (e.g. a CMS, its host, and its language) show the same numbers, and the listing cannot tell which one in such a stack is responsible. Treat strong pairs as leads for a human to confirm — a barrier that recurs with the same technology, especially across multiple sites, is likely a bug in that technology rather than in any one page\'s content.')}</p>
 <p class="meta">${t('Each finding links to its full report on the Accessibility page: the pages it is on, the failing elements and how to fix them.')}</p>
@@ -3639,7 +3918,8 @@ ${subnav('third-party')}
   <th scope="col" class="num">${t('Pages w/ finding')}</th>
 </tr></thead>
 <tbody>${rows}</tbody>
-</table>`;
+</table>
+`;
   return layout({
     title: `${target.domain} Third Parties ${summary.week} | vital-scans`,
     page: "third-party",
@@ -3916,39 +4196,81 @@ ${errorsSection}`;
 }
 
 /**
+ * Compact accounting for the archive page. These are deliberately different
+ * quantities: weekly summaries, archive objects and discovered observations
+ * are not interchangeable.
+ */
+function archiveAccounting(archiveIndex, observationSummary, summaryWeeks) {
+  const counts = archiveIndex?.counts ?? {};
+  const observations = observationSummary ?? {};
+  return `<section aria-labelledby="h-archive-accounting">
+${heading('h-archive-accounting', t('What is preserved'), 2)}
+<ul>
+  <li>${t('Weekly summaries: @n', { '@n': summaryWeeks })}</li>
+  <li>${t('Available archives: @available · expired: @expired · incomplete: @incomplete · missing: @missing', {
+    '@available': counts.available ?? 0,
+    '@expired': counts.expired ?? 0,
+    '@incomplete': counts.incomplete ?? 0,
+    '@missing': counts.missing ?? 0,
+  })}</li>
+  <li>${t('Discovered URLs: @total · never scanned: @never · stale successes: @stale · clean for automated engines: @clean', {
+    '@total': observations.total_urls ?? 0,
+    '@never': observations.never_scanned ?? 0,
+    '@stale': observations.stale ?? 0,
+    '@clean': observations.clean_without_automated_findings ?? 0,
+  })}</li>
+</ul>
+<p class="meta">${t('“Clean” means no axe or Alfa finding was recorded, not that the page conforms. Stale evidence and archived results are historical, not live.')}</p>
+</section>`;
+}
+
+/**
  * Archive page: every retained ISO-week report for a domain, newest
  * first, with key metrics and a week-over-week comparison. Lets reviewers
  * jump back to W24 etc. Lives at the domain's latest-week directory and
  * links into each week's own report folder.
  */
-export function renderArchivePage(target, series, latestWeek) {
+export function renderArchivePage(target, series, latestWeek, archiveIndex = null, observationSummary = null) {
   if (!series || series.length === 0) return null;
-  const scoreFormat = target.display?.score_format ?? 'both';
+  const scoreFormat = target.display?.score_format ?? 'percent';
   const ordered = [...series].reverse(); // newest first
+  const archiveByWeek = new Map((archiveIndex?.archives ?? []).map((entry) => [entry.week, entry]));
+  const STATE_LABELS = {
+    available: t('Available'),
+    expired: t('Expired'),
+    incomplete: t('Incomplete'),
+    missing: t('No archive'),
+  };
   const rows = ordered
     .map((s, i) => {
       const newer = ordered[i - 1]; // the week after this one (for delta)
       const sc = scoreFor(s);
       const med = s.axe.medianViolations ?? 0;
       const d = newer ? med - (newer.axe.medianViolations ?? 0) : null;
+      const archive = archiveByWeek.get(s.week);
+      const state = archive?.state ?? 'missing';
+      const stateLabel = STATE_LABELS[state] ?? STATE_LABELS.missing;
       return `<tr>
   <th scope="row"><a href="../${esc(s.week)}/index.html">${esc(s.week)}</a></th>
   <td class="num">${fmtA11yGrade(sc, scoreFormat)}</td>
   <td class="num">${s.pagesAudited ?? s.pagesScanned}</td>
   <td class="num">${fmtMedian(s.axe.medianViolations)}${d != null && d !== 0 ? ` ${delta(d)}` : ''}</td>
   <td class="num">${fmtMedian(s.alfa.medianFailures)}</td>
+  <td>${stateLabel} <a href="../${esc(s.week)}/evidence.html">${t('Evidence details')}</a></td>
 </tr>`;
     })
     .join('\n');
   const body = `
 <h1>${esc(target.domain)}: ${t('report archive')}</h1>
 ${subnav('archive')}
-<p class="meta">${t('Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison.')}</p>
+<p class="meta">${t('Every recorded ISO week for this site, newest first. The dashboard headline uses a rolling last-7-days window; these are the full per-week reports for week-over-week comparison. Archive state comes from the verified archive index; expiry never removes the weekly summary or findings.')}</p>
 <table>
 <caption>${t('Weekly reports for @domain (@n weeks).', { '@domain': esc(target.domain), '@n': series.length })}</caption>
-<thead><tr><th scope="col">${t('Week')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col" class="num">${t('Pages audited')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th></tr></thead>
+<thead><tr><th scope="col">${t('Week')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col" class="num">${t('Pages audited')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th><th scope="col">${t('Raw evidence')}</th></tr></thead>
 <tbody>${rows}</tbody>
-</table>`;
+</table>
+${archiveAccounting(archiveIndex, observationSummary, series.length)}
+`;
   return layout({
     title: `${target.domain} archive | vital-scans`,
     page: "archive",
@@ -3956,6 +4278,62 @@ ${subnav('archive')}
     body,
     depth: 3,
     apiFinding: { key: target.key, week: latestWeek },
+    target,
+  });
+}
+
+/**
+ * Per-week raw-evidence status. This is a static tombstone/explanation page,
+ * never a redirect: an expired or missing archive must not silently send a
+ * reader to a newer finding.
+ */
+export function renderArchiveEvidencePage(target, summary, archive, latestWeek) {
+  const state = archive?.state ?? 'missing';
+  const labels = {
+    available: t('Verified archive available'),
+    expired: t('Archive expired'),
+    incomplete: t('Archive incomplete'),
+    missing: t('No verified archive recorded'),
+  };
+  let detail;
+  if (state === 'available') {
+    detail = `<p>${t('A verified archive is recorded for this week. The weekly summary and findings remain available even if the raw archive later expires.')}</p>
+<p>${t('Archive key:')} <code>${esc(archive.key)}</code></p>
+${archive.public_url ? `<p><a href="${esc(archive.public_url)}" rel="external">${t('Download the evidence archive (ZIP)')}</a></p>` : `<p>${t('The archive is held in the operator-configured backend. Download links are not public.')}</p>`}
+<p class="meta">${t('SHA-256:')} <code>${esc(archive.zip_sha256 ?? '')}</code></p>
+<p class="meta">${t('Archive published:')} ${archive.published_at ? `<time datetime="${esc(archive.published_at)}">${esc(archive.published_at.slice(0, 10))}</time>` : t('unknown')} · ${t('Last verified:')} ${archive.verified_at ? `<time datetime="${esc(archive.verified_at)}">${esc(archive.verified_at.slice(0, 10))}</time>` : t('not recorded')} · ${t('Expires:')} ${archive.expires_at ? `<time datetime="${esc(archive.expires_at)}">${esc(archive.expires_at.slice(0, 10))}</time>` : t('never (indefinite)')}</p>`;
+  } else if (state === 'expired') {
+    detail = `<p>${t('The raw evidence archive has expired under the configured retention policy. Weekly summaries, findings and provenance remain available, but the original page records cannot be downloaded from this archive.')}</p>
+<p>${t('Expiry does not mean the finding was fixed, and this page does not redirect to a newer finding.')}</p>
+${archive.expires_at ? `<p class="meta">${t('Expired after:')} <time datetime="${esc(archive.expires_at)}">${esc(archive.expires_at.slice(0, 10))}</time></p>` : ''}`;
+  } else if (state === 'incomplete') {
+    detail = `<p>${t('The archive is incomplete because one or more deduplication dependencies could not be resolved. It is not a preservation claim and must not be used as the sole basis for deleting source data.')}</p>`;
+  } else {
+    detail = `<p>${t('No verified archive is recorded for this week. The weekly summary and findings remain available, but raw page detail may have been pruned.')}</p>
+<p>${t('This page is not a redirect; it explains what remains and what is unavailable.')}</p>`;
+  }
+  const body = `
+<h1>${esc(target.domain)}: ${esc(summary.week)} ${t('raw evidence')}</h1>
+${subnav('archive')}
+<section aria-labelledby="h-evidence-status">
+${heading('h-evidence-status', labels[state] ?? labels.missing, 2)}
+${detail}
+</section>
+<section aria-labelledby="h-evidence-report">
+${heading('h-evidence-report', t('Weekly report and provenance'), 2)}
+<ul>
+  <li><a href="index.html">${t('Weekly report for @week', { '@week': summary.week })}</a></li>
+  <li><a href="accessible.html">${t('Accessibility findings for @week', { '@week': summary.week })}</a></li>
+  <li><a href="archive.html">${t('All weeks and archive states')}</a></li>
+</ul>
+<p class="meta">${t('This page describes archived evidence; it is not a conformance claim and does not replace the canonical finding.')}</p>
+</section>`;
+  return layout({
+    title: `${target.domain} ${summary.week} evidence | vital-scans`,
+    page: 'evidence',
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="../${esc(latestWeek)}/index.html">${esc(target.domain)}</a></li><li aria-current="page">${t('Raw evidence')}</li>`,
+    body,
+    depth: 3,
     target,
   });
 }
@@ -3973,7 +4351,7 @@ function historyComparison(series) {
     return tot ? Math.round((checks.reduce((a, c) => a + c.pass, 0) / tot) * 100) : null;
   };
   const METRICS = [
-    { label: 'Accessibility score', pick: (s) => scoreFor(s)?.score ?? null, goodWhenDown: false },
+    { label: 'Automated accessibility health (axe)', pick: (s) => scoreFor(s)?.score ?? null, goodWhenDown: false },
     { label: 'Median axe violations / page', pick: (s) => s.axe?.medianViolations ?? null, goodWhenDown: true },
     { label: 'Median page weight (KB)', pick: (s) => (s.sustainability ? Math.round(s.sustainability.medianBytes / 1024) : null), goodWhenDown: true, unit: ' KB' },
     { label: 'Reading ease (Flesch)', pick: (s) => s.plainLanguage?.medianReadingEase ?? null, goodWhenDown: false },
@@ -4069,7 +4447,7 @@ export function renderHistoryPage(target, series, week) {
 ${subnav('history')}
 <p class="meta">${t('How this site has changed over time. The <a href="index.html">weekly overview</a> answers "what should I fix now?"; this page answers "how are we trending?"')}</p>
 ${weeks > 1
-    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Accessibility score is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''} ${t('Download the full trend series:')} <a href="../../../data/${esc(target.key)}/trends.csv">${t('CSV')}</a> · <a href="../../../data/${esc(target.key)}/weekly.json">${t('JSON')}</a>.</p>`
+    ? `<p class="meta">${t('Tracking since <strong>@from</strong> — <strong>@n</strong> weeks recorded.', { '@from': esc(firstWeek), '@n': nf(weeks) })}${traj ? ` ${t('Automated accessibility health (axe) is')} <strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''} ${t('Download the full trend series:')} <a href="../../../data/${esc(target.key)}/trends.csv">${t('CSV')}</a> · <a href="../../../data/${esc(target.key)}/weekly.json">${t('JSON')}</a>.</p>`
     : `<p class="note">${t('Only one week has been scanned so far. Trend charts appear here once there are at least two weeks to compare — check back after the next scan.')}</p>`}
 ${weeks > 1 ? historyComparison(series) : ''}
 <section aria-labelledby="h-history-a11y">
@@ -4092,16 +4470,41 @@ ${moreGroups}`;
   });
 }
 
+function coverageSummarySection(summary, prev, invSummary) {
+  const coverage = summarizeCoverage(summary, prev, invSummary);
+  if (!coverage) return '';
+  const total = coverage.pages_audited ?? coverage.pages_scanned;
+  const engines = coverage.engines.length
+    ? coverage.engines.map((entry) => `<li><strong>${esc(entry.engine)}</strong>: ${entry.pages} page(s)${entry.share != null ? ` (${entry.share}% of fetched pages)` : ''}</li>`).join('')
+    : `<li>${t('No engine coverage was recorded this week.')}</li>`;
+  const known = coverage.known_urls_estimate != null
+    ? `<p class="meta">${t('Known-URL estimate: @n. @note', { '@n': nf(coverage.known_urls_estimate), '@note': t(coverage.known_urls_note) })}</p>`
+    : `<p class="meta">${esc(t(coverage.known_urls_note))}</p>`;
+  return `<section class="coverage-summary" aria-labelledby="h-coverage-summary">
+${heading('h-coverage-summary', t('How much was tested'), 2)}
+<p><strong>${nf(total ?? 0)}</strong> ${t('unique page(s) audited')}${coverage.pages_scanned != null ? ` ${t('from @n fetched page(s)', { '@n': nf(coverage.pages_scanned) })}` : ''}.
+${coverage.pages_attempted != null ? ` ${t('@n attempted; @s succeeded.', { '@n': nf(coverage.pages_attempted), '@s': nf(coverage.pages_succeeded ?? 0) })}` : ''}
+${coverage.pages_blocked ? ` ${t('@n blocked.', { '@n': nf(coverage.pages_blocked) })}` : ''}</p>
+<ul class="coverage-engines">${engines}</ul>
+${known}
+${coverage.notes.length ? `<ul class="coverage-notes">${coverage.notes.map((note) => `<li>${esc(note)}</li>`).join('')}</ul>` : ''}
+<p class="meta">${t('Coverage is not the same as conformance. A clean automated result does not prove that untested pages are accessible, and a drop in findings may reflect lower coverage.')}</p>
+</section>`;
+}
+
 export function renderDomainReport(target, summary, prev, diff, series, bugs = [], csvLinks = { byRule: {}, bugsAll: null }, invSummary = null, progress = { new: [], fixed: [], regressed: [] }) {
   const score = scoreFor(summary);
-  const scoreFormat = target.display?.score_format ?? 'both';
+  const scoreFormat = target.display?.score_format ?? 'percent';
   const traj = trajectory(series, 4);
   const trendViol = series.map((s) => s.axe.medianViolations ?? 0);
   const csvLink = (href, text) => (href ? ` <a href="${esc(href)}" class="csv-link">${t(text)}</a>` : '');
   const prog = progress ?? { new: [], fixed: [], regressed: [] };
   const lanes = policyLaneCounts(bugs);
   // The single highest-leverage finding, surfaced as the one thing to do next.
-  const win = bugs.length ? rankBugs(bugs, 1)[0] : null;
+  // A "biggest available win" must be an actionable WCAG requirement; best
+  // practice/AAA findings belong in "Beyond the requirements", not the headline.
+  const winPool = bugs.filter((bug) => bug.wcag_sc && isRequiredFinding(bug));
+  const win = winPool.length ? rankBugs(winPool, 1)[0] : null;
   const changeCount = diff
     ? [diff.axe, diff.alfa].reduce((a, d) => a + d.appeared.length + d.resolved.length + d.changed.length, 0)
     : 0;
@@ -4142,14 +4545,29 @@ ${accessBanner(summary.access, target.user_agent)}
 ${prev ? t('Compared against @week (@n fetched).', { '@week': esc(prev.week), '@n': prev.pagesScanned }) : t('First recorded week; no comparison yet.')} ${t('The dashboard headline uses a rolling last-7-days window; this page is the full ISO week.')}
 ${t('Machine-readable API:')} <a href="../../../api/v1/${esc(target.key)}/snapshot.json">snapshot.json</a> · <a href="../../../api/v1/${esc(target.key)}/${esc(summary.week)}/findings.json">findings.json</a>.</p>
 
-${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Accessibility scorecard">
+${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automated accessibility health (axe) scorecard">
+  <span class="score-label">${t('Automated accessibility health (axe)')}</span>
   ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
   ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
   <span class="score-detail">${esc(scoreMeaning(summary, score))}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
-  <span class="score-caveat">${t('Score reflects the typical page\'s issue count vs other government sites (lower is better). Automated testing finds ~⅓ of barriers — a good score is a floor, not a finish line.')}</span>
+  <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score. 0–100; higher is better. It maps the median axe violation count per audited page to a benchmark curve; Alfa is sampled and reported separately. Manual testing is incomplete, so a high value is not proof of conformance.')}</span>
+  ${(() => {
+    const cov = summarizeCoverage(summary, prev, invSummary);
+    if (!cov) return '';
+    const axe = cov.engines.find((entry) => entry.engine === 'axe');
+    const alfa = cov.engines.find((entry) => entry.engine === 'alfa');
+    return `<span class="score-coverage">${t('Coverage for this metric: @audited audited page(s) of @fetched fetched. Axe ran on @axe@alpha. Do not compare scores when coverage changes substantially.', {
+      '@audited': nf(cov.pages_audited ?? 0),
+      '@fetched': nf(cov.pages_scanned ?? 0),
+      '@axe': axe ? `${axe.pages}${axe.share != null ? ` (${axe.share}%)` : ''}` : t('not recorded'),
+      '@alpha': alfa ? `; Alfa on ${alfa.pages}${alfa.share != null ? ` (${alfa.share}%)` : ''}` : '',
+    })}</span>`;
+  })()}
 </aside>
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
+
+${coverageSummarySection(summary, prev, invSummary)}
 
 <p class="meta">${t('Primary standards queue: @n required finding type(s) (handling: report). Verification queue: @r required finding type(s) (handling: review). Aspirational queue: @asp finding type(s). Advisory queue: @a finding type(s). Unmapped review queue: @u finding type(s).', {
   '@n': lanes.requiredReport,
@@ -4267,15 +4685,23 @@ ${rows}
  */
 export function renderAccessibilityPage(target, summary, bugs, csvLinks, reporting = {}, excludePatterns = []) {
   const { trainingPriorities = [], trainingAdvice = null } = reporting;
-  const acrNote = reporting.acrYaml
-    ? `<p class="meta">Automated Accessibility Conformance Report (OpenACR): <a href="${esc(reporting.acrYaml)}">Download ACR</a>. Machine-readable; compatible with <a href="https://github.com/GSA/openacr">GSA OpenACR tooling</a>. Automated tools find ~⅓ of real barriers — supplement with manual AT testing.</p>`
-    : '';
+  const evaluationNotes = [];
+  if (reporting.acrYaml) {
+    evaluationNotes.push(`<p class="meta"><strong>Draft automated accessibility evidence (OpenACR format) — not a conformance report.</strong> <a href="${esc(reporting.acrYaml)}">Download OpenACR-formatted data (draft)</a>. This is data for OpenACR tooling, not a completed ACR: machine-readable, but manual AT testing is incomplete and many criteria remain unknown.</p>`);
+  }
+  if (reporting.wcagEm) {
+    evaluationNotes.push(`<p class="meta"><strong>Draft automated WCAG-EM-aligned evaluation — not a conformance claim.</strong> <a href="${esc(reporting.wcagEm)}">Download WCAG-EM report</a>. It describes the weekly sample and records each criterion as failure or not evaluated. The sample is not a WCAG-EM representative sample, and manual evaluation is incomplete.</p>`);
+  }
+  const acrNote = evaluationNotes.join('\n');
   const body = `
 <h1>${esc(target.domain)}: ${t('Accessibility')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
 ${subnav('accessibility')}
 ${accessBanner(summary.access, target.user_agent)}
+${summary.alfa?.skippedPages ? `<p class="note">${t('Alfa skipped @n page(s) that were too large to audit safely. This is an engine limitation, not a clean result; axe results and the evidence coverage still apply.', { '@n': nf(summary.alfa.skippedPages) })}</p>` : ''}
 ${acrNote}
 ${scopeSummaryLine(summary, '#h-scope')}
+${evidenceCoverageSection(summary)}
+${liveInspectHelp()}
 ${renderTrainingPriorities(trainingPriorities, trainingAdvice)}
 ${nextActionsSection(summary, bugs, reporting)}
 ${bugReportsSection(target, summary, bugs, csvLinks.bugsAll ?? null, reporting, excludePatterns)}
@@ -4302,6 +4728,7 @@ ${consensusSection(summary, bugs)}
     page: "accessibility",
     breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">Accessibility</li>`,
     body,
+    extraScript: inspectCopyScript(),
     depth: 3,
     apiFinding: { key: target.key, week: summary.week },
     target,
@@ -4600,7 +5027,7 @@ export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
   // GitHub Pages default) it falls back to the original copy unchanged.
   const h1 = branding.title || t('Weekly quality ledger');
   const intro = branding.intro
-    || t('Accessibility and sustainability, measured continuously with open source engines. Thousands of pages per domain, scanned slowly and politely across each week.');
+    || t('Accessibility and sustainability, measured continuously with open source tools. We scan thousands of pages per site over each week, with pauses so we do not overload the site.');
   const pageTitle = branding.title ? `${branding.title} | vital-scans` : 'vital-scans | weekly quality ledger';
   // A target whose latest week audited nothing (a firewall, robots.txt or
   // network block) is listed in the access alert instead of the ranking, so
@@ -4649,7 +5076,7 @@ export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
       const partly = latest.access?.level === 'partial' ? ` <strong class="access-flag">${t('Partly blocked')}</strong>` : '';
       return `<tr>
   <th scope="row"><a href="reports/${esc(target.key)}/${esc(latest.week)}/index.html">${esc(target.domain)}</a>${partly}</th>
-  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'both')}</td>
+  <td class="num">${fmtA11yGrade(score, target.display?.score_format ?? 'percent')}</td>
   <td>${arrow(traj)}</td>
   <td class="num">${win.pagesAudited ?? win.pagesScanned}</td>
   <td class="num">${fmtMedian(win.axe.medianViolations)}</td>
@@ -4668,10 +5095,10 @@ export function renderIndex(dashboard, { branding = {}, unscanned = [] } = {}) {
   const worst = fleetWorstOffenders(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })), 20);
   const worstSection = worst.length === 0 ? '' : `
 <section aria-labelledby="h-worst">
-${heading('h-worst', t('Worst offenders across all domains'))}
+${heading('h-worst', t('Highest-impact issues across all sites'))}
 <p class="meta">${t('Highest-impact issues fleet-wide: legally required findings first, then the rest of each site\'s conformance target, then AAA and best-practice findings. Within each, ranked by pages affected × severity × people reached.')}</p>
 <table>
-<caption>${t('Top @n issues across all active domains.', { '@n': worst.length })}</caption>
+<caption>${t('Top @n issues across all active sites.', { '@n': worst.length })}</caption>
 <thead><tr><th scope="col">${t('Domain')}</th><th scope="col">${t('Issue')}</th><th scope="col">${t('Requirement')}</th><th scope="col">${t('Severity')}</th><th scope="col" class="num">${t('Pages')}</th></tr></thead>
 <tbody>${worst
     .map((b) => `<tr>
@@ -4826,11 +5253,11 @@ ${active.length === 0
         : `<p>${t('No accessibility or sustainability data could be collected yet: every target is blocked (see above).')}</p>`)
     : `
 <table>
-<caption>${t('Domains ranked by accessibility score (best first). Trajectory compares the score against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size.')}</caption>
+<caption>${t('Domains ranked by automated accessibility health (axe, best first). Trajectory compares the indicator against ~4 weeks ago. Counts are medians per page over the last 7 days, comparable across sites of any size; this is not a conformance ranking.')}</caption>
 <thead><tr><th scope="col">${t('Domain')}</th><th scope="col" class="num">${t('Score')}</th><th scope="col">${t('Trajectory')}</th><th scope="col" class="num">${t('Pages audited (7d)')}</th><th scope="col" class="num">${t('Median axe / page')}</th><th scope="col" class="num">${t('Median Alfa / page')}</th><th scope="col">${t('Trend')}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
-<p class="score-caveat">${t('Scores are a relative, automated signal based on axe violations per page (axe runs on every page; Alfa is sampled and reported separately). Automated testing finds only ~⅓ of barriers — use scores to compare and track direction, not as a pass/fail.')}</p>
+<p class="score-caveat">${t('Scores compare sites on axe violations per page. Axe runs on every page; Alfa is sampled separately. Automated tests find only about a third of barriers, so use scores to track direction, not as a pass/fail.')}</p>
 ${overlay}
 ${sustainTrend}
 ${worstSection}
@@ -4845,7 +5272,7 @@ ${heading('h-tools', t('Tools'))}
 </section>
 <section aria-labelledby="h-why">
 ${heading('h-why', t('Why this exists'))}
-<p>${t('Continuous measurement beats one-off audits. This ledger tracks whether each site is getting more accessible and lighter over time, using <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (the open source engine behind Siteimprove) for accessibility, and page weight with <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> CO₂ estimates for sustainability. Everything here is open: the scanner, the data, and the reports.')}</p>
+<p>${t('One-off audits go out of date. This ledger shows whether each site is becoming more accessible and lighter over time. It uses <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (open source accessibility engines) and estimates page carbon with the <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> model. The scanner, data and reports are all open.')}</p>
 <p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), a machine-discovery <a href=".well-known/api-catalog">API catalog</a>, and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="https://github.com/mgifford/vital-core/blob/main/MCP.md">MCP server</a>.')}</p>
 </section>`;
   return layout({ title: pageTitle, breadcrumb: '', body, depth: 0, page: 'index' });
@@ -5210,6 +5637,9 @@ export function renderUrlLookup(domains) {
 
 export function writeAsset(docsDir) {
   fs.writeFileSync(path.join(docsDir, 'style.css'), CSS);
+  fs.writeFileSync(path.join(docsDir, FAVICON_FILENAME), FAVICON_SVG);
+  const faviconPng = path.resolve(path.dirname(new URL(import.meta.url).pathname), 'assets/favicon.png');
+  if (fs.existsSync(faviconPng)) fs.copyFileSync(faviconPng, path.join(docsDir, FAVICON_PNG_FILENAME));
   // Serve the vendored ParaCharts runtime first-party (AGPL-3.0). Charts are
   // progressively enhanced: the static SVG + table render without it; this
   // bundle is lazy-imported only on report pages to upgrade them. Copied as a
@@ -5260,7 +5690,8 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   border: 2px solid var(--accent); z-index: 1; }
 header { border-bottom: 3px double var(--rule); padding-bottom: .5rem; margin-bottom: 1.5rem; }
 .brand { font-variant: small-caps; letter-spacing: .06em; font-size: 1.1rem; margin: 0; }
-.brand a { text-decoration: none; color: var(--ink); font-weight: 700; }
+.brand a { display: inline-flex; align-items: center; gap: .4rem; text-decoration: none; color: var(--ink); font-weight: 700; }
+.brand-mark { width: 1.75rem; height: 1.75rem; border-radius: 4px; flex: none; }
 .tag { color: var(--muted); font-size: .85rem; letter-spacing: .1em; }
 .crumbs { list-style: none; padding: 0; margin: .25rem 0 0; font-size: .9rem; }
 .crumbs li { display: inline; }
@@ -5349,6 +5780,7 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .scorecard { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem;
   border: 1px solid var(--rule); border-left: 5px solid var(--accent); border-radius: 4px;
   padding: .8rem 1rem; margin: 1rem 0; }
+.scorecard .score-label { flex-basis: 100%; font-weight: 700; }
 .scorecard .grade { font-size: 2rem; font-weight: 700; line-height: 1;
   padding: .1rem .5rem; border-radius: 4px; border: 2px solid currentColor; }
 .grade-A { color: var(--better); } .grade-B { color: var(--better); }
@@ -5532,4 +5964,786 @@ footer { margin-top: 3rem; border-top: 3px double var(--rule); padding-top: 1rem
 .page-result-summary { cursor: pointer; padding: .6rem 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .6rem; }
 .violation-item { border-top: 1px solid var(--rule); padding: .5rem 0; }
 .violation-item + .violation-item { padding-top: .5rem; }
+/* Finding Explorer: static index stays usable without JavaScript; filters and
+   the detail panel are the enhancement. No colour-only meaning. */
+.explorer-filters { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: end; margin: 1rem 0; }
+.explorer-filters[hidden] { display: none; }
+.explorer-field { display: flex; flex-direction: column; gap: .25rem; min-width: 11rem; }
+.explorer-field label { font-weight: 600; }
+.explorer-field input, .explorer-field select { font: inherit; padding: .35rem .45rem; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; }
+.explorer-field input:focus-visible, .explorer-field select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.explorer-results { list-style: none; padding: 0; margin: 1rem 0; }
+.explorer-results li { padding: .45rem 0; border-bottom: 1px solid var(--rule); }
+.explorer-results a { display: block; }
+.explorer-results .bug-meta { display: block; margin-top: .2rem; }
+.explorer-detail { border: 2px solid var(--accent); border-radius: 4px; padding: 1rem; margin: 1.25rem 0; }
+.explorer-detail:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.explorer-detail h3 { margin-top: 0; }
+.live-inspect-help { margin: 1rem 0; scroll-margin-top: 6rem; }
+.bookmarklet-visual { border: 1px solid var(--rule); border-radius: 4px; padding: .75rem 1rem; margin: .75rem 0; background: var(--surface, #f7f7f7); }
+.bookmarklet-visual-bar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: .5rem; }
+.bookmarklet-visual-button { border: 2px solid var(--accent); border-radius: 4px; padding: .25rem .5rem; font-weight: 700; }
+.bookmarklet-visual-arrow { font-size: 1.6rem; line-height: 1; }
+.bookmarklet-visual-label { color: var(--muted); }
+.bookmarklet-visual-hint { margin: .4rem 0 0; font-size: .9rem; color: var(--muted); }
+.bookmarklet-steps { margin: .75rem 0; }
+.bookmarklet-install { margin: 1rem 0; }
+.bookmarklet-button { display: inline-flex; align-items: center; gap: .5rem; padding: .65rem .9rem; border: 2px solid var(--accent); border-radius: 6px; font-weight: 700; text-decoration: none; cursor: grab; }
+.bookmarklet-button small { font-weight: 400; }
+.bookmarklet-button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.bookmarklet-icon { font-size: 1.2rem; }
+.inspect-ways { margin: 1rem 0; }
+.inspect-ways dt { font-weight: 700; margin-top: .6rem; }
+.inspect-ways dd { margin: .1rem 0 .4rem 0; }
+.live-inspect-help .bookmarklet-link { display: inline-block; padding: .4rem .6rem; border: 2px solid var(--accent); border-radius: 4px; font-weight: 600; text-decoration: none; }
+.live-inspect-help .bookmarklet-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.screenshot-figure { margin: 1rem 0; }
+.screenshot-scroll { max-height: 70vh; overflow: auto; border: 1px solid var(--rule); }
+.screenshot-inner { position: relative; }
+.screenshot-inner img { display: block; width: 100%; height: auto; }
+.screenshot-marker { position: absolute; border: 3px solid #ffbf47; box-shadow: 0 0 0 2px #000, inset 0 0 0 2px #000; pointer-events: none; }
+.screenshot-marker-label { position: absolute; top: -1.6rem; left: -3px; background: #000; color: #fff; font-weight: 700; font-size: .8rem; padding: .05rem .35rem; border-radius: 2px; }
+.screenshot-toggle { display: inline-flex; gap: .4rem; align-items: center; margin-top: .4rem; }
+.screenshot-figure figcaption { font-size: .9rem; color: var(--muted); margin-top: .4rem; }
+.detail-lead { border-left: 4px solid var(--accent); padding: .4rem 0 .4rem .75rem; margin-bottom: .75rem; }
+.detail-lead p { margin: 0 0 .4rem; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: .4rem .8rem; align-items: center; }
+.detail-actions a, .detail-actions button { font: inherit; }
+.manual-validation-block { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .75rem; }
+.manual-validation-block ul { margin: .4rem 0; }
+.manual-review-fields { display: flex; flex-wrap: wrap; gap: .6rem; margin: .8rem 0; padding: .6rem; border: 1px solid var(--rule); }
+.manual-review-fields label { display: flex; flex-direction: column; gap: .2rem; font-size: .9rem; }
+.manual-review-fields input, .manual-review-fields select { font: inherit; padding: .3rem; }
+@media (max-width: 40rem) { .explorer-field { min-width: 100%; } }
 `;
+
+// ---------------------------------------------------------------------------
+// Finding Explorer
+// ---------------------------------------------------------------------------
+
+const EXPLORER_ROW_LIMIT = 200;
+
+/**
+ * The page reuses finding-filter.js in the browser, so the filter logic has
+ * exactly one implementation (unit-tested in Node, stringified here).
+ */
+function explorerScript({ bugsJson, reportHref, labels }) {
+  const filterSource = [findingRegionKey, findingRegionLabel, findingWidgetKey, findingWidgetLabel, findingComponentKey, findingComponentLabel, findingImpactKeys, findingArrmRoles, filterFindings]
+    .map((fn) => fn.toString())
+    .join('\n');
+  const reproductionSource = [isReplayableSelector, reproductionPlan, executeReproduction, playwrightTestFor]
+    .map((fn) => fn.toString())
+    .join('\n');
+  const manualSource = [manualValidationFor, manualReviewRecord]
+    .map((fn) => fn.toString())
+    .join('\n');
+  const mcpSource = mcpInvestigationPrompt.toString();
+  const screenshotSource = markerGeometry.toString();
+  const liveInspectSource = [inspectCodeFor, inspectUrlFor, inspectUnavailableReason, inspectUnavailableText].map((fn) => fn.toString()).join('\n');
+  return `<script>
+(function () {
+  'use strict';
+  var LABELS = ${JSON.stringify(labels)};
+  var MANUAL_REVIEW_STATUSES = ${JSON.stringify(MANUAL_REVIEW_STATUSES)};
+  var REPRODUCTION_EXIT_CODES = ${JSON.stringify(REPRODUCTION_EXIT_CODES)};
+  ${filterSource}
+  ${reproductionSource}
+  ${manualSource}
+  ${mcpSource}
+  ${screenshotSource}
+  ${liveInspectSource}
+  var BUGS_JSON = ${JSON.stringify(bugsJson)};
+  var REPORT_HREF = ${JSON.stringify(reportHref)};
+  var form = document.getElementById('explorer-filters');
+  var results = document.getElementById('explorer-results');
+  var status = document.getElementById('explorer-status');
+  var detail = document.getElementById('explorer-detail');
+  var detailTitle = document.getElementById('explorer-detail-title');
+  var detailBody = document.getElementById('explorer-detail-body');
+  var closeButton = document.getElementById('explorer-close');
+  var clearButton = document.getElementById('explorer-clear');
+  var staticIndex = document.getElementById('explorer-static');
+  if (!form || !results || !status || !detail || !detailTitle || !detailBody) return;
+  var bugs = [];
+  var activeId = null;
+
+  function text(tag, value, className) {
+    var node = document.createElement(tag);
+    if (value !== null && value !== undefined) node.textContent = String(value);
+    if (className) node.className = className;
+    return node;
+  }
+  function externalLink(href, value) {
+    var node = document.createElement('a');
+    node.href = href;
+    node.textContent = String(value);
+    node.rel = 'noreferrer noopener';
+    return node;
+  }
+  function pair(label, value) {
+    var row = document.createElement('div');
+    row.appendChild(text('dt', label));
+    var dd = document.createElement('dd');
+    if (value && value.nodeType) dd.appendChild(value);
+    else dd.textContent = value === null || value === undefined || value === '' ? LABELS.notCaptured : String(value);
+    row.appendChild(dd);
+    return row;
+  }
+  function fieldValue(id) {
+    var node = document.getElementById(id);
+    return node ? node.value : '';
+  }
+  function readState() {
+    return {
+      region: fieldValue('explorer-region'),
+      impact: fieldValue('explorer-impact'),
+      arrmRole: fieldValue('explorer-arrm-role'),
+      widget: fieldValue('explorer-widget'),
+      component: fieldValue('explorer-component'),
+      engine: fieldValue('explorer-engine'),
+      severity: fieldValue('explorer-severity'),
+      query: fieldValue('explorer-query'),
+    };
+  }
+  function regionPath(bug) {
+    var context = bug.semantic_context;
+    if (!context) return LABELS.evidenceUnavailable;
+    var parts = (context.region_ancestry || []).map(function (entry) {
+      return entry.name ? entry.role + ' "' + entry.name + '"' : entry.role;
+    });
+    if (context.widget) parts.push((context.widget.role || '') + (context.widget.name ? ' "' + context.widget.name + '"' : ''));
+    return parts.length ? parts.join(' > ') : findingRegionLabel(bug);
+  }
+  function downloadReproduction(bug) {
+    var plan = reproductionPlan(bug);
+    if (plan.status === 'unavailable') return;
+    var code = playwrightTestFor(plan, { generatedAt: new Date().toISOString() });
+    var blob = new Blob([code], { type: 'text/javascript' });
+    var url = URL.createObjectURL(blob);
+    var anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = (plan.instance_id || 'finding') + '.spec.mjs';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+  function downloadReview(bug) {
+    var record = manualReviewRecord(bug, {
+      generatedAt: new Date().toISOString(),
+      review: {
+        status: fieldValue('manual-review-status') || 'not_reviewed',
+        reviewer: fieldValue('manual-reviewer'),
+        browser: fieldValue('manual-browser'),
+        assistive_technology: fieldValue('manual-at'),
+        viewport: fieldValue('manual-viewport'),
+      },
+    });
+    var blob = new Blob([JSON.stringify(record, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = (record.finding.instance_id || 'finding') + '.manual-review.json';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+  function manualSection(bug) {
+    var guidance = manualValidationFor(bug);
+    var section = document.createElement('section');
+    section.className = 'manual-validation-block';
+    section.id = 'explorer-manual';
+    section.appendChild(text('h4', LABELS.manualValidation));
+    section.appendChild(text('p', LABELS.manualAutomated, 'bug-meta'));
+    section.appendChild(text('p', LABELS.notReviewed, 'bug-meta'));
+    var prompts = document.createElement('ul');
+    guidance.prompts.forEach(function (prompt) { prompts.appendChild(text('li', prompt)); });
+    section.appendChild(prompts);
+    section.appendChild(text('p', guidance.environment_note, 'bug-meta'));
+    if (guidance.false_positive_check) section.appendChild(text('p', guidance.false_positive_check, 'bug-meta'));
+
+    var fieldset = document.createElement('fieldset');
+    fieldset.className = 'manual-review-fields';
+    var legend = document.createElement('legend');
+    legend.textContent = LABELS.reviewFields;
+    fieldset.appendChild(legend);
+    function addField(id, labelText, type) {
+      var label = document.createElement('label');
+      label.setAttribute('for', id);
+      label.textContent = labelText;
+      var input = document.createElement('input');
+      input.type = type || 'text';
+      input.id = id;
+      input.name = id;
+      label.appendChild(input);
+      fieldset.appendChild(label);
+    }
+    addField('manual-reviewer', LABELS.reviewer);
+    addField('manual-browser', LABELS.reviewBrowser);
+    addField('manual-at', LABELS.reviewAt);
+    addField('manual-viewport', LABELS.reviewViewport);
+    var statusLabel = document.createElement('label');
+    statusLabel.setAttribute('for', 'manual-review-status');
+    statusLabel.textContent = LABELS.reviewStatus;
+    var select = document.createElement('select');
+    select.id = 'manual-review-status';
+    select.name = 'manual-review-status';
+    MANUAL_REVIEW_STATUSES.forEach(function (status) {
+      var option = document.createElement('option');
+      option.value = status;
+      option.textContent = (LABELS.reviewStatuses && LABELS.reviewStatuses[status]) || status;
+      select.appendChild(option);
+    });
+    statusLabel.appendChild(select);
+    fieldset.appendChild(statusLabel);
+    section.appendChild(fieldset);
+    section.appendChild(text('p', LABELS.reviewFieldsNote, 'bug-meta'));
+
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'triage-btn';
+    button.id = 'explorer-download-review';
+    button.textContent = LABELS.downloadReview;
+    button.addEventListener('click', function () { downloadReview(bug); });
+    section.appendChild(button);
+    return section;
+  }
+  function screenshotSection(bug) {
+    var shot = bug.screenshot;
+    if (!shot || shot.available !== true || !shot.file) return null;
+    var figure = document.createElement('figure');
+    figure.className = 'screenshot-figure';
+    figure.id = 'explorer-screenshot';
+    var scroll = document.createElement('div');
+    scroll.className = 'screenshot-scroll';
+    var inner = document.createElement('div');
+    inner.className = 'screenshot-inner';
+    var img = document.createElement('img');
+    img.src = shot.file;
+    img.alt = LABELS.screenshotAlt + (bug.selector ? ' (' + bug.selector + ')' : '');
+    img.loading = 'lazy';
+    inner.appendChild(img);
+    var geom = markerGeometry(bug.element && bug.element.rect_page, shot);
+    if (geom && geom.visible) {
+      var marker = document.createElement('span');
+      marker.className = 'screenshot-marker';
+      marker.id = 'explorer-marker';
+      marker.style.left = geom.left + '%';
+      marker.style.top = geom.top + '%';
+      marker.style.width = geom.width + '%';
+      marker.style.height = geom.height + '%';
+      marker.setAttribute('role', 'img');
+      marker.setAttribute('aria-label', LABELS.markerLabel);
+      marker.appendChild(text('span', '1', 'screenshot-marker-label'));
+      inner.appendChild(marker);
+    }
+    scroll.appendChild(inner);
+    figure.appendChild(scroll);
+    var caption = document.createElement('figcaption');
+    caption.textContent = LABELS.historical + (shot.full_page ? '' : ' ' + LABELS.viewportOnly);
+    figure.appendChild(caption);
+    if (geom && !geom.visible) figure.appendChild(text('p', LABELS.markerOutside, 'bug-meta'));
+    if (geom && geom.visible) {
+      var label = document.createElement('label');
+      label.className = 'screenshot-toggle';
+      var checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = 'explorer-hide-annotations';
+      checkbox.addEventListener('change', function () {
+        marker.hidden = checkbox.checked;
+      });
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(' ' + LABELS.hideAnnotations));
+      figure.appendChild(label);
+    }
+    return figure;
+  }
+  function reproductionRow(bug) {
+    var row = document.createElement('div');
+    row.appendChild(text('dt', LABELS.reproduction));
+    var dd = document.createElement('dd');
+    var plan = reproductionPlan(bug);
+    if (plan.status === 'unavailable') {
+      dd.textContent = LABELS.unavailable + ': ' + (LABELS.reproReasons[plan.reason] || plan.reason);
+      row.appendChild(dd);
+      return row;
+    }
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'triage-btn';
+    button.id = 'explorer-download-test';
+    button.textContent = LABELS.downloadTest;
+    button.addEventListener('click', function () { downloadReproduction(bug); });
+    dd.appendChild(button);
+    dd.appendChild(text('span', LABELS.testReady, 'bug-meta'));
+    row.appendChild(dd);
+    return row;
+  }
+  function componentText(bug) {
+    var scope = bug.component_scope;
+    if (scope && scope.component_id) {
+      return (scope.component_label || scope.component_id) + ' · ' + LABELS.configured + ' · ' + LABELS.implementation + ': ' + (scope.implementation || scope.component_id) + ' · ' + LABELS.ownership;
+    }
+    var widget = bug.semantic_context && bug.semantic_context.widget;
+    if (widget && widget.role) return widget.role + ' · ' + LABELS.candidate + ' · ' + LABELS.ownership;
+    return LABELS.unattributed;
+  }
+  function closeDetail() {
+    if (!activeId) return;
+    var previous = activeId;
+    detail.hidden = true;
+    detailBody.textContent = '';
+    activeId = null;
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    var back = results.querySelector('a[data-id="' + previous + '"]');
+    if (back) back.focus();
+  }
+  function select(id, updateHash) {
+    var bug = null;
+    for (var i = 0; i < bugs.length; i++) if (bugs[i].instance_id === id) { bug = bugs[i]; break; }
+    if (!bug) return;
+    activeId = id;
+    detailBody.textContent = '';
+    detailTitle.textContent = (bug.summary || bug.rule_label || bug.rule_id) + ' — ' + id;
+    var lead = document.createElement('div');
+    lead.className = 'detail-lead';
+    var leadText = document.createElement('p');
+    leadText.appendChild(text('strong', LABELS.automatedFinding + ' '));
+    leadText.appendChild(document.createTextNode(
+      (bug.severity || '') + ' · ' +
+      (bug.wcag_sc ? 'WCAG ' + bug.wcag_sc + ' · ' : '') +
+      ((bug.frequency && bug.frequency.pages_affected) || 0) + ' page(s) · ' +
+      regionPath(bug)
+    ));
+    lead.appendChild(leadText);
+    var actions = document.createElement('div');
+    actions.className = 'detail-actions';
+    var inspect = inspectUrlFor(bug);
+    var inspectReason = inspectUnavailableReason(bug);
+    var mcpPrompt = mcpInvestigationPrompt(bug);
+    if (inspect) {
+      var inspectLink = document.createElement('a');
+      inspectLink.id = 'explorer-highlight';
+      inspectLink.className = 'inspect-open';
+      inspectLink.href = inspect;
+      inspectLink.target = '_blank';
+      inspectLink.rel = 'noopener';
+      inspectLink.textContent = LABELS.highlightOnSite;
+      actions.appendChild(inspectLink);
+      var inspectCode = inspectCodeFor(bug);
+      if (inspectCode) {
+        var copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'inspect-copy';
+        copy.id = 'explorer-inspect-code';
+        copy.setAttribute('data-inspect-code', inspectCode);
+        copy.textContent = LABELS.copyInspectCode;
+        actions.appendChild(copy);
+      }
+    } else if (inspectReason) {
+      var unavailable = document.createElement('a');
+      unavailable.href = '#live-inspect-help';
+      unavailable.textContent = LABELS.highlightUnavailable + ' ' + LABELS.aboutLiveInspection;
+      actions.appendChild(unavailable);
+    }
+    if (mcpPrompt) {
+      var mcpButton = document.createElement('button');
+      mcpButton.type = 'button';
+      mcpButton.className = 'mcp-copy';
+      mcpButton.setAttribute('data-mcp-prompt', mcpPrompt);
+      mcpButton.textContent = LABELS.copyMcpPrompt;
+      var chromium = /Chrome|Chromium|Edg/.test(navigator.userAgent) && !/Firefox|OPR/.test(navigator.userAgent);
+      mcpButton.hidden = !chromium;
+      actions.appendChild(mcpButton);
+    }
+    if (bug.screenshot?.available) {
+      var shotLink = document.createElement('a');
+      shotLink.href = '#explorer-screenshot';
+      shotLink.textContent = LABELS.viewScreenshot;
+      actions.appendChild(shotLink);
+    }
+    if (reproductionPlan(bug).status !== 'unavailable') {
+      var testButton = document.createElement('button');
+      testButton.type = 'button';
+      testButton.textContent = LABELS.downloadTest;
+      testButton.addEventListener('click', function () { downloadReproduction(bug); });
+      actions.appendChild(testButton);
+    }
+    var manualLink = document.createElement('a');
+    manualLink.href = '#explorer-manual';
+    manualLink.textContent = LABELS.manualValidation;
+    actions.appendChild(manualLink);
+    if (bug.instance_id) {
+      actions.appendChild(externalLink(REPORT_HREF + '#' + encodeURIComponent(bug.instance_id), LABELS.fullReport));
+    }
+    lead.appendChild(actions);
+    detailBody.appendChild(lead);
+    var list = document.createElement('dl');
+    list.appendChild(pair(LABELS.rule, bug.rule_id + (bug.rule_label ? ' — ' + bug.rule_label : '')));
+    list.appendChild(pair(LABELS.engine, bug.engine_key));
+    if (bug.occurrence_id) {
+      list.appendChild(pair(LABELS.occurrence, bug.occurrence_id + (bug.observation_id ? ' · ' + bug.observation_id : '') + ' · ' + (bug.occurrence_selection || LABELS.unavailable)));
+    }
+    if (bug.finding_ref) list.appendChild(pair(LABELS.stableReference, bug.finding_ref));
+    if (bug.observation) {
+      var observed = [];
+      if (bug.observation.scanned_at) observed.push(bug.observation.scanned_at);
+      if (bug.observation.engine_key) observed.push(bug.observation.engine_key + (bug.observation.engine_version ? ' ' + bug.observation.engine_version : ''));
+      if (bug.observation.consent_state) observed.push(bug.observation.consent_state);
+      list.appendChild(pair(LABELS.observed, observed.join(' · ')));
+    }
+    list.appendChild(pair(LABELS.severity, bug.severity));
+    list.appendChild(pair(LABELS.wcag, bug.wcag_sc ? bug.wcag_sc + (bug.wcag_name ? ' — ' + bug.wcag_name : '') + (bug.wcag_level ? ' (' + LABELS.level + ' ' + bug.wcag_level + ')' : '') : ''));
+    var frequency = bug.frequency || {};
+    list.appendChild(pair(LABELS.pages, (frequency.pages_affected || 0) + ' / ' + (frequency.total_pages_scanned || 0)));
+    if (bug.url) list.appendChild(pair(LABELS.url, externalLink(bug.url, bug.url)));
+    if (bug.selector) list.appendChild(pair(LABELS.selector, text('code', bug.selector)));
+    var element = bug.element;
+    if (element && element.available) {
+      var parts = ['<' + element.tag + '>'];
+      if (element.role) parts.push('role=' + element.role);
+      if (element.name) parts.push('name="' + element.name + '"');
+      parts.push((element.selector_matches === null || element.selector_matches === undefined ? '?' : element.selector_matches) + ' ' + LABELS.matches);
+      parts.push(element.visible ? LABELS.visible : LABELS.hidden);
+      if (element.shadow) parts.push(LABELS.shadow);
+      if (element.iframe) parts.push(LABELS.iframe);
+      list.appendChild(pair(LABELS.element, parts.join(' · ')));
+    } else {
+      list.appendChild(pair(LABELS.element, LABELS.noEvidence));
+    }
+    list.appendChild(pair(LABELS.region, regionPath(bug)));
+    if (bug.semantic_context && bug.semantic_context.widget) {
+      list.appendChild(pair(LABELS.widget, bug.semantic_context.widget.role + (bug.semantic_context.widget.name ? ' "' + bug.semantic_context.widget.name + '"' : '')));
+    }
+    list.appendChild(pair(LABELS.component, componentText(bug)));
+    var evidence = bug.evidence;
+    if (evidence) {
+      var ev = [evidence.element_identity === 'captured' ? LABELS.captured : LABELS.evidenceUnavailable];
+      if (evidence.examples_captured !== undefined) ev.push(evidence.examples_captured + ' / ' + evidence.example_limit + ' ' + LABELS.examples);
+      ev.push(evidence.examples_truncated ? LABELS.truncated : LABELS.complete);
+      list.appendChild(pair(LABELS.evidence, ev.join(' · ')));
+    }
+    var context = bug.browser_context;
+    if (context) {
+      var ctx = [];
+      if (context.viewport) ctx.push(context.viewport.width + '×' + context.viewport.height);
+      if (context.color_scheme) ctx.push(context.color_scheme);
+      if (context.forced_colors) ctx.push(context.forced_colors);
+      if (context.reduced_motion) ctx.push(context.reduced_motion);
+      if (context.locale) ctx.push(context.locale);
+      if (context.final_url) ctx.push(context.final_url);
+      list.appendChild(pair(LABELS.browser, ctx.join(' · ')));
+    }
+    list.appendChild(pair(LABELS.interaction, LABELS.notCaptured));
+    list.appendChild(pair(LABELS.screenshot, bug.screenshot?.available ? LABELS.captured : (bug.screenshot?.reason || LABELS.noScreenshot)));
+    list.appendChild(reproductionRow(bug));
+    detailBody.appendChild(list);
+    var shotFigure = screenshotSection(bug);
+    if (shotFigure) detailBody.appendChild(shotFigure);
+    if (Array.isArray(bug.steps_to_reproduce) && bug.steps_to_reproduce.length) {
+      detailBody.appendChild(text('h4', LABELS.steps));
+      var steps = document.createElement('ol');
+      bug.steps_to_reproduce.forEach(function (step) { steps.appendChild(text('li', step)); });
+      detailBody.appendChild(steps);
+    }
+    if (Array.isArray(bug.examples) && bug.examples.length) {
+      detailBody.appendChild(text('h4', LABELS.examples));
+      bug.examples.forEach(function (example) {
+        if (example.selector) detailBody.appendChild(text('p', example.selector, 'bug-meta'));
+        if (example.html_snippet) {
+          var pre = document.createElement('pre');
+          var code = document.createElement('code');
+          code.textContent = example.html_snippet;
+          pre.appendChild(code);
+          detailBody.appendChild(pre);
+        }
+      });
+    }
+    if (bug.impact && bug.impact.summary) {
+      detailBody.appendChild(text('h4', LABELS.impact));
+      detailBody.appendChild(text('p', bug.impact.summary));
+    }
+    detailBody.appendChild(manualSection(bug));
+    detailBody.appendChild(text('p', '')).appendChild(externalLink(REPORT_HREF + '#' + bug.instance_id, LABELS.fullReport));
+    detail.hidden = false;
+    if (updateHash) history.replaceState(null, '', '#' + bug.instance_id);
+    detailTitle.setAttribute('tabindex', '-1');
+    detailTitle.focus();
+  }
+  function apply() {
+    var filtered = filterFindings(bugs, readState());
+    status.textContent = LABELS.showing.replace('@shown', filtered.length).replace('@total', bugs.length);
+    results.textContent = '';
+    filtered.forEach(function (bug) {
+      var li = document.createElement('li');
+      var anchor = document.createElement('a');
+      anchor.href = '#' + bug.instance_id;
+      anchor.setAttribute('data-id', bug.instance_id);
+      anchor.appendChild(text('span', bug.severity, 'sev-badge sev-' + String(bug.severity).toLowerCase()));
+      anchor.appendChild(document.createTextNode(' '));
+      anchor.appendChild(text('span', bug.rule_id, 'rule-badge'));
+      anchor.appendChild(document.createTextNode(' ' + (bug.summary || bug.rule_label || '')));
+      var meta = findingRegionLabel(bug) + ' · ' + findingWidgetLabel(bug);
+      if (findingComponentKey(bug)) meta += ' · ' + findingComponentLabel(bug);
+      anchor.appendChild(text('span', meta, 'bug-meta'));
+      li.appendChild(anchor);
+      results.appendChild(li);
+    });
+    if (!filtered.length) results.appendChild(text('li', LABELS.none, 'meta'));
+  }
+  form.hidden = false;
+  form.addEventListener('submit', function (event) { event.preventDefault(); apply(); });
+  // The input event covers selects and text fields. A separate change listener
+  // would also fire when focus leaves the search box — rebuilding the list and
+  // dropping focus just after a result was focused for keyboard activation.
+  form.addEventListener('input', apply);
+  if (clearButton) clearButton.addEventListener('click', function () { form.reset(); apply(); });
+  if (closeButton) closeButton.addEventListener('click', closeDetail);
+  results.addEventListener('click', function (event) {
+    var anchor = event.target.closest ? event.target.closest('a[data-id]') : null;
+    if (!anchor) return;
+    event.preventDefault();
+    select(anchor.getAttribute('data-id'), true);
+  });
+  window.addEventListener('hashchange', function () {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (id) select(id, false);
+    else closeDetail();
+  });
+  fetch(BUGS_JSON, { credentials: 'same-origin' }).then(function (response) {
+    if (!response.ok) throw new Error(String(response.status));
+    return response.json();
+  }).then(function (data) {
+    bugs = Array.isArray(data.reports) ? data.reports : [];
+    if (staticIndex) staticIndex.hidden = true;
+    apply();
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (id) {
+      if (!filterFindings(bugs, readState()).some(function (bug) { return bug.instance_id === id; })) {
+        form.reset();
+        apply();
+      }
+      select(id, false);
+    }
+  }).catch(function () {
+    status.textContent = LABELS.loadError;
+    if (staticIndex) staticIndex.hidden = false;
+  });
+})();
+</script>`;
+}
+
+/**
+ * Finding Explorer: a lightweight inspection surface over the sanitized
+ * bugs.json every report already publishes. The static page (no JavaScript)
+ * lists every finding with its region and component and links to the full
+ * report; with JavaScript it adds filters and a detail panel. It never
+ * duplicates the canonical report: full finding detail stays on the
+ * Accessibility page, and every row links back to its anchor there.
+ */
+export function renderExplorerPage(target, summary, bugs, { bugsJson = 'bugs.json' } = {}) {
+  const rows = (bugs ?? []).slice(0, EXPLORER_ROW_LIMIT).map((bug) => {
+    const href = pageHref('accessibility', bug.instance_id);
+    return `<tr id="${esc(bug.instance_id)}"><th scope="row"><a href="${esc(href)}">${esc(bug.summary || bug.rule_label || bug.rule_id)}</a></th><td><span class="sev-badge">${esc(t(bug.severity))}</span></td><td>${esc(bug.engine_key === 'axe-core' ? 'axe' : bug.engine_key)}</td><td>${esc(findingRegionLabel(bug))}</td><td>${esc(findingWidgetLabel(bug))}</td><td>${esc(findingComponentLabel(bug))}</td><td class="num">${nf(bug.frequency?.pages_affected ?? 0)}</td></tr>`;
+  }).join('');
+  const regionRows = (summary.regions?.regions ?? []).map((region) =>
+    `<tr><th scope="row">${esc(region.label)}</th><td class="num">${nf(region.findings)}</td><td class="num">${nf(region.pages_affected_sum)}</td></tr>`).join('');
+  const widgetRows = (summary.widgetGroups?.groups ?? []).map((group) =>
+    `<tr><th scope="row">${esc(group.label)}</th><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.pages_affected_sum)}</td><td>${esc((group.components ?? []).map((component) => component.id).join(', ') || '—')}</td></tr>`).join('');
+  const componentRows = (summary.componentGroups?.groups ?? []).map((group) =>
+    `<tr><th scope="row">${esc(group.label)}</th><td class="num">${nf(group.findings)}</td><td class="num">${nf(group.verified_findings ?? 0)}</td><td class="num">${nf(group.inspection_evidence?.locator ?? 0)}</td><td class="num">${nf(group.pages_affected_sum)}</td></tr>`).join('');
+  const options = (items) => items.map((item) =>
+    `<option value="${esc(item.key)}">${esc(item.label)}${item.count ? ` (${nf(item.count)})` : ''}</option>`).join('');
+  const regionOptions = options((summary.regions?.regions ?? []).map((region) => ({ key: region.key, label: region.label, count: region.findings })));
+  const impactOptions = options(filterOptions(bugs ?? []).impacts);
+  const arrmRoleOptions = options(filterOptions(bugs ?? []).arrmRoles);
+  const widgetOptions = options((summary.widgetGroups?.groups ?? []).map((group) => ({
+    key: `widget:${group.widget}`,
+    label: group.label,
+    count: group.findings,
+  })));
+  const componentOptions = options((summary.componentGroups?.groups ?? []).map((group) => ({
+    key: `component:${group.implementation}`,
+    label: group.label,
+    count: group.findings,
+  })));
+  const engines = [...new Set((bugs ?? []).map((bug) => bug.engine_key))].sort();
+  const severities = ['Critical', 'Serious', 'Moderate', 'Minor'].filter((severity) => (bugs ?? []).some((bug) => bug.severity === severity));
+
+  const labels = {
+    showing: t('Showing @shown of @total finding(s).'),
+    none: t('No findings match these filters.'),
+    loadError: t('The finding data could not be loaded. The static list below remains available.'),
+    rule: t('Rule'),
+    engine: t('Engine'),
+    severity: t('Severity'),
+    wcag: t('WCAG'),
+    level: t('Level'),
+    pages: t('Pages affected'),
+    url: t('Affected URL'),
+    selector: t('Selector'),
+    element: t('Element'),
+    region: t('Region'),
+    impactGroup: t('Estimated impact group'),
+    allImpactGroups: t('All estimated impact groups'),
+    widget: t('Widget'),
+    widgetType: t('Widget type'),
+    allWidgets: t('All widgets'),
+    component: t('Component'),
+    evidence: t('Evidence'),
+    browser: t('Browser context'),
+    interaction: t('Interaction state'),
+    reproduction: t('Reproduction'),
+    steps: t('Steps to reproduce'),
+    examples: t('Stored examples'),
+    impact: t('Impact'),
+    fullReport: t('Open the full report'),
+    noEvidence: t('No element evidence was captured for this finding.'),
+    notCaptured: t('Not captured'),
+    evidenceUnavailable: t('unavailable'),
+    matches: t('match(es)'),
+    visible: t('visible'),
+    hidden: t('not visible'),
+    shadow: t('inside a shadow root'),
+    iframe: t('inside an iframe'),
+    truncated: t('sample truncated'),
+    complete: t('all examples stored'),
+    configured: t('configured'),
+    candidate: t('candidate'),
+    implementation: t('implementation'),
+    ownership: t('ownership not established'),
+    unattributed: t('unattributed'),
+    captured: t('captured'),
+    highlightOnSite: t('Highlight on site'),
+    highlightUnavailable: t('Live highlighting is unavailable.'),
+    aboutLiveInspection: t('About live inspection'),
+    highlightHint: t('Requires the VITAL Inspect bookmarklet; the panel scrolls to the element and reports when it is hidden in the current page state.'),
+    copyInspectCode: t('Copy inspection code'),
+    screenshot: t('Screenshot'),
+    screenshotAlt: t('Screenshot of the affected page'),
+    historical: t('Screenshot captured during the scan. The current website may differ.'),
+    viewportOnly: t('This is a viewport capture; the element may be outside it.'),
+    markerOutside: t('The affected element is outside this screenshot.'),
+    markerLabel: t('Highlighted affected element'),
+    hideAnnotations: t('Hide annotations'),
+    noScreenshot: t('No screenshot was captured for this page.'),
+    occurrence: t('Evidence occurrence'),
+    observation: t('Scan observation'),
+    stableReference: t('Stable reference'),
+    observed: t('Observed'),
+    manualValidation: t('Manual validation'),
+    automatedFinding: t('Automated finding.'),
+    copyMcpPrompt: t('Copy Playwright MCP prompt'),
+    viewScreenshot: t('View historical screenshot'),
+    startHere: t('Start here'),
+    notReviewed: t('Not reviewed. These prompts are specific to this finding; recording an answer does not establish conformance.'),
+    manualAutomated: t('This is automated evidence, not a confirmed failure. Test the task with a keyboard and, where relevant, a screen reader before recording an outcome.'),
+    reviewFields: t('Reviewer and testing environment'),
+    reviewer: t('Reviewer name'),
+    reviewStatus: t('Review status'),
+    reviewBrowser: t('Browser and version'),
+    reviewAt: t('Assistive technology'),
+    reviewViewport: t('Viewport or zoom'),
+    reviewFieldsNote: t('These values are written only into the downloaded JSON record. VITAL does not store them or submit them anywhere.'),
+    reviewStatuses: {
+      not_reviewed: t('Not reviewed'),
+      in_progress: t('In progress'),
+      confirmed: t('Confirmed'),
+      not_reproduced: t('Not reproduced'),
+      false_positive: t('False positive'),
+      needs_investigation: t('Needs investigation'),
+    },
+    downloadReview: t('Download manual review record'),
+    reviewNotSaved: t('Not saved by VITAL; fill it in and share it through your own process.'),
+    downloadTest: t('Download Playwright test'),
+    testReady: t('Generated on demand; it is not run automatically.'),
+    reproReasons: {
+      'element-evidence-unavailable': t('no element evidence was captured'),
+      'element-not-found-at-scan': t('the element was not found when the page was scanned'),
+      'selector-not-replayable': t('the recorded selector cannot be replayed'),
+      'url-redacted-for-publication': t('the published URL is redacted'),
+      'only-axe-core-findings-can-be-replayed': t('only axe-core findings can be replayed'),
+    },
+  };
+  const script = explorerScript({ bugsJson, reportHref: pageHref('accessibility'), labels });
+
+  const body = `
+<h1>${esc(target.domain)}: ${t('Findings explorer')} — ${t('week @week', { '@week': esc(summary.week) })}</h1>
+${subnav('explorer')}
+${evidenceCoverageSection(summary)}
+${falsePositiveHelp()}
+<p class="meta">${t('Inspect the week\'s findings by region, widget type and component. This view reads the same sanitized evidence as the <a href="@report">Accessibility report</a>; the full finding detail stays there and every row links back to it.', { '@report': esc(pageHref('accessibility')) })}</p>
+${liveInspectHelp()}
+<section aria-labelledby="h-explorer-find">
+<h2 id="h-explorer-find">${t('Find and inspect a finding')}</h2>
+<p class="meta">${t('The filters and detail panel need JavaScript. Without it, the complete static index below remains available and links to each finding\'s full report.')}</p>
+<form id="explorer-filters" class="explorer-filters" hidden>
+  <div class="explorer-field"><label for="explorer-region">${t('Region')}</label><select id="explorer-region"><option value="">${t('All regions')}</option>${regionOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-impact">${t('Estimated impact group')}</label><select id="explorer-impact"><option value="">${t('All estimated impact groups')}</option>${impactOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-arrm-role">${t('ARRM role')}</label><select id="explorer-arrm-role"><option value="">${t('All ARRM roles')}</option>${arrmRoleOptions}</select></div>
+  <p class="meta">${t('Impact groups are estimated from the WCAG-to-population mapping, not counts of people affected. Filtering is sample-based.')}</p>
+  <div class="explorer-field"><label for="explorer-widget">${t('Widget type')}</label><select id="explorer-widget"><option value="">${t('All widgets')}</option>${widgetOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-component">${t('Component')}</label><select id="explorer-component"><option value="">${t('All components')}</option>${componentOptions}</select></div>
+  <div class="explorer-field"><label for="explorer-engine">${t('Engine')}</label><select id="explorer-engine"><option value="">${t('All engines')}</option>${options(engines.map((engine) => ({ key: engine, label: engine === 'axe-core' ? 'axe' : engine })))}</select></div>
+  <div class="explorer-field"><label for="explorer-severity">${t('Severity')}</label><select id="explorer-severity"><option value="">${t('All severities')}</option>${options(severities.map((severity) => ({ key: severity, label: t(severity) })))}</select></div>
+  <div class="explorer-field"><label for="explorer-query">${t('Search')}</label><input id="explorer-query" type="search" autocomplete="off"></div>
+  <button type="button" id="explorer-clear" class="triage-btn">${t('Clear filters')}</button>
+</form>
+<p id="explorer-status" role="status" aria-live="polite" class="meta"></p>
+<ul id="explorer-results" class="explorer-results"></ul>
+<section id="explorer-detail" class="explorer-detail" aria-labelledby="explorer-detail-title" tabindex="-1" hidden>
+  <h3 id="explorer-detail-title"></h3>
+  <p><button type="button" id="explorer-close" class="triage-btn">${t('Close details')}</button></p>
+  <div id="explorer-detail-body"></div>
+</section>
+</section>
+<section id="explorer-static" aria-labelledby="h-explorer-static">
+<h2 id="h-explorer-static">${t('All findings this week')}</h2>
+<p class="meta">${t('Static index (no JavaScript needed). Every finding is placed by its first stored example, a sample; pages are the finding\'s affected-page count.')}${(bugs?.length ?? 0) > EXPLORER_ROW_LIMIT ? ` ${t('Showing the first @shown of @total; the CSV and JSON downloads on the Accessibility report have the complete list.', { '@shown': nf(EXPLORER_ROW_LIMIT), '@total': nf(bugs.length) })}` : ''}</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Findings table'))}">
+<table>
+<caption class="visually-hidden">${t('Findings with region, widget and component attribution')}</caption>
+<thead><tr><th scope="col">${t('Finding')}</th><th scope="col">${t('Severity')}</th><th scope="col">${t('Engine')}</th><th scope="col">${t('Region')}</th><th scope="col">${t('Widget type')}</th><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Pages affected')}</th></tr></thead>
+<tbody>${rows || `<tr><td colspan="7">${t('No accessibility findings this week.')}</td></tr>`}</tbody>
+</table>
+</div>
+</section>
+${summary.regions?.regions?.length ? `<section aria-labelledby="h-explorer-regions">
+<h2 id="h-explorer-regions">${t('By region')}</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Region table'))}">
+<table><caption class="visually-hidden">${t('Findings by landmark region')}</caption>
+<thead><tr><th scope="col">${t('Region')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
+<tbody>${regionRows}</tbody></table>
+</div>
+</section>` : ''}
+${summary.widgetGroups?.groups?.length ? `<section aria-labelledby="h-explorer-widgets">
+<h2 id="h-explorer-widgets">${t('By widget type')}</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Widget table'))}">
+<table><caption class="visually-hidden">${t('Findings by structural widget type')}</caption>
+<thead><tr><th scope="col">${t('Widget type')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Pages (sum)')}</th><th scope="col">${t('Components')}</th></tr></thead>
+<tbody>${widgetRows}</tbody></table>
+</div>
+</section>` : ''}
+${summary.componentGroups?.groups?.length ? `<section aria-labelledby="h-explorer-components">
+<h2 id="h-explorer-components">${t('By component')}</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('Component table'))}">
+<table><caption class="visually-hidden">${t('Findings by configured shared component')}</caption>
+<thead><tr><th scope="col">${t('Component')}</th><th scope="col" class="num">${t('Findings')}</th><th scope="col" class="num">${t('Verified findings')}</th><th scope="col" class="num">${t('With locator')}</th><th scope="col" class="num">${t('Pages (sum)')}</th></tr></thead>
+<tbody>${componentRows}</tbody></table>
+</div>
+</section>` : ''}
+<p class="meta">${t('Playwright tests are generated on demand from recorded evidence; screenshots and manual review records are not available yet. See the finding evidence roadmap in the repository.')}</p>`;
+
+  return layout({
+    title: `${target.domain} Findings explorer ${summary.week} | vital-scans`,
+    page: 'explorer',
+    breadcrumb: `<li><a href="../../../index.html">${esc(t('All domains'))}</a></li><li><a href="index${localeSuffix()}.html">${esc(target.domain)} ${esc(summary.week)}</a></li><li aria-current="page">${t('Findings explorer')}</li>`,
+    body,
+    depth: 3,
+    extraScript: script + inspectCopyScript(),
+    apiFinding: { key: target.key, week: summary.week },
+    target,
+  });
+}

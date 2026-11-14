@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveLanguages, loadConfig, ciDataRepo } from '../../src/lib/config.js';
+import { resolveLanguages, loadConfig, ciDataRepo, resolveTargetQuery } from '../../src/lib/config.js';
 
 test('config: defaults to [en]/en when nothing is set', () => {
   const r = resolveLanguages(undefined, undefined, 'x');
@@ -271,4 +271,74 @@ targets:
   assert.equal(c.targets[1].pageFamilies[0].route, '/feedback');
   assert.throws(() => loadConfig('targets:\n  - domain: a.example\n    component_signatures: [{ id: x }]\n'), /target a\.example: component_signatures\[0\]: needs at least one of/);
   assert.throws(() => loadConfig('targets:\n  - domain: a.example\n    page_families: [{ id: x, route: nope }]\n'), /route must be a path/);
+});
+
+test('config: evaluation_report defaults to openacr and accepts wcag-em', () => {
+  const base = loadConfig('targets:\n  - domain: example.gov\n').targets[0];
+  assert.equal(base.evaluationReport, 'openacr', 'US default remains OpenACR');
+  const nonUs = loadConfig('targets:\n  - domain: example.org\n    evaluation_report: wcag-em\n').targets[0];
+  assert.equal(nonUs.evaluationReport, 'wcag-em');
+  const both = loadConfig('evaluation_report: both\ntargets:\n  - domain: example.org\n').targets[0];
+  assert.equal(both.evaluationReport, 'both', 'global default is inherited');
+  assert.throws(() => loadConfig('targets:\n  - domain: example.org\n    evaluation_report: vpat\n'), /evaluation_report must be openacr, wcag-em or both/);
+});
+
+
+test('config: url_ignore_params is optional, trimmed and validated', () => {
+  assert.deepEqual(loadConfig('targets:\n  - domain: example.gov\n').targets[0].urlIgnoreParams, []);
+  const target = loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: [page, " sort "]\n').targets[0];
+  assert.deepEqual(target.urlIgnoreParams, ['page', 'sort']);
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: page\n'), /url_ignore_params must be a list/);
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    url_ignore_params: [""]\n'), /url_ignore_params must be a list/);
+});
+
+test('config: retention policy preserves legacy weeks unless explicitly configured', () => {
+  const legacy = loadConfig('defaults:\n  retention_weeks: 2\ntargets:\n  - domain: example.gov\n').targets[0];
+  assert.equal(legacy.retentionSource, 'retention_weeks');
+  assert.equal(legacy.retentionPolicy.live.mode, 'fixed');
+  assert.equal(legacy.retentionPolicy.live.weeks, 2);
+
+  const explicit = loadConfig(`
+defaults:
+  retention_weeks: 2
+  retention:
+    profile: research
+    live: { mode: fixed, weeks: 8 }
+targets:
+  - domain: example.gov
+`).targets[0];
+  assert.equal(explicit.retentionSource, 'retention');
+  assert.equal(explicit.retentionPolicy.profile, 'research');
+  assert.equal(explicit.retentionPolicy.live.weeks, 8);
+  assert.match(explicit.retentionWarnings.join(' '), /superseded/);
+
+  const targetOverride = loadConfig(`
+targets:
+  - domain: example.gov
+    retention:
+      profile: preserve
+      live: { mode: fixed, weeks: 12 }
+`).targets[0];
+  assert.equal(targetOverride.retentionPolicy.profile, 'preserve');
+  assert.equal(targetOverride.retentionPolicy.live.weeks, 12);
+
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    retention:\n      profile: impossible\n'), /Unknown retention profile/);
+  assert.throws(() => loadConfig('targets:\n  - domain: example.gov\n    retention:\n      live: { mode: adaptive, minimum_weeks: 18, maximum_weeks: 4 }\n'), /invalid adaptive retention week range/);
+});
+
+test('config: resolveTargetQuery accepts a unique parent domain and lists ambiguous ones', () => {
+  const config = {
+    targets: [
+      { key: 'www.cms.gov', domain: 'www.cms.gov' },
+      { key: 'data.cms.gov', domain: 'data.cms.gov' },
+      { key: 'openpaymentsdata.cms.gov', domain: 'openpaymentsdata.cms.gov' },
+      { key: 'www.medicaid.gov', domain: 'www.medicaid.gov' },
+    ],
+  };
+  assert.equal(resolveTargetQuery(config, 'www.medicaid.gov').key, 'www.medicaid.gov');
+  assert.equal(resolveTargetQuery(config, 'https://www.medicaid.gov/').key, 'www.medicaid.gov');
+  assert.throws(() => resolveTargetQuery(config, 'cms.gov'), /ambiguous.*www\.cms\.gov.*data\.cms\.gov/s);
+  assert.throws(() => resolveTargetQuery(config, 'missing.gov'), /Configured keys/);
+  // A parent domain with one match resolves.
+  assert.equal(resolveTargetQuery({ targets: [{ key: 'www.example.gov', domain: 'www.example.gov' }] }, 'example.gov').key, 'www.example.gov');
 });

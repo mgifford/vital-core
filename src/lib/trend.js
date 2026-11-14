@@ -55,6 +55,17 @@ export function trendSummary(summary) {
       components: (s.sharedComponents.components ?? []).map((c) => without(c, ['findings'])),
     };
   }
+  // Region/component groupings keep their counts in the trend but not their
+  // representative URLs, which the public weekly series does not need.
+  if (s.regions) {
+    s.regions = { ...s.regions, regions: (s.regions.regions ?? []).map((region) => without(region, ['representative'])) };
+  }
+  if (s.widgetGroups) {
+    s.widgetGroups = { ...s.widgetGroups, groups: (s.widgetGroups.groups ?? []).map((group) => without(group, ['representative'])) };
+  }
+  if (s.componentGroups) {
+    s.componentGroups = { ...s.componentGroups, groups: (s.componentGroups.groups ?? []).map((group) => without(group, ['representative'])) };
+  }
   if (s.linkCheck) s.linkCheck = { ...without(s.linkCheck, ['broken']), brokenCount: s.linkCheck.brokenCount ?? s.linkCheck.broken?.length ?? 0 };
   if (Array.isArray(s.errorPages)) {
     s.errorStatuses = {};

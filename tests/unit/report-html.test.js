@@ -1,7 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { renderAccessibilityPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS } from '../../src/report-html.js';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS, writeAsset } from '../../src/report-html.js';
 import { buildCooccurrence } from '../../src/lib/tech-findings.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
@@ -11,6 +14,9 @@ test('related-links: a domain page links the JSON API, API.md, and MCP.md in <he
     standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
   };
   const html = renderStandardsPage(target, summary);
+  assert.match(html, /rel="icon" href="[^"]*favicon\.svg" type="image\/svg\+xml"/, 'pages advertise the SVG favicon');
+  assert.match(html, /rel="icon" href="[^"]*favicon\.png" type="image\/png" sizes="64x64"/, 'pages provide a PNG fallback');
+  assert.match(html, /class="brand-mark" src="[^"]*favicon\.svg" alt="" width="28" height="28"/, 'the header carries the brand mark with empty alt text');
   assert.match(
     html,
     /<link rel="alternate" type="application\/json" href="\.\.\/\.\.\/\.\.\/api\/v1\/d\/2026-W24\/findings\.json" title="This page's findings as JSON">/,
@@ -40,6 +46,7 @@ test('related-links: the fleet index has no domain-specific JSON alternate (no s
   // The help links (API.md/MCP.md) are unconditional, unlike the JSON alternate.
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md"/);
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
+  assert.match(html, /We scan thousands of pages per site over each week, with pauses so we do not overload the site\./);
 });
 
 test('webmcp bridge: reaches every domain sub-page via layout(), not just Accessibility/index', () => {
@@ -237,6 +244,8 @@ test('renderDomainReport links to History & Trends instead of embedding trend ch
   // overview links there rather than embedding them.
   assert.match(html, /History &amp; Trends →/);
   assert.match(html, /href="history\.html"/);
+  assert.match(html, /How much was tested/, 'coverage summary is visible on the domain report');
+  assert.match(html, /Coverage is not the same as conformance/, 'coverage does not imply conformance');
   assert.doesNotMatch(html, /Pages affected by axe severity over 2 weeks/);
   assert.doesNotMatch(html, /Lighthouse category scores over 2 weeks/);
   assert.doesNotMatch(html, /Score trends/);
@@ -260,6 +269,11 @@ test('renderLighthousePage embeds the Lighthouse category trend chart when multi
       scores: { performance: 76, accessibility: 79, bestPractices: 73, seo: 78, agentic: null },
       metrics: { firstContentfulPaintMs: 1180, largestContentfulPaintMs: 2210, speedIndexMs: 2800, totalBlockingTimeMs: 120, cumulativeLayoutShift: 0.11 },
     }],
+    recommendations: [{
+      id: 'render-blocking-resources', category: 'performance', title: 'Eliminate render-blocking resources',
+      pages: 3, savingsBytes: 90000, savingsMs: 3000,
+      savingsBytesMedian: 30000, savingsBytesP75: 45000, savingsMsMedian: 1000, savingsMsP75: 1500,
+    }],
   };
   const summary = { week: '2026-W25', lighthouse: lh };
   const series = [
@@ -271,6 +285,9 @@ test('renderLighthousePage embeds the Lighthouse category trend chart when multi
   assert.match(withHistory, /Lighthouse category scores over 2 weeks/, 'trend chart embedded with 2+ weeks of series data');
   assert.match(withHistory, /History &amp; Trends →/, 'still links to the full History \\& Trends page');
   assert.match(withHistory, /data-parachart="/, 'chart carries a ParaCharts manifest, same as every other trend chart');
+  assert.match(withHistory, /Median per page/, 'shows a per-page median saving');
+  assert.match(withHistory, /75th percentile/, 'shows a per-page 75th percentile');
+  assert.match(withHistory, /Total transfer \(sampled pages\)/, 'labels the sample total as a total, not a visitor saving');
 
   // Single-week (or omitted) series: no trend section, no crash, no dangling heading.
   const singleWeek = renderLighthousePage(target, summary, null, null, [series[1]]);
@@ -361,6 +378,7 @@ test('renderDomainReport Layer-1: three deltas, biggest-win callout, demoted det
   // Biggest-win callout links to the top-ranked finding's canonical location.
   assert.match(html, /class="callout callout-win"/);
   assert.match(html, /Biggest available win/);
+  assert.match(html, /0–100; higher is better/);
   assert.match(html, /<a href="accessible\.html#VS-abc12345"><strong>Images must have alternative text<\/strong><\/a>/);
   // The callout headlines the highest-priority finding (Critical, 7 pages), not the Serious one.
   const callout = html.match(/<aside class="callout callout-win"[\s\S]*?<\/aside>/)[0];
@@ -502,6 +520,16 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   const summary = {
     week: '2026-W25',
     pagesScanned: 4,
+    evidenceCoverage: {
+      findings_total: 1, findings_with_detailed_evidence: 1, findings_without_detailed_evidence: 0,
+      element_evidence: { captured: 1, not_captured: 0, not_applicable: 0, unsupported_dom_boundary: 0, no_stored_examples: 0 },
+      usable_locator: { captured: 1, unavailable: 0 },
+      semantic_region: { captured: 1, no_containing_landmark: 0, unavailable: 0 },
+      widget: { captured: 0, no_widget: 1, unavailable: 0 },
+      component: { attributed: 0, unattributed: 1 },
+      screenshot: { available: 0, unavailable: 1 },
+      reproduction: { eligible: 1, unavailable: 0 },
+    },
     axe: { rules: { 'image-alt': { count: 2, pages: 2, help: 'Images must have alt text', helpUrl: 'https://example.gov/axe/image-alt', tags: ['wcag111'], examplePages: ['https://example.gov/a'], affectedPages: [{ url: 'https://example.gov/a', instances: 2 }], instances: [{ url: 'https://example.gov/a', target: 'img', html: '<img>' }], impact: 'serious' } } },
     alfa: { rules: { 'sia-r12': { count: 1, pages: 1, ruleUrl: 'https://example.gov/alfa/sia-r12', examplePages: ['https://example.gov/b'], affectedPages: [{ url: 'https://example.gov/b', instances: 1 }], instances: [{ url: 'https://example.gov/b', target: 'a', html: '<a>' }], impact: 'serious' } } },
     consensus: {
@@ -514,6 +542,8 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
       instance_id: 'VS-12345678',
       pattern_id: 'VS-12345678',
       url: 'https://example.gov/a',
+      selector: 'img.hero',
+      element: { available: true, tag: 'img', role: null, name: null, name_source: 'none', text_anchor: 'Images must have alternative text' },
       xpath: 'img',
       wcag_sc: '1.1.1',
       wcag_name: 'Non-text Content',
@@ -537,6 +567,7 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
       steps_to_reproduce: ['Open https://example.gov/a.', 'Locate the affected element.', 'Confirm the axe-core finding for rule image-alt against WCAG 1.1.1 Non-text Content.'],
       remediation_tip: null,
       suggested_fix: 'See remediation guidance: https://example.gov/axe/image-alt',
+      arrm: { roles: ['Content Authoring', 'Front-End Development'], tasks: [{ id: 'IMG-001', task: 'Informative alternate text is provided.', main_role: 'Author', primary: ['Content Authoring'], starter: true }], source_revision: '70f9d027d7a87ab72058ded2037915a76795e46a' },
       default_visible: true,
       priority_tier: 0,
       cross_engine_correlations: [{
@@ -556,6 +587,36 @@ test('renderAccessibilityPage shows engine and rule id in bug summaries', () => 
   assert.match(html, /<span class="rule-badge">image-alt<\/span>/);
   assert.match(html, /Images must have alternative text/);
   assert.match(html, /Cross-engine ACT evidence/);
+  assert.match(html, /Highlight on site/, 'finding links to a live highlight');
+  assert.match(html, /Automated finding — unverified/, 'each finding is labelled unverified');
+  assert.match(html, /false-positive-help/, 'false-positive guidance is linked from the report');
+  assert.match(html, /#vital-inspect=/, 'the live link carries the finding payload');
+  assert.match(html, /id="live-inspect-help"/, 'the bookmarklet install section has a stable anchor');
+  assert.match(html, /data-inspect-version="2"/, 'the bookmarklet advertises its version');
+  assert.match(html, /Updated November 2026/, 'the install guide tells earlier installers to replace it');
+  assert.match(html, /Evidence coverage/, 'the evidence coverage section is rendered');
+  assert.match(html, /no containing landmark/, 'missing landmark is separate from unavailable evidence');
+  assert.match(html, /class="bookmarklet-link bookmarklet-button" href="javascript:/, 'the VITAL Inspect bookmarklet is offered');
+  assert.match(html, /bookmarklet-visual/, 'the bookmarks-bar visual is present');
+  assert.match(html, /Which inspection should I use\?/, 'inspection methods are distinguished');
+  assert.match(html, /Copy bookmarklet/, 'the manual copy fallback is present');
+  assert.match(html, /class="inspect-copy" data-inspect-code="/, 'a URL-free inspection code is offered');
+  assert.match(html, /Copy inspection code/, 'the code fallback is labelled');
+  assert.match(html, /Copy Playwright MCP prompt/, 'an optional Playwright MCP investigation prompt is offered');
+  assert.match(html, /ARRM roles/, 'the finding shows ARRM role responsibilities');
+  assert.match(html, /Content Authoring/, 'the mapped ARRM role is visible');
+  assert.match(html, /not an ownership assignment/, 'ARRM mapping is not presented as assignment');
+  assert.match(html, /More inspection options/, 'secondary inspection controls are collapsed');
+  assert.match(html, /Opens the page first\. Then click the VITAL Inspect bookmark/, 'the two-step live highlight is explicit');
+  assert.match(html, /Copy selector/, 'the representative selector can be copied');
+  assert.match(html, /Copy page URL/, 'the page URL can be copied');
+  assert.match(html, /class="bug-meta mcp-only"/, 'the MCP note is marked Chromium-only');
+  assert.match(html, /data-mcp-prompt=/, 'the MCP prompt carries the finding locator');
+  assert.match(html, /Highlight text on site/, 'a native text-fragment link is offered');
+  assert.ok(html.indexOf('#:~:text=') < html.indexOf('class="inspect-open"'), 'the no-install text link is offered before the bookmarklet');
+  assert.match(html, /inspect-launch-status|class="inspect-open"/, 'a fallback status is attached to the live-page action');
+  assert.match(html, /#:~:text=/, 'the text link carries a text directive');
+  assert.match(html, /strict script-src Content-Security-Policy/, 'the CSP limitation is documented');
   assert.match(html, /ACT rule\/page group\(s\) overlap between engines/);
   assert.match(html, /A matching ACT rule and page shows rule\/page overlap only/);
   assert.doesNotMatch(html, /same issue is often caught by both/);
@@ -1365,4 +1426,157 @@ test('scope of analysis explains consent handling: dialog audited on the first p
   const html = renderAccessibilityPage({ key: 'd', domain: 'd' }, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
   assert.match(html, /Consent dialog handling \(the scanner chose "reject" once per run\): audited with the dialog open on 1 pages, after the dialog had been dismissed on 2 pages, with no dialog seen on 1 pages\./);
   assert.match(html, /recorded on the first page of each run, not on every page/);
+});
+
+test('renderAccessibilityPage groups findings by page region, sample-based and accessible', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25', pagesScanned: 4, pagesAudited: 4,
+    axe: { rules: {} }, alfa: { rules: {} }, deprecatedHtml: { rules: {} },
+    componentClusters: null, consensus: null,
+    regions: {
+      basis: 'stored_examples',
+      findings_total: 3,
+      findings_with_region: 3,
+      findings_unclassified: 1,
+      findings_without_evidence: 1,
+      regions: [
+        { key: 'main|', role: 'main', name: null, label: 'main (unnamed)', unclassified: false, findings: 2, pages_affected_sum: 5, instances_total: 8, components: [{ id: 'cmp-consent', findings: 1 }], representative: [] },
+        { key: 'unclassified', role: null, name: null, label: 'unclassified (no landmark)', unclassified: true, findings: 1, pages_affected_sum: 1, instances_total: 1, components: [], representative: [] },
+      ],
+      csv: 'www.example.gov_16JUN2026_regions.csv',
+    },
+  };
+  const bug = {
+    instance_id: 'VS-region01', pattern_id: 'VS-region-p', url: 'https://example.gov/a', xpath: 'main',
+    wcag_sc: '1.3.1', wcag_name: 'Info and Relationships', wcag_level: 'A', wcag_version: '2.0',
+    wcag_category: 'WCAG 2.0 A', rule_id: 'region', rule_label: 'Landmark', engine_key: 'axe-core',
+    tool: 'axe-core', rule_url: null, severity: 'Moderate',
+    frequency: { instances: 2, pages_affected: 2, total_pages_scanned: 4 },
+    summary: 'Landmark', description: 'd', examples: [], example_pages: [], affected_pages: [],
+    impact: { groups: [], summary: '' }, testing_environment: 'e', steps_to_reproduce: [],
+    remediation_tip: null, suggested_fix: 'f', default_visible: true, priority_tier: 0,
+    obligation: 'required', handling: 'report',
+    manual_validation: { status: 'not_reviewed', prompts: ['Test with a keyboard only.'], environment_note: 'Use the conditions that apply.', limitations: ['Automated tools find a subset.'] },
+  };
+  const html = renderAccessibilityPage(target, summary, [bug], { byRule: {}, bugsAll: null }, { keyPages: [] });
+  assert.match(html, /id="h-scope-regions">Findings by page region/);
+  assert.match(html, /<th scope="row">main \(unnamed\)<\/th>/);
+  assert.match(html, /<th scope="row">unclassified \(no landmark\)<\/th>/);
+  assert.match(html, /cmp-consent/);
+  assert.match(html, /<caption class="visually-hidden">Findings grouped by the landmark region/);
+  assert.match(html, /Download region CSV/);
+  // Sample-based wording, not a claim about every instance.
+  assert.match(html, /sample-based counts/);
+  assert.match(html, /1 finding\(s\) had no landmark; 1 could not be located/);
+  assert.match(html, /<dt>Manual validation<\/dt><dd>Not reviewed\./);
+  assert.match(html, /Test with a keyboard only\./);
+});
+
+test('renderExplorerPage has a no-JS static index, filters and a detail panel', () => {
+  const target = { key: 'www.example.gov', domain: 'www.example.gov' };
+  const summary = {
+    week: '2026-W25', pagesScanned: 4,
+    regions: { basis: 'stored_examples', findings_total: 1, regions: [{ key: 'main|', role: 'main', name: null, label: 'main (unnamed)', findings: 1, pages_affected_sum: 2 }] },
+    componentGroups: { basis: 'stored_examples', groups: [{ key: 'component:cmp', label: 'Consent dialog', attribution: 'configured', implementation: 'cmp', findings: 1, verified_findings: 1, pages_affected_sum: 2 }] },
+    widgetGroups: { basis: 'stored_examples', groups: [{ key: 'widget:dialog', widget: 'dialog', label: 'dialog', attribution: 'widget-type', implementation: null, findings: 1, pages_affected_sum: 2, components: [{ id: 'cmp', findings: 1 }] }] },
+  };
+  const bug = {
+    instance_id: 'VS-explore1', pattern_id: 'VS-p', rule_id: 'button-name',
+    rule_label: 'Buttons must have discernible text', summary: 'Button name', url: 'https://example.gov/a',
+    engine_key: 'axe-core', severity: 'Serious', wcag_sc: '4.1.2', wcag_name: 'Name, Role, Value', wcag_level: 'A',
+    frequency: { instances: 2, pages_affected: 2, total_pages_scanned: 4 },
+    semantic_context: { nearest_region: { role: 'main', name: null, unnamed: true }, region_ancestry: [{ role: 'main', name: null }], widget: null, path: [{ role: 'main', name: null }], unclassified: false },
+    component_scope: { component_id: 'cmp', component_label: 'Consent dialog', implementation: 'cmp' },
+    element: { available: true, tag: 'button', role: null, name: 'Opt-Outs', selector_matches: 1, visible: true, shadow: false, iframe: false },
+    evidence: { element_identity: 'captured', examples_captured: 1, example_limit: 5, examples_truncated: true },
+    browser_context: { viewport: { width: 1280, height: 900 }, color_scheme: 'light', forced_colors: 'none', reduced_motion: 'no-preference', locale: 'en' },
+    examples: [{ url: 'https://example.gov/a', selector: 'button', html_snippet: '<button></button>' }],
+    steps_to_reproduce: ['Open the page.'], impact: { summary: 'Affects screen reader users.' },
+  };
+  const html = renderExplorerPage(target, summary, [bug], { bugsJson: 'example_bugs.json' });
+  assert.match(html, /id="explorer-static"/, 'static index present');
+  assert.match(html, /href="accessible\.html#VS-explore1"/, 'static row links to the canonical finding');
+  assert.match(html, /<tr id="VS-explore1">/, 'static row is a no-JS deep-link target');
+  assert.match(html, /<label for="explorer-region">/, 'filters have visible labels');
+  assert.match(html, /id="explorer-status"[^>]*aria-live="polite"/, 'status is a live region');
+  assert.match(html, /example_bugs\.json/, 'client fetches the published bugs JSON');
+  assert.match(html, /main \(unnamed\)/, 'region column/count present');
+  assert.match(html, /Consent dialog/, 'component table present');
+  assert.match(html, /<label for="explorer-widget">Widget type<\/label>/, 'widget filter is labelled');
+  assert.match(html, /<label for="explorer-impact">Estimated impact group<\/label>/, 'impact group filter is labelled');
+  assert.match(html, /id="explorer-impact"/, 'impact group filter is present');
+  assert.match(html, /id="h-explorer-widgets">By widget type/, 'widget table present');
+  assert.match(html, /<th scope="col">Widget type<\/th>/, 'static index has a widget column');
+  assert.match(html, /<caption class="visually-hidden">/, 'tables have captions');
+  assert.match(html, /manual-reviewer/, 'manual review captures the reviewer');
+  assert.match(html, /manual-review-status/, 'manual review captures the review status');
+  assert.match(html, /Reviewer name/, 'review fields have visible labels');
+  assert.match(html, /Automated finding\./, 'detail starts with a concise automated-finding lead');
+  assert.match(html, /false-positive-help/, 'the report carries false-positive/false-assurance guidance');
+  assert.match(html, /detail-actions/, 'primary actions are grouped before technical evidence');
+  assert.match(html, /copyMcpPrompt|Copy Playwright MCP prompt/, 'the Explorer offers the MCP prompt');
+  assert.match(html, /explorer-manual/, 'manual validation is a direct anchor');
+  assert.match(html, /automated evidence, not a confirmed failure/i, 'manual prompts distinguish automated evidence');
+  // Empty state is honest rather than an empty table.
+  const empty = renderExplorerPage(target, { week: '2026-W25', pagesScanned: 1 }, []);
+  assert.match(empty, /No accessibility findings this week\./);
+});
+
+
+test('writeAsset emits the SVG favicon alongside the stylesheet', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-favicon-'));
+  try {
+    writeAsset(dir);
+    const svg = fs.readFileSync(path.join(dir, 'favicon.svg'), 'utf8');
+    assert.match(svg, /^<svg /, 'valid SVG document');
+    assert.match(svg, /<title id="vital-mark-title">vital-scans<\/title>/, 'mark has an accessible title');
+    assert.match(svg, /#083b3d/, 'deep-teal field');
+    assert.match(svg, /#e0a526/, 'amber ledger rule');
+    const png = fs.readFileSync(path.join(dir, 'favicon.png'));
+    assert.equal(png.subarray(1, 4).toString(), 'PNG', 'PNG fallback copied');
+    assert.ok(fs.existsSync(path.join(dir, 'style.css')), 'stylesheet still written');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('accessibility page offers a WCAG-EM report when configured', () => {
+  const target = { key: 'example.org', domain: 'example.org' };
+  const summary = {
+    week: '2026-W46', pagesScanned: 2, pagesAudited: 2,
+    axe: { version: '4.14.0', pagesScanned: 2, rules: {} },
+    alfa: { version: '0.117.0', pagesScanned: 1, rules: {} },
+  };
+  const withReport = renderAccessibilityPage(target, summary, [], {}, { wcagEm: 'wcag-em.html' });
+  assert.match(withReport, /Draft automated WCAG-EM-aligned evaluation/);
+  assert.match(withReport, /href="wcag-em\.html"/);
+  assert.match(withReport, /not a WCAG-EM representative sample/);
+  const without = renderAccessibilityPage(target, summary, [], {}, {});
+  assert.doesNotMatch(without, /WCAG-EM-aligned evaluation/);
+});
+
+test('the ACR download is presented as draft data, not a completed report', () => {
+  const target = { key: 'example.gov', domain: 'example.gov' };
+  const summary = {
+    week: '2026-W46', pagesScanned: 10, pagesAudited: 10,
+    axe: { version: '4.14.0', pagesScanned: 10, rules: {} },
+    alfa: { version: '0.117.0', pagesScanned: 5, rules: {} },
+  };
+  const html = renderAccessibilityPage(target, summary, [], {}, { acrYaml: 'acr.yaml' });
+  assert.match(html, /Download OpenACR-formatted data \(draft\)/);
+  assert.match(html, /not a completed ACR/);
+  assert.doesNotMatch(html, />Download ACR</);
+});
+
+test('the report discloses pages where Alfa was skipped as too large', () => {
+  const target = { key: 'example.gov', domain: 'example.gov' };
+  const summary = {
+    week: '2026-W46', pagesScanned: 10, pagesAudited: 10,
+    axe: { version: '4.14.0', pagesScanned: 10, rules: {} },
+    alfa: { version: '0.117.0', pagesScanned: 9, skippedPages: 1, rules: {} },
+  };
+  const html = renderAccessibilityPage(target, summary, [], {}, {});
+  assert.match(html, /Alfa skipped 1 page\(s\) that were too large/);
+  assert.match(html, /engine limitation, not a clean result/);
 });

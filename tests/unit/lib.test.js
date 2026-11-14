@@ -23,6 +23,7 @@ import { buildCooccurrence, lift, rankAssociations, onNearlyEveryPage, mergeFlee
 import { rollupThirdParty } from '../../src/lib/third-party-rollup.js';
 import { buildLineManifest } from '../../src/lib/paracharts.js';
 import { extractAudits, isDetachedTargetError, isClosedSessionError } from '../../src/engines/lighthouse.js';
+import { runAlfa, ALFA_MAX_ELEMENTS } from '../../src/engines/alfa.js';
 import { assessAltText, isAltProblem, ALT_VERDICTS } from '../../src/lib/alt-text.js';
 import { loadPriorityUrls } from '../../src/lib/top-tasks.js';
 import { prioritizeAccessibilityBugs } from '../../src/lib/accessibility-priority.js';
@@ -31,6 +32,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import YAML from 'yaml';
 
 test('normalizeUrl: identity is stable and tracking-free', () => {
   const base = 'https://example.gov/';
@@ -39,6 +41,11 @@ test('normalizeUrl: identity is stable and tracking-free', () => {
     'https://example.gov/a/b?a=2&z=1'
   );
   assert.equal(normalizeUrl('https://EXAMPLE.gov:443/path/', base, 'example.gov'), 'https://example.gov/path');
+  assert.equal(
+    normalizeUrl('https://example.gov/list?page=2&sort=date&utm_source=x', 'https://example.gov/', 'example.gov', undefined, ['page']),
+    'https://example.gov/list?sort=date',
+    'configured url_ignore_params drops only the named query parameter'
+  );
   assert.equal(normalizeUrl('https://other.gov/x', base, 'example.gov'), null, 'off-host rejected');
   assert.equal(normalizeUrl('/file.pdf', base, 'example.gov'), null, 'binary rejected');
   assert.equal(normalizeUrl('mailto:x@y.z', base, 'example.gov'), null);
@@ -1374,6 +1381,33 @@ test('buildAcrData: zero-page failure is partially-supports, not supports', () =
   assert.equal(sc111.pagesAffected, 0);
 });
 
+test('buildAcrData: no automated failure is never reported as supports', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 50,
+    axe: { pagesScanned: 50, rules: {} },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap, incomplete } = buildAcrData(summary);
+  assert.ok([...scMap.values()].every((entry) => entry.adherence !== 'supports'), 'no supports from absence of findings');
+  assert.equal(scMap.get('1.4.3').adherence, 'not-evaluated');
+  assert.ok(incomplete.includes('1.4.3'));
+  assert.ok(incomplete.length > 20, 'the draft names its unverified A/AA criteria');
+});
+
+test('buildAcrData: 4.1.1 is not part of the WCAG 2.2 A/AA catalog', () => {
+  const summary = {
+    week: '2026-W25', pagesScanned: 50,
+    axe: { pagesScanned: 50, rules: {} },
+    alfa: { pagesScanned: 0, rules: {} },
+  };
+  const { scMap } = buildAcrData(summary);
+  assert.equal(scMap.has('4.1.1'), false, 'Parsing was removed in WCAG 2.1 and is not a WCAG 2.2 criterion');
+  for (const sc of ['1.3.2', '3.1.1', '3.2.2', '3.2.6', '3.3.7']) {
+    assert.ok(scMap.has(sc), `${sc} remains in the WCAG 2.2 A/AA catalog`);
+  }
+});
+
 test('buildAcrData: not-evaluated for SCs no engine covers', () => {
   const summary = {
     week: '2026-W25',
@@ -1425,7 +1459,22 @@ test('buildAcrYaml: valid YAML shape with required OpenACR fields', () => {
   assert.match(yaml, /chapters:/, 'has chapters section');
   assert.match(yaml, /success_criteria_level_a:/, 'has Level A section');
   assert.match(yaml, /success_criteria_level_aa:/, 'has Level AA section');
-  assert.match(yaml, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence values');
+  assert.match(yaml, /does-not-support|partially-supports|not-evaluated/, 'contains evidence adherence values');
+  assert.doesNotMatch(yaml, /level: supports/, 'contains no supports claim');
+  assert.match(yaml, /INCOMPLETE DRAFT/, 'declares the incomplete draft');
+  assert.match(yaml, /legal_disclaimer: "DRAFT/, 'carries a draft legal disclaimer');
+  const parsed = YAML.parse(yaml);
+  assert.equal(parsed.catalog, '2.5-edition-wcag-2.2-en');
+  assert.equal(parsed.version, 1, 'OpenACR requires an integer version');
+  assert.match(parsed.report_date, /^\d{4}-\d{2}-\d{2}$/, 'report date is a quoted string');
+  assert.ok(parsed.author?.email, 'OpenACR requires an author email');
+  assert.match(parsed.author.name, /unreviewed draft/, 'the author is not a fabricated person');
+  assert.ok(parsed.legal_disclaimer.startsWith('DRAFT'), 'draft disclaimer parses');
+  assert.match(parsed.notes, /^INCOMPLETE DRAFT/, 'incomplete marker is the first note');
+  const criteria = [...parsed.chapters.success_criteria_level_a.criteria, ...parsed.chapters.success_criteria_level_aa.criteria];
+  assert.ok(criteria.length > 20, 'criteria tables are populated');
+  assert.ok(criteria.every((criterion) => criterion.components[0].adherence.level !== 'supports'), 'no supports claims');
+  assert.ok(criteria.some((criterion) => criterion.components[0].adherence.level === 'not-evaluated'));
 });
 
 test('renderAcrHtml: produces self-contained HTML with WCAG table structure', () => {
@@ -1441,12 +1490,16 @@ test('renderAcrHtml: produces self-contained HTML with WCAG table structure', ()
   const html = renderAcrHtml({ domain: 'example.gov' }, summary, '2026-W25', acrData);
   assert.ok(html.startsWith('<!DOCTYPE html>'), 'starts with DOCTYPE');
   assert.match(html, /<html lang="en">/, 'has lang attribute');
-  assert.ok(!html.includes('<link rel='), 'no external stylesheet link');
+  assert.match(html, /<link rel="icon" href="data:image\/svg\+xml,/, 'embeds the self-contained favicon');
+  assert.ok(!html.includes('<link rel="stylesheet"'), 'no external stylesheet link');
   assert.ok(!html.includes('<script src='), 'no external script');
   assert.match(html, /<style>/, 'has inline style block');
   assert.match(html, /Level A Success Criteria/, 'has Level A heading');
   assert.match(html, /Level AA Success Criteria/, 'has Level AA heading');
-  assert.match(html, /does-not-support|partially-supports|supports|not-evaluated/, 'contains adherence classes');
+  assert.match(html, /does-not-support|partially-supports|not-evaluated/, 'contains evidence adherence classes');
+  assert.match(html, /DRAFT — not an Accessibility Conformance Report/, 'states this is not an ACR');
+  assert.match(html, /INCOMPLETE DRAFT/, 'lists incomplete criteria');
+  assert.doesNotMatch(html, /class="adherence supports"/, 'contains no supports claim');
   assert.match(html, /WAI\/WCAG22\/Understanding\//, 'links to WCAG Understanding docs');
   assert.match(html, /acr\.yaml/, 'links back to yaml');
   assert.ok(!html.includes('uswds') && !html.includes('cdn.'), 'no design system or CDN dependency');
@@ -1616,11 +1669,24 @@ test('tech-findings: rankAssociations compares pages with and without the tech, 
   for (let i = 0; i < 6; i++) pages.push({ techs: [], findings: i < 3 ? ['axe:y'] : [] });
   const m = buildCooccurrence(pages);
   const ranked = rankAssociations(m, { minPages: 3 });
-  assert.deepEqual(ranked[0], { tech: 'A', finding: 'axe:x', ratio: 4, lift: 2, pairPages: 6, techPages: 6, findingPages: 9, withoutPages: 12, withoutFindingPages: 3 },
+  assert.deepEqual(ranked[0], { tech: 'A', finding: 'axe:x', ratio: 4, ci_low: 1.5, ci_high: 10.66, certainty: 'ci_above_one', lift: 2, pairPages: 6, techPages: 6, findingPages: 9, withoutPages: 12, withoutFindingPages: 3 },
     'x on 6 of 6 A pages (100%) against 3 of 12 others (25%)');
   const y = ranked.find((a) => a.tech === 'B' && a.finding === 'axe:y');
   assert.equal(y.ratio, 4, 'y on 6 of 6 B pages against 3 of 12 others');
   assert.ok(!ranked.some((a) => a.tech === 'B' && a.finding === 'axe:x'), 'x is on 50% of pages with B and 50% without: not listed');
+});
+
+test('tech-findings: a ratio above 1.5 is suppressed when its interval includes no difference', () => {
+  const pages = [];
+  for (let i = 0; i < 20; i++) pages.push({ techs: ['Small'], findings: i < 5 ? ['axe:x'] : [] });
+  for (let i = 0; i < 40; i++) pages.push({ techs: [], findings: i < 5 ? ['axe:x'] : [] });
+  const m = buildCooccurrence(pages);
+  const all = rankAssociations(m, { minPages: 5, minLower: 0 });
+  const row = all.find((a) => a.tech === 'Small' && a.finding === 'axe:x');
+  assert.equal(row.ratio, 2);
+  assert.ok(row.ci_low < 1, 'interval includes no difference');
+  assert.equal(row.certainty, 'ci_includes_one');
+  assert.deepEqual(rankAssociations(m, { minPages: 5 }).filter((a) => a.tech === 'Small'), [], 'uncertain pair is not a lead');
 });
 
 test('tech-findings: a tech on nearly every page is not compared (Google Ads, 59 of 60 pages)', () => {
@@ -1641,8 +1707,8 @@ test('tech-findings: an Alfa finding is compared across the pages Alfa checked (
   const m = buildCooccurrence(pages);
   assert.deepEqual(m.engines.alfa, { pages: 41, tech: { 'Amazon Advertising': 34 } });
   assert.deepEqual(rankAssociations(m), [], 'on every page Alfa checked, with or without the tech: 1×, not 1.5×');
-  assert.deepEqual(rankAssociations(m, { minRatio: 0 }).find((a) => a.finding === 'alfa:sia-r66'),
-    { tech: 'Amazon Advertising', finding: 'alfa:sia-r66', ratio: 1, lift: 1, pairPages: 34, techPages: 34, findingPages: 41, withoutPages: 7, withoutFindingPages: 7 });
+  assert.deepEqual(rankAssociations(m, { minRatio: 0, minLower: 0 }).find((a) => a.finding === 'alfa:sia-r66'),
+    { tech: 'Amazon Advertising', finding: 'alfa:sia-r66', ratio: 1, ci_low: null, ci_high: null, certainty: 'no_comparison', lift: 1, pairPages: 34, techPages: 34, findingPages: 41, withoutPages: 7, withoutFindingPages: 7 });
 
   const fleet = mergeFleet([{ domain: 'a', model: m }, { domain: 'b', model: m }]);
   assert.equal(fleet.engines.alfa.pages, 82);
@@ -1883,4 +1949,15 @@ test('computeTrainingPriorities counts rules that are verified shared-component 
   assert.equal(row.shared_component_rule_count, 1, 'candidates and unscoped findings are not counted');
   const [plain] = computeTrainingPriorities([mk('image-alt', 9, null)]);
   assert.equal('shared_component_rule_count' in plain, false);
+});
+
+
+test('Alfa skips an oversized page instead of exhausting the Node heap', async () => {
+  const page = { evaluate: async () => ({ elements: ALFA_MAX_ELEMENTS + 1, textLength: 100 }) };
+  const result = await runAlfa(page);
+  assert.equal(result.skipped, true);
+  assert.equal(result.skippedReason, 'page-too-large');
+  assert.equal(result.failedCount, 0);
+  assert.deepEqual(result.failed, {});
+  assert.equal(result.pageSize.elements, ALFA_MAX_ELEMENTS + 1);
 });

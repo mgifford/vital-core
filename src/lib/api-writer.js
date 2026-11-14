@@ -3,6 +3,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { redactUrl, deepRedactUrls } from './api-redact.js';
 import { buildFindingReporting, sanitizeEvidence } from './finding-reporting.js';
+import { safeSelector } from './element-evidence.js';
+import { reproductionPlan } from './reproduction.js';
+import { summarizeCoverage } from './coverage.js';
 
 export const SCHEMA_VERSION = '1';
 
@@ -137,12 +140,57 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
       pages_scanned: latest.pagesScanned ?? 0,
     },
     reporting: buildFindingReporting(latestBugs, opts).summary,
+    coverage: summarizeCoverage(latest, series[series.length - 2] ?? null, invSummary ?? null),
     inventory: invSummary ?? null,
     findings: ledger.findings ?? {},
     tech_findings: latest.techFindings?.associations ?? null,
     top_actions: apiTopActions(latest, opts.denyParams),
     policy: policySummary ? { suppression: policySummary } : null,
     weekly,
+  };
+}
+
+/**
+ * Public copy of a region/component grouping: every `url` value is redacted by
+ * deepRedactUrls, selectors pass the same allowlist as finding evidence, and
+ * representative lists stay capped.
+ */
+function publicGrouping(grouping, denyParams) {
+  if (!grouping) return null;
+  const redacted = deepRedactUrls(grouping, { denyParams });
+  for (const key of ['regions', 'groups']) {
+    for (const entry of redacted[key] ?? []) {
+      if (!Array.isArray(entry.representative)) continue;
+      entry.representative = entry.representative.slice(0, 3).map((item) => ({
+        url: item.url ?? null,
+        selector: safeSelector(item.selector),
+      }));
+    }
+  }
+  return redacted;
+}
+
+/**
+ * Public reproduction state for a finding. The API never claims a run happened:
+ * `not_attempted` means the evidence can be replayed, `unavailable` carries the
+ * reason. The test itself is generated on demand by the Finding Explorer or the
+ * `scripts/reproduce.js` CLI, not stored per finding.
+ */
+function publicReproduction(bug) {
+  const plan = reproductionPlan(bug);
+  if (plan.status === 'unavailable') return { status: 'unavailable', reason: plan.reason };
+  return {
+    status: 'not_attempted',
+    occurrence_id: plan.occurrence_id,
+    observation_id: plan.observation_id,
+    locator: plan.locator,
+    rule: plan.rule,
+    engine_version: plan.engine_version,
+    element_identity: plan.element_identity,
+    context: plan.context,
+    interaction_required: plan.interaction_required,
+    steps: plan.steps,
+    verified_at: null,
   };
 }
 
@@ -155,16 +203,40 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
     generated_at: new Date().toISOString(),
     pages_scanned: summary.pagesScanned ?? 0,
     reporting: reporting.summary,
-    ...(summary.sharedComponents || summary.pageFamilies
-      ? { scope_of_analysis: { shared_components: summary.sharedComponents ? { ...summary.sharedComponents, rules: undefined } : null, page_families: summary.pageFamilies ?? null } }
+    ...(summary.sharedComponents || summary.pageFamilies || summary.regions || summary.widgetGroups || summary.componentGroups
+      ? {
+          scope_of_analysis: {
+            shared_components: summary.sharedComponents ? { ...summary.sharedComponents, rules: undefined } : null,
+            page_families: summary.pageFamilies ?? null,
+            ...(summary.regions ? { regions: publicGrouping(summary.regions, target.api_redact_params ?? []) } : {}),
+            ...(summary.widgetGroups ? { widget_groups: publicGrouping(summary.widgetGroups, target.api_redact_params ?? []) } : {}),
+            ...(summary.componentGroups ? { component_groups: publicGrouping(summary.componentGroups, target.api_redact_params ?? []) } : {}),
+          },
+        }
       : {}),
+    evidence_coverage: summary.evidenceCoverage ?? null,
     top_actions: apiTopActions(summary, target.api_redact_params ?? []),
     findings: bugs.map(b => {
       const ledgerEntry = ledgerFindings?.[b.pattern_id] ?? null;
+      const findingReporting = reporting.byFindingId.get(b.pattern_id);
+      // Sanitized element/region evidence (ids and ancestry withheld) so the
+      // API carries the same inspectable facts as the reports without exposing
+      // anything the public sanitizer removed.
+      const evidence = (findingReporting?.representative_evidence ?? []).find((example) => example.element?.available) ?? null;
       return {
         finding_id:     b.pattern_id,
         instance_id:    b.instance_id ?? null,
-        reporting:      reporting.byFindingId.get(b.pattern_id),
+        finding_ref:    b.finding_ref ?? null,
+        occurrence_id:  b.occurrence_id ?? null,
+        observation_id: b.observation_id ?? null,
+        occurrence_selection: b.occurrence_selection ?? null,
+        observation:    b.observation ? {
+          scanned_at: b.observation.scanned_at,
+          engine_key: b.observation.engine_key,
+          engine_version: b.observation.engine_version,
+          consent_state: b.observation.consent_state,
+        } : null,
+        reporting:      findingReporting,
         rule_id:        b.rule_id,
         rule_label:     b.rule_label,
         engine:         b.engine_key,
@@ -175,6 +247,19 @@ export function buildWeekFindings(target, summary, bugs, ledgerFindings) {
         included_in_primary_score: b.included_in_primary_score === true,
         wcag_sc:        b.wcag_sc ?? null,
         wcag_level:     b.wcag_level ?? null,
+        selector:       evidence?.selector ?? null,
+        element:        evidence?.element ?? null,
+        semantic_context: evidence?.semantic_context ?? null,
+        screenshot: b.screenshot ?? null,
+        evidence:       b.evidence ? { ...b.evidence } : null,
+        evidence_reference: b.evidence_reference ?? null,
+        reproduction:   publicReproduction(b),
+        manual_validation: b.manual_validation ? {
+          status: b.manual_validation.status,
+          prompts: b.manual_validation.prompts,
+          environment_note: b.manual_validation.environment_note,
+          limitations: b.manual_validation.limitations,
+        } : null,
         pages_affected: b.frequency.pages_affected,
         trend_status:   deriveTrend(b, ledgerEntry),
         first_seen:     b.first_seen ?? null,

@@ -132,6 +132,55 @@ observation-based heuristics, not verified task counts or causal ownership.
 Queue items now explicitly say `counting_basis: engine_observations_not_tasks`
 and `remediation_task_count: null`. No API version bump or data migration occurs.
 
+### Element and semantic evidence (additive v1 fields)
+
+Captured once at scan time, while the page is already open, and carried by the
+same capped examples every consumer reads. Additive: existing fields keep their
+meaning and `schema_version` stays `"1"`.
+
+- `findings[].selector` is the sanitized CSS selector of the primary stored
+  example (or null). Internally the older `xpath` name still holds the same
+  value for compatibility; for Alfa it is a node description, not a selector.
+- `findings[].element` is the element identity for the primary stored example,
+  or null. When the scanner could not locate the node, it is
+  `{ "available": false, "reason": "not-found" | "invalid-selector" |
+  "alfa-target-is-a-serialized-node-description-not-a-selector" | … }`.
+  When present: `available`, `selector`, `selector_matches` (how many nodes the
+  selector matched when captured), `tag`, `role` (the **explicit** role
+  attribute only — the computed accessibility role is not recorded), `name` and
+  `name_source` (only name-bearing attributes: `aria-label`, `alt`, `title`,
+  `placeholder`, or `aria-labelledby` with `labelledby_ids`), `shadow`,
+  `iframe`, `visible`, `rect`. Element ids and the raw ancestry are withheld
+  from the public API.
+- `findings[].semantic_context` is derived from the serialized ancestor chain:
+  `nearest_region`, `region_ancestry`, `widget`, `widget_ancestry`, `path`,
+  `in_dialog`, `unnamed_landmarks`, `unclassified`. Landmark and widget roles are
+  classified separately. A `<header>`/`<footer>` scoped to
+  `article/aside/main/nav/section` is not `banner`/`contentinfo`; an
+  unnamed `<section>`/`<form>` (or `role="region"`/`role="form"`) is recorded as
+  unnamed, never as a landmark; when no landmark exists the element is
+  `unclassified` rather than assigned an invented region.
+- `findings[].evidence` states completeness: `instances_total`,
+  `examples_captured`, `example_limit` (5), `examples_truncated`,
+  `element_identity` (`captured`/`unavailable`/`not-captured`) and
+  `semantic_context`. Stored examples are a capped sample, not every instance.
+- `findings[].reporting.representative_evidence[]` also carries `element` and
+  `semantic_context` for the **first** sanitized example (at most three examples
+  are stored; only the first is enriched, to bound the weekly summary that is
+  kept forever).
+- The render context is recorded once per week on the summary, not repeated per
+  finding: viewport, device scale factor, colour scheme, forced colours, reduced
+  motion, document language, user agent, and the final URL reduced to origin +
+  path (query strings are dropped because this block is published). No
+  screenshot is captured yet, so `screenshot_captured` is `false`. The summary
+  also carries `axe.element_evidence` (null, or
+  `{ "status": "unavailable", "pages_failed": n }` when collection failed on
+  some pages) and `alfa.element_evidence` (always unavailable).
+
+Not available by design: computed accessibility roles, element text, XPath,
+screenshots, and element evidence for Alfa findings (Alfa reports serialized
+node descriptions, so no selector is invented).
+
 ### Shared-component scope and page families (additive v1 fields)
 
 Both are opt-in per target (`component_signatures`, `page_families` in
@@ -186,6 +235,184 @@ Both are opt-in per target (`component_signatures`, `page_families` in
 - Grouping never merges findings, changes `pattern_id`/`instance_id`, or alters
   scores. Page-family counts do not change page identity: every query variant is
   still its own URL.
+
+### Region and component grouping (additive v1 fields)
+
+Both groupings are built from the bounded stored examples (PR 1 evidence), so
+they are sample-based and never a fix count. They appear only when a week has
+findings.
+
+- `scope_of_analysis.regions`: `{ basis: "stored_examples", findings_total,
+  findings_with_region, findings_unclassified, findings_without_evidence,
+  regions: [...] }`. Each region has `key`, `role`, `name`, `label`,
+  `unclassified`, `findings`, `pages_affected_sum`, `instances_total`,
+  `stored_instances` (examples that carried this region), `engines`,
+  `components` (configured ids with finding counts) and
+  `representative` (at most three redacted URLs + sanitized selectors).
+  Landmark roles and names distinguish regions (`main`, `navigation "Primary"`);
+  an element with evidence but no landmark is its own `unclassified` entry; a
+  finding with no captured evidence is counted in `findings_without_evidence`,
+  never folded into unclassified. `pages_affected_sum` and `instances_total`
+  are sums across findings, not distinct counts.
+- `scope_of_analysis.widget_groups`: `{ basis, findings_total, attributed,
+  unattributed, ownership_basis, groups: [...] }`. A group is a **structural
+  widget type** (dialog, tablist, menu, …) with `key`/`type`
+  (`widget:<role>`), `widget`, `label`, `attribution: "widget-type"`,
+  `implementation: null` (always), `ownership_established: false`, `findings`,
+  `instances_total`, `stored_instances`, `pages_affected_sum`, `regions`,
+  `components` (configured ids that also occurred in the group) and up to three
+  representative URLs. Two unrelated dialogs share this category; they are not
+  a component.
+- `scope_of_analysis.component_groups`: `{ basis, findings_total, attributed,
+  unattributed, ownership_basis, groups: [...] }`. Only **configured shared
+  components** appear here: `key`/`type` (`component:<id>`), `label`,
+  `attribution: "configured"`, `implementation` (the configured signature id),
+  `ownership_established` (always false), `instance_identity`
+  (`page_url_and_selector_of_stored_examples`), `findings`, `instances_total`,
+  `stored_instances`, `pages_affected_sum`, `verified_findings`,
+  `classification_counts`, `confidence`, `inspection_evidence` (`element`,
+  `locator`, `reproduction_eligible`), `regions` and `representative`. A
+  widget role never appears as a component. Verification still comes from
+  `scope_of_analysis.shared_components`; grouping never upgrades a candidate.
+- `findings[].reporting.region` is the finding's `nearest_region` (or null),
+  with `region_unclassified` (true when evidence exists but no landmark was
+  found, null when evidence is unavailable) and `region_evidence`
+  (`captured` | `unavailable`).
+- `findings[].reporting.component_scope` now also carries `component_type`,
+  `implementation`, `attribution` and `ownership_established` alongside the
+  existing classification. Identity is split on purpose: a type is not an
+  implementation, and grouping is not ownership.
+- Per-week CSV: `<domain>_<DDMONYYYY>_regions.csv` (one row per region:
+  findings, summed pages/instances, components, representative URLs).
+
+### Evidence occurrence (additive v1 fields)
+
+A finding aggregates rule-level results, but every displayed or replayed field
+comes from **one** stored occurrence:
+
+- `findings[].finding_ref` — stable `VFR-…` reference for the rule finding
+  within the domain. Independent of which example is selected.
+- `findings[].occurrence_id` — stable `VO-…` identity (pattern + URL + selector
+  + component). Distinct from the aggregated `finding_id` and the legacy
+  `instance_id` anchor.
+- `findings[].observation_id` — `VOB-…` identity for one scan observation
+  (occurrence + page/run/time/engine). Changes on a new run.
+- `findings[].evidence_reference` — durable reference fields (`finding_ref`,
+  occurrence/observation id, URL, selector, scan time, engine/version) plus the
+  page-detail retention window and an availability note.
+- `findings[].occurrence_selection` — `complete`, `partial`, `unavailable` or
+  `none`. `url`, `selector`, `element`, `semantic_context`, `browser_context`
+  and `observation` all come from that occurrence.
+- `findings[].observation` — `scanned_at`, `engine_key`, `engine_version` and
+  `consent_state`. Internal page/run identifiers are not published.
+- `findings[].reporting.representative_evidence[]` carries each example's own
+  `occurrence_id`, `element`, `semantic_context` and `observation`; examples are
+  never mixed.
+- `semantic_context.ancestry_complete` / `ancestry_depth` — whether the whole
+  ancestor chain was walked and how deep it was. Only meaningful boundaries
+  (landmarks, sectioning elements, widgets, the target) are serialized, so deep
+  layout wrappers no longer hide `main`.
+
+Historical records without enriched evidence keep `occurrence_selection:
+"unavailable"` and null evidence fields; the week-level render context is not
+substituted.
+
+### Lighthouse recommendations (additive v1 fields)
+
+`summary.lighthouse.recommendations[]` keeps the sample totals (`savingsBytes`,
+`savingsMs`) and adds per-page distribution fields: `savingsBytesMedian`,
+`savingsBytesP75`, `savingsMsMedian`, `savingsMsP75`. The totals are sums across
+sampled pages, not a single visitor's experience; time savings are per page.
+
+### Evidence coverage (additive v1 fields)
+
+`evidence_coverage` is finding-level, not an occurrence count:
+
+- `findings_total`, `occurrences_stored`, `findings_with_detailed_evidence`,
+  `findings_without_detailed_evidence`.
+- `element_evidence`: `captured`, `not_captured`, `not_applicable` (engines such
+  as Alfa without a DOM selector), `unsupported_dom_boundary`,
+  `no_stored_examples`.
+- `usable_locator`, `semantic_region` (`captured`, `no_containing_landmark`,
+  `unavailable`), `widget` (`captured`, `no_widget`, `unavailable`),
+  `component` (`attributed`, `unattributed`), `screenshot` and `reproduction`.
+- `by_engine` breaks the element/locator/reproduction counts down by engine.
+
+A missing locator is not evidence that a page lacks a landmark. Counts are
+findings; use `findings[].evidence` for the capped occurrence sample.
+
+### Historical screenshots (additive v1 fields)
+
+When a target enables `screenshots`, findings can carry bounded, historical
+image evidence:
+
+- `findings[].screenshot` — `{ available, file, file_name, width, height,
+  full_page, captured_at, format, bytes }` or `{ available: false, reason }`.
+  Dimensions are CSS pixels; `file` is a path relative to the week report
+  (e.g. `screenshots/<page-id>.jpg`). `captured_at` describes the scan, not the
+  current site.
+- `findings[].element.rect_page` — element rectangle in page coordinates, used
+  to position the marker. `findings[].browser_context.scroll` records the scroll
+  position at evidence capture.
+- `findings[].element.text_anchor` — up to 80 characters of the element's
+  visible text, captured only for text-bearing elements. It powers the native
+  `#:~:text=` link; it is not a description of the finding.
+- `findings[].element.rect_page` and the screenshot reference describe the same
+  representative occurrence; they are not combined with another example.
+- Each `reporting.representative_evidence[]` entry carries its own `screenshot`
+  when that occurrence's page was captured.
+
+Screenshots are off by default and are pruned with page detail; older weeks may
+have none. The image is a historical artifact and must not be presented as a
+live view.
+
+### Reproduction state (additive v1 fields)
+
+`findings[].reproduction` says whether the stored evidence can be replayed, not
+whether a run happened. The API never runs anything.
+
+- `status: "not_attempted"` — the evidence is sufficient. The object carries
+  `occurrence_id`, `observation_id`, `locator` (`{ strategy: "css", value }`),
+  `rule` (`{ engine, id, impact }`),
+  `context` (recorded viewport/colour scheme/forced colours/reduced motion/
+  locale), `interaction_required`, `timeout_ms` (default 30000), `steps`
+  (empty until interaction sequences are recorded) and `verified_at: null`.
+- `status: "unavailable"` — with `reason`: `element-evidence-unavailable`,
+  `element-not-found-at-scan`, `selector-not-replayable`,
+  `url-redacted-for-publication`, or
+  `only-axe-core-findings-can-be-replayed`. No selector is guessed.
+- The runnable test is generated on demand by the Finding Explorer or
+  `scripts/reproduce.js` from the same plan. The generated script is standalone
+  apart from `playwright` and `axe-core`; `REPRO_URL`, `REPRO_SELECTOR`,
+  `REPRO_HEADED` and `REPRO_TIMEOUT_MS` (or the CLI's `--url`, `--selector`,
+  `--headed`, `--timeout`) retest another URL/selector without changing the
+  recorded identity. Its outcomes use the statuses in
+  `src/lib/reproduction.js` (`reproduced`, `not_reproduced`,
+  `locator_not_found`, `ambiguous_locator`, `interaction_state_unavailable`,
+  `page_unavailable`, `rule_or_engine_changed`, `element_identity_changed`,
+  `inconclusive`). Reproduction verifies the recorded tag/role/name-attribute
+  identity and engine version before claiming a rule result; exit code 7 is
+  `element_identity_changed`.
+
+### Manual validation (additive v1 fields)
+
+`findings[].manual_validation` carries finding-specific guidance, never a
+completion claim:
+
+- `status` is always `"not_reviewed"`.
+- `prompts` (at most three) are chosen from the WCAG success criterion or the
+  rule, with a generic fallback.
+- `environment_note` says which conditions may apply (not every item applies to
+  every finding).
+- `limitations` states that automated tools find roughly a third of barriers,
+  that recording a review does not establish conformance, and that any
+  screenshot is historical.
+
+The structured review record is generated and downloaded client-side by the
+Finding Explorer (`<VS-id>.manual-review.json`); it is not published by the API
+and never sets a reviewer, date, outcome or status. It carries the occurrence
+id, recorded element, stored-example count and any screenshot reference, plus a
+note that the image is historical and a reminder to remove personal data.
 
 ### Snapshot Contents
 

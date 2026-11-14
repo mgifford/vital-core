@@ -16,7 +16,10 @@ import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
+import { syncObservationsFromState } from './lib/observations.js';
 import { runAxe } from './engines/axe.js';
+import { attachElementEvidence } from './lib/element-evidence.js';
+import { capturePageScreenshot } from './lib/screenshots.js';
 import { runComponentObservation, annotateComponentExamples } from './engines/component-observation.js';
 import { runConsentAction } from './engines/consent-action.js';
 import { runAlfa } from './engines/alfa.js';
@@ -112,9 +115,9 @@ if (canonicalized.moved || canonicalized.merged) {
 // --- Seed -------------------------------------------------------------
 if (Object.keys(state.pages).length === 0) {
   log('state empty; seeding from sitemap and homepage');
-  const seeds = await discoverFromSitemaps(siteOrigin, host, target.user_agent);
+  const seeds = await discoverFromSitemaps(siteOrigin, host, target.user_agent, 20000, target.urlIgnoreParams ?? []);
   log(`sitemap yielded ${seeds.length} URLs`);
-  const homeNorm = normalizeUrl(siteOrigin + '/', siteOrigin, host, siteOrigin);
+  const homeNorm = normalizeUrl(siteOrigin + '/', siteOrigin, host, siteOrigin, target.urlIgnoreParams ?? []);
   if (homeNorm) addPage(state, pageId(homeNorm), homeNorm, 0);
   for (const u of seeds) addPage(state, pageId(u), u, 1);
   state.seededAt = new Date().toISOString();
@@ -180,8 +183,13 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 const rates = ratesFor(config, target);
 const enginesRun = {}; // engine -> count of pages it ran on this run
 const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, redirect: 0, error: 0 };
+// Historical screenshots: opt-in, bounded per run, one per page with findings.
+const screenshotConfig = target.screenshots ?? { enabled: false };
+const screenshotsEnabled = screenshotConfig.enabled === true;
+let screenshotsTaken = 0;
+
 const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAllowed: robots.isAllowed('/') }, startedAt: new Date().toISOString(), scanned: [], errors: [], sampling: rates,
-  browser: { userAgent: target.user_agent, viewport: { width: 1280, height: 800 } } };
+  browser: { userAgent: target.user_agent, viewport: { width: 1280, height: 800 } }, screenshots: { enabled: screenshotsEnabled, captured: 0 } };
 // Opt-in: dismiss a configured consent dialog once per run so it is audited once, not on every page.
 let consentDone = false;
 if (target.consentHandling) runLog.consent = { choice: target.consentHandling.choice, attempts: 0, clicked_on: null };
@@ -306,7 +314,7 @@ for (const item of batch) {
     // own, and not rescanned this week.
     let recId = item.id;
     let recUrl = item.url;
-    const landed = normalizeUrl(page.url(), page.url(), host, siteOrigin);
+    const landed = normalizeUrl(page.url(), page.url(), host, siteOrigin, target.urlIgnoreParams ?? []);
     if (landed && landed !== item.url) {
       const landedId = pageId(landed);
       addPage(state, landedId, landed, item.depth);
@@ -396,6 +404,17 @@ for (const item of batch) {
       if (runs('axe')) {
         record.axe = await runAxe(page);
         mark('axe');
+        // Element + semantic evidence is collected once here, while the page is
+        // open, and rides along with the same capped examples every report, API
+        // and export already reads. A failure must not fail the page.
+        try {
+          await attachElementEvidence(page, record.axe);
+        } catch (error) {
+          record.axe.element_evidence = {
+            status: 'unavailable',
+            reason: `collection-failed: ${String(error?.message ?? error).slice(0, 120)}`,
+          };
+        }
         if (target.componentSignatures?.length) {
           try { await annotateComponentExamples(page, target.componentSignatures, record.axe); } catch { /* best effort */ }
         }
@@ -467,6 +486,26 @@ for (const item of batch) {
         }
       }
 
+      // One historical screenshot per page with findings (never per violation).
+      // Capture while the page is open, before link discovery changes nothing
+      // visually; the full-page image is bounded and can be masked.
+      if (screenshotsEnabled && screenshotsTaken < screenshotConfig.max_per_run
+        && ((record.axe?.violationCount ?? 0) > 0 || (record.alfa?.failedCount ?? 0) > 0)) {
+        const shot = await capturePageScreenshot(page, {
+          dir: path.join(DIRS.data, target.key, week, 'screenshots'),
+          fileBase: recId,
+          config: screenshotConfig,
+        });
+        record.screenshot = shot;
+        if (shot.available) {
+          screenshotsTaken++;
+          runLog.screenshots.captured = screenshotsTaken;
+          log(`screenshot ${urlPath} ${shot.width}x${shot.height}${shot.full_page ? '' : ' (viewport)'} ${Math.round(shot.bytes / 1024)}KB`);
+        } else {
+          log(`screenshot unavailable ${urlPath}: ${shot.reason}`);
+        }
+      }
+
       // Extract links once; use them for discovery (same-host,
       // depth-capped) and, if enabled, for link checking (all links).
       const hrefs = await page.evaluate(() =>
@@ -478,7 +517,7 @@ for (const item of batch) {
         let added = 0;
         for (const href of hrefs) {
           // Normalize against the canonical domain, not the test base-url.
-          const norm = normalizeUrl(href, page.url(), host === 'localhost' || host === '127.0.0.1' ? host : new URL(`https://${target.domain}`).hostname, siteOrigin);
+          const norm = normalizeUrl(href, page.url(), host === 'localhost' || host === '127.0.0.1' ? host : new URL(`https://${target.domain}`).hostname, siteOrigin, target.urlIgnoreParams ?? []);
           if (norm && urlFilter(norm) && addPage(state, pageId(norm), norm, item.depth + 1)) added++;
         }
         if (added) log(`+${added} URLs discovered on ${urlPath}`);
@@ -598,6 +637,11 @@ runLog.tally = tally;
 runLog.finishedAt = new Date().toISOString();
 fs.writeFileSync(path.join(runsDir, `${runId}.json`), JSON.stringify(runLog, null, 1));
 saveState(target.key, state);
+try {
+  syncObservationsFromState(target.key, target.domain, state, week);
+} catch (error) {
+  console.warn(`[${target.key}] last-observation index not updated: ${error.message}`);
+}
 logMemory('before-browser-close');
 await browser.close();
 logMemory('end');

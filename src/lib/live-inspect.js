@@ -1,0 +1,695 @@
+/**
+ * Live inspection on the target site.
+ *
+ * A static report cannot draw on another origin. The honest equivalent of the
+ * WAVE/Accessibility Insights visual helper is code running in the target page:
+ * a one-time bookmarklet plus a per-finding payload in the URL fragment. The
+ * payload contains only the selector, rule, WCAG mapping and fix text already
+ * published; the bookmarklet never sends anything anywhere.
+ */
+
+export const INSPECT_HASH = 'vital-inspect';
+export const INSPECT_VERSION = 2;
+
+/** Why a finding cannot be highlighted from the top-level document, if it cannot. */
+export function inspectUnavailableReason(bug) {
+  if (!bug) return 'no-finding';
+  if (bug.element?.reason === 'frame-or-shadow-path') return 'frame-or-shadow-path';
+  if (!bug.element || bug.element.available !== true) return 'no-element-evidence';
+  if (bug.element?.shadow === true) return 'shadow-root';
+  if (bug.element?.iframe === true) return 'iframe';
+  const hasXPath = typeof bug.xpath === 'string' && /^(?:\/|\(|\.\/|\.\.\/)/.test(bug.xpath.trim());
+  if ((typeof bug.selector !== 'string' || !bug.selector.trim()) && !hasXPath) return 'no-selector';
+  if (typeof bug.url !== 'string' || !/^https?:\/\//i.test(bug.url)) return 'no-live-url';
+  return null;
+}
+
+/** Human-readable explanation for an unavailable live highlight. */
+export function inspectUnavailableText(reason) {
+  var messages = {
+    'no-finding': 'No finding was supplied.',
+    'no-element-evidence': 'No element evidence was captured for this finding.',
+    'frame-or-shadow-path': 'The recorded element is inside a frame or shadow root, which this bookmarklet cannot reach from the top-level page.',
+    'shadow-root': 'The recorded element is inside a shadow root, which this bookmarklet cannot reach.',
+    'iframe': 'The recorded element is inside an iframe, which this bookmarklet cannot reach.',
+    'no-selector': 'No replayable selector was recorded.',
+    'no-live-url': 'No live page URL is available.',
+  };
+  return messages[reason] || 'Live highlighting is unavailable for this finding.';
+}
+
+/**
+ * Build the compact inspection code (base64url JSON). It contains no full URL
+ * and no page content: only the selector, recorded identity, rule/WCAG/fix and
+ * the expected origin, so query parameters and personal data are not carried.
+ */
+export function inspectCodeFor(bug) {
+  if (inspectUnavailableReason(bug)) return null;
+  let origin;
+  try { origin = new URL(bug.url).origin; } catch (error) { return null; }
+  const selector = typeof bug.selector === 'string' && bug.selector.trim() ? bug.selector.slice(0, 500) : null;
+  const xpath = !selector && typeof bug.xpath === 'string' && /^(?:\/|\(|\.\/|\.\.\/)/.test(bug.xpath.trim()) ? bug.xpath.slice(0, 500) : null;
+  if (!selector && !xpath) return null;
+  const payload = {
+    v: 1,
+    s: selector,
+    x: xpath,
+    t: typeof bug.element?.tag === 'string' ? bug.element.tag.slice(0, 50) : null,
+    r: typeof bug.element?.role === 'string' ? bug.element.role.slice(0, 50) : null,
+    n: typeof bug.element?.name === 'string' ? bug.element.name.slice(0, 200) : null,
+    txt: typeof bug.element?.text_anchor === 'string' ? bug.element.text_anchor.slice(0, 80) : null,
+    ns: bug.element?.name_source ?? 'none',
+    rule: typeof bug.rule_id === 'string' ? bug.rule_id.slice(0, 100) : null,
+    label: String(bug.rule_label ?? bug.summary ?? '').slice(0, 200) || null,
+    w: typeof bug.wcag_sc === 'string' ? bug.wcag_sc.slice(0, 20) : null,
+    fix: String(bug.remediation_tip || bug.suggested_fix || '').slice(0, 400),
+    h: /^https?:\/\//i.test(bug.rule_url ?? '') ? bug.rule_url.slice(0, 500) : null,
+    org: origin,
+    id: typeof bug.occurrence_id === 'string' ? bug.occurrence_id.slice(0, 100) : null,
+    obs: typeof bug.observation_id === 'string' ? bug.observation_id.slice(0, 100) : null,
+    ref: typeof bug.finding_ref === 'string' ? bug.finding_ref.slice(0, 100) : null,
+  };
+  const json = JSON.stringify(payload);
+  const base64 = typeof Buffer !== 'undefined'
+    ? Buffer.from(json, 'utf8').toString('base64')
+    : btoa(unescape(encodeURIComponent(json)));
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+/**
+ * Build the target URL with an inspection code in the fragment. This is the
+ * one-click path. Callers should warn when the target already uses its hash
+ * for routing; `inspectCodeFor` is the URL-free alternative.
+ */
+export function inspectUrlFor(bug) {
+  const token = inspectCodeFor(bug);
+  if (!token) return null;
+  const url = new URL(bug.url);
+  const existing = url.hash ? url.hash.slice(1) + '&' : '';
+  url.hash = `${existing}vital-inspect=${token}`;
+  return url.href;
+}
+
+/** Decode and size-check an inspection code. Throws a plain reason on failure. */
+export function decodeInspectToken(token) {
+  if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{1,8192}$/.test(token)) throw new Error('invalid inspection code encoding');
+  const b64 = token.replace(/-/g, '+').replace(/_/g, '/');
+  let json;
+  try {
+    json = typeof Buffer !== 'undefined'
+      ? Buffer.from(b64, 'base64').toString('utf8')
+      : decodeURIComponent(escape(atob(b64)));
+  } catch (error) {
+    throw new Error('the inspection code could not be decoded');
+  }
+  if (json.length > 6000) throw new Error('the inspection code is too large');
+  try { return JSON.parse(json); } catch (error) { throw new Error('the inspection code is not valid JSON'); }
+}
+
+/** Validate an inspection payload before it is used. Returns {ok} or {ok:false, reason}. */
+export function validateInspectPayload(payload, pageHref) {
+  const payloadKeys = ['v', 's', 'x', 't', 'r', 'n', 'txt', 'ns', 'rule', 'label', 'w', 'fix', 'h', 'org', 'id', 'obs', 'ref'];
+  const nameSources = ['aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby', 'aria-labelledby-unresolved', 'none'];
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { ok: false, reason: 'inspection payload must be an object' };
+  for (const key of Object.keys(payload)) {
+    if (!payloadKeys.includes(key)) return { ok: false, reason: `unexpected inspection property: ${key}` };
+  }
+  if (payload.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
+  const hasSelector = typeof payload.s === 'string' && payload.s.trim();
+  const hasXPath = typeof payload.x === 'string' && payload.x.trim();
+  if (!hasSelector && !hasXPath) return { ok: false, reason: 'inspection payload has no selector or XPath' };
+  if (hasSelector) {
+    if (payload.s.length > 500) return { ok: false, reason: 'invalid selector in inspection payload' };
+    if (/[\u0000-\u001f]/.test(payload.s)) return { ok: false, reason: 'invalid control character in selector' };
+    if (/^[\s]*[<{]/.test(payload.s)) return { ok: false, reason: 'inspection selector is not CSS (HTML or serialized node data)' };
+  }
+  if (hasXPath && (payload.x.length > 500 || !/^(?:\/|\(|\.\/|\.\.\/)/.test(payload.x.trim()))) return { ok: false, reason: 'invalid XPath in inspection payload' };
+  if (typeof payload.org !== 'string' || !/^https?:\/\/[^/]+$/i.test(payload.org)) return { ok: false, reason: 'invalid origin in inspection payload' };
+  try {
+    if (new URL(payload.org).origin !== payload.org) return { ok: false, reason: 'inspection origin must be an origin only' };
+    if (pageHref && new URL(pageHref).origin !== payload.org) return { ok: false, reason: 'this inspection code belongs to a different site origin' };
+  } catch (error) {
+    return { ok: false, reason: 'invalid page or inspection origin' };
+  }
+  const stringOrNull = (key, max) => {
+    const value = payload[key];
+    if (value == null) return true;
+    if (typeof value !== 'string' || value.length > max) return false;
+    return true;
+  };
+  if (!stringOrNull('t', 50) || !stringOrNull('r', 50) || !stringOrNull('n', 200) || !stringOrNull('txt', 80) || !stringOrNull('rule', 100) || !stringOrNull('label', 200) || !stringOrNull('w', 20) || !stringOrNull('fix', 400) || !stringOrNull('h', 500) || !stringOrNull('id', 100) || !stringOrNull('obs', 100) || !stringOrNull('ref', 100)) {
+    return { ok: false, reason: 'inspection payload field is too long or the wrong type' };
+  }
+  if (payload.ns != null && !nameSources.includes(payload.ns)) return { ok: false, reason: 'invalid name source in inspection payload' };
+  if (payload.h != null && !/^https?:\/\//i.test(payload.h)) return { ok: false, reason: 'unsafe documentation URL in inspection payload' };
+  return { ok: true };
+}
+
+/** A one-time bookmarklet; reads the payload from the current page's hash. *//** A one-time bookmarklet; reads a payload from the hash or a pasted code. */
+export function inspectBookmarklet() {
+  const inspect = vitalInspect.toString().replace(/\s+/g, ' ').trim();
+  const validate = validateInspectPayload.toString().replace(/\s+/g, ' ').trim();
+  return `javascript:(function(){var validate=${validate};(${inspect})(validate);})()`;
+}
+
+/**
+ * Runs in the target page. Kept ES5-ish and self-contained so it can be
+ * stringified into the bookmarklet. It creates a high-contrast outline and a
+ * panel with the recorded rule/WCAG/selector/fix, checks that the selector
+ * still points at the recorded kind of element, and removes itself on close.
+ */
+export function vitalInspect(validate) {
+  var marker = 'vital-inspect=';
+  var hash = window.location.hash || '';
+  var start = hash.indexOf(marker);
+  var token = start < 0 ? '' : hash.slice(start + marker.length).split('&')[0];
+  if (!token) {
+    token = (window.prompt('VITAL: paste the inspection code copied from the finding, or open a "Highlight on site" link first.') || '').trim();
+    if (!token) return;
+  }
+  var payload;
+  try {
+    if (!/^[A-Za-z0-9_-]{1,8192}$/.test(token)) throw new Error('encoding');
+    var b64 = token.replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    payload = JSON.parse(decodeURIComponent(escape(window.atob(b64))));
+  } catch (error) {
+    window.alert('VITAL: this inspection code is damaged or unsupported.');
+    return;
+  }
+  var checked = typeof validate === 'function' ? validate(payload, window.location.href) : localValidate(payload);
+  if (!checked.ok) {
+    window.alert('VITAL: ' + checked.reason);
+    return;
+  }
+
+  var previous = document.getElementById('vital-inspect-host');
+  if (previous) previous.remove();
+  var previousFocus = document.activeElement;
+  var matches = [];
+  var fallbackReason = '';
+  var index = 0;
+  var target = null;
+  var hidden = false;
+  var liveState = 'ok';
+  var corner = 'right';
+  var scheduled = false;
+  var resizeObserver = null;
+  var attributeObserver = null;
+  var treeObserver = null;
+  var host = null;
+  var root = null;
+  var ui = null;
+  var heading = null;
+  var statusLine = null;
+  var body = null;
+  var details = null;
+  var controls = null;
+  var close = null;
+  var previousButton = null;
+  var nextButton = null;
+  var findAgain = null;
+  var toggle = null;
+  var showElement = null;
+  var showChanged = null;
+  var collapse = null;
+  var move = null;
+  var box = null;
+  var label = null;
+
+  function localValidate(value) {
+    if (!value || value.v !== 1) return { ok: false, reason: 'unsupported inspection payload version' };
+    if (!(typeof value.s === 'string' && value.s.trim()) && !(typeof value.x === 'string' && value.x.trim())) return { ok: false, reason: 'inspection payload has no selector or XPath' };
+    if (value.org !== window.location.origin) return { ok: false, reason: 'this inspection code belongs to a different site origin' };
+    return { ok: true };
+  }
+  function liveRole(el) {
+    var value = (el.getAttribute('role') || '').trim().toLowerCase().split(/\s+/)[0];
+    return value || null;
+  }
+  function labelledByText(el) {
+    var refs = (el.getAttribute('aria-labelledby') || '').trim();
+    if (!refs) return '';
+    return refs.split(/\s+/).map(function (id) {
+      var node = document.getElementById(id);
+      return node ? (node.textContent || '') : '';
+    }).join(' ').replace(/\s+/g, ' ').trim();
+  }
+  function liveName(el, source) {
+    if (source === 'aria-labelledby') return labelledByText(el);
+    if (source === 'aria-label' || source === 'alt' || source === 'title' || source === 'placeholder') return el.getAttribute(source);
+    return null;
+  }
+  function compare(el) {
+    var differences = [];
+    var tagKnown = typeof payload.t === 'string' && payload.t;
+    var roleKnown = Object.prototype.hasOwnProperty.call(payload, 'r');
+    var nameSource = payload.ns;
+    var nameReliable = payload.n != null && ['aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby'].indexOf(nameSource) >= 0;
+    if (tagKnown && payload.t !== el.localName) differences.push('tag: recorded ' + payload.t + ', live ' + el.localName);
+    var live = liveRole(el);
+    if (roleKnown && (payload.r || null) !== live) differences.push('role: recorded ' + (payload.r || 'none') + ', live ' + (live || 'none'));
+    var nameChecked = false;
+    if (nameReliable) {
+      var name = liveName(el, nameSource);
+      if (name !== payload.n) differences.push((nameSource === 'aria-labelledby' ? 'accessible name from aria-labelledby' : nameSource) + ': recorded "' + payload.n + '", live "' + (name == null ? '' : name) + '"');
+      else nameChecked = true;
+    }
+    if (differences.length) return { status: 'changed', differences: differences };
+    if (!tagKnown || !roleKnown) return { status: 'candidate', reason: 'Recorded tag or role was not available, so identity cannot be confirmed.' };
+    if (!nameChecked) return { status: 'candidate', reason: 'No reliable recorded name attribute is available to confirm this is the same element.' };
+    return { status: 'matched' };
+  }
+  function blockedPage() {
+    const text = `${document.title || ''} ${document.body?.innerText || ''}`.slice(0, 20000);
+    return /access denied|errors\.edgesuite\.net|request unsuccessful|reference #\s*\d/i.test(text);
+  }
+  function evaluate() {
+    target = matches[index] || null;
+    if (!target) return { status: 'not_located' };
+    if (fallbackReason) return { status: 'candidate', reason: fallbackReason, comparison: compare(target) };
+    var result = compare(target);
+    if (matches.length > 1) return { status: 'candidate', reason: matches.length + ' elements match the selector. Compare them before choosing.', comparison: result };
+    return result;
+  }
+  function collect() {
+    matches = [];
+    index = 0;
+    try {
+      if (payload.x) {
+        var snapshot = document.evaluate(payload.x, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        for (var i = 0; i < snapshot.snapshotLength; i++) matches.push(snapshot.snapshotItem(i));
+      } else {
+        var found = document.querySelectorAll(payload.s);
+        for (var j = 0; j < found.length; j++) matches.push(found[j]);
+      }
+    } catch (error) {
+      matches = [];
+    }
+    fallbackReason = '';
+    if (!matches.length) {
+      var fallback = [];
+      var wantedText = (payload.txt || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      var wantedName = typeof payload.n === 'string' ? payload.n : '';
+      var nameSource = ['aria-label', 'alt', 'title', 'placeholder'].indexOf(payload.ns) >= 0 ? payload.ns : null;
+      var tag = typeof payload.t === 'string' && /^[a-zA-Z][a-zA-Z0-9-]*$/.test(payload.t) ? payload.t : '*';
+      var all = document.querySelectorAll(tag);
+      for (var n = 0; n < all.length && fallback.length < 10; n++) {
+        var el = all[n];
+        var text = (el.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+        var byText = wantedText && text === wantedText;
+        var byName = nameSource && wantedName && el.getAttribute(nameSource) === wantedName;
+        if ((byText || byName) && !isInvisible(el)) fallback.push(el);
+      }
+      if (fallback.length) {
+        matches = fallback;
+        fallbackReason = fallback.length + ' element(s) match the recorded ' + (wantedText ? 'visible text' : 'name') + ', but the recorded selector no longer matches. This is a candidate, not a confirmed occurrence.';
+      }
+    }
+    for (var k = 0; k < matches.length; k++) {
+      if (!isInvisible(matches[k])) { index = k; break; }
+    }
+    return evaluate();
+  }
+
+  function build() {
+    host = document.createElement('div');
+    host.id = 'vital-inspect-host';
+    host.style.cssText = 'all: initial; position: fixed; inset: 0; z-index: 2147483647; pointer-events: none;';
+    host.setAttribute('dir', document.documentElement.getAttribute('dir') || 'ltr');
+    root = host.attachShadow({ mode: 'open' });
+    root.innerHTML = '<style>' +
+      ':host { direction: inherit; }' +
+      '#vital-inspect-ui { position: fixed; right: 16px; bottom: 16px; max-width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; background: #fff; color: #1b1b1b; border: 2px solid #1b1b1b; border-radius: 6px; box-shadow: 0 6px 28px rgba(0,0,0,.4); font: 14px/1.45 system-ui,-apple-system,sans-serif; padding: 16px 18px; pointer-events: auto; }' +
+      '#vital-inspect-ui[data-corner="left"] { left: 16px; right: auto; }' +
+      '#vital-inspect-ui[data-corner="top-right"] { top: 16px; bottom: auto; }' +
+      '#vital-inspect-ui[data-corner="top-left"] { top: 16px; bottom: auto; left: 16px; right: auto; }' +
+      '#vital-inspect-ui h2 { margin: 0 64px 4px 0; font-size: 1.05rem; line-height: 1.3; }' +
+      '#vital-inspect-ui p { margin: 0 0 8px; }' +
+      '#vital-inspect-ui ul { margin: 0 0 8px 1.1rem; padding: 0; }' +
+      '#vital-inspect-ui code { display: block; white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f3f3; padding: 6px; border-radius: 3px; margin-bottom: 10px; }' +
+      '#vital-inspect-ui button { font: inherit; padding: 4px 8px; border: 1px solid #1b1b1b; border-radius: 4px; background: #fff; color: #1b1b1b; cursor: pointer; }' +
+      '#vital-inspect-ui button:focus-visible { outline: 3px solid #0b57d0; outline-offset: 2px; }' +
+      '#vital-inspect-close { position: absolute; top: 10px; right: 10px; font-weight: 600; }' +
+      '#vital-inspect-controls { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }' +
+      '#vital-inspect-box { position: fixed; z-index: 2147483646; pointer-events: none; border: 3px solid #d4351c; box-shadow: 0 0 0 2px #fff, 0 0 0 5px #1b1b1b; border-radius: 2px; }' +
+      '#vital-inspect-label { position: fixed; z-index: 2147483647; pointer-events: none; background: #1b1b1b; color: #fff; font: 700 12px/1.4 system-ui,sans-serif; padding: 2px 6px; border-radius: 2px; }' +
+      '@media (forced-colors: active) { #vital-inspect-ui { background: Canvas; color: CanvasText; border-color: CanvasText; } #vital-inspect-box { border-color: Highlight; outline: 3px solid Highlight; } #vital-inspect-label { background: CanvasText; color: Canvas; } }' +
+      '@media (prefers-color-scheme: dark) { #vital-inspect-ui { background: #1b1b1b; color: #fff; border-color: #fff; } #vital-inspect-ui code { background: #333; } #vital-inspect-ui button { background: #1b1b1b; color: #fff; border-color: #fff; } }' +
+      '</style>' +
+      '<div id="vital-inspect-ui" role="region" aria-labelledby="vital-inspect-title" data-corner="right">' +
+      '<button type="button" id="vital-inspect-close" aria-label="Close VITAL inspect">Close</button>' +
+      '<h2 id="vital-inspect-title"></h2>' +
+      '<p id="vital-inspect-status" aria-live="polite"></p>' +
+      '<div id="vital-inspect-body">' +
+      '<div id="vital-inspect-details"></div>' +
+      '<div id="vital-inspect-controls">' +
+      '<button type="button" id="vital-inspect-previous">Previous candidate</button>' +
+      '<button type="button" id="vital-inspect-next">Next candidate</button>' +
+      '<button type="button" id="vital-inspect-find">Find again</button>' +
+      '<button type="button" id="vital-inspect-show">Show element</button>' +
+      '<button type="button" id="vital-inspect-toggle">Hide highlight</button>' +
+      '<button type="button" id="vital-inspect-show-changed">Show changed element</button>' +
+      '<button type="button" id="vital-inspect-collapse" aria-expanded="true" aria-controls="vital-inspect-details">Collapse</button>' +
+      '<button type="button" id="vital-inspect-move">Move panel</button>' +
+      '</div></div></div>';
+    document.body.appendChild(host);
+    ui = root.querySelector('#vital-inspect-ui');
+    heading = root.querySelector('#vital-inspect-title');
+    statusLine = root.querySelector('#vital-inspect-status');
+    body = root.querySelector('#vital-inspect-body');
+    details = root.querySelector('#vital-inspect-details');
+    controls = root.querySelector('#vital-inspect-controls');
+    close = root.querySelector('#vital-inspect-close');
+    previousButton = root.querySelector('#vital-inspect-previous');
+    nextButton = root.querySelector('#vital-inspect-next');
+    findAgain = root.querySelector('#vital-inspect-find');
+    showElement = root.querySelector('#vital-inspect-show');
+    toggle = root.querySelector('#vital-inspect-toggle');
+    showChanged = root.querySelector('#vital-inspect-show-changed');
+    collapse = root.querySelector('#vital-inspect-collapse');
+    move = root.querySelector('#vital-inspect-move');
+    ui.style.cssText = 'position: fixed; right: 16px; bottom: 16px; max-width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; background: #fff; color: #1b1b1b; border: 2px solid #1b1b1b; border-radius: 6px; box-shadow: 0 6px 28px rgba(0,0,0,.4); font: 14px/1.45 system-ui,-apple-system,sans-serif; padding: 16px 18px; pointer-events: auto;';
+    close.addEventListener('click', cleanup);
+    previousButton.addEventListener('click', function () { if (index > 0) { index--; target = matches[index]; stopWatchers(); watch(); render(evaluate()); reveal(); } });
+    nextButton.addEventListener('click', function () { if (index < matches.length - 1) { index++; target = matches[index]; stopWatchers(); watch(); render(evaluate()); reveal(); } });
+    findAgain.addEventListener('click', function () { run(); });
+    showElement.addEventListener('click', reveal);
+    toggle.addEventListener('click', function () {
+      hidden = !hidden;
+      if (box) box.hidden = hidden;
+      if (label) label.hidden = hidden;
+      toggle.textContent = hidden ? 'Show highlight' : 'Hide highlight';
+    });
+    showChanged.addEventListener('click', function () {
+      if (target) {
+        drawBox('changed', 'Different element — not the recorded occurrence');
+        showChanged.hidden = true;
+        toggle.hidden = false;
+        reveal();
+      }
+    });
+    collapse.addEventListener('click', function () {
+      details.hidden = !details.hidden;
+      collapse.textContent = details.hidden ? 'Expand' : 'Collapse';
+      collapse.setAttribute('aria-expanded', details.hidden ? 'false' : 'true');
+    });
+    move.addEventListener('click', function () {
+      corner = corner === 'right' ? 'left' : corner === 'left' ? 'top-right' : corner === 'top-right' ? 'top-left' : 'right';
+      applyCorner();
+    });
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('scroll', schedule, true);
+    window.addEventListener('resize', schedule);
+  }
+
+  function applyCorner() {
+    ui.setAttribute('data-corner', corner);
+    if (corner === 'right') { ui.style.left = 'auto'; ui.style.right = '16px'; ui.style.top = 'auto'; ui.style.bottom = '16px'; }
+    if (corner === 'left') { ui.style.left = '16px'; ui.style.right = 'auto'; ui.style.top = 'auto'; ui.style.bottom = '16px'; }
+    if (corner === 'top-right') { ui.style.left = 'auto'; ui.style.right = '16px'; ui.style.top = '16px'; ui.style.bottom = 'auto'; }
+    if (corner === 'top-left') { ui.style.left = '16px'; ui.style.right = 'auto'; ui.style.top = '16px'; ui.style.bottom = 'auto'; }
+  }
+  function addDetail(tag, text, css) {
+    var node = document.createElement(tag);
+    if (text != null) node.textContent = String(text);
+    if (css) node.style.cssText = css;
+    details.appendChild(node);
+    return node;
+  }
+  function addIdentity(title, values) {
+    addDetail('p', title, 'margin:10px 0 2px;font-weight:700;');
+    var list = document.createElement('ul');
+    values.forEach(function (value) {
+      var item = document.createElement('li');
+      item.textContent = value;
+      list.appendChild(item);
+    });
+    details.appendChild(list);
+  }
+  function removeBox() {
+    if (box && box.parentNode) box.remove();
+    if (label && label.parentNode) label.remove();
+    box = null;
+    label = null;
+  }
+  function drawBox(kind, text) {
+    removeBox();
+    if (!target) return;
+    box = document.createElement('div');
+    box.id = 'vital-inspect-box';
+    box.setAttribute('aria-hidden', 'true');
+    box.style.cssText = kind === 'matched'
+      ? 'border:3px solid #d4351c;background:rgba(212,53,28,.12);box-shadow:0 0 0 2px #fff,0 0 0 5px #1b1b1b;'
+      : kind === 'candidate'
+        ? 'border:3px dashed #8a5a00;background:rgba(224,165,38,.14);box-shadow:0 0 0 2px #fff,0 0 0 4px #1b1b1b;'
+        : 'border:3px dashed #4a4a4a;box-shadow:0 0 0 2px #fff;';
+    label = document.createElement('div');
+    label.id = 'vital-inspect-label';
+    label.setAttribute('aria-hidden', 'true');
+    label.textContent = text;
+    root.appendChild(box);
+    root.appendChild(label);
+    hidden = false;
+    toggle.textContent = 'Hide highlight';
+    toggle.hidden = false;
+    place();
+  }
+  function isInvisible(el) {
+    if (!el || !el.isConnected) return true;
+    var style = window.getComputedStyle(el);
+    return el.getClientRects().length === 0 || style.visibility === 'hidden' || style.display === 'none' || style.opacity === '0';
+  }
+  function reveal() {
+    if (!target) return;
+    if (isInvisible(target)) {
+      liveState = 'hidden';
+      removeBox();
+      heading.textContent = 'Recorded element is hidden in this page state';
+      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again. The finding remains unverified.';
+      toggle.hidden = true;
+      showElement.hidden = true;
+      return;
+    }
+    liveState = 'ok';
+    showElement.hidden = false;
+    try {
+      target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'auto' });
+    } catch (error) { /* older browsers: still place the fixed box */ }
+    var afterScroll = function () { place(); avoidTarget(); };
+    (window.requestAnimationFrame || function (fn) { setTimeout(fn, 16); })(function () {
+      afterScroll();
+      setTimeout(afterScroll, 80);
+    });
+  }
+  function place() {
+    if (!target || !box || hidden || liveState !== 'ok') return;
+    var r = target.getBoundingClientRect();
+    box.style.left = Math.max(0, r.left - 3) + 'px';
+    box.style.top = Math.max(0, r.top - 3) + 'px';
+    box.style.width = Math.max(2, r.width + 6) + 'px';
+    box.style.height = Math.max(2, r.height + 6) + 'px';
+    if (label) {
+      label.style.left = Math.max(0, Math.min(window.innerWidth - 190, r.left - 3)) + 'px';
+      var labelTop = r.top - 27;
+      if (labelTop < 0 || r.top < 30) labelTop = Math.min(window.innerHeight - 26, r.bottom + 4);
+      label.style.top = Math.max(0, labelTop) + 'px';
+    }
+  }
+  function schedule() {
+    if (scheduled) return;
+    scheduled = true;
+    (window.requestAnimationFrame || function (fn) { setTimeout(fn, 16); })(function () { scheduled = false; checkLive(); });
+  }
+  function stopWatchers() {
+    if (resizeObserver) { resizeObserver.disconnect(); resizeObserver = null; }
+    if (attributeObserver) { attributeObserver.disconnect(); attributeObserver = null; }
+    if (treeObserver) { treeObserver.disconnect(); treeObserver = null; }
+  }
+  function watch() {
+    stopWatchers();
+    if (!target) return;
+    if (typeof ResizeObserver === 'function') {
+      resizeObserver = new ResizeObserver(function () { place(); });
+      resizeObserver.observe(target);
+    }
+    if (typeof MutationObserver === 'function') {
+      attributeObserver = new MutationObserver(function () { schedule(); });
+      attributeObserver.observe(target, { attributes: true, attributeFilter: ['role', 'aria-label', 'alt', 'title', 'placeholder', 'aria-labelledby', 'hidden', 'style', 'class', 'id'] });
+      treeObserver = new MutationObserver(function () { schedule(); });
+      treeObserver.observe(document.documentElement, { childList: true, subtree: true });
+    }
+  }
+  function checkLive() {
+    if (!target) return;
+    if (!target.isConnected) {
+      stopWatchers();
+      removeBox();
+      liveState = 'broken';
+      heading.textContent = 'Live element changed';
+      statusLine.textContent = 'The recorded element was removed or replaced while the panel was open. It is not being switched to another element.';
+      details.textContent = '';
+      addDetail('p', 'Use Find again after the page has settled; candidates are re-validated before anything is highlighted.', 'margin:8px 0;');
+      previousButton.hidden = true;
+      nextButton.hidden = true;
+      toggle.hidden = true;
+      showChanged.hidden = true;
+      return;
+    }
+    var style = window.getComputedStyle(target);
+    var invisible = target.getClientRects().length === 0 || style.visibility === 'hidden' || style.display === 'none';
+    if (invisible) {
+      if (liveState !== 'hidden') {
+        liveState = 'hidden';
+        removeBox();
+        heading.textContent = 'Recorded element is hidden in this page state';
+        statusLine.textContent = 'The live element is hidden. Open the menu, tab, dialog or accordion that contains it, then choose Find again.';
+        toggle.hidden = true;
+        showElement.hidden = true;
+      }
+      return;
+    }
+    if (liveState === 'hidden') {
+      liveState = 'ok';
+      render(evaluate());
+      watch();
+      reveal();
+      return;
+    }
+    if (liveState === 'broken') return;
+    var result = compare(target);
+    if (result.status === 'changed') {
+      stopWatchers();
+      removeBox();
+      liveState = 'broken';
+      heading.textContent = 'Live element changed';
+      statusLine.textContent = 'The recorded identity changed while the panel was open. The element is no longer highlighted as the original occurrence.';
+      details.textContent = '';
+      addDetail('p', 'Differences', 'margin:8px 0 2px;font-weight:700;');
+      var list = document.createElement('ul');
+      result.differences.forEach(function (difference) { var li = document.createElement('li'); li.textContent = difference; list.appendChild(li); });
+      details.appendChild(list);
+      addDetail('p', 'Use Find again after the page has settled.', 'margin:8px 0;');
+      previousButton.hidden = true;
+      nextButton.hidden = true;
+      toggle.hidden = true;
+      showChanged.hidden = true;
+      return;
+    }
+    place();
+  }
+
+  function render(result) {
+    details.textContent = '';
+    previousButton.hidden = matches.length < 2;
+    nextButton.hidden = matches.length < 2;
+    previousButton.disabled = index === 0;
+    nextButton.disabled = index >= matches.length - 1;
+    toggle.hidden = !box || result.status === 'changed';
+    showElement.hidden = !target || result.status === 'changed' || liveState !== 'ok';
+    showChanged.hidden = result.status !== 'changed';
+    if (target && isInvisible(target) && (result.status === 'matched' || result.status === 'candidate')) {
+      heading.textContent = 'Recorded element is hidden in this page state';
+      statusLine.textContent = 'The selector matches an element, but it has no visible box here. Open the menu, tab, dialog or accordion that contains it, then choose Find again. The finding remains unverified.';
+      toggle.hidden = true;
+      showElement.hidden = true;
+    } else if (result.status === 'matched') {
+      heading.textContent = 'Recorded element located';
+      statusLine.textContent = 'The selector and recorded identity agree. This does not re-test the accessibility violation.';
+    } else if (result.status === 'candidate') {
+      heading.textContent = 'Possible matching element. Verification required.';
+      statusLine.textContent = (result.reason || 'Identity evidence is incomplete.') + (matches.length > 1 ? ' Candidate ' + (index + 1) + ' of ' + matches.length + '.' : '');
+    } else if (result.status === 'changed') {
+      heading.textContent = 'Recorded element changed';
+      statusLine.textContent = 'The selector matches an element, but its recorded identity differs. It is not highlighted as the original occurrence.';
+    } else if (blockedPage()) {
+      heading.textContent = 'Page access blocked';
+      statusLine.textContent = 'This is an access-denied or bot-block page, not the audited page. The recorded selector cannot be evaluated here.';
+    } else {
+      heading.textContent = 'Element not found';
+      statusLine.textContent = 'No element on this page matches the recorded selector.';
+    }
+    addDetail('p', 'Rule: ' + (payload.rule || 'unknown') + (payload.w ? ' · WCAG ' + payload.w : ''), 'margin:10px 0 4px;');
+    if (payload.id) addDetail('p', 'Occurrence: ' + payload.id + (payload.obs ? ' · observation ' + payload.obs : ''), 'margin:0 0 4px;');
+    addDetail('p', 'Selector', 'margin:8px 0 2px;font-weight:700;');
+    var code = document.createElement('code');
+    code.textContent = payload.s || payload.x;
+    details.appendChild(code);
+    if (target) {
+      addIdentity('Recorded identity', [
+        'Tag: ' + (payload.t || 'not recorded'),
+        'Role: ' + (payload.r || 'none recorded'),
+        'Name: ' + (payload.n || 'not recorded') + (payload.ns && payload.ns !== 'none' ? ' (' + payload.ns + ')' : ''),
+      ]);
+      addIdentity('Live identity', [
+        'Tag: ' + target.localName,
+        'Role: ' + (liveRole(target) || 'none'),
+        'Name: ' + (liveName(target, payload.ns) || 'none'),
+      ]);
+    }
+    if (result.differences && result.differences.length) {
+      addDetail('p', 'Differences', 'margin:10px 0 2px;font-weight:700;');
+      var ul = document.createElement('ul');
+      result.differences.forEach(function (difference) { var li = document.createElement('li'); li.textContent = difference; ul.appendChild(li); });
+      details.appendChild(ul);
+    }
+    if (result.status === 'not_located' && blockedPage()) {
+      addDetail('p', 'Try the same inspection URL in your normal browser, where your session and cookies may allow access. Do not weaken the site’s access controls.', 'margin:8px 0;');
+    } else if (result.status === 'not_located') {
+      addDetail('p', 'Possible causes: the element was removed, the locator changed, an interaction is required, content loads dynamically, it is inside a frame or shadow root, the page is in another state, or access is restricted.', 'margin:8px 0;');
+      addDetail('p', 'Change the page state if needed, then choose Find again. A missing highlight does not mean the finding is fixed; treat it as unverified.', 'margin:0 0 8px;');
+    }
+    if (result.comparison && result.comparison.differences) {
+      addDetail('p', 'This candidate also differs: ' + result.comparison.differences.join('; '), 'margin:8px 0;');
+    }
+    if (payload.fix) {
+      addDetail('p', 'Historical remediation guidance (from the scan; not a fresh test)', 'margin:12px 0 4px;font-weight:700;');
+      addDetail('p', payload.fix, 'margin:0 0 8px;');
+    }
+    if (payload.h && /^https?:\/\//.test(payload.h)) {
+      var link = document.createElement('a');
+      link.href = payload.h;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = 'Rule documentation';
+      details.appendChild(link);
+    }
+    addDetail('p', 'Runs locally in your browser. VITAL sends nothing; this overlay is not stored. A visible element is not proof the violation persists, and a missing element is not proof it is fixed. If this highlight is missing or wrong, record that in the Finding Explorer’s manual review record.', 'margin:12px 0 0;font-size:.85rem;color:inherit;');
+    if (result.status === 'matched') drawBox('matched', 'Recorded element');
+    else if (result.status === 'candidate') drawBox('candidate', 'Candidate ' + (index + 1) + ' of ' + matches.length + ' — verify');
+    else removeBox();
+    avoidTarget();
+  }
+  function avoidTarget() {
+    if (!target || !ui || hidden) return;
+    var panel = ui.getBoundingClientRect();
+    var r = target.getBoundingClientRect();
+    var overlap = panel.left < r.right && panel.right > r.left && panel.top < r.bottom && panel.bottom > r.top;
+    if (overlap) {
+      corner = corner === 'right' ? 'left' : corner === 'left' ? 'top-right' : corner;
+      applyCorner();
+    }
+  }
+  function run() {
+    stopWatchers();
+    liveState = 'ok';
+    render(collect());
+    watch();
+    reveal();
+  }
+  function onKey(event) { if (event.key === 'Escape') cleanup(); }
+  function cleanup() {
+    stopWatchers();
+    document.removeEventListener('keydown', onKey);
+    window.removeEventListener('scroll', schedule, true);
+    window.removeEventListener('resize', schedule);
+    removeBox();
+    if (host && host.parentNode) host.remove();
+    if (previousFocus && previousFocus.focus) previousFocus.focus();
+  }
+
+  build();
+  applyCorner();
+  run();
+  close.focus();
+}

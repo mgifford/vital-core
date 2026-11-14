@@ -111,6 +111,14 @@ describe('buildSnapshot', () => {
     assert.equal(snap.summary.serious_count, 1);
   });
 
+  test('exposes a compact coverage summary without inventing audited totals', () => {
+    const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
+    assert.equal(snap.coverage.pages_scanned, 100);
+    assert.equal(snap.coverage.pages_audited, null);
+    assert.equal(snap.coverage.known_urls_estimate, 500);
+    assert.match(snap.coverage.known_urls_note, /not an authoritative/);
+  });
+
   test('does not include top-level pages array', () => {
     const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
     assert.ok(!('pages' in snap));
@@ -304,15 +312,110 @@ describe('buildWeekFindings scope of analysis (additive)', () => {
       ...FAKE_SUMMARY,
       sharedComponents: { schema: 1, counts: { engine_findings: 1 }, components: [{ id: 'consent-dialog', verified: true }], rules: { 'axe-core:x': scope } },
       pageFamilies: { schema: 1, urls_total: 3, known_implementation_count: 1, families: [] },
+      evidenceCoverage: { findings_total: 1, findings_with_detailed_evidence: 1, findings_without_detailed_evidence: 0 },
     };
     const wf = buildWeekFindings(FAKE_TARGET, summary, [bug], FAKE_LEDGER.findings);
     assert.deepEqual(wf.findings[0].reporting.component_scope, scope);
     assert.equal(wf.scope_of_analysis.page_families.known_implementation_count, 1);
     assert.equal(wf.scope_of_analysis.shared_components.components[0].id, 'consent-dialog');
+    assert.equal(wf.evidence_coverage.findings_total, 1);
     assert.equal(JSON.parse(JSON.stringify(wf)).scope_of_analysis.shared_components.rules, undefined, 'per-rule map is carried on each finding instead');
     assert.equal(wf.schema_version, SCHEMA_VERSION, 'no schema version bump');
     const plain = buildWeekFindings(FAKE_TARGET, FAKE_SUMMARY, [FAKE_BUG], FAKE_LEDGER.findings);
     assert.equal('scope_of_analysis' in plain, false);
     assert.equal(plain.findings[0].reporting.component_scope, null);
   });
+});
+
+test('buildWeekFindings publishes region and component groupings with redacted representatives', () => {
+  const summary = {
+    week: '2026-W25',
+    pagesScanned: 2,
+    regions: {
+      basis: 'stored_examples',
+      findings_total: 1,
+      findings_with_region: 1,
+      findings_unclassified: 0,
+      findings_without_evidence: 0,
+      regions: [{
+        key: 'main|', role: 'main', name: null, label: 'main (unnamed)', unclassified: false,
+        findings: 1, pages_affected_sum: 2, instances_total: 3,
+        engines: { 'axe-core': 1 }, components: [{ id: 'cmp-consent', findings: 1 }],
+        representative: [{ url: 'https://example.gov/a?token=SECRET', selector: 'input[value="SECRET"]' }],
+      }],
+    },
+    widgetGroups: {
+      basis: 'stored_examples',
+      findings_total: 1,
+      attributed: 1,
+      unattributed: 0,
+      ownership_basis: 'Widget roles are structural categories.',
+      groups: [{
+        key: 'widget:dialog', type: 'widget:dialog', widget: 'dialog', label: 'dialog',
+        attribution: 'widget-type', implementation: null, ownership_established: false,
+        findings: 1, instances_total: 3, pages_affected_sum: 2,
+        regions: [{ key: 'main|', findings: 1 }],
+        representative: [{ url: 'https://example.gov/a?token=SECRET', selector: 'div[role="dialog"]' }],
+      }],
+    },
+    componentGroups: {
+      basis: 'stored_examples',
+      findings_total: 1,
+      attributed: 1,
+      unattributed: 0,
+      ownership_basis: 'Configured signatures and widget roles only.',
+      groups: [{
+        key: 'component:cmp-consent', type: 'component:cmp-consent', label: 'Consent dialog',
+        attribution: 'configured', implementation: 'cmp-consent', ownership_established: false,
+        findings: 1, instances_total: 3, pages_affected_sum: 2, regions: [{ key: 'main|', findings: 1 }],
+        representative: [{ url: 'https://example.gov/a?token=SECRET', selector: 'button[aria-label="Ok"]' }],
+      }],
+    },
+  };
+  const data = buildWeekFindings(FAKE_TARGET, summary, [], {});
+  const scope = data.scope_of_analysis;
+  assert.equal(scope.regions.basis, 'stored_examples');
+  assert.equal(scope.regions.regions[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');
+  assert.equal(scope.regions.regions[0].representative[0].selector, null, 'unsafe selector withheld');
+  assert.equal(scope.widget_groups.groups[0].widget, 'dialog');
+  assert.equal(scope.widget_groups.groups[0].implementation, null);
+  assert.equal(scope.widget_groups.groups[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');
+  assert.equal(scope.component_groups.groups[0].attribution, 'configured');
+  assert.equal(scope.component_groups.groups[0].ownership_established, false);
+  assert.equal(scope.component_groups.groups[0].representative[0].url, 'https://example.gov/a?token=[REDACTED]');
+  assert.equal(scope.component_groups.groups[0].representative[0].selector, 'button[aria-label="Ok"]');
+  assert.ok(!JSON.stringify(data).includes('SECRET'));
+});
+
+test('buildWeekFindings publishes reproduction state without claiming a run', () => {
+  const summary = { week: '2026-W25', pagesScanned: 1 };
+  const bug = {
+    pattern_id: 'VS-p', instance_id: 'VS-i', rule_id: 'button-name', rule_label: 'Button', engine_key: 'axe-core',
+    severity: 'Serious', frequency: { pages_affected: 1, instances: 1, total_pages_scanned: 1 },
+    url: 'https://example.gov/a', selector: 'button', element: { available: true, selector: 'button', tag: 'button', role: null, name_source: 'none' },
+    finding_ref: 'VFR-abc12345',
+    occurrence_id: 'VO-abc12345', observation_id: 'VOB-abc12345', occurrence_selection: 'complete',
+    evidence_reference: { finding_ref: 'VFR-abc12345', occurrence_id: 'VO-abc12345', observation_id: 'VOB-abc12345', page_detail_retention_weeks: 2 },
+    observation: { scanned_at: '2026-11-06T00:00:00.000Z', engine_key: 'axe-core', engine_version: '4.12.1', consent_state: 'no_dialog', page_id: 'internal', run_id: 'internal-run' },
+    browser_context: { viewport: { width: 1280, height: 800 }, color_scheme: 'light' },
+    manual_validation: { status: 'not_reviewed', prompts: ['Try it with a keyboard.'], environment_note: 'Use the conditions that apply.', limitations: ['Automated tools find a subset.'] },
+    screenshot: { available: true, file: 'screenshots/abc.jpg', file_name: 'abc.jpg', width: 1280, height: 900, full_page: true, captured_at: '2026-11-06T00:00:00.000Z', format: 'jpeg' },
+  };
+  const data = buildWeekFindings(FAKE_TARGET, summary, [bug], {});
+  assert.equal(data.findings[0].finding_ref, 'VFR-abc12345');
+  assert.equal(data.findings[0].occurrence_id, 'VO-abc12345');
+  assert.equal(data.findings[0].observation_id, 'VOB-abc12345');
+  assert.equal(data.findings[0].evidence_reference.observation_id, 'VOB-abc12345');
+  assert.equal(data.findings[0].observation.scanned_at, '2026-11-06T00:00:00.000Z');
+  assert.equal('page_id' in data.findings[0].observation, false, 'internal identifiers stay internal');
+  assert.equal(data.findings[0].reproduction.status, 'not_attempted');
+  assert.equal(data.findings[0].reproduction.verified_at, null);
+  assert.deepEqual(data.findings[0].reproduction.locator, { strategy: 'css', value: 'button' });
+  assert.equal(data.findings[0].manual_validation.status, 'not_reviewed');
+  assert.deepEqual(data.findings[0].manual_validation.prompts, ['Try it with a keyboard.']);
+  assert.equal(data.findings[0].screenshot.file, 'screenshots/abc.jpg');
+
+  const unavailable = buildWeekFindings(FAKE_TARGET, summary, [{ ...bug, element: null }], {});
+  assert.equal(unavailable.findings[0].reproduction.status, 'unavailable');
+  assert.equal(unavailable.findings[0].reproduction.reason, 'element-evidence-unavailable');
 });

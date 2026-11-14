@@ -84,6 +84,294 @@ banner is a different variant), pull the idea from here instead of rebuilding it
 Not solved: seeing the variant a visitor in another country would see. The
 scheduled scans run on GitHub's cloud servers.
 
+### Element and semantic evidence
+
+For every stored failing-element example of each rule (up to three per page),
+the scanner records the element's tag, explicit role, name-bearing attributes
+(never text content), selector match count, visibility, bounding rectangle, and
+its serialized ancestor chain. Only meaningful boundaries (landmarks, sectioning
+elements, widgets and the target) are serialized, so deep layout wrappers no
+longer hide `main`; the chain is classified into the nearest landmark region and
+any containing widget (dialog, tablist, navigation, …). Each example keeps its
+own URL, selector, context and scan provenance, and reports select one
+representative occurrence as a whole (`occurrence_id`) instead of mixing fields
+from different observations. Unnamed
+`<section>`/`<form>` elements stay unnamed rather than being promoted to
+landmarks, and elements outside any landmark are marked `unclassified` instead
+of being assigned an invented region. Alfa reports node descriptions rather than
+selectors, so its element evidence is recorded as explicitly unavailable. The
+evidence is bounded, sanitized for publication (no element ids, no ancestry, no
+text), and travels with the same examples every report, CSV and JSON API
+consumer reads. Data contracts and remaining work are documented in
+[`docs-internal/FINDING-EVIDENCE-ROADMAP.md`](docs-internal/FINDING-EVIDENCE-ROADMAP.md).
+
+### Findings by region and component
+
+The stored evidence is grouped in three separate dimensions: **by landmark
+region** (main, navigation "Primary", an explicit `unclassified` entry, and a
+separate count for findings the scanner could not locate), **by structural
+widget type** (dialog, tablist, menu, … — a category that never claims an
+implementation), and **by configured shared component** (a
+`component_signatures` id, with its verification provenance from the
+shared-component model). Two unrelated dialogs therefore share the `dialog`
+widget category but are never grouped as one component; a widget role never
+becomes a component. Grouping is sample-based: pages and instances are summed
+across findings, not distinct counts, and `ownership_established` is always
+false. The Accessibility page gains a
+"Findings by page region" table (no JavaScript needed), the JSON API exposes
+`scope_of_analysis.regions` / `component_groups` and per-finding
+`reporting.region`, and a `<domain>_<date>_regions.csv` export is written.
+Component identity is split into type, implementation and occurrence; a type is
+not an implementation and grouping is not ownership.
+
+### Reporting integrity
+
+- The headline is labelled **Automated accessibility health (axe)**, not a
+  WCAG conformance score; Alfa is reported separately and manual testing is
+  incomplete.
+- Technology associations require at least 1.5× and an approximate 95%
+  risk-ratio interval that excludes 1. Point estimates alone are not presented
+  as implementation leads; the interval does not control for confounding.
+- Lighthouse recommendations show the median and 75th percentile saving **per
+  affected page**, plus total transfer across sampled pages. Time savings are
+  never summed into a single visitor-experience claim.
+- The OpenACR export is an **INCOMPLETE DRAFT**, not a conformance report. No
+  automated failure is `not-evaluated` rather than `supports`; the unverified
+  A/AA criteria, draft legal disclaimer and manual-testing gap are explicit.
+- Targets choose `evaluation_report: openacr` (US procurement default),
+  `wcag-em` (W3C evaluation report for a website; recommended outside the US),
+  or `both`. The WCAG-EM output records scope, the non-representative weekly
+  sample, methods, every A/AA outcome as failure or not-evaluated, step status
+  and limitations. See [`docs-internal/WCAG-EM.md`](docs-internal/WCAG-EM.md).
+
+### Finding Explorer filters
+
+The Explorer filters by region, configured component, widget type, engine,
+severity and **estimated impact group**. Impact groups come from the
+WCAG-to-population mapping and are explicitly not counts of people; filtering
+uses the stored sample. ARRM role filters remain deferred.
+
+### Evidence coverage
+
+Each weekly summary carries a finding-level coverage block: how many findings
+have element evidence, a usable locator, semantic-region evidence, widget
+classification, configured component attribution, a historical screenshot, or
+eligibility for deterministic reproduction — with exact denominators.
+
+The statuses distinguish **not captured**, **not applicable to this engine**
+(for example Alfa, which does not provide a DOM selector), **unsupported DOM
+boundary**, **no stored examples**, **no containing landmark** and
+**unavailable**. A missing locator is never presented as evidence that the page
+has no landmark. Counts are findings, not element occurrences.
+
+### Historical screenshots and visual inspection
+
+Screenshots are **opt-in and bounded** (`screenshots` in `config/targets.yml`,
+default off): at most `max_per_run` pages, one screenshot per page that has
+findings (never per violation), captured while the page is already open after
+auditing. Pages taller than `max_height` (default 6,000 CSS px) or wider than
+20,000 CSS px, or whose full-page JPEG exceeds `max_bytes` (default 500 KB),
+fall back to a top-viewport capture. JPEG `quality` bounds storage further, and
+`mask_selectors` masks forms or account widgets before capture. Images live
+under `data/<domain>/<week>/screenshots/`, are copied only into the report
+directories whose findings reference them, and are pruned with page detail.
+
+Every finding also carries a content-independent `finding_ref` (`VFR-…`) and
+each occurrence a `observation_id` (`VOB-…`) for the specific scan run.
+Representative selection is deterministic by evidence completeness and stable
+occurrence fields, not capture order. `finding_ref` is the durable link target;
+the legacy `#VS-…` anchor remains frozen for old links, while page-detail and
+screenshot availability still follow the retention policy.
+
+Each image records CSS width/height, device scale factor, scroll position and
+capture time; element evidence records `rect_page` (page coordinates), so the
+Finding Explorer can place a high-contrast marker without assuming the scroll
+position. The Explorer labels every image **"Screenshot captured during the
+scan. The current website may differ."**, offers a "hide annotations" control,
+and falls back to structured DOM/region evidence when there is no reliable
+rectangle, no screenshot, or the element is outside a viewport capture. It never
+embeds the live site in an iframe.
+
+### Finding Explorer
+
+A per-week `explore.html` page turns the finding list into an inspection
+surface. **Without JavaScript** it renders a complete static index — every
+finding with severity, engine, region, widget type, component and affected
+pages, each linking to its full report anchor — plus the week's by-region,
+by-widget-type and by-component tables. **With JavaScript** it adds filters
+(region, widget type, component, engine, severity, free-text search) and a
+detail panel for the selected finding: rule,
+WCAG, URL, selector, captured element facts (tag, explicit role, name
+attributes, match count, visibility, shadow/iframe), region path, widget,
+component attribution and evidence completeness, stored examples and steps to
+reproduce — always with a link back to the canonical report. The filter logic
+lives in `src/lib/finding-filter.js`, is unit-tested in Node and is reused
+verbatim in the browser, so the static and enhanced views cannot drift. The
+panel explicitly says when evidence, screenshots or reproduction scripts are
+not available yet.
+
+### Live highlight on the target site
+
+A static report cannot draw on another origin, so the WAVE/Accessibility Insights
+equivalent is a **one-time bookmarklet**, not a stored screenshot per issue.
+Every finding with a selector gets a **“Highlight on site”** link that opens the
+live page with a compact VITAL payload in the URL fragment. Clicking the
+**VITAL Inspect** bookmarklet there shows an explicit match status:
+
+- **Recorded element located** — a unique selector and every available identity
+  check agree. This confirms only that the element is still present; it does
+  **not** re-test the violation.
+- **Possible matching element. Verification required.** — several elements
+  match, the recorded tag/role/name evidence is incomplete, or the selector is
+  stale and a visible element matches the recorded name/visible text. Candidates
+  are outlined with a dashed box and can be inspected with Previous/Next.
+- **Recorded element is hidden in this page state** — the selector matches a
+  real element with no visible box (closed menu/tab/dialog, `display:none`,
+  `visibility:hidden`, zero rect). The panel says so rather than drawing an
+  invisible outline; open the containing state and choose Find again.
+- **Recorded element changed** — the selector matches, but the recorded tag,
+  role or name attribute differs. The element is **not** highlighted as the
+  original occurrence unless the user explicitly chooses “Show changed element”.
+- **Element not found** — with possible causes, a **Find again** action, and an
+  explicit reminder that a missing highlight means unverified, not fixed.
+
+The panel scrolls the first visible candidate into view, offers **Show element**
+to re-centre it, and adds a translucent fill to the high-contrast outline. When
+the finding has recorded text, the report offers the no-install native text
+fragment first; the bookmarklet is an enhancement, not the only path. The
+install guide shows the current bookmarklet version and tells people who
+installed an earlier copy to drag it again; older copies can reject newer
+inspection codes. It
+shows the occurrence id, rule, WCAG mapping, selector, recorded and live
+identity, differences and historical remediation guidance. It is rendered in a shadow
+root so aggressive page CSS cannot hide it, can be collapsed or moved between
+corners, and offers Hide highlight, Find again, and candidate navigation. It
+detects when the element is removed or replaced, becomes hidden, or changes a
+recorded identity attribute while the panel is open: the marker is suspended,
+the change is reported, and the user must Find again — it never switches to a
+different element on its own. `Escape` or Close removes it and cleans up its
+observers/listeners. It reads only the page in front of you, sends nothing, and
+stores nothing. The install block is open by default at the top of the
+Accessibility page and Explorer.
+
+Findings with a recorded visible text anchor also get a **“Highlight text on
+site”** link. That is a native `#:~:text=` fragment: the browser scrolls to and
+highlights the text with no JavaScript, bookmark or extension. It highlights
+text rather than an element box, may choose the first matching occurrence, and
+does not show the VITAL panel. Chrome 80+, Firefox 131+ and Safari 16.1+
+support it; hash-routed pages get no text link because the fragment must own the
+hash. The anchor is visible element text, capped at 80 characters, and is not
+captured for form controls.
+
+Inspection codes are versioned, size-bounded and origin-scoped; they carry the
+selector and recorded identity, **not the full URL, query string, page text or
+HTML**. Because a fragment can interfere with hash-routed sites, every finding
+also offers **Copy inspection code**: open the page normally, activate the
+bookmarklet, and paste the code when prompted. A strict `script-src`
+Content-Security-Policy can block the bookmarklet before it can show any
+message; the report warns about that and never suggests weakening site policy.
+
+The bookmarklet is installed once by showing the bookmarks bar and dragging the
+large **VITAL Inspect** button into it. The report shows a bookmarks-bar visual,
+the keyboard shortcut for each browser, and a manual fallback (right-click →
+Copy link, or **Copy bookmarklet**, then create a bookmark and paste the code as
+its address). Clicking the button on the report page only runs it there; it must
+be dragged to the bar or saved as a bookmark. It follows the recorded selector, so it cannot
+cross shadow roots, iframe boundaries or interaction-gated content; those cases
+are reported rather than guessed. A page with a strict CSP may block the
+bookmarklet's inline styles; the report says it is a browser-side tool, not a
+server-side highlight.
+
+### Local Playwright inspector
+
+For developers who want a live, headed view without a bookmarklet or extension:
+
+```bash
+npm run inspect -- --bugs <bugs.json|URL> --id <VS-id|pattern-id>
+npm run inspect -- --url https://example.gov/page --selector '#main h2'
+npm run inspect -- --url https://example.gov/page --xpath '//main//h2'
+```
+
+It opens the page in a headed Chromium, injects the same VITAL Inspect
+highlighter, and keeps the browser open. `--dry-run` prints the payload/target
+without launching a browser; `--print-url` prints just the payload URL;
+`--headless`, `--timeout` and `--user-agent` support automation. The browser is
+a normal local Playwright window, not an iframe in the report.
+
+If a site returns a firewall/bot-block page (for example Akamai “Access Denied”)
+the inspector and bookmarklet now say **Page access blocked** instead of
+reporting “element not found”. Use `--print-url`, open that URL in your normal
+browser with its cookies/session, and run the VITAL Inspect bookmarklet there.
+
+### Optional Playwright MCP investigation
+
+For developers already running an MCP client, the Accessibility page and Explorer
+offer **Copy Playwright MCP prompt**. It contains the recorded URL, selector,
+tag/role/name and occurrence, and asks the client to use Microsoft's Playwright
+MCP with the Playwright browser extension. That reuses the existing Chrome/Edge
+profile and signed-in tabs, which the bookmarklet cannot do.
+
+The prompt is observation-only: report matches, visibility, coverage and the
+page state needed to reveal the element; do not run a new audit, claim
+conformance or change the page. It is external and optional (Node, Chrome/Edge
+extension and an MCP client are required), not a VITAL dependency, and still
+does not prove the violation persists. See
+[`docs-internal/PLAYWRIGHT-MCP.md`](docs-internal/PLAYWRIGHT-MCP.md).
+
+### Deterministic Playwright reproduction
+
+A finding with captured element evidence can be replayed as a standalone
+Playwright test, generated on demand from the Explorer's detail panel or with
+`npm run reproduce -- --bugs <bugs.json> --id <VS-id> --out test.mjs`. The
+script opens the recorded URL with the recorded viewport/colour scheme/forced
+colours/reduced motion/locale, verifies that the recorded selector matches
+exactly one element, runs axe-core with **only the recorded rule**, and checks
+that the failure is on **that element** — a rule failing elsewhere is reported
+as `not_reproduced`, never as a reproduction. Outcomes are explicit
+(`reproduced`, `not_reproduced`, `locator_not_found`, `ambiguous_locator`,
+`interaction_state_unavailable`, `element_identity_changed`,
+`page_unavailable`, `rule_or_engine_changed`, `inconclusive`) and map to exit
+codes 0–7. The generated file is self-contained apart from `playwright` and
+`axe-core`: its header gives copy-paste setup (`npm init -y`, `npm install
+playwright axe-core`, `npx playwright install chromium`), and it accepts
+`REPRO_URL`, `REPRO_SELECTOR`, `REPRO_HEADED` and `REPRO_TIMEOUT_MS` for
+retesting a staging URL, a changed selector or a headed run. `scripts/reproduce.js`
+accepts the same as `--url`, `--selector`, `--headed` and `--timeout`; overrides
+never change the recorded identity, so a selector that now matches another
+element is still `element_identity_changed`. Nothing runs during a scheduled
+scan, Alfa/frame/shadow findings are reported as unavailable rather than
+guessed, and a failure to reproduce never means the issue is fixed.
+
+### Brand mark and favicon
+
+Reports use one inline SVG brand mark: a bold V on deep teal with an amber
+ledger rule. It is written as `docs/favicon.svg` plus a 64 px `docs/favicon.png` fallback,
+advertised with both icon links on every report page, and repeated as the
+28 px header mark (empty alt text because the adjacent wordmark names it).
+The self-contained ACR embeds the same mark as a data URI. The mark is a static
+asset, adds no script or network request beyond the favicon, and remains legible
+at 16 px.
+
+### Manual validation guidance and review records
+
+Every finding carries **finding-relevant** manual prompts (for example contrast
+in light, dark and forced-colours modes for 1.4.3; keyboard-only operation for
+2.1.1), suggested test conditions and an explicit limit: automated tools find
+roughly a third of barriers, and recording a review does not establish
+conformance. The prompts appear on the Accessibility page's finding detail and
+in `bugs.md`. The Explorer can download a structured
+`<VS-id>.manual-review.json` with the finding (including `occurrence_id`, the
+recorded element and any historical screenshot reference), guidance and a
+review block. The Explorer prompts for reviewer, review status, browser,
+assistive technology and viewport; those values are written into the downloaded
+record only. `not_a_conformance_claim: true` and
+`manual_validation_required: true` stay set, and VITAL stores nothing. When a screenshot is present the record
+says it is historical and must be re-checked against the live page, and the
+instructions ask the reviewer to remove personal or sensitive data before
+sharing. Nothing is stored or submitted by VITAL, and no status is ever set on
+the reviewer's behalf. A guided assessment workflow and ARRM task/role mapping
+remain documented follow-ups.
+
 ### Cross-engine consensus (ACT-rule deduplication)
 
 axe and Alfa both implement [W3C ACT rules](https://www.w3.org/WAI/standards-guidelines/act/rules/), so the same issue is frequently reported by both under different rule ids (axe `image-alt` and Alfa `sia-r2` are both ACT rule `23a2a8`). Reports now consolidate findings by their shared ACT rule and affected page, so a real issue is counted **once** — the dashboard shows unique issues plus how many are caught by **both** engines (highest confidence) versus axe-only / alfa-only, instead of a misleading doubled total (`src/lib/act.js`, `src/lib/consensus.js`; mapping in `src/data/act-mapping.json`, regenerable from the upstream ACT implementation reports). Unmapped rules keep their own identity and are never wrongly merged.
@@ -156,7 +444,7 @@ Every WCAG success criterion in `src/lib/wcag.js` now carries a `wcag_version` f
 
 ### Data Retention
 
-- Page-level detail (`data/<domain>/<week>/pages/*.json`) is pruned after `retention_weeks` by `src/prune.js`.
+- Page-level detail is not pruned automatically. Only the verified, explicitly authorized `retention:prune` command can remove it; `src/prune.js` is disabled.
 - Weekly `summary.json` files are kept forever, so trend graphs never break.
 
 ### Rolling site inventory (all pages ever scanned)
@@ -182,7 +470,7 @@ Two engines replicate, at site scale, the gaps between vital-core and [ScanGov](
 - **Security** (`src/engines/security.js`, per origin): HTTPS, HSTS, CSP, X-Content-Type-Options, clickjacking protection (X-Frame-Options or CSP frame-ancestors), published `security.txt`, sponsored government TLD (.gov/.mil/.edu), and www resolution. Reported as a per-origin pass/fail checklist.
 - **Standards & metadata** (`src/engines/standards.js`, per page): schema.org GovernmentOrganization, canonical, hreflang, `<title>`, meta description, charset, document `lang`, responsive viewport (zoom not disabled), Open Graph tags (≥4/6), Twitter card — reported as a pass-rate table across checked pages. Also detects **open social presence** (Mastodon via `rel="me"`/known hosts, Bluesky) and surfaces the links.
 
-Both are rate-controlled engines (security low/per-origin, standards per-page) with their own report section, and roll into the per-domain `domain.json` export. We deliberately keep these out of the accessibility score — security and SEO are different dimensions.
+Both are rate-controlled engines (security low/per-origin, standards per-page) with their own report section, and roll into the per-domain `domain.json` export. We deliberately keep these out of the automated accessibility health indicator — security and SEO are different dimensions.
 
 ### Time windows: rolling 7 days vs ISO-week archive
 

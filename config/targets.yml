@@ -10,6 +10,16 @@
 # for slow pages under the 110-min job cap. The 5 weekly crons accumulate
 # coverage: 100 x 5 ~= 500 pages/week/domain (more for higher importance).
 
+# Size warnings are advisory, never deletion triggers. The report workflow
+# reads these values (scripts/storage-growth.js); lower a ceiling only with a
+# measured migration and explicit review.
+storage:
+  code_ceiling_mb: 100
+  data_warning_mb: 1300
+  data_critical_mb: 1600
+  weekly_growth_warning_mb: 100
+  run_growth_warning_mb: 50
+
 defaults:
   pages_per_run: 150        # max pages scanned per domain per workflow run (keeps runs < 2h)
   max_pages_per_week: 10000  # hard weekly cap per domain
@@ -18,9 +28,32 @@ defaults:
   networkidle_cap_ms: 8000  # max wait for network-idle after load; passive listening (sends nothing), so capping never adds server load
   settle_delay_ms: 1000     # wait after load + network-idle before auditing (avoids pre-hydration false positives)
   max_crawl_depth: 10        # BFS depth from seeds
-  retention_weeks: 2        # page-level detail kept this long; weekly summaries kept forever
+  retention_weeks: 2        # legacy: page-level detail kept this long; weekly summaries kept forever
+  # Optional retention policy. When omitted, retention_weeks above is preserved
+  # for reading/planning only; no automatic deletion occurs. Explicit policy
+  # overrides the legacy field with a warning. Recommended migration (leave it
+  # commented until a backend and restore drill are approved):
+  # retention:
+  #   profile: balanced
+  #   live: { mode: adaptive, minimum_weeks: 4, maximum_weeks: 16, scan_cycle_multiplier: 1.25 }
+  #   archive: { enabled: true, retention_months: 12, verify_before_prune: true, backend: local, path: archives }
+  #   summary: { retention: indefinite }
+  # Evaluation export: openacr (US procurement default), wcag-em (W3C evaluation
+  # report; recommended outside the US), or both. Per-target override below.
+  evaluation_report: openacr
+  # Query parameters to ignore when identifying a page (default: none). Use
+  # only for values that do not change the content, e.g. [page] for a paginated
+  # index. Query variants remain distinct pages by default.
+  url_ignore_params: []
   user_agent: "vital-scans/0.1 (+https://github.com/mgifford/vital-core; accessibility and sustainability monitoring)"
   spelling_locale: en-US     # dictionary for spell checks: en-US, en-GB, en-CA or en-AU (per-target override below)
+  screenshots:                # historical, bounded evidence; opt-in (privacy)
+    enabled: false            # no screenshot is captured unless a target enables it
+    max_per_run: 25           # pages per run (one screenshot per page, never per finding)
+    max_height: 6000          # taller pages fall back to a top-viewport capture
+    max_bytes: 500000         # a full-page JPEG above this falls back to the viewport
+    quality: 70               # JPEG quality, to bound storage
+    mask_selectors: []        # CSS selectors to mask before capture (forms, account widgets)
   reporting:
     max_html_issues: 50
     moderate_issue_threshold_percent: 5
@@ -31,11 +64,11 @@ defaults:
     template_page_threshold: 10
   display:
     # How the accessibility score appears in per-domain reports and the archive.
+    # percent — numeric score only (default; least likely to imply a grade)
     # letter  — letter grade only (A/B/C/D/F)
-    # percent — numeric score only (e.g. "78")
-    # both    — letter grade and numeric score (default)
+    # both    — letter grade and numeric score (opt in)
     # none    — suppress the score section entirely
-    score_format: both
+    score_format: percent
   finding_policy:
     # version/level is the build target: everything new should meet WCAG
     # 2.2 AA. legal_baseline is the legal minimum: Section 508 (36 CFR 1194)
@@ -244,6 +277,23 @@ targets:
   #     Examples:
   #       spelling_allowlist: ["Medicaid", "FMAP", "CHIPRA", "MACRA"]
   #       spelling_allowlist: ["Sequestration", "Beneficiaries", "CMS"]
+  #
+  #   evaluation_report: openacr
+  # Query parameters to ignore when identifying a page (default: none). Use
+  # only for values that do not change the content, e.g. [page] for a paginated
+  # index. Query variants remain distinct pages by default.
+  #   evaluation_report: openacr | wcag-em | both — which evaluation artifact
+  #     the Accessibility page offers. US fleets usually want `openacr` (draft
+  #     OpenACR/VPAT-compatible); non-US fleets evaluating a website should set
+  #     `wcag-em` for a W3C WCAG-EM-aligned report. `both` is available during
+  #     migration. The automated WCAG-EM report is a pre-assessment, not a
+  #     conformance claim. Example: evaluation_report: wcag-em
+  #
+  #   retention: optional policy (profile: minimal | balanced | research |
+  #     preserve, plus live/archive/storage overrides). Omit it to preserve
+  #     retention_weeks. Explicit policy wins over retention_weeks with a
+  #     warning when they disagree. Planning is read-only:
+  #     `npm run retention:plan`.
   #
   #   spelling_locale: en-US | en-GB | en-CA | en-AU — the English the spell
   #     checker accepts (default en-US, or defaults.spelling_locale). en-GB is

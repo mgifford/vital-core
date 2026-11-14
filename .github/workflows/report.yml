@@ -9,13 +9,15 @@
 #
 # Steps, in order:
 #   1. aggregate       : computes summaries from data/, writes docs/
-#   2. prune           : removes page-level detail older than retention_weeks
-#   3. commit          : writes summaries and retention marker back to data/
+#   2. commit          : writes summaries and retention marker back to data/
 #                        (data/ is a checkout of the data repo, `data_repo`
 #                        in config/targets.yml; pushed with VITAL_DATA_DEPLOY_KEY)
-#   4. generate comment: creates docs/comment.md
-#   5. deploy          : publishes docs/ to GitHub Pages
-#   6. post comment    : posts weekly Markdown summary to a pinned issue
+#   3. generate comment: creates docs/comment.md
+#   4. deploy          : publishes docs/ to GitHub Pages
+#   5. post comment    : posts weekly Markdown summary to a pinned issue
+#
+# Pruning is intentionally absent. Historical detail may only be removed by
+# the manually authorized, archive-verified retention:prune command.
 
 name: report
 
@@ -121,51 +123,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           DATA_REPO: ${{ steps.datarepo.outputs.repo }}
-          WEEKLY_GROWTH_LIMIT_MB: 100
-          CEILING_MB: 1300
-          CODE_CEILING_MB: 100
-        run: |
-          CODE_MB=$(( $(gh api "repos/${GITHUB_REPOSITORY}" --jq .size) / 1024 ))
-          echo "Code repository size: ~${CODE_MB} MB"
-          if [ "$CODE_MB" -gt "$CODE_CEILING_MB" ]; then
-            echo "::warning title=Code repo over size ceiling::${GITHUB_REPOSITORY} is ~${CODE_MB} MB, over the ${CODE_CEILING_MB} MB ceiling. Scan data belongs in ${DATA_REPO}."
-          fi
-          KB=$(gh api "repos/${DATA_REPO}" --jq .size)
-          MB=$((KB / 1024))
-          echo "Data repository size (server-side, full history): ${KB} KB (~${MB} MB)"
-          # GitHub reports 0 until it has sized a repo (e.g. a new one), so
-          # 0 is "unknown": neither recorded nor compared.
-          if [ "$KB" -eq 0 ]; then
-            echo "Size not computed yet by GitHub; skipping growth checks."
-            exit 0
-          fi
-          echo "kb=${KB}" >> "$GITHUB_OUTPUT"
-          PREV_KB=$(cat data/.repo-size-kb 2>/dev/null || echo "")
-          if [ -n "$PREV_KB" ] && [ "$PREV_KB" -gt 0 ]; then
-            GROWTH_KB=$((KB - PREV_KB))
-            GROWTH_MB=$((GROWTH_KB / 1024))
-            echo "Growth since last run: ${GROWTH_KB} KB (~${GROWTH_MB} MB)"
-            if [ "$GROWTH_MB" -gt 50 ]; then
-              echo "::warning title=Repo growing fast::Repo grew ~${GROWTH_MB} MB since the last report run (now ~${MB} MB). The write-pattern fix (see ARCHITECTURE.md 'Git history policy') may have regressed, or a new bloat source appeared in the data repo."
-            fi
-          else
-            echo "No prior size recorded yet (first run after the watchdog rewrite) — nothing to compare."
-          fi
-          CUTOFF=$(date -u -d '7 days ago' +%Y-%m-%d)
-          BASE=$(awk -v c="$CUTOFF" '$1 <= c && $2 > 0 { d = $1; kb = $2 } END { if (kb) print d, kb }' data/.repo-size-history 2>/dev/null || true)
-          if [ -n "$BASE" ]; then
-            set -- $BASE
-            WEEK_MB=$(( (KB - $2) / 1024 ))
-            echo "Growth since $1: ~${WEEK_MB} MB"
-            if [ "$WEEK_MB" -gt "$WEEKLY_GROWTH_LIMIT_MB" ]; then
-              echo "::warning title=Repo growing steadily::Repo grew ~${WEEK_MB} MB since $1 (limit ${WEEKLY_GROWTH_LIMIT_MB} MB per ~7 days; now ~${MB} MB). Find the path with 'git rev-list --objects --all | git cat-file --batch-check' and check whether something large is being committed every run (see ARCHITECTURE.md 'Git history policy')."
-            fi
-          else
-            echo "No size recorded 7+ days ago yet — weekly growth check starts once data/.repo-size-history has a week of entries."
-          fi
-          if [ "$MB" -gt "$CEILING_MB" ]; then
-            echo "::warning title=Repo over size ceiling::Repo is ~${MB} MB, over the ${CEILING_MB} MB ceiling. Investigate the largest paths in history before it reaches GitHub's soft limits."
-          fi
+        run: node scripts/storage-growth.js
 
       - id: decide
         run: |
@@ -218,10 +176,11 @@ jobs:
       - name: Aggregate
         run: node src/aggregate.js
 
-      - name: Prune old page-level detail
-        run: node src/prune.js
+      # No automatic prune. See docs-internal/RETENTION-ROLLOUT.md: every
+      # destructive run must re-verify archives and require explicit operator
+      # confirmation.
 
-      - name: Commit summaries and pruning
+      - name: Commit summaries and retention metadata
         working-directory: data
         env:
           REPO_SIZE_KB: ${{ needs.gate.outputs.repo_size_kb }}

@@ -23,6 +23,7 @@ import { Audit } from '@siteimprove/alfa-test-utils';
 import { Playwright as AlfaPlaywright } from '@siteimprove/alfa-playwright';
 import { runAxe } from '../src/engines/axe.js';
 import { runAlfa } from '../src/engines/alfa.js';
+import { attachElementEvidence } from '../src/lib/element-evidence.js';
 import { buildBugReports } from '../src/lib/bug-report.js';
 
 const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
@@ -89,6 +90,10 @@ targets:
       reject_selectors: ['#fx-reject']
       accept_selectors: ['#fx-accept']
       wait_ms: 200
+    screenshots:
+      enabled: true
+      max_per_run: 5
+      quality: 60
     page_families:
       - id: numbered-pages
         label: Numbered pages
@@ -151,13 +156,17 @@ fs.writeFileSync(
   serverScript,
   `import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
 const SITE = ${JSON.stringify(SITE)};
+const DOCS = ${JSON.stringify(path.join(SANDBOX, 'docs'))};
 http.createServer((req, res) => {
   const reqPath = req.url.split('?')[0];
   if (reqPath === '/moved-page.html') { res.writeHead(301, { location: '/page-1.html' }); res.end(); return; }
   if (reqPath === '/challenge.html') { res.writeHead(202, { 'content-type': 'text/html', 'x-amzn-waf-action': 'challenge' }); res.end('<!DOCTYPE html><html><head><title>Challenge</title></head><body><img src="/x.png"></body></html>'); return; }
-  const f = path.join(SITE, reqPath === '/' ? 'index.html' : reqPath);
+  // The generated report site is served too, so browser checks exercise the
+  // same HTTP origin production uses (fetch() cannot read file:// URLs).
+  const docsRequest = reqPath.startsWith('/docs/');
+  const f = path.join(docsRequest ? DOCS : SITE, docsRequest ? reqPath.slice('/docs'.length) : reqPath === '/' ? 'index.html' : reqPath);
   if (fs.existsSync(f) && fs.statSync(f).isFile()) {
-    res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.js') ? 'application/javascript' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
+    res.setHeader('content-type', f.endsWith('.png') ? 'image/png' : f.endsWith('.js') ? 'application/javascript' : f.endsWith('.json') ? 'application/json' : f.endsWith('.css') ? 'text/css' : f.endsWith('.xml') ? 'application/xml' : f.endsWith('.txt') ? 'text/plain' : 'text/html');
     res.end(fs.readFileSync(f));
   } else {
     res.statusCode = 404; res.setHeader('content-type', 'text/html');
@@ -372,8 +381,39 @@ try {
   assert(/href="tech-findings.html">Tech/.test(w1index), 'subnav links to tech-findings page');
   assert(/class="note scope-summary">[^<]*distinct URLs scanned[^<]*verified shared-component findings[^<]*<a href="accessible\.html#h-scope">/.test(w1index), 'landing page carries the scope summary with a link to the Scope of analysis');
   const w1acc = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'accessible.html'), 'utf8');
+  const w1explore = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'explore.html'), 'utf8');
+  assert(/All findings this week/.test(w1explore), 'explorer has a static findings index');
+  assert(/id="explorer-filters"/.test(w1explore) && /id="explorer-detail"/.test(w1explore), 'explorer has filters and a detail panel slot');
+  assert(/<label for="explorer-widget">Widget type<\/label>/.test(w1explore), 'explorer separates widget type from component');
+  assert(/id="h-explorer-widgets">By widget type/.test(w1explore), 'explorer has a widget grouping table');
+  assert(/id="h-explorer-components">By component/.test(w1explore), 'explorer has a component grouping table');
+  const week1BugsPath = reportFile('2026-W23', '_bugs.json');
+  assert(week1BugsPath, 'bugs.json published');
+  const week1Bugs = JSON.parse(fs.readFileSync(week1BugsPath, 'utf8'));
+  const shotBug = week1Bugs.reports.find((bug) => bug.screenshot?.available && bug.element?.rect_page);
+  assert(shotBug, 'a finding carries screenshot metadata with page coordinates');
+  const dataShots = fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'screenshots'));
+  const docsShots = fs.readdirSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', 'screenshots'));
+  assert(dataShots.length > 0 && dataShots.length <= 10, `screenshots bounded per run (${dataShots.length} across two runs)`);
+  assert(docsShots.length > 0, 'screenshots copied into the published report');
+  assert(/explore\.html#VS-/.test(w1acc), 'each finding links to the explorer');
+  assert(/Highlight on site/.test(w1acc) && /#vital-inspect=/.test(w1acc), 'findings link to a live highlight payload');
+  assert(/class="bookmarklet-link bookmarklet-button" href="javascript:/.test(w1acc), 'the VITAL Inspect bookmarklet is offered');
+  assert(/bookmarklet-visual/.test(w1acc), 'the bookmarks-bar visual is present');
+  assert(/Copy bookmarklet/.test(w1acc), 'the manual bookmarklet fallback is present');
+  assert(/class="inspect-copy" data-inspect-code="/.test(w1acc), 'a URL-free inspection code is available');
+  assert(/id="live-inspect-help" class="live-inspect-help" open>/.test(w1acc), 'the bookmarklet install section has a stable anchor and is open by default');
   assert(/class="note scope-summary">/.test(w1acc) && /Shared component: Fixture consent dialog \(verified\)/.test(w1acc), 'accessibility page leads with the scope summary and badges verified shared-component actions');
   assert(!/\d+ot /.test(w1acc.replace(/<[^>]+>/g, ' ')), 'no corrupted placeholder text');
+  assert(/id="h-scope-regions">Findings by page region/.test(w1acc), 'accessibility page groups findings by region');
+  assert(/<th scope="row">main \(unnamed\)<\/th>/.test(w1acc), 'main is a region row');
+  assert(/could not be located by the scanner/.test(w1acc), 'findings without element evidence are counted separately');
+  assert(/Download region CSV/.test(w1acc), 'region grouping links its CSV export');
+  const regionsCsv = fs.readdirSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23'))
+    .find((name) => /_regions\.csv$/.test(name));
+  assert(!!regionsCsv, 'regions.csv is written');
+  const regionsCsvText = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23', regionsCsv), 'utf8');
+  assert(/^region,role,name,unclassified,findings/.test(regionsCsvText), 'regions.csv has the documented header');
 
   // Third-party JS: every page loads a script from 127.0.0.1 while the page
   // itself is on localhost — a different registrable domain — so the engine
@@ -473,13 +513,20 @@ try {
   assert(report.includes('Changes since 2026-W23'), 'report includes week-over-week section');
   assert(report.includes('lang="en"') && report.includes('Skip to content'), 'report has basic accessibility scaffolding');
   // Theme toggle: action-describing aria-label, sun+moon icons, no-flash script.
-  assert(report.includes('id="theme-toggle"') && /aria-label="Switch to (dark|light) mode"/.test(report), 'theme toggle present with action label');
+  assert(report.includes('id="theme-toggle"') && /aria-label="Theme: Switch to (dark|light) mode"/.test(report), 'theme toggle present with action label');
   assert(report.includes('icon-sun') && report.includes('icon-moon'), 'toggle has sun and moon icons');
   assert(report.includes("data-theme") && report.includes('vital-theme'), 'no-flash theme script + persistence present');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'index.html')), 'dashboard generated');
   assert(fs.existsSync(path.join(SANDBOX, 'docs', 'style.css')), 'stylesheet generated');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'favicon.svg')), 'SVG favicon generated');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'favicon.png')), 'PNG favicon fallback generated');
+  assert(report.includes('rel="icon"') && report.includes('favicon.svg'), 'report advertises the SVG favicon');
+  assert(report.includes('favicon.png'), 'report advertises the PNG fallback');
+  assert(report.includes('class="brand-mark"') && report.includes('alt=""'), 'header brand mark is decorative');
   // Scorecard on the domain report; trend charts live on the History page (WP2).
-  assert(/class="scorecard"/.test(report) && /class="grade grade-[A-F]"/.test(report), 'domain report shows a score + grade');
+  assert(/class="scorecard"/.test(report) && /class="score"/.test(report) && !/class="grade grade-[A-F]"/.test(report), 'domain report shows a numeric score without a letter grade');
+  assert(report.includes('How much was tested') && report.includes('Coverage is not the same as conformance'), 'domain report has a plain-language coverage summary');
+  assert(/id="h-coverage-summary"/.test(report), 'coverage summary has a stable heading anchor');
   assert(/href="history\.html"/.test(report) && /History &amp; Trends/.test(report), 'overview links to the History & Trends page');
   const historyPage = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'history.html'), 'utf8');
   assert(historyPage.includes('id="h-history-a11y"') && /class="linechart/.test(historyPage), 'History page shows multi-week trend charts');
@@ -510,6 +557,10 @@ try {
   const totalKnownPages = Object.keys(inv.pages).length + Object.keys(inv.fixed).length + (inv.cleanCount ?? 0);
   assert(totalKnownPages >= PAGES, `inventory summary still accounts for all known pages (${totalKnownPages})`);
   assert(/unique pages have been scanned at least once/.test(report), 'report cites total known pages from inventory');
+  const observations = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', 'observations.json')));
+  assert(Object.keys(observations.urls).length >= PAGES + 1, 'last-observation index covers discovered URLs');
+  assert(Object.values(observations.urls).every((entry) => typeof entry.outcome === 'string'), 'every observation has an explicit outcome');
+  assert(Object.values(observations.urls).some((entry) => entry.clean === true || entry.clean === false), 'clean-for-automated-engines is explicit for audited URLs');
   // ScanGov-style standards + security engines.
   assert(w1.security && w1.security.checks.some((c) => c.id === 'https'), 'security checks recorded (per origin)');
   assert(w1.security.checks.find((c) => c.id === 'gov-tld').pass === false, 'localhost is not a .gov (TLD check works)');
@@ -534,7 +585,7 @@ try {
   assert(/data\/localhost\/domain\.json/.test(report), 'report links the JSON download');
   // Dashboard: leaderboard score + trajectory + cross-domain chart.
   const dash = fs.readFileSync(path.join(SANDBOX, 'docs', 'index.html'), 'utf8');
-  assert(/<th\b[^>]*scope="col"[^>]*>\s*Score\s*<\/th>/.test(dash) && /class="grade grade-[A-F]"/.test(dash), 'dashboard leaderboard shows scores');
+  assert(/<th\b[^>]*scope="col"[^>]*>\s*Score\s*<\/th>/.test(dash) && /<td class="num">\d+<\/td>/.test(dash), 'dashboard leaderboard shows numeric scores');
   assert(/class="traj traj-/.test(dash), 'dashboard shows trajectory arrows');
   assert(dash.includes('all domains') && dash.includes('linechart'), 'dashboard has cross-domain overlay chart');
   assert(/id="h-worst"/.test(dash), 'dashboard has fleet-wide worst-offenders section');
@@ -556,12 +607,20 @@ try {
   assert(fs.existsSync(archivePath), 'archive page written');
   const archiveHtml = fs.readFileSync(archivePath, 'utf8');
   assert(/2026-W23/.test(archiveHtml) && /2026-W24/.test(archiveHtml), 'archive lists both weeks');
+  assert(/Raw evidence/.test(archiveHtml) && /Evidence details/.test(archiveHtml), 'archive links each week to its raw-evidence state');
+  const evidencePath = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'evidence.html');
+  assert(fs.existsSync(evidencePath), 'per-week evidence/tombstone page written');
+  const evidenceHtml = fs.readFileSync(evidencePath, 'utf8');
+  assert(/No verified archive recorded/.test(evidenceHtml), 'without an archive the evidence page is an honest tombstone');
+  assert(!/http-equiv="refresh"/i.test(evidenceHtml), 'the evidence page does not redirect to a newer finding');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'api', 'v1', 'archives', 'index.json')), 'machine-readable archive index written');
+  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'api', 'v1', 'localhost', 'archives.json')), 'per-domain archive index written');
 
   // Consistent navigation: every sub-page is written for the week, and every
   // page (including archive.html) carries the identical full subnav. A
   // criterion with no data this week still renders, with an empty-state page.
   const weekDir = path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W23');
-  const SUBPAGES = ['index', 'accessible', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'pdfs', 'history', 'archive'];
+  const SUBPAGES = ['index', 'accessible', 'explore', 'standards', 'security', 'errors', 'fast', 'findable', 'tech', 'tech-findings', 'third-parties', 'images', 'pdfs', 'history', 'archive'];
   const navOf = (html) => {
     const m = html.match(/<nav class="subnav"[\s\S]*?<\/nav>/);
     if (!m) return null;
@@ -647,6 +706,79 @@ try {
         await reportContext.close();
       }
     }
+
+    // Finding Explorer: filters and the detail panel are progressive enhancement.
+    const explorerContext = await reportBrowser.newContext({ viewport: { width: 1280, height: 900 } });
+    try {
+      const explorerPage = await explorerContext.newPage();
+      await explorerPage.goto(`http://127.0.0.1:${PORT}/docs/reports/localhost/2026-W23/explore.html`);
+      await explorerPage.waitForSelector('#explorer-filters:not([hidden])');
+      await explorerPage.waitForSelector('#explorer-results li a');
+      assert(await explorerPage.locator('#explorer-results li a').count() > 0, 'explorer lists findings once JavaScript loads');
+      assert(await explorerPage.locator('#explorer-detail').isHidden(), 'detail panel starts closed');
+      await explorerPage.selectOption('#explorer-region', 'main|');
+      assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'region filter updates the live status');
+      await explorerPage.selectOption('#explorer-widget', 'widget:dialog');
+      assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'widget filter updates the live status');
+      await explorerPage.selectOption('#explorer-widget', '');
+      const arrmValue = await explorerPage.locator('#explorer-arrm-role option').nth(1).getAttribute('value');
+      assert(arrmValue, 'ARRM role filter has a mapped option');
+      await explorerPage.selectOption('#explorer-arrm-role', arrmValue);
+      assert(/Showing \d+ of \d+ finding/.test(await explorerPage.locator('#explorer-status').innerText()), 'ARRM role filter updates the live status');
+      await explorerPage.selectOption('#explorer-arrm-role', '');
+      // Keyboard-only: focus a result, open it with Enter, close with Enter.
+      await explorerPage.fill('#explorer-query', 'image-alt');
+      await explorerPage.locator('#explorer-results li a').first().focus();
+      await explorerPage.keyboard.press('Enter');
+      assert(await explorerPage.locator('#explorer-detail').isVisible(), 'Enter on a result opens the detail panel');
+      assert(await explorerPage.locator('#explorer-detail a[href*="accessible.html#"]').count() > 0, 'detail panel links to the canonical report');
+      assert(await explorerPage.locator('#explorer-detail .mcp-copy').count() === 1, 'detail panel offers an optional Playwright MCP prompt');
+      assert(/#VS-/.test(explorerPage.url()), 'selecting a finding updates the URL fragment');
+      assert(await explorerPage.locator('#explorer-highlight').count() === 1, 'the detail panel offers a live highlight');
+      assert(await explorerPage.locator('#explorer-detail .detail-actions').count() === 1, 'primary actions are grouped at the top of the detail');
+      assert(await explorerPage.locator('#explorer-impact').count() === 1, 'disability impact-group filter is present');
+      assert(await explorerPage.locator('#explorer-detail .detail-lead').count() === 1, 'detail begins with a short finding summary');
+      assert(await explorerPage.locator('#explorer-inspect-code').count() === 1, 'the detail panel offers a URL-free inspection code');
+      assert(await explorerPage.evaluate(() => document.activeElement?.id === 'explorer-detail-title'), 'focus moves to the detail heading');
+      assert(await explorerPage.locator('#explorer-download-test').isVisible(), 'a ready finding offers a Playwright test download');
+      const [download] = await Promise.all([
+        explorerPage.waitForEvent('download'),
+        explorerPage.locator('#explorer-download-test').click(),
+      ]);
+      assert(/\.spec\.mjs$/.test(download.suggestedFilename()), 'the download is a .spec.mjs test');
+      const generatedTest = fs.readFileSync(await download.path(), 'utf8');
+      assert(/Generated by vital-core/.test(generatedTest) && /executeReproduction/.test(generatedTest), 'the downloaded file is the standalone reproduction script');
+      assert(await explorerPage.locator('#explorer-download-review').isVisible(), 'a finding offers a manual review record');
+      const [reviewDownload] = await Promise.all([
+        explorerPage.waitForEvent('download'),
+        explorerPage.locator('#explorer-download-review').click(),
+      ]);
+      assert(/\.manual-review\.json$/.test(reviewDownload.suggestedFilename()), 'the review record downloads as JSON');
+      const reviewRecord = JSON.parse(fs.readFileSync(await reviewDownload.path(), 'utf8'));
+      assert(reviewRecord.review.status === 'not_reviewed', 'the review record starts unreviewed');
+      assert(reviewRecord.review.reviewer === null, 'no reviewer is invented');
+      assert(reviewRecord.not_a_conformance_claim === true, 'the record is explicitly not a conformance claim');
+      assert(reviewRecord.guidance.prompts.length > 0, 'the record carries finding-specific prompts');
+      await explorerPage.locator('#explorer-close').focus();
+
+      // Historical visual evidence: deep link to a finding with a screenshot.
+      await explorerPage.goto(`http://127.0.0.1:${PORT}/docs/reports/localhost/2026-W23/explore.html#${shotBug.instance_id}`);
+      await explorerPage.waitForSelector('#explorer-detail:not([hidden])');
+      assert(await explorerPage.locator('.screenshot-figure img').count() === 1, 'screenshot shown for the finding');
+      assert(await explorerPage.locator('#explorer-marker').count() === 1, 'affected element marker shown');
+      assert(/Screenshot captured during the scan/.test(await explorerPage.locator('.screenshot-figure figcaption').innerText()), 'screenshot is labelled as historical');
+      assert(await explorerPage.locator('#explorer-hide-annotations').isVisible(), 'annotations can be hidden');
+      await explorerPage.locator('#explorer-hide-annotations').check();
+      assert(await explorerPage.locator('#explorer-marker').isHidden(), 'hiding annotations removes the marker');
+      await explorerPage.locator('#explorer-hide-annotations').uncheck();
+      await explorerPage.locator('#explorer-close').focus();
+      await explorerPage.keyboard.press('Enter');
+      assert(await explorerPage.locator('#explorer-detail').isHidden(), 'Enter on close returns to the list');
+      const explorerAxe = await runAxe(explorerPage);
+      assert(Object.keys(explorerAxe.violations).length === 0, `explorer page has no automated axe violations (${Object.keys(explorerAxe.violations).join(', ')})`);
+    } finally {
+      await explorerContext.close();
+    }
   } finally {
     await reportBrowser.close();
   }
@@ -713,6 +845,7 @@ try {
     await consentPage.goto(pathToFileURL(path.join(ROOT, 'tests', 'fixtures', 'walsall-consent.html')).href);
     const consentAxe = await runAxe(consentPage);
     const consentAlfa = await runAlfa(consentPage);
+    await attachElementEvidence(consentPage, consentAxe);
     assert(!!consentAxe.violations.list, 'consent list fixture triggers axe list evidence');
     assert(!!consentAxe.violations['aria-required-parent'], 'orphan list item triggers axe parent evidence');
     assert(!!consentAxe.violations['color-contrast'], 'low contrast consent text triggers axe contrast evidence');
@@ -721,11 +854,20 @@ try {
     assert(!!consentAlfa.failed['sia-r69'], 'consent text triggers Alfa contrast evidence');
     assert(!!consentAxe.violations['button-name'] && !!consentAlfa.failed['sia-r8'], 'unnamed consent switch is observed independently by both engines');
 
+    const consentSwitch = consentAxe.violations['button-name']?.examples?.[0];
+    assert(consentSwitch?.element?.available === true, 'button-name example resolves to a live element');
+    assert(consentSwitch.element.selector_matches >= 1, 'selector match count is recorded at capture time');
+    assert(consentSwitch.element.tag === 'button', 'element tag is recorded');
+    assert(consentSwitch.semantic_context?.nearest_region?.role === 'main', 'consent dialog sits inside main');
+    assert(consentSwitch.semantic_context?.in_dialog === true, 'the switch is inside the dialog widget');
+    assert(consentAxe.context?.viewport?.width > 0, 'the render context is captured');
+    assert(consentAlfa.element_evidence?.status === 'unavailable', 'Alfa element evidence is explicitly unavailable');
+
     const observedUrl = 'https://walsall.example.test/consent';
     const axeRules = Object.fromEntries(Object.entries(consentAxe.violations).map(([ruleId, rule]) => [ruleId, {
       ...rule,
       pages: 1,
-      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target, html: example.html })),
+      instances: rule.examples.map((example) => ({ url: observedUrl, target: example.target, html: example.html, element: example.element, semantic_context: example.semantic_context, browser_context: consentAxe.context })),
       affectedPages: [{ url: observedUrl, instances: rule.count }],
     }]));
     const alfaRules = Object.fromEntries(Object.entries(consentAlfa.failed).map(([ruleId, rule]) => [ruleId, {
@@ -736,9 +878,20 @@ try {
     }]));
     const consentReports = buildBugReports({ domain: 'walsall.example.test', key: 'walsall.example.test' }, {
       domain: 'walsall.example.test', pagesScanned: 1,
-      axe: { version: consentAxe.version, rules: axeRules },
+      axe: { version: consentAxe.version, context: consentAxe.context, rules: axeRules },
       alfa: { version: consentAlfa.version, rules: alfaRules },
     });
+    const consentButton = consentReports.find((report) => report.rule_id === 'button-name');
+    assert(/qc-cmp2-toggle/.test(consentButton.selector ?? ''), 'the report carries the captured selector');
+    assert(consentButton.element?.tag === 'button', 'the report carries element identity');
+    assert(consentButton.element?.selector_matches >= 1, 'the report carries the match count');
+    assert(consentButton.semantic_context?.nearest_region?.role === 'main', 'the report carries the semantic region');
+    assert(consentButton.semantic_context?.in_dialog === true, 'the report records the containing dialog');
+    assert(consentButton.evidence?.element_identity === 'captured', 'evidence completeness says captured');
+    assert(consentButton.browser_context?.viewport?.width === 1280, 'the report carries the render context');
+    const consentAlfaReport = consentReports.find((report) => report.rule_id === 'sia-r8');
+    assert(consentAlfaReport.element === null, 'Alfa element identity stays unavailable rather than guessed');
+    assert(consentAlfaReport.evidence?.element_identity === 'unavailable', 'Alfa evidence completeness is explicit');
     const related = (ruleId, peerRuleId) => consentReports.find((report) => report.rule_id === ruleId)?.cross_engine_correlations?.find((correlation) =>
       consentReports.find((candidate) => candidate.instance_id === correlation.peer_instance_id)?.rule_id === peerRuleId
     );

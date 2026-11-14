@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Deep evidence fixture</title>
+</head>
+<body>
+  <header id="page-header">
+    <nav aria-label="Primary"><a href="/">Home</a></nav>
+  </header>
+  <main>
+    <header id="in-main-header">
+      <h1>Deeply nested controls</h1>
+      <section aria-label="Search region">
+        <form aria-label="Search form" action="#">
+          <div class="wrapper"><div class="wrapper"><div class="wrapper"><div class="wrapper">
+          <div class="wrapper"><div class="wrapper"><div class="wrapper"><div class="wrapper">
+          <div class="wrapper"><div class="wrapper"><div class="wrapper"><div class="wrapper">
+            <button id="deep-button"></button>
+          </div></div></div></div>
+          </div></div></div></div>
+          </div></div></div></div>
+        </form>
+      </section>
+    </header>
+    <section id="unnamed-section">
+      <form id="unnamed-form" action="#">
+        <a id="unnamed-link" href="#"></a>
+      </form>
+    </section>
+  </main>
+  <div role="dialog" aria-label="Consent A" aria-modal="true">
+    <button id="dialog-a"></button>
+  </div>
+  <div role="dialog" aria-label="Consent B">
+    <button id="dialog-b"></button>
+  </div>
+  <footer><p>Footer</p></footer>
+</body>
+</html>

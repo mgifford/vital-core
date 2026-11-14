@@ -6,6 +6,9 @@ import { DEFAULT_FINDING_POLICY, mergeFindingPolicy, validateFindingPolicy } fro
 import { resolveComponentSignatures } from './shared-components.js';
 import { resolvePageFamilies } from './page-families.js';
 import { resolveConsentHandling } from '../engines/consent-action.js';
+import { resolveScreenshotConfig } from './screenshots.js';
+import { resolveTargetRetention } from './retention-policy.js';
+import { resolveStorageLimits } from './storage-guard.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
@@ -69,10 +72,36 @@ export function loadConfig(rawYaml) {
   // exports). Trailing slash stripped so callers can always do `${base}${path}`.
   const reportBaseUrl = (cfg.report_base_url || '').replace(/\/+$/, '');
   const dataRepo = validateDataRepo(cfg.data_repo ?? DEFAULT_DATA_REPO, 'global config');
-  const targets = (cfg.targets ?? []).map((t) => ({ ...defaults, ...t }));
-  for (const t of targets) {
+  const storageLimits = resolveStorageLimits(cfg.storage ?? {});
+  const evaluationReport = cfg.evaluation_report ?? defaults.evaluation_report ?? 'openacr';
+  if (!['openacr', 'wcag-em', 'both'].includes(evaluationReport)) {
+    throw new Error(`evaluation_report must be openacr, wcag-em or both (got ${JSON.stringify(evaluationReport)})`);
+  }
+  const rawTargets = cfg.targets ?? [];
+  const globalRetention = defaults.retention ?? cfg.retention ?? null;
+  const targets = rawTargets.map((t) => ({ ...defaults, ...t }));
+  for (const [index, t] of targets.entries()) {
+    const rawTarget = rawTargets[index] ?? {};
     if (!t.domain) throw new Error('Every target needs a `domain` key.');
     t.reporting = { ...(defaults.reporting ?? {}), ...(t.reporting ?? {}) };
+    const ignoreParams = t.url_ignore_params ?? [];
+    if (!Array.isArray(ignoreParams) || ignoreParams.some((name) => typeof name !== 'string' || !name.trim())) {
+      throw new Error(`target ${t.domain}: url_ignore_params must be a list of non-empty query parameter names`);
+    }
+    t.urlIgnoreParams = [...new Set(ignoreParams.map((name) => name.trim()))];
+    const retention = resolveTargetRetention({
+      defaultsRetention: globalRetention,
+      targetRetention: rawTarget.retention ?? null,
+      legacyWeeks: t.retention_weeks ?? null,
+    });
+    t.retentionPolicy = retention.policy;
+    t.retentionSource = retention.source;
+    t.retentionWarnings = retention.warnings;
+    for (const warning of retention.warnings) console.warn(`[config] ${t.domain}: ${warning}`);
+    t.evaluationReport = t.evaluation_report ?? evaluationReport;
+    if (!['openacr', 'wcag-em', 'both'].includes(t.evaluationReport)) {
+      throw new Error(`target ${t.domain}: evaluation_report must be openacr, wcag-em or both`);
+    }
     t.key = domainKey(t.domain);
     const langs = resolveLanguages(t.languages, t.default_language, `target ${t.domain}`, globalLangs);
     t.languages = langs.languages;
@@ -113,6 +142,8 @@ export function loadConfig(rawYaml) {
     t.spelling_locale = resolveSpellingLocale(t.spelling_locale, `target ${t.domain}`);
     t.governmentDomains = resolveGovernmentDomains(t.government_domains, `target ${t.domain}`);
     t.pdfAudit = resolvePdfAudit({ ...(defaults.pdf_audit ?? {}), ...(t.pdf_audit ?? {}) }, `target ${t.domain}`);
+    // Historical screenshots are opt-in and bounded; off unless a target asks.
+    t.screenshots = resolveScreenshotConfig({ ...(defaults.screenshots ?? {}), ...(t.screenshots ?? {}) }, `target ${t.domain}`);
     // Both are opt-in and data-only; a target's list replaces the global default.
     t.componentSignatures = resolveComponentSignatures(t.component_signatures ?? defaults.component_signatures, `target ${t.domain}`);
     t.pageFamilies = resolvePageFamilies(t.page_families ?? defaults.page_families, `target ${t.domain}`);
@@ -128,6 +159,7 @@ export function loadConfig(rawYaml) {
     showLanguageSwitcher: globalShowSwitcher,
     reportBaseUrl,
     dataRepo,
+    storageLimits,
     targets,
   };
 }
@@ -211,6 +243,35 @@ export function resolveLanguages(langsRaw, defaultRaw, where, fallback) {
 /** Filesystem-safe identifier for a domain. Stable across runs. */
 export function domainKey(domain) {
   return domain.toLowerCase().replace(/^https?:\/\//, '').replace(/\/+$/, '').replace(/[^a-z0-9.-]/g, '_');
+}
+
+/**
+ * Resolve a CLI target name leniently.
+ *
+ * Accepts an exact key/domain, or a parent domain when it identifies exactly
+ * one target (e.g. "example.gov" -> "www.example.gov"). Ambiguous bare domains
+ * list the choices instead of guessing; a typo lists configured keys.
+ */
+export function resolveTargetQuery(config, query) {
+  const normalized = String(query ?? '').trim().toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/\/+$/, '');
+  const targets = config.targets ?? [];
+  if (!normalized) throw new Error('A target domain or key is required');
+  const exact = targets.filter((target) => target.key === normalized || target.domain.toLowerCase() === normalized);
+  if (exact.length === 1) return exact[0];
+  if (exact.length > 1) {
+    throw new Error(`Target "${query}" is ambiguous: ${exact.map((target) => target.key).join(', ')}`);
+  }
+  const parentMatches = targets.filter((target) => {
+    const domain = target.domain.toLowerCase();
+    return domain.endsWith(`.${normalized}`) || `www.${normalized}` === domain;
+  });
+  if (parentMatches.length === 1) return parentMatches[0];
+  if (parentMatches.length > 1) {
+    throw new Error(`Target "${query}" is ambiguous. Use one of: ${parentMatches.map((target) => target.key).join(', ')}`);
+  }
+  throw new Error(`Unknown target "${query}". Configured keys: ${targets.map((target) => target.key).join(', ')}`);
 }
 
 export function getTarget(config, domainOrKey) {

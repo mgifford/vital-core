@@ -20,6 +20,7 @@ npm run scan          # crawl + audit one target (VITAL_DOMAIN=www.cms.gov)
 npm run aggregate     # build docs/ from data/
 npm run test:unit     # unit tests (Node built-in runner)
 npm run test:e2e      # smoke test
+npm run inspect       # headed Playwright highlight: --bugs/--id or --url/--selector/--xpath
 npm run check:public-interest www.cms.gov   # quick 4-check diagnostic
 ```
 
@@ -362,7 +363,20 @@ list, in three layers (progressive disclosure):
 - **Layer 2 "What do I do next?"** — the next-actions queue with triage on the
   Accessibility page (`#h-next-actions`).
 - **Layer 3 "Show me the evidence"** — the engine pages, grouped in the subnav
-  by outcome question.
+  by outcome question. The Findings explorer (`explore.html`, subnav "Findings
+  explorer") is an inspection surface over the same findings: a complete static
+  index without JavaScript, plus region/widget/component/engine/severity filters and a
+  detail panel as progressive enhancement. It adds no scan and no data source;
+  every row links back to the finding's canonical anchor on the Accessibility
+  page. It can also generate a standalone Playwright reproduction test on
+  demand (the same plan `scripts/reproduce.js` runs); neither runs during a
+  scan, and "not reproduced" never means fixed. It also downloads a blank
+  manual review record with finding-specific prompts; VITAL never stores it,
+  never marks a review complete and never turns it into a conformance claim.
+  With `screenshots` enabled it shows the historical image with a page-coordinate
+  marker, labelled as historical; no live iframe. “Highlight on site” opens the
+  live page with a compact selector/rule/WCAG/fix payload; the one-time VITAL
+  Inspect bookmarklet draws the outline and panel locally.
 
 Conventions to preserve:
 

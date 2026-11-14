@@ -108,6 +108,22 @@ export function lift(model, tech, finding, minPages = 5) {
 export const MIN_RATIO = 1.5;
 
 /**
+ * Approximate 95% confidence interval for the risk ratio (Katz log method).
+ * Used only to suppress pairs whose data are compatible with no difference; it
+ * is not a causal model and not a substitute for a controlled comparison.
+ */
+export function riskRatioCi(pairPages, techPages, withoutFindingPages, withoutPages) {
+  if (pairPages <= 0 || techPages <= 0 || withoutFindingPages <= 0 || withoutPages <= 0) return null;
+  if (pairPages > techPages || withoutFindingPages > withoutPages) return null;
+  const se = Math.sqrt(1 / pairPages - 1 / techPages + 1 / withoutFindingPages - 1 / withoutPages);
+  if (!Number.isFinite(se) || se <= 0) return null;
+  const rr = (pairPages / techPages) / (withoutFindingPages / withoutPages);
+  if (!Number.isFinite(rr) || rr <= 0) return null;
+  const log = Math.log(rr);
+  return [Math.exp(log - 1.96 * se), Math.exp(log + 1.96 * se)];
+}
+
+/**
  * Rank (tech, finding) pairs by how much more common the finding is on pages
  * with the tech than on pages without it:
  *
@@ -119,10 +135,12 @@ export const MIN_RATIO = 1.5;
  * and without the tech, and a ratio of at least `minRatio`. `ratio` is null
  * when the finding is never on a page without the tech. `lift` (against all
  * pages) stays for API consumers. Returns
- *   [{ tech, finding, ratio, lift, pairPages, techPages, findingPages, withoutPages, withoutFindingPages }]
- * strongest first. `limit` caps the result.
+ *   [{ tech, finding, ratio, ci_low, ci_high, certainty, lift, pairPages,
+ *      techPages, findingPages, withoutPages, withoutFindingPages }]
+ * strongest first. The approximate 95% risk-ratio interval suppresses pairs
+ * compatible with no difference (`minLower`); it is not a causal model. `limit` caps the result.
  */
-export function rankAssociations(model, { minPages = 5, minRatio = MIN_RATIO, limit = 50 } = {}) {
+export function rankAssociations(model, { minPages = 5, minRatio = MIN_RATIO, minLower = 1, limit = 50 } = {}) {
   const out = [];
   for (const tech of Object.keys(model.pair)) {
     for (const finding of Object.keys(model.pair[tech])) {
@@ -135,10 +153,15 @@ export function rankAssociations(model, { minPages = 5, minRatio = MIN_RATIO, li
       const withoutFindingPages = findingPages - pairPages;
       const ratio = withoutFindingPages > 0 ? (pairPages / techPages) / (withoutFindingPages / withoutPages) : null;
       if (ratio != null && ratio < minRatio) continue;
+      const ci = ratio == null ? null : riskRatioCi(pairPages, techPages, withoutFindingPages, withoutPages);
+      if (ci && ci[0] < minLower) continue;
       out.push({
         tech,
         finding,
         ratio: ratio == null ? null : Math.round(ratio * 100) / 100,
+        ci_low: ci == null ? null : Math.round(ci[0] * 100) / 100,
+        ci_high: ci == null ? null : Math.round(ci[1] * 100) / 100,
+        certainty: ci == null ? 'no_comparison' : ci[0] >= 1 ? 'ci_above_one' : 'ci_includes_one',
         lift: Math.round(lift(model, tech, finding, minPages) * 100) / 100,
         pairPages,
         techPages,

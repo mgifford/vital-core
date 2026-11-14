@@ -31,7 +31,7 @@ export function loadPriorityUrls(target, origin = `https://${target.domain}`, ho
   const out = [];
   for (const u of raw) {
     const canon = canonicalizeHost(u, hostName);
-    const norm = normalizeUrl(canon, origin, hostName, canonicalOrigin);
+    const norm = normalizeUrl(canon, origin, hostName, canonicalOrigin, target.urlIgnoreParams ?? []);
     if (norm && !seen.has(norm)) {
       seen.add(norm);
       out.push(norm);

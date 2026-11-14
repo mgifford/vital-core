@@ -72,3 +72,19 @@ test('omitHeavyLists: the summary.json replacer drops only the per-page lists', 
   assert.equal(json.pagesWithAxeList, undefined);
   assert.equal(json.axe.rules['image-alt'].affectedPages.length, 1, "each week's summary.json keeps its evidence");
 });
+
+test('trendSummary keeps region counts but drops representative URLs', () => {
+  const summary = {
+    ...week(),
+    regions: { basis: 'stored_examples', findings_total: 1, regions: [{ key: 'main|', label: 'main', findings: 1, representative: [{ url: 'https://a.gov/x?token=S', selector: '#x' }] }] },
+    widgetGroups: { basis: 'stored_examples', groups: [{ key: 'widget:dialog', findings: 1, representative: [{ url: 'https://a.gov/x', selector: '#y' }] }] },
+    componentGroups: { basis: 'stored_examples', groups: [{ key: 'component:cmp', findings: 1, representative: [{ url: 'https://a.gov/x', selector: '#y' }] }] },
+  };
+  const trend = trendSummary(summary);
+  assert.equal(trend.regions.regions[0].findings, 1);
+  assert.equal('representative' in trend.regions.regions[0], false);
+  assert.equal(trend.componentGroups.groups[0].findings, 1);
+  assert.equal('representative' in trend.componentGroups.groups[0], false);
+  assert.equal('representative' in trend.widgetGroups.groups[0], false);
+  assert.ok(JSON.stringify(trend).includes('widget:dialog'), 'counts survive');
+});

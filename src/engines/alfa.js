@@ -4,6 +4,22 @@ import { Playwright } from '@siteimprove/alfa-playwright';
 const MAX_EXAMPLES = 3;
 const MAX_SNIPPET = 200;
 
+// Alfa serializes the document through Playwright. On very large documents
+// (for example a long MMWR table page) that can exhaust the Node heap instead
+// of returning a result. Skip the engine explicitly; never report the page as
+// clean. These bounds are intentionally generous for ordinary government pages.
+export const ALFA_MAX_ELEMENTS = 20000;
+export const ALFA_MAX_TEXT_LENGTH = 1_000_000;
+
+// Alfa reports each outcome's target as a serialized node description (tag,
+// attributes, text), not a CSS selector or DOM path. It therefore cannot be
+// located in the live document honestly, so element evidence is recorded as
+// explicitly unavailable rather than guessed at a look-alike element.
+const ELEMENT_EVIDENCE = Object.freeze({
+  status: 'unavailable',
+  reason: 'alfa-target-is-a-serialized-node-description-not-a-selector',
+});
+
 /**
  * Run Siteimprove's Alfa engine against a snapshot of the live page.
  * Alfa is the open source core of Siteimprove's commercial checker,
@@ -14,6 +30,26 @@ const MAX_SNIPPET = 200;
  * which is one of its strengths).
  */
 export async function runAlfa(page) {
+  const size = await page.evaluate(() => ({
+    elements: document.querySelectorAll('*').length,
+    textLength: (document.body?.innerText || '').length,
+  })).catch(() => null);
+  if (size && (size.elements > ALFA_MAX_ELEMENTS || size.textLength > ALFA_MAX_TEXT_LENGTH)) {
+    console.warn(`[alfa] skipped: page too large (${size.elements} elements, ${size.textLength} text chars)`);
+    return {
+      engine: 'alfa',
+      version: null,
+      skipped: true,
+      skippedReason: 'page-too-large',
+      pageSize: size,
+      failedCount: 0,
+      failed: {},
+      cantTellCount: 0,
+      passedRules: 0,
+      element_evidence: { ...ELEMENT_EVIDENCE },
+    };
+  }
+
   // Playwright JSHandle to the page's document. It MUST be disposed:
   // an undisposed handle pins both the Node-side wrapper and the
   // browser-side DOM, and across a few hundred large government pages
@@ -59,6 +95,7 @@ export async function runAlfa(page) {
       failed,
       cantTellCount,
       passedRules,
+      element_evidence: { ...ELEMENT_EVIDENCE },
     };
   } finally {
     await documentHandle.dispose().catch(() => {});

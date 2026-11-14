@@ -86,7 +86,7 @@ concurrency:
 
 jobs:
   matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     outputs:
       domains: ${{ steps.list.outputs.domains }}
@@ -236,7 +236,7 @@ jobs:
     # when the discovery job reports that no domains are currently eligible.
     if: ${{ needs.matrix.outputs.has_domains == 'true' }}
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 110
 
     strategy:

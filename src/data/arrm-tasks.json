@@ -1,0 +1,3897 @@
+{
+ "schema_version": 1,
+ "source": {
+  "title": "W3C WAI Accessibility Roles and Responsibilities Mapping (ARRM) tasks",
+  "repository": "https://github.com/w3c/wai-arrm",
+  "path": "_data/arrm/arrm-all-tasks.csv",
+  "revision": "70f9d027d7a87ab72058ded2037915a76795e46a",
+  "url": "https://raw.githubusercontent.com/w3c/wai-arrm/70f9d027d7a87ab72058ded2037915a76795e46a/_data/arrm/arrm-all-tasks.csv",
+  "fetched_at": "2026-11-11",
+  "note": "Mapped by WCAG success criterion. It identifies ARRM tasks and typical role responsibilities; it is not an assignment for a specific finding or organization."
+ },
+ "tasks": [
+  {
+   "id": "IMG-001",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Informative alternate text is provided for images (i.e. not \"spacer\" or image file name).",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-002",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Informative images are described with a clear and meaningful text equivalent (alt attribute or other equivalent means).",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "IMG-003",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Purely decorative images are provided with null alt attribute values (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-004",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Null alt attribute values are used for images that are already described in text in adjacent page content.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-005",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Adjacent linked images and text links pointing the same URL are combined into single links.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-006",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Alt text used for images of text include all relevant text found in the image.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-007",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Informative images are marked up as foreground images, and not embedded as part of the CSS.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-008",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "The purpose or function of complex images is accurately described in text.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "IMG-009",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "The purpose or function of complex images is conveyed using a text description, via an alt attribute.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [
+    "User Experience (UX) Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "IMG-010",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "The full explanation of complex images is accurately described in text.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "IMG-011",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "A mechanism that conveys the way through which the full explanation of complex images is defined.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-012",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "The full explanation of complex images is provided through the longdesc attribute (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-013",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Images primarily conveying function use alternative text to describe their purpose, rather than what they look like.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-014",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Text alternatives of static and linked images do not replicate any information that is already being conveyed by screen reader technology.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-015",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Text alternatives of dynamically updated images are simultaneously updated as the images change.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "IMG-016",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Alternate means of accessing CAPTCHA information are provided, such as audio CAPTCHA, logical question, or other equivalent means.",
+   "main_role": "Design",
+   "primary": [
+    "Business Analysis"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "IMG-017",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Images which do not convey information are defined as decorative.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-018",
+   "wcag_sc": "1.4.1",
+   "level": "A",
+   "task": "Charts, graphs, infographics and other visual representations of information don't rely on color alone to convey information.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "IMG-019",
+   "wcag_sc": "1.4.5",
+   "level": "AA",
+   "task": "Text content that conveys information is not part of images.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "IMG-020",
+   "wcag_sc": "1.4.5",
+   "level": "AA",
+   "task": "Text that is placed on top of an image is handled semantically through HTML and CSS instead.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "IMG-021",
+   "wcag_sc": "1.4.5",
+   "level": "AA",
+   "task": "Unless a particular presentation of text is essential to the information being conveyed, all images that contain text are only used for purely decorative purposes.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "IMG-022",
+   "wcag_sc": "1.4.9",
+   "level": "AAA",
+   "task": "With the exception of logos, all images that contain text are only used for purely decorative purposes.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-001",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Informative content is provided through HTML markup.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design",
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-002",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "HTML elements are used according to the HTML specification.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-003",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Navigation groupings are marked up using HTML list or nav elements (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-004",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Header sections are marked up using HTML header elements (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-005",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "The main section of a page is marked up using a HTML main element (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-006",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "The footer of the page is marked up using a HTML footer element (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-007",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Content that is complementary to the main section is marked up using HTML aside elements (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-008",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "HTML elements are used based on the semantics they provide, not based on what they look like.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-009",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Decorative elements are embedded through the CSS presentation layer (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-010",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "All scripting behaviors are handled through JavaScript.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-011",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Elements that act as headings are marked up as such.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-012",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Headings follow a hierarchical sequence without skipping any levels.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-013",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Headings are marked up using h1 to h6 elements or other equivalent means.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design",
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-014",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Page contains a level 1 heading that describes the page content.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design",
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-015",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Whitespace or pre-formatted text is not used to render content to appear as multiple columns or tabular information.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-016",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Use of native, semantic HTML elements are prioritized over other methods.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-017",
+   "wcag_sc": "1.3.2",
+   "level": "A",
+   "task": "The source code (or DOM) order matches the suggested visual order of the design.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-018",
+   "wcag_sc": "2.4.1",
+   "level": "A",
+   "task": "iFrames displaying content are provided with a clear, informative title attribute value.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-019",
+   "wcag_sc": "2.4.2",
+   "level": "A",
+   "task": "Page title text matches the level 1 heading text.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-020",
+   "wcag_sc": "2.4.2",
+   "level": "A",
+   "task": "Pages are described using unique and descriptive page title values.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-021",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "The tab order logically and predictably follows the expected interaction order of the visual design.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-022",
+   "wcag_sc": "2.4.6",
+   "level": "AA",
+   "task": "Heading text meaningfully describes the content's topic or purpose.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-023",
+   "wcag_sc": "2.4.6",
+   "level": "AA",
+   "task": "The main heading of the page describes the content of the page.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SEM-024",
+   "wcag_sc": "4.1.1",
+   "level": "A",
+   "task": "Source code is properly nested, according to its specification.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-025",
+   "wcag_sc": "4.1.1",
+   "level": "A",
+   "task": "Source code elements are provided with complete start and end tags (or are self-closed) according to specification.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-026",
+   "wcag_sc": "4.1.1",
+   "level": "A",
+   "task": "ID attribute values assigned to elements are unique.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-027",
+   "wcag_sc": "4.1.1",
+   "level": "A",
+   "task": "Elements do not contain duplicate attributes.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-028",
+   "wcag_sc": "4.1.2",
+   "level": "A",
+   "task": "iFrames are given a title that describes their content or purpose.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SEM-029",
+   "wcag_sc": "4.1.2",
+   "level": "A",
+   "task": "iFrames are implemented using title attribute values that describe their content or purpose.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-001",
+   "wcag_sc": "1.4.13",
+   "level": "AA",
+   "task": "Additional content triggered by focus or hover that covers other information can be dismissed by the user.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-002",
+   "wcag_sc": "1.4.13",
+   "level": "AA",
+   "task": "Additional content triggered by pointer hover does not disappear when trying to move the pointer over it.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-003",
+   "wcag_sc": "1.4.13",
+   "level": "AA",
+   "task": "Additional content triggered by hover or focus stays visible until purposefully un-triggered, dismissed, or is no longer valid.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-004",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "All actionable elements can be reached, using only the keyboard.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "INP-005",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "All active elements can be triggered, using only the keyboard.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "INP-006",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "Device-specific programmatic event handlers are not used as the only way to trigger interactions.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-007",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "Behaviors for hover and focus states are planned and included with the design assets.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "INP-008",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "Keyboard focus states are planned for every active element.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-009",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "Keyboard focus is not applied to non-active or static elements.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-010",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "Custom active elements replicate all inherent keyboard behaviors of native active HTML elements.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-011",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "Non-interactive elements are not assigned JavaScript event handlers.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-012",
+   "wcag_sc": "2.1.2",
+   "level": "A",
+   "task": "Users can navigate away from all active elements, using only the keyboard.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "INP-013",
+   "wcag_sc": "2.1.3",
+   "level": "AAA",
+   "task": "All actionable elements can be reached using only the keyboard without requiring specific timings for individual keystrokes.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-014",
+   "wcag_sc": "2.1.4",
+   "level": "A",
+   "task": "Single-key keyboard shortcuts can be disabled or remapped, unless they are only active on keyboard focus.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-015",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "Users can tab through active elements in an order that reflects the intended interaction order of the design.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design",
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "INP-016",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "Tabindex attributes are not assigned positive integer values.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-017",
+   "wcag_sc": "2.4.7",
+   "level": "AA",
+   "task": "Every element that receives keyboard focus is designed to display a visible focus indicator.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "INP-018",
+   "wcag_sc": "2.4.7",
+   "level": "AA",
+   "task": "Every element that receives keyboard focus displays a visible focus indicator.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "INP-019",
+   "wcag_sc": "2.5.1",
+   "level": "A",
+   "task": "Non-essential multipoint, path- or gesture-based functions have single-pointer alternatives.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-020",
+   "wcag_sc": "2.5.2",
+   "level": "A",
+   "task": "Non-essential single-pointer functionality is not triggered on down events, unless the functionality can be canceled, undone, or reversed.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-021",
+   "wcag_sc": "2.5.3",
+   "level": "A",
+   "task": "Text or images of text that is usually included in a user interface control is part of its accessible name.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-022",
+   "wcag_sc": "2.5.4",
+   "level": "A",
+   "task": "All non-essential motion-related functionalities have alternative user interface controls that allow for equivalent actions.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-023",
+   "wcag_sc": "2.5.4",
+   "level": "A",
+   "task": "All non-essential motion-related functionality can be turned off to prevent accidental actuation.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-024",
+   "wcag_sc": "2.5.7",
+   "level": "AA",
+   "task": "All functionality requiring dragging movements can also be operated using single-pointer alternatives.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "INP-025",
+   "wcag_sc": "2.5.8",
+   "level": "AA",
+   "task": "Any programmatic grouping of controls has a target area of at least 24 by 24 CSS pixels.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "User Experience (UX) Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "INP-026",
+   "wcag_sc": "3.2.2",
+   "level": "A",
+   "task": "Keyboard focus does not move automatically from one form control to the next.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-001",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Text labels are marked up using the label element or other equivalent means.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-002",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Text labels and form controls are programmatically associated (using the FOR and ID attributes, or equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-003",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Submit buttons in forms rely on a submit input type, a button element, or other equivalent means.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-004",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Related form controls are programmatically associated using fieldset and legend elements or other equivalent means.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-005",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Long option lists in select elements are grouped semantically (using the optgroup element, or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-006",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Common group label text is informative, meaningful and provides context for the grouping.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-007",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Instructions and messages are programmatically conveyed to assistive technologies.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-008",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Use of native HTML controls are prioritized over other methods.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-009",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Required fields are programmatically conveyed as such to assistive technologies.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-010",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Instructions on how to use forms are programmatically conveyed to assistive technologies.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-011",
+   "wcag_sc": "1.3.2",
+   "level": "A",
+   "task": "Information that is relevant to a form does not appear after the submit button.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-012",
+   "wcag_sc": "1.3.5",
+   "level": "AA",
+   "task": "Data entry fields are designed to autofill previously entered user information when that information is available.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-013",
+   "wcag_sc": "1.3.5",
+   "level": "AA",
+   "task": "Data entry fields using the autocomplete attribute for previously entered information are set to the appropriate value.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-014",
+   "wcag_sc": "1.3.6",
+   "level": "AAA",
+   "task": "The purpose of user interface components, icons, and regions is implemented using markup languages, in a way that can be programmatically determined.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-015",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "Keyboard focus is dynamically moved to the error message when errors are returned.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-016",
+   "wcag_sc": "2.4.6",
+   "level": "AA",
+   "task": "The purpose of the form control is clearly described in text.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-017",
+   "wcag_sc": "2.5.6",
+   "level": "AAA",
+   "task": "The content is designed in a way that does not restrict input modalities available.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-018",
+   "wcag_sc": "3.2.1",
+   "level": "A",
+   "task": "Changes of context are not initiated automatically as user interface components receive focus.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-019",
+   "wcag_sc": "3.2.2",
+   "level": "A",
+   "task": "Event handlers are not used to automatically trigger a change of context upon input that would otherwise require explicit user action unless previously communicated.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-020",
+   "wcag_sc": "3.2.2",
+   "level": "A",
+   "task": "Form interactions are not designed to include automatic changes of context upon input that would otherwise require explicit user action unless previously communicated.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-021",
+   "wcag_sc": "3.2.4",
+   "level": "A",
+   "task": "Error messages and alerts are visually displayed across the site in a consistent manner.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-022",
+   "wcag_sc": "3.2.4",
+   "level": "A",
+   "task": "Visual indicators are presented to support error messages when errors are returned.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-023",
+   "wcag_sc": "3.3.1",
+   "level": "A",
+   "task": "Inline error messages are displayed next to their related form controls.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-024",
+   "wcag_sc": "3.3.1",
+   "level": "A",
+   "task": "Error messages are grouped as a list at the top of the form.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-025",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Radio buttons and checkbox labels are positioned to the right of their respective form controls (for left-to-right languages).",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-026",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Related form controls and their respective labels are grouped together visually.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-027",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Instructions are in close visual proximity to their related controls.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-028",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Form controls are coded to have persistent visual labels.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "Visual Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "FRM-029",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Form controls are designed to have persistent visual labels.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-030",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Clear text-based instructions are provided on how to use the form controls.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "Visual Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "FRM-031",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Instructions provided in forms are displayed in a clear and unambiguous way.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-032",
+   "wcag_sc": "3.3.2",
+   "level": "A",
+   "task": "Placeholder text is not used in lieu of regular text label elements.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-033",
+   "wcag_sc": "3.3.3",
+   "level": "AA",
+   "task": "Error messages returned provide clear instructions on how to fix them.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-034",
+   "wcag_sc": "3.3.2",
+   "level": "AA",
+   "task": "Instructions intending to prevent errors are provided in text and available.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "FRM-035",
+   "wcag_sc": "3.3.3",
+   "level": "AA",
+   "task": "Text-based instructions are provided to help users correct errors.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring",
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-036",
+   "wcag_sc": "3.3.4",
+   "level": "AA",
+   "task": "Users are provided with means to prevent and correct form errors when legal, financial, or data information is involved.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Business Analysis"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "FRM-037",
+   "wcag_sc": "3.3.4",
+   "level": "AA",
+   "task": "When legal, financial, or data information is involved, confirmation screens are provided prior to any final form submission.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Business Analysis"
+   ],
+   "contributor": [
+    "Front-End Development"
+   ],
+   "starter": false
+  },
+  {
+   "id": "FRM-038",
+   "wcag_sc": "3.3.5",
+   "level": "AAA",
+   "task": "Context-sensitive help text is available.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-039",
+   "wcag_sc": "3.3.6",
+   "level": "AAA",
+   "task": "Users are provided with means to prevent and correct form errors.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Business Analysis"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-040",
+   "wcag_sc": "3.3.7",
+   "level": "A",
+   "task": "Except when it is essential for users to re-enter information in the same session, previously entered information is made available through auto-population or user selection.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "FRM-041",
+   "wcag_sc": "3.3.8",
+   "level": "AA",
+   "task": "Cognitive function tests that do not rely on object recognition or personal content must provide an alternative non-cognitive method or an assistive mechanism.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "Business Analysis"
+   ],
+   "starter": false
+  },
+  {
+   "id": "FRM-042",
+   "wcag_sc": "3.3.9",
+   "level": "AAA",
+   "task": "A cognitive function test during authentication is not required unless an alternative non-cognitive method or an assistive mechanism is provided.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "Business Analysis"
+   ],
+   "starter": false
+  },
+  {
+   "id": "CSS-001",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Icon fonts used to convey information are provided with a text equivalent.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-002",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "The meaning of icon fonts is determined programmatically using the aria-label attribute (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-003",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Icon fonts whose default accessible name do not represent what the icon is, are overwritten using an aria-hidden attribute (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-004",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Background images identified as decorative are implemented as such.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-005",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "CSS pseudo-selectors such as :before and :after are not used to integrate informative content.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-006",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Shape and location are never used as the only way to convey information and relationships between page components.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": true
+  },
+  {
+   "id": "CSS-007",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Users relying on High Contrast themes don't lose information as a result of doing so.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-008",
+   "wcag_sc": "1.3.4",
+   "level": "AA",
+   "task": "Content is viewable in both portrait and landscape orientation, unless a particular orientation is essential.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-009",
+   "wcag_sc": "1.4.1",
+   "level": "A",
+   "task": "Color is never used as the only way to convey information, context, indicate selection or the presence of errors.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": true
+  },
+  {
+   "id": "CSS-010",
+   "wcag_sc": "1.4.1",
+   "level": "A",
+   "task": "For a link that is not underlined and in a paragraph text, its text color is sufficiently contrasted by providing a luminosity ratio of at least 3:1 against its surrounding text.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "CSS-011",
+   "wcag_sc": "1.4.3",
+   "level": "AA",
+   "task": "Regular-sized text is sufficiently contrasted against its background, with a luminosity ratio of at least 4.5:1.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "CSS-012",
+   "wcag_sc": "1.4.3",
+   "level": "AA",
+   "task": "Large-sized text is sufficiently contrasted against its background, with a luminosity ratio of at least 3:1.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-013",
+   "wcag_sc": "1.4.4",
+   "level": "AA",
+   "task": "Users can resize the text on the page up to 200% without any loss of content or functionality.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "User Experience (UX) Design"
+   ],
+   "starter": true
+  },
+  {
+   "id": "CSS-014",
+   "wcag_sc": "1.4.4",
+   "level": "AA",
+   "task": "CSS techniques are used to ensure that content doesn't overflow, overlap or get truncated as a result of increasing the text size.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "User Experience (UX) Design"
+   ],
+   "starter": true
+  },
+  {
+   "id": "CSS-015",
+   "wcag_sc": "1.4.5",
+   "level": "AA",
+   "task": "CSS background sprites don't include images of text, unless equivalent text alternatives are also provided as part of the HTML.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring",
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-016",
+   "wcag_sc": "1.4.6",
+   "level": "AAA",
+   "task": "Regular-sized text is sufficiently contrasted against its background, with a luminosity ratio of at least 7:1.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-017",
+   "wcag_sc": "1.4.6",
+   "level": "AAA",
+   "task": "Large-sized text is sufficiently contrasted against its background, with a luminosity ratio of at least 4.5:1.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-018",
+   "wcag_sc": "1.4.10",
+   "level": "AA",
+   "task": "The design makes it possible for end users to enlarge the text so that it reflows into a single column without any loss of information or functionality.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-019",
+   "wcag_sc": "1.4.10",
+   "level": "AA",
+   "task": "Displaying content on narrower screens or magnifying it does not cause multidirectional scrolling.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "User Experience (UX) Design"
+   ],
+   "starter": true
+  },
+  {
+   "id": "CSS-020",
+   "wcag_sc": "1.4.11",
+   "level": "AA",
+   "task": "All non-text user interface components and graphical objects are sufficiently contrasted against their background, with a luminosity ratio of at least 3:1.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "CSS-021",
+   "wcag_sc": "1.4.12",
+   "level": "AA",
+   "task": "Adjusting spacing between letters, words, or paragraphs, or adjusting line height does not cause a loss of content or functionality.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-022",
+   "wcag_sc": "2.4.7",
+   "level": "AA",
+   "task": "The CSS outline property of objects that receive keyboard focus are not set to zero or none.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-023",
+   "wcag_sc": "2.4.11",
+   "level": "AA",
+   "task": "Elements that receive keyboard focus are at least partially visible in the viewport, without being covered by other content.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "Visual Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "CSS-024",
+   "wcag_sc": "2.4.12",
+   "level": "AAA",
+   "task": "Elements that receive keyboard focus are fully visible within the viewport, without being covered by other content.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "Visual Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "CSS-025",
+   "wcag_sc": "2.4.13",
+   "level": "AAA",
+   "task": "The keyboard focus indicator is clearly visible and has a minimum area equivalent to a 2 CSS pixel thick border around the focused element, except situations where no visible change is required.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [
+    "User Experience (UX) Design",
+    "Front-End Development"
+   ],
+   "starter": false
+  },
+  {
+   "id": "CSS-026",
+   "wcag_sc": "2.4.13",
+   "level": "AAA",
+   "task": "The focus indicator has a contrast ratio of at least 3:1 between the same pixels in the focused and unfocused states.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-027",
+   "wcag_sc": "2.5.5",
+   "level": "AAA",
+   "task": "Unless the interactive element is part of a sentence or a block of text, its size must be at least 44 x 44 pixels.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "CSS-028",
+   "wcag_sc": "2.5.8",
+   "level": "AA",
+   "task": "A minimum height and width of 24 CSS pixels is provided for each interactive target that is not an inline link or control.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-029",
+   "wcag_sc": "2.5.8",
+   "level": "AA",
+   "task": "For any control that is less than 24 by 24 CSS pixels, add padding so that the target area is at least 24 by 24 CSS pixels.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "CSS-030",
+   "wcag_sc": "2.5.8",
+   "level": "AA",
+   "task": "Controls with the same functionality or destination are combined within a single target area that is at least 24 by 24 CSS pixels.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "Front-End Development"
+   ],
+   "starter": false
+  },
+  {
+   "id": "NAV-001",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Active objects and other calls to action are visually identifiable as such.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-002",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Instructions are conveyed through more than shape, size, position, or sound alone.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-003",
+   "wcag_sc": "1.4.1",
+   "level": "A",
+   "task": "Additional visual and/or textual cues are provided when color is used to convey information.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design",
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-004",
+   "wcag_sc": "2.2.1",
+   "level": "A",
+   "task": "Users are notified when time limits are about to expire.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Business Analysis"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-005",
+   "wcag_sc": "2.2.1",
+   "level": "A",
+   "task": "Options to extend, or even turn off time limits are provided.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Business Analysis"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-006",
+   "wcag_sc": "2.2.2",
+   "level": "A",
+   "task": "Users are given means to pause, stop or hide content that automatically updates.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-007",
+   "wcag_sc": "2.2.4",
+   "level": "AAA",
+   "task": "Users are provided with means to turn off all updates, except in case of emergencies.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-008",
+   "wcag_sc": "2.2.5",
+   "level": "AAA",
+   "task": "Users are provided with means to re-authenticate sessions without loss of data.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-009",
+   "wcag_sc": "2.4.1",
+   "level": "A",
+   "task": "Users can bypass blocks of content using skip links or similar mechanisms.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-010",
+   "wcag_sc": "2.4.1",
+   "level": "A",
+   "task": "Skip links (and similar mechanisms) for main content and navigation are provided at the most effective location in the interface (such as the very first tab stop).",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-011",
+   "wcag_sc": "2.4.1",
+   "level": "A",
+   "task": "The functionality and expected destination of skip links and similar mechanisms is clearly defined.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-012",
+   "wcag_sc": "2.4.1",
+   "level": "A",
+   "task": "Skip links and similar mechanisms point to the expected destination.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-013",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "All active elements receive focus in a logical and predictable order that is prescribed by the visual presentation.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "User Experience (UX)",
+    "Design Visual Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "NAV-014",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "A logical and predictable focus order is defined for complex interactions.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-015",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "Objects that are not actionable are not part of the tabbing order.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-016",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "Focus is sent back to the initiating point when modal dialogs and controls are dismissed.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-017",
+   "wcag_sc": "2.4.3",
+   "level": "A",
+   "task": "Event handlers do not unexpectedly send the focus somewhere else on the page.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-018",
+   "wcag_sc": "2.4.4",
+   "level": "A",
+   "task": "Link text and alternate text for images, when used as links, describe the destination or purpose of the link.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-019",
+   "wcag_sc": "2.4.4",
+   "level": "A",
+   "task": "Links are marked up using the anchor element and have a valid href attribute value (or use other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-020",
+   "wcag_sc": "2.4.5",
+   "level": "AA",
+   "task": "Multiple mechanisms are provided for wayfinding, such as navigation menus, breadcrumbs, search features, site map, progress bar, steps, etc.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-021",
+   "wcag_sc": "2.4.8",
+   "level": "AAA",
+   "task": "Indications are provided to help users identify their current location within the site.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-022",
+   "wcag_sc": "2.4.9",
+   "level": "AAA",
+   "task": "The purpose of each link can be identified in its immediate context, or from the link text alone.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-023",
+   "wcag_sc": "2.4.10",
+   "level": "AAA",
+   "task": "Content is logically organized using section headings.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [
+    "Front-End Development"
+   ],
+   "starter": false
+  },
+  {
+   "id": "NAV-024",
+   "wcag_sc": "3.2.1",
+   "level": "A",
+   "task": "Setting the focus to a new element doesn't automatically trigger a context change, such as content updates or the opening of new windows.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-025",
+   "wcag_sc": "3.2.2",
+   "level": "A",
+   "task": "Interacting with input controls or other equivalent elements doesn't automatically trigger a change of context, unless the user has been notified ahead of time.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-026",
+   "wcag_sc": "3.2.3",
+   "level": "AA",
+   "task": "Navigation mechanisms are repeated consistently throughout the site or application in the same relative order.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-027",
+   "wcag_sc": "3.2.4",
+   "level": "AA",
+   "task": "Navigational graphics and icons used throughout the site or application are designed to always serve the same function and or meaning.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "NAV-028",
+   "wcag_sc": "3.2.4",
+   "level": "AA",
+   "task": "The accessible name of user interface components used across the site or application are defined consistently.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-029",
+   "wcag_sc": "3.2.4",
+   "level": "AA",
+   "task": "Users can consistently distinguish between links internal to a page and links going to different locations.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-030",
+   "wcag_sc": "3.2.5",
+   "level": "AAA",
+   "task": "Links that open new windows visually indicate they will do so.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-031",
+   "wcag_sc": "3.2.5",
+   "level": "AAA",
+   "task": "Links that open new windows indicate they will do so, either as part of the link text, or using aria-label or equivalent means.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "NAV-032",
+   "wcag_sc": "3.2.6",
+   "level": "AAA",
+   "task": "Help mechanisms are repeated consistently throughout the site or application in the same relative order.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-001",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Tables are only to be used to lay out tabular information or data.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-002",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Table row and/or column headers provide context for data within the table.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-003",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Data table structure is appropriate for the data being included.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-004",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Tabular data and corresponding header cells for that data are part of the same table.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-005",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Header cells for rows are marked up using THEAD elements.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-006",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Header cells for columns are marked up using TH elements.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-007",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "The relationship between table header rows and table header columns with data cells in simple data tables is provided through the SCOPE attributes.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-008",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "The relationship between table header rows and table header columns with data cells in complex data tables is provided through the HEADERS and ID attributes.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-009",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Caption elements are used to associate caption information with data tables.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-010",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Large, complex data tables are broken into smaller, simpler data tables (when possible).",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design",
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-011",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Unrelated data is not included in the same data table.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-012",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Tables are not used for layout purposes.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-013",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Tables are not used to layout lists.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-014",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Caption elements, aria-labelledby attributes or other equivalent means are used to explain the structure of data tables.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-015",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "A meaningful description of the structure of data tables is provided.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "TAB-016",
+   "wcag_sc": "1.3.2",
+   "level": "A",
+   "task": "The programmatic order of the table content matches the intended reading order, so not to affect its meaning.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "TAB-017",
+   "wcag_sc": "2.4.6",
+   "level": "AA",
+   "task": "All data table header cells are identified.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-001",
+   "wcag_sc": "1.2.1",
+   "level": "A",
+   "task": "Text transcripts are provided for prerecorded audio-only files.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "ANM-002",
+   "wcag_sc": "1.2.1",
+   "level": "A",
+   "task": "Text transcripts are provided for prerecorded video-only files.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "ANM-003",
+   "wcag_sc": "1.2.1",
+   "level": "A",
+   "task": "Links to transcript files are provided in close proximity to the audio-only files.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-004",
+   "wcag_sc": "1.2.1",
+   "level": "A",
+   "task": "The relationship between multimedia files and their associated transcript is clearly communicated through content sequence or focus order.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-005",
+   "wcag_sc": "1.2.1",
+   "level": "A",
+   "task": "Copy on the page identifies when video content has no sound.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-006",
+   "wcag_sc": "1.2.1",
+   "level": "A",
+   "task": "When appropriate, further information about the multimedia file is provided in proximity to the multimedia file.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-007",
+   "wcag_sc": "1.2.2",
+   "level": "A",
+   "task": "Synchronized captions are provided for all prerecorded video content.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "ANM-008",
+   "wcag_sc": "1.2.2",
+   "level": "A",
+   "task": "Captions do not skip dialogues or important sounds.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-009",
+   "wcag_sc": "1.2.2",
+   "level": "A",
+   "task": "Multimedia player controls are provided to turn captions on or off.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-010",
+   "wcag_sc": "1.2.3",
+   "level": "A",
+   "task": "Text transcripts report all significant information from the audio track.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "ANM-011",
+   "wcag_sc": "1.2.3",
+   "level": "A",
+   "task": "Text transcripts or audio descriptions report all significant information from the visual track.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-012",
+   "wcag_sc": "1.2.4",
+   "level": "AA",
+   "task": "Synchronized captions are provided for all live video content.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-013",
+   "wcag_sc": "1.2.4",
+   "level": "AA",
+   "task": "Captions for live audio content are generated using real-time text transcription services.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-014",
+   "wcag_sc": "1.2.5",
+   "level": "AA",
+   "task": "Prerecorded videos have audio descriptions that captures all significant information from the visual track.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-015",
+   "wcag_sc": "1.2.5",
+   "level": "AA",
+   "task": "Controls to toggle audio descriptions features are provided as part of the media player controls.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-016",
+   "wcag_sc": "1.2.5",
+   "level": "AA",
+   "task": "Multimedia player controls are provided to access a version of the video with audio description.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-017",
+   "wcag_sc": "1.2.6",
+   "level": "AAA",
+   "task": "Sign language interpretation is provided for all prerecorded audio content in synchronized media.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-018",
+   "wcag_sc": "1.2.7",
+   "level": "AAA",
+   "task": "Extended audio description is provided for all prerecorded synchronized video content when pauses in foreground audio are insufficient to allow audio descriptions to convey the sense of the video.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-019",
+   "wcag_sc": "1.2.8",
+   "level": "AAA",
+   "task": "Text alternatives are provided for all prerecorded audio and video files.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-020",
+   "wcag_sc": "1.2.8",
+   "level": "AAA",
+   "task": "Brief descriptions summarizing multimedia content are provided in close proximity to the audio and video files.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-021",
+   "wcag_sc": "1.2.9",
+   "level": "AAA",
+   "task": "Live transcripts are provided for all audio content happening in real-time.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-022",
+   "wcag_sc": "1.4.2",
+   "level": "A",
+   "task": "Multimedia player controls are provided to turn sound on and off.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-023",
+   "wcag_sc": "1.4.2",
+   "level": "A",
+   "task": "Volume controls for page-level multimedia files are independent from general computer audio controls.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-024",
+   "wcag_sc": "1.4.2",
+   "level": "A",
+   "task": "Volume controls for page-level multimedia files are visually located at the top of the page.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-025",
+   "wcag_sc": "1.4.2",
+   "level": "A",
+   "task": "Audio content that automatically starts on page load lasts no longer than 3 seconds.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-026",
+   "wcag_sc": "1.4.2",
+   "level": "A",
+   "task": "Prerecorded or live video content is not set to auto-play.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-027",
+   "wcag_sc": "1.4.7",
+   "level": "AAA",
+   "task": "Prerecorded audio-only background sounds can be controlled by the user.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-028",
+   "wcag_sc": "1.4.7",
+   "level": "AAA",
+   "task": "Prerecorded audio-only speeches contain no background sound, or if they do, must be at least 20 decibels lower than the foreground speech content.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-029",
+   "wcag_sc": "2.1.1",
+   "level": "A",
+   "task": "Multimedia player controls can be fully operated using only the keyboard.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-030",
+   "wcag_sc": "2.2.2",
+   "level": "A",
+   "task": "Multimedia player controls are provided to pause or play the multimedia file.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-031",
+   "wcag_sc": "2.2.3",
+   "level": "AAA",
+   "task": "Timing is not an essential part of the event or activity presented by the content.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [
+    "Business Analysis"
+   ],
+   "starter": false
+  },
+  {
+   "id": "ANM-032",
+   "wcag_sc": "2.2.6",
+   "level": "AAA",
+   "task": "Users are warned that more than 20 hours of inactivity could lead to data loss.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-033",
+   "wcag_sc": "2.3.1",
+   "level": "A",
+   "task": "Content on the screen does not flash or blink more than three times in any one-second period, or the flash is below the general flash and red flash thresholds.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-034",
+   "wcag_sc": "2.3.2",
+   "level": "AAA",
+   "task": "Content on the screen does not flash or blink at a rate that is higher than three times in any one-second period.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-035",
+   "wcag_sc": "2.3.3",
+   "level": "AAA",
+   "task": "Animation features that create the illusion of movement are defined so that users can disable them.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-036",
+   "wcag_sc": "2.3.3",
+   "level": "AAA",
+   "task": "Animation features that create the illusion of movement support prefers-reduced-motion (or other equivalent means).",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "ANM-037",
+   "wcag_sc": "4.1.2",
+   "level": "A",
+   "task": "Information conveyed by multimedia player controls are programmatically announced through assistive technologies.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-001",
+   "wcag_sc": "1.1.1",
+   "level": "A",
+   "task": "Emoticons, emojis, ASCII art, and other non-markup language constructs are supported with equivalent text alternatives and conveyed to assistive technologies.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [
+    "Front-End Development"
+   ],
+   "starter": false
+  },
+  {
+   "id": "SCT-002",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Emoticons, emojis, ASCII art, and other non-markup language constructs are not used as the only way to structure content or convey information.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-003",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Proper markup is used to render emphasized, bolded text and other stylistic or presentational effects.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-004",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Proper markup is used to structure quotes, blockquotes and citations.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-005",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Heading markup is only used for text which acts as a section heading.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-006",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "Heading markup is not used for formatting effects.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-007",
+   "wcag_sc": "1.3.1",
+   "level": "A",
+   "task": "The headings used in a page provide a logical outline for the document.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SCT-008",
+   "wcag_sc": "1.3.2",
+   "level": "A",
+   "task": "The intended reading order of the content remains logical when CSS and images are turned off.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-009",
+   "wcag_sc": "1.3.2",
+   "level": "A",
+   "task": "The source code order reflects the intended reading order of the document.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-010",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Objects that rely on shape to be properly perceived are supported with additional text information.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "SCT-011",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Objects that rely on size to be properly perceived are supported with additional text information.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "SCT-012",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Objects that rely on visual location to be properly perceived are supported with additional text information.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "SCT-013",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Objects that rely on orientation to be properly perceived are supported with additional text information.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "SCT-014",
+   "wcag_sc": "1.3.3",
+   "level": "A",
+   "task": "Objects that rely on sound to be properly perceived are supported with additional text information.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-015",
+   "wcag_sc": "1.4.5",
+   "level": "AA",
+   "task": "Mathematical formulas are marked up using MathML.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-016",
+   "wcag_sc": "1.4.8",
+   "level": "AAA",
+   "task": "Text content in design assets such as content blocks is left-aligned in left-to-right languages.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-017",
+   "wcag_sc": "1.4.8",
+   "level": "AAA",
+   "task": "Fully justified text can easily be changed to ragged right text with a simple action.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-018",
+   "wcag_sc": "3.1.1",
+   "level": "A",
+   "task": "The primary language used in the document is properly identified using the lang attribute.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-019",
+   "wcag_sc": "3.1.1",
+   "level": "A",
+   "task": "The language definition of the document uses the correct value for language and locale.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-020",
+   "wcag_sc": "3.1.2",
+   "level": "AA",
+   "task": "Content passages that differ from the default are identified with the correct value for language and locale.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-021",
+   "wcag_sc": "3.1.3",
+   "level": "AAA",
+   "task": "Unusual words, phrases, and abbreviations are organized into a glossary.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-022",
+   "wcag_sc": "3.1.3",
+   "level": "AAA",
+   "task": "Unusual words found in the content are linked to their definitions in a glossary.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-023",
+   "wcag_sc": "3.1.4",
+   "level": "AAA",
+   "task": "Abbreviations are programmatically associated with their definition.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-024",
+   "wcag_sc": "3.1.5",
+   "level": "AAA",
+   "task": "Content is written in plain language using everyday words, to help users with different literacy levels and access needs.",
+   "main_role": "Author",
+   "primary": [
+    "Content Authoring"
+   ],
+   "secondary": [],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "SCT-027",
+   "wcag_sc": "3.1.5",
+   "level": "AAA",
+   "task": "Ideas conveyed through text are supported with illustrations or other visuals.",
+   "main_role": "Design",
+   "primary": [
+    "Visual Design"
+   ],
+   "secondary": [
+    "User Experience (UX) Design",
+    "Content Authoring"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-028",
+   "wcag_sc": "3.1.5",
+   "level": "AAA",
+   "task": "Content is displayed and structured in a way that makes it easier to read.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Visual Design"
+   ],
+   "contributor": [],
+   "starter": false
+  },
+  {
+   "id": "SCT-029",
+   "wcag_sc": "3.1.6",
+   "level": "AAA",
+   "task": "Ambiguous words are supported by a mechanism that helps users identify their specific pronunciation.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "Content Authoring"
+   ],
+   "starter": false
+  },
+  {
+   "id": "DYN-001",
+   "wcag_sc": "2.4.11",
+   "level": "AA",
+   "task": "Fixed-position content does not fully cover focused elements.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "Visual Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "DYN-002",
+   "wcag_sc": "2.4.12",
+   "level": "AA",
+   "task": "Fixed-position content does not cover any part of focused elements.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [
+    "Visual Design"
+   ],
+   "starter": false
+  },
+  {
+   "id": "DYN-003",
+   "wcag_sc": "4.1.3",
+   "level": "AA",
+   "task": "Status messages are announced by assistive technologies without affecting the focus.",
+   "main_role": "Design",
+   "primary": [
+    "User Experience (UX) Design"
+   ],
+   "secondary": [
+    "Front-End Development"
+   ],
+   "contributor": [],
+   "starter": true
+  },
+  {
+   "id": "DYN-004",
+   "wcag_sc": "4.1.3",
+   "level": "AA",
+   "task": "Status, toast, or similar messages are programmatically determined through WAI-ARIA roles or properties, so they can be presented to assistive technology users without receiving focus.",
+   "main_role": "Development",
+   "primary": [
+    "Front-End Development"
+   ],
+   "secondary": [
+    "User Experience (UX) Design"
+   ],
+   "contributor": [],
+   "starter": true
+  }
+ ]
+}

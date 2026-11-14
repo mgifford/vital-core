@@ -27,6 +27,10 @@
       },
       "additionalProperties": true
     },
+    "evidence_coverage": {
+      "description": "Finding-level evidence coverage with exact denominators: element evidence, usable locators, semantic regions, widget types, configured components, screenshots and reproduction eligibility. Counts are findings, not element occurrences.",
+      "type": ["object", "null"]
+    },
     "top_actions": {
       "description": "Optional component-cluster next-actions queue. Null or absent when no clusters were computed.",
       "type": ["object", "null"]
@@ -53,6 +57,31 @@
         "rule_id": { "type": "string", "description": "Engine rule id, e.g. color-contrast. Stable across weeks." },
         "rule_label": { "type": "string" },
         "instance_id": { "type": ["string", "null"] },
+        "finding_ref": {
+          "type": ["string", "null"],
+          "description": "Stable VFR- reference for this rule finding within the domain, independent of which sample is representative."
+        },
+        "observation_id": {
+          "type": ["string", "null"],
+          "description": "VOB- identity for the representative scan observation (occurrence plus page/run/time/engine)."
+        },
+        "evidence_reference": {
+          "type": ["object", "null"],
+          "description": "Durable reference: finding_ref, occurrence_id, observation_id, url, selector, scanned_at, engine, engine_version, page_detail_retention_weeks and an availability note."
+        },
+        "occurrence_id": {
+          "type": ["string", "null"],
+          "description": "Stable identity of the representative stored occurrence (VO-hash of pattern + URL + selector + component). Distinct from the aggregated finding_id and from the frozen instance_id anchor."
+        },
+        "occurrence_selection": {
+          "type": ["string", "null"],
+          "enum": ["complete", "partial", "unavailable", "none", null],
+          "description": "Evidence completeness of the selected occurrence. URL, selector, element, semantic context and browser context all come from this one occurrence."
+        },
+        "observation": {
+          "type": ["object", "null"],
+          "description": "Provenance of the representative occurrence: scanned_at, engine_key, engine_version, consent_state. Internal page/run identifiers are not published."
+        },
         "reporting": {
           "type": "object",
           "properties": {
@@ -100,6 +129,56 @@
         },
         "wcag_sc": { "type": ["string", "null"] },
         "wcag_level": { "type": ["string", "null"] },
+        "selector": {
+          "type": ["string", "null"],
+          "description": "Sanitized CSS selector of the primary stored example. Legacy consumers read the same value as reporting.representative_evidence[].selector; the older xpath field name is retained internally for compatibility but is not published at the top level."
+        },
+        "element": {
+          "type": ["object", "null"],
+          "description": "Sanitized element identity for the primary example, or null when the engine could not locate one. available=false carries a reason (e.g. not-found, invalid-selector, unavailable). Element ids and ancestry are intentionally withheld from the public API."
+        },
+        "screenshot": {
+          "type": ["object", "null"],
+          "description": "Historical screenshot metadata for the representative occurrence: available, file, width/height in CSS px, full_page, captured_at. The image was captured during the scan; it is not a live view. Null when the target has not opted in."
+        },
+        "semantic_context": {
+          "type": ["object", "null"],
+          "description": "Landmark/widget context derived from the scanner's serialized ancestry: nearest_region, region_ancestry, widget, path, in_dialog, unnamed_landmarks, unclassified. Absent rather than invented when no ancestry was captured."
+        },
+        "evidence": {
+          "type": ["object", "null"],
+          "description": "Completeness of the stored evidence: instances_total, examples_captured, example_limit, examples_truncated, element_identity and semantic_context capture status. Capped examples are a sample, not every instance."
+        },
+        "manual_validation": {
+          "type": ["object", "null"],
+          "description": "Finding-specific manual guidance. status is only ever not_reviewed: VITAL never marks a review complete, and recording one does not establish conformance.",
+          "properties": {
+            "status": { "const": "not_reviewed" },
+            "prompts": { "type": "array", "items": { "type": "string" } },
+            "environment_note": { "type": "string" },
+            "limitations": { "type": "array", "items": { "type": "string" } }
+          },
+          "required": ["status"]
+        },
+        "reproduction": {
+          "type": "object",
+          "description": "Deterministic reproduction state. not_attempted means the stored evidence can be replayed; unavailable carries a reason and no selector. Tests are generated on demand; the API never implies a run happened.",
+          "required": ["status"],
+          "properties": {
+            "status": { "enum": ["not_attempted", "unavailable"] },
+            "reason": { "type": "string" },
+            "occurrence_id": { "type": ["string", "null"] },
+            "locator": { "type": "object" },
+            "rule": { "type": "object" },
+            "engine_version": { "type": ["string", "null"] },
+            "element_identity": { "type": "object" },
+            "context": { "type": "object" },
+            "interaction_required": { "type": "boolean" },
+            "steps": { "type": "array" },
+            "verified_at": { "type": "null" }
+          },
+          "additionalProperties": true
+        },
         "pages_affected": { "type": "integer", "minimum": 0 },
         "trend_status": {
           "description": "Week-over-week status derived from the findings ledger.",

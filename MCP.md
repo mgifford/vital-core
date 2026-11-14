@@ -262,6 +262,21 @@ If you need any of the above today, the tools don't exist — this server
 will not attempt to guess at local source locations or run anything on your
 behalf.
 
+## Optional: Playwright MCP for live investigation
+
+The VITAL MCP server is read-only and does not control a browser. For live
+investigation, a client can also register Microsoft's
+[Playwright MCP](https://github.com/microsoft/playwright-mcp) with the
+[Playwright browser extension](https://playwright.dev/mcp/configuration/browser-extension).
+That path reuses the user's existing Chrome/Edge profile and signed-in tabs,
+which the bookmarklet cannot do.
+
+The Finding Explorer offers **Copy Playwright MCP prompt** with the recorded
+URL, selector and identity. The prompt asks for observation only and forbids a
+new audit or conformance claim. This is optional and not a dependency of the
+static reports; see
+[docs-internal/PLAYWRIGHT-MCP.md](docs-internal/PLAYWRIGHT-MCP.md).
+
 ## WebMCP
 
 A separate, opt-in, **browser**-facing surface (issue #214 step 10) — not

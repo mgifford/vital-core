@@ -127,17 +127,24 @@ files that accumulate across the whole life of a site, so they survive
 page-detail pruning and answer "when did this first appear?".
 
 **Retention contract:** summaries and ledgers are kept forever; page-level
-detail under `pages/` and `runs/` is pruned after `retention_weeks`
-(set to 2 in `config/targets.yml`; `src/prune.js` falls back to 3 if
-unset) — this is an
-insight-delivery system, not an archive, so raw per-page detail that a
-newer scan supersedes is aggressively forgotten once it's rolled up into
-`summary.json` and the ledgers. Consumers (`aggregate.js`, CSV exports,
+detail under `pages/`, `runs/` and `screenshots/` may only be removed by the
+separate, manually authorized `retention:prune` command after a verified
+archive. `src/prune.js` and the report workflow no longer delete anything;
+there is no automatic pruning. Legacy `retention_weeks` is still parsed for
+planning and migration, but it is not an automatic deletion trigger. Consumers (`aggregate.js`, CSV exports,
 `url-index.js`) all check `fs.existsSync` before reading `pages/`, so a
 pruned week degrades gracefully rather than erroring.
 
-**Git history policy:** `prune.js` deletes files from the working tree,
-but git history keeps every blob forever — deleting a file from a later
+**Retention planning:** `npm run retention:plan` is a read-only policy and
+storage planner. It preserves legacy `retention_weeks` when no explicit
+`retention:` policy exists and never archives or deletes. See
+[`docs-internal/RETENTION-ADR.md`](docs-internal/RETENTION-ADR.md) for profiles,
+precedence, size measurements and the archive/prune PR sequence. The additive
+`observations.json` index records last attempt/success, stale/never-scanned and
+clean-for-automated-engine state; `storage` thresholds live in validated config.
+
+**Git history policy:** the verified prune command deletes files from the
+working tree, but git history keeps every blob forever — deleting a file from a later
 commit does not shrink any earlier commit that still contains it, so the
 repo's `.git` size never decreases on its own; it can only grow slower.
 
@@ -401,7 +408,7 @@ scan.yml      (several scheduled runs per night, off-peak, one job per domain)
 
 report.yml    (after the night's scans complete)
   ├─ src/aggregate.js   read data/ → write summaries + docs/
-  ├─ src/prune.js       drop page detail older than retention_weeks
+  ├─ (no prune step)    automatic pruning is disabled
   ├─ commit summaries back into data/
   └─ deploy docs/ to GitHub Pages
 
@@ -416,6 +423,85 @@ The scan pipeline is responsible for **collecting evidence**.
 The aggregation pipeline is responsible for **transforming evidence into reusable products**.
 
 No report should perform its own scanning or independent measurements. Reports consume aggregated evidence rather than generating it.
+
+### Finding evidence: element and semantic context
+
+Each axe audit is followed, while the page is still open, by one
+`attachElementEvidence()` call (`src/lib/element-evidence.js`). For every stored
+example of each failing rule (up to three per page), it records the element's
+tag, explicit role, name attributes, selector match count, rendering state,
+bounding rectangle, and the ancestor chain. The chain is walked in full but only
+meaningful boundaries are serialized, so deep layout wrappers cannot hide
+`main`; `src/lib/semantic-context.js` classifies that chain into the nearest
+landmark region and any containing widget (dialog, tablist, navigation, …).
+Each example keeps its own URL, selector, context and scan provenance, and
+`src/lib/occurrence.js` selects one representative occurrence as a whole for
+reports (`occurrence_id`), never mixing fields across observations. Each
+occurrence also has a `observation_id` for its scan run; each finding has a
+content-independent `finding_ref` for durable links. Representative selection is
+deterministic, not capture-order based. The same
+bounded record travels into `summary.json`, bug reports, `bugs.json`, the JSON
+API and Markdown, so no consumer rescans the page.
+
+`src/lib/region-groups.js` then groups the week's findings in three separate
+dimensions: nearest landmark **region**, structural **widget type** (dialog,
+tablist, …) and configured shared **component**. A widget role is never a
+component and never implies a shared implementation; only a configured
+signature produces a component group, annotated with verification provenance
+from the shared-component model. Identity is split on purpose (type,
+implementation, occurrence) and `ownership_established` is always false. The
+grouping is computed once in `summarizeRecords` and rendered (Accessibility page
+and Explorer tables), exported (CSV, JSON API), from that same record.
+
+Historical screenshots are opt-in (`screenshots` in `config/targets.yml`). The
+scan captures at most `max_per_run` pages, one image per page with findings,
+after auditing and while the page is still open; page records store bounded
+metadata and element evidence stores `rect_page` (page coordinates). Aggregate
+copies only the images referenced by a week's findings into the report
+directory; pruning removes them with page detail. The Explorer draws the marker
+from `rect_page` and the recorded CSS dimensions, labels the image as
+historical, and falls back to textual evidence when geometry is unavailable.
+
+Live highlighting is deliberately browser-side. `src/lib/live-inspect.js`
+builds a compact payload (selector, rule, WCAG mapping, fix text) and a
+bookmarklet; the report's “Highlight on site” link opens the target page with
+that payload in the fragment, and the bookmarklet draws the outline and panel in
+the user's browser. Text-bearing elements also store a bounded 80-character
+visible-text anchor for a native `#:~:text=` link; a local `npm run inspect`
+command can open a finding or an ad-hoc CSS/XPath target in headed Playwright. The payload is versioned, size-bounded, origin-scoped and
+contains no full URL or page content; a URL-free clipboard code is the fallback
+for hash-routed pages. Nothing is sent to a server, stored, or inserted into the
+target site's own code. This is the static-report equivalent of a WAVE/AIW
+visual helper; it cannot cross frames, shadow roots or unrecorded interactions,
+and a strict `script-src` CSP may block bookmarklets entirely.
+
+Manual validation guidance is generated deterministically from the finding's
+criterion or rule (`src/lib/manual-validation.js`) and rendered on the
+Accessibility page and in the Explorer. The structured review record is created
+in the browser on demand: VITAL never stores it, never marks a review complete
+and never converts it into a conformance claim.
+
+Reproduction is an explicit consumer, never a scheduled step:
+`src/lib/reproduction.js` turns stored evidence into a plan, and
+`scripts/reproduce.js` / the Explorer generate or run a standalone Playwright
+test from that plan. The runner and the generated script share the same
+`executeReproduction()` function, so their outcomes cannot diverge. A
+reproduction checks the recorded element, not just the page, and its
+`not_reproduced` outcome is never treated as a fix.
+
+The Finding Explorer (`explore.html`) is rendered from the same `reportBugs`
+list. Its static index is server-rendered and complete without JavaScript; the
+progressive enhancement fetches the published `bugs.json` and filters it with
+the same `finding-filter.js` functions the server uses, rendering the detail
+panel with DOM text nodes (never HTML injection). It adds no scan and no new
+data source; the canonical full finding stays on the Accessibility page and
+every row links back to its anchor.
+
+Limits are explicit rather than implied: examples are a capped sample (3 per
+page per rule, 5 per rule per week); Alfa targets are serialized node
+descriptions, so Alfa element evidence is recorded as unavailable; computed
+accessibility roles and element text are not collected; and an axe
+frame/shadow path is not resolved against the top document.
 
 - **`scan.yml`** runs on a staggered set of off-hours cron schedules,
   one parallel job per domain. Each job scans its budget, commits only

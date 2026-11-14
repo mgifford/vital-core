@@ -76,7 +76,8 @@ export function isThirdParty(resourceUrl, pageUrl) {
  * `http://example.gov/a` and `https://www.example.gov/a` are one page.
  * URLs already in canonical form keep their page IDs.
  */
-export function normalizeUrl(raw, baseUrl, host, canonicalOrigin) {
+export function normalizeUrl(raw, baseUrl, host, canonicalOrigin, ignoreParams = []) {
+  const ignored = new Set(Array.isArray(ignoreParams) ? ignoreParams : []);
   let u;
   try {
     u = new URL(raw, baseUrl);
@@ -95,7 +96,7 @@ export function normalizeUrl(raw, baseUrl, host, canonicalOrigin) {
   }
   // Drop tracking parameters; sort the rest for stable identity.
   const params = [...u.searchParams.entries()]
-    .filter(([k]) => !TRACKING_PARAMS.test(k))
+    .filter(([k]) => !TRACKING_PARAMS.test(k) && !ignored.has(k))
     .sort(([a], [b]) => a.localeCompare(b));
   u.search = '';
   for (const [k, v] of params) u.searchParams.append(k, v);

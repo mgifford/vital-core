@@ -15,13 +15,13 @@
  * Adherence level mapping (OpenACR vocabulary):
  *   does-not-support  — automated scan found failures for this SC on ≥1 page
  *   partially-supports — failures on a small fraction of scanned pages (<5%)
- *   supports          — SC was tested (SC is in scope of a running engine) and
- *                       no failures were found this week
- *   not-evaluated     — no engine covers this SC; cannot make a claim
+ *   not-evaluated     — no manual conformance outcome exists (including every
+ *                       criterion where automation found no failure)
  *
- * This is an *automated baseline*, not a complete manual audit. The YAML
- * includes an explicit note on every criterion about the scanning context and
- * pages tested. Human testers should layer on top of this output.
+ * This is an *incomplete automated evidence draft*, not an ACR. Absence of an
+ * automated failure is not support. Every A/AA criterion without a manual
+ * outcome is marked not-evaluated and listed in the incomplete note. Human
+ * testers must complete and sign the document before publication.
  *
  * Only the web component is populated (electronic-docs, software, and
  * authoring-tool are marked not-applicable — this tool scans public web pages).
@@ -31,6 +31,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { resolveWcag } from './wcag.js';
+import { FAVICON_DATA_URI } from './brand.js';
 
 // All WCAG 2.2 Success Criteria in catalog order, with level and version.
 // This is the complete set for a WCAG 2.2 A+AA conformance target.
@@ -124,62 +125,36 @@ export function buildAcrData(summary) {
     if (w?.sc) addFailure(w.sc, rule.pages, 'Alfa', rule.examplePages);
   }
 
-  // Which SCs are "in scope" for each engine (engine tests at least something for them).
-  // We approximate this by the union of SCs we have axe rules or alfa rules for in
-  // the static mappings — rather than introspecting the live run, which avoids false
-  // "supports" claims for criteria where the engine ran but never fired.
-  // A more conservative approach: only claim "supports" for SCs where we observed
-  // a rule firing or have a known mapping. We use the observed-failures set + the
-  // SCs that the engines are *known* to cover via wcag.js tags.
-  // For this implementation: if an engine ran this week AND the SC is in our failure
-  // map (it was tested and passed OR failed), we mark it evaluated.
-  // SCs not covered by either engine -> not-evaluated.
-
-  // Build "tested SC" set: any SC that appeared in *any* rule result (pass or fail)
-  // We can't enumerate passes directly, so we use the running heuristic:
-  //   axe tested -> all SCs in axe rule tags that axe actually ran on (approximated by
-  //   SCs we know axe covers per the WCAG_CRITERIA + axe tag convention).
-  // Conservative: mark as "not-evaluated" unless we saw a failure. The exception is
-  // well-known SCs that have dedicated rules — those we can claim "supports" for.
-  //
-  // For Week-over-week value: the most important signal is which SCs have *failures*.
-  // For SCs with no failure data we say "not-evaluated" unless the engine positively
-  // ran a rule for it (which we track via the tags seen in the rules object).
-  const testedSCs = new Set();
-  for (const [, rule] of Object.entries(summary.axe?.rules ?? {})) {
-    for (const tag of rule.tags ?? []) {
-      const m = /^wcag(\d)(\d)(\d+)$/.exec(tag);
-      if (m) testedSCs.add(`${m[1]}.${m[2]}.${m[3]}`);
-    }
-  }
-  // Alfa rules: use the resolveWcag mapping
-  for (const [ruleId, rule] of Object.entries(summary.alfa?.rules ?? {})) {
-    const w = resolveWcag('alfa', { tags: rule.tags ?? [], ruleId });
-    if (w?.sc) testedSCs.add(w.sc);
-  }
+  // Automation cannot enumerate passes. A failure maps to an evidence term;
+  // everything else stays unknown until a human records an outcome.
 
   const scMap = new Map();
+  const incomplete = [];
   for (const entry of WCAG_CATALOG) {
     const fail = scFailures.get(entry.sc);
     let adherence, pagesAffected = 0, engines = [], examples = [];
+    let automatedNoFailure = false;
 
     if (fail) {
       pagesAffected = fail.pages;
       engines = [...fail.engines];
       examples = [...fail.examples];
       const failRate = fail.pages / Math.max(axePages, alfaPages, 1);
-      // Partially-supports when failures affect <5% of tested pages
+      // Failures on some tested pages and none on others are still only
+      // sample-scoped evidence, never a whole-product claim.
       adherence = failRate < 0.05 ? 'partially-supports' : 'does-not-support';
-    } else if (testedSCs.has(entry.sc)) {
-      adherence = 'supports';
     } else {
+      // Automation cannot establish support. No failure is not a pass: leave
+      // the criterion unknown and name it in the incomplete-draft list.
       adherence = 'not-evaluated';
+      automatedNoFailure = true;
+      incomplete.push(entry.sc);
     }
 
-    scMap.set(entry.sc, { ...entry, adherence, pagesAffected, engines, examples });
+    scMap.set(entry.sc, { ...entry, adherence, pagesAffected, engines, examples, automatedNoFailure });
   }
 
-  return { scMap, pagesScanned, axePages, alfaPages };
+  return { scMap, pagesScanned, axePages, alfaPages, incomplete };
 }
 
 /** YAML serialization — minimal hand-rolled YAML to avoid a dependency. */
@@ -202,29 +177,31 @@ export function buildAcrYaml(target, summary, week, acrData) {
   const reportDate = new Date().toISOString().slice(0, 10);
   const weekLabel = week ?? summary.week;
 
-  const header = `title: ${yamlStr(`${target.domain} Accessibility Conformance Report`)}
+  const incomplete = acrData.incomplete ?? [];
+  const header = `title: ${yamlStr(`${target.domain}: draft automated accessibility evidence (not a conformance report)`)}
+author:
+  name: "VITAL Core automated scan (unreviewed draft — no accountable author assigned)"
+  email: "vital-core@users.noreply.github.com"
 product:
   name: ${yamlStr(target.domain)}
   version: ${yamlStr(weekLabel)}
-  description: ${yamlStr(`Public web pages at ${target.domain}, week ${weekLabel}. Automated scan by vital-scans using axe-core and Siteimprove Alfa.`)}
-report_date: ${reportDate}
-last_modified_date: ${reportDate}
-version: "1"
+  description: ${yamlStr(`DRAFT automated evidence for public web pages at ${target.domain}, week ${weekLabel}. Generated by vital-scans using axe-core and Siteimprove Alfa; no manual assistive-technology evaluation was performed.`)}
+report_date: "${reportDate}"
+last_modified_date: "${reportDate}"
+version: 1
 catalog: 2.5-edition-wcag-2.2-en
 notes: ${yamlStr(
-  `This ACR is generated automatically from weekly accessibility scans of ${target.domain} ` +
-  `(week ${weekLabel}). It covers ${pagesScanned} scanned pages; axe-core ran on ${axePages} pages ` +
-  `and Siteimprove Alfa on ${alfaPages} pages. ` +
-  `Automated tools find roughly a third of real barriers — this report should be ` +
-  `supplemented with manual AT testing and user research before making conformance claims. ` +
-  `"supports" means no automated failure was detected this week, not that the criterion is fully met.`
+  `INCOMPLETE DRAFT — A/AA criteria without a manual outcome: ${incomplete.join(', ') || 'none'}. ` +
+  `This is automated evidence only, not an Accessibility Conformance Report and not a conformance claim. ` +
+  `It covers ${pagesScanned} scanned pages; axe-core ran on ${axePages} pages and Siteimprove Alfa on ${alfaPages} pages. ` +
+  `No accountable author or reviewer has signed this document. Manual AT testing, keyboard testing and user research have not been performed. ` +
+  `A criterion marked not-evaluated may still have no automated failure; absence of a detected failure is not evidence of support.`
 )}
 evaluation_methods_used: ${yamlStr(
-  `Automated: axe-core ${summary.axe?.version ?? ''} and Siteimprove Alfa, running in headless Chromium (Playwright). ` +
-  `Rules are mapped to WCAG 2.2 success criteria. Manual AT testing has not been conducted — ` +
-  `add manual findings directly to this YAML file.`
+  `Automated weekly sample only: axe-core ${summary.axe?.version ?? ''} and Siteimprove Alfa in headless Chromium (Playwright), mapped to WCAG 2.2 success criteria. ` +
+  `This is not a WCAG-EM evaluation and no manual AT testing was conducted. Add manual findings directly to this YAML file before relying on it.`
 )}
-legal_disclaimer: ""
+legal_disclaimer: "DRAFT — automated evidence only; not a conformance claim. Manual testing is incomplete. A qualified human must review, complete and sign this document before publication."
 license: CC-BY-4.0
 feedback: https://github.com/mgifford/vital-core/issues
 repository: https://github.com/mgifford/vital-core
@@ -242,8 +219,8 @@ repository: https://github.com/mgifford/vital-core
       if (d.pagesAffected > 0) {
         notes = `Automated scan found failures on ${d.pagesAffected} of ${Math.max(axePages, alfaPages)} tested pages (engines: ${d.engines.join(', ')}).`;
         if (d.examples.length > 0) notes += ` Example: ${d.examples[0]}`;
-      } else if (d.adherence === 'supports') {
-        notes = `No automated failures detected on ${Math.max(axePages, alfaPages)} tested pages this week.`;
+      } else if (d.automatedNoFailure) {
+        notes = `Automated scan detected no failure on ${Math.max(axePages, alfaPages)} tested pages this week, but absence of a detected failure is not evidence that the criterion is met. Manual testing required.`;
       } else {
         notes = 'Not evaluated by automated engines this week. Manual testing required.';
       }
@@ -267,7 +244,7 @@ repository: https://github.com/mgifford/vital-core
   return `${header}
 chapters:
   success_criteria_level_a:
-    notes: ${yamlStr(`Level A criteria. Automated coverage is partial — only criteria covered by axe-core or Alfa rules can be evaluated automatically. "not-evaluated" criteria require manual testing.`)}
+    notes: ${yamlStr(`Level A criteria. Automated coverage is partial. "not-evaluated" means no manual conformance outcome exists; it is not a pass.`)}
     criteria:
 ${renderCriteria(levelA)}
   success_criteria_level_aa:
@@ -303,7 +280,7 @@ const ADHERENCE_LABEL = {
  * No external CSS, JS, or design system required.
  */
 export function renderAcrHtml(target, summary, week, acrData) {
-  const { scMap, pagesScanned, axePages, alfaPages } = acrData;
+  const { scMap, pagesScanned, axePages, alfaPages, incomplete = [] } = acrData;
   const reportDate = summary.generatedAt ? String(summary.generatedAt).slice(0, 10) : new Date().toISOString().slice(0, 10);
   const weekLabel = week ?? summary.week;
   const domain = escHtml(target.domain);
@@ -318,8 +295,8 @@ export function renderAcrHtml(target, summary, week, acrData) {
     if (d.pagesAffected > 0) {
       notes = `Automated scan found failures on ${d.pagesAffected} of ${tested} tested pages (engines: ${escHtml(d.engines.join(', '))}).`;
       if (d.examples.length > 0) notes += ` Example: <a href="${escHtml(d.examples[0])}">${escHtml(d.examples[0])}</a>`;
-    } else if (d.adherence === 'supports') {
-      notes = `No automated failures detected on ${tested} tested pages this week.`;
+    } else if (d.automatedNoFailure) {
+      notes = `Automated scan detected no failure on ${tested} tested pages this week, but absence of a detected failure is not evidence that the criterion is met. Manual testing required.`;
     } else {
       notes = 'Not evaluated by automated engines this week. Manual testing required.';
     }
@@ -349,7 +326,8 @@ ${rows}
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${domain}: Accessibility Conformance Report — ${escHtml(weekLabel)}</title>
+  <link rel="icon" href="${FAVICON_DATA_URI}" type="image/svg+xml">
+  <title>${domain}: DRAFT automated accessibility evidence — ${escHtml(weekLabel)}</title>
   <style>
     body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:1200px;color:#1b1b1b}
     h1{color:#005ea2}
@@ -366,14 +344,20 @@ ${rows}
     .supports{color:#1a7a3e}
     .not-evaluated{color:#555}
     .footer{font-size:.85em;color:#555;margin-top:3rem;border-top:1px solid #ddd;padding-top:1rem}
+    .draft-banner{background:#fff3cd;border:2px solid #8a5c00;padding:1rem;margin:1rem 0}
+    .draft-banner strong{display:block;font-size:1.15rem}
     a{color:#005ea2}
   </style>
 </head>
 <body>
-<h1>${domain}: Accessibility Conformance Report</h1>
+<h1>${domain}: DRAFT automated accessibility evidence</h1>
+<div class="draft-banner" role="note">
+<strong>DRAFT — not an Accessibility Conformance Report.</strong>
+Automated evidence only. No manual assistive-technology testing, keyboard testing or user research was performed. Do not use this document to claim conformance or award a contract.
+</div>
 <p>Week: <strong>${escHtml(weekLabel)}</strong> &nbsp;&middot;&nbsp; Report date: <strong>${escHtml(reportDate)}</strong></p>
 <p>${escHtml(String(pagesScanned))} pages scanned; axe-core ran on ${escHtml(String(axePages))} pages, Siteimprove Alfa on ${escHtml(String(alfaPages))} pages.</p>
-<p class="note"><strong>Note:</strong> Automated tools find roughly a third of real barriers. This report must be supplemented with manual AT testing and user research before making conformance claims. &ldquo;Supports&rdquo; means no automated failure was detected this week, not that the criterion is fully met.</p>
+<p class="note"><strong>INCOMPLETE DRAFT.</strong> ${escHtml(String(incomplete.length))} Level A/AA criteria have no manual conformance outcome and are marked <strong>Not Evaluated</strong>: ${escHtml(incomplete.join(', ') || 'none')}. A criterion with no automated failure is still not evaluated: absence of a detected failure is not evidence of support. Complete a WCAG-EM or equivalent manual evaluation before publishing an ACR.</p>
 
 ${renderTable(levelA,  'Level A Success Criteria')}
 
@@ -382,7 +366,7 @@ ${renderTable(levelAA, 'Level AA Success Criteria')}
 <div class="footer">
   <p>Generated by <a href="https://github.com/mgifford/vital-core">vital-core</a> using axe-core and Siteimprove Alfa.
   Catalog: WCAG 2.2 A+AA (2.5-edition-wcag-2.2-en).
-  <a href="acr.yaml">Download acr.yaml</a>.</p>
+  <a href="acr.yaml">Download acr.yaml</a>. This file is a draft automated baseline, not a signed ACR.</p>
 </div>
 </body>
 </html>`;

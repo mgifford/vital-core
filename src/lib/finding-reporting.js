@@ -2,6 +2,7 @@ import { parseFragment, serialize } from 'parse5';
 import { actRulesFor } from './finding-correlation.js';
 import { priorityScore, tierOf } from './priority.js';
 import { redactUrl } from './api-redact.js';
+import { pickScreenshot, safeSelector, sanitizeElementEvidence, sanitizeSemanticContext } from './element-evidence.js';
 import { routeMatches } from './page-families.js';
 import actMapping from '../data/act-mapping.json' with { type: 'json' };
 
@@ -23,12 +24,22 @@ export function sanitizeEvidence(example, opts = {}) {
     }
   }
   clean(fragment);
-  const selector = typeof example.xpath === 'string' && !/^\s*text:/i.test(example.xpath) && !/[<>]|\[\s*(?:value|data-|.*(?:token|secret|password|session))/i.test(example.xpath)
-    ? example.xpath.slice(0, 1000) : null;
+  const selector = safeSelector(example.xpath)?.slice(0, 1000) ?? null;
   return {
     url: typeof example.url === 'string' ? redactUrl(example.url, opts) : null,
     selector,
     html: example.html_snippet ? serialize(fragment).slice(0, 4000) : null,
+    element: sanitizeElementEvidence(example.element),
+    semantic_context: sanitizeSemanticContext(example.semantic_context),
+    occurrence_id: typeof example.occurrence_id === 'string' ? example.occurrence_id : null,
+    observation_id: typeof example.observation_id === 'string' ? example.observation_id : null,
+    screenshot: pickScreenshot(example.screenshot),
+    observation: example.observation ? {
+      scanned_at: example.observation.scanned_at ?? null,
+      engine_key: example.observation.engine_key ?? null,
+      engine_version: example.observation.engine_version ?? null,
+      consent_state: example.observation.consent_state ?? null,
+    } : null,
     sanitized: true,
     text_and_values_omitted: true,
   };
@@ -37,10 +48,21 @@ export function sanitizeEvidence(example, opts = {}) {
 export function sanitizeBugEvidence(bug, opts = {}) {
   if (!bug || typeof bug !== 'object') return bug;
   const out = { ...bug };
-  const primary = sanitizeEvidence({ url: bug.url, xpath: bug.xpath, html_snippet: bug.html_snippet }, opts);
+  const primary = sanitizeEvidence({ url: bug.url, xpath: bug.xpath, html_snippet: bug.html_snippet, element: bug.element, semantic_context: bug.semantic_context }, opts);
   out.url = primary.url;
   out.xpath = primary.selector;
   out.html_snippet = primary.html;
+  out.element = primary.element;
+  out.semantic_context = primary.semantic_context;
+  if (bug.observation) {
+    // Internal page/run identifiers stay internal.
+    out.observation = {
+      scanned_at: bug.observation.scanned_at ?? null,
+      engine_key: bug.observation.engine_key ?? null,
+      engine_version: bug.observation.engine_version ?? null,
+      consent_state: bug.observation.consent_state ?? null,
+    };
+  }
   if (Array.isArray(bug.affected_pages)) out.affected_pages = bug.affected_pages.map((url) => redactUrl(url, opts));
   if (Array.isArray(bug.example_pages)) out.example_pages = bug.example_pages.map((url) => redactUrl(url, opts));
   if (Array.isArray(bug.steps_to_reproduce)) {
@@ -48,8 +70,8 @@ export function sanitizeBugEvidence(bug, opts = {}) {
   }
   if (Array.isArray(bug.examples)) {
     out.examples = bug.examples.slice(0, 3).map((example) => {
-      const evidence = sanitizeEvidence({ url: example.url, xpath: example.xpath ?? example.target, html_snippet: example.html_snippet ?? example.html }, opts);
-      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, sanitized: true };
+      const evidence = sanitizeEvidence({ url: example.url, xpath: example.xpath ?? example.target, html_snippet: example.html_snippet ?? example.html, element: example.element, semantic_context: example.semantic_context }, opts);
+      return { url: evidence.url, xpath: evidence.selector, html_snippet: evidence.html, element: evidence.element, semantic_context: evidence.semantic_context, occurrence_id: evidence.occurrence_id, observation_id: evidence.observation_id, observation: evidence.observation, screenshot: evidence.screenshot, sanitized: true };
     });
   }
   return out;
@@ -139,6 +161,11 @@ export function buildFindingReporting(bugs, opts = {}) {
       remediation_task_count: null,
       ownership: 'not_established',
       component_scope: bug.component_scope ?? null,
+      // Where the finding was found, from the first stored example (sample).
+      // Null when no element evidence was captured; unclassified is explicit.
+      region: bug.semantic_context?.nearest_region ?? null,
+      region_unclassified: bug.semantic_context ? !bug.semantic_context.nearest_region : null,
+      region_evidence: bug.semantic_context ? 'captured' : 'unavailable',
       page_family: pageFamilyFor(urls, pageCount, opts.summary?.pageFamilies),
       engine_observation_count: bug.frequency?.instances ?? null,
       engine_severity: bug.engine_severity ?? rule?.impact ?? null,
