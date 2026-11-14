@@ -80,3 +80,34 @@ test('an empty or corrupted observation index degrades safely', () => {
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test('an unchanged index is not rewritten, so a report run with no new pages commits nothing', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-observations-'));
+  const file = path.join(root, 'example.gov', 'observations.json');
+  const backdate = () => {
+    const index = JSON.parse(fs.readFileSync(file, 'utf8'));
+    fs.writeFileSync(file, `${JSON.stringify({ ...index, updated_at: '2026-01-01T00:00:00.000Z' }, null, 1)}\n`);
+    return fs.readFileSync(file, 'utf8');
+  };
+  try {
+    const records = [{ url: 'https://example.gov/a', pageId: 'pa', status: 200, scannedAt: '2026-11-01T00:00:00Z', week: '2026-W44', axe: { violations: {} } }];
+    syncObservationsFromRecords('example.gov', 'example.gov', records, { dataRoot: root });
+    let before = backdate();
+    const again = syncObservationsFromRecords('example.gov', 'example.gov', records, { dataRoot: root });
+    assert.equal(fs.readFileSync(file, 'utf8'), before, 'same records (aggregate): the file is byte-for-byte unchanged');
+    assert.equal(again.updated_at, '2026-01-01T00:00:00.000Z', 'and keeps the time it last really changed');
+
+    const state = { pages: { pa: { url: 'https://example.gov/a', discoveredAt: '2026-10-01T00:00:00Z', lastScannedAt: '2026-11-01T00:00:00Z', lastScannedWeek: '2026-W44', lastStatus: 200, failCount: 0 } } };
+    syncObservationsFromState('example.gov', 'example.gov', state, '2026-W44', { dataRoot: root });
+    before = backdate();
+    syncObservationsFromState('example.gov', 'example.gov', state, '2026-W44', { dataRoot: root });
+    assert.equal(fs.readFileSync(file, 'utf8'), before, 'same crawl state (scan): the file is byte-for-byte unchanged');
+
+    const changed = syncObservationsFromRecords('example.gov', 'example.gov', [{ ...records[0], status: 500, scannedAt: '2026-11-08T00:00:00Z', week: '2026-W45' }], { dataRoot: root });
+    assert.equal(changed.urls.pa.outcome, 'failed');
+    assert.notEqual(changed.updated_at, '2026-01-01T00:00:00.000Z', 'a real change is written with a new stamp');
+    assert.equal(loadObservations('example.gov', 'example.gov', { dataRoot: root }).urls.pa.outcome, 'failed');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});

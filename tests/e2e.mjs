@@ -954,18 +954,10 @@ try {
   const cfgPath = path.join(SANDBOX, 'config', 'targets.yml');
   fs.writeFileSync(cfgPath, fs.readFileSync(cfgPath, 'utf8').replace('  - domain: localhost\n', '  - domain: localhost\n    unlisted: true\n'));
   const dataDir = path.join(SANDBOX, 'data');
-  // observations.json is restamped (updated_at) on every aggregate run,
-  // listed or not, so only that stamp is left out of the comparison.
-  const dataFile = (f) => {
-    const raw = fs.readFileSync(path.join(dataDir, f), 'utf8');
-    if (path.basename(f) !== 'observations.json') return raw;
-    const { updated_at: _stamp, ...rest } = JSON.parse(raw);
-    return JSON.stringify(rest);
-  };
   const snapshotData = () => Object.fromEntries(
     fs.readdirSync(dataDir, { recursive: true })
       .filter((f) => fs.statSync(path.join(dataDir, f)).isFile())
-      .map((f) => [f, dataFile(f)]),
+      .map((f) => [f, fs.readFileSync(path.join(dataDir, f), 'utf8')]),
   );
   const dataBefore = snapshotData();
   fs.rmSync(path.join(SANDBOX, 'docs'), { recursive: true, force: true }); // CI builds docs/ from nothing
