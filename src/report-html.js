@@ -992,7 +992,7 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', a
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>${esc(title)}</title>
+${target?.unlisted ? '<meta name="robots" content="noindex">\n' : ''}<title>${esc(title)}</title>
 <link rel="stylesheet" href="${base}style.css">
 <link rel="llms.txt" href="${base}llms.txt" title="Machine-readable guide for LLMs and agents">
 ${relatedLinks}

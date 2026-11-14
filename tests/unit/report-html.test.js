@@ -66,6 +66,19 @@ test('webmcp bridge: absent when the domain has not opted in, even via layout()'
   assert.doesNotMatch(html, /registerTool/);
 });
 
+test('unlisted: every page of an unlisted site asks search engines not to index it', () => {
+  const summary = {
+    week: '2026-W24',
+    standards: { pagesChecked: 10, checks: [{ id: 'title', label: 'Has a title', rate: 100, pass: 10, total: 10 }], social: [] },
+    security: { passed: 1, total: 1, checks: [{ id: 'https', label: 'Serves HTTPS', pass: true }] },
+  };
+  const noindex = /<meta name="robots" content="noindex">/;
+  const quiet = { key: 'd', domain: 'd', unlisted: true };
+  for (const html of [renderStandardsPage(quiet, summary), renderSecurityPage(quiet, summary)]) assert.match(html, noindex);
+  assert.doesNotMatch(renderStandardsPage({ key: 'd', domain: 'd', unlisted: false }, summary), noindex);
+  assert.doesNotMatch(renderIndex([]), noindex);
+});
+
 test('webmcp bridge: absent from the fleet index (no single target to scope tools to)', () => {
   const html = renderIndex([]);
   assert.doesNotMatch(html, /registerTool/);

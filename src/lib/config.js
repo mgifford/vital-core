@@ -82,6 +82,13 @@ export function loadConfig(rawYaml) {
     // language switcher above — only a literal `true` enables it, so an
     // unset or misconfigured flag never silently ships client-side JS.
     t.webmcpEnabled = t.webmcp === true;
+    // Unlisted sites are still scanned and their reports still built at the
+    // same URLs; nothing site-wide links to them. A non-boolean is an error,
+    // not a silent "listed", so a typo can't publish a site meant to be quiet.
+    if (t.unlisted != null && typeof t.unlisted !== 'boolean') {
+      throw new Error(`unlisted in target ${t.domain} must be true or false.`);
+    }
+    t.unlisted = t.unlisted === true;
     // hf_only (VA) data is gitignored on purpose: pages can capture CSRF/OAuth
     // tokens. Sending it to any git repo is a separate owner decision.
     if (t.data_repo != null && t.hf_only) {

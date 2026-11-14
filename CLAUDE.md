@@ -329,6 +329,22 @@ through `aggregate.js` → `renderAccessibilityPage(…, target.url_exclude_patt
 argument threaded when touching the aggregate render call — it was silently
 dropped once, which made the config exclusion a no-op.
 
+## Unlisted sites (published, not linked)
+
+`unlisted: true` on a target takes it off the published site while the crawl
+carries on. It is unlisted, not private: anyone with a link can still open it.
+
+- **The data is untouched.** An unlisted site is scanned, aggregated and
+  pruned like any other, and `data/` comes out byte-for-byte the same
+  (`tests/e2e.mjs` checks this). Never skip it in `aggregate`'s data steps:
+  page detail is pruned after `retention_weeks`, so a skipped week is lost.
+- **Its pages stay at their URLs**, with `<meta name="robots"
+  content="noindex">` (`layout()`), along with the JSON they link to.
+- **Nothing site-wide lists it**: the dashboard and its blocked-sites notice,
+  the fleet tables, the URL lookup, `api/v1/index.json` (and so `llms.txt`
+  and the API catalog) and the weekly issue comment. A new site-wide output
+  must skip `target.unlisted` too.
+
 ---
 
 ## Information architecture

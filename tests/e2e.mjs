@@ -796,6 +796,32 @@ try {
   const comment = run('src/issue-comment.js', [], '2026-W24');
   assert(comment.includes('localhost: 2026-W24') && comment.includes('Median axe violations'), 'issue comment generated with deltas');
 
+  // --- Unlisted: the same site, set to `unlisted: true`, keeps its data and
+  // its report pages but drops out of everything that lists sites.
+  const cfgPath = path.join(SANDBOX, 'config', 'targets.yml');
+  fs.writeFileSync(cfgPath, fs.readFileSync(cfgPath, 'utf8').replace('  - domain: localhost\n', '  - domain: localhost\n    unlisted: true\n'));
+  const dataDir = path.join(SANDBOX, 'data');
+  const snapshotData = () => Object.fromEntries(
+    fs.readdirSync(dataDir, { recursive: true })
+      .filter((f) => fs.statSync(path.join(dataDir, f)).isFile())
+      .map((f) => [f, fs.readFileSync(path.join(dataDir, f)).toString('base64')]),
+  );
+  const dataBefore = snapshotData();
+  fs.rmSync(path.join(SANDBOX, 'docs'), { recursive: true, force: true }); // CI builds docs/ from nothing
+  run('src/aggregate.js', [], '2026-W24');
+  const docs = (...p) => path.join(SANDBOX, 'docs', ...p);
+  const read = (...p) => fs.readFileSync(docs(...p), 'utf8');
+  assert(JSON.stringify(snapshotData()) === JSON.stringify(dataBefore), 'unlisted: data/ (summaries, findings history) is identical to the listed run');
+  const unlistedReport = read('reports', 'localhost', '2026-W24', 'index.html');
+  assert(/<meta name="robots" content="noindex">/.test(unlistedReport), 'unlisted: the report is still built at the same URL, marked noindex');
+  assert(/<meta name="robots" content="noindex">/.test(read('reports', 'localhost', '2026-W24', 'accessible.html')), 'unlisted: its sub-pages are marked noindex too');
+  assert(fs.existsSync(docs('api', 'v1', 'localhost', 'snapshot.json')) && fs.existsSync(docs('api', 'v1', 'localhost', '2026-W24', 'findings.json')), 'unlisted: the JSON its own pages link to is still written');
+  assert(!read('index.html').includes('reports/localhost/'), 'unlisted: the dashboard does not link to it');
+  assert(!JSON.parse(read('api', 'v1', 'index.json')).domains.some((d) => d.key === 'localhost'), 'unlisted: the API index does not list it');
+  assert(!read('llms.txt').includes('localhost') && !read('.well-known', 'api-catalog').includes('localhost'), 'unlisted: llms.txt and the API catalog do not mention it');
+  assert(!fs.existsSync(docs('api', 'v1', 'localhost', 'url-index.json')) && (!fs.existsSync(docs('url-lookup.html')) || !read('url-lookup.html').includes('localhost')), 'unlisted: the URL lookup does not offer it');
+  assert(!run('src/issue-comment.js', [], '2026-W24').includes('localhost: 2026-W24'), 'unlisted: the weekly issue comment leaves it out');
+
   console.log('\nAll end-to-end checks passed.');
 } finally {
   server.kill();
