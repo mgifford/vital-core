@@ -81,8 +81,9 @@ Other deliberate choices:
   takes it off the published site without touching the crawl: it is still
   scanned and its history kept, and its reports are still built at the same
   URLs (marked `noindex`), but the dashboard, fleet-wide tables, URL lookup,
-  JSON API index, `llms.txt` and weekly issue comment leave it out. Anyone
-  with a link can still open it. Delete the line to list it again.
+  JSON API and archive indexes, `llms.txt` and weekly issue comment leave
+  it out. Anyone with a link can still open it. Delete the line to list it
+  again.
 - **Plain Node, no build step, no TypeScript, six dependencies.** Less
   machinery to break in CI.
 

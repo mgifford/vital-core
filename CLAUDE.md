@@ -343,8 +343,8 @@ carries on. It is unlisted, not private: anyone with a link can still open it.
   content="noindex">` (`layout()`), along with the JSON they link to.
 - **Nothing site-wide lists it**: the dashboard and its blocked-sites notice,
   the fleet tables, the URL lookup, `api/v1/index.json` (and so `llms.txt`
-  and the API catalog) and the weekly issue comment. A new site-wide output
-  must skip `target.unlisted` too.
+  and the API catalog), `api/v1/archives/index.json` and the weekly issue
+  comment. A new site-wide output must skip `target.unlisted` too.
 
 ---
 
