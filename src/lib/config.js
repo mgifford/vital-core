@@ -9,6 +9,7 @@ import { resolveConsentHandling } from '../engines/consent-action.js';
 import { resolveScreenshotConfig } from './screenshots.js';
 import { resolveTargetRetention } from './retention-policy.js';
 import { resolveStorageLimits } from './storage-guard.js';
+import { governmentDomain } from '../engines/security.js';
 
 const ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const DESIGN_SYSTEMS = new Set(['none', 'cms-ds', 'uswds']);
@@ -73,9 +74,9 @@ export function loadConfig(rawYaml) {
   const reportBaseUrl = (cfg.report_base_url || '').replace(/\/+$/, '');
   const dataRepo = validateDataRepo(cfg.data_repo ?? DEFAULT_DATA_REPO, 'global config');
   const storageLimits = resolveStorageLimits(cfg.storage ?? {});
-  const evaluationReport = cfg.evaluation_report ?? defaults.evaluation_report ?? 'openacr';
-  if (!['openacr', 'wcag-em', 'both'].includes(evaluationReport)) {
-    throw new Error(`evaluation_report must be openacr, wcag-em or both (got ${JSON.stringify(evaluationReport)})`);
+  const globalEvaluationReport = cfg.evaluation_report ?? defaults.evaluation_report ?? null;
+  if (globalEvaluationReport != null && !EVALUATION_REPORTS.includes(globalEvaluationReport)) {
+    throw new Error(`evaluation_report must be openacr, wcag-em or both (got ${JSON.stringify(globalEvaluationReport)})`);
   }
   const rawTargets = cfg.targets ?? [];
   const globalRetention = defaults.retention ?? cfg.retention ?? null;
@@ -98,10 +99,6 @@ export function loadConfig(rawYaml) {
     t.retentionSource = retention.source;
     t.retentionWarnings = retention.warnings;
     for (const warning of retention.warnings) console.warn(`[config] ${t.domain}: ${warning}`);
-    t.evaluationReport = t.evaluation_report ?? evaluationReport;
-    if (!['openacr', 'wcag-em', 'both'].includes(t.evaluationReport)) {
-      throw new Error(`target ${t.domain}: evaluation_report must be openacr, wcag-em or both`);
-    }
     t.key = domainKey(t.domain);
     const langs = resolveLanguages(t.languages, t.default_language, `target ${t.domain}`, globalLangs);
     t.languages = langs.languages;
@@ -141,6 +138,10 @@ export function loadConfig(rawYaml) {
     }
     t.spelling_locale = resolveSpellingLocale(t.spelling_locale, `target ${t.domain}`);
     t.governmentDomains = resolveGovernmentDomains(t.government_domains, `target ${t.domain}`);
+    t.evaluationReport = t.evaluation_report ?? globalEvaluationReport ?? defaultEvaluationReport(t.domain, t.governmentDomains);
+    if (!EVALUATION_REPORTS.includes(t.evaluationReport)) {
+      throw new Error(`target ${t.domain}: evaluation_report must be openacr, wcag-em or both`);
+    }
     t.pdfAudit = resolvePdfAudit({ ...(defaults.pdf_audit ?? {}), ...(t.pdf_audit ?? {}) }, `target ${t.domain}`);
     // Historical screenshots are opt-in and bounded; off unless a target asks.
     t.screenshots = resolveScreenshotConfig({ ...(defaults.screenshots ?? {}), ...(t.screenshots ?? {}) }, `target ${t.domain}`);
@@ -162,6 +163,18 @@ export function loadConfig(rawYaml) {
     storageLimits,
     targets,
   };
+}
+
+const EVALUATION_REPORTS = ['openacr', 'wcag-em', 'both'];
+const US_COUNTRY_NAMES = new Set(['united states', 'united states of america', 'us', 'usa']);
+
+// OpenACR is a US procurement format; elsewhere the W3C WCAG-EM report is the
+// recognised website evaluation. Unless a fleet chooses, only a site in a US
+// government namespace (built in, or a government_domains entry naming the
+// United States) gets OpenACR.
+export function defaultEvaluationReport(domain, governmentDomains = []) {
+  const country = String(governmentDomain(domain, governmentDomains)?.country ?? '').trim().toLowerCase().replace(/\./g, '');
+  return US_COUNTRY_NAMES.has(country) ? 'openacr' : 'wcag-em';
 }
 
 function validateDataRepo(repo, where) {

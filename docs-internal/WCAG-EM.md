@@ -15,7 +15,11 @@ testing are incomplete.
 
 ## Configuration
 
-Default remains OpenACR so existing US fleets do not change:
+Unset, the report follows the site's country: a site in a US government
+domain (`.gov`, `.mil`, `.edu`, `.fed.us`, or a `government_domains` entry
+whose country is the United States) gets OpenACR, and every other site gets
+WCAG-EM (`defaultEvaluationReport()` in `src/lib/config.js`). US fleets do not
+change. A fleet can choose for all its sites:
 
 ```yaml
 defaults:
@@ -73,9 +77,10 @@ do not claim the automated file is a completed evaluation.
 
 ## Downstream fleets
 
-A non-US fleet such as LocalGov Drupal should set `evaluation_report: wcag-em`
-in its own `config/targets.yml`. This repository does not edit downstream
-configs, workflows or data.
+A non-US fleet such as LocalGov Drupal gets WCAG-EM without setting anything,
+as long as its `config/targets.yml` does not set `evaluation_report` (fleets
+that copied `evaluation_report: openacr` from this file should delete that
+line). This repository does not edit downstream configs, workflows or data.
 
 ## References
 

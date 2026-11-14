@@ -273,11 +273,22 @@ targets:
   assert.throws(() => loadConfig('targets:\n  - domain: a.example\n    page_families: [{ id: x, route: nope }]\n'), /route must be a path/);
 });
 
-test('config: evaluation_report defaults to openacr and accepts wcag-em', () => {
-  const base = loadConfig('targets:\n  - domain: example.gov\n').targets[0];
-  assert.equal(base.evaluationReport, 'openacr', 'US default remains OpenACR');
+test('config: evaluation_report defaults to openacr in the US and wcag-em elsewhere', () => {
+  const report = (yaml) => loadConfig(yaml).targets.map((t) => t.evaluationReport);
+  assert.deepEqual(
+    report('targets:\n  - domain: www.example.gov\n  - domain: army.mil\n  - domain: www.walsall.gov.uk\n  - domain: www.canada.ca\n  - domain: example.org\n'),
+    ['openacr', 'openacr', 'wcag-em', 'wcag-em', 'wcag-em'],
+    'US government namespaces get OpenACR; other countries and unknown sites get WCAG-EM',
+  );
+  assert.deepEqual(
+    report('targets:\n  - domain: www.example.us\n    government_domains: [{ suffix: .example.us, country: USA }]\n  - domain: www.example.gob.mx\n    government_domains: [{ suffix: .gob.mx, country: Mexico }]\n'),
+    ['openacr', 'wcag-em'],
+    "a fleet's own government_domains entry decides the country too",
+  );
   const nonUs = loadConfig('targets:\n  - domain: example.org\n    evaluation_report: wcag-em\n').targets[0];
   assert.equal(nonUs.evaluationReport, 'wcag-em');
+  assert.equal(loadConfig('targets:\n  - domain: www.walsall.gov.uk\n    evaluation_report: openacr\n').targets[0].evaluationReport, 'openacr', 'an explicit choice wins');
+  assert.equal(loadConfig('defaults:\n  evaluation_report: openacr\ntargets:\n  - domain: www.walsall.gov.uk\n').targets[0].evaluationReport, 'openacr', 'a fleet-wide choice wins');
   const both = loadConfig('evaluation_report: both\ntargets:\n  - domain: example.org\n').targets[0];
   assert.equal(both.evaluationReport, 'both', 'global default is inherited');
   assert.throws(() => loadConfig('targets:\n  - domain: example.org\n    evaluation_report: vpat\n'), /evaluation_report must be openacr, wcag-em or both/);
