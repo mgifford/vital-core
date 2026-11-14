@@ -28,6 +28,7 @@ let out = `## Weekly scan summary\n\n`;
 let latestWeek = null;
 
 for (const target of config.targets) {
+  if (target.unlisted) continue;
   const domainDir = path.join(DIRS.data, target.key);
   if (!fs.existsSync(domainDir)) continue;
   const weeks = fs

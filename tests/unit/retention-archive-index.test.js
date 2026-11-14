@@ -68,6 +68,21 @@ test('the archive API publishes a fleet index and per-domain entries', () => {
   }
 });
 
+test('archive API: an unlisted site keeps its archives.json but is left out of the fleet index', () => {
+  const docs = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-archive-unlisted-'));
+  try {
+    writeArchiveApi(docs, [
+      { ...emptyArchiveIndex('listed.gov'), domain: 'listed.gov' },
+      { ...emptyArchiveIndex('quiet.gov'), domain: 'quiet.gov', unlisted: true },
+    ]);
+    const fleet = JSON.parse(fs.readFileSync(path.join(docs, 'api', 'v1', 'archives', 'index.json')));
+    assert.deepEqual(fleet.domains.map((d) => d.domain), ['listed.gov']);
+    assert.ok(fs.existsSync(path.join(docs, 'api', 'v1', 'quiet.gov', 'archives.json')));
+  } finally {
+    fs.rmSync(docs, { recursive: true, force: true });
+  }
+});
+
 test('archive pages expose evidence states without a silent redirect', () => {
   const html = renderArchivePage(target, [summary], summary.week, withArchiveState({
     ...emptyArchiveIndex('example.gov'),

@@ -145,6 +145,30 @@ test('config: webmcpEnabled resolves to a strict boolean for every real target',
   }
 });
 
+test('config: a target is listed unless it says `unlisted: true`', () => {
+  const c = loadConfig(`
+targets:
+  - domain: listed.example.gov
+  - domain: quiet.example.gov
+    unlisted: true
+  - domain: relisted.example.gov
+    unlisted: false
+`);
+  assert.deepEqual(c.targets.map((t) => t.unlisted), [false, true, false]);
+});
+
+test('config: a non-boolean `unlisted` is an error, not silently listed', () => {
+  assert.throws(() => loadConfig(`
+targets:
+  - domain: example.gov
+    unlisted: "yes"
+`), /unlisted in target example\.gov must be true or false/);
+});
+
+test('config: unlisted resolves to a strict boolean for every real target', () => {
+  for (const t of loadConfig().targets) assert.equal(typeof t.unlisted, 'boolean');
+});
+
 test('config: loadConfig surfaces reportBaseUrl with no trailing slash', () => {
   const c = loadConfig();
   assert.equal(typeof c.reportBaseUrl, 'string');

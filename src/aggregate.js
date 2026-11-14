@@ -100,7 +100,7 @@ const archiveIndexes = [];
 for (const target of config.targets) {
   const domainDir = path.join(DIRS.data, target.key);
   if (!fs.existsSync(domainDir)) {
-    unscanned.push({ target, access: assessAccess() });
+    if (!target.unlisted) unscanned.push({ target, access: assessAccess() });
     continue;
   }
   const reporting = target.reporting ?? {};
@@ -142,7 +142,7 @@ for (const target of config.targets) {
   }
   if (series.length === 0) {
     const lastWeek = weeks[weeks.length - 1];
-    unscanned.push({ target, access: assessAccess({ runs: lastWeek ? readRunLogs(path.join(domainDir, lastWeek, 'runs')) : [] }) });
+    if (!target.unlisted) unscanned.push({ target, access: assessAccess({ runs: lastWeek ? readRunLogs(path.join(domainDir, lastWeek, 'runs')) : [] }) });
     continue;
   }
 
@@ -539,10 +539,13 @@ for (const target of config.targets) {
 
   const latestSummary = series[series.length - 1];
   const latestBugsOnly = apiBugsFor(target, latestBugs.map(({ _week, ...b }) => b));
-  apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
+  // An unlisted site keeps its snapshot and findings files (its own report
+  // pages link to them) but stays out of index.json, and so out of llms.txt
+  // and the API catalog, which are built from the index.
+  if (!target.unlisted) apiIndexEntries.push(buildIndexEntry(target, latestSummary, latestBugsOnly));
   apiSnapshots.push({ key: target.key, data: buildSnapshot(target, trend, diffs, ledger, invSummary, latestBugsOnly, latestPolicySummary) });
 
-  const urlIdx = buildUrlIndex(domainDir, target.domain, latestSummary.week);
+  const urlIdx = target.unlisted ? null : buildUrlIndex(domainDir, target.domain, latestSummary.week);
   if (urlIdx) {
     writeUrlIndex(path.join(DIRS.docs, 'api', 'v1'), target.key, urlIdx);
     urlLookupDomains.push({ key: target.key, domain: target.domain, week: latestSummary.week });
@@ -586,8 +589,8 @@ for (const target of config.targets) {
   // window is empty (e.g. old data only).
   const windowSummary = summarizeWindow(target, 7) ?? series[series.length - 1];
 
-  dashboard.push({ target, series, diffs, inventory: invSummary, bugs: latestBugs, windowSummary });
-  archiveIndexes.push({ ...archiveIndex, domain: target.key });
+  if (!target.unlisted) dashboard.push({ target, series, diffs, inventory: invSummary, bugs: latestBugs, windowSummary });
+  archiveIndexes.push({ ...archiveIndex, domain: target.key, unlisted: target.unlisted });
   console.log(`${target.key}: ${series.length} week(s) aggregated, ${Object.keys(ledger.findings).length} tracked findings`);
 }
 

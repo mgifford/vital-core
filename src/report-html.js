@@ -1007,7 +1007,7 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', a
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#083b3d">
-<title>${esc(title)}</title>
+${target?.unlisted ? '<meta name="robots" content="noindex">\n' : ''}<title>${esc(title)}</title>
 <link rel="icon" href="${base}${FAVICON_FILENAME}" type="image/svg+xml">
 <link rel="icon" href="${base}${FAVICON_PNG_FILENAME}" type="image/png" sizes="64x64">
 <link rel="stylesheet" href="${base}style.css">

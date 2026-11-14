@@ -153,6 +153,7 @@ export function writeArchiveApi(docsDir, domainIndexes, generatedAt = new Date()
       archives: state.archives,
     };
     fs.writeFileSync(path.join(dir, 'archives.json'), `${JSON.stringify(data, null, 1)}\n`);
+    if (index.unlisted) continue;
     domains.push({
       domain: index.domain,
       counts: state.counts,
