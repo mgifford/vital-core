@@ -40,8 +40,8 @@ defaults:
   #   summary: { retention: indefinite }
   # Evaluation export (evaluation_report): openacr (draft OpenACR, for US
   # procurement), wcag-em (W3C WCAG-EM website evaluation report) or both. Unset,
-  # a site in a US government domain gets openacr and every other site wcag-em,
-  # so these all get openacr. Set it here or per target to choose.
+  # a site in a US government domain gets openacr and every other site wcag-em.
+  # Set it here or per target to choose.
   # Query parameters to ignore when identifying a page (default: none). Use
   # only for values that do not change the content, e.g. [page] for a paginated
   # index. Query variants remain distinct pages by default.
