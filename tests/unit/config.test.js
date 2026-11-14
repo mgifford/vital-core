@@ -276,9 +276,9 @@ targets:
 test('config: evaluation_report defaults to openacr in the US and wcag-em elsewhere', () => {
   const report = (yaml) => loadConfig(yaml).targets.map((t) => t.evaluationReport);
   assert.deepEqual(
-    report('targets:\n  - domain: www.example.gov\n  - domain: army.mil\n  - domain: www.walsall.gov.uk\n  - domain: www.canada.ca\n  - domain: example.org\n'),
-    ['openacr', 'openacr', 'wcag-em', 'wcag-em', 'wcag-em'],
-    'US government namespaces get OpenACR; other countries and unknown sites get WCAG-EM',
+    report('targets:\n  - domain: www.cms.gov\n  - domain: www.nsf.gov\n  - domain: www.mit.edu\n  - domain: army.mil\n  - domain: www.walsall.gov.uk\n  - domain: unimelb.edu.au\n  - domain: www.canada.ca\n  - domain: example.org\n'),
+    ['openacr', 'openacr', 'openacr', 'openacr', 'wcag-em', 'wcag-em', 'wcag-em', 'wcag-em'],
+    '.gov, .edu and .mil are American and get OpenACR; .gov.uk, .edu.au, other countries and unknown sites get WCAG-EM',
   );
   assert.deepEqual(
     report('targets:\n  - domain: www.example.us\n    government_domains: [{ suffix: .example.us, country: USA }]\n  - domain: www.example.gob.mx\n    government_domains: [{ suffix: .gob.mx, country: Mexico }]\n'),
