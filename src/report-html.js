@@ -5221,32 +5221,46 @@ ${heading('h-lhfleet', t('Common Lighthouse recommendations'))}
   // pages), not raw count, so a moderate issue hitting many sites can
   // outrank a critical issue confined to one.
   const mergedPatterns = mergeFleetPatterns(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })));
-  const fleetPatterns = rankFleetPatterns(mergedPatterns, { minSites: 2, limit: 25 });
-  let patternsSection = '';
-  if (fleetPatterns.length) {
-    patternsSection = `
-<section aria-labelledby="h-patterns">
-${heading('h-patterns', t('Recurring patterns across domains'))}
-<p class="meta">${t('The same underlying rule failing on multiple independent sites — the strongest signal of a shared CMS template, design-system component, or widget bug rather than a one-off content issue. Ranked by fix leverage: sites affected × severity × pages, not raw count.')}</p>
-<table class="sortable">
-<caption>${t('Top @n patterns spanning ≥2 sites.', { '@n': fleetPatterns.length })}</caption>
-<thead><tr>
-  <th scope="col">${t('Pattern')}</th>
-  <th scope="col">${t('Severity')}</th>
-  <th scope="col">${t('Likely source')}</th>
-  <th scope="col" class="num">${t('Sites')}</th>
-  <th scope="col" class="num">${t('Pages')}</th>
-</tr></thead>
-<tbody>${fleetPatterns
-      .map((p) => `<tr>
+  const requiredPatterns = rankFleetPatterns(mergedPatterns.filter((p) => p.required), { minSites: 2, limit: 25 });
+  const beyondPatterns = rankFleetPatterns(mergedPatterns.filter((p) => !p.required), { minSites: 2, limit: 25 });
+  const patternRows = (list) => list
+    .map((p) => `<tr>
   <th scope="row"><a href="reports/${esc(p.representative.key)}/${esc(p.representative.week)}/index.html">${esc(p.rule_label)}</a></th>
+  <td>${requirementCell(p)}</td>
   <td><span class="sev-badge">${esc(t(p.severity))}</span></td>
   <td>${esc(t(p.likely_source ?? 'unknown'))}</td>
   <td class="num">${p.sites}</td>
   <td class="num">${p.pages}</td>
 </tr>`)
-      .join('\n')}</tbody>
+    .join('\n');
+  const patternHead = (secondCol) => `<thead><tr>
+  <th scope="col">${t('Pattern')}</th>
+  <th scope="col">${secondCol}</th>
+  <th scope="col">${t('Severity')}</th>
+  <th scope="col">${t('Likely source')}</th>
+  <th scope="col" class="num">${t('Sites')}</th>
+  <th scope="col" class="num">${t('Pages')}</th>
+</tr></thead>`;
+  let patternsSection = '';
+  if (requiredPatterns.length || beyondPatterns.length) {
+    patternsSection = `
+<section aria-labelledby="h-patterns">
+${heading('h-patterns', t('Recurring patterns across domains'))}
+<p class="meta">${t('The same underlying rule failing on multiple independent sites — the strongest signal of a shared CMS template, design-system component, or widget bug rather than a one-off content issue. Ranked by fix leverage: sites affected × severity × pages, not raw count.')}</p>
+${requiredPatterns.length ? `<table class="sortable">
+<caption>${t('Top @n required patterns spanning ≥2 sites.', { '@n': requiredPatterns.length })}</caption>
+${patternHead(t('Requirement'))}
+<tbody>${patternRows(requiredPatterns)}</tbody>
+</table>` : `<p>${t('No required finding recurs on two or more sites.')}</p>`}
+${beyondPatterns.length ? `<details>
+<summary>${t('Beyond the requirements: @n AAA and best-practice patterns on two or more sites', { '@n': beyondPatterns.length })}</summary>
+<p class="meta">${t('Not required for conformance. AAA criteria are aspirational stretch goals and best practices are advisory: worth doing, after the required findings above.')}</p>
+<table class="sortable">
+<caption>${t('Aspirational, best-practice and unmapped patterns spanning ≥2 sites.')}</caption>
+${patternHead(t('Type'))}
+<tbody>${patternRows(beyondPatterns)}</tbody>
 </table>
+</details>` : ''}
 </section>`;
   }
 

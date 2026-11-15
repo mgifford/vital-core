@@ -1604,3 +1604,21 @@ test('the report discloses pages where Alfa was skipped as too large', () => {
   assert.match(html, /Alfa skipped 1 page\(s\) that were too large/);
   assert.match(html, /engine limitation, not a clean result/);
 });
+
+test('recurring patterns: required patterns in the main table, AAA and best practice only under Beyond the requirements', () => {
+  const wk = { week: '2026-W25', pagesScanned: 5, pagesAudited: 5, axe: { medianViolations: 1, pagesWithViolations: 1, pagesScanned: 5 }, alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 5 } };
+  const bug = (pattern_id, rule_label, tier, wcag_sc, wcag_level) => ({
+    pattern_id, rule_label, severity: 'moderate', likely_source: 'template', frequency: { pages_affected: 40 },
+    conformance_tier: tier, wcag_sc, wcag_version: '2.0', wcag_level, _week: '2026-W25',
+  });
+  const bugs = [bug('p-contrast', 'Text has minimum contrast', 'legal', '1.4.3', 'AA'), bug('p-enhanced', 'Text has enhanced contrast', 'aspirational', '1.4.6', 'AAA')];
+  const site = (domain) => ({ target: { domain, key: domain }, series: [wk], diffs: {}, bugs, windowSummary: wk });
+  const html = renderIndex([site('a.gov.uk'), site('b.gov.uk')]);
+  const section = html.slice(html.indexOf('id="h-patterns"'), html.indexOf('</section>', html.indexOf('id="h-patterns"')));
+  const [main, beyond] = section.split('<details>');
+  assert.match(main, /Text has minimum contrast/);
+  assert.match(main, /Legally required/, 'the requirement is shown as text');
+  assert.doesNotMatch(main, /Text has enhanced contrast/, 'AAA is never listed with requirements');
+  assert.match(beyond, /<summary>Beyond the requirements: 1 AAA and best-practice patterns on two or more sites<\/summary>/);
+  assert.match(beyond, /Text has enhanced contrast[\s\S]*Aspirational \(AAA\)/);
+});
