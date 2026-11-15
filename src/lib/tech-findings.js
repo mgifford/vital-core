@@ -231,30 +231,19 @@ export function mergeFleet(entries) {
 }
 
 /**
- * Rank fleet pairs by a systemic score that rewards both strong association
- * (lift) and breadth across sites: score = lift × sitesAffected. Only pairs
- * present on >= minSites distinct domains are returned, so single-site
- * coincidences don't dominate. Returns
- *   [{ tech, finding, lift, sites, pairPages, score }]
+ * Rank fleet pairs the way rankAssociations ranks one site's: the finding must
+ * be at least `minRatio` times as common on pages with the technology as on
+ * pages without it, with an approximate 95% interval above 1, and the pair
+ * must be on at least `minSites` domains. Lift against all pages said nothing
+ * here: a technology on nearly every page scored 1.00× with every finding and
+ * filled the dashboard table. Ordered by sites, then strength. Returns the
+ * rankAssociations fields plus `sites`.
  */
-export function rankFleetAssociations(fleet, { minPages = 5, minSites = 2, limit = 50 } = {}) {
-  const out = [];
-  for (const tech of Object.keys(fleet.pair)) {
-    for (const finding of Object.keys(fleet.pair[tech])) {
-      const sites = fleet.pairSites[tech]?.[finding] ?? 0;
-      if (sites < minSites) continue;
-      const l = lift(fleet, tech, finding, minPages);
-      if (l == null) continue;
-      out.push({
-        tech,
-        finding,
-        lift: Math.round(l * 100) / 100,
-        sites,
-        pairPages: fleet.pair[tech][finding],
-        score: Math.round(l * sites * 100) / 100,
-      });
-    }
-  }
-  out.sort((a, b) => b.score - a.score || b.sites - a.sites);
-  return out.slice(0, limit);
+export function rankFleetAssociations(fleet, { minPages = 5, minSites = 2, minRatio = MIN_RATIO, limit = 50 } = {}) {
+  const strength = (a) => a.ratio ?? Infinity;
+  return rankAssociations(fleet, { minPages, minRatio, limit: Infinity })
+    .map((a) => ({ ...a, sites: fleet.pairSites[a.tech]?.[a.finding] ?? 0 }))
+    .filter((a) => a.sites >= minSites)
+    .sort((a, b) => b.sites - a.sites || strength(b) - strength(a) || b.pairPages - a.pairPages)
+    .slice(0, limit);
 }

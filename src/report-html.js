@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
+import { scoreFor, trajectory } from './lib/score.js';
+import { LH_METRIC_AUDITS } from './engines/lighthouse.js';
 import { summarizeCoverage } from './lib/coverage.js';
 import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
@@ -127,6 +128,14 @@ let SUSTAINABILITY_METRIC = 'co2';
 export function setSustainabilityMetric(metric) {
   SUSTAINABILITY_METRIC = metric === 'energy' ? 'energy' : 'co2';
 }
+
+// Set once by aggregate via setInteractiveCharts() (config interactive_charts,
+// default false). Off: no manifests, no loader, no 2.8 MB runtime in docs/.
+let INTERACTIVE_CHARTS = false;
+export function setInteractiveCharts(on) {
+  INTERACTIVE_CHARTS = on === true;
+}
+const parachartAttr = (manifest) => (INTERACTIVE_CHARTS ? ` data-parachart="${esc(JSON.stringify(manifest))}"` : '');
 
 // Which languages this report set is built in, and which one owns the canonical
 // (unsuffixed) file paths. Set per render pass by aggregate, alongside setLocale.
@@ -695,7 +704,7 @@ function severityTrendChart(series) {
     activeLevels.map((l) => ({ key: l.label, points: pts.map((p) => ({ week: p.week, value: p[l.key] })) }))
   );
 
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('Pages affected by axe severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -758,7 +767,7 @@ function severityBurndownChart(burndown) {
     t('Open findings'),
     activeLevels.map((l) => ({ key: l.label, points: pts.map((p) => ({ week: p.week, value: p[l.key] ?? 0 })) }))
   );
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('Open findings by severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -910,7 +919,7 @@ function lighthouseCategoryTrendChart(series) {
     activeCategories.map((c) => ({ key: c.label, points: pts.map((p) => ({ week: p.week, value: p[c.key] })) }))
   );
 
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('Lighthouse category scores over @n weeks', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -961,9 +970,8 @@ function lineChart(title, points, { unit = '', lowerIsBetter = true, neutral = f
   // <para-chart>, and hides the SVG fallback. If JS is off or the runtime
   // fails to load, the SVG + table remain — nothing regresses.
   const manifest = buildLineManifest(title, title, pts, { unit });
-  const dataAttr = esc(JSON.stringify(manifest));
 
-  return `<figure class="chart" data-parachart="${dataAttr}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('@title over @n weeks — @trend', { '@title': esc(title), '@n': pts.length, '@trend': esc(trend) })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${t('@title trend: @trend', { '@title': esc(title), '@trend': esc(trend) })}" preserveAspectRatio="xMidYMid meet">
   <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -996,8 +1004,7 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', a
   const apiLink = apiFinding
     ? `<link rel="alternate" type="application/json" href="${esc(`${base}api/v1/${apiFinding.key}/${apiFinding.week}/findings.json`)}" title="This page's findings as JSON">\n`
     : '';
-  const relatedLinks = `${apiLink}<link rel="alternate" type="application/json" href="${esc(`${base}.well-known/api-catalog`)}" title="API catalog">
-<link rel="alternate" type="application/json" href="${esc(`${base}.well-known/api-catalog.json`)}" title="API catalog (JSON)">
+  const relatedLinks = `${apiLink}<link rel="alternate" type="application/json" href="${esc(`${base}api/catalog.json`)}" title="API catalog">
 <link rel="help" href="https://github.com/mgifford/vital-core/blob/main/API.md" title="JSON API documentation">
 <link rel="help" href="https://github.com/mgifford/vital-core/blob/main/MCP.md" title="Local MCP server documentation">`;
   return `<!DOCTYPE html>
@@ -1048,7 +1055,7 @@ ${body}
           '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
         })}</p>
 </footer>
-${paraChartLoader(base)}
+${INTERACTIVE_CHARTS ? paraChartLoader(base) : ''}
 ${target ? webmcpBridgeScript(target) : ''}
 ${extraScript}
 </body>
@@ -3438,6 +3445,9 @@ ${bothTable}
  * metrics. Linked from the domain report. Returns null if no LH data.
  */
 // Human labels for the recommendation categories (engine uses LH category ids).
+// Lighthouse titles mark code with Markdown backticks ("the `Issues` panel").
+const lhTitle = (title) => esc(title).replace(/`([^`]+)`/g, '<code>$1</code>');
+
 const LH_CATEGORY_LABELS = {
   performance: 'Performance',
   seo: 'SEO',
@@ -3469,7 +3479,7 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
         .filter(Boolean).join(' · ') || '—';
       const rows = byCat[cat]
         .map((r) => `<tr>
-  <th scope="row">${esc(r.title)}</th>
+  <th scope="row">${lhTitle(r.title)}</th>
   <td class="num">${r.pages}/${pagesSampled}</td>
   <td class="num">${savings(r.savingsBytesMedian, r.savingsMsMedian)}</td>
   <td class="num">${savings(r.savingsBytesP75, r.savingsMsP75)}</td>
@@ -3499,7 +3509,7 @@ function agenticExplainer(lh) {
   if (lh.medianAgentic == null) return '';
   const agenticRecos = (lh.recommendations ?? []).filter((r) => r.category === 'agentic-browsing');
   const gaps = agenticRecos.length
-    ? `<p class="meta">${t('Gaps found on the sampled pages:')} ${agenticRecos.map((r) => `${esc(r.title)} (${r.pages})`).join(', ')}.</p>`
+    ? `<p class="meta">${t('Gaps found on the sampled pages:')} ${agenticRecos.map((r) => `${lhTitle(r.title)} (${r.pages})`).join(', ')}.</p>`
     : '';
   return `<section aria-labelledby="h-lh-agentic">
 ${heading('h-lh-agentic', t('What the Agentic score means'))}
@@ -4549,7 +4559,7 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automa
   <span class="score-label">${t('Automated accessibility health (axe)')}</span>
   ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
   ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
-  <span class="score-detail">${esc(scoreMeaning(summary, score))}
+  <span class="score-detail">${t('The typical page has @n axe violation(s).', { '@n': score.medianIssues })}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
   <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score. 0–100; higher is better. It maps the median axe violation count per audited page to a benchmark curve; Alfa is sampled and reported separately. Manual testing is incomplete, so a high value is not proof of conformance.')}</span>
   ${(() => {
@@ -4906,7 +4916,7 @@ function crossDomainChart(ranked) {
     }))
   );
 
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>Median axe violations per page, all domains — lower is better</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="Median axe violations per page over time, compared across ${withSeries.length} domains" preserveAspectRatio="xMidYMid meet">
   ${lines.map((l) => l.line).join('')}${lines.map((l) => l.legend).join('')}${xlabels}
@@ -5130,13 +5140,13 @@ ${heading('h-worst', t('Highest-impact issues across all sites'))}
       techFindingsSection = `
 <section aria-labelledby="h-techfindings">
 ${heading('h-techfindings', t('Cross-technology issues'))}
-<p class="meta">${t('Accessibility findings that recur with the same technology across multiple sites — the strongest signal that a barrier lives in a shared CMS, theme, or widget rather than in one site\'s content. Ranked by lift × number of sites affected. Association, not proof of cause: confirm before attributing.')}</p>
+<p class="meta">${t('Accessibility findings at least 1.5 times as common on pages running a technology as on pages without it, on two or more sites — a sign that a barrier lives in a shared CMS, theme, or widget rather than in one site\'s content. Ranked by sites affected, then by how much more common. Association, not proof of cause: confirm before attributing. A technology on nearly every page has nothing to compare against, so it is not listed.')}</p>
 <table class="sortable">
 <caption>${t('Top @n technology ↔ finding associations spanning ≥2 sites.', { '@n': fleetPairs.length })}</caption>
 <thead><tr>
   <th scope="col">${t('Technology')}</th>
   <th scope="col">${t('Finding')}</th>
-  <th scope="col" class="num">${t('Lift')}</th>
+  <th scope="col" class="num">${t('Times as common (95% CI)')}</th>
   <th scope="col" class="num">${t('Sites')}</th>
   <th scope="col" class="num">${t('Pages')}</th>
 </tr></thead>
@@ -5144,7 +5154,7 @@ ${heading('h-techfindings', t('Cross-technology issues'))}
         .map((p) => `<tr>
   <th scope="row">${esc(p.tech)}</th>
   <td>${esc(findingLabel(p.finding))}</td>
-  <td class="num">${p.lift.toFixed(2)}×</td>
+  <td class="num" data-sort="${p.ratio ?? 1e9}">${p.ratio == null ? t('only with it') : p.ci_low == null ? `${p.ratio.toFixed(1)}×` : t('@ratio× (95% CI @low–@high)', { '@ratio': p.ratio.toFixed(1), '@low': p.ci_low.toFixed(1), '@high': p.ci_high.toFixed(1) })}</td>
   <td class="num">${p.sites}</td>
   <td class="num">${p.pairPages}</td>
 </tr>`)
@@ -5163,6 +5173,7 @@ ${heading('h-techfindings', t('Cross-technology issues'))}
   for (const d of active) {
     const recos = d.series[d.series.length - 1]?.lighthouse?.recommendations ?? [];
     for (const r of recos) {
+      if (LH_METRIC_AUDITS.has(r.id)) continue;
       const e = (lhMerged[r.id] ??= { id: r.id, category: r.category, title: r.title, sites: 0, pages: 0, savingsBytes: 0, savingsMs: 0 });
       e.sites++;
       e.pages += r.pages ?? 0;
@@ -5195,7 +5206,7 @@ ${heading('h-lhfleet', t('Common Lighthouse recommendations'))}
           const saving = [fmtSavingsBytes(e.savingsBytes), e.savingsMs ? `${(e.savingsMs / 1000).toFixed(1)}s` : '']
             .filter(Boolean).join(' · ') || '—';
           return `<tr>
-  <th scope="row">${esc(e.title)}</th>
+  <th scope="row">${lhTitle(e.title)}</th>
   <td>${esc(catLabel(e.category))}</td>
   <td class="num">${e.sites}</td>
   <td class="num">${e.pages}</td>
@@ -5214,32 +5225,46 @@ ${heading('h-lhfleet', t('Common Lighthouse recommendations'))}
   // pages), not raw count, so a moderate issue hitting many sites can
   // outrank a critical issue confined to one.
   const mergedPatterns = mergeFleetPatterns(active.map((d) => ({ target: d.target, bugs: d.bugs ?? [] })));
-  const fleetPatterns = rankFleetPatterns(mergedPatterns, { minSites: 2, limit: 25 });
-  let patternsSection = '';
-  if (fleetPatterns.length) {
-    patternsSection = `
-<section aria-labelledby="h-patterns">
-${heading('h-patterns', t('Recurring patterns across domains'))}
-<p class="meta">${t('The same underlying rule failing on multiple independent sites — the strongest signal of a shared CMS template, design-system component, or widget bug rather than a one-off content issue. Ranked by fix leverage: sites affected × severity × pages, not raw count.')}</p>
-<table class="sortable">
-<caption>${t('Top @n patterns spanning ≥2 sites.', { '@n': fleetPatterns.length })}</caption>
-<thead><tr>
-  <th scope="col">${t('Pattern')}</th>
-  <th scope="col">${t('Severity')}</th>
-  <th scope="col">${t('Likely source')}</th>
-  <th scope="col" class="num">${t('Sites')}</th>
-  <th scope="col" class="num">${t('Pages')}</th>
-</tr></thead>
-<tbody>${fleetPatterns
-      .map((p) => `<tr>
+  const requiredPatterns = rankFleetPatterns(mergedPatterns.filter((p) => p.required), { minSites: 2, limit: 25 });
+  const beyondPatterns = rankFleetPatterns(mergedPatterns.filter((p) => !p.required), { minSites: 2, limit: 25 });
+  const patternRows = (list) => list
+    .map((p) => `<tr>
   <th scope="row"><a href="reports/${esc(p.representative.key)}/${esc(p.representative.week)}/index.html">${esc(p.rule_label)}</a></th>
+  <td>${requirementCell(p)}</td>
   <td><span class="sev-badge">${esc(t(p.severity))}</span></td>
   <td>${esc(t(p.likely_source ?? 'unknown'))}</td>
   <td class="num">${p.sites}</td>
   <td class="num">${p.pages}</td>
 </tr>`)
-      .join('\n')}</tbody>
+    .join('\n');
+  const patternHead = (secondCol) => `<thead><tr>
+  <th scope="col">${t('Pattern')}</th>
+  <th scope="col">${secondCol}</th>
+  <th scope="col">${t('Severity')}</th>
+  <th scope="col">${t('Likely source')}</th>
+  <th scope="col" class="num">${t('Sites')}</th>
+  <th scope="col" class="num">${t('Pages')}</th>
+</tr></thead>`;
+  let patternsSection = '';
+  if (requiredPatterns.length || beyondPatterns.length) {
+    patternsSection = `
+<section aria-labelledby="h-patterns">
+${heading('h-patterns', t('Recurring patterns across domains'))}
+<p class="meta">${t('The same underlying rule failing on multiple independent sites — the strongest signal of a shared CMS template, design-system component, or widget bug rather than a one-off content issue. Ranked by fix leverage: sites affected × severity × pages, not raw count.')}</p>
+${requiredPatterns.length ? `<table class="sortable">
+<caption>${t('Top @n required patterns spanning ≥2 sites.', { '@n': requiredPatterns.length })}</caption>
+${patternHead(t('Requirement'))}
+<tbody>${patternRows(requiredPatterns)}</tbody>
+</table>` : `<p>${t('No required finding recurs on two or more sites.')}</p>`}
+${beyondPatterns.length ? `<details>
+<summary>${t('Beyond the requirements: @n AAA and best-practice patterns on two or more sites', { '@n': beyondPatterns.length })}</summary>
+<p class="meta">${t('Not required for conformance. AAA criteria are aspirational stretch goals and best practices are advisory: worth doing, after the required findings above.')}</p>
+<table class="sortable">
+<caption>${t('Aspirational, best-practice and unmapped patterns spanning ≥2 sites.')}</caption>
+${patternHead(t('Type'))}
+<tbody>${patternRows(beyondPatterns)}</tbody>
 </table>
+</details>` : ''}
 </section>`;
   }
 
@@ -5273,7 +5298,7 @@ ${heading('h-tools', t('Tools'))}
 <section aria-labelledby="h-why">
 ${heading('h-why', t('Why this exists'))}
 <p>${t('One-off audits go out of date. This ledger shows whether each site is becoming more accessible and lighter over time. It uses <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (open source accessibility engines) and estimates page carbon with the <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> model. The scanner, data and reports are all open.')}</p>
-<p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), a machine-discovery <a href=".well-known/api-catalog">API catalog</a>, and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="https://github.com/mgifford/vital-core/blob/main/MCP.md">MCP server</a>.')}</p>
+<p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), a machine-discovery <a href="api/catalog.json">API catalog</a>, and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="https://github.com/mgifford/vital-core/blob/main/MCP.md">MCP server</a>.')}</p>
 </section>`;
   return layout({ title: pageTitle, breadcrumb: '', body, depth: 0, page: 'index' });
 }
@@ -5645,7 +5670,7 @@ export function writeAsset(docsDir) {
   // bundle is lazy-imported only on report pages to upgrade them. Copied as a
   // build artifact (never committed to docs/), like style.css.
   const vendorBundle = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../vendor/paracharts/paracharts.js');
-  if (fs.existsSync(vendorBundle)) {
+  if (INTERACTIVE_CHARTS && fs.existsSync(vendorBundle)) {
     fs.copyFileSync(vendorBundle, path.join(docsDir, 'paracharts.js'));
   }
 }

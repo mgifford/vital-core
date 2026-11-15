@@ -110,6 +110,14 @@ defaults:
 # is the underlying physical quantity.
 sustainability_metric: energy
 
+# Interactive charts (ParaCharts, vendor/paracharts/). Off by default: every
+# chart is a static SVG with a data table, and no JavaScript or 2.8 MB runtime
+# is shipped. The vendored build currently fails on the line charts the
+# reports draw (it summarizes every line chart as a time series and reads x
+# values as dates), so turn this on only after refreshing it with
+# scripts/update-paracharts.sh and checking the charts render.
+interactive_charts: false
+
 # Base URL for published reports (used to generate absolute links in CSV exports
 # so that affected_pages_csv cells are clickable in Google Sheets / Excel).
 # Trailing slash is optional. Leave empty to keep CSV links relative.

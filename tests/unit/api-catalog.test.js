@@ -1,6 +1,9 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildApiCatalog } from '../../src/lib/api-catalog.js';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { buildApiCatalog, writeApiCatalog } from '../../src/lib/api-catalog.js';
 
 const CONFIG = { reportBaseUrl: 'https://mgifford.github.io/vital-core' };
 const ENTRIES = [
@@ -36,4 +39,16 @@ describe('buildApiCatalog', () => {
     assert.deepEqual(snap.examples, ['https://mgifford.github.io/vital-core/api/v1/www.cms.gov/snapshot.json']);
     assert.deepEqual(find.examples, ['https://mgifford.github.io/vital-core/api/v1/www.cms.gov/2026-W30/findings.json']);
   });
+});
+
+test('writeApiCatalog publishes the catalog at api/catalog.json, outside any dot-folder', () => {
+  const docs = fs.mkdtempSync(path.join(os.tmpdir(), 'vital-catalog-'));
+  try {
+    writeApiCatalog(docs, CONFIG, ENTRIES);
+    const linked = JSON.parse(fs.readFileSync(path.join(docs, 'api', 'catalog.json'), 'utf8'));
+    assert.equal(linked.catalog_version, '1.0');
+    assert.equal(fs.readFileSync(path.join(docs, '.well-known', 'api-catalog'), 'utf8'), JSON.stringify(linked, null, 1), 'well-known copies kept for hosts that serve them');
+  } finally {
+    fs.rmSync(docs, { recursive: true, force: true });
+  }
 });

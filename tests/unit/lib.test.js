@@ -1742,8 +1742,22 @@ test('tech-findings: fleet merge counts distinct sites and scores breadth', () =
   const ranked = rankFleetAssociations(fleet, { minPages: 5, minSites: 2 });
   assert.equal(ranked[0].tech, 'GTM');
   assert.equal(ranked[0].sites, 3);
-  // score = lift(2.0) * sites(3) = 6.0
-  assert.equal(ranked[0].score, 6);
+  assert.equal(ranked[0].ratio, null, 'no page without GTM has the finding: "only with it"');
+});
+
+test('tech-findings: fleet pairs need a real difference, not 1.00x from a technology on every page', () => {
+  // Every page runs Drupal and half have the finding: there is no page without
+  // Drupal to compare against, so the old lift-against-all-pages gave 1.00x.
+  const everywhere = () => buildCooccurrence(Array.from({ length: 12 }, (_, i) => ({ techs: ['Drupal'], findings: i % 2 ? ['alfa:r73'] : [] })));
+  // Weak: 4 of 6 pages with Ads have the finding, 3 of 6 without (1.33x).
+  const weak = () => buildCooccurrence([
+    ...Array.from({ length: 6 }, (_, i) => ({ techs: ['Ads'], findings: i < 4 ? ['axe:region'] : [] })),
+    ...Array.from({ length: 6 }, (_, i) => ({ techs: [], findings: i < 3 ? ['axe:region'] : [] })),
+  ]);
+  for (const mk of [everywhere, weak]) {
+    const fleet = mergeFleet([{ domain: 'a.gov', model: mk() }, { domain: 'b.gov', model: mk() }]);
+    assert.deepEqual(rankFleetAssociations(fleet, { minPages: 5, minSites: 2 }), []);
+  }
 });
 
 test('tech-findings: fleet minSites filters single-site coincidences', () => {
@@ -1821,16 +1835,19 @@ test('buildLineManifest: JIM shape with facets, string records, data.source', ()
 
 test('extractAudits: pulls failing non-a11y audits, tags category, skips a11y/passing', () => {
   const categories = {
-    performance: { auditRefs: [{ id: 'unused-css-rules' }, { id: 'server-response-time' }, { id: 'speed-index' }] },
+    performance: { auditRefs: [{ id: 'unused-css-rules' }, { id: 'server-response-time' }, { id: 'speed-index', group: 'metrics' }, { id: 'interactive', group: 'hidden' }, { id: 'cumulative-layout-shift', group: 'metrics' }, { id: 'bootup-time' }] },
     seo: { auditRefs: [{ id: 'meta-description' }] },
     accessibility: { auditRefs: [{ id: 'color-contrast' }] }, // must be ignored
-    'agentic-browsing': { auditRefs: [{ id: 'llms-txt' }] },
+    'agentic-browsing': { auditRefs: [{ id: 'llms-txt' }, { id: 'cumulative-layout-shift' }, { id: 'bootup-time' }] },
   };
   const audits = {
     'unused-css-rules': { title: 'Reduce unused CSS', score: 0.5, scoreDisplayMode: 'metricSavings',
       metricSavings: { LCP: 350 }, details: { overallSavingsBytes: 177580, items: [1, 2, 3] } },
     'server-response-time': { title: 'Server response', score: 1, scoreDisplayMode: 'binary' }, // passing -> skip
     'speed-index': { title: 'Speed Index', score: 0.4, scoreDisplayMode: 'numeric', details: {} },
+    interactive: { title: 'Time to Interactive', score: 0.3, scoreDisplayMode: 'numeric' },
+    'cumulative-layout-shift': { title: 'Cumulative Layout Shift', score: 0.5, scoreDisplayMode: 'numeric' },
+    'bootup-time': { title: 'Reduce JavaScript execution time', score: 0.4, scoreDisplayMode: 'numeric' },
     'meta-description': { title: 'No meta description', score: 0, scoreDisplayMode: 'binary', details: { items: [] } },
     'color-contrast': { title: 'Contrast', score: 0, scoreDisplayMode: 'binary' }, // a11y -> skip
     'llms-txt': { title: 'llms.txt follows recommendations', score: null, scoreDisplayMode: 'notApplicable' },
@@ -1838,9 +1855,11 @@ test('extractAudits: pulls failing non-a11y audits, tags category, skips a11y/pa
   const out = extractAudits(categories, audits);
   const ids = out.map((a) => a.id).sort();
   // unused-css-rules: metricSavings mode with 177580 bytes -> kept as a savings opportunity.
-  // speed-index (numeric, 0.4) kept; meta-description (binary, 0) kept; llms-txt (agentic notApplicable) kept.
+  // bootup-time (numeric, 0.4) kept; meta-description (binary, 0) kept; llms-txt (agentic notApplicable) kept.
   assert.ok(ids.includes('unused-css-rules'), 'metricSavings opportunity with real savings kept');
-  assert.ok(ids.includes('speed-index'), 'numeric failing audit kept');
+  assert.ok(ids.includes('bootup-time'), 'numeric failing audit kept');
+  assert.ok(!ids.includes('speed-index') && !ids.includes('interactive') && !ids.includes('cumulative-layout-shift'), 'performance metrics are measurements, not recommendations');
+  assert.equal(out.find((a) => a.id === 'bootup-time').category, 'performance', 'an audit in two categories keeps the first, not the last');
   assert.ok(ids.includes('meta-description'), 'binary failing audit kept');
   assert.ok(ids.includes('llms-txt'), 'agentic notApplicable gap kept');
   assert.ok(!ids.includes('color-contrast'), 'accessibility audit excluded');

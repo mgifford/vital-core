@@ -353,3 +353,9 @@ test('config: resolveTargetQuery accepts a unique parent domain and lists ambigu
   // A parent domain with one match resolves.
   assert.equal(resolveTargetQuery({ targets: [{ key: 'www.example.gov', domain: 'www.example.gov' }] }, 'example.gov').key, 'www.example.gov');
 });
+
+test('config: interactive_charts is off unless set to true, and must be a boolean', () => {
+  assert.equal(loadConfig('targets:\n  - domain: example.gov\n').interactiveCharts, false);
+  assert.equal(loadConfig('interactive_charts: true\ntargets:\n  - domain: example.gov\n').interactiveCharts, true);
+  assert.throws(() => loadConfig('interactive_charts: "yes"\ntargets:\n  - domain: example.gov\n'), /interactive_charts must be true or false/);
+});

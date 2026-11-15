@@ -82,11 +82,20 @@ export function buildApiCatalog(config, indexEntries) {
   };
 }
 
+// Published at api/catalog.json, which pages and llms.txt link to. GitHub
+// Pages serves nothing under a dot-folder from an Actions deploy (both
+// .well-known paths returned 404), and a project site's /<repo>/.well-known/
+// is not the host's well-known location anyway. The .well-known copies stay
+// for hosts that serve them.
+export const API_CATALOG_PATH = 'api/catalog.json';
+
 export function writeApiCatalog(docsDir, config, indexEntries) {
-  const wellKnownDir = path.join(docsDir, '.well-known');
-  fs.mkdirSync(wellKnownDir, { recursive: true });
   const catalog = buildApiCatalog(config, indexEntries);
   const json = JSON.stringify(catalog, null, 1);
+  fs.mkdirSync(path.join(docsDir, 'api'), { recursive: true });
+  fs.writeFileSync(path.join(docsDir, API_CATALOG_PATH), json);
+  const wellKnownDir = path.join(docsDir, '.well-known');
+  fs.mkdirSync(wellKnownDir, { recursive: true });
   fs.writeFileSync(path.join(wellKnownDir, 'api-catalog'), json);
   fs.writeFileSync(path.join(wellKnownDir, 'api-catalog.json'), json);
 }

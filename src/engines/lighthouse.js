@@ -148,6 +148,21 @@ const RECO_CATEGORIES = {
   'agentic-browsing': 'Agentic',
 };
 
+// Lighthouse's performance metrics (its `metrics` group, plus TTI and Max
+// Potential FID, which it keeps hidden). They are measurements, reported in
+// the metrics table, not things to fix; listing a slow LCP as a
+// "recommendation" next to "Reduce unused JavaScript" double-counts it.
+export const LH_METRIC_AUDITS = new Set([
+  'first-contentful-paint',
+  'largest-contentful-paint',
+  'total-blocking-time',
+  'cumulative-layout-shift',
+  'speed-index',
+  'interactive',
+  'max-potential-fid',
+  'first-meaningful-paint',
+]);
+
 /**
  * Pull the failing/actionable audits out of a Lighthouse result, tagged with
  * their category. An audit is a recommendation when it has a real score below
@@ -160,11 +175,16 @@ const RECO_CATEGORIES = {
  * per-metric millisecond saving from metricSavings.
  */
 export function extractAudits(categories, audits) {
-  // Map audit id -> category id via each category's auditRefs.
+  // Map audit id -> category id via each category's auditRefs. An audit in
+  // two categories keeps the first (performance before agentic-browsing):
+  // CLS was being labelled "Agentic" because the last one won.
   const auditCat = {};
   for (const [catId, cat] of Object.entries(categories)) {
     if (!RECO_CATEGORIES[catId]) continue;
-    for (const ref of cat.auditRefs ?? []) auditCat[ref.id] = catId;
+    for (const ref of cat.auditRefs ?? []) {
+      if (ref.group === 'metrics' || LH_METRIC_AUDITS.has(ref.id)) continue;
+      auditCat[ref.id] ??= catId;
+    }
   }
   const out = [];
   for (const [id, a] of Object.entries(audits)) {

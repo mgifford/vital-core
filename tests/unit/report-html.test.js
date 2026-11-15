@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS, writeAsset } from '../../src/report-html.js';
+import { setInteractiveCharts, renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS, writeAsset } from '../../src/report-html.js';
 import { buildCooccurrence } from '../../src/lib/tech-findings.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
@@ -41,8 +41,8 @@ test('related-links: help links appear on every domain sub-page (Standards, Secu
 test('related-links: the fleet index has no domain-specific JSON alternate (no single domain+week)', () => {
   const html = renderIndex([]);
   assert.doesNotMatch(html, /\/api\/v1\/[^"\s]+\/\d{4}-W\d{2}\/findings\.json/);
-  assert.match(html, /rel="alternate" type="application\/json" href="\.well-known\/api-catalog"/);
-  assert.match(html, /rel="alternate" type="application\/json" href="\.well-known\/api-catalog\.json"/);
+  assert.match(html, /rel="alternate" type="application\/json" href="api\/catalog\.json"/);
+  assert.doesNotMatch(html, /href="\.well-known\//, 'never links a dot-folder path GitHub Pages does not serve');
   // The help links (API.md/MCP.md) are unconditional, unlike the JSON alternate.
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md"/);
   assert.match(html, /rel="help" href="https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md"/);
@@ -97,7 +97,26 @@ test('webmcp bridge: absent from the fleet index (no single target to scope tool
 // converted to mount an accessible <para-chart> (distinct color per series,
 // interactive legend) via the same ParaCharts loader. Dash patterns alone
 // don't distinguish many overlapping domains.
+test('charts ship as static SVG + table only, with no ParaCharts manifest or loader, unless interactive_charts is on', () => {
+  const wk = (week, medianViolations) => ({
+    week, pagesScanned: 5, pagesAudited: 5,
+    axe: { medianViolations, pagesWithViolations: 1, pagesScanned: 5 },
+    alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 5 },
+  });
+  const dashboard = [
+    { target: { domain: 'alpha.gov', key: 'alpha.gov' }, series: [wk('2026-W24', 8), wk('2026-W25', 5)], diffs: {}, bugs: [], windowSummary: wk('2026-W25', 5) },
+    { target: { domain: 'beta.gov', key: 'beta.gov' }, series: [wk('2026-W24', 3), wk('2026-W25', 2)], diffs: {}, bugs: [], windowSummary: wk('2026-W25', 2) },
+  ];
+  setInteractiveCharts(false);
+  const html = renderIndex(dashboard);
+  assert.match(html, /<figure class="chart">/, 'the chart is still drawn');
+  assert.doesNotMatch(html, /data-parachart=/);
+  assert.doesNotMatch(html, /paracharts\.js/, 'no loader, so the 2.8 MB runtime is never requested');
+});
+
 test('cross-domain axe chart emits a per-domain ParaCharts manifest, not just dash patterns', () => {
+  setInteractiveCharts(true);
+  try {
   const wk = (week, medianViolations) => ({
     week, pagesScanned: 5, pagesAudited: 5,
     axe: { medianViolations, pagesWithViolations: 1, pagesScanned: 5 },
@@ -135,6 +154,9 @@ test('cross-domain axe chart emits a per-domain ParaCharts manifest, not just da
   const svgStart = html.indexOf('<svg', figStart);
   const svgTag = html.slice(svgStart, html.indexOf('>', svgStart) + 1);
   assert.match(svgTag, /class="linechart chart-fallback"/);
+  } finally {
+    setInteractiveCharts(false);
+  }
 });
 
 test('related-links: a visible footer sentence links the JSON API and MCP server on a domain page', () => {
@@ -239,6 +261,8 @@ test('renderDomainReport links to History & Trends instead of embedding trend ch
     { byRule: {}, bugsAll: null },
     null
   );
+  assert.match(html, /The typical page has \d+ axe violation\(s\)\./, 'score card states the typical page count');
+  assert.doesNotMatch(html, /Biggest lever/, 'no second, untiered "biggest" pick competing with Biggest available win');
 
   // WP2: the multi-week trend charts moved to the History & Trends page; the
   // overview links there rather than embedding them.
@@ -281,7 +305,9 @@ test('renderLighthousePage embeds the Lighthouse category trend chart when multi
     { week: '2026-W25', lighthouse: lh },
   ];
 
+  setInteractiveCharts(true);
   const withHistory = renderLighthousePage(target, summary, null, null, series);
+  setInteractiveCharts(false);
   assert.match(withHistory, /Lighthouse category scores over 2 weeks/, 'trend chart embedded with 2+ weeks of series data');
   assert.match(withHistory, /History &amp; Trends →/, 'still links to the full History \\& Trends page');
   assert.match(withHistory, /data-parachart="/, 'chart carries a ParaCharts manifest, same as every other trend chart');
@@ -1579,4 +1605,39 @@ test('the report discloses pages where Alfa was skipped as too large', () => {
   const html = renderAccessibilityPage(target, summary, [], {}, {});
   assert.match(html, /Alfa skipped 1 page\(s\) that were too large/);
   assert.match(html, /engine limitation, not a clean result/);
+});
+
+test('recurring patterns: required patterns in the main table, AAA and best practice only under Beyond the requirements', () => {
+  const wk = { week: '2026-W25', pagesScanned: 5, pagesAudited: 5, axe: { medianViolations: 1, pagesWithViolations: 1, pagesScanned: 5 }, alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 5 } };
+  const bug = (pattern_id, rule_label, tier, wcag_sc, wcag_level) => ({
+    pattern_id, rule_label, severity: 'moderate', likely_source: 'template', frequency: { pages_affected: 40 },
+    conformance_tier: tier, wcag_sc, wcag_version: '2.0', wcag_level, _week: '2026-W25',
+  });
+  const bugs = [bug('p-contrast', 'Text has minimum contrast', 'legal', '1.4.3', 'AA'), bug('p-enhanced', 'Text has enhanced contrast', 'aspirational', '1.4.6', 'AAA')];
+  const site = (domain) => ({ target: { domain, key: domain }, series: [wk], diffs: {}, bugs, windowSummary: wk });
+  const html = renderIndex([site('a.gov.uk'), site('b.gov.uk')]);
+  const section = html.slice(html.indexOf('id="h-patterns"'), html.indexOf('</section>', html.indexOf('id="h-patterns"')));
+  const [main, beyond] = section.split('<details>');
+  assert.match(main, /Text has minimum contrast/);
+  assert.match(main, /Legally required/, 'the requirement is shown as text');
+  assert.doesNotMatch(main, /Text has enhanced contrast/, 'AAA is never listed with requirements');
+  assert.match(beyond, /<summary>Beyond the requirements: 1 AAA and best-practice patterns on two or more sites<\/summary>/);
+  assert.match(beyond, /Text has enhanced contrast[\s\S]*Aspirational \(AAA\)/);
+});
+
+test('Lighthouse recommendations: metrics stay out (even from older summaries) and backticked code renders as code', () => {
+  const recommendations = [
+    { id: 'unused-javascript', category: 'performance', title: 'Reduce unused JavaScript', pages: 9, savingsBytes: 1000, savingsMs: 300 },
+    { id: 'largest-contentful-paint', category: 'performance', title: 'Largest Contentful Paint', pages: 9 },
+    { id: 'cumulative-layout-shift', category: 'agentic-browsing', title: 'Cumulative Layout Shift', pages: 5 },
+    { id: 'ard-schema', category: 'agentic-browsing', title: '`ai-catalog.json` schema is valid', pages: 9 },
+  ];
+  const wk = { week: '2026-W25', pagesScanned: 9, pagesAudited: 9, axe: { medianViolations: 1, pagesWithViolations: 1, pagesScanned: 9 }, alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 9 }, lighthouse: { recommendations } };
+  const site = (domain) => ({ target: { domain, key: domain }, series: [wk], diffs: {}, bugs: [], windowSummary: wk });
+  const html = renderIndex([site('a.gov.uk'), site('b.gov.uk')]);
+  const section = html.slice(html.indexOf('id="h-lhfleet"'), html.indexOf('</section>', html.indexOf('id="h-lhfleet"')));
+  assert.match(section, /Reduce unused JavaScript/);
+  assert.doesNotMatch(section, /Largest Contentful Paint|Cumulative Layout Shift/, 'metrics are not recommendations');
+  assert.match(section, /<code>ai-catalog\.json<\/code> schema is valid/);
+  assert.doesNotMatch(section, /`/, 'no raw Markdown backticks');
 });

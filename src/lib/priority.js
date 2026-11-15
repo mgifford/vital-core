@@ -99,8 +99,21 @@ export function mergeFleetPatterns(perDomain) {
           pages: 0,
           domains: [],
           representative: { domain: target.domain, key: target.key, week: b._week },
+          required: false,
         };
         byPattern.set(b.pattern_id, entry);
+      }
+      // Sites can hold a rule to different targets; the pattern counts as
+      // required, and is labelled, by the strictest site that requires it.
+      if (!entry.required || tierRank(b) < tierRank(entry)) {
+        Object.assign(entry, {
+          conformance_tier: tierOf(b),
+          wcag_sc: b.wcag_sc ?? entry.wcag_sc,
+          wcag_version: b.wcag_version,
+          wcag_level: b.wcag_level,
+          wcag_category: b.wcag_category,
+          required: entry.required || isRequiredFinding(b),
+        });
       }
       if (!entry.sites.has(target.key)) {
         entry.sites.add(target.key);
