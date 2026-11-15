@@ -37,17 +37,39 @@ export function loadObservations(domainKey, domain = null, { dataRoot = DIRS.dat
   }
 }
 
+const canonicalJson = (value) => JSON.stringify(value, (_key, v) => (
+  v && typeof v === 'object' && !Array.isArray(v)
+    ? Object.fromEntries(Object.entries(v).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)))
+    : v
+));
+
+function readPrevious(file) {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
 function writeObservations(domainKey, index, dataRoot = DIRS.data) {
   const file = observationsPath(domainKey, dataRoot);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const entries = Object.entries(index.urls)
     .sort(([a], [b]) => a.localeCompare(b))
     .slice(0, MAX_URLS);
+  const content = { schema_version: SCHEMA_VERSION, domain: index.domain, urls: Object.fromEntries(entries) };
+  // aggregate and every scan call this for every site; restamping an
+  // unchanged index would commit it to the data repo on every run.
+  const previous = readPrevious(file);
+  if (previous) {
+    const { updated_at: _stamp, ...previousContent } = previous;
+    if (canonicalJson(previousContent) === canonicalJson(content)) return previous;
+  }
   const payload = {
-    schema_version: SCHEMA_VERSION,
-    domain: index.domain,
+    schema_version: content.schema_version,
+    domain: content.domain,
     updated_at: new Date().toISOString(),
-    urls: Object.fromEntries(entries),
+    urls: content.urls,
   };
   const temp = `${file}.tmp-${process.pid}`;
   fs.writeFileSync(temp, `${JSON.stringify(payload, null, 1)}\n`);
