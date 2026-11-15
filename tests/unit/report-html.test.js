@@ -1624,3 +1624,20 @@ test('recurring patterns: required patterns in the main table, AAA and best prac
   assert.match(beyond, /<summary>Beyond the requirements: 1 AAA and best-practice patterns on two or more sites<\/summary>/);
   assert.match(beyond, /Text has enhanced contrast[\s\S]*Aspirational \(AAA\)/);
 });
+
+test('Lighthouse recommendations: metrics stay out (even from older summaries) and backticked code renders as code', () => {
+  const recommendations = [
+    { id: 'unused-javascript', category: 'performance', title: 'Reduce unused JavaScript', pages: 9, savingsBytes: 1000, savingsMs: 300 },
+    { id: 'largest-contentful-paint', category: 'performance', title: 'Largest Contentful Paint', pages: 9 },
+    { id: 'cumulative-layout-shift', category: 'agentic-browsing', title: 'Cumulative Layout Shift', pages: 5 },
+    { id: 'ard-schema', category: 'agentic-browsing', title: '`ai-catalog.json` schema is valid', pages: 9 },
+  ];
+  const wk = { week: '2026-W25', pagesScanned: 9, pagesAudited: 9, axe: { medianViolations: 1, pagesWithViolations: 1, pagesScanned: 9 }, alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 9 }, lighthouse: { recommendations } };
+  const site = (domain) => ({ target: { domain, key: domain }, series: [wk], diffs: {}, bugs: [], windowSummary: wk });
+  const html = renderIndex([site('a.gov.uk'), site('b.gov.uk')]);
+  const section = html.slice(html.indexOf('id="h-lhfleet"'), html.indexOf('</section>', html.indexOf('id="h-lhfleet"')));
+  assert.match(section, /Reduce unused JavaScript/);
+  assert.doesNotMatch(section, /Largest Contentful Paint|Cumulative Layout Shift/, 'metrics are not recommendations');
+  assert.match(section, /<code>ai-catalog\.json<\/code> schema is valid/);
+  assert.doesNotMatch(section, /`/, 'no raw Markdown backticks');
+});

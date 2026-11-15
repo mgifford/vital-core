@@ -36,6 +36,7 @@ import { omitHeavyLists, trendSeries } from './lib/trend.js';
 import { withCurrentGovernmentCheck } from './engines/security.js';
 import { buildLlmsTxt } from './lib/llms-txt.js';
 import { writeApiCatalog } from './lib/api-catalog.js';
+import { LH_METRIC_AUDITS } from './engines/lighthouse.js';
 import { summarizeDistribution } from './lib/distribution.js';
 import { writeAcrYaml } from './lib/acr.js';
 import { writeWcagEmReport } from './lib/wcag-em.js';
@@ -1051,6 +1052,8 @@ function summarizeRecords(target, week, records, brokenLinks) {
       // Roll up failing audits into recommendations (like axe rules): one
       // entry per audit id, counting pages affected and summing savings.
       for (const a of rec.lighthouse.audits ?? []) {
+        // Page records scanned before metrics were excluded still carry them.
+        if (LH_METRIC_AUDITS.has(a.id)) continue;
         const r = (lhReco[a.id] ??= { id: a.id, category: a.category, title: a.title, pages: 0, examplePages: [], savingsBytes: 0, savingsMs: 0, byteValues: [], msValues: [] });
         r.pages++;
         if (r.examplePages.length < 10) r.examplePages.push(rec.url);

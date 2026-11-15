@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory } from './lib/score.js';
+import { LH_METRIC_AUDITS } from './engines/lighthouse.js';
 import { summarizeCoverage } from './lib/coverage.js';
 import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
@@ -3445,6 +3446,9 @@ ${bothTable}
  * metrics. Linked from the domain report. Returns null if no LH data.
  */
 // Human labels for the recommendation categories (engine uses LH category ids).
+// Lighthouse titles mark code with Markdown backticks ("the `Issues` panel").
+const lhTitle = (title) => esc(title).replace(/`([^`]+)`/g, '<code>$1</code>');
+
 const LH_CATEGORY_LABELS = {
   performance: 'Performance',
   seo: 'SEO',
@@ -3476,7 +3480,7 @@ function lighthouseRecommendations(recommendations, pagesSampled) {
         .filter(Boolean).join(' · ') || '—';
       const rows = byCat[cat]
         .map((r) => `<tr>
-  <th scope="row">${esc(r.title)}</th>
+  <th scope="row">${lhTitle(r.title)}</th>
   <td class="num">${r.pages}/${pagesSampled}</td>
   <td class="num">${savings(r.savingsBytesMedian, r.savingsMsMedian)}</td>
   <td class="num">${savings(r.savingsBytesP75, r.savingsMsP75)}</td>
@@ -3506,7 +3510,7 @@ function agenticExplainer(lh) {
   if (lh.medianAgentic == null) return '';
   const agenticRecos = (lh.recommendations ?? []).filter((r) => r.category === 'agentic-browsing');
   const gaps = agenticRecos.length
-    ? `<p class="meta">${t('Gaps found on the sampled pages:')} ${agenticRecos.map((r) => `${esc(r.title)} (${r.pages})`).join(', ')}.</p>`
+    ? `<p class="meta">${t('Gaps found on the sampled pages:')} ${agenticRecos.map((r) => `${lhTitle(r.title)} (${r.pages})`).join(', ')}.</p>`
     : '';
   return `<section aria-labelledby="h-lh-agentic">
 ${heading('h-lh-agentic', t('What the Agentic score means'))}
@@ -5170,6 +5174,7 @@ ${heading('h-techfindings', t('Cross-technology issues'))}
   for (const d of active) {
     const recos = d.series[d.series.length - 1]?.lighthouse?.recommendations ?? [];
     for (const r of recos) {
+      if (LH_METRIC_AUDITS.has(r.id)) continue;
       const e = (lhMerged[r.id] ??= { id: r.id, category: r.category, title: r.title, sites: 0, pages: 0, savingsBytes: 0, savingsMs: 0 });
       e.sites++;
       e.pages += r.pages ?? 0;
@@ -5202,7 +5207,7 @@ ${heading('h-lhfleet', t('Common Lighthouse recommendations'))}
           const saving = [fmtSavingsBytes(e.savingsBytes), e.savingsMs ? `${(e.savingsMs / 1000).toFixed(1)}s` : '']
             .filter(Boolean).join(' · ') || '—';
           return `<tr>
-  <th scope="row">${esc(e.title)}</th>
+  <th scope="row">${lhTitle(e.title)}</th>
   <td>${esc(catLabel(e.category))}</td>
   <td class="num">${e.sites}</td>
   <td class="num">${e.pages}</td>
