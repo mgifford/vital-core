@@ -60,6 +60,11 @@ export function loadConfig(rawYaml) {
   const sampling = cfg.sampling ?? {};
   // Report display preference: 'co2' (default) or 'energy'.
   const sustainabilityMetric = cfg.sustainability_metric === 'energy' ? 'energy' : 'co2';
+  // ParaCharts progressive enhancement is opt-in: the vendored runtime is
+  // 2.8 MB and currently fails on every chart vital-core draws (see
+  // FEATURES.md), so by default pages ship only the static SVG + data table.
+  const interactiveCharts = cfg.interactive_charts ?? false;
+  if (typeof interactiveCharts !== 'boolean') throw new Error('interactive_charts must be true or false.');
   // Localization: which languages each report is rendered in, and which one
   // gets the canonical (unsuffixed) file paths. Global default here; per-target
   // `languages` / `default_language` keys override.
@@ -155,6 +160,7 @@ export function loadConfig(rawYaml) {
     findingPolicy: mergeFindingPolicy(globalFindingPolicy, {}),
     sampling,
     sustainabilityMetric,
+    interactiveCharts,
     languages: globalLangs.languages,
     defaultLanguage: globalLangs.defaultLanguage,
     showLanguageSwitcher: globalShowSwitcher,

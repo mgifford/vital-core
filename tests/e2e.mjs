@@ -530,18 +530,12 @@ try {
   assert(/href="history\.html"/.test(report) && /History &amp; Trends/.test(report), 'overview links to the History & Trends page');
   const historyPage = fs.readFileSync(path.join(SANDBOX, 'docs', 'reports', 'localhost', '2026-W24', 'history.html'), 'utf8');
   assert(historyPage.includes('id="h-history-a11y"') && /class="linechart/.test(historyPage), 'History page shows multi-week trend charts');
-  // ParaCharts progressive enhancement: each trend chart carries a manifest
-  // for the <para-chart> upgrade, keeps the SVG as the no-JS fallback, and the
-  // page lazy-imports the vendored runtime (copied into docs/ as an asset).
-  assert(/class="chart" data-parachart="/.test(historyPage), 'trend charts carry a ParaCharts manifest');
-  assert(/class="linechart chart-fallback"/.test(historyPage), 'SVG kept as the no-JS chart fallback');
-  assert(/import\('[^']*paracharts\.js'\)/.test(historyPage), 'page lazy-imports the ParaCharts runtime');
-  assert(historyPage.includes("window.addEventListener('error'") && historyPage.includes("window.addEventListener('unhandledrejection'"), 'ParaCharts loader guards against runtime errors and reverts to fallback');
-  assert(fs.existsSync(path.join(SANDBOX, 'docs', 'paracharts.js')), 'ParaCharts runtime copied into docs/');
-  // The manifest is valid JSON with the JIM shape the runtime requires.
-  const mfMatch = historyPage.match(/data-parachart="([^"]*)"/);
-  const mf = JSON.parse(mfMatch[1].replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&'));
-  assert(mf.datasets?.[0]?.data?.source === 'inline' && mf.datasets[0].series?.[0]?.records?.length >= 1, 'manifest has the JIM dataset/series shape');
+  // ParaCharts is opt-in (interactive_charts): by default the trend charts are
+  // the static SVG + data table only, with no manifest, no loader and no
+  // runtime in docs/. The opt-in markup is covered by the unit tests.
+  assert(/class="linechart chart-fallback"/.test(historyPage), 'trend charts are drawn as static SVG');
+  assert(!/data-parachart="/.test(historyPage) && !/paracharts\.js/.test(historyPage), 'no ParaCharts manifest or loader by default');
+  assert(!fs.existsSync(path.join(SANDBOX, 'docs', 'paracharts.js')), 'the 2.8 MB ParaCharts runtime is not copied into docs/ by default');
   // Rolling inventory committed and surfaced. Every fixture page carries a
   // fixed Alfa failure the fixture never resolves (see writeSite), so every
   // page still has hasIssues:true in week 2 even though the axe violation

@@ -339,11 +339,12 @@ This project follows public commitments to
 [W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/).
 The reports themselves are part of the argument: semantic HTML, no
 web fonts, ~2 KB of CSS, dark mode respected. They work fully without
-JavaScript — every chart renders as a static SVG with a data-table
-fallback. Where JavaScript is available, charts are progressively
-enhanced into interactive, keyboard- and screen-reader-navigable
-[ParaCharts](https://github.com/fizzstudio/ParaCharts), vendored and
-served first-party (no CDN).
+JavaScript — every chart renders as a static SVG with a data table.
+Interactive, keyboard- and screen-reader-navigable
+[ParaCharts](https://github.com/fizzstudio/ParaCharts) are vendored and
+served first-party (no CDN) but off by default (`interactive_charts` in
+`config/targets.yml`): the vendored 2.8 MB build fails on the charts the
+reports draw, so it would cost every reader the download for nothing.
 
 ## License
 

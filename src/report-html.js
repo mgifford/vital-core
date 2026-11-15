@@ -128,6 +128,14 @@ export function setSustainabilityMetric(metric) {
   SUSTAINABILITY_METRIC = metric === 'energy' ? 'energy' : 'co2';
 }
 
+// Set once by aggregate via setInteractiveCharts() (config interactive_charts,
+// default false). Off: no manifests, no loader, no 2.8 MB runtime in docs/.
+let INTERACTIVE_CHARTS = false;
+export function setInteractiveCharts(on) {
+  INTERACTIVE_CHARTS = on === true;
+}
+const parachartAttr = (manifest) => (INTERACTIVE_CHARTS ? ` data-parachart="${esc(JSON.stringify(manifest))}"` : '');
+
 // Which languages this report set is built in, and which one owns the canonical
 // (unsuffixed) file paths. Set per render pass by aggregate, alongside setLocale.
 // The default language writes <page>.html; every other writes <page>-<loc>.html.
@@ -695,7 +703,7 @@ function severityTrendChart(series) {
     activeLevels.map((l) => ({ key: l.label, points: pts.map((p) => ({ week: p.week, value: p[l.key] })) }))
   );
 
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('Pages affected by axe severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -758,7 +766,7 @@ function severityBurndownChart(burndown) {
     t('Open findings'),
     activeLevels.map((l) => ({ key: l.label, points: pts.map((p) => ({ week: p.week, value: p[l.key] ?? 0 })) }))
   );
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('Open findings by severity over @n weeks (lower is better)', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -910,7 +918,7 @@ function lighthouseCategoryTrendChart(series) {
     activeCategories.map((c) => ({ key: c.label, points: pts.map((p) => ({ week: p.week, value: p[c.key] })) }))
   );
 
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('Lighthouse category scores over @n weeks', { '@n': pts.length })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${esc(ariaLabel)}" preserveAspectRatio="xMidYMid meet">
   ${lines}
@@ -961,9 +969,8 @@ function lineChart(title, points, { unit = '', lowerIsBetter = true, neutral = f
   // <para-chart>, and hides the SVG fallback. If JS is off or the runtime
   // fails to load, the SVG + table remain — nothing regresses.
   const manifest = buildLineManifest(title, title, pts, { unit });
-  const dataAttr = esc(JSON.stringify(manifest));
 
-  return `<figure class="chart" data-parachart="${dataAttr}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>${t('@title over @n weeks — @trend', { '@title': esc(title), '@n': pts.length, '@trend': esc(trend) })}</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="${t('@title trend: @trend', { '@title': esc(title), '@trend': esc(trend) })}" preserveAspectRatio="xMidYMid meet">
   <polyline points="${poly}" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -1048,7 +1055,7 @@ ${body}
           '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
         })}</p>
 </footer>
-${paraChartLoader(base)}
+${INTERACTIVE_CHARTS ? paraChartLoader(base) : ''}
 ${target ? webmcpBridgeScript(target) : ''}
 ${extraScript}
 </body>
@@ -4906,7 +4913,7 @@ function crossDomainChart(ranked) {
     }))
   );
 
-  return `<figure class="chart" data-parachart="${esc(JSON.stringify(manifest))}">
+  return `<figure class="chart"${parachartAttr(manifest)}>
 <figcaption>Median axe violations per page, all domains — lower is better</figcaption>
 <svg viewBox="0 0 ${W} ${H}" class="linechart chart-fallback" role="img" aria-label="Median axe violations per page over time, compared across ${withSeries.length} domains" preserveAspectRatio="xMidYMid meet">
   ${lines.map((l) => l.line).join('')}${lines.map((l) => l.legend).join('')}${xlabels}
@@ -5645,7 +5652,7 @@ export function writeAsset(docsDir) {
   // bundle is lazy-imported only on report pages to upgrade them. Copied as a
   // build artifact (never committed to docs/), like style.css.
   const vendorBundle = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../vendor/paracharts/paracharts.js');
-  if (fs.existsSync(vendorBundle)) {
+  if (INTERACTIVE_CHARTS && fs.existsSync(vendorBundle)) {
     fs.copyFileSync(vendorBundle, path.join(docsDir, 'paracharts.js'));
   }
 }

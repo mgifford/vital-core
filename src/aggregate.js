@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadConfig, loadProfile, applyProfile, DIRS, DEFAULT_SPELLING_LOCALE } from './lib/config.js';
 import { isoWeek, compareWeeks, weekToDateStamp } from './lib/week.js';
 const filePfx = (domain, week) => `${domain}_${weekToDateStamp(week)}`;
-import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderExplorerPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, renderArchiveEvidencePage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
+import { renderDomainReport, renderIndex, writeAsset, setSustainabilityMetric, setInteractiveCharts, setLocale, setReportLanguages, renderLighthousePage, renderReadabilityPage, renderTechPage, renderArchivePage, renderAccessibilityPage, renderExplorerPage, renderStandardsPage, renderSecurityPage, renderErrorsPage, renderImagesPage, renderPdfsPage, renderTechFindingsPage, renderThirdPartyPage, renderUrlLookup, renderHistoryPage, renderArchiveEvidencePage, redirectStub, PAGE_REDIRECTS } from './report-html.js';
 import { buildBugReports, bugReportsMarkdown } from './lib/bug-report.js';
 import { summarizeEvidenceCoverage } from './lib/evidence-coverage.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
@@ -73,6 +73,7 @@ const profile = loadProfile(process.env.VITAL_PROFILE);
 const config = applyProfile(loadConfig(), profile);
 if (profile) console.log(`Building profile "${profile.name}" (${config.targets.length} targets).`);
 setSustainabilityMetric(config.sustainabilityMetric);
+setInteractiveCharts(config.interactiveCharts);
 fs.mkdirSync(DIRS.docs, { recursive: true });
 
 // Bugs fed into the static JSON API must honor the same render-time

@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS, writeAsset } from '../../src/report-html.js';
+import { setInteractiveCharts, renderAccessibilityPage, renderExplorerPage, renderDomainReport, renderStandardsPage, renderSecurityPage, renderHistoryPage, renderLighthousePage, renderReadabilityPage, renderTechFindingsPage, renderPdfsPage, renderIndex, statTile, redirectStub, PAGE_REDIRECTS, writeAsset } from '../../src/report-html.js';
 import { buildCooccurrence } from '../../src/lib/tech-findings.js';
 
 test('related-links: a domain page links the JSON API, API.md, and MCP.md in <head>', () => {
@@ -97,7 +97,26 @@ test('webmcp bridge: absent from the fleet index (no single target to scope tool
 // converted to mount an accessible <para-chart> (distinct color per series,
 // interactive legend) via the same ParaCharts loader. Dash patterns alone
 // don't distinguish many overlapping domains.
+test('charts ship as static SVG + table only, with no ParaCharts manifest or loader, unless interactive_charts is on', () => {
+  const wk = (week, medianViolations) => ({
+    week, pagesScanned: 5, pagesAudited: 5,
+    axe: { medianViolations, pagesWithViolations: 1, pagesScanned: 5 },
+    alfa: { medianFailures: 0, pagesWithFailures: 0, pagesScanned: 5 },
+  });
+  const dashboard = [
+    { target: { domain: 'alpha.gov', key: 'alpha.gov' }, series: [wk('2026-W24', 8), wk('2026-W25', 5)], diffs: {}, bugs: [], windowSummary: wk('2026-W25', 5) },
+    { target: { domain: 'beta.gov', key: 'beta.gov' }, series: [wk('2026-W24', 3), wk('2026-W25', 2)], diffs: {}, bugs: [], windowSummary: wk('2026-W25', 2) },
+  ];
+  setInteractiveCharts(false);
+  const html = renderIndex(dashboard);
+  assert.match(html, /<figure class="chart">/, 'the chart is still drawn');
+  assert.doesNotMatch(html, /data-parachart=/);
+  assert.doesNotMatch(html, /paracharts\.js/, 'no loader, so the 2.8 MB runtime is never requested');
+});
+
 test('cross-domain axe chart emits a per-domain ParaCharts manifest, not just dash patterns', () => {
+  setInteractiveCharts(true);
+  try {
   const wk = (week, medianViolations) => ({
     week, pagesScanned: 5, pagesAudited: 5,
     axe: { medianViolations, pagesWithViolations: 1, pagesScanned: 5 },
@@ -135,6 +154,9 @@ test('cross-domain axe chart emits a per-domain ParaCharts manifest, not just da
   const svgStart = html.indexOf('<svg', figStart);
   const svgTag = html.slice(svgStart, html.indexOf('>', svgStart) + 1);
   assert.match(svgTag, /class="linechart chart-fallback"/);
+  } finally {
+    setInteractiveCharts(false);
+  }
 });
 
 test('related-links: a visible footer sentence links the JSON API and MCP server on a domain page', () => {
@@ -281,7 +303,9 @@ test('renderLighthousePage embeds the Lighthouse category trend chart when multi
     { week: '2026-W25', lighthouse: lh },
   ];
 
+  setInteractiveCharts(true);
   const withHistory = renderLighthousePage(target, summary, null, null, series);
+  setInteractiveCharts(false);
   assert.match(withHistory, /Lighthouse category scores over 2 weeks/, 'trend chart embedded with 2+ weeks of series data');
   assert.match(withHistory, /History &amp; Trends →/, 'still links to the full History \\& Trends page');
   assert.match(withHistory, /data-parachart="/, 'chart carries a ParaCharts manifest, same as every other trend chart');
