@@ -5137,13 +5137,13 @@ ${heading('h-worst', t('Highest-impact issues across all sites'))}
       techFindingsSection = `
 <section aria-labelledby="h-techfindings">
 ${heading('h-techfindings', t('Cross-technology issues'))}
-<p class="meta">${t('Accessibility findings that recur with the same technology across multiple sites — the strongest signal that a barrier lives in a shared CMS, theme, or widget rather than in one site\'s content. Ranked by lift × number of sites affected. Association, not proof of cause: confirm before attributing.')}</p>
+<p class="meta">${t('Accessibility findings at least 1.5 times as common on pages running a technology as on pages without it, on two or more sites — a sign that a barrier lives in a shared CMS, theme, or widget rather than in one site\'s content. Ranked by sites affected, then by how much more common. Association, not proof of cause: confirm before attributing. A technology on nearly every page has nothing to compare against, so it is not listed.')}</p>
 <table class="sortable">
 <caption>${t('Top @n technology ↔ finding associations spanning ≥2 sites.', { '@n': fleetPairs.length })}</caption>
 <thead><tr>
   <th scope="col">${t('Technology')}</th>
   <th scope="col">${t('Finding')}</th>
-  <th scope="col" class="num">${t('Lift')}</th>
+  <th scope="col" class="num">${t('Times as common (95% CI)')}</th>
   <th scope="col" class="num">${t('Sites')}</th>
   <th scope="col" class="num">${t('Pages')}</th>
 </tr></thead>
@@ -5151,7 +5151,7 @@ ${heading('h-techfindings', t('Cross-technology issues'))}
         .map((p) => `<tr>
   <th scope="row">${esc(p.tech)}</th>
   <td>${esc(findingLabel(p.finding))}</td>
-  <td class="num">${p.lift.toFixed(2)}×</td>
+  <td class="num" data-sort="${p.ratio ?? 1e9}">${p.ratio == null ? t('only with it') : p.ci_low == null ? `${p.ratio.toFixed(1)}×` : t('@ratio× (95% CI @low–@high)', { '@ratio': p.ratio.toFixed(1), '@low': p.ci_low.toFixed(1), '@high': p.ci_high.toFixed(1) })}</td>
   <td class="num">${p.sites}</td>
   <td class="num">${p.pairPages}</td>
 </tr>`)

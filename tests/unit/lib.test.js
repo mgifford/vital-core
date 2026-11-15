@@ -1742,8 +1742,22 @@ test('tech-findings: fleet merge counts distinct sites and scores breadth', () =
   const ranked = rankFleetAssociations(fleet, { minPages: 5, minSites: 2 });
   assert.equal(ranked[0].tech, 'GTM');
   assert.equal(ranked[0].sites, 3);
-  // score = lift(2.0) * sites(3) = 6.0
-  assert.equal(ranked[0].score, 6);
+  assert.equal(ranked[0].ratio, null, 'no page without GTM has the finding: "only with it"');
+});
+
+test('tech-findings: fleet pairs need a real difference, not 1.00x from a technology on every page', () => {
+  // Every page runs Drupal and half have the finding: there is no page without
+  // Drupal to compare against, so the old lift-against-all-pages gave 1.00x.
+  const everywhere = () => buildCooccurrence(Array.from({ length: 12 }, (_, i) => ({ techs: ['Drupal'], findings: i % 2 ? ['alfa:r73'] : [] })));
+  // Weak: 4 of 6 pages with Ads have the finding, 3 of 6 without (1.33x).
+  const weak = () => buildCooccurrence([
+    ...Array.from({ length: 6 }, (_, i) => ({ techs: ['Ads'], findings: i < 4 ? ['axe:region'] : [] })),
+    ...Array.from({ length: 6 }, (_, i) => ({ techs: [], findings: i < 3 ? ['axe:region'] : [] })),
+  ]);
+  for (const mk of [everywhere, weak]) {
+    const fleet = mergeFleet([{ domain: 'a.gov', model: mk() }, { domain: 'b.gov', model: mk() }]);
+    assert.deepEqual(rankFleetAssociations(fleet, { minPages: 5, minSites: 2 }), []);
+  }
 });
 
 test('tech-findings: fleet minSites filters single-site coincidences', () => {
