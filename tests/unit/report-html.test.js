@@ -261,6 +261,8 @@ test('renderDomainReport links to History & Trends instead of embedding trend ch
     { byRule: {}, bugsAll: null },
     null
   );
+  assert.match(html, /The typical page has \d+ axe violation\(s\)\./, 'score card states the typical page count');
+  assert.doesNotMatch(html, /Biggest lever/, 'no second, untiered "biggest" pick competing with Biggest available win');
 
   // WP2: the multi-week trend charts moved to the History & Trends page; the
   // overview links there rather than embedding them.

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { scoreFor, trajectory, scoreMeaning } from './lib/score.js';
+import { scoreFor, trajectory } from './lib/score.js';
 import { summarizeCoverage } from './lib/coverage.js';
 import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
 import { prioritizeAccessibilityBugs } from './lib/accessibility-priority.js';
@@ -4556,7 +4556,7 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automa
   <span class="score-label">${t('Automated accessibility health (axe)')}</span>
   ${scoreFormat !== 'percent' ? `<span class="grade grade-${esc(score.grade)}">${esc(score.grade)}</span>` : ''}
   ${scoreFormat !== 'letter' ? `<span class="score">${score.score}<span class="score-max">/100</span> <span class="band">${esc(score.band)}</span></span>` : ''}
-  <span class="score-detail">${esc(scoreMeaning(summary, score))}
+  <span class="score-detail">${t('The typical page has @n axe violation(s).', { '@n': score.medianIssues })}
   ${traj ? `<strong class="traj traj-${esc(traj.direction)}">${esc(t(traj.direction))}</strong> ${t('(@delta pts since @week).', { '@delta': (traj.delta >= 0 ? '+' : '') + traj.delta, '@week': esc(traj.fromWeek) })}` : ''}</span>
   <span class="score-caveat">${t('Automated indicator, not a WCAG conformance score. 0–100; higher is better. It maps the median axe violation count per audited page to a benchmark curve; Alfa is sampled and reported separately. Manual testing is incomplete, so a high value is not proof of conformance.')}</span>
   ${(() => {

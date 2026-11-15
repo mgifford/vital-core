@@ -89,29 +89,6 @@ export function band(score) {
   if (score >= 50) return 'Needs work';
   return 'At risk';
 }
-
-/**
- * One-line, plain explanation of what the score means and the single
- * highest-leverage next step, given the week's summary.
- */
-export function scoreMeaning(summary, sc) {
-  if (!sc) return '';
-  const topAxe = topRule(summary.axe?.rules);
-  const action = topAxe
-    ? `Biggest lever: fix “${topAxe.id}” — it affects ${topAxe.pages} page(s).`
-    : 'Keep the typical page’s issue count low.';
-  return `Automated accessibility health (axe): the typical page has ${sc.medianIssues} axe violation(s). ${action}`;
-}
-
-function topRule(rules) {
-  if (!rules) return null;
-  let best = null;
-  for (const [id, r] of Object.entries(rules)) {
-    if (!best || r.pages > best.pages) best = { id, pages: r.pages };
-  }
-  return best;
-}
-
 /**
  * Trajectory of the score across a series of summaries: latest vs
  * `lookback` weeks earlier.
