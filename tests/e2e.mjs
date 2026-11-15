@@ -968,7 +968,7 @@ try {
   assert(!read('index.html').includes('reports/localhost/'), 'unlisted: the dashboard does not link to it');
   assert(!JSON.parse(read('api', 'v1', 'index.json')).domains.some((d) => d.key === 'localhost'), 'unlisted: the API index does not list it');
   assert(!JSON.parse(read('api', 'v1', 'archives', 'index.json')).domains.some((d) => d.domain === 'localhost') && fs.existsSync(docs('api', 'v1', 'localhost', 'archives.json')), 'unlisted: the archive index leaves it out; its own archives.json stays');
-  assert(!read('llms.txt').includes('localhost') && !read('.well-known', 'api-catalog').includes('localhost'), 'unlisted: llms.txt and the API catalog do not mention it');
+  assert(!read('llms.txt').includes('localhost') && !read('api', 'catalog.json').includes('localhost'), 'unlisted: llms.txt and the API catalog do not mention it');
   assert(!fs.existsSync(docs('api', 'v1', 'localhost', 'url-index.json')) && (!fs.existsSync(docs('url-lookup.html')) || !read('url-lookup.html').includes('localhost')), 'unlisted: the URL lookup does not offer it');
   assert(!run('src/issue-comment.js', [], '2026-W24').includes('localhost: 2026-W24'), 'unlisted: the weekly issue comment leaves it out');
 

@@ -29,7 +29,7 @@ export function buildLlmsTxt(config, indexEntries) {
       'latest week, severity counts, and per-domain links. Static, read-only, no auth.',
   );
   lines.push(
-    `- [API catalog](${abs('/.well-known/api-catalog')}): machine-discovery ` +
+    `- [API catalog](${abs('/api/catalog.json')}): machine-discovery ` +
       'catalog of endpoints, schemas, and agent-oriented entry points.',
   );
   for (const entry of indexEntries) {
