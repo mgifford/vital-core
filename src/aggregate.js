@@ -13,6 +13,7 @@ import { weekDeltas, severityBurndown, streaks, deltaSeries } from './lib/progre
 import { loadPdfLedger, pdfReportView } from './lib/pdf-audit.js';
 import { writeCsvs, writeBugsCsv, writeErrorsCsv, writeResourceCsv, writeLighthouseCsv, writeLighthouseJson, writeReadabilityCsv, writeSpellingCsv, writeAcronymsCsv, writeTechCsv, writeImagesCsv, writePdfsCsv, writeThirdPartyCsv, writePriorityPages, writeComponentClusterCsvs, writeTrendsCsv, writeRegionCsv } from './lib/csv.js';
 import { buildConsensus } from './lib/consensus.js';
+import { buildPerformanceInvestigations } from './lib/performance-investigations.js';
 import { loadInventory, saveInventory, updateInventory, inventorySummary } from './lib/inventory.js';
 import { resolvePageRecord } from './lib/page-records.js';
 import { scoreFor } from './lib/score.js';
@@ -649,6 +650,7 @@ function summarizeWeek(target, week) {
   }
   if (summary) summary.access = assessAccess({ records, runs: readRunLogs(runsDir) });
   if (summary) summary.performanceCohort = summarizePerformanceCohort(readRunLogs(runsDir), summary.pagesScanned);
+  if (summary) summary.performanceInvestigations = buildPerformanceInvestigations(summary);
   return summary;
 }
 
