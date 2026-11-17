@@ -11,6 +11,7 @@ export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 
   const resources = summary?.performanceResources?.resources ?? [];
   const resourceCandidates = resources
     .filter((resource) => resource.pages >= minPages && (resource.transfer_bytes ?? 0) > 0)
+    .filter((resource) => !(resource.third_party && resource.pages >= minPages) && !(resource.render_blocking_pages >= 2))
     .map((resource) => ({
       id: `shared-resource:${resource.key}`,
       category: 'shared-expensive-resource',
@@ -72,8 +73,10 @@ export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 
     .slice(0, Math.max(0, limit - resourceCandidates.length - slowPages.length));
 
   const familyCandidates = buildPageFamilyCandidates(summary, limit);
+  const renderBlocking = buildRenderBlockingCandidates(summary, limit);
+  const thirdParty = buildThirdPartyCandidates(summary, minPages, limit);
   const regressions = buildMatchedPageRegressions(summary, previous, limit);
-  const candidates = [...regressions, ...familyCandidates, ...resourceCandidates, ...slowPages, ...recommendations].slice(0, limit);
+  const candidates = [...regressions, ...familyCandidates, ...renderBlocking, ...thirdParty, ...resourceCandidates, ...slowPages, ...recommendations].slice(0, limit);
   return {
     schema_version: PERFORMANCE_INVESTIGATION_SCHEMA,
     generated_from: 'stored weekly summary; no live browser',
@@ -154,4 +157,41 @@ export function buildPageFamilyCandidates(summary, limit = 20) {
       status: 'investigation-candidate',
     };
   }).filter(Boolean).slice(0, limit);
+}
+
+
+export function buildRenderBlockingCandidates(summary, limit = 20) {
+  return (summary?.performanceResources?.resources ?? [])
+    .filter((resource) => (resource.render_blocking_pages ?? 0) >= 2)
+    .map((resource) => ({
+      id: `render-blocking:${resource.key}`,
+      category: 'potential-render-blocking-resource',
+      evidence_strength: 'direct-observation',
+      resource: { key: resource.key, type: resource.type, pages: resource.pages, render_blocking_pages: resource.render_blocking_pages },
+      evidence: { source: 'performance-resource-inventory/1', denominator: summary.performanceResources.pages_with_evidence ?? null, limitations: ['Render-blocking status is browser-reported and does not prove a user-visible delay.'] },
+      hypothesis: 'This resource is render-blocking on multiple sampled pages and may delay first paint.',
+      alternatives: ['The resource may be required for correct first paint.', 'The browser may no longer treat it as blocking after an implementation change.'],
+      proposed_test: 'Compare representative pages with the resource deferred or inlined in a controlled diagnostic run.',
+      status: 'investigation-candidate',
+    }))
+    .sort((a, b) => b.resource.render_blocking_pages - a.resource.render_blocking_pages)
+    .slice(0, limit);
+}
+
+export function buildThirdPartyCandidates(summary, minPages = 3, limit = 20) {
+  return (summary?.performanceResources?.resources ?? [])
+    .filter((resource) => resource.third_party && resource.pages >= minPages)
+    .map((resource) => ({
+      id: `third-party-resource:${resource.key}`,
+      category: 'third-party-resource-concern',
+      evidence_strength: 'direct-observation',
+      resource: { key: resource.key, type: resource.type, origin: resource.origin, pages: resource.pages, transfer_bytes: resource.transfer_bytes },
+      evidence: { source: 'performance-resource-inventory/1', denominator: summary.performanceResources.pages_with_evidence ?? null, limitations: ['Third-party presence and transfer are not proof of a defect or causation.'] },
+      hypothesis: 'This third-party resource is loaded on multiple sampled pages and may contribute transfer or blocking cost.',
+      alternatives: ['Another first-party or third-party resource may be responsible.', 'The third party may be required for a core service.'],
+      proposed_test: 'Measure the representative pages with the third-party resource blocked or deferred under matched conditions.',
+      status: 'investigation-candidate',
+    }))
+    .sort((a, b) => b.resource.pages - a.resource.pages || b.resource.transfer_bytes - a.resource.transfer_bytes)
+    .slice(0, limit);
 }

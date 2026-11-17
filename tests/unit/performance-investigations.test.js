@@ -4,7 +4,7 @@ import { buildPerformanceInvestigations } from '../../src/lib/performance-invest
 
 test('builds a deterministic shared-resource investigation without causal claims', () => {
   const summary = { performanceResources: { pages_with_evidence: 10, resources: [
-    { key: 'https://cdn.example/a.js', type: 'script', third_party: true, pages: 5, transfer_bytes: 500, examples: ['https://example.gov/a'] },
+    { key: 'https://cdn.example/a.js', type: 'script', third_party: false, pages: 5, transfer_bytes: 500, examples: ['https://example.gov/a'] },
     { key: 'https://example.gov/b.css', type: 'link', third_party: false, pages: 2, transfer_bytes: 900 },
   ] } };
   const q = buildPerformanceInvestigations(summary);
@@ -56,4 +56,15 @@ test('declared page family with repeated poor Lighthouse scores becomes a candid
   assert.ok(family);
   assert.equal(family.page.family_id, 'forms');
   assert.match(family.evidence.limitations[0], /not establish/);
+});
+
+test('render-blocking and third-party resources get distinct candidates', () => {
+  const summary = { performanceResources: { pages_with_evidence: 5, resources: [
+    { key: 'https://example.gov/a.css', type: 'link', pages: 2, transfer_bytes: 100, render_blocking_pages: 2 },
+    { key: 'https://cdn.other.org/a.js', type: 'script', pages: 3, transfer_bytes: 500, third_party: true },
+  ] } };
+  const q = buildPerformanceInvestigations(summary);
+  assert.ok(q.candidates.some((c) => c.category === 'potential-render-blocking-resource'));
+  assert.ok(q.candidates.some((c) => c.category === 'third-party-resource-concern'));
+  assert.equal(q.candidates.some((c) => c.category === 'shared-expensive-resource'), false);
 });
