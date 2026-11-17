@@ -48,3 +48,12 @@ test('regression candidates require stable-cohort membership when the list is pr
   const current = { week: '2026-W46', performanceCohort: { stable_urls: ['https://example.gov/other'] }, performanceResources: { resources: [] }, lighthouse: { pageDetail: [{ url: 'https://example.gov/a', scores: { performance: 50 } }] } };
   assert.equal(buildPerformanceInvestigations(current, { previous }).candidates.some((c) => c.category === 'possible-matched-page-regression'), false);
 });
+
+test('declared page family with repeated poor Lighthouse scores becomes a candidate', () => {
+  const summary = { pageFamilies: { families: [{ id: 'forms', label: 'Forms', route: '/forms*' }] }, lighthouse: { pagesSampled: 4, medianPerformance: 70, pageDetail: [{ url: 'https://example.gov/forms/a', scores: { performance: 40 } }, { url: 'https://example.gov/forms/b', scores: { performance: 35 } }, { url: 'https://example.gov/about', scores: { performance: 90 } }] } };
+  const q = buildPerformanceInvestigations(summary);
+  const family = q.candidates.find((c) => c.category === 'page-family-performance-pattern');
+  assert.ok(family);
+  assert.equal(family.page.family_id, 'forms');
+  assert.match(family.evidence.limitations[0], /not establish/);
+});
