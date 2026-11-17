@@ -118,6 +118,21 @@ export function createThirdPartyCollector(page, pageUrl) {
         totalThirdPartyScripts: list.reduce((s, e) => s + e.scripts, 0),
         firstPartyRequests,
         firstPartyBytes,
+        measurement: {
+          schema_version: 'resource-measurement/1',
+          collected_at: new Date().toISOString(),
+          functional_unit: 'page-view',
+          boundary: 'client-observed third-party and first-party responses during one page load; no server or device energy',
+          legacy_bytes: {
+            basis: 'content-length-or-decoded-body (mixed; historical)',
+            note: 'totalThirdPartyBytes and per-origin bytes retain the same legacy mixed basis as the sustainability page-weight metric.',
+          },
+          resource_timing: {
+            entries: timing.length,
+            transfer_bytes: timing.length ? timing.reduce((sum, entry) => sum + (entry.transferSize ?? 0), 0) : null,
+            note: timing.length ? 'transferSize can be zero for cache hits or cross-origin resources without Timing-Allow-Origin.' : 'Resource Timing entries unavailable; transfer bytes unknown.',
+          },
+        },
         // Per-origin detail, heaviest first.
         origins: list,
       };

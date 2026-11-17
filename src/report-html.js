@@ -4540,7 +4540,7 @@ export function renderDomainReport(target, summary, prev, diff, series, bugs = [
   <div><dt>${t('Broken links')}</dt><dd>${summary.linkCheck.brokenCount}${summary.linkCheck.brokenCount > 0 ? ` <a href="errors.html" class="csv-link">${t('details')}</a>` : ''}</dd></div>` : ''}
   ${summary.sustainability ? `
   <div><dt>${t('Median page weight')}</dt><dd>${kb(summary.sustainability.medianBytes)}
-    ${diff?.sustainability ? delta(Math.round(diff.sustainability.medianBytesDelta / 1024), { unit: ' KB' }) : ''}</dd></div>
+    ${diff?.sustainability ? delta(Math.round(diff.sustainability.medianBytesDelta / 1024), { unit: ' KB' }) : ''}<span class="bug-meta"> ${t('Legacy mixed byte basis (Content-Length or decoded body), not network transfer. CO₂/Wh are modelled estimates.')}</span></dd></div>
   <div><dt>${t('Median requests per page')}</dt><dd>${summary.sustainability.medianRequests}</dd></div>
   <div><dt>${sustainabilityHeadline(summary.sustainability).label}</dt><dd>${sustainabilityHeadline(summary.sustainability).value}</dd></div>` : ''}
 </dl>

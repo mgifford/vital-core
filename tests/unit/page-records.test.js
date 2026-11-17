@@ -87,3 +87,12 @@ test('resolvePageRecord returns the stub as-is when the pointed-to week has been
     fs.rmSync(domainDir, { recursive: true, force: true });
   }
 });
+
+test('pageFingerprint ignores measurement collection timestamps', async () => {
+  const { pageFingerprint } = await import('../../src/lib/page-records.js');
+  const base = { pageId: 'p', url: 'https://example.gov', week: '2026-W44', runId: 'r', scannedAt: '2026-11-01T00:00:00Z', status: 200, sustainability: { bytes: 1, measurement: { collected_at: '2026-11-01T01:00:00Z', schema_version: 'sustainability-measurement/1' } } };
+  const later = { ...base, sustainability: { ...base.sustainability, measurement: { ...base.sustainability.measurement, collected_at: '2026-11-08T01:00:00Z' } } };
+  const changed = { ...base, sustainability: { ...base.sustainability, bytes: 2 } };
+  assert.equal(pageFingerprint(base), pageFingerprint(later));
+  assert.notEqual(pageFingerprint(base), pageFingerprint(changed));
+});

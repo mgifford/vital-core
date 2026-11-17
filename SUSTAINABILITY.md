@@ -16,10 +16,10 @@ repeatedly are dropped rather than retried forever.
 scanned on Tuesday is not scanned again on Thursday; budget goes to pages
 that have not been covered yet, oldest first.
 
-**Data is pruned, summaries are kept.** Raw per-page results are deleted
-after a configurable retention window once the weekly summary exists. Trends
-survive in kilobytes of JSON per domain per week instead of gigabytes of raw
-output accumulating in git history.
+**Data is retained under an explicit policy.** Raw per-page results are not
+deleted automatically. A verified archive and an explicitly authorized prune
+are required before detail can be removed; summaries and ledgers are kept
+indefinitely. Trends survive without letting raw output grow without bound.
 
 **Reports are lightweight by construction.** No JavaScript, no web fonts, no
 images except inline SVG sparklines, one shared stylesheet of roughly 2 KB.
@@ -33,10 +33,17 @@ which keeps the repository small.
 
 ## How the scanner measures sustainability honestly
 
-Transferred bytes are measured as decoded body size, requests are counted
-per page, and CO2 is estimated with [co2.js](https://github.com/thegreenwebfoundation/co2.js)
-using the Sustainable Web Design model (v4). These are estimates suitable
-for tracking direction of travel, not carbon accounting. The reports say so.
+Page weight uses a **legacy mixed byte basis**: `Content-Length` where present
+(usually encoded bytes), otherwise the decoded response body. It is not a pure
+network-transfer measurement. New records also carry Resource Timing
+`transferSize`/`encodedBodySize`/`decodedBodySize` separately, with missing or
+cross-origin zero values marked as unknown rather than zero.
+
+CO₂ is modelled with [co2.js](https://github.com/thegreenwebfoundation/co2.js)
+using the Sustainable Web Design model (v4). The derived Wh value is model
+output, not measured client energy. These estimates are suitable for tracking
+direction of travel, not carbon accounting or per-component energy claims. See
+[`docs-internal/SCI-WEB.md`](docs-internal/SCI-WEB.md).
 
 ## Why it matters here
 
