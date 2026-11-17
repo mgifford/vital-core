@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 
 export const PERFORMANCE_INVESTIGATION_SCHEMA = 'performance-investigation/1';
 
-export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 20 } = {}) {
+export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 20, previous = null } = {}) {
   const resources = summary?.performanceResources?.resources ?? [];
   const resourceCandidates = resources
     .filter((resource) => resource.pages >= minPages && (resource.transfer_bytes ?? 0) > 0)
@@ -70,7 +70,8 @@ export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 
     .sort((a, b) => b.recommendation.pages - a.recommendation.pages || b.recommendation.savings_ms - a.recommendation.savings_ms)
     .slice(0, Math.max(0, limit - resourceCandidates.length - slowPages.length));
 
-  const candidates = [...resourceCandidates, ...slowPages, ...recommendations].slice(0, limit);
+  const regressions = buildMatchedPageRegressions(summary, previous, limit);
+  const candidates = [...regressions, ...resourceCandidates, ...slowPages, ...recommendations].slice(0, limit);
   return {
     schema_version: PERFORMANCE_INVESTIGATION_SCHEMA,
     generated_from: 'stored weekly summary; no live browser',
@@ -81,4 +82,33 @@ export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 
       'No energy measurement or causal attribution is included.',
     ],
   };
+}
+
+
+/** Same-URL Lighthouse score regressions; a single drop is only a possible regression. */
+export function buildMatchedPageRegressions(summary, previous, limit = 20) {
+  if (!previous?.lighthouse?.pageDetail?.length || !summary?.lighthouse?.pageDetail?.length) return [];
+  const before = new Map(previous.lighthouse.pageDetail.map((page) => [page.url, page]));
+  return summary.lighthouse.pageDetail
+    .filter((page) => Number.isFinite(page.scores?.performance))
+    .map((page) => {
+      const prior = before.get(page.url);
+      if (!prior || !Number.isFinite(prior.scores?.performance)) return null;
+      const delta = page.scores.performance - prior.scores.performance;
+      if (delta > -15) return null;
+      return {
+        id: `matched-page-regression:${crypto.createHash('sha256').update(page.url).digest('hex').slice(0, 12)}`,
+        category: 'possible-matched-page-regression',
+        evidence_strength: 'direct-observation',
+        page: { url: page.url, current_performance: page.scores.performance, previous_performance: prior.scores.performance, delta, current_metrics: page.metrics ?? {}, previous_metrics: prior.metrics ?? {} },
+        evidence: { source: 'Lighthouse lab runs from two reporting periods', previous_week: previous.week ?? null, current_week: summary.week ?? null, limitations: ['A single pair of lab runs is not a confirmed field regression; browser, throttling and network conditions may differ.'] },
+        hypothesis: 'This stable page may have become materially slower than its previous Lighthouse observation.',
+        alternatives: ['The change may be run-to-run variance or a different measurement environment.', 'Page content or a third party may have changed without a code regression.'],
+        proposed_test: 'Repeat the same URL under matched Lighthouse conditions and compare the metrics before attributing a regression.',
+        status: 'possible-regression',
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.page.delta - b.page.delta)
+    .slice(0, limit);
 }
