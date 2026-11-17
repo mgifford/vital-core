@@ -111,8 +111,10 @@ export function deepRedactUrls(value, opts = {}) {
   if (value && typeof value === 'object') {
     const out = {};
     for (const [k, v] of Object.entries(value)) {
-      if (k === 'url' && typeof v === 'string') out[k] = redactUrl(v, opts);
-      else if (k === 'urls' && Array.isArray(v)) out[k] = v.map((u) => (typeof u === 'string' ? redactUrl(u, opts) : deepRedactUrls(u, opts)));
+      if (typeof v === 'string' && /^https?:\/\//i.test(v) && (k === 'key' || k === 'examples' || k === 'examplePages' || k === 'stable_urls' || /url$/i.test(k))) {
+        out[k] = redactUrl(v, opts);
+      } else if (k === 'urls' && Array.isArray(v)) out[k] = v.map((u) => (typeof u === 'string' ? redactUrl(u, opts) : deepRedactUrls(u, opts)));
+      else if ((k === 'stable_urls' || k === 'examples' || k === 'examplePages') && Array.isArray(v)) out[k] = v.map((u) => (typeof u === 'string' && /^https?:\/\//i.test(u) ? redactUrl(u, opts) : deepRedactUrls(u, opts)));
       else out[k] = deepRedactUrls(v, opts);
     }
     return out;
