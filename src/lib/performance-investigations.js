@@ -3,6 +3,7 @@
  * This ranks observations; it does not establish causation or component ownership.
  */
 import crypto from 'node:crypto';
+import { routeMatches } from './page-families.js';
 
 export const PERFORMANCE_INVESTIGATION_SCHEMA = 'performance-investigation/1';
 
@@ -70,8 +71,9 @@ export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 
     .sort((a, b) => b.recommendation.pages - a.recommendation.pages || b.recommendation.savings_ms - a.recommendation.savings_ms)
     .slice(0, Math.max(0, limit - resourceCandidates.length - slowPages.length));
 
+  const familyCandidates = buildPageFamilyCandidates(summary, limit);
   const regressions = buildMatchedPageRegressions(summary, previous, limit);
-  const candidates = [...regressions, ...resourceCandidates, ...slowPages, ...recommendations].slice(0, limit);
+  const candidates = [...regressions, ...familyCandidates, ...resourceCandidates, ...slowPages, ...recommendations].slice(0, limit);
   return {
     schema_version: PERFORMANCE_INVESTIGATION_SCHEMA,
     generated_from: 'stored weekly summary; no live browser',
@@ -124,4 +126,32 @@ export function buildMatchedPageRegressions(summary, previous, limit = 20) {
     .filter(Boolean)
     .sort((a, b) => a.page.delta - b.page.delta)
     .slice(0, limit);
+}
+
+
+/** Declared page families with repeated poor Lighthouse results; association, not ownership. */
+export function buildPageFamilyCandidates(summary, limit = 20) {
+  const pages = summary?.lighthouse?.pageDetail ?? [];
+  const domainMedian = summary?.lighthouse?.medianPerformance ?? null;
+  return (summary?.pageFamilies?.families ?? []).map((family, index) => {
+    if (!family.route) return null;
+    const members = pages.filter((page) => { try { return routeMatches(family.route, new URL(page.url).pathname); } catch { return false; } });
+    if (members.length < 2) return null;
+    const scores = members.map((page) => page.scores?.performance).filter(Number.isFinite);
+    if (scores.length < 2) return null;
+    const median = scores.sort((a, b) => a - b)[Math.floor(scores.length / 2)];
+    const poor = scores.filter((score) => score < 50).length;
+    if (median >= 50 && !(domainMedian != null && median <= domainMedian - 10)) return null;
+    return {
+      id: `page-family:${family.id ?? index}`,
+      category: 'page-family-performance-pattern',
+      evidence_strength: 'direct-observation',
+      page: { family_id: family.id ?? null, label: family.label ?? family.id ?? null, sampled_pages: members.length, median_performance: median, poor_pages: poor, examples: members.map((page) => page.url) },
+      evidence: { source: 'declared page family + Lighthouse page detail', denominator: summary.lighthouse?.pagesSampled ?? null, membership_basis: 'configured route', limitations: ['Family association does not establish a shared implementation or component ownership.', 'Lighthouse lab scores are not field Core Web Vitals.'] },
+      hypothesis: 'Pages in this declared family repeatedly show weaker Lighthouse performance and may share a template-level issue.',
+      alternatives: ['The family may simply contain heavier content or third parties.', 'The sample may be too small to support a family-level conclusion.'],
+      proposed_test: 'Repeat the family representative pages under matched Lighthouse conditions and compare with outside-family pages.',
+      status: 'investigation-candidate',
+    };
+  }).filter(Boolean).slice(0, limit);
 }
