@@ -115,7 +115,7 @@ for (const target of config.targets) {
   const series = [];
 
   for (const week of weeks) {
-    const summary = summarizeWeek(target, week);
+    const summary = summarizeWeek(target, week, series[series.length - 1] ?? null);
     if (summary) {
       summary.evidenceCoverage = summarizeEvidenceCoverage(summary);
       series.push(summary);
@@ -622,7 +622,7 @@ function currentSecurity(target, security) {
   return withCurrentGovernmentCheck(security, target.domain, target.governmentDomains);
 }
 
-function summarizeWeek(target, week) {
+function summarizeWeek(target, week, previousSummary = null) {
   const domainDir = path.join(DIRS.data, target.key);
   const pagesDir = path.join(domainDir, week, 'pages');
   const summaryPath = path.join(domainDir, week, 'summary.json');
@@ -650,7 +650,7 @@ function summarizeWeek(target, week) {
   }
   if (summary) summary.access = assessAccess({ records, runs: readRunLogs(runsDir) });
   if (summary) summary.performanceCohort = summarizePerformanceCohort(readRunLogs(runsDir), summary.pagesScanned);
-  if (summary) summary.performanceInvestigations = buildPerformanceInvestigations(summary);
+  if (summary) summary.performanceInvestigations = buildPerformanceInvestigations(summary, { previous: previousSummary });
   return summary;
 }
 
