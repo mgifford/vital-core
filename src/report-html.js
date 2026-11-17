@@ -4480,6 +4480,12 @@ ${moreGroups}`;
   });
 }
 
+function transferLabel(item) {
+  if (!item || !Number.isFinite(item.transfer_bytes)) return t('n/a');
+  if (item.pages && item.zero_transfer_pages != null && item.zero_transfer_pages >= item.pages) return t('N/A (reported 0)');
+  return kb(item.transfer_bytes);
+}
+
 function performanceInvestigationsSection(summary) {
   const queue = summary.performanceInvestigations;
   if (!queue?.candidates?.length) return '';
@@ -4487,22 +4493,22 @@ function performanceInvestigationsSection(summary) {
     const label = candidate.resource?.key ?? candidate.recommendation?.title ?? candidate.page?.url ?? candidate.id;
     const kind = candidate.resource?.type ?? candidate.category;
     const pages = candidate.resource?.pages ?? candidate.recommendation?.pages ?? 1;
-    const transfer = candidate.resource ? kb(candidate.resource.transfer_bytes) : 'n/a';
+    const transfer = candidate.resource ? transferLabel(candidate.resource) : t('n/a');
     return `<tr><th scope="row">${esc(label)}</th><td>${esc(kind)}</td><td class="num">${pages}</td><td class="num">${transfer}</td><td>${esc(candidate.status)}</td><td>${esc((candidate.priority_reasons ?? []).slice(0, 2).join('; '))}</td></tr>`;
   }).join('');
   return `<details class="coverage"><summary>${t('Performance investigation candidates (@n)', { '@n': queue.candidates.length })}</summary>
 <p class="meta">${t('Candidates are ranked observations from stored evidence, not confirmed defects or component ownership. The table gives the evidence denominator; the list gives the hypothesis, competing explanations and proposed test.')}</p>
-<table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer')}</th><th scope="col">${t('Status')}</th><th scope="col">${t('Priority reason')}</th></tr></thead><tbody>${rows}</tbody></table>
+<table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer (sum)')}</th><th scope="col">${t('Status')}</th><th scope="col">${t('Priority reason')}</th></tr></thead><tbody>${rows}</tbody></table>
 <ul>${queue.candidates.slice(0, 5).map((candidate) => `<li><strong>${esc(candidate.hypothesis)}</strong> ${t('Alternatives:')} ${esc((candidate.alternatives ?? []).join(' ') || t('none recorded'))} <span class="bug-meta">${t('Proposed test:')} ${esc(candidate.proposed_test)}</span> <span class="bug-meta">${esc((candidate.priority_reasons ?? []).join(' · '))}</span></li>`).join('')}</ul></details>`;
 }
 
 function performanceResourcesSection(summary) {
   const r = summary.performanceResources;
   if (!r?.resources?.length) return '';
-  const rows = r.resources.slice(0, 15).map((item) => `<tr><th scope="row">${esc(item.key)}</th><td>${esc(item.type)}</td><td class="num" data-sort="${item.pages}">${item.pages}</td><td class="num" data-sort="${item.transfer_bytes}">${kb(item.transfer_bytes)}</td><td>${item.third_party ? t('Third party') : t('First party')}</td></tr>`).join('');
+  const rows = r.resources.slice(0, 15).map((item) => `<tr><th scope="row">${esc(item.key)}</th><td>${esc(item.type)}</td><td class="num" data-sort="${item.pages}">${item.pages}</td><td class="num" data-sort="${item.transfer_bytes}">${transferLabel(item)}</td><td>${item.third_party ? t('Third party') : t('First party')}</td></tr>`).join('');
   return `<details class="coverage"><summary>${t('Shared performance resources (@n observed)', { '@n': r.total_resources })}</summary>
 <p class="meta">${t('Resource Timing identity strips query strings. Page counts use the pages with this evidence, not the whole site. Presence is not a defect or a component-ownership claim.')}</p>
-<table><caption>${t('Resources observed across the most sampled pages.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer')}</th><th scope="col">${t('Party')}</th></tr></thead><tbody>${rows}</tbody></table></details>`;
+<table><caption>${t('Resources observed across the most sampled pages. Transfer is summed across those pages; zero can mean cache or a cross-origin measurement that the browser did not expose.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer (sum)')}</th><th scope="col">${t('Party')}</th></tr></thead><tbody>${rows}</tbody></table></details>`;
 }
 
 function coverageSummarySection(summary, prev, invSummary) {
