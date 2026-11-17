@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mgifford.github.io/vital-core/api/v1/schema/performance-investigation.schema.json",
+  "title": "vital-core performance investigation queue",
+  "description": "Bounded, deterministic performance investigation candidates built from stored evidence. Observations and hypotheses, not confirmed defects.",
+  "type": "object",
+  "required": ["schema_version", "candidates", "limitations"],
+  "properties": {
+    "schema_version": { "const": "performance-investigation/1" },
+    "generated_from": { "type": "string" },
+    "rank_basis": { "type": "string" },
+    "candidates": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "status", "evidence_strength", "hypothesis", "proposed_test", "priority_reasons"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "type": "string" },
+          "status": { "type": "string" },
+          "evidence_strength": { "type": "string" },
+          "priority_reasons": { "type": "array", "maxItems": 8, "items": { "type": "string" } },
+          "hypothesis": { "type": "string" },
+          "proposed_test": { "type": "string" },
+          "alternatives": { "type": "array", "maxItems": 8, "items": { "type": "string" } },
+          "resource": { "type": ["object", "null"] },
+          "recommendation": { "type": ["object", "null"] },
+          "page": { "type": ["object", "null"] },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "source": { "type": "string" },
+              "denominator": { "type": ["integer", "null"] },
+              "limitations": { "type": "array", "items": { "type": "string" } }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}
