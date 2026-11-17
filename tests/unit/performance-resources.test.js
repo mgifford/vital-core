@@ -16,7 +16,10 @@ test('resource inventory is bounded, keyed without query strings and classified 
   assert.ok(result.resources.some((r) => r.key === 'https://example.gov/app.js'));
   assert.equal(result.resources.find((r) => r.key.includes('lib.js')).third_party, true);
   assert.equal(result.total_transfer_bytes, 600);
-  assert.match(result.measurement.limitations[0], /zero size/);
+  assert.match(result.measurement.limitations[0], /zero or unavailable size/);
+  assert.equal(result.observed_entries, 2);
+  assert.equal(result.truncated, false);
+  assert.equal(result.measurement.main_document_included, false);
 });
 
 test('resource inventory reports an empty result rather than inventing data', async () => {

@@ -4485,9 +4485,9 @@ function performanceInvestigationsSection(summary) {
   if (!queue?.candidates?.length) return '';
   const rows = queue.candidates.slice(0, 15).map((candidate) => `<tr><th scope="row">${esc(candidate.resource.key)}</th><td>${esc(candidate.resource.type)}</td><td class="num">${candidate.resource.pages}</td><td class="num">${kb(candidate.resource.transfer_bytes)}</td><td>${esc(candidate.status)}</td></tr>`).join('');
   return `<details class="coverage"><summary>${t('Performance investigation candidates (@n)', { '@n': queue.candidates.length })}</summary>
-<p class="meta">${t('Candidates are ranked observations from stored evidence, not confirmed defects or component ownership. Each links to sampled pages and competing explanations.')}</p>
-<table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Transfer (decoded)')}</th><th scope="col">${t('Status')}</th></tr></thead><tbody>${rows}</tbody></table>
-<ul>${queue.candidates.slice(0, 5).map((candidate) => `<li>${esc(candidate.hypothesis)} <span class="bug-meta">${esc(candidate.proposed_test)}</span></li>`).join('')}</ul></details>`;
+<p class="meta">${t('Candidates are ranked observations from stored evidence, not confirmed defects or component ownership. The table gives the evidence denominator; the list gives the hypothesis, competing explanations and proposed test.')}</p>
+<table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer')}</th><th scope="col">${t('Status')}</th></tr></thead><tbody>${rows}</tbody></table>
+<ul>${queue.candidates.slice(0, 5).map((candidate) => `<li><strong>${esc(candidate.hypothesis)}</strong> ${t('Alternatives:')} ${esc((candidate.alternatives ?? []).join(' ') || t('none recorded'))} <span class="bug-meta">${t('Proposed test:')} ${esc(candidate.proposed_test)}</span></li>`).join('')}</ul></details>`;
 }
 
 function performanceResourcesSection(summary) {
@@ -4496,7 +4496,7 @@ function performanceResourcesSection(summary) {
   const rows = r.resources.slice(0, 15).map((item) => `<tr><th scope="row">${esc(item.key)}</th><td>${esc(item.type)}</td><td class="num" data-sort="${item.pages}">${item.pages}</td><td class="num" data-sort="${item.transfer_bytes}">${kb(item.transfer_bytes)}</td><td>${item.third_party ? t('Third party') : t('First party')}</td></tr>`).join('');
   return `<details class="coverage"><summary>${t('Shared performance resources (@n observed)', { '@n': r.total_resources })}</summary>
 <p class="meta">${t('Resource Timing identity strips query strings. Page counts use the pages with this evidence, not the whole site. Presence is not a defect or a component-ownership claim.')}</p>
-<table><caption>${t('Resources observed across the most sampled pages.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Transfer (decoded)')}</th><th scope="col">${t('Party')}</th></tr></thead><tbody>${rows}</tbody></table></details>`;
+<table><caption>${t('Resources observed across the most sampled pages.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer')}</th><th scope="col">${t('Party')}</th></tr></thead><tbody>${rows}</tbody></table></details>`;
 }
 
 function coverageSummarySection(summary, prev, invSummary) {

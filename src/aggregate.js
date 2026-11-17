@@ -1020,7 +1020,10 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (e.bytes == null && img.bytes != null) e.bytes = img.bytes;
       }
     }
-    if (rec.performanceResources) {
+    // Do not let blocked/error/login-challenge responses contaminate shared
+    // resource rankings. Redirected requests are recorded under their landing
+    // URL, which is the URL this evidence actually describes.
+    if (rec.performanceResources && rec.status >= 200 && rec.status < 400 && !rec.blocked) {
       for (const item of rec.performanceResources.resources ?? []) {
         let entry = perfResourceMap.get(item.key);
         if (!entry) {
