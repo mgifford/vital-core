@@ -14,6 +14,7 @@ import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
 import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
+import { selectStablePerformanceCohort } from './lib/performance-cohort.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { syncObservationsFromState } from './lib/observations.js';
@@ -136,6 +137,16 @@ if (priorityUrls.length) {
   saveState(target.key, state);
 }
 
+// --- Stable performance cohort ---------------------------------------
+// Mark a bounded, persistent set of pages before choosing this run's batch.
+// This does not add a visit or bypass the weekly cap; it makes the same
+// representative pages available for matched-page trends and Lighthouse.
+const performanceCohort = selectStablePerformanceCohort(state, target, siteOrigin);
+if (performanceCohort.stable.length) {
+  saveState(target.key, state);
+  log(`performance cohort: ${performanceCohort.stable.length} stable page(s), ${performanceCohort.familiesRepresented.length} family representative(s)`);
+}
+
 // --- URL filter -------------------------------------------------------
 // url_include / url_exclude patterns (inline arrays and/or *_file lists) from
 // targets.yml, matched as substrings or /regex/. Applied when adding URLs to
@@ -193,6 +204,10 @@ const runLog = { runId, week, domain: target.domain, canonical, robots: { rootAl
 // Opt-in: dismiss a configured consent dialog once per run so it is audited once, not on every page.
 let consentDone = false;
 if (target.consentHandling) runLog.consent = { choice: target.consentHandling.choice, attempts: 0, clicked_on: null };
+runLog.performanceCohort = {
+  stable: batch.filter((item) => item.stableCohort).map((item) => ({ url: item.url, reason: item.stableCohort.reason })),
+  selected_in_batch: batch.filter((item) => item.stableCohort).length,
+};
 
 // Link checking: collect links seen on pages that are in link-check's
 // sample, then probe them once after the scan. Rate > 0 enables it.
@@ -477,7 +492,7 @@ for (const item of batch) {
       // Lighthouse: only when this page is in lighthouse's sample AND its
       // own Chrome launched. The sample rate keeps the (slow) audit count
       // proportional to the week's pages.
-      if (lighthouse?.available && runs('lighthouse')) {
+      if (lighthouse?.available && (item.stableCohort || runs('lighthouse'))) {
         const lh = await lighthouse.audit(recUrl);
         if (lh) {
           record.lighthouse = lh;

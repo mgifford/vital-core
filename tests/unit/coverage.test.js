@@ -18,11 +18,24 @@ test('coverage distinguishes fetched, audited, attempted, blocked and skipped pa
   assert.equal(coverage.robots_skipped, 10);
   assert.equal(coverage.pages_skipped, 30);
   assert.equal(coverage.known_urls_estimate, 500);
+  assert.equal(coverage.stable_performance_pages, null);
   assert.equal(coverage.engines.find((e) => e.engine === 'alfa').share, 40);
   assert.equal(coverage.audited_delta, 30);
   assert.equal(coverage.coverage_changed, true);
   assert.ok(coverage.notes.some((note) => /coverage is incomplete/.test(note)));
   assert.ok(coverage.notes.some((note) => /reflect coverage/.test(note)));
+});
+
+test('coverage exposes stable and rotating performance cohort counts', () => {
+  const coverage = summarizeCoverage({
+    pagesScanned: 100,
+    pagesAudited: 100,
+    coverage: { axe: 100 },
+    access: { level: 'ok' },
+    performanceCohort: { stable_pages: 8, rotating_pages: 92 },
+  });
+  assert.equal(coverage.stable_performance_pages, 8);
+  assert.equal(coverage.rotating_performance_pages, 92);
 });
 
 test('coverage does not invent a site total or a clean result when blocked', () => {

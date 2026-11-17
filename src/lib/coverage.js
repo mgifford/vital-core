@@ -38,6 +38,8 @@ export function summarizeCoverage(summary, previous = null, inventory = null) {
   if (coverageChanged) notes.push(`Audited pages changed ${auditedDelta > 0 ? '+' : ''}${auditedDelta} (${auditedChangeShare}%) from the previous week; week-to-week findings may reflect coverage, not remediation.`);
   return {
     access_level: accessLevel,
+    stable_performance_pages: summary.performanceCohort?.stable_pages ?? null,
+    rotating_performance_pages: summary.performanceCohort?.rotating_pages ?? null,
     pages_scanned: scanned,
     pages_audited: audited,
     pages_attempted: attempted,

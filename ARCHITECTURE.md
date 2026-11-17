@@ -88,6 +88,13 @@ of `pageId + engine + week` (`src/lib/sampling.js`), so coverage is
 reproducible and a page tends to stay in or out of an engine's sample
 for the whole week.
 
+A separate, bounded **stable performance cohort** marks the homepage,
+configured priority URLs and one representative per declared page family
+(`src/lib/performance-cohort.js`). Those pages are ordered ahead of the
+rotating hash sample and receive Lighthouse even when the weekly hash would
+skip them, so matched-page performance trends are possible. Marking a page
+does not add a visit or bypass the weekly cap.
+
 ## Where data is stored
 
 Two data directories, plus one generated one. None is tracked in this

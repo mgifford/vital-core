@@ -142,6 +142,16 @@ test('sitemap: traverses multiple sibling index branches one level deep', async 
   }
 });
 
+test('pickBatch: stable performance cohort is chosen before the rotating sample', () => {
+  const state = { domain: 'x', pages: {} };
+  addPage(state, 'stable', 'https://x/stable', 0);
+  state.pages.stable.performanceCohort = { stable: true, reason: 'homepage' };
+  addPage(state, 'fresh', 'https://x/fresh', 0);
+  const { batch } = pickBatch(state, '2026-W24', 1, 100);
+  assert.equal(batch[0].id, 'stable');
+  assert.equal(batch[0].stableCohort.reason, 'homepage');
+});
+
 test('pickBatch: never-scanned first, weekly cap respected, no rescan same week', () => {
   const state = { domain: 'x', pages: {} };
   addPage(state, 'a', 'https://x/a', 0);
