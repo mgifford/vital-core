@@ -10,6 +10,16 @@ import crypto from 'node:crypto';
  */
 export function pageFingerprint(record) {
   const { pageId, url, week, runId, scannedAt, unchanged, since, fingerprint, ...content } = record;
+  // Measurement collection timestamps change on every scan; they describe when
+  // the observation was taken, not a content change. Keep them out of the
+  // deduplication fingerprint so unchanged pages still produce stubs.
+  for (const key of ['sustainability', 'thirdParty']) {
+    const measurement = content[key]?.measurement;
+    if (measurement?.collected_at) {
+      content[key] = { ...content[key], measurement: { ...measurement } };
+      delete content[key].measurement.collected_at;
+    }
+  }
   return crypto.createHash('sha256').update(canonicalize(content)).digest('hex').slice(0, 16);
 }
 
