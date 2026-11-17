@@ -76,10 +76,11 @@ export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 
   const renderBlocking = buildRenderBlockingCandidates(summary, limit);
   const thirdParty = buildThirdPartyCandidates(summary, minPages, limit);
   const regressions = buildMatchedPageRegressions(summary, previous, limit);
-  const candidates = [...regressions, ...familyCandidates, ...renderBlocking, ...thirdParty, ...resourceCandidates, ...slowPages, ...recommendations].slice(0, limit);
+  const candidates = rankPerformanceCandidates([...regressions, ...familyCandidates, ...renderBlocking, ...thirdParty, ...resourceCandidates, ...slowPages, ...recommendations], limit);
   return {
     schema_version: PERFORMANCE_INVESTIGATION_SCHEMA,
     generated_from: 'stored weekly summary; no live browser',
+    rank_basis: 'category evidence class, then sampled-page reach, then evidence-estimated savings; ties by stable ID',
     candidates,
     limitations: [
       'Resource presence is correlation, not proof of a performance defect or ownership.',
@@ -193,5 +194,52 @@ export function buildThirdPartyCandidates(summary, minPages = 3, limit = 20) {
       status: 'investigation-candidate',
     }))
     .sort((a, b) => b.resource.pages - a.resource.pages || b.resource.transfer_bytes - a.resource.transfer_bytes)
+    .slice(0, limit);
+}
+
+
+const CATEGORY_PRIORITY = {
+  'possible-matched-page-regression': 0,
+  'page-family-performance-pattern': 1,
+  'potential-render-blocking-resource': 2,
+  'third-party-resource-concern': 3,
+  'shared-expensive-resource': 4,
+  'slow-representative-page': 5,
+  'repeated-lighthouse-recommendation': 6,
+};
+
+function candidateReach(candidate) {
+  return candidate.resource?.pages ?? candidate.recommendation?.pages ?? candidate.page?.sampled_pages ?? 1;
+}
+function candidateSavings(candidate) {
+  return candidate.recommendation?.savings_ms ?? 0;
+}
+
+/** Deterministic ordering with visible reasons; not an opaque quality score. */
+export function rankPerformanceCandidates(candidates, limit = 20) {
+  return candidates
+    .map((candidate) => {
+      const reach = candidateReach(candidate);
+      const savings = candidateSavings(candidate);
+      return {
+        ...candidate,
+        priority_reasons: [
+          `category: ${candidate.category}`,
+          `evidence: ${candidate.evidence_strength ?? 'unknown'}`,
+          `reach: ${reach} sampled page(s)`,
+          ...(savings ? [`estimated savings: ${savings} ms`] : []),
+        ],
+      };
+    })
+    .sort((a, b) => {
+      const ca = CATEGORY_PRIORITY[a.category] ?? 99;
+      const cb = CATEGORY_PRIORITY[b.category] ?? 99;
+      if (ca !== cb) return ca - cb;
+      const ra = candidateReach(a), rb = candidateReach(b);
+      if (ra !== rb) return rb - ra;
+      const sa = candidateSavings(a), sb = candidateSavings(b);
+      if (sa !== sb) return sb - sa;
+      return String(a.id).localeCompare(String(b.id));
+    })
     .slice(0, limit);
 }
