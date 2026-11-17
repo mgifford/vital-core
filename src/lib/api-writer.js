@@ -12,7 +12,7 @@ export const SCHEMA_VERSION = '1';
 // Public JSON Schemas live under src/api/schema/ (checked in) and are copied
 // into docs/api/v1/schema/ at build time so consumers can validate responses.
 const SCHEMA_SRC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'api', 'schema');
-const SCHEMA_FILES = ['index.schema.json', 'snapshot.schema.json', 'findings.schema.json'];
+const SCHEMA_FILES = ['index.schema.json', 'snapshot.schema.json', 'findings.schema.json', 'performance-investigation.schema.json'];
 
 function severityCounts(bugs) {
   let critical_count = 0;
