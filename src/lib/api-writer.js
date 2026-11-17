@@ -141,6 +141,11 @@ export function buildSnapshot(target, series, diffs, ledger, invSummary, latestB
     },
     reporting: buildFindingReporting(latestBugs, opts).summary,
     coverage: summarizeCoverage(latest, series[series.length - 2] ?? null, invSummary ?? null),
+    performance: (latest.performanceResources || latest.performanceInvestigations || latest.performanceCohort) ? deepRedactUrls({
+      cohort: latest.performanceCohort ?? null,
+      resources: latest.performanceResources ?? null,
+      investigations: latest.performanceInvestigations ?? null,
+    }, opts) : null,
     inventory: invSummary ?? null,
     findings: ledger.findings ?? {},
     tech_findings: latest.techFindings?.associations ?? null,

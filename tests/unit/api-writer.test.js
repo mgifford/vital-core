@@ -119,6 +119,14 @@ describe('buildSnapshot', () => {
     assert.match(snap.coverage.known_urls_note, /not an authoritative/);
   });
 
+  test('exposes performance evidence additively', () => {
+    const series = [{ ...FAKE_SUMMARY, performanceCohort: { stable_pages: 1, rotating_pages: 99 }, performanceResources: { total_resources: 1, pages_with_evidence: 1, resources: [{ key: 'https://example.gov/app.js', pages: 1, transfer_bytes: 10 }] }, performanceInvestigations: { schema_version: 'performance-investigation/1', candidates: [] } }];
+    const snap = buildSnapshot(FAKE_TARGET, series, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
+    assert.equal(snap.performance.cohort.stable_pages, 1);
+    assert.equal(snap.performance.resources.total_resources, 1);
+    assert.equal(snap.performance.investigations.schema_version, 'performance-investigation/1');
+  });
+
   test('does not include top-level pages array', () => {
     const snap = buildSnapshot(FAKE_TARGET, FAKE_SERIES, FAKE_DIFFS, FAKE_LEDGER, FAKE_INV, [FAKE_BUG]);
     assert.ok(!('pages' in snap));
