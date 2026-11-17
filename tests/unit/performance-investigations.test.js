@@ -14,3 +14,17 @@ test('builds a deterministic shared-resource investigation without causal claims
   assert.match(q.candidates[0].hypothesis, /may be adding/);
   assert.match(q.limitations[0], /correlation/);
 });
+
+test('adds slow-page and repeated Lighthouse candidates without calling them field metrics', () => {
+  const q = buildPerformanceInvestigations({
+    performanceResources: { resources: [] },
+    lighthouse: {
+      pagesSampled: 4,
+      pageDetail: [{ url: 'https://example.gov/slow', scores: { performance: 22 }, metrics: { largestContentfulPaintMs: 4000, totalBlockingTimeMs: 900 } }],
+      recommendations: [{ id: 'render-blocking-resources', title: 'Eliminate render-blocking resources', category: 'performance', pages: 4, savingsMs: 300, savingsBytes: 0 }],
+    },
+  });
+  assert.ok(q.candidates.some((c) => c.category === 'slow-representative-page'));
+  assert.ok(q.candidates.some((c) => c.category === 'repeated-lighthouse-recommendation'));
+  assert.match(q.candidates.find((c) => c.category === 'slow-representative-page').evidence.limitations[0], /not field/);
+});

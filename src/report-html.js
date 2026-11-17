@@ -4483,7 +4483,13 @@ ${moreGroups}`;
 function performanceInvestigationsSection(summary) {
   const queue = summary.performanceInvestigations;
   if (!queue?.candidates?.length) return '';
-  const rows = queue.candidates.slice(0, 15).map((candidate) => `<tr><th scope="row">${esc(candidate.resource.key)}</th><td>${esc(candidate.resource.type)}</td><td class="num">${candidate.resource.pages}</td><td class="num">${kb(candidate.resource.transfer_bytes)}</td><td>${esc(candidate.status)}</td></tr>`).join('');
+  const rows = queue.candidates.slice(0, 15).map((candidate) => {
+    const label = candidate.resource?.key ?? candidate.recommendation?.title ?? candidate.page?.url ?? candidate.id;
+    const kind = candidate.resource?.type ?? candidate.category;
+    const pages = candidate.resource?.pages ?? candidate.recommendation?.pages ?? 1;
+    const transfer = candidate.resource ? kb(candidate.resource.transfer_bytes) : 'n/a';
+    return `<tr><th scope="row">${esc(label)}</th><td>${esc(kind)}</td><td class="num">${pages}</td><td class="num">${transfer}</td><td>${esc(candidate.status)}</td></tr>`;
+  }).join('');
   return `<details class="coverage"><summary>${t('Performance investigation candidates (@n)', { '@n': queue.candidates.length })}</summary>
 <p class="meta">${t('Candidates are ranked observations from stored evidence, not confirmed defects or component ownership. The table gives the evidence denominator; the list gives the hypothesis, competing explanations and proposed test.')}</p>
 <table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer')}</th><th scope="col">${t('Status')}</th></tr></thead><tbody>${rows}</tbody></table>
