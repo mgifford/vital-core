@@ -15,6 +15,7 @@ import { discoverFromSitemaps } from './lib/sitemap.js';
 import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { selectStablePerformanceCohort } from './lib/performance-cohort.js';
+import { shouldStopForBlocks, blockBackoffMs } from './lib/block-policy.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { syncObservationsFromState } from './lib/observations.js';
@@ -195,6 +196,7 @@ context.setDefaultNavigationTimeout(target.nav_timeout_ms);
 const rates = ratesFor(config, target);
 const enginesRun = {}; // engine -> count of pages it ran on this run
 const tally = { ok: 0, blocked: 0, timeout: 0, robots_skipped: 0, url_filtered: 0, non_html: 0, redirect: 0, error: 0 };
+let consecutiveBlocks = 0;
 // Historical screenshots: opt-in, bounded per run, one per page with findings.
 const screenshotConfig = target.screenshots ?? { enabled: false };
 const screenshotsEnabled = screenshotConfig.enabled === true;
@@ -374,9 +376,19 @@ for (const item of batch) {
       runLog.scanned.push(recId);
       Object.assign(state.pages[recId], { lastScannedWeek: week, lastScannedAt: scannedAt, lastStatus: status, failCount: 0 });
       tally.blocked++;
+      consecutiveBlocks++;
       log(`blocked ${status} ${new URL(recUrl).pathname}: firewall ${block.kind}${block.by.length ? ` (${block.by.join(', ')})` : ''}`);
       if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
-      await new Promise((r) => setTimeout(r, delayMs));
+      const decision = shouldStopForBlocks({ attempted: processedPages, blocked: tally.blocked, consecutive: consecutiveBlocks });
+      if (decision.stop) {
+        runLog.stoppedReason = 'blocked';
+        runLog.blockedStop = { reason: decision.reason, attempted: processedPages, blocked: tally.blocked, consecutive: consecutiveBlocks, at: new Date().toISOString() };
+        log(`stopping run: ${decision.reason}`);
+        saveState(target.key, state);
+        break;
+      }
+      const backoff = blockBackoffMs({ status, retryAfter: (response?.headers() ?? {})['retry-after'], consecutive: consecutiveBlocks });
+      await new Promise((r) => setTimeout(r, Math.max(delayMs, backoff)));
       continue;
     }
     // Let late async rendering settle before auditing. Government sites
@@ -592,7 +604,7 @@ for (const item of batch) {
     state.pages[recId].lastStatus = status;
     state.pages[recId].failCount = 0;
     if (status >= 400) tally.blocked++;
-    else tally.ok++;
+    else { tally.ok++; consecutiveBlocks = 0; }
     log(`${status} ${urlPath} ${record.axe ? `axe:${record.axe.violationCount}` : ''} ${record.alfa ? `alfa:${record.alfa.failedCount}` : ''}`);
   } catch (err) {
     const msg = String(err);
