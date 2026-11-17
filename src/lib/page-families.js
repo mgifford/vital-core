@@ -92,7 +92,6 @@ export function createPageFamilyTracker(families = []) {
         audited_url_count: entry.audited,
         implementation_count: entry.urls > 0 ? 1 : 0,
         implementation_basis: 'configured_route',
-        route,
         states: Object.fromEntries(Object.entries(entry.states).map(([name, counts]) => [name, Object.fromEntries([...counts.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))) ])),
         variants: Object.fromEntries(Object.entries(entry.variants).map(([name, values]) => [name, { distinct_values: values.size }])),
         representative_sampling: 'not_applied',
