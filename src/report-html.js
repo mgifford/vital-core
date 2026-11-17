@@ -4496,6 +4496,7 @@ ${heading('h-coverage-summary', t('How much was tested'), 2)}
 ${coverage.pages_attempted != null ? ` ${t('@n attempted; @s succeeded.', { '@n': nf(coverage.pages_attempted), '@s': nf(coverage.pages_succeeded ?? 0) })}` : ''}
 ${coverage.pages_blocked ? ` ${t('@n blocked.', { '@n': nf(coverage.pages_blocked) })}` : ''}</p>
 <ul class="coverage-engines">${engines}</ul>
+${coverage.stable_performance_pages != null ? `<p class="meta">${t('Performance cohort: @stable stable monitoring page(s); @rotating rotating sample page(s). Stable pages are reused for matched-page trends, not extra scans.', { '@stable': nf(coverage.stable_performance_pages), '@rotating': nf(coverage.rotating_performance_pages ?? 0) })}</p>` : ''}
 ${known}
 ${coverage.notes.length ? `<ul class="coverage-notes">${coverage.notes.map((note) => `<li>${esc(note)}</li>`).join('')}</ul>` : ''}
 <p class="meta">${t('Coverage is not the same as conformance. A clean automated result does not prove that untested pages are accessible, and a drop in findings may reflect lower coverage.')}</p>

@@ -174,9 +174,9 @@ export function pickBatch(state, week, budget, scannedThisWeekCap) {
     .filter(([, p]) => p.lastScannedWeek !== week && retryable(p, week))
     .map(([id, p]) => ({ id, p, rank: weeklyRank(id, week) }))
     .sort((a, b) => {
-      // Priority first.
-      const ap = a.p.priority ? 0 : 1;
-      const bp = b.p.priority ? 0 : 1;
+      // Priority first, then the persistent performance cohort.
+      const ap = a.p.priority ? 0 : (a.p.performanceCohort?.stable ? 1 : 2);
+      const bp = b.p.priority ? 0 : (b.p.performanceCohort?.stable ? 1 : 2);
       if (ap !== bp) return ap - bp;
       // Then never-scanned before previously-scanned (freshness for trends).
       const an = a.p.lastScannedWeek === null ? 0 : 1;
@@ -187,7 +187,13 @@ export function pickBatch(state, week, budget, scannedThisWeekCap) {
       return a.rank - b.rank;
     })
     .slice(0, n)
-    .map(({ id, p }) => ({ id, url: p.url, depth: p.depth, priority: !!p.priority }));
+    .map(({ id, p }) => ({
+      id,
+      url: p.url,
+      depth: p.depth,
+      priority: !!p.priority,
+      stableCohort: p.performanceCohort?.stable ? { ...p.performanceCohort } : null,
+    }));
 
   return { batch: candidates, scannedThisWeek };
 }

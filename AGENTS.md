@@ -54,7 +54,7 @@ comparison-friendly record onto the per-page JSON.
 | `src/engines/security.js` | HTTP header + domain checks | Per origin: HTTPS, HSTS, CSP, X-Content-Type-Options, clickjacking protection, security.txt, government TLD, www resolution. | `sampling.security` (10) |
 | `src/engines/public-interest.js` | HTTP checks | Per origin: accessibility statement, carbon.txt, Green Web Foundation, sitemaps. | `sampling.public-interest` (10) |
 | `src/engines/offline-resilience.js` | own browser context | Offline fallback, service worker and Cache Storage evidence. Opt-in cost. | `sampling.offline-resilience` (0) |
-| `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD v4) | Page weight (decoded body bytes) and estimated emissions/energy. | `sampling.sustainability` (10) |
+| `src/engines/sustainability.js` | **co2.js** (`@tgwf/co2`, SWD v4) | Legacy mixed page bytes (Content-Length or decoded body), Resource Timing provenance, and modelled emissions/energy. | `sampling.sustainability` (10) |
 | `src/engines/lighthouse.js` | **Google Lighthouse** (own Chrome) | Performance / accessibility / best-practices / SEO / agentic-browsing scores, Core Web Vitals, and failing non-a11y audits via `extractAudits`. Rendered on `fast.html`. | `sampling.lighthouse` (10) |
 | `src/engines/tech.js` | **HTTPArchive/wappalyzer** (vendored, GPL-3.0) | Technology fingerprinting from in-page signals, merged by highest confidence. Update via `scripts/update-wappalyzer.sh`. | `sampling.tech` (10) |
 | `src/engines/third-party.js` | response hook + Resource Timing | Per-page third-party (different eTLD+1) cost: requests, bytes, duration, scripts per origin. Rolled up in `src/lib/third-party-rollup.js`. | `sampling.third-party` (25) |
@@ -88,8 +88,13 @@ to 3 failed attempts), then once more in a later week.
 
 1. **Priority URLs first** (`priority_urls` / `priority_urls_file`: one URL per
    line, `#` comments ok), seeded at depth 0 with `priority: true`.
-2. **Then never-scanned before previously-scanned.**
-3. **Then a stable per-week random order** (hash of `pageId + week`), so a large
+2. **Then the stable performance cohort**: homepage, priority URLs and one
+   representative per declared page family, marked persistently in crawl state
+   by `src/lib/performance-cohort.js` (maximum 12; priority URLs are never
+   dropped). These pages get Lighthouse even when the weekly hash skips them,
+   so matched-page trends are possible. Marking does not add a visit.
+3. **Then never-scanned before previously-scanned.**
+4. **Then a stable per-week random order** (hash of `pageId + week`), so a large
    site gets a different sample each week while staying reproducible.
 
 `importance` (1–5, default 3) scales `max_pages_per_week` (3 = the configured

@@ -648,6 +648,7 @@ function summarizeWeek(target, week) {
     summary.pagesSucceeded = tally.succeeded;
   }
   if (summary) summary.access = assessAccess({ records, runs: readRunLogs(runsDir) });
+  if (summary) summary.performanceCohort = summarizePerformanceCohort(readRunLogs(runsDir), summary.pagesScanned);
   return summary;
 }
 
@@ -705,6 +706,25 @@ function readTallyTotals(runsDirOrDirs, sinceMs = null) {
     }
   }
   return found ? { attempted, succeeded } : null;
+}
+
+/** Stable/rotating cohort counts from run logs; URLs are deduplicated across runs. */
+function summarizePerformanceCohort(runs, pagesScanned = 0) {
+  const stable = new Map();
+  for (const run of runs) {
+    for (const entry of run.performanceCohort?.stable ?? []) stable.set(entry.url, entry.reason ?? 'unknown');
+  }
+  if (stable.size === 0) return null;
+  return {
+    stable_pages: stable.size,
+    rotating_pages: Math.max(0, (pagesScanned ?? 0) - stable.size),
+    pages_scanned: pagesScanned ?? null,
+    reasons: [...stable.values()].reduce((out, reason) => {
+      out[reason] = (out[reason] ?? 0) + 1;
+      return out;
+    }, {}),
+    note: 'Stable pages are prioritised for matched-page trends; rotating pages are this week’s hash sample.',
+  };
 }
 
 /** Every run log in a runs directory, parsed; [] when there is none. */
