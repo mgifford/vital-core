@@ -91,6 +91,7 @@ export function buildMatchedPageRegressions(summary, previous, limit = 20) {
   const before = new Map(previous.lighthouse.pageDetail.map((page) => [page.url, page]));
   return summary.lighthouse.pageDetail
     .filter((page) => Number.isFinite(page.scores?.performance))
+    .filter((page) => !summary.performanceCohort?.stable_urls?.length || summary.performanceCohort.stable_urls.includes(page.url))
     .map((page) => {
       const prior = before.get(page.url);
       if (!prior || !Number.isFinite(prior.scores?.performance)) return null;
@@ -101,7 +102,19 @@ export function buildMatchedPageRegressions(summary, previous, limit = 20) {
         category: 'possible-matched-page-regression',
         evidence_strength: 'direct-observation',
         page: { url: page.url, current_performance: page.scores.performance, previous_performance: prior.scores.performance, delta, current_metrics: page.metrics ?? {}, previous_metrics: prior.metrics ?? {} },
-        evidence: { source: 'Lighthouse lab runs from two reporting periods', previous_week: previous.week ?? null, current_week: summary.week ?? null, limitations: ['A single pair of lab runs is not a confirmed field regression; browser, throttling and network conditions may differ.'] },
+        evidence: {
+          source: 'Lighthouse lab runs from two reporting periods',
+          previous_week: previous.week ?? null,
+          current_week: summary.week ?? null,
+          stable_cohort_member: summary.performanceCohort?.stable_urls?.includes(page.url) ?? null,
+          confirmation: 'single-observation',
+          measurement_context: {
+            previous_lighthouse_version: prior.version ?? null,
+            current_lighthouse_version: page.version ?? null,
+            versions_comparable: prior.version && page.version ? prior.version === page.version : null,
+          },
+          limitations: ['A single pair of lab runs is not a confirmed field regression; browser, throttling, viewport and network conditions may differ.', 'Repeat under matched conditions before attributing a regression.'],
+        },
         hypothesis: 'This stable page may have become materially slower than its previous Lighthouse observation.',
         alternatives: ['The change may be run-to-run variance or a different measurement environment.', 'Page content or a third party may have changed without a code regression.'],
         proposed_test: 'Repeat the same URL under matched Lighthouse conditions and compare the metrics before attributing a regression.',

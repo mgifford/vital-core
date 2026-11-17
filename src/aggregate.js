@@ -719,6 +719,7 @@ function summarizePerformanceCohort(runs, pagesScanned = 0) {
   if (stable.size === 0) return null;
   return {
     stable_pages: stable.size,
+    stable_urls: [...stable.keys()].slice(0, 50),
     rotating_pages: Math.max(0, (pagesScanned ?? 0) - stable.size),
     pages_scanned: pagesScanned ?? null,
     reasons: [...stable.values()].reduce((out, reason) => {
@@ -1089,7 +1090,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
         const v = rec.lighthouse.metrics?.[k];
         if (typeof v === 'number') lhMetrics[k].push(v);
       }
-      lhPages.push({ url: rec.url, scores: rec.lighthouse.scores, metrics: rec.lighthouse.metrics ?? {} });
+      lhPages.push({ url: rec.url, scores: rec.lighthouse.scores, metrics: rec.lighthouse.metrics ?? {}, version: rec.lighthouse.version ?? null });
       // Roll up failing audits into recommendations (like axe rules): one
       // entry per audit id, counting pages affected and summing savings.
       for (const a of rec.lighthouse.audits ?? []) {

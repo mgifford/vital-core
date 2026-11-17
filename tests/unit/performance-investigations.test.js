@@ -38,4 +38,13 @@ test('matched-page regression is a possible regression, not a confirmed defect',
   assert.equal(regression.status, 'possible-regression');
   assert.equal(regression.page.delta, -30);
   assert.match(regression.evidence.limitations[0], /not a confirmed field regression/);
+  assert.equal(regression.evidence.confirmation, 'single-observation');
+  assert.equal(regression.evidence.stable_cohort_member, null);
+});
+
+
+test('regression candidates require stable-cohort membership when the list is present', () => {
+  const previous = { week: '2026-W45', lighthouse: { pageDetail: [{ url: 'https://example.gov/a', scores: { performance: 80 } }] } };
+  const current = { week: '2026-W46', performanceCohort: { stable_urls: ['https://example.gov/other'] }, performanceResources: { resources: [] }, lighthouse: { pageDetail: [{ url: 'https://example.gov/a', scores: { performance: 50 } }] } };
+  assert.equal(buildPerformanceInvestigations(current, { previous }).candidates.some((c) => c.category === 'possible-matched-page-regression'), false);
 });
