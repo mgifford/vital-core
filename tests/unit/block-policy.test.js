@@ -24,3 +24,9 @@ test('429 gets exponential backoff and 403 does not', () => {
   assert.ok(blockBackoffMs({ status: 429, consecutive: 2 }) >= 4000);
   assert.equal(blockBackoffMs({ status: 403, consecutive: 2 }), 0);
 });
+
+test('cooldown weeks advance across ISO years', async () => {
+  const { addWeeks } = await import('../../src/lib/week.js');
+  assert.equal(addWeeks('2026-W47', 8), '2027-W02');
+  assert.equal(addWeeks('2026-W52', 1), '2026-W53');
+});

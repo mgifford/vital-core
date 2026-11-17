@@ -6,6 +6,7 @@ export const MIN_ATTEMPTS_FOR_SHARE = 20;
 export const BLOCK_SHARE_STOP = 0.2;
 export const CONSECUTIVE_BLOCKS_STOP = 5;
 export const MAX_BACKOFF_MS = 15 * 60 * 1000;
+export const BLOCK_COOLDOWN_WEEKS = 8;
 
 export function shouldStopForBlocks({ attempted, blocked, consecutive }) {
   if (consecutive >= CONSECUTIVE_BLOCKS_STOP) {

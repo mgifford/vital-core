@@ -4995,6 +4995,10 @@ export function accessReasons(access, userAgent = 'vital-scans') {
     items.push(`<strong>${t('Unreachable')}</strong>: ${t('no page loaded in @runs run(s)', { '@runs': access.connection.runs })}${access.connection.error ? ` (${esc(access.connection.error.replace(/\.$/, ''))})` : ''}.`);
     actions.push(t('Run Actions → diagnose for this domain to see what the scanner’s network gets. A network block has to be lifted by the site’s team.'));
   }
+  if (access?.cooldown?.next_probe_week) {
+    labels.push(t('in cooldown'));
+    items.push(`<strong>${t('Scanning is paused')}</strong>: ${t('the scanner stopped after repeated blocking. Next probe week: @week; routine scans will not request this site before then.', { '@week': access.cooldown.next_probe_week })}`);
+  }
   if (access?.level === 'blocked' && Object.keys(access.errorStatuses ?? {}).length) {
     items.push(t('Other pages answered with an error: @statuses.', { '@statuses': esc(statusList(access.errorStatuses)) }));
   }

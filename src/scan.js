@@ -9,13 +9,13 @@ import { loadState, saveState, addPage, pickBatch, weeklyCapFor, canonicalizeSta
 import { resolveCanonicalOrigin } from './lib/canonical.js';
 import { detectBlock } from './lib/access.js';
 import { cookieNames } from './lib/probe.js';
-import { isoWeek } from './lib/week.js';
+import { isoWeek, addWeeks } from './lib/week.js';
 import { fetchRobots } from './lib/robots.js';
 import { discoverFromSitemaps } from './lib/sitemap.js';
 import { checkLinks } from './lib/links.js';
 import { ratesFor, shouldRun, normalizeRate } from './lib/sampling.js';
 import { selectStablePerformanceCohort } from './lib/performance-cohort.js';
-import { shouldStopForBlocks, blockBackoffMs } from './lib/block-policy.js';
+import { shouldStopForBlocks, blockBackoffMs, BLOCK_COOLDOWN_WEEKS } from './lib/block-policy.js';
 import { loadPriorityUrls } from './lib/top-tasks.js';
 import { pageFingerprint } from './lib/page-records.js';
 import { syncObservationsFromState } from './lib/observations.js';
@@ -98,6 +98,12 @@ const logMemory = (phase) => {
 logMemory('start');
 
 const state = loadState(target.key, target.domain);
+const blockedCooldown = state.blockedCooldown;
+if (blockedCooldown?.nextProbeWeek && week < blockedCooldown.nextProbeWeek) {
+  log(`blocked cooldown: next probe ${blockedCooldown.nextProbeWeek}; no requests this run`);
+  process.exit(0);
+}
+const probeOnly = Boolean(blockedCooldown?.nextProbeWeek && week >= blockedCooldown.nextProbeWeek);
 
 // --- Canonical origin -------------------------------------------------
 // The scheme and host the homepage redirects to. Every same-site URL is
@@ -170,7 +176,12 @@ const delayMs = Math.max(
 
 // --- Batch ------------------------------------------------------------
 const weeklyCap = weeklyCapFor(target);
-const { batch, scannedThisWeek } = pickBatch(state, week, budget, weeklyCap);
+let { batch, scannedThisWeek } = pickBatch(state, week, budget, weeklyCap);
+if (probeOnly) {
+  const home = siteOrigin + '/';
+  batch = batch.filter((item) => item.url === home).slice(0, 1);
+  log(`blocked cooldown probe: ${batch.length ? home : 'homepage not in frontier'}`);
+}
 log(`${scannedThisWeek} scanned in ${week}; cap ${weeklyCap} (importance ${target.importance ?? 3}); batch of ${batch.length}`);
 if (batch.length === 0) {
   log('nothing to do');
@@ -379,10 +390,15 @@ for (const item of batch) {
       consecutiveBlocks++;
       log(`blocked ${status} ${new URL(recUrl).pathname}: firewall ${block.kind}${block.by.length ? ` (${block.by.join(', ')})` : ''}`);
       if (++sincePersist >= STATE_SAVE_EVERY) { saveState(target.key, state); sincePersist = 0; }
+      const forceStop = probeOnly;
       const decision = shouldStopForBlocks({ attempted: processedPages, blocked: tally.blocked, consecutive: consecutiveBlocks });
-      if (decision.stop) {
+      if (forceStop || decision.stop) {
+        const nextProbeWeek = addWeeks(week, BLOCK_COOLDOWN_WEEKS);
+        state.blockedCooldown = { sinceWeek: state.blockedCooldown?.sinceWeek ?? week, lastBlockedWeek: week, nextProbeWeek };
+        decision.stop = true;
+        decision.reason = forceStop ? 'blocked during cooldown probe' : decision.reason;
         runLog.stoppedReason = 'blocked';
-        runLog.blockedStop = { reason: decision.reason, attempted: processedPages, blocked: tally.blocked, consecutive: consecutiveBlocks, at: new Date().toISOString() };
+        runLog.blockedStop = { reason: decision.reason, attempted: processedPages, blocked: tally.blocked, consecutive: consecutiveBlocks, nextProbeWeek, at: new Date().toISOString() };
         log(`stopping run: ${decision.reason}`);
         saveState(target.key, state);
         break;
@@ -604,7 +620,11 @@ for (const item of batch) {
     state.pages[recId].lastStatus = status;
     state.pages[recId].failCount = 0;
     if (status >= 400) tally.blocked++;
-    else { tally.ok++; consecutiveBlocks = 0; }
+    else {
+      tally.ok++;
+      consecutiveBlocks = 0;
+      if (probeOnly) { delete state.blockedCooldown; saveState(target.key, state); }
+    }
     log(`${status} ${urlPath} ${record.axe ? `axe:${record.axe.violationCount}` : ''} ${record.alfa ? `alfa:${record.alfa.failedCount}` : ''}`);
   } catch (err) {
     const msg = String(err);

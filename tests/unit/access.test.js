@@ -110,3 +110,9 @@ test('renderIndex: blocked and unscanned sites are listed above the ranking, not
   assert.match(html, /blackburn\.gov\.uk<\/strong>: Blocked\./);
   assert.doesNotMatch(html, /<details class="blocked-accordion"/);
 });
+
+test('assessAccess exposes the next probe week after a blocking stop', () => {
+  const access = assessAccess({ records: [{ url: 'https://x/', status: 200, axe: { violationCount: 0 } }], runs: [{ startedAt: '2026-11-17T00:00:00Z', blockedStop: { nextProbeWeek: '2027-W02', reason: '5 consecutive blocked responses' } }] });
+  assert.equal(access.cooldown.next_probe_week, '2027-W02');
+  assert.match(access.cooldown.reason, /consecutive/);
+});

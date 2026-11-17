@@ -54,3 +54,14 @@ export function previousWeekOf(weekStr, weeks) {
   const i = sorted.indexOf(weekStr);
   return i > 0 ? sorted[i - 1] : null;
 }
+
+/** ISO week `n` weeks after `weekStr` (Monday-based, UTC). */
+export function addWeeks(weekStr, n) {
+  const m = /^(\d{4})-W(\d{1,2})$/.exec(weekStr);
+  if (!m) return weekStr;
+  const jan4 = new Date(Date.UTC(Number(m[1]), 0, 4));
+  const day = jan4.getUTCDay() || 7;
+  const monday = new Date(jan4);
+  monday.setUTCDate(jan4.getUTCDate() - (day - 1) + (Number(m[2]) - 1) * 7 + n * 7);
+  return isoWeekOf(monday);
+}
