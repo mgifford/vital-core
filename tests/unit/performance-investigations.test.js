@@ -68,3 +68,17 @@ test('render-blocking and third-party resources get distinct candidates', () => 
   assert.ok(q.candidates.some((c) => c.category === 'third-party-resource-concern'));
   assert.equal(q.candidates.some((c) => c.category === 'shared-expensive-resource'), false);
 });
+
+test('ranking is deterministic and exposes priority reasons', () => {
+  const summary = { performanceResources: { pages_with_evidence: 10, resources: [
+    { key: 'https://example.gov/small.js', type: 'script', pages: 2, transfer_bytes: 90 },
+    { key: 'https://example.gov/big.js', type: 'script', pages: 4, transfer_bytes: 900 },
+    { key: 'https://cdn.other.org/a.js', type: 'script', pages: 3, transfer_bytes: 500, third_party: true },
+  ] } };
+  const q1 = buildPerformanceInvestigations(summary);
+  const q2 = buildPerformanceInvestigations(summary);
+  assert.deepEqual(q1.candidates.map((c) => c.id), q2.candidates.map((c) => c.id));
+  assert.ok(q1.rank_basis.includes('sampled-page reach'));
+  assert.ok(q1.candidates.every((c) => Array.isArray(c.priority_reasons) && c.priority_reasons.length >= 3));
+  assert.equal(q1.candidates[0].category, 'third-party-resource-concern');
+});
