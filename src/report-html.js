@@ -4480,6 +4480,16 @@ ${moreGroups}`;
   });
 }
 
+function performanceInvestigationsSection(summary) {
+  const queue = summary.performanceInvestigations;
+  if (!queue?.candidates?.length) return '';
+  const rows = queue.candidates.slice(0, 15).map((candidate) => `<tr><th scope="row">${esc(candidate.resource.key)}</th><td>${esc(candidate.resource.type)}</td><td class="num">${candidate.resource.pages}</td><td class="num">${kb(candidate.resource.transfer_bytes)}</td><td>${esc(candidate.status)}</td></tr>`).join('');
+  return `<details class="coverage"><summary>${t('Performance investigation candidates (@n)', { '@n': queue.candidates.length })}</summary>
+<p class="meta">${t('Candidates are ranked observations from stored evidence, not confirmed defects or component ownership. Each links to sampled pages and competing explanations.')}</p>
+<table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Transfer (decoded)')}</th><th scope="col">${t('Status')}</th></tr></thead><tbody>${rows}</tbody></table>
+<ul>${queue.candidates.slice(0, 5).map((candidate) => `<li>${esc(candidate.hypothesis)} <span class="bug-meta">${esc(candidate.proposed_test)}</span></li>`).join('')}</ul></details>`;
+}
+
 function performanceResourcesSection(summary) {
   const r = summary.performanceResources;
   if (!r?.resources?.length) return '';
@@ -4589,6 +4599,7 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automa
 
 ${coverageSummarySection(summary, prev, invSummary)}
 ${performanceResourcesSection(summary)}
+${performanceInvestigationsSection(summary)}
 
 <p class="meta">${t('Primary standards queue: @n required finding type(s) (handling: report). Verification queue: @r required finding type(s) (handling: review). Aspirational queue: @asp finding type(s). Advisory queue: @a finding type(s). Unmapped review queue: @u finding type(s).', {
   '@n': lanes.requiredReport,
