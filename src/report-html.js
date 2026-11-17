@@ -4480,6 +4480,15 @@ ${moreGroups}`;
   });
 }
 
+function performanceResourcesSection(summary) {
+  const r = summary.performanceResources;
+  if (!r?.resources?.length) return '';
+  const rows = r.resources.slice(0, 15).map((item) => `<tr><th scope="row">${esc(item.key)}</th><td>${esc(item.type)}</td><td class="num" data-sort="${item.pages}">${item.pages}</td><td class="num" data-sort="${item.transfer_bytes}">${kb(item.transfer_bytes)}</td><td>${item.third_party ? t('Third party') : t('First party')}</td></tr>`).join('');
+  return `<details class="coverage"><summary>${t('Shared performance resources (@n observed)', { '@n': r.total_resources })}</summary>
+<p class="meta">${t('Resource Timing identity strips query strings. Page counts use the pages with this evidence, not the whole site. Presence is not a defect or a component-ownership claim.')}</p>
+<table><caption>${t('Resources observed across the most sampled pages.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Transfer (decoded)')}</th><th scope="col">${t('Party')}</th></tr></thead><tbody>${rows}</tbody></table></details>`;
+}
+
 function coverageSummarySection(summary, prev, invSummary) {
   const coverage = summarizeCoverage(summary, prev, invSummary);
   if (!coverage) return '';
@@ -4579,6 +4588,7 @@ ${score && scoreFormat !== 'none' ? `<aside class="scorecard" aria-label="Automa
 <p class="note score-scope-note" id="score-scope-note" hidden>${t('You have URL exclusions active. They filter the findings on the Accessibility page; this whole-site score still reflects every scanned page.')}</p>` : ''}
 
 ${coverageSummarySection(summary, prev, invSummary)}
+${performanceResourcesSection(summary)}
 
 <p class="meta">${t('Primary standards queue: @n required finding type(s) (handling: report). Verification queue: @r required finding type(s) (handling: review). Aspirational queue: @asp finding type(s). Advisory queue: @a finding type(s). Unmapped review queue: @u finding type(s).', {
   '@n': lanes.requiredReport,

@@ -36,6 +36,7 @@ import { runTech } from './engines/tech.js';
 import { createLighthouseRunner } from './engines/lighthouse.js';
 import { createSustainabilityCollector } from './engines/sustainability.js';
 import { createThirdPartyCollector } from './engines/third-party.js';
+import { createPerformanceResourceCollector } from './engines/performance-resources.js';
 
 /**
  * One scan run for one domain. Designed to be boring:
@@ -318,6 +319,7 @@ for (const item of batch) {
   // response (like sustainability). Keyed on the page's canonical URL so
   // same-site subdomains are classified first-party.
   const thirdParty = runs('third-party') ? createThirdPartyCollector(page, item.url) : null;
+  const perfResources = runs('performance-resources') ? createPerformanceResourceCollector(page, item.url) : null;
 
   try {
     const response = await page.goto(fetchUrl, { waitUntil: 'load' });
@@ -410,6 +412,9 @@ for (const item of batch) {
     // collecting after them would conflate audit activity with the real
     // page weight and couple the number to which engines happened to run.
     if (sustain) { record.sustainability = await sustain.collect(); mark('sustainability'); }
+    // Same loaded page: no second navigation. Collect before audits so audit
+    // traffic cannot inflate the Resource Timing inventory.
+    if (perfResources) { record.performanceResources = await perfResources.collect(); mark('performance-resources'); }
 
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
       // Best-effort and read-only: taken before the audits so it describes the page as loaded.

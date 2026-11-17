@@ -766,6 +766,7 @@ function summarizeRecords(target, week, records, brokenLinks) {
   let alfaEvidence = null;
   const enginePageCounts = {}; // engine -> unique pages it ran on (coverage)
   const resourceMap = new Map(); // resource url -> { url, type, foundOn:Set }
+  const perfResourceMap = new Map(); // resource key -> bounded page-level evidence
   // Standards (per-page): checkId -> { label, pass, total } pass counts.
   const standardsChecks = {};
   let standardsPages = 0;
@@ -1017,6 +1018,21 @@ function summarizeRecords(target, week, records, brokenLinks) {
         if (e.bytes == null && img.bytes != null) e.bytes = img.bytes;
       }
     }
+    if (rec.performanceResources) {
+      for (const item of rec.performanceResources.resources ?? []) {
+        let entry = perfResourceMap.get(item.key);
+        if (!entry) {
+          entry = { key: item.key, type: item.type, third_party: item.third_party, origin: item.origin, pages: new Set(), examples: [], transfer_bytes: 0, decoded_body_bytes: 0, zero_transfer: 0, render_blocking_pages: new Set() };
+          perfResourceMap.set(item.key, entry);
+        }
+        entry.pages.add(rec.url);
+        if (entry.examples.length < 5) entry.examples.push(rec.url);
+        entry.transfer_bytes += item.transfer_bytes ?? 0;
+        entry.decoded_body_bytes += item.decoded_body_bytes ?? 0;
+        if (item.zero_transfer > 0) entry.zero_transfer++;
+        if (item.render_blocking) entry.render_blocking_pages.add(rec.url);
+      }
+    }
     if (rec.sustainability) {
       bytesList.push(rec.sustainability.bytes);
       requestsList.push(rec.sustainability.requests);
@@ -1116,6 +1132,22 @@ function summarizeRecords(target, week, records, brokenLinks) {
     // Per-engine coverage: unique pages each engine ran on, vs pages
     // scanned. Reflects the configured weekly sampling rates.
     coverage: enginePageCounts,
+    performanceResources: perfResourceMap.size ? {
+      schema_version: 'performance-resource-inventory/1',
+      pages_with_evidence: new Set([...perfResourceMap.values()].flatMap((entry) => [...entry.pages])).size,
+      total_resources: perfResourceMap.size,
+      third_party_resources: [...perfResourceMap.values()].filter((entry) => entry.third_party).length,
+      resources: [...perfResourceMap.values()]
+        .sort((a, b) => b.pages.size - a.pages.size || b.transfer_bytes - a.transfer_bytes)
+        .slice(0, 50)
+        .map((entry) => ({
+          key: entry.key, type: entry.type, third_party: entry.third_party, origin: entry.origin,
+          pages: entry.pages.size, examples: entry.examples, transfer_bytes: entry.transfer_bytes,
+          decoded_body_bytes: entry.decoded_body_bytes, zero_transfer_pages: entry.zero_transfer,
+          render_blocking_pages: entry.render_blocking_pages.size,
+        })),
+      note: 'Resource identity strips query strings; page counts are a denominator of pages with this Resource Timing evidence, not site-wide prevalence. Presence is not a defect or ownership claim.',
+    } : null,
     blocked,
     axe: {
       violationTotal: axeViolationTotal,
