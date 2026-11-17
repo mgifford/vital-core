@@ -101,5 +101,8 @@ export function assessAccess({ records = [], runs = [] } = {}) {
   else if (audited === 0) level = 'blocked';
   else if (stopped > 0 && stopped / attempted >= PARTIAL_SHARE) level = 'partial';
 
-  return { level, audited, attempted, firewall, robots, connection, errorStatuses };
+  const cooldown = latest?.blockedStop?.nextProbeWeek
+    ? { next_probe_week: latest.blockedStop.nextProbeWeek, reason: latest.blockedStop.reason ?? null }
+    : null;
+  return { level, audited, attempted, firewall, robots, connection, errorStatuses, cooldown };
 }
