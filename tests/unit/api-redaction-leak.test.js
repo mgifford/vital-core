@@ -97,3 +97,15 @@ describe('API redaction + exclusion leak proof (issue #136)', () => {
     assert.deepEqual(ids, ['VS-visible']);
   });
 });
+
+test('performance evidence nested URLs and hypotheses are redacted', () => {
+  const perfSeries = [{
+    week: '2026-W25', pagesScanned: 10,
+    performanceCohort: { stable_pages: 1, rotating_pages: 9, stable_urls: [`https://example.gov/stable?token=${SECRET}`] },
+    performanceResources: { pages_with_evidence: 1, total_resources: 1, resources: [{ key: `https://example.gov/a?token=${SECRET}`, examples: [`https://example.gov/a?token=${SECRET}`], pages: 1 }] },
+    performanceInvestigations: { schema_version: 'performance-investigation/1', candidates: [{ id: 'x', category: 'shared-expensive-resource', status: 'investigation-candidate', evidence_strength: 'direct-observation', priority_reasons: ['reach'], hypothesis: 'check the shared resource', proposed_test: 'test', evidence: { source: 'x', examples: [`https://example.gov/a?token=${SECRET}`] } }] },
+  }];
+  const snap = buildSnapshot({ ...target, url_exclude_patterns: [] }, perfSeries, {}, { findings: {} }, null, []);
+  const json = JSON.stringify(snap.performance);
+  assert.ok(!json.includes(SECRET), 'performance evidence leaked sensitive query value');
+});

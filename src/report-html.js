@@ -4488,12 +4488,12 @@ function performanceInvestigationsSection(summary) {
     const kind = candidate.resource?.type ?? candidate.category;
     const pages = candidate.resource?.pages ?? candidate.recommendation?.pages ?? 1;
     const transfer = candidate.resource ? kb(candidate.resource.transfer_bytes) : 'n/a';
-    return `<tr><th scope="row">${esc(label)}</th><td>${esc(kind)}</td><td class="num">${pages}</td><td class="num">${transfer}</td><td>${esc(candidate.status)}</td></tr>`;
+    return `<tr><th scope="row">${esc(label)}</th><td>${esc(kind)}</td><td class="num">${pages}</td><td class="num">${transfer}</td><td>${esc(candidate.status)}</td><td>${esc((candidate.priority_reasons ?? []).slice(0, 2).join('; '))}</td></tr>`;
   }).join('');
   return `<details class="coverage"><summary>${t('Performance investigation candidates (@n)', { '@n': queue.candidates.length })}</summary>
 <p class="meta">${t('Candidates are ranked observations from stored evidence, not confirmed defects or component ownership. The table gives the evidence denominator; the list gives the hypothesis, competing explanations and proposed test.')}</p>
-<table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer')}</th><th scope="col">${t('Status')}</th></tr></thead><tbody>${rows}</tbody></table>
-<ul>${queue.candidates.slice(0, 5).map((candidate) => `<li><strong>${esc(candidate.hypothesis)}</strong> ${t('Alternatives:')} ${esc((candidate.alternatives ?? []).join(' ') || t('none recorded'))} <span class="bug-meta">${t('Proposed test:')} ${esc(candidate.proposed_test)}</span></li>`).join('')}</ul></details>`;
+<table><caption>${t('Shared resources worth investigating. Page counts use sampled pages with evidence, not the whole site.')}</caption><thead><tr><th scope="col">${t('Resource')}</th><th scope="col">${t('Type')}</th><th scope="col" class="num">${t('Pages')}</th><th scope="col" class="num">${t('Network transfer')}</th><th scope="col">${t('Status')}</th><th scope="col">${t('Priority reason')}</th></tr></thead><tbody>${rows}</tbody></table>
+<ul>${queue.candidates.slice(0, 5).map((candidate) => `<li><strong>${esc(candidate.hypothesis)}</strong> ${t('Alternatives:')} ${esc((candidate.alternatives ?? []).join(' ') || t('none recorded'))} <span class="bug-meta">${t('Proposed test:')} ${esc(candidate.proposed_test)}</span> <span class="bug-meta">${esc((candidate.priority_reasons ?? []).join(' · '))}</span></li>`).join('')}</ul></details>`;
 }
 
 function performanceResourcesSection(summary) {
