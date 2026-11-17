@@ -244,6 +244,11 @@ try {
   assert(sc.consent_handling?.choice === 'reject' && sc.consent_handling.pages_by_state.after_decision > 0, 'summary records consent handling by state');
   assert(w1.pageFamilies && w1.pageFamilies.families[0].url_count >= PAGES && w1.pageFamilies.urls_total === w1.pagesScanned, 'page family counts cover the numbered pages without changing the URL total');
   assert(w1.sustainability && w1.sustainability.medianBytes > 0, 'sustainability metrics recorded');
+  const w1PageFiles = fs.readdirSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages')).filter((f) => f.endsWith('.json'));
+  const w1Page = JSON.parse(fs.readFileSync(path.join(SANDBOX, 'data', 'localhost', '2026-W23', 'pages', w1PageFiles[0]), 'utf8'));
+  assert.equal(w1Page.sustainability.measurement.schema_version, 'sustainability-measurement/1', 'page records carry measurement provenance');
+  assert.match(w1Page.sustainability.measurement.energy.basis, /not observed client energy/);
+  assert.match(w1Page.sustainability.measurement.legacy_bytes.basis, /mixed/);
   assert(w1.sustainability.meanEnergyWh > 0 && w1.sustainability.meanCo2g > 0, 'both energy (Wh) and CO2 (g) recorded');
   // Energy and CO2 are linked by grid intensity (~494 g/kWh in the SWD model).
   const gPerKWh = w1.sustainability.meanCo2g / (w1.sustainability.meanEnergyWh / 1000);

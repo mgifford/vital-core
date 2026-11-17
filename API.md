@@ -348,6 +348,13 @@ image evidence:
 
 - `findings[].screenshot` — `{ available, file, file_name, width, height,
   full_page, captured_at, format, bytes }` or `{ available: false, reason }`.
+
+Sustainability records retain the historical `bytes`, `co2g`, `energyWh` and
+`model` fields. New records add `measurement` (`sustainability-measurement/1`)
+with the byte basis, Resource Timing values, CO₂ model/version, grid-intensity
+source, boundary and limitations. Treat CO₂/Wh as modelled estimates; they are
+not observed energy.
+
   Dimensions are CSS pixels; `file` is a path relative to the week report
   (e.g. `screenshots/<page-id>.jpg`). `captured_at` describes the scan, not the
   current site.

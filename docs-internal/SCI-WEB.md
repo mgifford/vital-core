@@ -11,9 +11,13 @@ by section. Do not claim VITAL produces an SCI-Web score.
 
 `src/engines/sustainability.js` records, per page:
 
-- browser-observed decoded response bytes and requests by resource type;
+- a legacy mixed page-byte total: `Content-Length` where present, otherwise
+  decoded response body — not a pure transfer measurement;
+- separately recorded Resource Timing transfer/encoded/decoded sizes, with
+  missing and cross-origin-zero values marked unknown;
 - CO₂e using the **Sustainable Web Design v4** model from `co2.js`;
-- derived energy using the model's grid intensity.
+- derived energy using the model's grid intensity, explicitly model output
+  rather than measured client energy.
 
 Reports call these estimates and use them for week-over-week direction, not
 carbon accounting. That remains correct.
@@ -55,3 +59,12 @@ software boundary and per-component implementation tiers. VITAL currently has:
 No scanner or report implementation now. The honest current output is a
 page-weight/CO₂ trend, not an SCI-Web conformance score. This note records the
 gap so future work does not mislabel it.
+
+## Measurement versioning
+
+Records created before the measurement-provenance change have no
+`measurement` block. Their top-level `bytes`, `co2g`, `energyWh` and `model`
+values are unchanged and retain the historical mixed byte basis. Do not
+backfill transfer or decoded totals from old records, and do not compare new
+Resource Timing values with old page-weight values as if they were the same
+metric.

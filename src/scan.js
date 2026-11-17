@@ -394,7 +394,7 @@ for (const item of batch) {
     // any lazy content they trigger) generate their own network traffic;
     // collecting after them would conflate audit activity with the real
     // page weight and couple the number to which engines happened to run.
-    if (sustain) { record.sustainability = sustain.collect(); mark('sustainability'); }
+    if (sustain) { record.sustainability = await sustain.collect(); mark('sustainability'); }
 
     if (status >= 200 && status < 400 && (response?.headers()['content-type'] ?? '').includes('html')) {
       // Best-effort and read-only: taken before the audits so it describes the page as loaded.
