@@ -1,6 +1,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildLlmsTxt } from '../../src/lib/llms-txt.js';
+import { repoBlobBase, repoUrl } from '../../src/lib/repo-links.js';
 
 const CONFIG = { reportBaseUrl: 'https://mgifford.github.io/vital-core' };
 
@@ -25,10 +26,11 @@ describe('buildLlmsTxt', () => {
     assert.match(text, /\[nih\.gov snapshot\]\(https:\/\/mgifford\.github\.io\/vital-core\/api\/v1\/nih\.gov\/snapshot\.json\)/);
   });
 
-  test('links MCP.md and API.md at the GitHub repo (not the Pages host, which does not serve them)', () => {
+  test('links MCP.md, API.md and the repository at the instance repo (not the Pages host)', () => {
     const text = buildLlmsTxt(CONFIG, []);
-    assert.match(text, /\[MCP\.md\]\(https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/MCP\.md\)/);
-    assert.match(text, /\[API\.md\]\(https:\/\/github\.com\/mgifford\/vital-core\/blob\/main\/API\.md\)/);
+    assert.ok(text.includes(`[MCP.md](${repoBlobBase()}/MCP.md)`));
+    assert.ok(text.includes(`[API.md](${repoBlobBase()}/API.md)`));
+    assert.ok(text.includes(`[Repository](${repoUrl()})`));
   });
 
   test('never emits a relative link — every URL is absolute', () => {

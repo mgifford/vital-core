@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFor, trajectory } from './lib/score.js';
+import { repoBlobBase } from './lib/repo-links.js';
 import { LH_METRIC_AUDITS } from './engines/lighthouse.js';
 import { summarizeCoverage } from './lib/coverage.js';
 import { rankBugs, fleetWorstOffenders, mergeFleetPatterns, rankFleetPatterns, tierOf, isRequiredFinding } from './lib/priority.js';
@@ -1005,8 +1006,8 @@ function layout({ title, breadcrumb, body, depth, extraScript = '', page = '', a
     ? `<link rel="alternate" type="application/json" href="${esc(`${base}api/v1/${apiFinding.key}/${apiFinding.week}/findings.json`)}" title="This page's findings as JSON">\n`
     : '';
   const relatedLinks = `${apiLink}<link rel="alternate" type="application/json" href="${esc(`${base}api/catalog.json`)}" title="API catalog">
-<link rel="help" href="https://github.com/mgifford/vital-core/blob/main/API.md" title="JSON API documentation">
-<link rel="help" href="https://github.com/mgifford/vital-core/blob/main/MCP.md" title="Local MCP server documentation">`;
+<link rel="help" href="${repoBlobBase()}/API.md" title="JSON API documentation">
+<link rel="help" href="${repoBlobBase()}/MCP.md" title="Local MCP server documentation">`;
   return `<!DOCTYPE html>
 <html lang="${esc(getLocale())}">
 <head>
@@ -1048,11 +1049,11 @@ ${body}
   <p>${apiFinding
       ? t('Machine-readable data for this page is available through the <a href="@apiUrl">Vital Core JSON API</a>. Developers using an MCP-compatible coding assistant can connect through the <a href="@mcpUrl">Vital MCP server</a>.', {
           '@apiUrl': esc(`${base}api/v1/${apiFinding.key}/${apiFinding.week}/findings.json`),
-          '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
+          '@mcpUrl': `${repoBlobBase()}/MCP.md`,
         })
       : t('Machine-readable data for this site is available through the <a href="@apiUrl">Vital Core JSON API</a>. Developers using an MCP-compatible coding assistant can connect through the <a href="@mcpUrl">Vital MCP server</a>.', {
           '@apiUrl': esc(`${base}api/v1/index.json`),
-          '@mcpUrl': 'https://github.com/mgifford/vital-core/blob/main/MCP.md',
+          '@mcpUrl': `${repoBlobBase()}/MCP.md`,
         })}</p>
 </footer>
 ${INTERACTIVE_CHARTS ? paraChartLoader(base) : ''}
@@ -4960,7 +4961,7 @@ ${table}
 </figure>`;
 }
 
-const WAF_ALLOWLIST_URL = 'https://github.com/mgifford/vital-core/blob/main/WAF-ALLOWLIST.md';
+const wafAllowlistUrl = () => `${repoBlobBase()}/WAF-ALLOWLIST.md`;
 
 function statusList(statuses) {
   return Object.entries(statuses ?? {}).sort((a, b) => b[1] - a[1]).map(([s, n]) => `HTTP ${s} × ${n}`).join(', ');
@@ -4980,7 +4981,7 @@ export function accessReasons(access, userAgent = 'vital-scans') {
     const by = fw.by?.length ? ` ${t('Identified as @firewalls.', { '@firewalls': esc(fw.by.join(', ')) })}` : '';
     labels.push(t('blocked by a firewall'));
     items.push(`<strong>${t('Blocked by a firewall')}</strong>: ${t('@count page(s) got a challenge or refusal instead of the page (@statuses).', { '@count': fw.pages, '@statuses': esc(statusList(fw.statuses)) })}${by}`);
-    actions.push(t('Ask the site’s web team to let the user agent <code>@ua</code> through its firewall (<a href="@href">what to send them</a>).', { '@ua': ua, '@href': WAF_ALLOWLIST_URL }));
+    actions.push(t('Ask the site’s web team to let the user agent <code>@ua</code> through its firewall (<a href="@href">what to send them</a>).', { '@ua': ua, '@href': wafAllowlistUrl() }));
   }
   const rb = access?.robots;
   if (rb?.rootBlocked || rb?.skipped) {
@@ -5336,7 +5337,7 @@ ${heading('h-tools', t('Tools'))}
 <section aria-labelledby="h-why">
 ${heading('h-why', t('Why this exists'))}
 <p>${t('One-off audits go out of date. This ledger shows whether each site is becoming more accessible and lighter over time. It uses <a href="https://github.com/dequelabs/axe-core">axe-core</a> and <a href="https://github.com/Siteimprove/alfa">Alfa</a> (open source accessibility engines) and estimates page carbon with the <a href="https://sustainablewebdesign.org/">Sustainable Web Design</a> model. The scanner, data and reports are all open.')}</p>
-<p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), a machine-discovery <a href="api/catalog.json">API catalog</a>, and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="https://github.com/mgifford/vital-core/blob/main/MCP.md">MCP server</a>.')}</p>
+<p>${t('This data is also available beyond the web page: a read-only <a href="api/v1/index.json">JSON API</a> (no auth, no server), a machine-discovery <a href="api/catalog.json">API catalog</a>, and for coding agents an <a href="llms.txt">llms.txt</a> guide plus a local <a href="@mcpUrl">MCP server</a>.', { '@mcpUrl': `${repoBlobBase()}/MCP.md` })}</p>
 </section>`;
   return layout({ title: pageTitle, breadcrumb: '', body, depth: 0, page: 'index' });
 }
