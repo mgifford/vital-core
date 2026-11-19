@@ -22,14 +22,19 @@ const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo', 'ag
 // Lighthouse sets up each child target (an iframe or worker) in an async
 // 'sessionattached' listener. When the page removes the target before Chrome
 // answers, Lighthouse ignores "Target closed" but rethrows Chrome's other
-// wording of the same thing, "Session with given id not found". Thrown from a
-// listener, it is an unhandled rejection that audit()'s try/catch can't see,
-// and Node exits mid-scan (lighthouse 13.5.0 and 13.6.0).
+// wording of the same thing, "Session with given id not found", or reports it
+// as a protocol timeout on the same setup methods. Thrown from a listener,
+// either is an unhandled rejection that audit()'s try/catch can't see, and
+// Node exits mid-scan (lighthouse 13.5.0 and 13.6.0).
 const TARGET_SETUP_METHODS = new Set(['Target.getTargetInfo', 'Network.enable', 'Target.setAutoAttach']);
 
 export function isDetachedTargetError(reason) {
-  return TARGET_SETUP_METHODS.has(reason?.protocolMethod)
-    && /Session with given id not found/.test(String(reason?.message ?? ''));
+  if (!TARGET_SETUP_METHODS.has(reason?.protocolMethod)) return false;
+  // Chrome reports a child that never answered as a protocol timeout on the
+  // same setup methods (go.walsall.gov.uk, Network.enable). Ignoring it loses
+  // that child's data, not the page audit, which still fails through audit().
+  if (reason?.code === 'PROTOCOL_TIMEOUT') return true;
+  return /Session with given id not found/.test(String(reason?.message ?? ''));
 }
 
 // Lighthouse's CPU-idle wait re-arms itself with setTimeout. When the audit
@@ -51,7 +56,7 @@ export function isClosedSessionError(reason) {
 export function guardDetachedTargetRejections(log = () => {}) {
   const onRejection = (reason) => {
     if (isDetachedTargetError(reason)) {
-      log(`lighthouse: ignored a child target that closed while attaching (${reason.protocolMethod})`);
+      log(`lighthouse: ignored a child target that ${reason.code === 'PROTOCOL_TIMEOUT' ? 'timed out' : 'closed'} while attaching (${reason.protocolMethod})`);
     } else if (isClosedSessionError(reason)) {
       log(`lighthouse: ignored a late check on a page that had closed (${reason.protocolMethod})`);
     } else {

@@ -1894,6 +1894,10 @@ test('isDetachedTargetError: matches only a child target closing while Lighthous
   assert.ok(!isDetachedTargetError(protocolError('Target.getTargetInfo', 'Internal error')), 'other errors still fail');
   assert.ok(!isDetachedTargetError(new Error('Session with given id not found.')), 'needs a protocol method');
   assert.ok(!isDetachedTargetError(undefined));
+  const timeout = Object.assign(protocolError('Network.enable', 'Waiting for DevTools protocol response has exceeded the allotted time.'), { code: 'PROTOCOL_TIMEOUT' });
+  assert.ok(isDetachedTargetError(timeout), 'a target that never answered is a detached target');
+  const wrongMethod = Object.assign(protocolError('Page.navigate', 'Waiting for DevTools protocol response has exceeded the allotted time.'), { code: 'PROTOCOL_TIMEOUT' });
+  assert.ok(!isDetachedTargetError(wrongMethod), 'timeouts outside target setup still fail');
 });
 
 test('isClosedSessionError: matches Lighthouse rejecting a check on a page that has closed', () => {
@@ -1907,11 +1911,12 @@ test('isClosedSessionError: matches Lighthouse rejecting a check on a page that 
 
 test('guardDetachedTargetRejections: survives the detached-target rejection, still crashes on others', () => {
   const mod = new URL('../../src/engines/lighthouse.js', import.meta.url).href;
-  const run = (method, message) => spawnSync(process.execPath, ['--input-type=module', '-e', `
+  const run = (method, message, code = null) => spawnSync(process.execPath, ['--input-type=module', '-e', `
     const { guardDetachedTargetRejections } = await import(${JSON.stringify(mod)});
     guardDetachedTargetRejections((m) => console.log(m));
     const err = new Error(${JSON.stringify(message)});
     err.protocolMethod = ${JSON.stringify(method)};
+    ${code ? `err.code = ${JSON.stringify(code)};` : ''}
     Promise.reject(err);
     setTimeout(() => console.log('still running'), 50);
   `], { encoding: 'utf8' });
@@ -1925,6 +1930,11 @@ test('guardDetachedTargetRejections: survives the detached-target rejection, sti
   assert.equal(late.status, 0, late.stderr);
   assert.match(late.stdout, /ignored a late check on a page that had closed \(Page\.enable\)/);
   assert.match(late.stdout, /still running/);
+
+  const timedOut = run('Network.enable', 'Protocol error (Network.enable): Waiting for DevTools protocol response has exceeded the allotted time.', 'PROTOCOL_TIMEOUT');
+  assert.equal(timedOut.status, 0, timedOut.stderr);
+  assert.match(timedOut.stdout, /ignored a child target that timed out while attaching \(Network\.enable\)/);
+  assert.match(timedOut.stdout, /still running/);
 
   const fatal = run('Page.navigate', 'Protocol error (Page.navigate): Internal error');
   assert.notEqual(fatal.status, 0);
