@@ -82,3 +82,14 @@ test('ranking is deterministic and exposes priority reasons', () => {
   assert.ok(q1.candidates.every((c) => Array.isArray(c.priority_reasons) && c.priority_reasons.length >= 3));
   assert.equal(q1.candidates[0].category, 'third-party-resource-concern');
 });
+
+test('resource candidates carry a representative page and the cap retains high-transfer third parties', () => {
+  const resources = [];
+  for (let i = 0; i < 25; i++) resources.push({ key: `https://example.gov/r${i}.css`, type: 'link', pages: 10, render_blocking_pages: 2 });
+  resources.push({ key: 'https://qualtrics.example/survey.js', type: 'script', third_party: true, origin: 'qualtrics.example', pages: 10, transfer_bytes: 1000000, examples: ['https://example.gov/page'] });
+  const q = buildPerformanceInvestigations({ performanceResources: { pages_with_evidence: 10, resources } });
+  const third = q.candidates.find((c) => c.id === 'third-party-resource:https://qualtrics.example/survey.js');
+  assert.ok(third);
+  assert.equal(third.page.url, 'https://example.gov/page');
+  assert.ok(q.candidates.length > 20);
+});

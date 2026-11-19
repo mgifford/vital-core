@@ -7,7 +7,12 @@ import { routeMatches } from './page-families.js';
 
 export const PERFORMANCE_INVESTIGATION_SCHEMA = 'performance-investigation/1';
 
-export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 20, previous = null } = {}) {
+function pageFor(resource) {
+  const url = (resource?.examples ?? []).find((example) => typeof example === 'string' && example.startsWith('https://'));
+  return url ? { url } : null;
+}
+
+export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 30, previous = null } = {}) {
   const resources = summary?.performanceResources?.resources ?? [];
   const resourceCandidates = resources
     .filter((resource) => resource.pages >= minPages && (resource.transfer_bytes ?? 0) > 0)
@@ -24,6 +29,7 @@ export function buildPerformanceInvestigations(summary, { minPages = 3, limit = 
         transfer_bytes: resource.transfer_bytes,
         render_blocking_pages: resource.render_blocking_pages ?? 0,
       },
+      ...(pageFor(resource) ? { page: pageFor(resource) } : {}),
       evidence: {
         source: 'performance-resource-inventory/1',
         examples: resource.examples ?? [],
@@ -161,7 +167,7 @@ export function buildPageFamilyCandidates(summary, limit = 20) {
 }
 
 
-export function buildRenderBlockingCandidates(summary, limit = 20) {
+export function buildRenderBlockingCandidates(summary, limit = 30) {
   return (summary?.performanceResources?.resources ?? [])
     .filter((resource) => (resource.render_blocking_pages ?? 0) >= 2)
     .map((resource) => ({
@@ -169,6 +175,7 @@ export function buildRenderBlockingCandidates(summary, limit = 20) {
       category: 'potential-render-blocking-resource',
       evidence_strength: 'direct-observation',
       resource: { key: resource.key, type: resource.type, pages: resource.pages, render_blocking_pages: resource.render_blocking_pages },
+      ...(pageFor(resource) ? { page: pageFor(resource) } : {}),
       evidence: { source: 'performance-resource-inventory/1', denominator: summary.performanceResources.pages_with_evidence ?? null, limitations: ['Render-blocking status is browser-reported and does not prove a user-visible delay.'] },
       hypothesis: 'This resource is render-blocking on multiple sampled pages and may delay first paint.',
       alternatives: ['The resource may be required for correct first paint.', 'The browser may no longer treat it as blocking after an implementation change.'],
@@ -179,7 +186,7 @@ export function buildRenderBlockingCandidates(summary, limit = 20) {
     .slice(0, limit);
 }
 
-export function buildThirdPartyCandidates(summary, minPages = 3, limit = 20) {
+export function buildThirdPartyCandidates(summary, minPages = 3, limit = 30) {
   return (summary?.performanceResources?.resources ?? [])
     .filter((resource) => resource.third_party && resource.pages >= minPages)
     .map((resource) => ({
@@ -187,6 +194,7 @@ export function buildThirdPartyCandidates(summary, minPages = 3, limit = 20) {
       category: 'third-party-resource-concern',
       evidence_strength: 'direct-observation',
       resource: { key: resource.key, type: resource.type, origin: resource.origin, pages: resource.pages, transfer_bytes: resource.transfer_bytes },
+      ...(pageFor(resource) ? { page: pageFor(resource) } : {}),
       evidence: { source: 'performance-resource-inventory/1', denominator: summary.performanceResources.pages_with_evidence ?? null, limitations: ['Third-party presence and transfer are not proof of a defect or causation.'] },
       hypothesis: 'This third-party resource is loaded on multiple sampled pages and may contribute transfer or blocking cost.',
       alternatives: ['Another first-party or third-party resource may be responsible.', 'The third party may be required for a core service.'],
@@ -216,7 +224,7 @@ function candidateSavings(candidate) {
 }
 
 /** Deterministic ordering with visible reasons; not an opaque quality score. */
-export function rankPerformanceCandidates(candidates, limit = 20) {
+export function rankPerformanceCandidates(candidates, limit = 30) {
   return candidates
     .map((candidate) => {
       const reach = candidateReach(candidate);
