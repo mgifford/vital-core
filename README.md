@@ -1,357 +1,377 @@
 # VITAL Scans
 
-An open source website quality engine. It crawls 5–20 domains slowly and
-politely across each week, scans thousands of pages per domain with
-[axe-core](https://github.com/dequelabs/axe-core) and
-[Siteimprove Alfa](https://github.com/Siteimprove/alfa) (the open source
-engine behind Siteimprove's commercial checker), measures page weight,
-estimated energy costs, image inventory, and technology stack, and publishes
-week-over-week reports to GitHub Pages. Everything runs on GitHub Actions.
-There is no server, no database, and no budget line.
+**Open-source, continuous website quality monitoring for accessibility, performance, sustainability, and the public interest.**
 
-Continuous measurement beats one-off audits. The question this answers is
-not "is this site accessible?" but "is this site **getting more
-accessible** to more people?"
+[VITAL Scans](https://github.com/mgifford/vital-core) helps organizations understand how the quality of their websites changes over time.
 
-## Design principles
+Rather than relying on occasional audits, VITAL uses recurring, carefully budgeted scans to identify problems, observe changes, and help teams prioritize improvements.
 
-**Files are the only state. Data is append-only. Reports are pure
-functions of the data directory.**
+It was developed with government websites in mind, where accessibility, transparency, reliability, and responsible use of public resources are essential.
 
-- `state/<domain>/crawl.json`: the crawl frontier. The only mutable
-  file. Not committed: CI keeps it on the `scan-state` release (see
-  ARCHITECTURE.md). If it is deleted, the crawler reseeds from the sitemap
-  and no history is lost.
-- `data/`: scan data. Not tracked in this repo: it is its own repo
-  (`data_repo` in `config/targets.yml`, default
-  [mgifford/vital-core-data](https://github.com/mgifford/vital-core-data)),
-  checked out into `data/` by CI. Clone it there locally only when you need
-  the data; the code runs and tests without it.
-- `data/<domain>/<ISO-week>/pages/*.json`: one compact record per page
-  per week. Append-only.
-- `data/<domain>/<ISO-week>/runs/*.json`: append-only run logs.
-- `data/<domain>/<ISO-week>/summary.json`: the weekly rollup, computed
-  from the page records and committed. Old page-level detail is pruned
-  only by the verified, explicitly authorized retention command; summaries are kept forever, so trend history
-  never breaks.
-- `docs/`: generated HTML, built at deploy time and shipped as a Pages
-  artifact. **Never committed.** It cannot drift from the data because
-  it does not persist.
+The central question is not simply *"Does this website pass an automated test?"* It is **"Is this website getting better for the people who depend on it?"**
 
-## Retention
+**[Explore the published VITAL Scans reports](https://mgifford.github.io/vital-core/)**
 
-Automatic pruning is disabled. Page-level detail can only be removed by the
-verified, explicitly confirmed retention command. See
-[docs-internal/RETENTION-RUNBOOK.md](docs-internal/RETENTION-RUNBOOK.md) and
-[docs-internal/RETENTION-ADR.md](docs-internal/RETENTION-ADR.md).
+## Explore the reports
 
-Other deliberate choices:
+VITAL publishes accessible reports through GitHub Pages. You do not need to install software or have a GitHub account to explore the published results.
 
-- **Stable page identity.** One URL normalization function
-  (`src/lib/urls.js`) defines page identity everywhere. Week-over-week
-  comparison depends on it; treat it as a frozen contract.
-- **ISO weeks as the unit of comparison.** A page scanned Tuesday and a
-  page scanned Saturday of the same week belong to the same dataset.
-  There are no synthesized run IDs to group incorrectly.
-- **Pages-affected over instance counts.** A rule failing 600 times on
-  a nav menu is one fix, not 600. Reports rank rules by pages affected.
-- **Reports built for the visitor's question, not the engine list.** Each
-  domain's landing page answers "how are we doing?" in ~10 seconds — score
-  and trend, three deltas (new / fixed / regressed this week), and the one
-  biggest available win — with the detail collapsed below. The sub-nav is
-  grouped by outcome (Accessible? · Fast? · Findable? · Trustworthy? ·
-  Sustainable?). Renamed pages keep a redirect at their old URL, so existing
-  links (including pinned `#finding` anchors) never break.
-- **A settle delay before auditing** (`settle_delay_ms`, overridable
-  with `VITAL_A11Y_SETTLE_DELAY_MS`) lets client-side hydration finish,
-  which removes the largest source of transient false positives.
-- **URL path/query filtering.** Per-target `url_include` / `url_exclude`
-  pattern arrays (set in `config/targets.yml`) narrow which pages are
-  crawled and scanned. Each pattern is a substring or a `/regex/`, and long
-  lists can live in a file via `url_include_file` / `url_exclude_file`
-  (resolved under `config/`). Priority URLs always bypass the filter.
-- **Viewer URL exclusion.** A report reader can hide findings on pages they
-  are not responsible for (a section another team owns, legacy `.aspx` pages)
-  via a control on the landing and Accessibility pages. The list is a
-  substring/`/regex/` set saved per-domain in the browser (`localStorage`),
-  shared across both pages, and exportable/importable so a team can agree on
-  one scope. Scanning is unaffected — it only changes what the report shows;
-  with JavaScript off the full report renders.
-- **Unlisted sites.** `unlisted: true` on a target in `config/targets.yml`
-  takes it off the published site without touching the crawl: it is still
-  scanned and its history kept, and its reports are still built at the same
-  URLs (marked `noindex`), but the dashboard, fleet-wide tables, URL lookup,
-  JSON API and archive indexes, `llms.txt` and weekly issue comment leave
-  it out. Anyone with a link can still open it. Delete the line to list it
-  again.
-- **Plain Node, no build step, no TypeScript, six dependencies.** Less
-  machinery to break in CI.
+Reports help answer questions such as:
 
-## How a week works
+- Which accessibility problems affect the most pages?
+- Which problems are newly observed, persistent, or no longer observed?
+- Are website performance and resource use improving?
+- Are recurring problems associated with shared technologies or components?
+- Which pages or issues warrant further investigation?
+- What evidence is available, and what still requires human verification?
 
-1. The `scan` workflow runs nightly at off-hours (UTC crons in
-   `.github/workflows/scan.yml`; adjust for your targets' audiences).
-2. Each run scans up to `pages_per_run` pages per domain that have not
-   yet been scanned this ISO week, discovering new same-host links as it
-   goes. Coverage accumulates: 300 pages/run × 7 runs ≈ 2,000+
-   pages/domain/week, within the `max_pages_per_week` cap.
-3. After the night's scans finish, the `report` workflow aggregates the
-   week, deploys the reports to GitHub Pages, and prunes page-level
-   detail older than a verified retention policy. Automatic pruning is disabled.
-4. Optionally, the `pdf-audit` workflow checks the PDFs each site links to
-   (daily, for sites with `pdf_audit: { enabled: true }`, or for one site
-   from Actions → pdf-audit), and the next report shows them on that
-   site's PDFs page.
+The [public dashboard](https://mgifford.github.io/vital-core/) provides an overview of monitored websites and links to their detailed reports.
 
-For how crawling, storage, and the pipeline work in more detail, see
-**[ARCHITECTURE.md](ARCHITECTURE.md)**.
+Each website has its own history, including the pages assessed, findings, trends, and limitations of the available evidence.
 
-## Setup
+**These reports are monitoring evidence, not accessibility certifications or declarations of legal conformance.**
 
-### Repository Roles
+## What does VITAL measure?
 
-GitHub is the source of truth for this project. The `main` branch keeps
-the full working history, and that is where development should land.
+VITAL collects several complementary indicators of website quality.
 
-Hugging Face Spaces has been archived. It was a deployment target, not a second source branch:
-it should receive a clean snapshot of the current site state on its own
-`main` branch, with large `state/` crawl artifacts stripped out before
-push.
+### Accessibility
 
-### Setting up a new instance
+VITAL uses two independent open-source accessibility testing engines:
 
-An instance is two repositories: this code (the workflows, `config/`) and a
-companion **data repository** that CI commits scan results to. Every step
-below is needed; a missing one tends to fail quietly, late in a run.
+- [axe-core](https://github.com/dequelabs/axe-core), maintained by Deque.
+- [Siteimprove Alfa](https://github.com/Siteimprove/alfa), an open-source accessibility evaluation engine.
 
-1. **Create the code repo from the template, then join its history to
-   upstream.** This repository is a GitHub template: choose **Use this
-   template → Create a new repository**, leaving "Include all branches"
-   unticked. GitHub starts the new repo with one "Initial commit" that
-   copies these files but not their history, so `git merge upstream/main`
-   can't work until the two histories are joined. Join them once, straight
-   away. It changes no files:
-   ```sh
-   git clone git@github.com:<owner>/<name>.git
-   cd <name>
-   git remote add upstream https://github.com/mgifford/vital-core
-   git fetch upstream main
-   # The upstream commit that "Initial commit" was copied from:
-   ROOT_TREE=$(git rev-parse "$(git rev-list --max-parents=0 HEAD)^{tree}")
-   BASE=$(git log --format='%H %T' upstream/main | awk -v t="$ROOT_TREE" '$2 == t { print $1; exit }')
-   if [ -n "$BASE" ]; then
-     git merge -s ours --allow-unrelated-histories "$BASE" \
-       -m "Record vital-core ${BASE:0:7} as upstream base"
-     git push
-   else
-     echo "No upstream commit matches the initial commit." >&2
-   fi
-   ```
-   If no commit matches, the first commit isn't an unchanged copy of an
-   upstream commit, so don't guess one. Never run the `-s ours` merge
-   against `upstream/main` itself: it records every upstream change made
-   since the copy as merged without applying it.
+The engines implement different testing rules and may produce different findings on the same page.
 
-   Instead of the template, you can clone this repository and push it to a
-   new, empty repo (`git remote rename origin upstream`, then add your repo
-   as `origin`). That keeps the shared history from the start, with no join
-   step.
+VITAL preserves engine provenance and supports comparisons, rule mappings, and investigations into overlapping or inconsistent results.
 
-   A repo made from the template has the scheduled scan and report
-   workflows switched on from its first commit, with this repo's targets in
-   `config/targets.yml`. Until step 4 they stop at the push-access check
-   without fetching any site, so finish step 3 before adding the key.
-2. **Create the data repo:** a **public** repository such as `<name>-data`,
-   with an initial commit (a README is enough). It must be public: the
-   report's `gate` job reads its marker files with the workflow's own token.
-3. **Edit `config/targets.yml`:**
-   - list your domains and adjust budgets
-   - set `data_repo:` to the data repo
-   - point the `user_agent` contact URL at your repo
-   - set `report_base_url:` to `https://<owner>.github.io/<name>`; CSV
-     links, `llms.txt` and the API catalog are built from it
-   - set `finding_policy.conformance` (the WCAG target) and, where a law
-     sets a lower minimum, `legal_baseline` (for US federal sites, Section
-     508: WCAG 2.0 AA). The shipped default is Section 508, so change or
-     remove it for any other jurisdiction
-   - cut `languages:` down to the ones your readers need. Every listed
-     language is built and deployed on each report run, even with the
-     switcher hidden
+Accessibility reporting includes references to relevant WCAG requirements, with the applicable assessment target and legal baseline configured for each monitored website.
 
-   Run `npm run test:unit` before pushing; it fails on a config that
-   doesn't load.
-4. **Add a deploy key so CI can push scan data:**
-   - `ssh-keygen -t ed25519 -N "" -C "<name> Actions" -f data-key`
-   - add `data-key.pub` to the **data repo** → Settings → Deploy keys, with
-     **Allow write access** ticked
-   - add the private `data-key` file, including its BEGIN/END lines, to the
-     **code repo** → Settings → Secrets and variables → Actions, as the
-     repository secret **`VITAL_DATA_DEPLOY_KEY`**
-   - delete both local files
+Automated tests identify some accessibility barriers, but they cannot establish complete WCAG conformance. Manual accessibility and usability testing remain essential.
 
-   Without the key, checkout quietly falls back to a read-only token. The
-   "Check data repo push access" step now stops the run first, and its
-   annotation names the cause.
-5. **In the code repo's settings:**
-   - **Pages:** set the source to **GitHub Actions**
-   - **Actions → General:** allow workflows **read and write permissions**
-   - **Issues:** keep them enabled; the report workflow posts a "Weekly
-     scan reports" issue
-6. **Run the first scan:** Actions → scan → Run workflow, with the domain
-   left blank, a small budget (e.g. 10) and **Run report** ticked. Start one
-   scan at a time: the `scan-global` concurrency group keeps only the
-   newest waiting run and cancels the others.
-7. **Check that it really worked.** A green run alone doesn't prove anything
-   was scanned. Look for:
-   - new commits in the data repo
-   - the site at `https://<owner>.github.io/<name>/`
-   - the "Weekly scan reports" issue
+### Performance
 
-   A site the scanner couldn't get into is listed at the top of the
-   dashboard under "Sites blocking the scanner", with the cause: a firewall
-   rule, robots.txt or no connection. For the details, run Actions →
-   **diagnose** with that domain. It shows what the site sends
-   the scanner from GitHub's network: each redirect hop, the firewall or CDN
-   in front of it, whether a desktop browser gets a different answer,
-   `robots.txt` and the sitemap, and what a slow homepage was still loading.
-   Locally, `npm run diagnose -- <domain>` does the same from your network.
+VITAL uses [Google Lighthouse](https://github.com/GoogleChrome/lighthouse) and browser resource measurements to investigate performance.
 
-### Taking upstream updates
+It examines indicators such as loading behaviour, page resources, performance recommendations, and changes over time.
 
-```sh
-git fetch upstream main
-git merge upstream/main
-```
+A stable group of important pages supports more meaningful historical comparisons.
 
-Conflicts should only appear in files you changed yourself. A fix that
-reached both repos by copying rather than merging (for example, one you
-made in your repo and then ported upstream) can conflict once. Take
-upstream's version (`git checkout --theirs <file>`) unless you meant to keep
-yours. For `package-lock.json`, take upstream's version, then run `npm ci`
-to confirm it still matches `package.json`.
+Performance results depend on the testing environment, page state, and measurement conditions. A change in a score is not automatically a regression or improvement.
 
-### Sending discoveries upstream
+### Sustainability
 
-Keep a `docs-internal/UPSTREAM-SUGGESTIONS.md` in your repo for anything
-every instance would want: an engine bug, a US-only assumption, a missing
-setup step. vital-core never ships that file, so it never conflicts. Fix
-those things in vital-core, on a branch from `upstream/main`, then merge
-upstream into your repo. See CLAUDE.md, "Fleets made from this template".
+VITAL collects resource-use indicators that can help identify opportunities to reduce unnecessary data transfer and computational work.
 
-## Local use
+It uses [CO2.js](https://github.com/thegreenwebfoundation/co2.js) to estimate environmental impacts from available page-resource evidence.
 
-```sh
+These estimates are model outputs, not direct measurements of device energy consumption or verified carbon emissions.
+
+The project follows the direction of the [W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/) and applies sustainability principles to its own scanning and reporting infrastructure.
+
+### Content and discoverability
+
+VITAL examines indicators including:
+
+- Plain-language readability, spelling, and writing heuristics.
+- Page metadata, titles, language declarations, and canonical URLs.
+- Structured data and relevant web standards.
+- Broken links and navigation-related signals.
+- Image inventories and alternative-text indicators.
+- Linked documents and other embedded resources.
+
+These checks identify potential concerns. They cannot independently establish that content is understandable, accurate, or suitable for its intended audience.
+
+### Security, public-interest signals, and technology
+
+VITAL also collects selected HTTP security-header signals, public-interest metadata, and technology fingerprints.
+
+Technology identification uses the open-source [Wappalyzer](https://github.com/HTTPArchive/wappalyzer) dataset. These observations are indicative, not authoritative inventories of a website's software.
+
+VITAL can identify patterns associated with particular technologies across multiple websites. Such relationships are investigative leads, not proof that a technology caused an accessibility or performance problem.
+
+### PDF documents
+
+An optional PDF audit workflow examines linked PDF documents for configured targets.
+
+Document findings are reported separately from HTML page findings, with their own testing limitations.
+
+## How continuous monitoring works
+
+VITAL monitors a configured inventory of websites rather than accepting arbitrary one-off scan requests.
+
+It uses incremental crawling and sampling so that work can be spread across the week without repeatedly requesting the same pages unnecessarily.
+
+The monitoring process follows five stages:
+
+1. **Discover:** Identify pages through sitemaps, selected priority URLs, and links found during crawling.
+2. **Sample:** Select pages and testing engines according to documented budgets and coverage rules.
+3. **Measure:** Collect accessibility, performance, sustainability, and other configured evidence.
+4. **Compare:** Preserve results by ISO week and compare them with previous observations.
+5. **Publish:** Generate accessible reports, data exports, and historical summaries.
+
+VITAL respects `robots.txt`, identifies its crawler, applies delays between page requests, and limits how much work it performs.
+
+Pages that cannot be accessed because of a firewall, bot protection, technical failure, or other restriction must be identified as unavailable. They are not treated as passing tests.
+
+The primary GitHub deployment uses GitHub Actions for scanning and reporting, a separate repository for scan data, and GitHub Pages for publication. It does not require a continuously running application server or database.
+
+See [Architecture](ARCHITECTURE.md) for the implementation details.
+
+## Understanding the evidence
+
+VITAL aims to make website quality findings useful without overstating what automated tools can establish.
+
+### Findings and trends
+
+A finding can be newly observed, repeatedly observed, or no longer observed under the available testing conditions.
+
+These categories require careful interpretation.
+
+For example, a finding that is no longer detected may have been fixed. Alternatively, the page may have changed, the rule may not have run, or the testing environment may have differed.
+
+**Not observed is not the same as verified fixed.**
+
+Similarly, an accessibility score is an automated health signal. It is not a percentage of WCAG conformance or a measure of the proportion of users who can complete a task.
+
+### Coverage and uncertainty
+
+The reports distinguish between:
+
+- Pages discovered and pages successfully scanned.
+- Engines that ran and engines that did not run.
+- Findings supported by recorded evidence.
+- Findings requiring further investigation.
+- Inconclusive, unavailable, or untested conditions.
+- Automated observations and human-reviewed evidence.
+
+A high score on a limited sample must not be presented as a complete evaluation of a website.
+
+### Repeated problems
+
+A single defective navigation component may appear on hundreds of pages.
+
+VITAL emphasizes the number of pages affected and investigates shared patterns rather than treating every repeated occurrence as an unrelated problem.
+
+Component associations and inferred ownership remain provisional until supported by appropriate evidence.
+
+## Investigating accessibility problems
+
+VITAL includes tools intended to help developers, accessibility specialists, and website owners move from a reported finding to an actionable investigation.
+
+### Finding Explorer
+
+The Finding Explorer provides searchable and filterable access to recorded accessibility findings.
+
+Depending on the available evidence, a finding may include:
+
+- The testing engine and rule.
+- Relevant WCAG or ACT references.
+- The page where it was observed.
+- A selector or recorded element identity.
+- Semantic region or containing widget information.
+- A possible shared-component association.
+- Historical evidence and reproduction information.
+- Guidance for manual verification.
+
+Filters and supporting controls enhance the reports without replacing their accessible HTML content.
+
+### Inspecting findings on a live website
+
+An optional VITAL Inspect bookmarklet and local Playwright inspector can help locate recorded elements on a live page.
+
+These tools support investigation. They do not establish that a historical problem still exists.
+
+A changed or missing element is reported as such rather than being silently replaced with a different match.
+
+### Reproducible testing
+
+VITAL can generate and execute targeted Playwright reproductions for supported findings.
+
+These are separate, deliberate investigations. Routine monitoring does not automatically execute reproduction tests for every reported problem.
+
+A reproduction that fails to locate an element does not prove the original issue was fixed.
+
+### Manual testing
+
+VITAL provides guidance and downloadable records to support human accessibility evaluation.
+
+The system does not automatically claim that manual testing was completed.
+
+The [W3C Accessibility Roles and Responsibilities Mapping](https://www.w3.org/WAI/planning/arrm/) can also help identify typical responsibilities associated with accessibility requirements. These mappings do not establish ownership of a particular defect.
+
+## Accessibility evaluation reports
+
+VITAL supports evaluation-oriented exports, including draft OpenACR and WCAG-EM-aligned reports, depending on the monitored website's configuration.
+
+These outputs serve different purposes.
+
+**OpenACR** provides a structure used for Accessibility Conformance Reports, particularly in procurement contexts. VITAL's generated output is explicitly incomplete and requires qualified human review.
+
+**WCAG-EM-aligned reporting** organizes automated evidence around the W3C website accessibility evaluation methodology. The output is an automated pre-assessment, not a completed WCAG-EM evaluation.
+
+Neither output should be used as a verified conformance statement without the necessary evaluation.
+
+See [WCAG-EM and ACR documentation](docs-internal/WCAG-EM.md).
+
+## Using the data
+
+VITAL publishes structured data alongside its human-readable reports.
+
+### JSON API
+
+The static [JSON API](API.md) provides versioned, read-only access to website snapshots, historical summaries, and normalized findings.
+
+It can be used by dashboards, development tools, research projects, and other applications without scraping HTML.
+
+### Model Context Protocol
+
+An optional [MCP server](MCP.md) lets compatible development tools retrieve and investigate published findings.
+
+The local MCP integration uses a bounded, read-only interface, with additional local source-mapping functionality available when explicitly configured.
+
+Optional WebMCP support can expose selected read-only tools to compatible browser-based agents.
+
+These interfaces do not automatically authorize changes to the websites being monitored.
+
+### Data and reproducibility
+
+Scan evidence is maintained separately from the application code.
+
+The default data repository is [mgifford/vital-core-data](https://github.com/mgifford/vital-core-data).
+
+VITAL preserves historical summaries and finding identities to support longitudinal analysis.
+
+Automatic deletion of historical page-level evidence is disabled. Destructive retention operations require an explicitly authorized, verified archive process.
+
+See the [retention runbook](docs-internal/RETENTION-RUNBOOK.md).
+
+## Related projects
+
+VITAL complements other open-source testing and investigation tools.
+
+- **[Open Scans](https://github.com/mgifford/open-scans):** On-demand accessibility scanning, cross-engine comparisons, ACT mappings, and reproducible investigations.
+- **[Firefox Energy Scanner](https://github.com/mgifford/firefox-energy-scanner):** Controlled experiments that investigate browser activity and measured client energy consumption.
+- **[Drupal Quality Observatory](https://github.com/mgifford/drupal-core):** An emerging project for tracking quality across Drupal Core, Drupal CMS, and related configurations.
+- **[OpenACR Release Evidence](https://github.com/mgifford/openacr-release-evidence):** Accessibility evidence and draft conformance reporting associated with specific software releases.
+
+VITAL's primary responsibility is recurring monitoring of configured website inventories.
+
+It can identify candidates for further investigation without attempting to reproduce the specialized capabilities of these other projects.
+
+## Get involved
+
+Contributions are welcome from accessibility specialists, developers, designers, performance engineers, sustainability researchers, content authors, public servants, and website owners.
+
+Useful contributions include:
+
+- Reviewing findings and identifying possible false positives.
+- Providing manual accessibility testing evidence.
+- Investigating recurring problems across websites.
+- Improving scanning coverage, accuracy, and reliability.
+- Suggesting better ways to explain historical changes.
+- Improving report accessibility, readability, and navigation.
+- Helping reduce the environmental footprint of scanning.
+- Contributing tests, documentation, translations, and code.
+- Reporting problems with the scanner or its published evidence.
+
+**[Open an issue or suggest an improvement](https://github.com/mgifford/vital-core/issues)**
+
+Not every useful contribution requires writing code. Independent verification of a reported problem is particularly valuable.
+
+## Run your own VITAL instance
+
+VITAL is open source and designed to support separate, independently configured installations.
+
+A typical GitHub deployment uses a code repository for the scanner and configuration, a separate data repository for scan results, GitHub Actions for execution, and GitHub Pages for publication.
+
+Organizations can adapt their target inventories, scanning budgets, languages, applicable accessibility requirements, and reporting configuration.
+
+The project provides a GitHub repository template, but deploying a new instance requires configuring its data repository, deployment credentials, workflows, and target settings.
+
+Consult the existing technical documentation before enabling scheduled scans.
+
+### Local development
+
+You need Node.js 22 or newer, npm, and a browser supported by Playwright.
+
+```bash
+git clone https://github.com/mgifford/vital-core.git
+cd vital-core
 npm ci
 npx playwright install chromium
-node src/scan.js --domain example.gov --budget 25
-node src/aggregate.js
-npx http-server docs   # or open docs/index.html
+npm test
 ```
 
-Tests:
+For a locally configured target, see [Architecture](ARCHITECTURE.md) and [Target Configuration](config/targets.yml).
 
-```sh
-npm run test:unit   # URL identity, ISO weeks, robots.txt, batch picking
-npm run test:e2e    # full pipeline over a local fixture site simulating two weeks
-npm run retention:plan -- --domain example.gov   # read-only retention/storage plan
-npm run retention:prune-check -- --domain example.gov   # read-only archive coverage check
-npm run retention:prune -- --domain example.gov         # dry-run; --execute is explicit
-npm run retention:archive -- --domain example.gov --week 2026-W44   # dry-run ZIP + manifest
-# archive states: npm run aggregate → reports/<domain>/<week>/archive.html + evidence.html
-```
+The `npm test` command runs the project's unit and end-to-end test suites.
 
-## Languages
+Developers should review the [agent instructions](AGENTS.md) and [feature status](FEATURES.md) before making substantial changes.
 
-Reports can be published in multiple languages. Set `languages` (and optionally
-`default_language`) in `config/targets.yml` — globally or per target, e.g.
-`languages: [en, fr]` for a Canadian site. The default language keeps the usual
-file paths; every other language is published alongside as `<page>-<lang>.html`,
-cross-linked by a header language switcher that works without JavaScript. A
-reader's choice is remembered in `localStorage` and can be forced from a link
-with `?lang=<code>` (e.g. `?lang=fr`); both are progressive enhancement and are
-only active when more than one language is configured.
+## Project status and limitations
 
-Translation uses a Drupal/gettext-style `t()` where the English phrase is the
-key, so untranslated strings fall back to English and partial catalogs are safe.
-Catalogs are human-reviewed JSON in `src/locales/<lang>.json` (`en`, `fr`, `ja`,
-`nl` supported). Run `npm run i18n:extract` to refresh the translator checklist
-(`src/locales/template.json`). Only the UI chrome is translated — engine-sourced
-WCAG/rule descriptions stay English. See CLAUDE.md for details.
+VITAL is actively developed and used for recurring website quality monitoring.
 
-## JSON API
+Its capabilities and reporting formats continue to evolve.
 
-Every build publishes a static, read-only, versioned JSON API next to the HTML
-reports at `/api/v1/` — no server, database, or auth. Consume it with a plain
-HTTP `GET` (`curl`, `fetch`, CI) instead of scraping HTML. Endpoints: an
-`index.json` of all domains, a per-domain `snapshot.json`, and per-week
-`findings.json`, each carrying a `schema_version` and validated against
-published JSON Schemas. URLs are redacted for publication (fragments stripped,
-sensitive query values `[REDACTED]`) and excluded pages are omitted. See
-[API.md](API.md) for the full contract, schemas, retention, and examples.
+Important limitations include:
 
-Every deployed site also publishes `/llms.txt` (the
-[llmstxt.org](https://llmstxt.org/) convention): a plain-text index pointing
-an LLM or coding agent at the JSON API, `API.md`, and `MCP.md`, so the data
-behind the HTML report is discoverable without already knowing this
-repository exists.
+- Automated accessibility testing cannot establish complete WCAG conformance.
+- Sampling means not every page receives every test.
+- Some websites restrict or block automated scanning.
+- Missing data is not equivalent to a successful test.
+- Technology fingerprints can be incomplete or inaccurate.
+- Performance measurements depend on testing conditions.
+- CO₂ and energy estimates are models, not direct energy measurements.
+- Component and technology associations do not establish causation.
+- Automated evaluation reports remain incomplete without appropriate human review.
 
-## Local MCP server
+See [Feature Status](FEATURES.md) for documented capabilities and outstanding work.
 
-`mcp/` is a local, read-only-by-default [Model Context Protocol](https://modelcontextprotocol.io/)
-server that lets an MCP-compatible coding client (Claude Code, GitHub
-Copilot, etc.) list and inspect findings from a Vital Core instance's JSON
-API. It runs on your own machine over stdio — no network port, no local
-repository access, no command execution. See [MCP.md](MCP.md) for setup,
-`.vital.yml`, the available tools, and what's intentionally not implemented
-yet.
+## Accessibility and sustainability commitments
 
-A separate, opt-in [WebMCP](https://github.com/webmachinelearning/webmcp)
-bridge registers the same read-only tools directly in a domain's report
-pages, for an in-browser agent instead of a local coding client — see
-[MCP.md#webmcp](MCP.md#webmcp).
+VITAL aims to follow the same principles it encourages others to adopt.
 
-## Politeness
+Published reports prioritize semantic HTML, readable text, keyboard access, meaningful tables, dark-mode support, and lightweight delivery.
 
-The crawler honors `robots.txt` (Disallow/Allow/Crawl-delay),
-identifies itself with a user agent containing a contact URL, scans one
-page at a time per domain with a configurable delay, and runs at night.
-PDF checks follow the same rules: one PDF at a time, only from the site's
-own domain, each downloaded once and then re-validated with a conditional
-request at most every 90 days.
-If you operate a site being scanned and want changes, open an issue.
+Core report content remains available without JavaScript. Optional features, including interactive filtering and selected browser integrations, use progressive enhancement.
 
-## Honest limits
+The project also limits its own scanning workload and reuses existing evidence rather than repeatedly performing expensive assessments when it is unnecessary.
 
-- Automated checkers find roughly 30–40% of WCAG barriers. A clean
-  report is a floor, not a finish line. Manual testing with assistive
-  technology remains essential. Testing with users with disabilities throughout the design stage. Using a well supported design system is key to learning from past mistakes.
-- Byte counts are decoded body sizes seen by the browser, not on-wire
-  transfer sizes. They are consistent week over week, which is what the
-  trend needs.
-- Technology detection (Wappalyzer) fingerprints client-side signals and
-  is not authoritative; confidence scores reflect this.
+Read the [Accessibility Statement](ACCESSIBILITY.md) and [Sustainability Statement](SUSTAINABILITY.md).
 
-## Commitments
+## AI use
 
-This project follows public commitments to
-[accessibility](ACCESSIBILITY.md) and
-[sustainability](SUSTAINABILITY.md), and aims to advance the
-[W3C Web Sustainability Guidelines](https://w3c.github.io/sustainableweb-wsg/).
-The reports themselves are part of the argument: semantic HTML, no
-web fonts, ~2 KB of CSS, dark mode respected. They work fully without
-JavaScript — every chart renders as a static SVG with a data table.
-Interactive, keyboard- and screen-reader-navigable
-[ParaCharts](https://github.com/fizzstudio/ParaCharts) are vendored and
-served first-party (no CDN) but off by default (`interactive_charts` in
-`config/targets.yml`): the vendored 2.8 MB build fails on the charts the
-reports draw, so it would cost every reader the download for nothing.
+Generative AI has assisted with the development, documentation, testing, and maintenance of VITAL.
+
+Optional local AI capabilities can help summarize findings when explicitly configured. These are not required for standard scans.
+
+AI-generated explanations are not independent verification of accessibility, performance, sustainability, or legal conformance.
+
+The scanner's underlying observations and their provenance must remain available separately from AI-generated interpretations.
+
+See [AGENTS.md](AGENTS.md) for development and evidence requirements.
+
+## Documentation
+
+- [Feature Status](FEATURES.md): Implemented capabilities and outstanding development.
+- [Architecture](ARCHITECTURE.md): Crawling, sampling, data storage, and reporting infrastructure.
+- [API](API.md): Published JSON data contracts and schemas.
+- [MCP Integration](MCP.md): Read-only tools for consuming findings.
+- [Accessibility Strategy](A11Y-STRATEGY.md): Accessibility direction and priorities.
+- [Finding Evidence Roadmap](docs-internal/FINDING-EVIDENCE-ROADMAP.md): Element evidence, component attribution, inspection, and reproduction.
+- [WCAG-EM and ACR](docs-internal/WCAG-EM.md): Evaluation artifact distinctions and limitations.
+- [Retention Runbook](docs-internal/RETENTION-RUNBOOK.md): Data preservation, verified archives, and authorized pruning.
+- [Accessibility Statement](ACCESSIBILITY.md).
+- [Sustainability Statement](SUSTAINABILITY.md).
+- [AI Agent Instructions](AGENTS.md).
 
 ## License
 
-AGPL-3.0. Vendored third-party components: the
-[HTTPArchive/wappalyzer](https://github.com/HTTPArchive/wappalyzer)
-fingerprint database (GPL-3.0, `vendor/wappalyzer/`, refreshed via
-`scripts/update-wappalyzer.sh`) and the
-[ParaCharts](https://github.com/fizzstudio/ParaCharts) accessible-charts
-runtime (AGPL-3.0, `vendor/paracharts/`, refreshed via
-`scripts/update-paracharts.sh`).
+VITAL is free and open-source software licensed under the [GNU Affero General Public License, version 3](LICENSE).
+
+Included third-party components retain their respective licenses, including the Wappalyzer fingerprint database and the optional ParaCharts runtime.
+
+Independent verification, adaptation, and contributions are encouraged.
