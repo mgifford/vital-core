@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const REPO_BLOB_BASE = 'https://github.com/mgifford/vital-core/blob/main';
+import { repoBlobBase } from './repo-links.js';
 
 function joinUrl(base, p) {
   const b = (base || '').replace(/\/+$/, '');
@@ -25,7 +25,7 @@ export function buildApiCatalog(config, indexEntries) {
         type: 'json',
         base_url: abs('/api/v1'),
         auth: 'none',
-        docs_url: `${REPO_BLOB_BASE}/API.md`,
+        docs_url: `${repoBlobBase()}/API.md`,
         schema_base_url: abs('/api/v1/schema'),
         endpoints: [
           {
@@ -69,7 +69,7 @@ export function buildApiCatalog(config, indexEntries) {
           {
             id: 'mcp_docs',
             method: 'GET',
-            url: `${REPO_BLOB_BASE}/MCP.md`,
+            url: `${repoBlobBase()}/MCP.md`,
             description: 'Local MCP server documentation for coding assistants.',
           },
         ],

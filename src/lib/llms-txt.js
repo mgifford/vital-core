@@ -4,7 +4,7 @@
 // read-only JSON API (no auth, no server) and the local, opt-in MCP server.
 // Pure function of already-computed aggregate state — never re-derives it.
 
-const REPO_BLOB_BASE = 'https://github.com/mgifford/vital-core/blob/main';
+import { repoBlobBase, repoUrl } from './repo-links.js';
 
 export function buildLlmsTxt(config, indexEntries) {
   const base = (config.reportBaseUrl || '').replace(/\/+$/, '');
@@ -39,14 +39,14 @@ export function buildLlmsTxt(config, indexEntries) {
     );
   }
   lines.push(
-    `- [API.md](${REPO_BLOB_BASE}/API.md): full contract, JSON Schemas, retention, and examples.`,
+    `- [API.md](${repoBlobBase()}/API.md): full contract, JSON Schemas, retention, and examples.`,
   );
   lines.push('');
 
   lines.push('## MCP');
   lines.push('');
   lines.push(
-    `- [MCP.md](${REPO_BLOB_BASE}/MCP.md): a local, read-only-by-default Model ` +
+    `- [MCP.md](${repoBlobBase()}/MCP.md): a local, read-only-by-default Model ` +
       'Context Protocol server (stdio, no network port) that lets an ' +
       'MCP-compatible coding client list and inspect findings from this ' +
       'API, and optionally map a finding to a probable local source file. ' +
@@ -56,8 +56,8 @@ export function buildLlmsTxt(config, indexEntries) {
 
   lines.push('## Docs');
   lines.push('');
-  lines.push(`- [README](${REPO_BLOB_BASE}/README.md): project overview, design principles, setup.`);
-  lines.push('- [Repository](https://github.com/mgifford/vital-core): source, issues, license (AGPL-3.0).');
+  lines.push(`- [README](${repoBlobBase()}/README.md): project overview, design principles, setup.`);
+  lines.push(`- [Repository](${repoUrl()}): source, issues, license (AGPL-3.0).`);
   lines.push('');
 
   lines.push('## Notes');

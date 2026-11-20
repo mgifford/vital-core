@@ -1,3 +1,4 @@
+import { repoUrl } from './repo-links.js';
 import crypto from 'node:crypto';
 import { resolveWcag, classifyFinding, severityFor } from './wcag.js';
 import { impactFor, estimateExcluded, pct } from './fpc.js';
@@ -388,7 +389,7 @@ export function bugReportsMarkdown(target, summary, reports) {
     '',
     `${reports.length} issue type(s) from ${summary.pagesScanned} pages scanned. ` +
       `Generated ${summary.generatedAt.slice(0, 10)} by ` +
-      `[vital-scans](https://github.com/mgifford/vital-core), following ` +
+      `[vital-scans](${repoUrl()}), following ` +
       `[accessibility bug-reporting best practices](https://mgifford.github.io/ACCESSIBILITY.md/examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.html).`,
     '',
     '> Automated checks find roughly a third of accessibility barriers. ' +
