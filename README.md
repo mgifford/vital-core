@@ -378,6 +378,10 @@ See [AGENTS.md](AGENTS.md) for development and evidence requirements.
 - [Accessibility Statement](ACCESSIBILITY.md).
 - [Sustainability Statement](SUSTAINABILITY.md).
 - [AI Agent Instructions](AGENTS.md).
+- [Deployment Guide](docs-internal/DEPLOYMENT.md):
+  Creating, configuring, and maintaining independent VITAL installations.
+- [Deployment Models and Optional Profiles](config/profiles/README.md):
+  Recommended repository architecture and historical deployment experiments.
 
 ## License
 
