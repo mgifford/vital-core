@@ -282,7 +282,18 @@ Not every useful contribution requires writing code. Independent verification of
 
 ## Run your own VITAL instance
 
-VITAL is open source and designed to support separate, independently configured installations.
+VITAL is open source and designed to support independently configured and maintained installations.
+
+**The recommended approach is to use a separate repository for each monitoring programme**, rather than managing multiple organizations or website inventories through deployment profiles in one repository.
+
+Existing examples include:
+
+- **[VITAL Core NSF](https://github.com/mgifford/vital-core-nsf):** Monitoring websites associated with the US National Science Foundation.
+- **[VITAL Core LGD](https://github.com/localgovdrupal/vital-core-lgd):** Monitoring local government websites associated with LocalGov Drupal.
+
+Each installation can retain VITAL's full scanning, reporting, investigation, and API capabilities while controlling its own website inventory, schedules, configuration, data, and maintenance.
+
+These repositories are independently maintained. Improvements made to VITAL Core are not automatically incorporated into other installations.
 
 A typical GitHub deployment uses a code repository for the scanner and configuration, a separate data repository for scan results, GitHub Actions for execution, and GitHub Pages for publication.
 
@@ -290,7 +301,7 @@ Organizations can adapt their target inventories, scanning budgets, languages, a
 
 The project provides a GitHub repository template, but deploying a new instance requires configuring its data repository, deployment credentials, workflows, and target settings.
 
-Consult the existing technical documentation before enabling scheduled scans.
+See the [Deployment Guide](docs-internal/DEPLOYMENT.md) for setup instructions and [Deployment Models and Optional Profiles](config/profiles/README.md) for the rationale behind independent installations.
 
 ### Local development
 
